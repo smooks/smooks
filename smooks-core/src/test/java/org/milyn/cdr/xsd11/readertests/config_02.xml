@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+	<profiles>
+		<profile base-profile="A" />
+	</profiles>
+
+    <reader class="com.ZZZZReader" targetProfile="A">
+        <handlers>
+            <handler class="com.X" />
+            <handler class="com.Y" />
+        </handlers>
+        <features>
+            <setOn feature="http://a" />
+            <setOn feature="http://b" />
+            <setOff feature="http://c" />
+            <setOff feature="http://d" />
+        </features>
+        <params>
+            <param name="param1">val1</param>
+            <param name="param2">val2</param>
+        </params>
+    </reader>
+
+    <resource-config selector="x">
+        <resource>x</resource>
+    </resource-config>
+
+</smooks-resource-list>

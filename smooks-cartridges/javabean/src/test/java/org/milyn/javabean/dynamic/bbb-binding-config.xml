@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" 
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.3.xsd"
+                      xmlns:dmb="http://www.milyn.org/xsd/smooks/dmb-1.4.xsd">
+
+    <jb:bean beanId="bbb" class="org.milyn.javabean.dynamic.BBB" createOnElement="#document">
+        <jb:wiring property="aaas" beanIdRef="aaas" />
+        <jb:value property="floatProperty" data="bbb/value/@property" />
+    </jb:bean>
+
+    <jb:bean beanId="aaas" class="java.util.ArrayList" createOnElement="#document">
+        <jb:wiring beanIdRef="aaa" />
+    </jb:bean>
+
+    <dmb:writer beanId="bbb" class="org.milyn.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
+        <param name="template">/org/milyn/javabean/dynamic/BBB-v11.ftl</param>
+    </dmb:writer>
+
+</smooks-resource-list>

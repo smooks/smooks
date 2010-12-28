@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <resource-config selector="a">
+        <resource>org.milyn.delivery.dom.ProcessorVisitor1</resource>
+    </resource-config>
+
+    <resource-config selector="b">
+        <resource>org.milyn.delivery.dom.serialize.AddAttributeSerializer</resource>
+    </resource-config>
+
+    <resource-config selector="c">
+        <resource>org.milyn.delivery.dom.AssemblyVisitor1</resource>
+    </resource-config>
+
+    <resource-config selector="d">
+        <resource>org.milyn.delivery.SAXAndDOMVisitor</resource>
+    </resource-config>
+
+</smooks-resource-list>

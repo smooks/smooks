@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding="UTF-8"?>
+
+<!-- root element -->
+<!ELEMENT trans-archive (trans-unit+) >
+
+<!ELEMENT trans-unit EMPTY >
+<!ATTLIST trans-unit
+	element 	CDATA 	#REQUIRED
+	list 		CDATA 	#REQUIRED
+	type 		CDATA 	#REQUIRED
+	path 		CDATA 	#REQUIRED
+>

@@ -1,0 +1,20 @@
+<root someattrib="hasval">
+	some text
+	<anelement>
+		<anelement>
+			some text
+			<anelement>
+				some text
+				
+					some text
+					<yyyy>
+					<zzz/>
+					some text
+				
+				some text
+				some text
+			</anelement>
+			some text
+		</anelement>
+	</anelement>
+</root>

@@ -1,0 +1,24 @@
+<bbb:root xmlns:bbb="http://www.acme.com/xsd/bbb.xsd" xmlns:aaa="http://www.acme.com/xsd/aaa.xsd" xmlns:boo="http://boohoo.com">
+	<bbb:bbb>
+	   <bbb:value property="1234.87" />
+	</bbb:bbb>
+	<aaa:aaa>
+	   <aaa:value property1="1234.98765" property2="123" />
+	</aaa:aaa>
+    <![CDATA[ some cdata ]]>
+    <aaa:aaa>
+       <aaa:value property1="2234.98765" property2="223" />
+    </aaa:aaa>
+    <!-- A Comment -->
+    <boo:ddd>
+        boo
+        <![CDATA[ some more cdata ]]>
+    </boo:ddd>
+    <!-- Another Comment -->
+    <boo:ddd>
+        boo
+    </boo:ddd>
+    <aaa:aaa>
+       <aaa:value property1="3234.98765" property2="323" />
+    </aaa:aaa>
+</bbb:root>

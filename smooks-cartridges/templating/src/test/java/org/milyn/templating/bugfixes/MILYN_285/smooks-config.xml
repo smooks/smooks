@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                        xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd"
+                        xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+
+    <params>
+        <param name="stream.filter.type">SAX</param>
+    </params>
+    
+    <jb:bindings beanId="env" class="java.util.HashMap" createOnElement="root" extendLifecycle="true">
+		<jb:value property="abc" data="abc"/>
+	</jb:bindings>
+	
+	<ftl:freemarker applyOnElement="root/bla/blub">
+		<ftl:template>${env.abc}</ftl:template>
+	</ftl:freemarker>
+
+</smooks-resource-list>

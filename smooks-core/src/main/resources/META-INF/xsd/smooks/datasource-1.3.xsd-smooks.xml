@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/datasource-1.3.xsd">
+
+    <!--
+        DirectDatasource Resource
+    -->
+
+    <resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.db.DirectDataSource</param>
+    </resource-config>
+
+    <resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">bindOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">bindOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">datasource</param>
+    </resource-config>
+
+	<resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">autoCommit</param>
+    </resource-config>
+
+	<resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">driver</param>
+    </resource-config>
+
+	<resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">url</param>
+    </resource-config>
+
+	<resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">username</param>
+    </resource-config>
+
+    <resource-config selector="direct">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">password</param>
+    </resource-config>
+
+    <!--
+        JndiDatasource Resource
+    -->
+
+    <resource-config selector="JNDI">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.db.JndiDataSource</param>
+    </resource-config>
+
+    <resource-config selector="JNDI">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">bindOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="JNDI">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">datasource</param>
+    </resource-config>
+
+    <resource-config selector="JNDI">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">datasourceJndi</param>
+    </resource-config>
+
+    <resource-config selector="JNDI">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">transactionJndi</param>
+    </resource-config>
+
+    <resource-config selector="JNDI">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">transactionManager</param>
+    </resource-config>
+
+	<resource-config selector="JNDI">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">autoCommit</param>
+    </resource-config>
+
+    <resource-config selector="JNDI">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">setAutoCommitAllowed</param>
+    </resource-config>
+
+</smooks-resource-list>

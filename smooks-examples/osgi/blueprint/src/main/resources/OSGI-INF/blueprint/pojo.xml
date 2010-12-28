@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint 
+    xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+    <bean id="pojo" class="example.Pojo" init-method="start" destroy-method="stop">
+        <argument>
+            <ref component-id="smooks"/>
+        </argument>
+        <argument>
+            <value type="java.lang.String">${basedir}/input-message.xml</value>
+        </argument>
+    </bean>
+    
+    <bean id="smooks" class="org.milyn.Smooks" factory-ref="smooksOsgiFactory" factory-method="create">
+	    <argument>
+	       <ref component-id="blueprintBundle"/>
+        </argument>
+    </bean>
+    
+    <bean id="smooksOsgiFactory" class="org.milyn.SmooksOSGIFactoryImpl"/>
+    
+</blueprint>
+

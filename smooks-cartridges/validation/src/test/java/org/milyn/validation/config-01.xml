@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+    xmlns:rules="http://www.milyn.org/xsd/smooks/rules-1.0.xsd"
+    xmlns:validation="http://www.milyn.org/xsd/smooks/validation-1.0.xsd">
+
+    <rules:ruleBases>
+        <rules:ruleBase name="regex" src="/regex.properties" provider="org.milyn.rules.regex.RegexProvider" />
+    </rules:ruleBases>
+
+    <validation:rule executeOn="b" name="regex.custom" onFail="WARN" />
+    <validation:rule executeOn="b/@x" name="regex.custom" onFail="WARN" />
+
+</smooks-resource-list>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/test-xsd-01.xsd">
+
+    <resource-config selector="renameElement">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.RenameElementTrans</param>
+    </resource-config>
+
+    <resource-config selector="renameElement">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">name</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="renameElement">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">newName</param>
+        <param name="mapTo">new-name</param>
+    </resource-config>
+
+    <resource-config selector="renameElement/conditionRef">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <param name="mapTo">conditionRef</param>
+    </resource-config>
+
+</smooks-resource-list>

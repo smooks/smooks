@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~  This library is free software; you can redistribute it and/or
+  ~  modify it under the terms of the GNU Lesser General Public
+  ~  License (version 2.1) as published by the Free Software
+  ~  Foundation.
+  ~
+  ~  This library is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~  See the GNU Lesser General Public License for more details:
+  ~  http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+	xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd"
+	xmlns:dao="http://www.milyn.org/xsd/smooks/persistence-1.4.xsd">
+
+    <jb:bean beanId="theList" class="java.util.ArrayList" createOnElement="$document">
+        <jb:wiring beanIdRef="entity" />
+    </jb:bean>
+
+	<dao:locator dao="some" lookup="test" beanId="entity" uniqueResult="true">
+        <dao:params type="POSITIONAL">
+			<dao:expression name="1">'value-1'</dao:expression>
+		</dao:params>
+    </dao:locator>
+
+</smooks-resource-list>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:yyy="http://www.milyn.org/xsd/test-xsd-01.xsd"
+           targetNamespace="http://www.milyn.org/xsd/test-xsd-01.xsd"
+           elementFormDefault="qualified">
+
+    <xs:element name="nameValuePairs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="yyy:abstractNVP" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="abstractNVP" type="yyy:abstractNVP" abstract="true" />
+    <xs:complexType name="abstractNVP" abstract="true" />
+
+    <xs:element name="nameValuePair" substitutionGroup="yyy:abstractNVP">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="yyy:abstractNVP">
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                    <xs:attribute name="value" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

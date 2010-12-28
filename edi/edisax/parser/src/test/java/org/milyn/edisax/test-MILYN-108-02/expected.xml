@@ -1,0 +1,17 @@
+<test-message>
+	<outer-seg>
+		<field-1>1</field-1>
+		<field-2>2</field-2>
+		<field-3>3</field-3>
+	</outer-seg>
+	<personal-details>
+		<name>
+			<firstname>
+				<salutation>Mr</salutation>
+				<title>Tom</title>
+			</firstname>
+			<lastname>Fennelly</lastname>
+		</name>
+		<country>Ireland</country>
+	</personal-details>
+</test-message>

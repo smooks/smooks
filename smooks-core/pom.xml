@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>milyn</artifactId>
+        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+    <name>Milyn Smooks Core</name>
+    <groupId>org.milyn</groupId>
+	<artifactId>milyn-smooks-core</artifactId>
+	<version>${milyn.smooks.core.version}</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>testres</artifactId>
+            <version>${milyn.smooks.core.version}</version>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.milyn</groupId>
+			<artifactId>milyn-commons</artifactId>
+			<version>${milyn.commons.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>${xstream.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+            <version>${mvel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>${jaxen.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>dom4j</artifactId>
+                    <groupId>dom4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xerces</artifactId>
+                    <groupId>xmlParserAPIs</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xerces</artifactId>
+                    <groupId>xercesImpl</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xom</artifactId>
+                    <groupId>xom</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+		<dependency>
+			<groupId>dtdparser</groupId>
+			<artifactId>dtdparser</artifactId>
+			<version>${dtdparser.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>${javax.transaction.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockejb</groupId>
+			<artifactId>mockejb</artifactId>
+			<version>${mockejb.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!--
+			###################################################################################################################
+				Note that xercesImpl is included only until the SAX bug (http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6770436)
+				with Java6 has been fixed. This can then be removed. Daniel Bevenius 2008-11-12.
+			###################################################################################################################
+		-->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>${xerces.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+	</dependencies>
+
+    <repositories>
+        <repository>
+            <id>mvel</id>
+            <url>http://repository.codehaus.org</url>
+        </repository>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+</project>

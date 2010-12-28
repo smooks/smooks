@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <resource-config selector="$document">
+        <resource>org.milyn.delivery.lifecyclecleanup.SaxVisitCleanable</resource>
+    </resource-config>
+
+</smooks-resource-list>

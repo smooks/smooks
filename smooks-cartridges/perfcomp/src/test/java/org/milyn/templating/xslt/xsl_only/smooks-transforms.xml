@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
+
+<smooks-resource-list>
+
+    <!--
+        The xslt
+    -->
+    <smooks-resource selector="Order" path="org/milyn/templating/xslt/xsl_only/transform-order.xsl">
+        <param name="is-xslt-templatelet">false</param>
+    </smooks-resource>
+
+</smooks-resource-list>

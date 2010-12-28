@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <jb:bean beanId="unEdifactMessage" class="org.milyn.smooks.edi.unedifact.model.r41.UNEdifactMessage41" createOnElement="interchangeMessage">
+    	<jb:wiring property="interchangeHeader" beanIdRef="unbSegment" />
+    	<jb:wiring property="groupHeader" beanIdRef="ungSegment" />
+        <jb:wiring property="groupTrailer" beanIdRef="uneSegment" />
+    	<jb:wiring property="messageHeader" beanIdRef="unhSegment" />
+    	<jb:wiring property="messageTrailer" beanIdRef="untSegment" />
+    	<jb:wiring property="message" beanAnnotation="org.milyn.smooks.edi.EDIMessage" />
+    </jb:bean>
+
+    <import file="control-segments.xml" />
+
+</smooks-resource-list>

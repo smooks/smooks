@@ -1,0 +1,24 @@
+STARTED
+<root>
+	<a>
+	</a>
+	<b>
+		<c>
+			<d>
+			</d>
+		</c>
+	</b>
+	<e>
+	</e>
+	<f>
+		<g>
+			<h>
+			</h>
+			<i>
+			</i>
+		</g>
+	</f>
+	<j>
+	</j>
+</root>
+FINISHED

@@ -1,0 +1,11 @@
+<a>
+    <b>
+        <c>
+<!--
+  a comment
+  <with_xml_tags>
+
+  should not be indented!!
+        --></c>
+    </b>
+</a>

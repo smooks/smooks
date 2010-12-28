@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.4.xsd">
+
+	<medi:description name="Test Message" version="1.0" />
+
+	<medi:delimiters segment="&#10;" field="|" fieldRepeat="~" component="^" sub-component="&amp;" escape="\" />
+
+	<medi:segments xmltag="test-message">
+		<medi:segment segcode="A" xmltag="message-seg" maxOccurs="2" ignoreUnmappedFields="true">
+			<medi:field xmltag="field-1" />
+			<medi:field xmltag="field-2" >
+			    <medi:component xmltag="component-1" />
+			    <medi:component xmltag="component-2" />
+			</medi:field>			
+			<medi:field xmltag="field-3" />
+		</medi:segment>
+	</medi:segments>
+	
+</medi:edimap>

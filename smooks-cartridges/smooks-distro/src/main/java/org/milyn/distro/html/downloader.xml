@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <!-- Use the Nekohtml parser so we can handle poorly formed HTML...-->
+    <reader class="org.cyberneko.html.parsers.SAXParser">
+        <features>
+            <setOff feature="http://cyberneko.org/html/features/scanner/notify-builtin-refs" />
+        </features>
+    </reader>
+
+    <!-- The transformations... -->
+    <import file="visitors/url-rewriting.xml" />
+    <import file="visitors/page-objects.xml" />
+    <!-- import file="visitors/page-operations.xml" / -->
+
+</smooks-resource-list>

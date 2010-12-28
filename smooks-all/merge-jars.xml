@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~  This library is free software; you can redistribute it and/or
+  ~  modify it under the terms of the GNU Lesser General Public
+  ~  License (version 2.1) as published by the Free Software
+  ~  Foundation.
+  ~
+  ~  This library is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~  See the GNU Lesser General Public License for more details:
+  ~  http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<project default="assemble" name="Assembly" basedir=".">
+
+    <target name="assemble">
+
+		<taskdef name="merge" classname="org.milyn.ant.ResourceMergerTask" classpathref="task.classpath"/>
+		<merge jarName="${basedir}/target/milyn-smooks-all-${smooks.version}.jar" overwrite="true" 
+				manifest="${basedir}/target/classes/META-INF/MANIFEST.MF"
+				resources="/META-INF/content-handlers.inf, /META-INF/data-decoders.inf">
+			<fileset dir="${basedir}/target" includes="dependency/milyn*.jar"/>
+		</merge>
+
+        <jar destfile="./target/milyn-smooks-all-${smooks.version}-sources.jar">
+            <zipgroupfileset dir="./target/sources" includes="milyn*.jar"/>
+        </jar>
+
+    </target>
+
+	<path id="task.classpath">
+		<pathelement path="${basedir}/target/classes"/>
+		<fileset dir="${basedir}/target/dependency" includes="*.jar"/>
+	</path>
+
+</project>
+

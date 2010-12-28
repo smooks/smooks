@@ -1,0 +1,17 @@
+<shipping-history date="2007-07-16">
+    <warehouse id="2" location="Belfast" />
+    <trackingNumbers>
+        <trackingNumber>
+            <shipperID>Speedy</shipperID>
+            <shipmentNumber>ZX5-20030294-731</shipmentNumber>
+        </trackingNumber>
+        <trackingNumber>
+            <shipperID>Acme</shipperID>
+            <shipmentNumber>Previous0987</shipmentNumber>
+        </trackingNumber>
+        <trackingNumber>
+            <shipperID>Zoom</shipperID>
+            <shipmentNumber>776-ASDAAAA-988</shipmentNumber>
+        </trackingNumber>
+    </trackingNumbers>
+</shipping-history>

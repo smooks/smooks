@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
+
+<!--
+	This CDRL defines basic serialisation units and maps them to their 
+	appropriate device profile.
+
+	NB: See device-profile.xml
+-->
+
+<smooks-resource-list> 
+
+	<!--
+		Default serializer for all elements is the "DefaultSerializationUnit".
+	-->
+	<smooks-resource 	useragent="*" selector="*" 
+			path="org/milyn/delivery/serialize/DefaultSerializationUnit" />
+
+	<!--
+		Print elements that are marked "EMPTY" in their DTD in the <xx /> format.
+	-->
+	<smooks-resource 	useragent="*" selector="xmldef:elcspec:empty" 
+			path="org/milyn/cdres/serialize/EmptyElementSU" />
+		
+</cdres-list>
+

@@ -1,0 +1,6 @@
+<#if resource.inline>
+    Applied inlined <a href="http://www.w3.org/Style/XSL/">XSL</a> Template.  See Template in Resource Configuration (below).
+<#else>
+    Applied <a href="http://www.w3.org/Style/XSL/">XSL</a> Template <b>${resource.resource}</b>.
+</#if>
+Templating action: <b>${resource.parameters.action!'replace'}</b>.

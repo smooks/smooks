@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:unedifact="http://www.milyn.org/xsd/smooks/unedifact-1.4.xsd"
+                      xmlns:camel="http://www.milyn.org/xsd/smooks/camel-1.4.xsd"
+                      xmlns:frag="http://www.milyn.org/xsd/smooks/fragment-routing-1.4.xsd">
+
+    <!--
+    Configure the EDI Reader to parse the UN/EDIFACT d93a message set.
+    Reader configured with the a URN, which is based on the maven repo
+    artifact group:name:version info...
+    -->
+    <unedifact:reader mappingModel="urn:org.milyn.edi.unedifact:d93a-mapping:1.0" />
+
+    <!--
+    Add the binding configs for the d93a message set.  These configs will build
+    Java Object models for any d93a messages encountered in the incoming UN/EDIFACT
+    Interchanges...
+    -->
+    <import file="/org/milyn/edi/unedifact/d93a/message-bindingconfig.xml" />
+
+    <!--
+    Explicitly capture DESADV (Dispatch Advice) message events from the stream and bind the
+    XML fragments into the BeanContext under beanId "DESADV_frag". Can route the XML fragments
+    using Camel...
+    -->
+    <frag:serialize fragment="interchangeMessage/DESADV" bindTo="DESADV_frag"/>
+
+    <!--
+    Add the Camel Routes for the 3 messages we're interested in...
+    -->
+    <camel:route beanId="INVOIC">
+        <camel:to endpoint="jms:invoice"/>
+    </camel:route>
+    <camel:route beanId="ORDERS">
+        <camel:to endpoint="jms:order"/>
+    </camel:route>
+    <camel:route beanId="DESADV_frag">
+        <camel:to endpoint="file:./target/DESADVs"/>
+    </camel:route>
+
+</smooks-resource-list>

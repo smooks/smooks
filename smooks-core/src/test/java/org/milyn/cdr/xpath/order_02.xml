@@ -1,0 +1,18 @@
+<ord xmlns:c="http://c" xmlns:d="http://d">
+    <items>
+        <c:item>
+            <d:units index="1">1</d:units>
+        </c:item>
+        <c:item>
+            <d:units index="2">2</d:units>
+        </c:item>
+    </items>
+    <items>
+        <c:item>
+            <d:units index="1">1</d:units>
+        </c:item>
+        <c:item>
+            <d:units index="2">2</d:units>
+        </c:item>
+    </items>
+</ord>

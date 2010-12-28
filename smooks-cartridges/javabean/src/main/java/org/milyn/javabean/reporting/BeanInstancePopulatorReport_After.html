@@ -1,0 +1,9 @@
+<#if resource.parameters.wireBeanId??>
+	Wiring bean <b>${resource.parameters.wireBeanId}</b> <#if resource.parameters.property??>on property <b>${resource.parameters.property}</b> of <#else>by adding it to the</#if> bean <b>${resource.parameters.beanId}</b>.
+<#else>
+    Extracting element data and <#if resource.parameters.property??>binding it on property <b>${resource.parameters.property}</b> <@beanType/> of <#else>adding it <@beanType/> to the</#if> bean <b>${resource.parameters.beanId}</b>.
+</#if>
+
+<#macro beanType>
+	<#if !resource.parameters.expression??>(type <b>${resource.parameters.type!'String'}</b>)</#if>
+</#macro>

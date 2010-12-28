@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <!--
+    Configure the Yaml Reader to read the message into a stream of SAX events.
+    -->
+    <resource-config selector="org.xml.sax.driver">
+	    <resource>org.milyn.yaml.YamlReader</resource>
+	    <param name="rootName">root</param>
+	    <param name="documentName">doc</param>
+	    <param name="arrayElementName">e</param>
+	</resource-config>
+
+</smooks-resource-list>

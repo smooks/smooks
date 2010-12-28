@@ -1,0 +1,4 @@
+keyWithAnchorStruct: &id1
+   subKey1: subValue1
+   subKey2:
+      - *id1

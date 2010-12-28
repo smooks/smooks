@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:g="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">
+
+    <!--
+        This tests that the imports are added.
+    -->
+
+    <g:groovy executeOnElement="c">
+        <g:imports>
+            import org.milyn.smooks.scripting.groovy.x.XClass;
+        </g:imports>
+        <g:script>
+            XClass x = new XClass();
+            x.exec();
+        </g:script>
+    </g:groovy>
+
+</smooks-resource-list>

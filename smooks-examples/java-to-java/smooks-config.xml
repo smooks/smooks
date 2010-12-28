@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" 
+                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.3.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd">
+
+    <core:filterSettings type="SAX" />
+
+    <jb:bean beanId="lineOrder" class="example.trgmodel.LineOrder" createOnElement="example.srcmodel.Order">
+        <jb:wiring property="lineItems" beanIdRef="lineItems" />
+        <jb:value property="customerId" data="header/customerNumber" />
+        <jb:value property="customerName" data="header/customerName" />
+        <jb:value property="priority" data="header/priority" decoder="Enum">
+        	<jb:decodeParam name="enumType">example.trgmodel.LineOrderPriority</jb:decodeParam>
+        	<jb:decodeParam name="LOW">NOT_IMPORTANT</jb:decodeParam>
+        	<jb:decodeParam name="MEDIUM">IMPORTANT</jb:decodeParam>
+        	<jb:decodeParam name="HIGH">VERY_IMPORTANT</jb:decodeParam>
+        </jb:value>
+    </jb:bean>
+
+    <jb:bean beanId="lineItems" class="example.trgmodel.LineItem[]" createOnElement="orderItems">
+        <jb:wiring beanIdRef="lineItem" />
+    </jb:bean>
+
+
+    <jb:bean beanId="lineItem" class="example.trgmodel.LineItem" createOnElement="example.srcmodel.OrderItem">
+        <jb:value property="productCode" data="example.srcmodel.OrderItem/productId" />
+        <jb:value property="unitQuantity" decoder="Integer" data="example.srcmodel.OrderItem/quantity" />
+        <jb:value property="unitPrice" decoder="BigDecimal" data="example.srcmodel.OrderItem/price" />
+    </jb:bean>
+
+</smooks-resource-list>

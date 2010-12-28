@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:json="http://www.milyn.org/xsd/smooks/json-1.1.xsd">
+
+    <!--
+    Configure the JSON Reader to read the message into a stream of SAX events.
+    -->
+    <json:reader>
+    	<json:keyMap>
+			<json:key from="some key">someKey</json:key>
+			<json:key from="some&amp;key" to="someAndKey" />
+	    </json:keyMap>
+    </json:reader>
+
+</smooks-resource-list>

@@ -1,0 +1,37 @@
+<?xml version='1.0'?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd" default-target-profile="shipping-response">
+
+    <!--
+        Use a FreeMarker template to perform the transformation.
+        We're transforming the "history" element...
+    -->
+    <resource-config selector="history">
+        <resource type="ftl">
+            <!--
+<trackingNumbers>
+<#list history.trackingNumbers as trackingNumber>
+<trackingNumber>
+	<shipperID>${trackingNumber.shipperID}</shipperID>
+	<shipmentNumber>
+		${trackingNumber.shipmentNumber}
+	</shipmentNumber>
+</trackingNumber>
+</#list>
+</trackingNumbers>
+            -->
+        </resource>
+    </resource-config>
+
+    <!--
+        Configure the TrackingNumber bean creation and population...
+    -->
+    <resource-config selector="history">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">history</param>
+        <param name="beanClass">org.milyn.templating.soapshipping.History</param>
+        <param name="bindings">
+            <binding property="trackingNumbers" selector="history" />
+        </param>
+    </resource-config>
+
+</smooks-resource-list>

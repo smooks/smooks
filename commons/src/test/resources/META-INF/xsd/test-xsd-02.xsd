@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:yyy="http://www.milyn.org/xsd/test-xsd-01.xsd"
+           xmlns:zzz="http://www.milyn.org/xsd/test-xsd-02.xsd"
+           targetNamespace="http://www.milyn.org/xsd/test-xsd-02.xsd"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.milyn.org/xsd/test-xsd-01.xsd" />
+
+    <xs:element name="myNVP" substitutionGroup="yyy:abstractNVP">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="yyy:abstractNVP">
+                    <xs:attribute name="myName" type="xs:string" use="required"/>
+                    <xs:attribute name="myValue" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

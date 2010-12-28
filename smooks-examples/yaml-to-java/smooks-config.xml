@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<smooks-resource-list
+	 xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+	 xmlns:yalm="http://www.milyn.org/xsd/smooks/yaml-1.4.xsd"
+	 xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <!--
+    Configure the YALM Reader to read the message stream into a stream of SAX events.
+
+    The input message contains whitespaces in the key names. Whitespaces aren't allowed in
+    element names of the SAX event stream. To solve this we replace the whitespaces with dashes (-).
+
+  	Another special case is that the is a key called date&time. The ampersand isn't allowed in a
+  	element name of the SAX event stream. We can solve this in two ways. Configure the reader, with
+  	the illegalElementNameCharReplacement parameter, to replace all illegal characters with
+  	a character that is allowed. In this example however we solve it by mapping the "date&time" key
+    to the "date-and-time" name.
+
+    YALM has the notion of anchors and aliases. An alias refers to the data of an anchor. The
+    YALM reader has three strategies for dealing with anchors and aliases. By default anchor
+    results in a 'id' attribute within the element of the anchor and the alias results in a 'ref'
+    attribute within the element of the alias. Both attributes contain the value of the (refered) anchor.
+    This is the 'REFER' strategy.
+    The second strategy resolves the data structure of an anchor when an alias is processed. This means
+    that the anchored value or structure is processed again at the location of the alias. This is the
+    'RESOLVE' strategy.
+    The last strategy combines both strategies. The attributes are set and the data structure is resolved.
+    This example demonstrates the 'REFER_RESOLVE' strategy.
+
+    There are more settings to for the org.milyn.yalm.YalmReader.
+    Take a look at the Javadoc of the class for all the possible parameters.
+    -->
+    <yalm:reader rootName="order" keyWhitspaceReplacement="-" aliasStrategy="REFER_RESOLVE">
+	    <yalm:keyMap>
+	    	<yalm:key from="date&amp;time" to="date-and-time" />
+	    </yalm:keyMap>
+	</yalm:reader>
+
+
+    <!--
+    Create an "example.beans.Order" bean instance when we visit the start of the <order> element.
+    Assign the new bean instance to the beanId of "order".
+    Target the to be created Header bean under the beanId "header" via the ${header} bean binding.
+    As soon as this bean is created it will be set on this bean instance.
+    Target the to be created ArrayList instance under the beanId "orderItems" via the ${orderItems} bean binding.
+    As soon as this list is created it will be set on this bean instance.
+    -->
+    <jb:bean class="example.model.Order" beanId="order" createOnElement="order">
+    	<jb:wiring property="header" beanIdRef="header"/>
+    	<jb:wiring property="orderItems" beanIdRef="orderItems"/>
+
+    	<jb:value property="comment" data="comment" />
+    </jb:bean>
+
+    <!--
+    Create an "example.beans.Header" bean instance when we visit the start of the <order> element.
+    Note, we're creating this bean instance before we encounter the actual <header> element.
+    This bean is set on the on the previous declared Order bean as soon as it is created, because
+    it is target by that bean via a bean binding.
+    Target the to be created Customer instance under the beanId "customer" via the ${customer} bean binding.
+    As soon as this bean is created it will be set on this bean instance.
+    -->
+    <jb:bean class="example.model.Header" beanId="header" createOnElement="order">
+    	<jb:wiring property="customer" beanIdRef="customer"/>
+    	<jb:wiring property="billingAddress" beanIdRef="billingAddress"/>
+    	<jb:wiring property="shippingAddress" beanIdRef="shippingAddress"/>
+
+    	<jb:value property="orderId" data="header order-id" />
+    	<jb:value property="orderStatus" data="header status-code" decoder="Long" />
+    	<jb:value property="netAmount" data="header net-amount" decoder="BigDecimal"/>
+    	<jb:value property="totalAmount" data="header total-amount" decoder="BigDecimal"/>
+    	<jb:value property="tax" data="header tax" decoder="BigDecimal"/>
+    	<jb:value property="date" data="header date-and-time" decoder="Date">
+            <jb:decodeParam name="format">EEE MMM dd HH:mm:ss z yyyy</jb:decodeParam>
+            <jb:decodeParam name="locale-language">en</jb:decodeParam>
+            <jb:decodeParam name="locale-country">IE</jb:decodeParam>
+        </jb:value>
+    </jb:bean>
+
+    <!--
+    Create an "example.beans.Customer" bean instance when we visit the start of the
+    <customer-details> element.
+	This bean is set on the on the previous declared Header bean as soon as it is created, because
+    it is target by that bean via a bean binding.
+    -->
+    <jb:bean class="example.model.Customer" beanId="customer" createOnElement="customer">
+    	<jb:value property="userName" data="customer user-name" />
+    	<jb:value property="firstName" data="customer first-name" />
+    	<jb:value property="lastName" data="customer last-name"/>
+    </jb:bean>
+
+    <!--
+    Create an "example.beans.Address" bean instance when we visit the start of the
+    <billing-address> element.
+	This bean is set on the on the previous declared Header bean as soon as it is created, because
+    it is target by that bean via a bean binding.
+    -->
+    <jb:bean class="example.model.Address" beanId="billingAddress" createOnElement="billing-address">
+    	<jb:value property="street" data="billing-address street" />
+    	<jb:value property="city" data="billing-address city" />
+    	<jb:value property="zip-code" data="billing-address zip-code"/>
+    </jb:bean>
+
+    <!--
+    Create an "example.beans.Address" bean instance when we visit the start of the
+    <shipping-address> element.
+	This bean is set on the on the previous declared Header bean as soon as it is created, because
+    it is target by that bean via a bean binding.
+    -->
+    <jb:bean class="example.model.Address" beanId="shippingAddress" createOnElement="shipping-address">
+    	<jb:value property="street" data="shipping-address street" />
+    	<jb:value property="city" data="shipping-address city" />
+    	<jb:value property="zipcode" data="shipping-address zip-code"/>
+    </jb:bean>
+
+	<!--
+	Create an ArrayList when we visit the start of the <order> element.
+	This list is set on the on the previous declared Order bean as soon as it is created, because
+    it is target by that bean via a bean binding.
+	Target the to be created OrderItem beans under the beanId "orderItem" via the ${orderItem} bean binding.
+    As soon as these beans are created they will be added to this list.
+	 -->
+	<jb:bean class="java.util.ArrayList" beanId="orderItems" createOnElement="order">
+    	<jb:wiring beanIdRef="orderItem"/>
+    </jb:bean>
+
+    <!--
+    Create an "example.beans.OrderItem" bean instance when we visit the start of the <order-item> element.
+    This bean is add to the on the previous declared ArrayList as soon as it is created, because
+    it is target by that ArrayList via a bean binding.
+    -->
+    <jb:bean class="example.model.OrderItem" beanId="orderItem" createOnElement="order-item element">
+    	<jb:value property="quantity" data="order-item element quantity" decoder="Integer"/>
+        <jb:value property="productId" data="order-item element product-id" />
+        <jb:value property="price" data="order-item element price" decoder="BigDecimal" />
+        <jb:value property="title" data="order-item element title" />
+    </jb:bean>
+
+</smooks-resource-list>

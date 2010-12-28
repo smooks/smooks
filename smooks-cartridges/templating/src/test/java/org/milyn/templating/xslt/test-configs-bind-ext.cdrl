@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:xsl="http://www.milyn.org/xsd/smooks/xsl-1.1.xsd">
+
+    <xsl:xsl applyOnElement="c">
+        <xsl:template><!--<bind />--></xsl:template>
+        <xsl:use>
+            <xsl:bindTo id="mybeanTemplate" />
+        </xsl:use>
+    </xsl:xsl>
+
+</smooks-resource-list>

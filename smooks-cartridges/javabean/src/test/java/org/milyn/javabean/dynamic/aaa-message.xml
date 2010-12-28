@@ -1,0 +1,3 @@
+<f:aaa xmlns:f="http://www.acme.com/xsd/aaa.xsd">
+   <f:value property1="1234.98765" property2="123" />
+</f:aaa>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-test01="http://www.milyn.org/xsd/smooks/test-xsd-04.xsd"
+           targetNamespace="http://www.milyn.org/xsd/smooks/test-xsd-04.xsd"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd" />
+
+    <xs:element name="renameElement" substitutionGroup="smooks:abstract-resource-config">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="smooks:element-visitor">
+                    <xs:attribute name="name" type="xs:string" use="required" />
+                    <xs:attribute name="newName" type="xs:string" use="required" />
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>smooks-examples</artifactId>
+		<version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+    <name>Milyn Smooks Example - Smooks Camel Root</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-smooks-example-camel</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>camel-integration</module>
+		<module>camel-dataformat</module>
+	</modules>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-camel</artifactId>
+            <version>${milyn.smooks.camel.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-javabean</artifactId>
+            <version>${milyn.smooks.javabean.version}</version>
+        </dependency>
+
+		<!-- Camel dependencies -->
+		 <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${camel.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                 <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-spring</artifactId>
+                 </exclusion>
+           </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+            <version>${camel.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <scope>provided</scope>
+        </dependency>
+
+	</dependencies>
+
+</project>

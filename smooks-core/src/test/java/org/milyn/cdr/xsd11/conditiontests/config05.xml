@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <!-- Undefined condition idRef - should cause and error -->
+
+    <resource-config selector="a">
+        <resource>org.milyn.cdr.xsd11.conditiontests.ConditionTestVisitor</resource>
+        <condition idRef="config3" />
+        <param name="message">config3</param>
+    </resource-config>
+
+</smooks-resource-list>

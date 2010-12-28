@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>milyn</artifactId>
+        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+	<packaging>pom</packaging>
+    <name>Milyn Scribe</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-scribe</artifactId>
+	<version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+
+    <modules>
+    	<module>core</module>
+    	<module>adapter</module>
+    </modules>
+
+	<dependencyManagement>
+		<dependencies>
+            <dependency>
+                <groupId>org.milyn</groupId>
+                <artifactId>testres</artifactId>
+	            <version>${milyn.smooks.core.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+			<dependency>
+				<groupId>org.milyn</groupId>
+				<artifactId>milyn-scribe-core</artifactId>
+				<version>${version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.milyn</groupId>
+				<artifactId>milyn-commons</artifactId>
+				<version>${milyn.commons.version}</version>
+			</dependency>
+
+			<!-- TEST -->
+
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.7</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>5.7</version>
+				<classifier>jdk15</classifier>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.14</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+	<profiles>
+		<profile>
+			<id>test-unit</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+            </activation>
+			<properties>
+				<testGroups>unit</testGroups>
+			</properties>
+		</profile>
+		<profile>
+			<id>test-integration</id>
+			<properties>
+				<testGroups>unit,integration</testGroups>
+			</properties>
+		</profile>
+	</profiles>
+
+</project>

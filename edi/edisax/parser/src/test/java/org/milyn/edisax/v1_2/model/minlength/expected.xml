@@ -1,0 +1,1 @@
+org.milyn.edisax.EDIParseException:EDI message processing failed [un-edifact][1.0].  Value [abcdaaaa] should have a length greater than [10]. Currently at segment number 1.

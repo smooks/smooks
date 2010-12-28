@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>        
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.1.xsd">
+
+    <medi:import resource="edi-definition-segment-un-cefact-2.xml" namespace="un" truncatableFields="true" truncatableComponents="true" />
+    
+    <medi:description name="un-edifact" version="1.0" />
+
+    <medi:delimiters segment="&#39;" field="+" component=":" sub-component="~"/>
+
+    <medi:segments xmltag="un-edifact">
+
+        <medi:segment segcode="UNH" xmltag="UNH" segref="un:UNH"/>
+
+        <medi:segment segcode="BGM" xmltag="BGM">
+            <medi:field xmltag="DOCUMENT">
+                <medi:component xmltag="documentNameCode" />
+                <medi:component xmltag="codeListQualifier" />
+                <medi:component xmltag="codeListAgencyCode" />
+                <medi:component xmltag="documentName" />
+            </medi:field>
+            <medi:field xmltag="DocumentNumber" />
+            <medi:field xmltag="MessageFunctionCode" />
+            <medi:field xmltag="ResponseTypeCode" />
+        </medi:segment>
+
+        <medi:segment segcode="DTM" xmltag="DTM">
+            <medi:field xmltag="DATE_TIME_PERIOD" required="true">
+                <medi:component xmltag="dateTimePeriodQualifier" required="true"/>
+                <medi:component xmltag="dateTimePeriod" />
+                <medi:component xmltag="dateTimePeriodFormatQualifier" />
+            </medi:field>
+        </medi:segment>
+
+        <medi:segment segcode="FTX" xmltag="FTX">
+            <medi:field xmltag="TextSubjectQualifier" required="true"/>
+            <medi:field xmltag="TextFunctionCode" />
+            <medi:field xmltag="TEXT_REFERENCE">
+                <medi:component xmltag="freeTextCode" required="true"/>
+                <medi:component xmltag="codeListQualifier"/>
+                <medi:component xmltag="codeListAgencyCode" />
+            </medi:field>
+            <medi:field xmltag="TEXT_LITERAL">
+                <medi:component xmltag="freeText1" required="true"/>
+                <medi:component xmltag="freeText2" />
+                <medi:component xmltag="freeText3" />
+                <medi:component xmltag="freeText4" />
+                <medi:component xmltag="freeText5" />
+            </medi:field>
+            <medi:field xmltag="languageType" />
+        </medi:segment>
+
+        <medi:segment segcode="RFF" xmltag="RFF">
+            <medi:field xmltag="REFERENCE" required="true">
+                <medi:component xmltag="referenceQualifier" required="true"/>
+                <medi:component xmltag="referenceNr" />
+                <medi:component xmltag="lineNr" />
+                <medi:component xmltag="referenceVersionNr" />
+            </medi:field>
+        </medi:segment>
+        
+        <medi:segment segcode="NAD" xmltag="NAD">
+            <medi:field xmltag="PartyQualifier" required="true"/>
+            <medi:field xmltag="PARTY_IDENTIFICATION">
+                <medi:component xmltag="partyId" required="true"/>
+                <medi:component xmltag="codeListQualifier" />
+                <medi:component xmltag="codeListAgencyCode" />
+            </medi:field>
+            <medi:field xmltag="NAME_ADDRESS">
+                <medi:component xmltag="nameAddressline1" required="true"/>
+                <medi:component xmltag="nameAddressline2" />
+                <medi:component xmltag="nameAddressline3" />
+                <medi:component xmltag="nameAddressline4" />
+                <medi:component xmltag="nameAddressline5" />
+            </medi:field>
+            <medi:field xmltag="PARTY_NAME">
+                <medi:component xmltag="partyName1" required="true"/>
+                <medi:component xmltag="partyName2" />
+                <medi:component xmltag="partyName3" />
+                <medi:component xmltag="partyName4" />
+                <medi:component xmltag="partyName5" />
+                <medi:component xmltag="partyNameFormatCode" />
+            </medi:field>
+            <medi:field xmltag="STREET" >
+                <medi:component xmltag="street1" required="true"/>
+                <medi:component xmltag="street2" />
+                <medi:component xmltag="street3" />
+                <medi:component xmltag="street4" />
+            </medi:field>
+            <medi:field xmltag="City" />
+            <medi:field xmltag="Country" />
+            <medi:field xmltag="PostCode" />
+            <medi:field xmltag="CountryCode" />
+        </medi:segment>
+
+    </medi:segments>
+	
+</medi:edimap>

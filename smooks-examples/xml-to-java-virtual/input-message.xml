@@ -1,0 +1,18 @@
+<order>
+    <header>
+        <date>Wed Nov 15 13:45:28 EST 2006</date>
+        <customer number="123123">Joe</customer>
+    </header>
+    <order-items>
+        <order-item>
+            <product>111</product>
+            <quantity>2</quantity>
+            <price>8.90</price>
+        </order-item>
+        <order-item>
+            <product>222</product>
+            <quantity>7</quantity>
+            <price>5.20</price>
+        </order-item>
+    </order-items>
+</order>

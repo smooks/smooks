@@ -1,0 +1,10 @@
+<order xmlns="http://x">
+    <order-items>
+        <order-item>
+            <product>111</product>
+        </order-item>
+        <order-item>
+            <product>222</product>
+        </order-item>
+    </order-items>
+</order>

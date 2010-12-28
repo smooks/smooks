@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>smooks-examples</artifactId>
+		<version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+    <name>Milyn Smooks Example - Java-Basic</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-smooks-example-java-basic</artifactId>
+	<version>1.0</version>
+
+    <!--
+    TODO: Find out why the build of this fails if this dependency is not included.
+          It's already in the parent POM, so shouldn't be needed!!
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-core</artifactId>
+            <version>${milyn.smooks.core.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>dtdparser</groupId>
+                    <artifactId>dtdparser</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+</project>

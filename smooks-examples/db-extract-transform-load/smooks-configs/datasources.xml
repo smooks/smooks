@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<smooks-resource-list
+	xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+	xmlns:ds="http://www.milyn.org/xsd/smooks/datasource-1.1.xsd">
+
+	<ds:direct
+		bindOnElement="#document"
+		datasource="DBExtractTransformLoadDS"
+		driver="org.hsqldb.jdbcDriver"
+		url="jdbc:hsqldb:hsql://localhost:9201/milyn-hsql-9201"
+		username="sa"
+		password=""
+		autoCommit="false" />
+
+</smooks-resource-list>

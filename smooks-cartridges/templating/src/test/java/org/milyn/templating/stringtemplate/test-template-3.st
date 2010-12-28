@@ -1,0 +1,1 @@
+<mybean>$myBeanEData.x$</mybean>

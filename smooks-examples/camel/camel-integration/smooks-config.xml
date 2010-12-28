@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<smooks-resource-list 
+	xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" 
+	xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.3.xsd"
+	xmlns:camel="http://www.milyn.org/xsd/smooks/camel-1.4.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.milyn.org/xsd/smooks-1.1.xsd http://www.milyn.org/xsd/smooks-1.1.xsd
+		http://www.milyn.org/xsd/smooks/javabean-1.3.xsd http://www.milyn.org/xsd/smooks/javabean-1.3.xsd
+		http://www.milyn.org/xsd/smooks/camel-1.4.xsd http://www.milyn.org/xsd/smooks/camel-1.4.xsd">
+ 
+	<!-- Create a new ActivityLogEvent for each log entry... -->
+	<jb:bean beanId="logEvent" class="example.LogEvent" createOnElement="activity/event">
+		<jb:value property="transactionId" data="event/@txId" />
+		<jb:value property="customerId" data="event/customer/@customerId" />
+		<jb:value property="nationality" data="event/customer/countryCode" />
+	</jb:bean>
+ 
+	<camel:route beanId="logEvent" routeOnElement="activity/event">
+		<camel:to endpoint="direct:ireland" if="logEvent.nationality == 'IE'"/>
+		<camel:to endpoint="direct:greatbritain" if="logEvent.nationality == 'GB'"/>
+	</camel:route>
+
+</smooks-resource-list>

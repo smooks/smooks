@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:edi="http://www.milyn.org/xsd/smooks/edi-1.4.xsd">
+
+	<edi:reader mappingModel="/org/milyn/smooks/edi/xsd14/edi-to-xml-mapping.xml" ignoreNewLines="true" />
+
+</smooks-resource-list>

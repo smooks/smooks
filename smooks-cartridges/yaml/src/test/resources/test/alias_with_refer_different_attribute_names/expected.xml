@@ -1,0 +1,1 @@
+<yaml><document><keyWithAnchoredValue anchor="id1">value1</keyWithAnchoredValue><keyWithAliasValue alias="id1"></keyWithAliasValue><keyWithAnchorStruct anchor="id2"><subKey1>subValue1</subKey1><subKey2>subValue2</subKey2></keyWithAnchorStruct><keyWithAliasStruct alias="id2"></keyWithAliasStruct></document></yaml>

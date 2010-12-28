@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.milyn.org/xsd/smooks/fixed-length-1.3.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-fl="http://www.milyn.org/xsd/smooks/fixed-length-1.3.xsd">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Smooks Fixed Length Reader Configuration</xs:documentation>
+    </xs:annotation>
+
+
+    <xs:element name="reader" type="smooks-fl:reader" substitutionGroup="smooks:abstract-reader">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			Fixed Length Reader Configuration
+    		 	The Fixed Length reader reads and validates a fixed length stream and converts it to SAX events that Smooks
+    		 	can process.
+    		</xs:documentation>
+    	</xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="reader">
+    	<xs:annotation>
+    		 <xs:documentation xml:lang="en">Fixed Length Reader</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:abstract-reader">
+    			<xs:choice minOccurs="0" maxOccurs="1">
+                    <xs:element name="singleBinding" type="smooks-fl:binding" >
+				  		<xs:annotation>
+				            <xs:documentation xml:lang="en">
+				                Fixed Length Binding Configuration for a single object.
+				                <p/>
+				                Supports simple automatic java binding of Fixed Length records onto a bean based on the configured field
+				                names matching the target bean's property names.  For more complex binding, use the main Java
+				                binding configurations.
+				            </xs:documentation>
+				    	</xs:annotation>
+                    </xs:element>
+                    <xs:element name="listBinding" type="smooks-fl:binding" >
+						<xs:annotation>
+				            <xs:documentation xml:lang="en">
+				                Fixed Length Binding Configuration for a list of objects.
+				                <p/>
+				                Supports simple automatic java binding of Fixed Length records onto a bean based on the configured field
+				                names matching the target bean's property names.  For more complex binding, use the main Java
+				                binding configurations.
+				            </xs:documentation>
+				    	</xs:annotation>
+                    </xs:element>
+                    <xs:element name="mapBinding" type="smooks-fl:mapBinding" >
+						<xs:annotation>
+				            <xs:documentation xml:lang="en">
+				                Fixed Length Binding Configuration for a map of objects.
+				                <p/>
+				                Supports simple automatic java binding of Fixed Length records onto a bean based on the configured field
+				                names matching the target bean's property names.  For more complex binding, use the main Java
+				                binding configurations.
+				            </xs:documentation>
+				    	</xs:annotation>
+					</xs:element>
+                </xs:choice>
+    			<xs:attribute name="fields" type="xs:string">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Comma separated list of Fixed Length record field names and size in brackets : 'field[size]'.
+    						Fields that should be ignored should have the field name $ignore$. The size must still be set.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="lineNumber" type="xs:boolean" use="optional" default="true">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						 If it should add the line number to each record. This
+    						 line number is set in the 'number' attribute of the 'record' element.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="skipLines" type="xs:integer" use="optional" default="0">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Number of lines to skip before processing starts. Default of 0.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="strict" type="xs:boolean" use="optional" default="false">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						If a line is invalid and parameter is set on 'true' then the line is skipped and warning is given.
+    						Is this parameter is set the false then for every line that is invalid the 'truncated' attribute
+    						is set in the 'record' element and on the field elements that are truncated. Those fields will never
+    						contain any data.
+    						Invalid means that the line has less characters then expected. Lines that have more characters then
+    						expected are not considerd invalid.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="encoding" type="xs:string" use="optional" default="UTF-8">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						The encoding of the input stream. Default of 'UTF-8'
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="rootElementName" type="xs:string" use="optional" default="set">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Name of root element.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="recordElementName" type="xs:string" use="optional" default="record">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Name of record element.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+                <xs:attribute name="lineNumberAttributeName" type="xs:string" use="optional" default="number">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Name of the line number attribute.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+                <xs:attribute name="truncatedAttributeName" type="xs:string" use="optional" default="truncated">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Name of the truncated attribute.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+                <xs:attribute name="indent" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Add indentation character data to the generated event stream.  This simply makes
+                            the generated event stream easier to read in its serialized form.  Useful for
+                            testing etc.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+	<xs:complexType name="binding">
+    	<xs:annotation>
+            <xs:documentation xml:lang="en">
+                Fixed Length Binding Configuration.
+                <p/>
+                Supports simple automatic java binding of Fixed Length records onto a bean based on the configured field
+                names matching the target bean's property names.  For more complex binding, use the main Java
+                binding configurations.
+            </xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:abstract-resource-config">
+                <xs:attribute name="beanId" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The ID under which the created bean is to be bound in the bean context.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="class" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The fully qualified bean Class name.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="mapBinding">
+    	<xs:annotation>
+            <xs:documentation xml:lang="en">
+                Fixed Length Binding Configuration.
+                <p/>
+                Supports simple automatic java binding of Fixed Length records onto a bean based on the configured field
+                names matching the target bean's property names.  For more complex binding, use the main Java
+                binding configurations.
+            </xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks-fl:binding">
+                <xs:attribute name="keyField" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The CSV field whose value is used as the Map key value.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd" default-target-profile="null-dom">
+
+    <!--
+        This is a "Null" Smooks config for DOM.  It applies no transforms.
+        This allows you see the raw SAX events (translated into a DOM) as
+        seen by Smooks, but without any modification.
+    -->
+
+    <profiles>
+        <profile base-profile="null-dom" />
+    </profiles>
+
+    <resource-config selector="global-parameters">
+        <param name="stream.filter.type">DOM</param>
+    </resource-config>
+
+</smooks-resource-list>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+	                  xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+	                  
+	<jb:bean beanId="xbean" class="org.milyn.javabean.JIRA.MILYN_444.X" createOnElement="#document">
+		<jb:value property="val1" data="x/a" default="123" />
+        <jb:value property="val2" data="x/b" default="987" />
+        <jb:value property="val3" data="x/c" default="99.65" />
+	</jb:bean>
+	
+</smooks-resource-list>

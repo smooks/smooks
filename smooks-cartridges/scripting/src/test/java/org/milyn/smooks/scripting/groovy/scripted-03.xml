@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <params>
+        <param name="stream.filter.type">SAX</param>
+    </params>
+
+    <resource-config selector="c">
+        <resource type="groovy">
+            <!--
+            element.getWriter(this).write('<xxx newElementAttribute="1234"></xxx>');
+            -->
+        </resource>
+        <param name="executeBefore">true</param>
+    </resource-config>
+
+</smooks-resource-list>

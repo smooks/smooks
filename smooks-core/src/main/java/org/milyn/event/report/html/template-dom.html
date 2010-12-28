@@ -1,0 +1,53 @@
+<#import "commons.ftl" as commons>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+	<head>
+		<#include "template-common-head.html" parse=true>
+	</head>
+<body>
+    <h1>Smooks Execution Report</h1>
+	<div class="tabber" id="outertab">
+
+		<!-- <div class="tabbertab" title="Configuration">
+            TODO!!
+        </div> -->
+
+		<div class="tabbertab tabbertabdefault" title="Execution">
+			<div id="left">
+				STARTED<br/>
+                ASSEMBLY_STARTED<br/>
+                <@commons.outputMessageNodes report.assemblies></@commons.outputMessageNodes>
+                PROCESSING_STARTED<br/>
+                <@commons.outputMessageNodes report.processings></@commons.outputMessageNodes>
+                SERIALIZATION_STARTED<br/>
+                <@commons.outputMessageNodes report.serializations></@commons.outputMessageNodes>
+                FINISHED
+            </div>
+			<div id="right">
+				<div id="righttop">
+                    <@commons.outputMessageSummaries report.assemblies></@commons.outputMessageSummaries>
+                    <@commons.outputMessageSummaries report.processings></@commons.outputMessageSummaries>
+                    <@commons.outputMessageSummaries report.serializations></@commons.outputMessageSummaries>
+                </div>
+				<div id="rightbottom">
+                    <@commons.outputMessageDetails report.assemblies></@commons.outputMessageDetails>
+                    <@commons.outputMessageDetails report.processings></@commons.outputMessageDetails>
+                    <@commons.outputMessageDetails report.serializations></@commons.outputMessageDetails>
+				</div>
+			</div>
+		</div>
+
+		<div class="tabbertab" title="Result">
+            <#foreach  result in report.results>
+            <div id="result-summary">
+                ${result.summary}
+            </div>
+            <div id="result-detail">
+                <pre class="brush: xml" id="result"><@htmlEscape>${result.detail}</@htmlEscape></pre>
+            </div>
+            </#foreach>
+		</div>
+	</div>
+
+	</body>
+</html>

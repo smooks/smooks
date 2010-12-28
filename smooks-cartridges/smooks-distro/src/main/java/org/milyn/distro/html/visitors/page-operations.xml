@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <!-- Some crap at the top of the page needs removing ... -->
+    <resource-config selector="div">
+        <resource>org.milyn.distro.html.visitors.ElementOperator</resource>
+        <param name="attribName">class</param>
+        <param name="attribValue">spacenametitle-printable</param>
+        <param name="operation">removeText</param>
+    </resource-config>
+    <resource-config selector="span">
+        <resource>org.milyn.distro.html.visitors.ElementOperator</resource>
+        <param name="attribName">class</param>
+        <param name="attribValue">smalltext</param>
+        <param name="operation">remove</param>
+    </resource-config>
+
+    <!-- Get rid of the google adds... -->
+    <resource-config selector="script">
+        <resource>org.milyn.distro.html.visitors.ElementOperator</resource>
+        <param name="attribName">src</param>
+        <param name="attribValue">google</param>
+        <param name="operation">remove</param>
+    </resource-config>
+
+    <!-- Some crap at the bottom of the page needs removing ... -->
+    <resource-config selector="div">
+        <resource>org.milyn.distro.html.visitors.ElementOperator</resource>
+        <param name="attribName">id</param>
+        <param name="attribValue">pageChildren</param>
+        <param name="operation">remove</param>
+    </resource-config>
+
+    <!-- Some crap at the bottom of the page needs removing ... -->
+    <resource-config selector="div">
+        <resource>org.milyn.distro.html.visitors.ElementOperator</resource>
+        <param name="attribName">id</param>
+        <param name="attribValue">poweredby</param>
+        <param name="operation">remove</param>
+    </resource-config>
+
+    <!-- Some crap at the bottom of the page needs removing ... -->
+    <resource-config selector="div">
+        <resource>org.milyn.distro.html.visitors.ElementOperator</resource>
+        <param name="attribName">class</param>
+        <param name="attribValue">license license-opensource</param>
+        <param name="operation">remove</param>
+    </resource-config>
+
+    <!-- Close empty elements when serializing ... -->
+    <resource-config selector="area,br,p,img,link,param,hr,input,col,base,meta">
+        <resource>org.milyn.delivery.dom.serialize.DefaultSerializationUnit</resource>
+        <param name="closeEmptyElements">true</param>
+    </resource-config>
+
+</smooks-resource-list>

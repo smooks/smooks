@@ -1,0 +1,1 @@
+<x attribute1="value1">some text <![CDATA[cdata text]]> <y> and &amp; yerself!</y> <!-- comment text --></x>

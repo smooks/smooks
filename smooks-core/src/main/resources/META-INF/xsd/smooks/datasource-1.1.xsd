@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.milyn.org/xsd/smooks/datasource-1.1.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-datasource="http://www.milyn.org/xsd/smooks/datasource-1.1.xsd">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Smooks Datasource Configuration</xs:documentation>
+    </xs:annotation>
+
+
+    <xs:element name="direct" type="smooks-datasource:direct" substitutionGroup="smooks:abstract-resource-config" >
+    	<xs:annotation>
+    		<xs:documentation>
+    			Direct datasource configuration
+    			The direct datasource resource creates a connection to a datasource and
+    			makes it available in the ExecutionContext. The datasource can then be used
+    			by other cartridges to access the datasource.
+    		</xs:documentation>
+    	</xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="direct">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			Direct Datasource
+    		</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension
+    			base="smooks:element-visitor">
+    			<xs:attribute name="bindOnElement" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The element on which the datasource is bound. On the visitAfter
+			    			of the element the connection does a Commit or Rollback depending
+			    			if a exception got thrown.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="bindOnElementNS" type="xs:string" use="optional" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The namespace of the bindOnElement element
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="datasource" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The reference name of the datasource. This name must be used
+			    			to retrieve the datasource from the ExecutionContext.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="autoCommit" type="xs:boolean" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+							If the datasource should automaticly commit.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="driver" type="xs:string"
+    				use="required">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						The JDBC driver name
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="url" type="xs:anyURI"
+    				use="required">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						The JDBC URL
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="username" type="xs:string"
+    				use="required">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						The username
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="password" type="xs:string"
+    				use="required">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						The password
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="JNDI" type="smooks-datasource:Jndi" substitutionGroup="smooks:abstract-resource-config" >
+    	<xs:annotation>
+    		<xs:documentation>
+    			JNDI datasource configuration
+    			The JNDI datasource resource retrieves a datasource from the JNDI and
+    			makes it available in the ExecutionContext. The datasource can then be used
+    			by other cartridges to access the datasource.
+    		</xs:documentation>
+    	</xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="Jndi">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			JNDI Datasource
+    		</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:element-visitor">
+    			<xs:attribute name="bindOnElement" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The element on which the datasource is bound. On the visitAfter
+			    			of the element the connection does a Commit or Rollback depending
+			    			if a exception got thrown.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="datasource" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The reference name of the datasource. This name must be used
+			    			to retrieve the datasource from the ExecutionContext.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="autoCommit" type="xs:boolean" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+							If the datasource should automaticly commit.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

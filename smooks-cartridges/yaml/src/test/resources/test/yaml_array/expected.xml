@@ -1,0 +1,10 @@
+<yaml>
+	<document>
+		<element>1</element>
+		<element>
+			<element>2</element>
+			<element>3</element>
+		</element>
+		<element>4</element>
+	</document>
+</yaml>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	targetNamespace="http://www.milyn.org/schema/edi-message-mapping-1.0.xsd"
+	xmlns="http://www.milyn.org/schema/edi-message-mapping-1.0.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xs:element name="edimap" type="EdiMap" />
+
+	<xs:complexType name="EdiMap">
+		<xs:sequence>
+			<xs:element name="description" type="Description" minOccurs="1" maxOccurs="1" />
+			<xs:element name="delimiters" type="Delimiters" minOccurs="1" maxOccurs="1" />
+			<xs:element name="segments" type="Segments" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Description">
+		<xs:attribute name="name" use="required" type="xs:string" />
+		<xs:attribute name="version" use="required" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="Delimiters">
+		<xs:attribute name="segment" use="required"	type="xs:string" />
+		<xs:attribute name="field" use="required" type="xs:string" />
+		<xs:attribute name="component" use="required" type="xs:string" />
+		<xs:attribute name="sub-component" use="required"
+			type="xs:string">
+			<xs:annotation>
+				<xs:documentation>
+					The delimiter attributes mark the boundary
+					tokens between the EDI message parts - segment,
+					field, component and sub-component.
+
+					These boundary tokens may contain special
+					characters (non-printable). These are defined
+					using XML character references e.g. LF =
+					&quot;&amp;#10;&quot;
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="Segments">
+		<xs:complexContent>
+			<xs:extension base="MappingNode">
+				<xs:sequence>
+					<xs:element name="segment" type="Segment" minOccurs="1" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="MappingNode">
+		<xs:attribute name="xmltag" use="required" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="Segment">
+		<xs:complexContent>
+			<xs:extension base="MappingNode">
+				<xs:sequence>
+					<xs:element name="field" type="Field" minOccurs="1" maxOccurs="unbounded" />
+					<xs:element name="segment" type="Segment" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attribute name="minOccurs" type="xs:int" default="1" use="optional">
+					<xs:annotation>
+						<xs:documentation>
+							The minimum number of times the segment must appear in this
+							position within the EDI message.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="maxOccurs" type="xs:int" default="1" use="optional">
+					<xs:annotation>
+						<xs:documentation>
+							The maximum number of times the segment must appear in this
+							position within the EDI message.  For an unbounded max, set
+							the maxOccurs value to -1.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="segcode" type="xs:string" use="required"/>
+                <xs:attribute name="truncatable" use="optional" type="xs:boolean" default="false" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Field">
+		<xs:complexContent>
+			<xs:extension base="MappingNode">
+				<xs:sequence>
+					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+                   <xs:attribute name="required" use="optional" type="xs:boolean" default="false" />
+                   <xs:attribute name="truncatable" use="optional" type="xs:boolean" default="false" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Component">
+		<xs:complexContent>
+			<xs:extension base="MappingNode">
+				<xs:sequence>
+					<xs:element name="sub-component" type="SubComponent" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+                   <xs:attribute name="required" use="optional" type="xs:boolean" default="false" />
+                   <xs:attribute name="truncatable" use="optional" type="xs:boolean" default="false" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="SubComponent">
+		<xs:complexContent>
+			<xs:extension base="MappingNode">
+                   <xs:attribute name="required" use="optional" type="xs:boolean" default="false" />
+               </xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>

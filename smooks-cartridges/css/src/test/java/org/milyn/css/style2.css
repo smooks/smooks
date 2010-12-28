@@ -1,0 +1,10 @@
+body p { font-size: 8em }
+h1 p { font-size: 9em }
+
+@media unsupportedmedia, screen {
+	h1 { background-color: blue }
+}
+
+@media unsupportedmedia {
+	h1 { background-color: yellow }
+}

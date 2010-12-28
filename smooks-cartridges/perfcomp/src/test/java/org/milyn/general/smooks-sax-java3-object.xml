@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd">
+
+    <params>
+        <param name="stream.filter.type">SAX</param>
+        <param name="maintain.element.stack">false</param>
+    </params>
+
+    <jb:bean beanId="orderItem" class="org.milyn.general.OrderItem" createOnElement="order-item">
+        <jb:value property="position" data="position" />
+        <jb:value property="quantity" data="quantity" />
+        <jb:value property="title" data="title" />
+    </jb:bean>
+
+</smooks-resource-list>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+
+    <ftl:freemarker applyOnElement="c">
+        <ftl:template>/org/milyn/templating/freemarker/test-template-include.ftl</ftl:template>
+        <ftl:use>
+            <ftl:inline directive="replace" />
+        </ftl:use>
+    </ftl:freemarker>
+
+</smooks-resource-list>

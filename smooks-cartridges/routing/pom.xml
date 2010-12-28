@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>smooks-cartridge-base-pom</artifactId>
+		<version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+    <name>Milyn Smooks Cartridge - Routing</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-smooks-routing</artifactId>
+	<version>${milyn.smooks.routing.version}</version>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<groups>${testGroups}</groups>
+					<parallel>tests</parallel>
+					<threadCount>10</threadCount>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-javabean</artifactId>
+            <version>${milyn.smooks.javabean.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-templating</artifactId>
+            <version>${milyn.smooks.templating.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+			<groupId>com.mockrunner</groupId>
+			<artifactId>mockrunner-jdk1.5-j2ee1.3</artifactId>
+			<version>0.4</version>
+            <scope>test</scope>
+			<!-- Mockrunner appears to have a screwed up POM. Excluding these un resolveable dependencies. -->
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib-nodep</groupId>
+                    <artifactId>cglib-nodep</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jboss</groupId>
+                    <artifactId>jboss-jee</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>2.2</version>
+            <scope>test</scope>
+		</dependency>
+		<dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-j2ee</artifactId>
+			<version>4.2.0.GA</version>
+            <scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ActiveMQ for testing... -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>5.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.4.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j</artifactId>
+            <version>3.0.2</version>
+            <scope>test</scope>
+        </dependency>        
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j-tools</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>20030805.205232</version>
+            <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+            <scope>test</scope>
+		</dependency>
+		<!-- testng -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>5.8</version>
+			<scope>test</scope>
+			<classifier>jdk15</classifier>
+		</dependency>
+
+        <!--
+            ###################################################################################################################
+                Note that xercesImpl is included only until the SAX bug (http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6770436)
+                with Java6 has been fixed. This can then be removed. Daniel Bevenius 2008-11-12.
+            ###################################################################################################################
+        -->
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>${xerces.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>jboss</id>
+            <url>http://repository.jboss.com/maven2</url>
+        </repository>
+    </repositories>
+
+	<profiles>
+		<profile>
+			<id>test-unit</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+            </activation>
+			<properties>
+				<testGroups>unit</testGroups>
+			</properties>
+		</profile>
+		<profile>
+			<id>test-integration</id>
+			<properties>
+				<testGroups>unit,integration</testGroups>
+			</properties>
+		</profile>
+	</profiles>
+
+</project>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd"
+                      xmlns:dmb="http://www.milyn.org/xsd/smooks/dmb-1.4.xsd">
+
+    <!--
+    Main Smooks model bean.
+    -->
+    <jb:bean beanId="smooksModel" class="org.smooks.model.core.SmooksModel" createOnElement="#document">
+        <jb:wiring property="readers" beanIdRef="readers" />
+        <jb:wiring property="beans" beanIdRef="beans" />
+    </jb:bean>
+    <jb:bean beanId="readers" class="java.util.ArrayList" createOnElement="#document">
+        <jb:wiring beanType="org.smooks.model.core.Reader" />
+    </jb:bean>
+    <jb:bean beanId="beans" class="java.util.ArrayList" createOnElement="#document">
+        <jb:wiring beanType="org.smooks.model.javabean.Bean" />
+    </jb:bean>
+
+    <!--
+    Top level writer...
+    -->
+    <dmb:writer beanId="smooksModel" class="org.milyn.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
+        <param name="template">/org/smooks/model/core/v1.1.ftl</param>
+    </dmb:writer>
+
+</smooks-resource-list>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>smooks-cartridge-base-pom</artifactId>
+		<version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+    <name>Milyn Smooks Cartridge - Servlet</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-smooks-servlet</artifactId>
+	<version>${milyn.smooks.servlet.version}</version>
+
+    <dependencies>
+		<dependency>
+			<groupId>org.milyn</groupId>
+			<artifactId>milyn-tinak</artifactId>
+			<version>${milyn.tinak.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>${nekohtml.version}</version>
+            <scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+            <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>mockobjects</groupId>
+			<artifactId>mockobjects-jdk1.4</artifactId>
+			<version>0.09</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mockobjects</groupId>
+			<artifactId>mockobjects-core</artifactId>
+			<version>0.09</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mockobjects</groupId>
+			<artifactId>mockobjects-j1.4-j2ee1.3</artifactId>
+			<version>0.07</version>
+			<scope>test</scope>
+		</dependency>		
+	</dependencies>
+    
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+</project>

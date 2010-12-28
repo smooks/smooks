@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-cartridge-base-pom</artifactId>
+        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    </parent>
+    <name>Milyn Smooks Cartridge - Fixed Length Reader</name>
+    <groupId>org.milyn</groupId>
+    <artifactId>milyn-smooks-fixed-length</artifactId>
+    <version>${milyn.smooks.fixed-length.version}</version>
+
+	<description>A Smooks cartridge that can read fixed length files. The code of this cartridge was donated by Cedric Rathgeb.</description>
+
+	<developers>
+		<developer>
+			<name>Cedric Rathgeb</name>
+            <roles>
+                <role>Contribution</role>
+            </roles>
+		</developer>
+	</developers>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<groups>unit</groups>
+					<parallel>tests</parallel>
+					<threadCount>10</threadCount>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.milyn</groupId>
+			<artifactId>milyn-smooks-javabean</artifactId>
+			<version>${milyn.smooks.javabean.version}</version>
+		</dependency>
+
+		<!-- testng -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>5.7</version>
+			<scope>test</scope>
+			<classifier>jdk15</classifier>
+		</dependency>
+	</dependencies>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+</project>

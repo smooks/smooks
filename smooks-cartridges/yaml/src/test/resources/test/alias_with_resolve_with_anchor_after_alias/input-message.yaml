@@ -1,0 +1,2 @@
+keyWithAlias: *id1
+keyWithoutAnchor: &id1 value1

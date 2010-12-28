@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <reader>
+        <features>
+            <setOff feature="http://www.smooks.org/sax/features/generate-java-event-stream" />
+        </features>
+    </reader>
+    
+</smooks-resource-list>

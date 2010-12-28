@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE device-profiles PUBLIC "-//MILYN//DTD TINAK 1.0//EN" "http://www.milyn.org/dtd/device-profile-1.0.dtd">
+
+<device-profiles>
+	<device-profile name="html32" 		list="IPAQ,PocketPCEmul2002"/>
+	<device-profile name="html4" 		list="MSIE6,MSIE5,Firefox09,Unknown-HTML4"/>
+	<device-profile name="html"			list="html32,html4"/>
+
+	<device-profile name="wml11"		list="EricssonA2618,UPBrowser,Unknown-WML"/>
+	<device-profile name="wml12"		list="Nokia3350,Nokia9210"/>
+	<device-profile name="wml" 			list="wml11,wml12"/>
+
+	<device-profile name="xxxxx"		list="html,wml"/>
+	
+	<device-profile name="css-enabled" 	list="MSIE6,MSIE5,Firefox09"/>
+
+	<device-profile name="nokia" 		list="Nokia3350,Nokia9210"/>
+	<device-profile name="msie" 		list="MSIE6,MSIE5,PocketPCEmul2002"/>
+	<device-profile name="PDA" 			list="IPAQ,PocketPCEmul2002"/>
+
+	<device-profile name="large" 		list="MSIE6,MSIE5,Firefox09,Unknown-HTML4,Unknown-HTML"/>
+	<device-profile name="medium" 		list="IPAQ,PocketPCEmul2002"/>
+	<device-profile name="small" 		list="Nokia3350,Nokia9210,EricssonA2618,UPBrowser,Unknown-WML"/>
+</device-profiles>

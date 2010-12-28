@@ -1,0 +1,31 @@
+<?xml version='1.0'?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd" default-target-profile="shipping-request">
+
+	<!--
+		Use a FreeMarker template to perform the transformation.
+		We're transforming the "trackingNumber" element...
+	-->
+	<resource-config selector="trackingNumber">
+        <resource type="ftl">
+            <!--
+<trackingNumber>
+ ${trackingNumber}
+</trackingNumber>
+            -->
+        </resource>
+    </resource-config>
+
+    <!--
+		Configure the TrackingNumber bean creation and population...
+	-->
+    <resource-config selector="trackingNumber">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">trackingNumber</param>
+        <param name="beanClass">org.milyn.templating.soapshipping.TrackingNumber</param>
+        <param name="bindings">
+            <binding property="shipperID" selector="trackingNumber shipperID" />
+            <binding property="shipmentNumber" selector="trackingNumber shipmentNumber" />
+        </param>
+    </resource-config>
+	
+</smooks-resource-list>

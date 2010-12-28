@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+
+    <ftl:freemarker applyOnElement="$document">
+        <ftl:template>data to outstream</ftl:template>
+        <ftl:use>
+            <ftl:outputTo outputStreamResource="outRes" />
+        </ftl:use>
+    </ftl:freemarker>
+
+    <resource-config selector="$document">
+        <resource>org.milyn.templating.MockOutStreamResource</resource>
+        <param name="resourceName">outRes</param>
+    </resource-config>
+
+</smooks-resource-list>

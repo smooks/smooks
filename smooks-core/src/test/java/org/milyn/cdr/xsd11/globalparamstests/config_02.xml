@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <params>
+        <param name="zapCount">1</param>
+    </params>
+
+    <resource-config selector="a">
+        <resource>org.milyn.cdr.xsd11.globalparamstests.MyZapVisitor</resource>
+        <param name="xp">blah</param>
+    </resource-config>
+
+</smooks-resource-list>

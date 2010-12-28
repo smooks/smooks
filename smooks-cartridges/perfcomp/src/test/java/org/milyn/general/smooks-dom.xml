@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <resource-config selector="global-parameters">
+        <param name="stream.filter.type">DOM</param>
+    </resource-config>
+
+    <resource-config selector="customer-details">
+        <resource>org.milyn.general.DOMVisitor</resource>
+    </resource-config>
+
+</smooks-resource-list>

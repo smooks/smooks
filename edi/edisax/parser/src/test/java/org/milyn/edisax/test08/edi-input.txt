@@ -1,0 +1,6 @@
+SEG*1*2**4*5
+XXX*6*7
+Y*Some^stuff**yes!
+Y*Some^stuff**yes!
+Y*Some^stuff**yes!
+YYY*Mr~Tom^Fennelly*Ireland

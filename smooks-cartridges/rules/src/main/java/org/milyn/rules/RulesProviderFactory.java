@@ -1,0 +1,112 @@
+/*
+ * Milyn - Copyright (C) 2006 - 2010
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License (version 2.1) as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU Lesser General Public License for more details:
+ * http://www.gnu.org/licenses/lgpl.txt
+ */
+
+package org.milyn.rules;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.milyn.SmooksException;
+import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.annotation.AppContext;
+import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.cdr.annotation.ConfigParam.Use;
+import org.milyn.container.ApplicationContext;
+import org.milyn.delivery.ContentHandler;
+import org.milyn.delivery.annotation.Initialize;
+
+/**
+ * RulesProviderFactory is responsible for creating {@link RuleProvider}s
+ * and installing those providers in the Smooks {@link ApplicationContext}.
+ * <p/>
+ *
+ * @author <a href="mailto:danielbevenius@gmail.com">Daniel Bevenius</a>
+ */
+public final class RulesProviderFactory implements ContentHandler<RuleProvider>
+{
+    /**
+     * Logger.
+     */
+    private static Log logger = LogFactory.getLog(RulesProviderFactory.class);
+
+    /**
+     * The Smooks {@link ApplicationContext}.
+     */
+    @AppContext
+    private ApplicationContext applicationContext;
+
+    /**
+     * The rule name to be used.
+     */
+    @ConfigParam(use = Use.REQUIRED )
+    private String name;
+
+    /**
+     * The {@link RuleProvider} implementation to be used.
+     */
+    @ConfigParam(name = "provider", use = Use.REQUIRED)
+    private Class<RuleProvider> provider;
+
+    /**
+     * The source of the rule. Is implementation dependent, may be a file for example.
+     */
+    @ConfigParam(use = Use.OPTIONAL)
+    private String src;
+
+    /**
+     * Creates and installs the configured rule provider.
+     *
+     * @throws SmooksConfigurationException
+     */
+    @Initialize
+    public void installRuleProvider() throws SmooksConfigurationException
+    {
+        logger.debug(this);
+        if(RuleProvider.class.isAssignableFrom(provider))
+        {
+            final RuleProvider providerImpl = createProvider(provider);
+            providerImpl.setName(name);
+            providerImpl.setSrc(src);
+
+            RuleProviderAccessor.add(applicationContext, providerImpl);
+        }
+        else
+        {
+            throw new SmooksConfigurationException("Invalid rule provider configuration :'" + this + "'");
+        }
+    }
+
+    RuleProvider createProvider(final Class<? extends RuleProvider> providerClass) throws SmooksException
+    {
+        try
+        {
+            return providerClass.newInstance();
+        }
+        catch (final InstantiationException e)
+        {
+            throw new SmooksException(e.getMessage(), e);
+        }
+        catch (final IllegalAccessException e)
+        {
+            throw new SmooksException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("%s [name=%s, src=%s, provider=%s]", getClass().getSimpleName(), name, src, provider);
+    }
+
+}

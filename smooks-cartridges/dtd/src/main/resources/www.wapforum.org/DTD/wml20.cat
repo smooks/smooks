@@ -1,0 +1,36 @@
+-- .......................................................................... --
+-- File catalog  ............................................................ --
+
+-- WML 2.0 Catalog Data File
+
+
+    See "Entity Management", SGML Open Technical Resolution 9401 for detailed
+    information on supplying and using catalog data. This document is available
+    from OASIS at URL:
+
+        <http://www.oasis-open.org/html/tr9401.html>
+--
+
+-- .......................................................................... --
+-- SGML declaration associated with XML  .................................... --
+
+OVERRIDE YES
+
+SGMLDECL "xml1.dcl"
+
+-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: --
+
+-- WML 2.0 DTD modular driver file  ..................................... --
+
+PUBLIC "-//WAPFORUM//DTD WML 2.0//EN"                       "wml20.dtd"
+
+-- WML 2.0 modules ............................................. --
+
+PUBLIC "-//WAPFORUM//ENTITIES WML 2.0 Document Model 1.0//EN" 	"wml20-model-1.mod"
+PUBLIC "-//WAPFORUM//ENTITIES WML Modular Framework 1.0//EN"     "wml-framework-1.mod"
+PUBLIC "-//WAPFORUM//ENTITIES WML Qualified Names 1.0//EN" 		"wml-qname-1.mod"
+PUBLIC "-//WAPFORUM//ELEMENTS WML Special 1.0//EN"			"wml-special-1.mod"
+PUBLIC "-//WAPFORUM//ELEMENTS WML Deprecated 1.0//EN"		"wml-deprecated-1.mod"
+
+-- End of catalog data  ..................................................... --
+-- .......................................................................... --

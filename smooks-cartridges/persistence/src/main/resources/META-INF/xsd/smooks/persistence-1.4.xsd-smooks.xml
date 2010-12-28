@@ -1,0 +1,415 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~  This library is free software; you can redistribute it and/or
+  ~  modify it under the terms of the GNU Lesser General Public
+  ~  License (version 2.1) as published by the Free Software
+  ~  Foundation.
+  ~
+  ~  This library is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~  See the GNU Lesser General Public License for more details:
+  ~  http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/persistence-1.4.xsd">
+
+	<!-- INSERTER -->
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.persistence.EntityInserter</param>
+    </resource-config>
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">insertOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">insertOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">beanId</param>
+    </resource-config>
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">insertedBeanId</param>
+    </resource-config>
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">dao</param>
+    </resource-config>
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">name</param>
+    </resource-config>
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">insertBefore</param>
+    </resource-config>
+
+    <resource-config selector="inserter">
+        <resource>org.milyn.persistence.config.ext.SetSelectorFromBeanCreator</resource>
+        <param name="selectorAttrName">insertOnElement</param>
+    </resource-config>
+
+	<!-- UPDATER -->
+
+    <resource-config selector="updater">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.persistence.EntityUpdater</param>
+    </resource-config>
+
+    <resource-config selector="updater">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">updateOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="updater">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">updateOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="updater">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">beanId</param>
+    </resource-config>
+
+    <resource-config selector="updater">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">updatedBeanId</param>
+    </resource-config>
+
+    <resource-config selector="updater">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">dao</param>
+    </resource-config>
+
+    <resource-config selector="updater">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">name</param>
+    </resource-config>
+
+    <resource-config selector="updater">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">updateBefore</param>
+    </resource-config>
+
+    <resource-config selector="updater">
+        <resource>org.milyn.persistence.config.ext.SetSelectorFromBeanCreator</resource>
+        <param name="selectorAttrName">updateOnElement</param>
+    </resource-config>
+
+	<!-- DELETER -->
+
+    <resource-config selector="deleter">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.persistence.EntityDeleter</param>
+    </resource-config>
+
+    <resource-config selector="deleter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">deleteOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="deleter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">deleteOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="deleter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">beanId</param>
+    </resource-config>
+
+    <resource-config selector="deleter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">deletedBeanId</param>
+    </resource-config>
+
+    <resource-config selector="deleter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">dao</param>
+    </resource-config>
+
+    <resource-config selector="deleter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">name</param>
+    </resource-config>
+
+    <resource-config selector="deleter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">deleteBefore</param>
+    </resource-config>
+
+    <!-- FLUSHER -->
+
+    <resource-config selector="flusher">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.persistence.DaoFlusher</param>
+    </resource-config>
+
+    <resource-config selector="flusher">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">flushOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="flusher">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">flushOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="flusher">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">dao</param>
+    </resource-config>
+
+    <resource-config selector="flusher">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">flushBefore</param>
+    </resource-config>
+
+    <!-- Locator -->
+
+    <resource-config selector="locator">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.persistence.EntityLocator</param>
+    </resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.persistence.config.ext.EntityLocatorIdResolver</resource>
+    </resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">lookupOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">lookupOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">beanId</param>
+	</resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">dao</param>
+    </resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">lookup</param>
+    </resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">onNoResult</param>
+    </resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">uniqueResult</param>
+    </resource-config>
+
+    <resource-config selector="locator">
+        <resource>org.milyn.persistence.config.ext.SetSelectorFromBeanPopulatorWiring</resource>
+        <param name="selectorAttrName">lookupOnElement</param>
+    </resource-config>
+
+	<resource-config selector="locator/query">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <param name="mapTo">query</param>
+    </resource-config>
+
+    <resource-config selector="locator/params">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">type</param>
+        <param name="mapTo">parameterListType</param>
+    </resource-config>
+
+    <resource-config selector="locator/params">
+        <resource>org.milyn.persistence.config.ext.ParameterIndexInitializer</resource>
+    </resource-config>
+
+	<!-- LOOKUPPER - Value Parameter  -->
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
+        <param name="resource">org.milyn.persistence.EntityLocatorParameterVisitor</param>
+        <param name="unset">beanId</param>
+        <param name="unset">dao</param>
+        <param name="unset">lookup</param>
+        <param name="unset">onNoResult</param>
+        <param name="unset">uniqueResult</param>
+        <param name="unset">query</param>
+        <param name="unset">id</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.persistence.config.ext.ParameterIndexResolver</resource>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromParentConfig</resource>
+        <param name="mapFrom">id</param>
+        <param name="mapTo">entityLookupperId</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">data</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">dataNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">name</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">decoder</param>
+        <param name="mapTo">type</param>
+        <param name="defaultValue">String</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">default</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.javabean.ext.SelectorPropertyResolver</resource>
+    </resource-config>
+
+    <resource-config selector="locator/params/value">
+        <resource>org.milyn.persistence.config.ext.DecodeParamResolver</resource>
+    </resource-config>
+
+	<!-- LOOKUPPER - Wiring Parameter -->
+
+    <resource-config selector="locator/params/wiring">
+        <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
+        <param name="resource">org.milyn.persistence.EntityLocatorParameterVisitor</param>
+        <param name="unset">beanId</param>
+        <param name="unset">dao</param>
+        <param name="unset">lookup</param>
+        <param name="unset">onNoResult</param>
+        <param name="unset">uniqueResult</param>
+        <param name="unset">query</param>
+        <param name="unset">id</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/wiring">
+        <resource>org.milyn.persistence.config.ext.ParameterIndexResolver</resource>
+    </resource-config>
+
+    <resource-config selector="locator/params/wiring">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromParentConfig</resource>
+        <param name="mapFrom">id</param>
+        <param name="mapTo">entityLookupperId</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/wiring">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">wireOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/wiring">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">wireOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/wiring">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">name</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/wiring">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">beanIdRef</param>
+        <param name="mapTo">wireBeanId</param>
+    </resource-config>
+
+    <!-- LOOKUPPER - Expression Parameter  -->
+
+    <resource-config selector="locator/params/expression">
+        <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
+        <param name="resource">org.milyn.persistence.EntityLocatorParameterVisitor</param>
+        <param name="unset">beanId</param>
+        <param name="unset">dao</param>
+        <param name="unset">lookup</param>
+        <param name="unset">onNoResult</param>
+        <param name="unset">uniqueResult</param>
+        <param name="unset">query</param>
+        <param name="unset">id</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/expression">
+        <resource>org.milyn.persistence.config.ext.ParameterIndexResolver</resource>
+    </resource-config>
+
+    <resource-config selector="locator/params/expression">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromParentConfig</resource>
+        <param name="mapFrom">id</param>
+        <param name="mapTo">entityLookupperId</param>
+    </resource-config>
+
+
+    <resource-config selector="locator/params/expression">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">execOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/expression">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">execOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="locator/params/expression">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">name</param>
+    </resource-config>
+
+
+    <resource-config selector="locator/params/expression">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <param name="mapTo">expression</param>
+    </resource-config>
+
+</smooks-resource-list>

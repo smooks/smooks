@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
+
+<smooks-resource-list>
+	<smooks-resource useragent="device1" selector="a" path="test/trans/ATransUnit.class">
+		<param name="param1">value1</param>
+	</smooks-resource>
+	<smooks-resource useragent="device1" selector="b" path="test/trans/BTransUnit.class">
+		<param name="param2">value2</param>
+		<param name="param3">val&#220;e3 &amp;</param>
+	</smooks-resource>
+	<smooks-resource useragent="device1" selector="c" path="test/trans/CTransUnit.class" />
+</smooks-resource-list>

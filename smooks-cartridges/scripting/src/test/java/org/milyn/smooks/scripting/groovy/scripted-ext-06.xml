@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:g="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">
+
+    <!--
+        This tests that the config params make it through to the script.
+    -->
+
+    <g:groovy executeOnElement="c">
+        <g:script>
+            element = DomUtils.renameElement(element, config.getStringParameter("newElementName"), true, true);
+            element.setAttribute("newElementAttribute", "1234");
+        </g:script>
+        <param name="newElementName">newElX</param>
+    </g:groovy>
+
+</smooks-resource-list>

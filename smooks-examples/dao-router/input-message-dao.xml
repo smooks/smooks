@@ -1,0 +1,15 @@
+<order>
+    <ordernumber>1</ordernumber>
+    <date>2008-12-11 10:09:08</date>
+    <customer>123456</customer>
+    <order-items>
+        <order-item>
+            <product>11</product>
+            <quantity>2</quantity>
+        </order-item>
+        <order-item>
+            <product>22</product>
+            <quantity>7</quantity>
+        </order-item>
+    </order-items>
+</order>

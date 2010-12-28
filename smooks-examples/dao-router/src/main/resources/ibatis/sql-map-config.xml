@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<!-- Always ensure to use the correct XML header as above! -->
+<sqlMapConfig>
+
+	<!-- These settings control SqlMap configuration details, primarily to do with transaction
+		management. They are all optional (see the Developer Guide for more). -->
+	<settings
+		cacheModelsEnabled="false"
+		enhancementEnabled="true"
+		lazyLoadingEnabled="false"
+		maxRequests="512"
+		maxSessions="128"
+		maxTransactions="16"
+		useStatementNamespaces="false"
+	/>
+
+	<!-- Configure a datasource to use with this SQL Map using SimpleDataSource.
+		Notice the use of the properties from the above resource -->
+	<transactionManager type="JDBC">
+		<dataSource type="SIMPLE">
+			<property name="JDBC.Driver" value="org.hsqldb.jdbcDriver" />
+			<property name="JDBC.ConnectionURL" value="jdbc:hsqldb:hsql://localhost:9201/milyn-hsql-9201" />
+			<property name="JDBC.Username" value="sa" />
+			<property name="JDBC.Password" value="" />
+		</dataSource>
+	</transactionManager>
+
+
+	<!-- Identify all SQL Map XML files to be loaded by this SQL map. Notice the paths
+		are relative to the classpath.-->
+	<sqlMap resource="ibatis/sql-map.xml" />
+
+</sqlMapConfig>

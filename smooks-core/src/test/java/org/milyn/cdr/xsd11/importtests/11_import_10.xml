@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <import file="10Config.xml" />
+
+</smooks-resource-list>

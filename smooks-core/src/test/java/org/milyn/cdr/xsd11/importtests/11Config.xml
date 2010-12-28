@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <resource-config selector="x">
+    </resource-config>
+
+</smooks-resource-list>

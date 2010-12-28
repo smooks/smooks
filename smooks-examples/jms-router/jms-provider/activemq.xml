@@ -1,0 +1,20 @@
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:amq="http://activemq.org/config/1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.org/config/1.0 http://activemq.apache.org/schema/activemq-core.xsd
+  http://activemq.apache.org/camel/schema/spring http://activemq.apache.org/camel/schema/spring/camel-spring.xsd">
+
+    <!-- Allows us to use system properties as variables in this configuration file -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+
+    <broker xmlns="http://activemq.org/config/1.0" useJmx="false"  dataDirectory="${activemq.base}/target/activemq">
+
+        <transportConnectors>
+            <transportConnector uri="tcp://localhost:61717"/>
+        </transportConnectors>
+
+    </broker>
+
+</beans>

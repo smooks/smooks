@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="deploy" name="Deploy" basedir="./">
+
+    <property name="appname" value="smooks-test"/>
+
+    <target name="deploy">
+        <available file="${catalina.home}" type="dir" property="server.deploy.available"/>
+        <fail unless="server.deploy.available" message="     ****** Tomcat deployment not found at '${catalina.home}'.  Check the 'catalina.home' property in the deploy.properties file in ${basedir}."/>
+        <waitfor maxwait="2000" timeoutproperty="tomcat.not.running">
+            <http url="http://localhost:8080/tomcat-docs/"/>
+        </waitfor>
+        <fail if="tomcat.not.running" message="     ****** Tomcat not running on port 8080. Required by 'servlet' example 'test' module.  Either deploy a Tomcat instance, or disable this test by disabling the 'test' module in the pom.xml in the parent folder of ${basedir}."/>
+
+        <antcall target="deploy.to.server"/>
+    </target>
+
+    <target name="deploy.to.server" if="server.deploy.available">
+        <!-- See deploy.properties -->
+        <taskdef name="deploy" classpath="${catalina.home}/server/lib/catalina-ant.jar"
+                 classname="org.apache.catalina.ant.DeployTask"/>
+        <deploy url="${catalina.deploy.url}" username="${catalina.manager.uname}"
+                password="${catalina.manager.password}"
+                war="${basedir}/../war/target/milyn-smooks-example-servlet-1.0.war" path="/${appname}" update="true"/>
+    </target>
+
+</project>
+

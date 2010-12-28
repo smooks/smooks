@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.milyn.org/xsd/smooks/io-routing-1.1.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-io-routing="http://www.milyn.org/xsd/smooks/io-routing-1.1.xsd">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Smooks IO Routing Configuration</xs:documentation>
+    </xs:annotation>
+
+
+    <xs:element name="router" type="smooks-io-routing:router" substitutionGroup="smooks:abstract-resource-config" >
+    	Output stream router configuration
+		Output Stream Router is a fragment Visitor (DOM/SAX) that can be used to route
+		context beans to an OutputStream.
+    </xs:element>
+
+    <xs:complexType name="router">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			Output stream router
+    		</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:element-visitor">
+    			<xs:attribute name="routeOnElement" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The element to route on.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="routeOnElementNS" type="xs:string" use="optional" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The namespace of the routeOnElement element.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="resourceName" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The resource name of the AbstractOutputStreamResource the bean should be routed to.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="beanId" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The beanId of the bean from the bean context to be written to the OutputStream.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="encoding" type="xs:string" use="optional" default="UTF-8">
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			 The encoding used when writing characters to the stream. Default is 'UTF-8'
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="executeBefore" type="xs:boolean" use="optional" default="false">
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			If the routing is done before or after the selected element. Default is 'false'.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+</xs:schema>

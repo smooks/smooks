@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>        
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.1.xsd">    
+
+    <medi:description name="un-edifact" version="1.0" />
+
+    <medi:delimiters segment="&#39;" field="+" component=":" sub-component="~"/>
+
+    <medi:segments xmltag="un-edifact">
+
+        <medi:segment segcode="UNH" xmltag="UNH">
+			<medi:field xmltag="MessageReferenceNr" required="true"/>
+            <medi:field xmltag="MESSAGE_IDENTIFIER" required="true">
+                <medi:component xmltag="messageType" required="true"/>
+                <medi:component xmltag="messageVersionNr" required="true"/>
+                <medi:component xmltag="messageReleaseNr" required="true"/>
+                <medi:component xmltag="controllingAgencyCode" required="true"/>
+                <medi:component xmltag="associationAssignedCode" />
+                <medi:component xmltag="codeListDirectoryVersionNr" />
+                <medi:component xmltag="messageTypeSubFunctionId" />
+            </medi:field>
+            <medi:field xmltag="CommonAccessReference" />
+            <medi:field xmltag="STATUS_OF_TRANSFER">
+                <medi:component xmltag="sequenceOfTransfers" required="true"/>
+                <medi:component xmltag="firstAndLastTransfer" />
+            </medi:field>
+            <medi:field xmltag="MESSAGE_SUBSET_ID">
+                <medi:component xmltag="messageSubsetId" required="true"/>
+                <medi:component xmltag="messageSubsetVersionNr" />
+                <medi:component xmltag="messageSubsetReleaseNr" />
+                <medi:component xmltag="controllingAgencyCode" />
+            </medi:field>
+            <medi:field xmltag="MESSAGE_IMPL_GUIDELINE_ID">
+                <medi:component xmltag="messageImplGuidId" required="true"/>
+                <medi:component xmltag="messageImplGuidVersionNr" />
+                <medi:component xmltag="messageImplGuidReleaseNr" />
+                <medi:component xmltag="controllingAgencyCode" />
+            </medi:field>
+            <medi:field xmltag="SCENARIO_ID">
+                <medi:component xmltag="scenarioId" required="true"/>
+                <medi:component xmltag="scenarioVersionNr" />
+                <medi:component xmltag="scenarioReleaseNr" />
+                <medi:component xmltag="controllingAgencyCode" />
+            </medi:field>
+        </medi:segment>
+        
+    </medi:segments>
+	
+</medi:edimap>

@@ -1,0 +1,82 @@
+<data>
+    <!--
+        Primitives...
+    -->
+    <byteVal>1</byteVal>
+    <shortVal>1</shortVal>
+    <intVal>1</intVal>
+    <longVal>2</longVal>
+    <boolVal>true</boolVal>
+    <floatVal>3</floatVal>
+    <doubleVal>4</doubleVal>
+    <charVal>a</charVal>
+
+    <!--
+        Objects...
+    -->
+    <integerVal>5</integerVal>
+    <dateVal>Wed Nov 15 13:45:28 EST 2006</dateVal>
+
+    <!--
+        Primitive Arrays...
+    -->
+    <intValArray>
+        <intVal>6</intVal>
+        <intVal>7</intVal>
+        <intVal>8</intVal>
+    </intValArray>
+
+    <!--
+        Object Arrays...
+    -->
+    <integerValArray>
+        <integerVal>9</integerVal>
+        <integerVal>10</integerVal>
+        <integerVal>11</integerVal>
+    </integerValArray>
+
+    <!--
+        List...
+    -->
+    <integerValList>
+        <integerVal>12</integerVal>
+        <integerVal>13</integerVal>
+        <integerVal>14</integerVal>
+    </integerValList>
+
+    <!--
+        Map...
+    -->
+    <integerValMap>
+        <byelement>
+            <integerVal1>15</integerVal1>
+            <integerVal2>16</integerVal2>
+            <integerVal3>17</integerVal3>
+        </byelement>
+        <byattribute>
+            <integerVal x="integerVal4">18</integerVal>
+            <integerVal x="integerVal5">19</integerVal>
+            <integerVal x="integerVal6">20</integerVal>
+            <integerVal>21</integerVal>
+        </byattribute>
+    </integerValMap>
+
+    <!--
+        Another Map, set on the previous Map...
+    -->
+    <mixedMap>
+        <intVal>1</intVal>
+        <longVal>2</longVal>
+        <boolVal>true</boolVal>
+        <floatVal>3</floatVal>
+        <doubleVal>4</doubleVal>
+        <charVal>a</charVal>
+        <integerVal>5</integerVal>
+        <dateVal>Wed Nov 15 13:45:28 EST 2006</dateVal>
+        <intValArray>
+            <intVal>6</intVal>
+            <intVal>7</intVal>
+            <intVal>8</intVal>
+        </intValArray>
+    </mixedMap>
+</data>

@@ -1,0 +1,10 @@
+<?xml version='1.0'?>
+<!DOCTYPE xx PUBLIC "-//MILYN//DTD XX 1.0//EN" "http://www.milyn.org/dtd/xx.dtd">
+<xx xmlns="http://x" xmlns:y="http://y">
+    <y:h attrib1="11&quot;11" y:attrib2="1111" />
+    <g>gvalue <!-- Comment --></g>
+    <!-- Comment -->
+    <h> Some text... &amp; ... &lt; ...
+        <i><![CDATA[cdata data]]></i>
+    </h>
+</xx>

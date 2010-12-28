@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:g="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">
+
+    <g:groovy executeOnElement="c">
+        <g:script>
+            element = DomUtils.renameElement(element, "xxx", true, true);
+            element.setAttribute("newElementAttribute", "1234");
+        </g:script>
+    </g:groovy>
+
+</smooks-resource-list>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 sp1 (http://www.altova.com) by Bård Langöy (Diamo AB) -->
+<xs:schema xmlns="http://www.milyn.org/schema/edi-message-mapping-1.3.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.milyn.org/schema/edi-message-mapping-1.3.xsd" elementFormDefault="qualified">
+	<xs:element name="edimap">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="import" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>
+							The definition element specifies the name (and sometimes the location) of the file containing the definition of segments in the edi-message-mapping.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="description"/>
+				<xs:element ref="delimiters"/>
+				<xs:element ref="segments"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:unique name="uniqueNamespaces">
+			<xs:selector xpath="import"/>
+			<xs:field xpath="@namespace"/>
+		</xs:unique>
+	</xs:element>
+	<xs:element name="import">
+		<xs:complexType>
+			<xs:attribute name="resource" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>A URI reference that specifies the name and location of external schema for use in this schema. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="namespace" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>A namespace is used in combination with URI specified in the name attribute. The namespace must have a unique value within the same schema.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="truncatableSegments" type="xs:boolean" use="optional">
+				<xs:annotation>
+					<xs:documentation>Specifies whether Fields in edi-definition should be truncatable. This setting overwrites
+truncatable attribute for all Fields in edi-definition
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="truncatableFields" type="xs:boolean" use="optional">
+				<xs:annotation>
+					<xs:documentation>Specifies whether Fields in edi-definition should be truncatable. This setting overwrites
+truncatable attribute for all Fields in edi-definition
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="truncatableComponents" type="xs:boolean" use="optional">
+				<xs:annotation>
+					<xs:documentation>Specifies whether Components in edi-definition should be truncatable. This setting overwrites
+truncatable attribute for all Components in edi-definition.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="description">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="version" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="delimiters">
+		<xs:complexType>
+			<xs:attribute name="segment" type="xs:string" use="required"/>
+			<xs:attribute name="field" type="xs:string" use="required"/>
+			<xs:attribute name="component" type="xs:string" use="required"/>
+			<xs:attribute name="sub-component" type="xs:string" use="required"/>
+			<xs:attribute name="escape" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>The delimiter attributes mark the boundary tokens between the EDI message parts - segment, field, component and sub-component.
+
+These boundary tokens may contain special characters (non-printable). These are defined using XML character references e.g. LF = &quot;&amp;#10;&quot;
+
+The escape attribute specifies a character that can be used before a delimiter to prevent the delimiter from separating the EDI message into the specified part.
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="segments">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="mapping-node">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="segmentGroup"/>
+						<xs:element ref="segment"/>
+					</xs:choice>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="mapping-node">
+		<xs:sequence>
+			<xs:element name="documentation" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The documentation describing the usage and meaning of node.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="xmltag" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name of the xmltag when creating xml-event.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="value-node">
+		<xs:complexContent>
+			<xs:extension base="mapping-node">
+				<xs:attribute name="type" type="paramType" use="optional">
+					<xs:annotation>
+						<xs:documentation>Specifies the type of the value existing in value-node. The standard types are connected to standard DataDecoders in Smooks.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="typeParameters" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Parameters used to validate the type of the value-node. Parameters are listed in the form: param1=value1;param2=value2 etc.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="minLength" type="xs:int" use="optional">
+					<xs:annotation>
+						<xs:documentation>The minimum number of characters allowed in value-node.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="maxLength" type="xs:int" use="optional">
+					<xs:annotation>
+						<xs:documentation>The maximum number of characters allowed in value-node</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="paramType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BigDecimal"/>
+			<xs:enumeration value="BigInteger"/>
+			<xs:enumeration value="Binary"/>
+			<xs:enumeration value="Boolean"/>
+			<xs:enumeration value="Byte"/>
+			<xs:enumeration value="Custom"/>
+			<xs:enumeration value="Calendar"/>
+			<xs:enumeration value="Character"/>
+			<xs:enumeration value="Date"/>
+			<xs:enumeration value="Double"/>
+			<xs:enumeration value="Float"/>
+			<xs:enumeration value="Integer"/>
+			<xs:enumeration value="Long"/>
+			<xs:enumeration value="Short"/>
+			<xs:enumeration value="String"/>
+			<xs:enumeration value="URI"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="segmentGroup">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="documentation" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The documentation describing the usage and meaning of node.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="segment"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="segmentGroup"/>
+					<xs:element ref="segment"/>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="xmltag" type="xs:string" use="optional"/>
+			<xs:attributeGroup ref="bounds"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="segment">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="mapping-node">
+					<xs:sequence>
+						<xs:element ref="field" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element ref="segment"/>
+							<xs:element ref="segmentGroup"/>
+						</xs:choice>
+					</xs:sequence>
+					<xs:attributeGroup ref="bounds"/>
+					<xs:attribute name="segcode" type="xs:string" use="required"/>
+					<xs:attribute name="segref" type="xs:string" use="optional"/>
+					<xs:attribute name="truncatable" type="xs:boolean" use="optional" default="false"/>
+					<xs:attribute name="description" type="xs:string" use="optional"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="field">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="value-node">
+					<xs:sequence>
+						<xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="required" type="xs:boolean" use="optional" default="false"/>
+					<xs:attribute name="truncatable" type="xs:boolean" use="optional" default="false"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="component">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="value-node">
+					<xs:sequence>
+						<xs:element ref="sub-component" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="required" type="xs:boolean" use="optional" default="false"/>
+					<xs:attribute name="truncatable" type="xs:boolean" use="optional" default="false"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sub-component">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="value-node">
+					<xs:attribute name="required" type="xs:boolean" use="optional" default="false"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:attributeGroup name="bounds">
+		<xs:attribute name="minOccurs" type="xs:nonNegativeInteger" use="optional" default="1">
+			<xs:annotation>
+				<xs:documentation>
+The minimum number of times the segment/segmentGroup must appear in this position within the EDI message.
+                </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxOccurs" type="xs:int" use="optional" default="1">
+			<xs:annotation>
+				<xs:documentation>
+The maximum number of times the segment/segmentGroup must appear in this position within the EDI message.  For an unbounded max, set the maxOccurs value to -1.
+                </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+</xs:schema>

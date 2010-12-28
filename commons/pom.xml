@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>milyn</artifactId>
+		<version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+    <name>Milyn Commons</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-commons</artifactId>
+	<version>${milyn.commons.version}</version>
+
+	<dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>testres</artifactId>
+            <version>${milyn.smooks.core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>${freemarker.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+          <version>${javassist.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+            <scope>provided</scope>
+        </dependency>
+	</dependencies>
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+</project>

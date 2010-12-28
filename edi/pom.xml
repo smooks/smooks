@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.milyn</groupId>
+    <artifactId>milyn-edi</artifactId>
+    <packaging>pom</packaging>
+    <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    <name>Milyn EDI</name>
+    <url>http://milyn.codehaus.org</url>
+
+    <modules>
+        <module>edisax</module>
+        <module>ect</module>
+        <module>ect/maven-ect-plugin</module>
+        <module>ejc</module>
+        <module>ejc/maven-ejc-plugin</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>codehaus.maven.repo</id>
+            <name>Milyn Central Maven2 Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/milyn/</url>
+        </repository>
+        <snapshotRepository>
+            <id>codehaus.maven.repo</id>
+            <name>Milyn Central Maven2 SNAPSHOT Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/milyn/</url>
+        </snapshotRepository>
+        <site>
+            <id>codehaus.maven.repo</id>
+            <url>dav:https://dav.codehaus.org/xfire/</url>
+        </site>
+    </distributionManagement>
+
+</project>

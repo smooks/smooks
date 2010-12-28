@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+        <cc1:Address xmlns:cc1="http://test.com">
+            <cc1:AddressType>Home</cc1:AddressType>
+            <cc1:AddressLine1>String</cc1:AddressLine1>
+            <cc1:City>String</cc1:City>
+            <cc1:PostalCode>String</cc1:PostalCode>
+            <cc1:County>String</cc1:County>
+        </cc1:Address>
+    </soapenv:Body>

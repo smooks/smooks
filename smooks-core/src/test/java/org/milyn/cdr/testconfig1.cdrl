@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
+
+<smooks-resource-list default-selector='b' default-useragent='yyy' default-path='/org/milyn/cdr/test-resource.txt' default-namespace='http://milyn.codehaus.org/smooks-default'>
+
+	<!-- Overriding the defaults -->
+	<smooks-resource selector='a' useragent='xxx' path='x.txt' namespace='http://milyn.codehaus.org/smooks'/>
+
+	<!-- Inheriting the defaults -->
+	<smooks-resource>
+		<param name='param1'>param1Val</param>
+		<param name='param2'>true</param>
+		<param name='param3'>false</param>
+	</smooks-resource>
+
+	<!-- Inheriting the defaults + inlining the resource data. -->
+	<smooks-resource>
+		<param name='restype'>abc</param>
+		<param name='resdata'>Howya</param>
+	</smooks-resource>
+</smooks-resource-list>
+

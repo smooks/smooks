@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~  This library is free software; you can redistribute it and/or
+  ~  modify it under the terms of the GNU Lesser General Public
+  ~  License (version 2.1) as published by the Free Software
+  ~  Foundation.
+  ~
+  ~  This library is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~  See the GNU Lesser General Public License for more details:
+  ~  http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<smooks-resource-list
+	xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+	xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd"
+	xmlns:dao="http://www.milyn.org/xsd/smooks/persistence-1.4.xsd">
+
+	<!--
+		This is the normal Javabean binding. Notice that we have a wiring on customer. The
+	    Customer entity will not be created but looked up by a locator.
+	 -->
+    <jb:bean beanId="order" class="example.jpa.entity.Order" createOnElement="order">
+        <jb:value property="ordernumber"   data="ordernumber" decoder="Integer" />
+        <jb:value property="orderDate"     data="date"        decoder="Date">
+            <jb:decodeParam name="format">yyyy-MM-dd HH:mm:ss</jb:decodeParam>
+        </jb:value>
+
+        <jb:wiring property="customer"  beanIdRef="customer" />
+        <jb:wiring setterMethod="addOrderLine"  beanIdRef="orderLine" />
+    </jb:bean>
+
+	<!--
+		The locator calls the EntityManager#query() method and expects a result. The locator wants
+		a unique result but the query() method returns a list. The locator will check that there is only
+		one row and extract that row from the list. That entity is inserted into bean repository under
+		the bean id customer.
+		Because only the order bean, in the previous resource, wants to wire the result the locator
+		will by default execute on the same selector as the previous resource.
+	-->
+    <dao:locator beanId="customer" onNoResult="EXCEPTION" uniqueResult="true">
+    	<dao:query>from Customer c where c.id = :id</dao:query>
+    	<dao:params>
+    		<dao:value name="id" data="customer" decoder="Integer"/>
+    	</dao:params>
+    </dao:locator>
+
+	<!--
+		This is the normal Javabean binding. Notice that we have a wiring on product. The
+	    Product entity will not be created but looked up by a locator.
+	 -->
+    <jb:bean beanId="orderLine" class="example.jpa.entity.OrderLine" createOnElement="order-item">
+		<jb:value property="quantity" data="quantity" decoder="Integer"/>
+		<jb:wiring property="order" beanIdRef="order"/>
+		<jb:wiring property="product" beanIdRef="product"/>
+    </jb:bean>
+
+	<!--
+		The locator calls the EntityManager#query() method and expects a result. The locator wants
+		a unique result but the query() method returns a list. The locator will check that there is only
+		one row and extract that row from the list. That entity is inserted into bean repository under
+		the bean id product.
+	-->
+    <dao:locator beanId="product" lookupOnElement="order-item" onNoResult="EXCEPTION" uniqueResult="true">
+    	<dao:query>from Product p where p.id = :id</dao:query>
+    	<dao:params>
+    		<dao:value name="id" data="product" decoder="Integer"/>
+    	</dao:params>
+    </dao:locator>
+
+	<!--
+		The inserter calls the EntityManager#persist() method at the visitAfter of Order.
+	-->
+	<dao:inserter beanId="order" />
+
+</smooks-resource-list>

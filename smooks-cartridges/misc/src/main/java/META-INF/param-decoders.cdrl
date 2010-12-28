@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
+
+<!--
+	This CDRL contains base ParameterDecoder configurations.
+	Used on "device-parameters" resources. See base-params.cdrl.
+
+	NB: See device-profile.xml
+-->
+
+<smooks-resource-list default-useragent="*"> 
+
+	<!-- 
+		Tokenize parameter value into a {@link java.util.List}. 
+		Default config - see TokenizedStringParameterDecoder javadoc. 
+	-->
+	<smooks-resource selector="param-type:string-list" 
+		path="org.milyn.param.TokenizedStringParameterDecoder" />
+
+	<!-- 
+		Tokenize parameter value into a {@link java.util.HashSet}. 
+		Default config - see TokenizedStringParameterDecoder javadoc. 
+	-->
+	<smooks-resource selector="param-type:string-hashset" 
+		path="org.milyn.param.TokenizedStringParameterDecoder" />
+
+</cdres-list>

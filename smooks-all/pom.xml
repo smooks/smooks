@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~  This library is free software; you can redistribute it and/or
+  ~  modify it under the terms of the GNU Lesser General Public
+  ~  License (version 2.1) as published by the Free Software
+  ~  Foundation.
+  ~
+  ~  This library is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~  See the GNU Lesser General Public License for more details:
+  ~  http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>milyn</artifactId>
+        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    </parent>
+    <name>Milyn Smooks All</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-smooks-all</artifactId>
+    <version>${milyn.smooks.core.version}</version>
+	<packaging>bundle</packaging>
+
+	<properties>
+		<objectweb.version>2.2.3</objectweb.version>
+		<antlr.version>2.7.7</antlr.version>
+	</properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-commons</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-core</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-edisax-parser</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-calc</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-camel</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-csv</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-edi</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-fixed-length</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-javabean</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-json</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-misc</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-persistence</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-routing</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-rules</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-scripting</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-templating</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-validation</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-yaml</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-scribe-core</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-scribe-hibernate</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-scribe-ibatis</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-scribe-jpa</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-camel</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+		<dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi_R4_core</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi_R4_compendium</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+		<dependency>
+			<groupId>org.jboss.shrinkwrap</groupId>
+			<artifactId>shrinkwrap-api</artifactId>
+			<version>1.0.0-alpha-11</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap</groupId>
+			<artifactId>shrinkwrap-impl-base</artifactId>
+			<version>1.0.0-alpha-11</version>
+			<scope>provided</scope> 
+		</dependency>
+
+        <!-- Readding core dependencies -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>${xstream.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+            <version>${mvel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>${jaxen.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>dom4j</artifactId>
+                    <groupId>dom4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xerces</artifactId>
+                    <groupId>xmlParserAPIs</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xerces</artifactId>
+                    <groupId>xercesImpl</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xom</artifactId>
+                    <groupId>xom</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+		<!-- Bundles -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.jaxen</groupId>
+			<artifactId>com.springsource.org.jaxen</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>com.springsource.freemarker</artifactId>
+			<version>${freemarker.version}</version>
+			<scope>provided</scope> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
+			<version>${groovy.version}</version>
+			<scope>provided</scope> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>com.springsource.antlr</artifactId>
+			<version>${antlr.version}</version>
+			<scope>provided</scope> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.objectweb.asm</groupId>
+			<artifactId>com.springsource.org.objectweb.asm</artifactId>
+			<version>${objectweb.version}</version>
+			<scope>provided</scope> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.objectweb.asm</groupId>
+			<artifactId>com.springsource.org.objectweb.asm.tree.analysis</artifactId>
+			<version>${objectweb.version}</version>
+			<scope>provided</scope> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.objectweb.asm</groupId>
+			<artifactId>com.springsource.org.objectweb.asm.tree</artifactId>
+			<version>${objectweb.version}</version>
+			<scope>provided</scope> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.objectweb.asm</groupId>
+			<artifactId>com.springsource.org.objectweb.asm.util</artifactId>
+			<version>${objectweb.version}</version>
+			<scope>provided</scope> 
+		</dependency>
+
+	</dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>src-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>sources</classifier>
+                            <excludeTransitive>true</excludeTransitive>
+                            <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+                            <outputDirectory>${project.build.directory}/sources</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <ant dir="./" antfile="merge-jars.xml">
+                                    <property name="smooks.version" value="${project.version}" />
+                                </ant>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+			<!--
+			<plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        </archive>
+                    </configuration>
+            </plugin>
+			-->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.0</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>   
+                            <goal>manifest</goal>
+                        </goals>  
+                    </execution>
+                </executions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>org.milyn.smooks.osgi</Bundle-SymbolicName>
+						<Bundle-Name>Smooks OSGi</Bundle-Name>
+						<Bundle-Version>${milyn.smooks.core.version}</Bundle-Version>
+						<Bundle-Activator>org.milyn.SmooksActivator</Bundle-Activator>
+						<Export-Package>
+							org.milyn.*;-split-package:=merge-first;version="${milyn.smooks.core.version}",
+							META-INF.xsd.smooks.*;-split-package:=merge-first,
+							!META-INF.services.*,
+							!META-INF.maven.*,
+						</Export-Package>
+						<Import-Package>
+							org.osgi.framework,
+							org.jaxen.*;version="1.1.1", 
+							org.apache.commons.*, 
+							freemarker.*;version="${freemarker.version}",
+							groovy.xml;version="${groovy.version}",
+							groovy.xml.dom;version="${groovy.version}",
+							org.codehaus.groovy.*;version="${groovy.version}",
+							org.codehaus.groovy.runtime;version="${groovy.version}",
+							org.codehaus.groovy.runtime.typehandling;version="${groovy.version}",
+							javax.swing.tree,
+							!org.apache.commons.cli.*,
+							!META-INF.services.javax.xml.parsers.*,*;resolution:=optional
+						</Import-Package>
+						<_failok>true</_failok>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+                <groupId>org.ops4j</groupId>
+                <artifactId>maven-pax-plugin</artifactId>
+                <version>1.4</version>
+			</plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+		<repository>
+			<id>com.springsource.repository.bundles.release</id>
+			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/release</url>
+		</repository>
+
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
+    </repositories>
+
+</project>

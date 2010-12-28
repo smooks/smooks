@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <profiles>
+        <profile base-profile="message-exchange-1" sub-profiles="from-a,to-b" />
+        <profile base-profile="message-exchange-2" sub-profiles="from-a,to-c" />
+        <profile base-profile="message-exchange-3" sub-profiles="from-a,to-d" />
+
+        <profile base-profile="message-exchange-4" sub-profiles="from-c,to-b" />
+        <profile base-profile="message-exchange-5" sub-profiles="from-d,to-b" />
+    </profiles>
+
+    <resource-config selector="a" target-profile="from-a">
+	    <resource>example.BasicJavaTransformer</resource>
+		<param name="newName">from-a</param>
+	</resource-config>
+
+    <resource-config selector="a b" target-profile="to-b">
+	    <resource>example.BasicJavaTransformer</resource>
+		<param name="newName">to-b</param>
+	</resource-config>
+
+    <resource-config selector="c b" target-profile="to-c">
+	    <resource>example.BasicJavaTransformer</resource>
+		<param name="newName">to-c</param>
+	</resource-config>
+
+    <resource-config selector="c" target-profile="to-d">
+	    <resource>example.BasicJavaTransformer</resource>
+		<param name="newName">to-d</param>
+	</resource-config>
+
+    <resource-config selector="b c" target-profile="message-exchange-5">
+	    <resource>example.BasicJavaTransformer</resource>
+		<param name="newName">message-exchange-5</param>
+	</resource-config>
+
+    <resource-config selector="c b" target-profile="to-b AND from-d">
+	    <resource>example.BasicJavaTransformer</resource>
+		<param name="newName">d-to-b</param>
+	</resource-config>
+
+</smooks-resource-list>

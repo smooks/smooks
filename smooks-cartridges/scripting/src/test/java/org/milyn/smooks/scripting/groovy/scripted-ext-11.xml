@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:g="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">
+
+    <params>
+        <param name="stream.filter.type">SAX</param>
+        <param name="default.serialization.on">false</param>
+    </params>
+
+    <!--
+        More NodeModel testing for SAX.  With the SAX filter, we create a Node Model for the fragment.  This make
+        the SAX events easier to work with.  This test checks that the writeFragment closure works when
+        default serialization is turned off...
+    -->
+
+    <g:groovy executeOnElement="category">
+        <g:script>
+            <!--
+            use(DOMCategory) {
+
+                // Modify "supplies": we need an extra 2 pens...
+                if (element.'@type' == 'supplies') {
+                    element.item.each { item ->
+                        if (item.text() == 'Pens') {
+                            item['@quantity'] = item.'@quantity'.toInteger() + 2;
+                        }
+                    }
+                    writeFragment(element);
+                }
+            }
+            -->
+        </g:script>
+    </g:groovy>
+
+</smooks-resource-list>

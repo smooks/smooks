@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-groovy="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Groovy Scripting Configuration</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="groovy" type="smooks-groovy:groovy" substitutionGroup="smooks:abstract-resource-config">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Groovy Script.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="groovy">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Groovy Script.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="smooks:element-visitor">
+                <xs:sequence>
+                    <xs:element name="imports" type="xs:string" minOccurs="0" />
+                    <xs:element name="script" type="xs:string" />
+                    <xs:element ref="smooks:param" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="executeOnElement" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The name of the element on which to execute the script.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="executeOnElementNS" type="xs:anyURI" use="optional">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The namespace of the element on which to execute the script.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="executeBefore" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Execute the script before visiting the elements child content. Default is 'false'.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

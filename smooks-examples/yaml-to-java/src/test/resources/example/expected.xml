@@ -1,0 +1,42 @@
+<order>
+    <document>
+        <header>
+            <order-id>1</order-id>
+            <status-code>0</status-code>
+            <net-amount>59.97</net-amount>
+            <total-amount>64.92</total-amount>
+            <tax>4.95</tax>
+            <date-and-time>Wed Nov 15 13:45:28 EST 2006</date-and-time>
+            <customer>
+                <user-name>HenkJansen</user-name>
+                <first-name>Henk</first-name>
+                <last-name>Jansen</last-name>
+            </customer>
+            <billing-address id="id001">
+                <street>Dr. Walkman 458</street>
+                <city>Royal Oak</city>
+                <zip-code>48054</zip-code>
+            </billing-address>
+            <shipping-address ref="id001">
+                <street>Dr. Walkman 458</street>
+                <city>Royal Oak</city>
+                <zip-code>48054</zip-code>
+            </shipping-address>
+        </header>
+        <order-item>
+            <element>
+                <quantity>1</quantity>
+                <product-id>364</product-id>
+                <title>The 40-Year-Old Virgin</title>
+                <price>29.98</price>
+            </element>
+            <element>
+                <quantity>1</quantity>
+                <product-id>299</product-id>
+                <title>Pulp Fiction</title>
+                <price>29.99</price>
+            </element>
+        </order-item>
+        <comment>Late afternoon is best. Backup contact is Nancy Billsmer @ 338-4338.</comment>
+    </document>
+</order>

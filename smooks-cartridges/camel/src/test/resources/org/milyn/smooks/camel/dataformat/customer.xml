@@ -1,0 +1,7 @@
+<customer>
+    <firstName>John</firstName>
+    <lastName>Cocktolstol</lastName>
+    <genderName>Male</genderName>
+    <age>35</age>
+    <country>USA</country>
+</customer>

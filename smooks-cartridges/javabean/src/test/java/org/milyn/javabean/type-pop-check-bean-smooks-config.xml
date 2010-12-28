@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+	<resource-config selector="global-parameters">
+        <param name="binding.extend.lifecycle">true</param>
+    </resource-config>
+
+    <resource-config selector="data">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">data</param>
+        <param name="beanClass">org.milyn.javabean.TypePopCheckBean</param>
+        <param name="bindings">
+        	<binding selector="${intValArray}" />
+        	<binding selector="${integerValArray}" />
+        	<binding selector="${integerValList}" />
+        	<binding selector="${integerValMap}" />
+
+        	<binding property="byteVal" type="Byte" selector="data byteVal" />
+        	<binding property="shortVal" type="Short" selector="data shortVal" />
+            <binding property="intVal" type="Integer" selector="data intVal" />
+            <binding property="longVal" type="Long" selector="data longVal" />
+            <binding property="boolVal" type="Boolean" selector="data boolVal" />
+            <binding property="floatVal" type="Float" selector="data floatVal" />
+            <binding property="doubleVal" type="Double" selector="data doubleVal" />
+            <binding property="charVal" type="Character" selector="data charVal" />
+            <binding property="integerVal" type="Integer" selector="data integerVal" />
+            <binding property="dateVal" type="OrderDateLong" selector="data dateVal" />
+        </param>
+    </resource-config>
+
+    <resource-config selector="decoder:OrderDateLong">
+        <resource>org.milyn.javabean.decoders.DateDecoder</resource>
+        <param name="format">EEE MMM dd HH:mm:ss z yyyy</param>
+        <param name="locale-language">en</param>
+        <param name="locale-country">IE</param>
+    </resource-config>
+
+    <resource-config selector="data intValArray">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">intValArray</param>
+        <param name="beanClass">int[]</param>
+        <param name="bindings">
+            <binding type="Integer" selector="data intValArray intVal" />
+        </param>
+    </resource-config>
+
+    <resource-config selector="data integerValArray">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">integerValArray</param>
+        <param name="beanClass">java.lang.Integer[]</param>
+        <param name="bindings">
+            <binding type="Integer" selector="integerValArray integerVal" />
+        </param>
+    </resource-config>
+
+    <resource-config selector="data integerValList">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">integerValList</param>
+        <param name="beanClass">java.util.ArrayList</param>
+        <param name="bindings">
+            <binding type="Integer" selector="integerValList integerVal" />
+        </param>
+    </resource-config>
+
+    <resource-config selector="data integerValMap">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">integerValMap</param>
+        <param name="beanClass">java.util.LinkedHashMap</param>
+        <param name="bindings">
+        	<binding selector="${mixedMap}" />
+
+            <binding               type="Integer" selector="integerValMap byelement *" />
+            <binding property="@x" type="Integer" selector="integerValMap byattribute integerVal" />
+        </param>
+    </resource-config>
+
+    <resource-config selector="data mixedMap">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">mixedMap</param>
+        <param name="beanClass">java.util.LinkedHashMap</param>
+        <param name="bindings">
+        	<binding selector="${mixedIntValArray}" />
+
+            <binding property="intVal" type="Integer" selector="mixedMap intVal" />
+            <binding property="longVal" type="Long" selector="mixedMap longVal" />
+            <binding property="boolVal" type="Boolean" selector="mixedMap boolVal" />
+            <binding property="floatVal" type="Float" selector="mixedMap floatVal" />
+            <binding property="doubleVal" type="Double" selector="mixedMap doubleVal" />
+            <binding property="charVal" type="Character" selector="mixedMap charVal" />
+            <binding property="integerVal" type="Integer" selector="mixedMap integerVal" />
+        </param>
+    </resource-config>
+
+    <resource-config selector="mixedMap intValArray">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">mixedIntValArray</param>
+        <param name="beanClass">java.util.ArrayList</param>
+        <param name="bindings">
+            <binding type="Integer" selector="mixedMap intValArray intVal" />
+        </param>
+    </resource-config>
+
+</smooks-resource-list>

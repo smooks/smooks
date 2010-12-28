@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<title>Test</title>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<x id="para1">Content from template!!</x>
+				<x id="para2">Content from template!!</x>
+			</tr>
+		</table>
+	</body>
+</html>

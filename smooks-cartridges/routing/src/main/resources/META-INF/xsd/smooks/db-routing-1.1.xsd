@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.milyn.org/xsd/smooks/db-routing-1.1.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-db-routing="http://www.milyn.org/xsd/smooks/db-routing-1.1.xsd">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Smooks SQL Routing Configuration</xs:documentation>
+    </xs:annotation>
+
+
+    <xs:element name="executor" type="smooks-db-routing:executor" substitutionGroup="smooks:abstract-resource-config" >
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			SQL Executor configuration
+    			The SQL Executor can be used to perform event driven read and write operations on a DataSource,
+    			using data in the bean context as the query/update parameters.
+    		</xs:documentation>
+    	</xs:annotation>
+	</xs:element>
+
+
+    <xs:complexType name="executor">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			SQL Executor
+    		</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:element-visitor">
+    			<xs:sequence>
+    				<xs:element name="statement" type="xs:string" minOccurs="1" maxOccurs="1">
+    					<xs:annotation>
+				    		<xs:documentation xml:lang="en">
+				    			The SQL statement to be executed. Supports templating in the form of ${variable}.
+				    			The variables are resolved from the bean context.
+				    		</xs:documentation>
+				    	</xs:annotation>
+    				</xs:element>
+    				<xs:element name="resultSet" type="smooks-db-routing:resultSet"  minOccurs="0" maxOccurs="1" >
+    					<xs:annotation>
+				    		<xs:documentation xml:lang="en">
+				    			Sets the resultSet specific configuration like the resultSet name, scope and timeToLive.
+				    		</xs:documentation>
+				    	</xs:annotation>
+    				</xs:element>
+    			</xs:sequence>
+    			<xs:attribute name="executeOnElement" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The element on which the query is executed. With the 'executeBefore'
+			    			attribute can be set if the query is executed before or after the element.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="executeOnElementNS" type="xs:string" use="optional" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The namespace of the executeOnElement element.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="datasource" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The name of the datasource configuration to use. See the datasource configuration
+			    			of the Smooks core library.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="executeBefore" type="xs:boolean" use="optional" default="false">
+    			<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			If the query is executed before the element else it will execute after the element.
+			    			Default is 'false'.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+	<xs:element name="resultSetRowSelector" type="smooks-db-routing:resultSetRowSelector" substitutionGroup="smooks:abstract-resource-config" >
+		<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			ResultSet Row Selector configuration
+    			The ResultSet row Selector can search though a resultset for a specific row.
+    		</xs:documentation>
+    	</xs:annotation>
+	</xs:element>
+
+    <xs:complexType name="resultSetRowSelector">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			ResultSet row selector
+    		</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:element-visitor">
+    			<xs:sequence>
+    				<xs:element name="where" type="xs:string" minOccurs="1" maxOccurs="1" >
+    					<xs:annotation>
+				    		<xs:documentation xml:lang="en">
+				    			The MVEL condition to select the correct row.
+				    		</xs:documentation>
+				    	</xs:annotation>
+    				</xs:element>
+    				<xs:element name="failedSelectError" type="xs:string"  minOccurs="0" maxOccurs="1" >
+    					<xs:annotation>
+				    		<xs:documentation xml:lang="en">
+				    			The error message that is thrown in org.milyn.routing.db.DataSelectionException
+				    			exception when no row was found that matches the 'where' query.
+				    			If the error message is not set then no exception will be thrown.
+				    		</xs:documentation>
+				    	</xs:annotation>
+    				</xs:element>
+    			</xs:sequence>
+    			<xs:attribute name="selectRowOnElement" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The element on which the row selection is executed.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="resultSetName" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+			    			The name of the resultSet to select the row from.
+			    		</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="beanId" type="xs:string" use="required" >
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+    						The beanId under which the selected row will be added in the bean context.
+    					</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="executeBefore" type="xs:boolean" use="optional" default="false">
+    				<xs:annotation>
+			    		<xs:documentation xml:lang="en">
+    						If the selection is done before or after the selected element. Default is 'false'.
+						</xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="resultSetScopeType">
+    	<xs:restriction base="xs:string">
+    		<xs:enumeration value="EXECUTION"></xs:enumeration>
+    		<xs:enumeration value="APPLICATION"></xs:enumeration>
+    	</xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="resultSet">
+    	<xs:attribute name="name" type="xs:string" use="optional">
+    		<xs:annotation>
+    			<xs:documentation xml:lang="en">
+    				If the statement is a query statement then the ResultSet will be bound
+	    			with this id in the ExecutionContext. Must be specified if the 'statement' is a query
+	    			statement, otherwise it is optional.
+    			</xs:documentation>
+    		</xs:annotation>
+    	</xs:attribute>
+		<xs:attribute name="scope" type="smooks-db-routing:resultSetScopeType" default="EXECUTION">
+			<xs:annotation>
+    			<xs:documentation xml:lang="en">
+    				The scope on which the resultSet will be stored. The scope can be on a EXECUTION or
+    				on a APPLICATION level. On a EXECUTION level the query is executed every time on the selected element.
+    				On a APPLICATION level the query is only executed once for the
+    				whole Smooks instance until the resultSet expires. With the 'timeToLive' attribute the expire time
+    				can be configured. After the resultSet is expired the query will be executed again.
+    			</xs:documentation>
+    		</xs:annotation>
+    	</xs:attribute>
+		<xs:attribute name="timeToLive" type="xs:long" default="900000">
+			<xs:annotation>
+    			<xs:documentation xml:lang="en">
+    				If the 'scope' attribute is set to APPLICATION this attribute determines the expire time
+    				in milliseconds of the resultSet. After the resultSet is expired the query will be executed again.
+    			</xs:documentation>
+    		</xs:annotation>
+    	</xs:attribute>
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!DOCTYPE trans-archive PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/trans-archive-1.0.dtd">
+
+<trans-archive>
+	<trans-unit list="xxx,yyy,zzz" type="java" path="/"/>
+</trans-archive>

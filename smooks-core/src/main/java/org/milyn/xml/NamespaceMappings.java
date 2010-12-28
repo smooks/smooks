@@ -1,0 +1,86 @@
+/*
+	Milyn - Copyright (C) 2006 - 2010
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License (version 2.1) as published by the Free Software
+	Foundation.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU Lesser General Public License for more details:
+	http://www.gnu.org/licenses/lgpl.txt
+*/
+package org.milyn.xml;
+
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.AppContext;
+import org.milyn.cdr.annotation.Config;
+import org.milyn.container.ApplicationContext;
+import org.milyn.container.ApplicationContextInitializer;
+import org.milyn.delivery.annotation.Initialize;
+
+/**
+ * Namespace Mappings.
+ * <p/>
+ * This handler loads namespace prefix-to-uri mappings into the {@link ApplicationContext}.
+ * 
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public class NamespaceMappings implements ApplicationContextInitializer {
+
+    /**
+     * Logger.
+     */
+    private static Log logger = LogFactory.getLog(NamespaceMappings.class);
+	
+	@Config
+	private SmooksResourceConfiguration config;
+	
+	@AppContext
+	private ApplicationContext appContext;
+	
+	/**
+	 * Load the namespace prefix-to-uri mappings into the {@link ApplicationContext}.
+	 */
+	@Initialize
+	public void loadNamespaces() {
+		Properties namespaces = getMappings(appContext);
+		Properties namespacesToAdd = config.toProperties();
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Adding namespace prefix-to-uri mappings: " + namespacesToAdd);
+		}
+		namespaces.putAll(namespacesToAdd);
+
+        setMappings(namespaces, appContext);
+    }
+
+    /**
+     * Set the namespace prefix-to-uri mappings.
+     * @param namespaces The namespace mappings.
+     * @param appContext The application context.
+     */
+    public static void setMappings(Properties namespaces, ApplicationContext appContext) {
+        appContext.setAttribute(NamespaceMappings.class, namespaces);
+    }
+
+    /**
+	 * Get the prefix-to-namespace mannings from the {@link ApplicationContext}.
+	 * @param appContext The {@link ApplicationContext}.
+	 * @return The prefix-to-namespace mannings.
+	 */
+	public static Properties getMappings(ApplicationContext appContext) {
+		Properties properties = (Properties) appContext.getAttribute(NamespaceMappings.class);
+		if(properties == null) {
+			return new Properties();
+		}
+		return properties;
+	}
+}

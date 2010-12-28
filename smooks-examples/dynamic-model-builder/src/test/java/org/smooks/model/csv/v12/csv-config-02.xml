@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.2.xsd">
+
+    <!-- CSV Reader config... -->
+    <csv:reader fields="name,address,age" rootElementName="people" recordElementName="person" indent="true">
+        <csv:singleBinding beanId="beanX" class="com.acme.XClass" />
+    </csv:reader>
+
+</smooks-resource-list>

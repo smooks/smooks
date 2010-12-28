@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.3.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd"
+                      xmlns:file="http://www.milyn.org/xsd/smooks/file-routing-1.1.xsd"
+                      xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+
+    <!--
+    Filter the message using the SAX Filter (i.e. not DOM, so no
+    intermediate DOM, so we can process huge messages...
+    -->
+    <core:filterSettings type="SAX" />
+
+    <!-- Extract and decode data from the message.  Used in the freemarker template (below).
+         Note that we could also use a NodeModel here... -->
+    <jb:bean beanId="order" class="java.util.Hashtable" createOnElement="order">
+        <jb:value property="orderId" decoder="Integer" data="order/@id"/>
+        <jb:value property="customerNumber" decoder="Long" data="header/customer/@number"/>
+        <jb:value property="customerName" data="header/customer"/>
+        <jb:wiring property="orderItem" beanIdRef="orderItem"/>
+    </jb:bean>
+    <jb:bean beanId="orderItem" class="java.util.Hashtable" createOnElement="order-item">
+        <jb:value property="itemId" decoder="Integer" data="order-item/@id"/>
+        <jb:value property="productId" decoder="Long" data="order-item/product"/>
+        <jb:value property="quantity" decoder="Integer" data="order-item/quantity"/>
+        <jb:value property="price" decoder="Double" data="order-item/price"/>
+    </jb:bean>
+
+    <!--
+    Every time we hit the end of an <order-item> element, apply this freemarker template,
+    outputting the result to the "orderItemSplitStream" OutputStream, which is the file
+    output stream configured below.
+    -->
+    <ftl:freemarker applyOnElement="order-item">
+        <ftl:template>target/classes/orderitem-split.ftl</ftl:template>
+        <ftl:use>
+            <!-- Output the templating result to the "orderItemSplitStream" file output stream... -->
+            <ftl:outputTo outputStreamResource="orderItemSplitStream"/>
+        </ftl:use>
+    </ftl:freemarker>
+
+    <!-- Create/open a file output stream.  This is writen to by the freemarker template (above).. -->
+    <file:outputStream resourceName="orderItemSplitStream" openOnElement="order-item">
+        <file:fileNamePattern>order-${order.orderId}-${order.orderItem.itemId}.xml</file:fileNamePattern>
+        <file:destinationDirectoryPattern>target/orders</file:destinationDirectoryPattern>
+        <file:listFileNamePattern>order-${order.orderId}.lst</file:listFileNamePattern>
+
+        <file:highWaterMark mark="3"/>
+    </file:outputStream>
+
+</smooks-resource-list>

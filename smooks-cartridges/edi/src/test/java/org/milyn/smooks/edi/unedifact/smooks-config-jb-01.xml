@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.3.xsd" 
+                      xmlns:unedifact="http://www.milyn.org/xsd/smooks/unedifact-1.4.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+	<unedifact:reader mappingModel="MSG1-model.xml,MSG2-model.xml,MSG3-model.xml" ignoreNewLines="true" />
+	
+	<import file="/org/milyn/smooks/edi/unedifact/model/r41/bindings/unedifact-message.xml" />
+	
+    <jb:bean beanId="unEdifactMessages" class="java.util.ArrayList" createOnElement="#document" retain="true">
+    	<jb:wiring beanIdRef="unEdifactMessage" />
+    </jb:bean>		
+
+</smooks-resource-list>

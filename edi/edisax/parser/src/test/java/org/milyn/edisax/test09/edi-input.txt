@@ -1,0 +1,11 @@
+SEG*1*2**4*5
+XXX*6*7
+Y*Some^stuff**yes!
+Y*Some^stuff**yes!
+Y*Some^stuff**yes!
+SEG*8*9**11*12
+XXX*13*14
+Y*Some^stuff**yes!
+Y*Some^stuff**yes!
+Y*Some^stuff**yes!
+YYY*Ms~X^Y*Somewhere

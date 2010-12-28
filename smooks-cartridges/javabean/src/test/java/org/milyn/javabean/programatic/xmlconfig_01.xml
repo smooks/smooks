@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd">
+
+    <jb:bindings beanId="order" class="org.milyn.javabean.Order" createOnElement="order">
+        <jb:wiring property="orderItems" beanIdRef="orderItemArray" />
+    </jb:bindings>
+
+    <jb:bindings beanId="orderItemArray" class="org.milyn.javabean.OrderItem[]" createOnElement="order">
+        <jb:wiring beanIdRef="orderItem" />
+    </jb:bindings>
+
+    <jb:bindings beanId="orderItem" class="org.milyn.javabean.OrderItem" createOnElement="order-item">
+        <jb:value property="productId" data="order-item/product" decoder="Long" />
+    </jb:bindings>
+
+</smooks-resource-list>

@@ -1,0 +1,1 @@
+org.milyn.edisax.EDIParseException:EDI message processing failed [Test Message][1.0].  Segment [SEG], field 3 (field-3) expected to contain a value.  Currently at segment number 1.

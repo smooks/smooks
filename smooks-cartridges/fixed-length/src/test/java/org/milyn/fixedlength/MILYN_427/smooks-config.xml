@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:fl="http://www.milyn.org/xsd/smooks/fixed-length-1.3.xsd" xmlns:javabean="http://www.milyn.org/xsd/smooks/javabean-1.3.xsd">
+	<params>
+		<param name="stream.filter.type">SAX</param>
+	</params>
+
+	<fl:reader fields="lastname[15].trim,firstname[15].trim,email[30].trim" lineNumber="true" strict="false"/>
+
+	<javabean:bean beanId="Data" class="org.milyn.fixedlength.MILYN_427.Data" createOnElement="/set/record">
+		<javabean:value data="/set/record/@number" property="number"/>
+		<javabean:value data="/set/record/@truncated" property="truncated"/>
+		<javabean:value data="/set/record/lastname" property="lastname"/>
+		<javabean:value data="/set/record/firstname" property="firstname"/>
+		<javabean:value data="/set/record/mail" property="mail"/>
+	</javabean:bean>
+</smooks-resource-list>

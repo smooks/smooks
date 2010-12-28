@@ -1,0 +1,12 @@
+<activity>
+    <event txId="1">
+    	<customer customerId="123">
+    		<countryCode>IE</countryCode>
+    	</customer>
+    </event>
+    <event txId="2">
+    	<customer customerId="321">
+    		<countryCode>GB</countryCode>
+    	</customer>
+    </event>
+</activity>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
+
+<smooks-resource-list>
+
+	<!--
+		The order-item java transforms...
+	-->
+    <smooks-resource selector="order-item" path="org.milyn.javabean.BeanPopulator">
+        <param name="beanId">order-item</param>
+        <param name="beanClass">org.milyn.templating.xslt.OrderItem</param>
+    </smooks-resource>
+    <smooks-resource selector="order-item price" path="org.milyn.javabean.BeanPopulator">
+        <param name="beanId">order-item</param>
+        <param name="setterName">setPrice</param>
+    </smooks-resource>
+    <smooks-resource selector="order-item quantity" path="org.milyn.javabean.BeanPopulator">
+        <param name="beanId">order-item</param>
+        <param name="setterName">setQuantity</param>
+    </smooks-resource>
+    <smooks-resource selector="order-item product-id" path="org.milyn.javabean.BeanPopulator">
+        <param name="beanId">order-item</param>
+        <param name="setterName">setProduct</param>
+    </smooks-resource>
+    <smooks-resource selector="order-item title" path="org.milyn.javabean.BeanPopulator">
+        <param name="beanId">order-item</param>
+        <param name="setterName">setTitle</param>
+    </smooks-resource>
+    <smooks-resource selector="order-item" path="org.milyn.templating.xslt.TransformOrderItem" />
+
+    <!--
+        The xslt
+    -->
+    <smooks-resource selector="Order" path="org/milyn/templating/xslt/xsl_java_01/transform-order.xsl">
+        <param name="is-xslt-templatelet">false</param>
+    </smooks-resource>
+
+</smooks-resource-list>

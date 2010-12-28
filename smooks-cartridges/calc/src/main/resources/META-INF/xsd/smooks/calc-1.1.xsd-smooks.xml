@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/calc-1.1.xsd">
+
+    <!--
+        Bean Instance Creator Resource...
+    -->
+
+    <resource-config selector="counter">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.calc.Counter</param>
+    </resource-config>
+
+    <resource-config selector="counter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">countOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="counter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">countOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="counter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">beanId</param>
+    </resource-config>
+
+    <resource-config selector="counter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">amount</param>
+    </resource-config>
+
+    <resource-config selector="counter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">start</param>
+    </resource-config>
+
+    <resource-config selector="counter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">direction</param>
+    </resource-config>
+
+    <resource-config selector="counter">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">executeAfter</param>
+    </resource-config>
+
+    <resource-config selector="counter/startExpression">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <param name="mapTo">startExpression</param>
+    </resource-config>
+
+    <resource-config selector="counter/amountExpression">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <param name="mapTo">amountExpression</param>
+    </resource-config>
+
+    <resource-config selector="counter/resetCondition">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <param name="mapTo">resetCondition</param>
+    </resource-config>
+</smooks-resource-list>

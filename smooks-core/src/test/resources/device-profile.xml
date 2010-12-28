@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE device-profiles PUBLIC "-//MILYN//DTD TINAK 1.0//EN" "http://www.milyn.org/dtd/device-profile-1.0.dtd">
+
+<device-profiles>
+	<device-profile name="msie6"	list="msie6w,msie6m"/>
+	<device-profile name="html4"	list="msie6,firefox,reportingtestclient"/>
+	<device-profile name="html"		list="html4"/>
+</device-profiles>

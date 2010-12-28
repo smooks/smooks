@@ -1,0 +1,9 @@
+<order>
+    <order-items>
+        <order-item>
+            <product>111</product>
+            <quantity>2</quantity>
+            <price>8.90</price>
+        </order-item>
+    </order-items>
+</order>

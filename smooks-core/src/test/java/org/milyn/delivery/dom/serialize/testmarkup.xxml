@@ -1,0 +1,25 @@
+<root>
+	some text
+	<anelement>
+		<anelement>
+			some text
+			<anelement>
+				some text
+				<xxx>
+					some text
+					<yyyy></yyyy>
+					<zzz>
+						Some content that shouldn exist because zzz is an EMPTY element.
+						<www>
+							ssssss
+						</www>
+					</zzz>
+					some text
+				</xxx>
+				some text
+				some text
+			</anelement>
+			some text
+		</anelement>
+	</anelement>
+</root>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.1.xsd">
+
+	<profiles>
+		<profile base-profile="A" />
+		<profile base-profile="B" />
+	</profiles>
+
+    <csv:reader fields="firstname,lastname,gender,age,country" separator="|" quote="'" skipLines="1" targetProfile="A" />
+
+    <csv:reader fields="firstname,lastname,gender,age,country" separator=";" quote="'" skipLines="0" targetProfile="B" />
+
+</smooks-resource-list>

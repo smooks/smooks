@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~  This library is free software; you can redistribute it and/or
+  ~  modify it under the terms of the GNU Lesser General Public
+  ~  License (version 2.1) as published by the Free Software
+  ~  Foundation.
+  ~
+  ~  This library is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~  See the GNU Lesser General Public License for more details:
+  ~  http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.4.xsd">
+
+	<medi:description name="Test Message" version="1.0" />
+
+	<medi:delimiters segment="&#10;" field="*" component="^" sub-component="~" escape="?" />
+
+	<medi:segments xmltag="outer">
+
+        <medi:segment segcode="SEG" xmltag="segOne" maxOccurs="4">
+			<medi:field xmltag="field-1" />
+			<medi:field xmltag="field-2" />
+			<medi:field xmltag="field-3" />
+			<medi:field xmltag="field-4" />
+			<medi:field xmltag="field-5" />
+		</medi:segment>
+
+        <!-- This group should not be triggered -->
+        <medi:segmentGroup xmltag="segTwo" minOccurs="0">
+            <medi:segment xmltag="segAA" segcode="1A">
+                <medi:field xmltag="field-1" />
+            </medi:segment>
+            <medi:segment xmltag="segAAA" segcode="2A">
+                <medi:field xmltag="field-1" />
+                <medi:field xmltag="field-2" />
+            </medi:segment>
+        </medi:segmentGroup>
+
+        <medi:segmentGroup xmltag="segB" minOccurs="0">
+            <medi:segment xmltag="segBB" segcode="1B">
+                <medi:field xmltag="field-1" />
+            </medi:segment>
+            <medi:segment xmltag="segBBB" segcode="2B" minOccurs="2" maxOccurs="2">
+                <medi:field xmltag="field-1" />
+                <medi:field xmltag="field-2" />
+            </medi:segment>
+        </medi:segmentGroup>
+
+    </medi:segments>
+
+</medi:edimap>

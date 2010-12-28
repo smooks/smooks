@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.3.xsd" xmlns:javabean="http://www.milyn.org/xsd/smooks/javabean-1.3.xsd">
+	<csv:reader fields="lastname?trim,firstname,mail?right_trim.capitalize,country,city?upper_case" validateHeader="true"/>
+</smooks-resource-list>

@@ -1,0 +1,650 @@
+/*
+	Milyn - Copyright (C) 2008
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License (version 2.1) as published by the Free Software
+	Foundation.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU Lesser General Public License for more details:
+	http://www.gnu.org/licenses/lgpl.txt
+*/
+
+package org.milyn.json;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+import org.milyn.cdr.Parameter;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.Config;
+import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.cdr.annotation.ConfigParam.Use;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.annotation.Initialize;
+import org.milyn.xml.SmooksXMLReader;
+import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.helpers.AttributesImpl;
+
+import javax.xml.XMLConstants;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Stack;
+import java.util.Map;
+
+/**
+ * JSON to SAX event reader.
+ * <p/>
+ * This JSON Reader can be plugged into Smooks in order to convert a
+ * JSON based message stream into a stream of SAX events to be consumed by the other
+ * Smooks resources.
+ *
+ * <h3>Configuration</h3>
+ * <pre>
+ * &lt;resource-config selector="org.xml.sax.driver"&gt;
+ *  &lt;resource&gt;org.milyn.json.JSONReader&lt;/resource&gt;
+ *  &lt;!--
+ *      (Optional) The element name of the SAX document root. Default of 'json'.
+ *  --&gt;
+ *  &lt;param name="<b>rootName</b>"&gt;<i>&lt;root-name&gt;</i>&lt;/param&gt;
+ *  &lt;!--
+ *      (Optional) The element name of a array element. Default of 'element'.
+ *  --&gt;
+ *  &lt;param name="<b>arrayElementName</b>"&gt;<i>&lt;array-element-name&gt;</i>&lt;/param&gt;
+ *  &lt;!--
+ *      (Optional) The replacement string for JSON NULL values. Default is an empty string.
+ *  --&gt;
+ *  &lt;param name="<b>nullValueReplacement</b>"&gt;<i>&lt;null-value-replacement&gt;</i>&lt;/param&gt;
+ *  &lt;!--
+ *      (Optional) The replacement character for whitespaces in a json map key. By default this not defined, so that the reader doesn't search for whitespaces.
+ *  --&gt;
+ *  &lt;param name="<b>keyWhitspaceReplacement</b>"&gt;<i>&lt;key-whitspace-replacement&gt;</i>&lt;/param&gt;
+ *  &lt;!--
+ *      (Optional) The prefix character to add if the JSON node name starts with a number. By default this is not defined, so that the reader doesn't search for element names that start with a number.
+ *  --&gt;
+ *  &lt;param name="<b>keyPrefixOnNumeric</b>"&gt;<i>&lt;key-prefix-on-numeric&gt;</i>&lt;/param&gt;
+ *  &lt;!--
+ *      (Optional) If illegal characters are encountered in a JSON element name then they are replaced with this value. By default this is not defined, so that the reader doesn't doesn't search for illegal characters.
+ *  --&gt;
+ *  &lt;param name="<b>illegalElementNameCharReplacement</b>"&gt;<i>&lt;illegal-element-name-char-replacement&gt;</i>&lt;/param&gt;
+ *  &lt;!--
+ *      (Optional) Defines a map of keys and there replacement. The from key will be replaced with the to key or the contents of the element.
+ *  --&gt;
+ *  &lt;param name="<b>keyMap</b>"&gt;
+ *   &lt;key from="fromKey" to="toKey" /&gt;
+ *   &lt;key from="fromKey"&gt;&lt;to&gt;&lt;/key&gt;
+ *  &lt;/param&gt;
+ *  &lt;!--
+ *      (Optional) The encoding of the input stream. Default of 'UTF-8'
+ *  --&gt;
+ *  &lt;param name="<b>encoding</b>"&gt;<i>&lt;encoding&gt;</i>&lt;/param&gt;
+ *
+ * &lt;/resource-config&gt;
+ * </pre>
+ *
+ * <h3>Example Usage</h3>
+ * So the following configuration could be used to parse a JSON stream into
+ * a stream of SAX events:
+ * <pre>
+ * &lt;resource-config selector="org.xml.sax.driver"&gt;
+ *  &lt;resource&gt;org.milyn.json.JSONReader&lt;/resource&gt;
+ * &lt;/smooks-resource&gt;</pre>
+ *
+ * The "Acme-Order-List" input JSON message:
+ * <pre>
+ * [
+ *  {
+ *   "name" : "Maurice Zeijen",
+ *   "address" : "Netherlands",
+ *   "item" : "V1234",
+ *   "quantity" : 3
+ *  },
+ *  {
+ *   "name" : "Joe Bloggs",
+ *   "address" : "England",
+ *   "item" : "D9123",
+ *   "quantity" : 7
+ *  },
+ * ]</pre>
+ *
+ * Within Smooks, the stream of SAX events generated by the "Acme-Order-List" message (and this reader) will generate
+ * a DOM equivalent to the following:
+ * <pre>
+ * &lt;json&gt;
+ *  &lt;element&gt;
+ *   &lt;name&gt;Maurice Zeijen&lt;/name&gt;
+ *   &lt;address&gt;Netherlands&lt;/address&gt;
+ *   &lt;item&gt;V1234&lt;/item&gt;
+ *   &lt;quantity&gt;3&lt;/quantity&gt;
+ *  &lt;element&gt;
+ *  &lt;element&gt;
+ *   &lt;name&gt;Joe Bloggs&lt;/name&gt;
+ *   &lt;address&gt;England&lt;/address&gt;
+ *   &lt;item&gt;D9123&lt;/item&gt;
+ *   &lt;quantity&gt;7&lt;/quantity&gt;
+ *  &lt;element&gt;
+ * &lt;/json&gt;</pre>
+ * <p/>
+ *
+ * @author <a href="mailto:maurice@zeijen.net">maurice@zeijen.net</a>
+ */
+public class JSONReader implements SmooksXMLReader {
+
+	private static Log logger = LogFactory.getLog(JSONReader.class);
+
+	public static final String CONFIG_PARAM_KEY_MAP = "keyMap";
+
+	public static final String XML_ROOT = "json";
+
+	public static final String XML_ARRAY_ELEMENT_NAME = "element";
+
+	public static final String DEFAULT_NULL_VALUE_REPLACEMENT = "";
+
+    private static final Attributes EMPTY_ATTRIBS = new AttributesImpl();
+
+    private static final JsonFactory jsonFactory = new JsonFactory();
+
+    private ContentHandler contentHandler;
+
+	private ExecutionContext executionContext;
+
+
+	@ConfigParam(defaultVal = XML_ROOT)
+    private String rootName;
+
+	@ConfigParam(defaultVal = XML_ARRAY_ELEMENT_NAME)
+    private String arrayElementName;
+
+	@ConfigParam(use = Use.OPTIONAL)
+    private String keyWhitspaceReplacement;
+
+	@ConfigParam(use = Use.OPTIONAL)
+    private String keyPrefixOnNumeric;
+
+	@ConfigParam(use = Use.OPTIONAL)
+    private String illegalElementNameCharReplacement;
+
+	@ConfigParam(defaultVal = DEFAULT_NULL_VALUE_REPLACEMENT)
+    private String nullValueReplacement;
+
+    @ConfigParam(defaultVal = "UTF-8")
+    private Charset encoding;
+
+    @ConfigParam(defaultVal = "false")
+    private boolean indent;
+
+    private boolean doKeyReplacement = false;
+
+    private boolean doKeyWhitspaceReplacement = false;
+
+    private boolean doPrefixOnNumericKey = false;
+
+    private boolean doIllegalElementNameCharReplacement = false;
+
+    private HashMap<String, String> keyMap = new HashMap<String, String>();
+
+
+	@Config
+    private SmooksResourceConfiguration config;
+
+    private static enum Type {
+    	OBJECT,
+    	ARRAY
+    }
+
+    @Initialize
+    public void initialize() {
+		initKeyMap();
+
+		doKeyReplacement = !keyMap.isEmpty();
+		doKeyWhitspaceReplacement = keyWhitspaceReplacement != null;
+		doPrefixOnNumericKey = keyPrefixOnNumeric != null;
+		doIllegalElementNameCharReplacement = illegalElementNameCharReplacement != null;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * @see org.milyn.xml.SmooksXMLReader#setExecutionContext(org.milyn.container.ExecutionContext)
+     */
+	public void setExecutionContext(ExecutionContext request) {
+		this.executionContext = request;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.XMLReader#parse(org.xml.sax.InputSource)
+	 */
+	public void parse(InputSource csvInputSource) throws IOException, SAXException {
+        if(contentHandler == null) {
+            throw new IllegalStateException("'contentHandler' not set.  Cannot parse JSON stream.");
+        }
+        if(executionContext == null) {
+            throw new IllegalStateException("Smooks container 'executionContext' not set.  Cannot parse JSON stream.");
+        }
+
+        try {
+			// Get a reader for the JSON source...
+	        Reader jsonStreamReader = csvInputSource.getCharacterStream();
+	        if(jsonStreamReader == null) {
+	            jsonStreamReader = new InputStreamReader(csvInputSource.getByteStream(), encoding);
+	        }
+	
+	        // Create the JSON parser...
+	        JsonParser jp = null;
+	        try {
+	
+	        	if(logger.isTraceEnabled()) {
+	        		logger.trace("Creating JSON parser");
+	        	}
+	
+	        	jp = jsonFactory.createJsonParser(jsonStreamReader);
+	
+		        // Start the document and add the root "csv-set" element...
+		        contentHandler.startDocument();
+		        startElement(rootName, 0);
+	
+		        if(logger.isTraceEnabled()) {
+		        	logger.trace("Starting JSON parsing");
+		        }
+	
+		        boolean first = true;
+		        Stack<String> elementStack = new Stack<String>();
+		        Stack<Type> typeStack = new Stack<Type>();
+		        JsonToken t;
+		        while ((t = jp.nextToken()) != null) {
+	
+		        	if(logger.isTraceEnabled()) {
+		        		logger.trace("Token: " + t.name());
+		        	}
+	
+		        	switch(t) {
+	
+		        	case START_OBJECT:
+		        	case START_ARRAY:
+		        		if(!first) {
+			        		if(!typeStack.empty() && typeStack.peek() == Type.ARRAY) {
+			        			startElement(arrayElementName, typeStack.size());
+			        		}
+		        		}
+		        		typeStack.push(t == JsonToken.START_ARRAY ? Type.ARRAY : Type.OBJECT);
+		        		break;
+	
+		        	case END_OBJECT:
+		        	case END_ARRAY:
+	
+		        		typeStack.pop();
+	
+		        		boolean typeStackPeekIsArray = !typeStack.empty() && typeStack.peek() == Type.ARRAY;
+	
+		        		if(!elementStack.empty() && !typeStackPeekIsArray) {
+		        			endElement(elementStack.pop(), typeStack.size());
+		        		}
+	
+	
+		        		if(typeStackPeekIsArray) {
+		        			endElement(arrayElementName, typeStack.size());
+		        		}
+		        		break;
+	
+		        	case FIELD_NAME:
+	
+		        		String text = jp.getText();
+	
+		        		if(logger.isTraceEnabled()) {
+			        		logger.trace("Field name: " + text);
+			        	}
+	
+		        		String name = getElementName(text);
+	
+	        			startElement(name, typeStack.size());
+	        			elementStack.add(name);
+	
+	
+		        		break;
+	
+		        	default:
+	
+		        		String value;
+	
+		        		if(t == JsonToken.VALUE_NULL) {
+		        			value = nullValueReplacement;
+		        		} else {
+		        			value = jp.getText();
+		        		}
+	
+		        		if(typeStack.peek() == Type.ARRAY) {
+	
+		        			startElement(arrayElementName, typeStack.size());
+		        		}
+	
+		        		contentHandler.characters(value.toCharArray(), 0, value.length());
+	
+		        		if(typeStack.peek() == Type.ARRAY) {
+	
+		        			endElement(arrayElementName);
+	
+		        		} else {
+	
+			        		endElement(elementStack.pop());
+	
+		        		}
+	
+		        		break;
+	
+	
+		        	}
+	
+		        	first = false;
+		        }
+		        endElement(rootName, 0);
+		        contentHandler.endDocument();
+	        } finally {
+	
+	        	try {
+	        		jp.close();
+	        	} catch (Exception e) {
+				}
+	
+	
+	        }
+        } finally {
+        	// These properties need to be reset for every execution (e.g. when reader is pooled).
+        	contentHandler = null;
+        	executionContext = null;
+        }
+	}
+
+    private static char[] INDENT = new String("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t").toCharArray();
+
+    private void startElement(String name, int indent) throws SAXException {
+        indent(indent);
+        contentHandler.startElement(XMLConstants.NULL_NS_URI, name, "", EMPTY_ATTRIBS);        
+    }
+
+    private void endElement(String name, int indent) throws SAXException {
+        indent(indent);
+        endElement(name);
+    }
+
+    private void endElement(String name) throws SAXException {
+        contentHandler.endElement(XMLConstants.NULL_NS_URI, name, "");
+    }
+
+    private void indent(int indentAmount) throws SAXException {
+        if(indent) {
+            if(indentAmount > 0) {
+                contentHandler.characters(INDENT, 0, indentAmount + 1);
+            } else {
+                contentHandler.characters(INDENT, 0, 1);
+            }
+        }
+    }
+
+    /**
+	 * @param text
+	 * @return
+	 */
+	private String getElementName(String text) {
+
+		boolean replacedKey = false;
+		if(doKeyReplacement) {
+
+			String mappedKey = keyMap.get(text);
+
+			replacedKey = mappedKey != null;
+			if(replacedKey) {
+				text = mappedKey;
+			}
+
+		}
+
+		if(!replacedKey) {
+			if(doKeyWhitspaceReplacement) {
+				text = text.replace(" ", keyWhitspaceReplacement);
+			}
+
+			if(doPrefixOnNumericKey && Character.isDigit(text.charAt(0))) {
+				text = keyPrefixOnNumeric + text;
+			}
+
+			if(doIllegalElementNameCharReplacement) {
+				text = text.replaceAll("^[.]|[^a-zA-Z0-9_.-]", illegalElementNameCharReplacement);
+			}
+		}
+		return text;
+	}
+
+
+	/**
+	 *
+	 */
+	private void initKeyMap() {
+		Parameter keyMapParam = config.getParameter(CONFIG_PARAM_KEY_MAP);
+
+       if (keyMapParam != null) {
+           Object objValue = keyMapParam.getObjValue();
+
+           if(objValue instanceof Map) {
+               keyMap = (HashMap<String, String>) objValue;
+           } else {
+               Element keyMapParamElement = keyMapParam.getXml();
+
+               if(keyMapParamElement != null) {
+
+                   setKeyMap(KeyMapDigester.digest(keyMapParamElement));
+
+               } else {
+                logger.error("Sorry, the key properties must be available as XML DOM. Please configure using XML.");
+               }
+           }
+       }
+	}
+
+	public void setContentHandler(ContentHandler contentHandler) {
+        this.contentHandler = contentHandler;
+    }
+
+    public ContentHandler getContentHandler() {
+        return contentHandler;
+    }
+
+
+	/**
+	 * @return the keyMap
+	 */
+	public HashMap<String, String> getKeyMap() {
+		return keyMap;
+	}
+
+    /**
+	 * @param keyMap the keyMap to set
+	 */
+	public void setKeyMap(HashMap<String, String> keyMap) {
+		this.keyMap = keyMap;
+	}
+
+
+	/**
+	 * @return the rootName
+	 */
+	public String getRootName() {
+		return rootName;
+	}
+
+
+	/**
+	 * @param rootName the rootName to set
+	 */
+	public void setRootName(String rootName) {
+		this.rootName = rootName;
+	}
+
+
+	/**
+	 * @return the arrayElementName
+	 */
+	public String getArrayElementName() {
+		return arrayElementName;
+	}
+
+
+	/**
+	 * @param arrayElementName the arrayElementName to set
+	 */
+	public void setArrayElementName(String arrayElementName) {
+		this.arrayElementName = arrayElementName;
+	}
+
+
+	/**
+	 * @return the keyWhitspaceReplacement
+	 */
+	public String getKeyWhitspaceReplacement() {
+		return keyWhitspaceReplacement;
+	}
+
+
+	/**
+	 * @param keyWhitspaceReplacement the keyWhitspaceReplacement to set
+	 */
+	public void setKeyWhitspaceReplacement(String keyWhitspaceReplacement) {
+		this.keyWhitspaceReplacement = keyWhitspaceReplacement;
+	}
+
+
+	/**
+	 * @return the keyPrefixOnNumeric
+	 */
+	public String getKeyPrefixOnNumeric() {
+		return keyPrefixOnNumeric;
+	}
+
+
+	/**
+	 * @param keyPrefixOnNumeric the keyPrefixOnNumeric to set
+	 */
+	public void setKeyPrefixOnNumeric(String keyPrefixOnNumeric) {
+		this.keyPrefixOnNumeric = keyPrefixOnNumeric;
+	}
+
+
+	/**
+	 * @return the illegalElementNameCharReplacement
+	 */
+	public String getIllegalElementNameCharReplacement() {
+		return illegalElementNameCharReplacement;
+	}
+
+
+	/**
+	 * @param illegalElementNameCharReplacement the illegalElementNameCharReplacement to set
+	 */
+	public void setIllegalElementNameCharReplacement(
+			String illegalElementNameCharReplacement) {
+		this.illegalElementNameCharReplacement = illegalElementNameCharReplacement;
+	}
+
+
+	/**
+	 * @return the nullValueReplacement
+	 */
+	public String getNullValueReplacement() {
+		return nullValueReplacement;
+	}
+
+
+	/**
+	 * @param nullValueReplacement the nullValueReplacement to set
+	 */
+	public void setNullValueReplacement(String nullValueReplacement) {
+		this.nullValueReplacement = nullValueReplacement;
+	}
+
+
+	/**
+	 * @return the encoding
+	 */
+	public Charset getEncoding() {
+		return encoding;
+	}
+
+
+	/**
+	 * @param encoding the encoding to set
+	 */
+	public void setEncoding(Charset encoding) {
+		this.encoding = encoding;
+	}
+
+    public void setIndent(boolean indent) {
+        this.indent = indent;
+    }
+
+	/****************************************************************************
+     *
+     * The following methods are currently unimplemnted...
+     *
+     ****************************************************************************/
+
+    public void parse(String systemId) throws IOException, SAXException {
+        throw new UnsupportedOperationException("Operation not supports by this reader.");
+    }
+
+    public boolean getFeature(String name) throws SAXNotRecognizedException,
+            SAXNotSupportedException {
+        return false;
+    }
+
+    public void setFeature(String name, boolean value)
+            throws SAXNotRecognizedException, SAXNotSupportedException {
+    }
+
+    public DTDHandler getDTDHandler() {
+        return null;
+    }
+
+    public void setDTDHandler(DTDHandler arg0) {
+    }
+
+    public EntityResolver getEntityResolver() {
+        return null;
+    }
+
+    public void setEntityResolver(EntityResolver arg0) {
+    }
+
+    public ErrorHandler getErrorHandler() {
+        return null;
+    }
+
+    public void setErrorHandler(ErrorHandler arg0) {
+    }
+
+    public Object getProperty(String name) throws SAXNotRecognizedException,
+            SAXNotSupportedException {
+        return null;
+    }
+
+    public void setProperty(String name, Object value)
+            throws SAXNotRecognizedException, SAXNotSupportedException {
+    }
+}

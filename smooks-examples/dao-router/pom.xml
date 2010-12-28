@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>smooks-examples</artifactId>
+		<version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+    <name>Milyn Smooks Example - DAO Router</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-smooks-example-dao-router</artifactId>
+	<version>1.0</version>
+
+    <dependencies>
+
+    	<dependency>
+    		<groupId>org.milyn</groupId>
+    		<artifactId>milyn-scribe-jpa</artifactId>
+    		<version>${milyn.scribe.jpa.version}</version>
+    	</dependency>
+
+    	<dependency>
+    		<groupId>org.milyn</groupId>
+    		<artifactId>milyn-scribe-ibatis</artifactId>
+    		<version>${milyn.scribe.ibatis.version}</version>
+    	</dependency>
+
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-persistence</artifactId>
+            <version>${milyn.smooks.persistence.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-routing</artifactId>
+            <version>${milyn.smooks.routing.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.mockrunner</groupId>
+            		<artifactId>mockrunner-jdk1.5-j2ee1.3</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.mockejb</groupId>
+            		<artifactId>mockejb</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>jboss</groupId>
+            		<artifactId>jboss-j2ee</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>jboss</groupId>
+            		<artifactId>jbossall-client</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+        </dependency>
+
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>3.3.2.GA</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+	</dependencies>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+</project>

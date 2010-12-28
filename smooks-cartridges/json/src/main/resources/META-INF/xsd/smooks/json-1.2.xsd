@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-json="http://www.milyn.org/xsd/smooks/json-1.2.xsd"
+           targetNamespace="http://www.milyn.org/xsd/smooks/json-1.2.xsd"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Smooks JSON Reader Configuration</xs:documentation>
+    </xs:annotation>
+
+
+    <xs:element name="reader" type="smooks-json:reader" substitutionGroup="smooks:abstract-reader">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			JSON Reader Configuration
+    		 	The JSON reader reads a JSON stream and converts it to SAX events that Smooks
+    		 	can process.
+    		</xs:documentation>
+    	</xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="reader">
+    	<xs:annotation>
+    		 <xs:documentation xml:lang="en">JSON Reader</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:abstract-reader">
+    			<xs:sequence>
+    				<xs:element name="keyMap" type="smooks-json:keyMap" maxOccurs="1" minOccurs="0">
+    					<xs:annotation>
+				    		 <xs:documentation xml:lang="en">
+				    		 	Defines a JSON element name mapping
+				    		 	The "from" key will be replaced with the "to" key or the contents of the element.
+				    		 </xs:documentation>
+				    	</xs:annotation>
+    				</xs:element>
+    			</xs:sequence>
+    			<xs:attribute name="rootName" type="xs:string" use="optional" default="json">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The element name of the document root. Default of 'json'.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="arrayElementName" type="xs:string" use="optional" default="element">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The element name of a array element. Default of 'element'.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="nullValueReplacement" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The replacement string for JSON NULL values. Default is an empty string.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="keyWhitspaceReplacement" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The replacement character for whitespaces in a JSON map key.
+			    		 	By default this not defined, so that the reader doesn't search for whitespaces.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="keyPrefixOnNumeric" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The prefix character to add if the JSON node name starts with a number.
+			    		 	By default this is not defined, so that the reader doesn't search for element names that start with a number.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="illegalElementNameCharReplacement" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	If illegal characters are encountered in a JSON element name then they are replaced with this value.
+			    		 	By default this is not defined, so that the reader doesn't doesn't search for illegal characters.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="encoding" type="xs:string" use="optional" default="UTF-8">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The encoding of the input stream. Default of 'UTF-8'
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+                <xs:attribute name="indent" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Add indentation character data to the generated event stream.  This simply makes
+                            the generated event stream easier to read in its serialized form.  Useful for
+                            testing etc.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="keyMap">
+    	<xs:sequence>
+    		<xs:element name="key" type="smooks-json:key" maxOccurs="unbounded" minOccurs="1">
+    			<xs:annotation>
+    				<xs:documentation xml:lang="en">
+			   		 	Defines a JSON element name mapping
+			   		 	The "from" key will be replaced with the "to" key or the contents of this element.
+		   		 	</xs:documentation>
+    			</xs:annotation>
+    		</xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="key">
+    	<xs:simpleContent>
+    		<xs:extension base="xs:string">
+    			<xs:attribute name="from" type="xs:string"	use="required">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The name of the key that will be replaced.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="to" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The name the "from" key name is changed into.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    		</xs:extension>
+    	</xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

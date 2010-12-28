@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="unit">
+	<test name="unit">
+		<groups>
+			<run>
+				<include name="unit" />
+			</run>
+		</groups>
+		<packages>
+			<package name="org.milyn.persistence.*" />
+		</packages>
+
+	</test>
+</suite>

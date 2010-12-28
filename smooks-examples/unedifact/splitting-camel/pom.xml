@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-examples</artifactId>
+        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    </parent>
+    <name>Milyn Smooks Example - UN/EDIFACT - Camel Split/Route</name>
+    <groupId>org.milyn</groupId>
+    <artifactId>milyn-smooks-example-unedifact-camel-split-route</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <!-- TODO: Ungrade camel.version to same version as camel cartridge -->
+        <camel.version>2.1.0</camel.version>
+    </properties>
+
+
+    <dependencies>
+
+        <!-- The binding config for the D93A directory... -->
+        <dependency>
+            <groupId>org.milyn.edi.unedifact</groupId>
+            <artifactId>d93a-binding</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- Routing dependencies ... -->
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-camel</artifactId>
+            <version>${milyn.smooks.camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-routing</artifactId>
+            <version>${milyn.smooks.routing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-spring</artifactId>
+            <version>3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jms</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>5.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-camel</artifactId>
+            <version>5.3.0</version>
+            <exclusions>
+                 <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-web</artifactId>
+                 </exclusion>
+           </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>UnedifactServer</id>
+            <properties>
+                <target.main.class>org.apache.camel.spring.Main</target.main.class>
+                <target.cmd.args>-ac META-INF/spring/unedifact-server.xml</target.cmd.args>
+            </properties>
+        </profile>
+        <profile>
+            <id>OrdersService</id>
+            <properties>
+                <target.main.class>org.apache.camel.spring.Main</target.main.class>
+                <target.cmd.args>-ac META-INF/spring/orders-service.xml</target.cmd.args>
+            </properties>
+        </profile>
+        <profile>
+            <id>InvoiceService</id>
+            <properties>
+                <target.main.class>org.apache.camel.spring.Main</target.main.class>
+                <target.cmd.args>-ac META-INF/spring/invoice-service.xml</target.cmd.args>
+            </properties>
+        </profile>
+        <profile>
+            <id>DispatchAdviceService</id>
+            <properties>
+                <target.main.class>org.apache.camel.spring.Main</target.main.class>
+                <target.cmd.args>-ac META-INF/spring/desadv-service.xml</target.cmd.args>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${target.main.class}</mainClass>
+                    <includePluginDependencies>false</includePluginDependencies>
+                    <commandlineArgs>${target.cmd.args}</commandlineArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>    
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+</project>

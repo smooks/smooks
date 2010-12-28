@@ -1,0 +1,30 @@
+<example.model.Order>
+    <header>
+        <orderId>1</orderId>
+        <orderStatus>0</orderStatus>
+        <netAmount>59.97</netAmount>
+        <totalAmount>64.92</totalAmount>
+        <tax>4.95</tax>
+        <date/>
+        <customer>
+            <userName>user1</userName>
+            <firstName>Harry</firstName>
+            <lastName>Fletcher</lastName>
+            <state>SD</state>
+        </customer>
+    </header>
+    <orderItems>
+        <example.model.OrderItem>
+            <quantity>1</quantity>
+            <productId>364</productId>
+            <price>29.98</price>
+            <title>The 40-Year-Old Virgin</title>
+        </example.model.OrderItem>
+        <example.model.OrderItem>
+            <quantity>1</quantity>
+            <productId>299</productId>
+            <price>29.99</price>
+            <title>Pulp Fiction</title>
+        </example.model.OrderItem>
+    </orderItems>
+</example.model.Order>

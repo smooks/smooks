@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:yaml="http://www.milyn.org/xsd/smooks/yaml-1.4.xsd">
+    <!--
+    Configure the YAML Reader to read the message into a stream of SAX events.
+    -->
+    <yaml:reader aliasStrategy="RESOLVE"/>
+
+</smooks-resource-list>

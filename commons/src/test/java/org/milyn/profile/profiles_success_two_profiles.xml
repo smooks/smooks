@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE device-profiles PUBLIC "-//MILYN//DTD TINAK 1.0//EN" "http://www.milyn.org/dtd/device-profile-1.0.dtd">
+
+<device-profiles>
+	<device-profile name="html" list="MSIE6,MSIE5,IPAQ,Unknown-HTML4,Unknown-HTML"/>
+	<device-profile name="wml" list="Nokia3350,Nokia9210,EricssonA2618,UPBrowser,Unknown-WML"/>
+</device-profiles>

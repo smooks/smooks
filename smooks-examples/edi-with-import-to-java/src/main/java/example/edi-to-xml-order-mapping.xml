@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.2.xsd">
+
+    <medi:import truncatableSegments="true" truncatableFields="true" truncatableComponents="true" resource="edi-segment-definition.xml" namespace="def"/>
+
+    <medi:description name="DVD Order" version="1.0" />
+
+	<medi:delimiters segment="&#10;" field="*" component="^" sub-component="~" escape="?"/>
+
+	<medi:segments xmltag="Order">
+
+        <medi:segment minOccurs="0" maxOccurs="1" segref="def:HDR" segcode="HDR" xmltag="header"/>
+
+		<medi:segment minOccurs="0" maxOccurs="1" segref="def:CUS" segcode="CUS" xmltag="customer-details"/>
+
+		<medi:segment minOccurs="0" maxOccurs="-1" segref="def:ORD" segcode="ORD" xmltag="order-item"/>
+
+	</medi:segments>
+	
+</medi:edimap>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:g="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">
+
+    <!--
+    Should cause an error...
+    -->
+    <g:groovy executeOnElement="c">
+        <g:script>
+            asdasdasdasdasdasd;
+        </g:script>
+    </g:groovy>
+
+</smooks-resource-list>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <!-- The text() node should cause an error for this Visitor because it implements more than just the SAXVisitAfter interface -->
+    <resource-config selector="item[@code = '8655']/units[text() = 1]">
+        <resource>org.milyn.cdr.xpath.XPathVisitor</resource>
+    </resource-config>
+
+</smooks-resource-list>

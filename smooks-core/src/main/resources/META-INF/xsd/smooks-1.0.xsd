@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.0.xsd"
+           targetNamespace="http://www.milyn.org/xsd/smooks-1.0.xsd"
+           elementFormDefault="qualified">
+
+    <xs:element name="smooks-resource-list">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation xml:lang="en">List of Smooks Resource Configuration.</xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="1" ref="smooks:profiles"/>
+                <xs:element minOccurs="1" maxOccurs="unbounded" ref="smooks:abstract-resource-config"/>
+            </xs:sequence>
+            <xs:attribute name="default-target-profile" type="xs:string"/>
+            <xs:attribute name="default-selector" type="xs:string"/>
+            <xs:attribute name="default-selector-namespace" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="profiles">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation xml:lang="en">List of Profiles</xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element minOccurs="1" maxOccurs="unbounded" ref="smooks:profile"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="profile">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Profile Configuration. Basically allows you to specify the name of a
+                    base profile along with a list of its sub-profiles.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="base-profile" type="xs:string" use="required"/>
+                    <xs:attribute name="sub-profiles" type="xs:string"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="abstract-resource-config" abstract="true"/>
+    <xs:element name="abstract-resource-config" type="smooks:abstract-resource-config" abstract="true"/>
+
+    <xs:element name="import" substitutionGroup="smooks:abstract-resource-config">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="smooks:abstract-resource-config">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">Smooks Resource Configuration Import</xs:documentation>
+                    </xs:annotation>
+                    <xs:attribute name="file" use="required" type="xs:anyURI"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="resource-config" substitutionGroup="smooks:abstract-resource-config">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="smooks:abstract-resource-config">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">Smooks Resource Configuration</xs:documentation>
+                    </xs:annotation>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" maxOccurs="1" ref="smooks:resource"/>
+                        <xs:element minOccurs="0" maxOccurs="1" ref="smooks:condition"/>
+                        <xs:element minOccurs="0" maxOccurs="unbounded" ref="smooks:param"/>
+                    </xs:sequence>
+                    <xs:attribute name="selector" type="xs:string"/>
+                    <xs:attribute name="selector-namespace" type="xs:anyURI"/>
+                    <xs:attribute name="target-profile" type="xs:string"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="resource">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Resource Configuration Resource Type (xsl, class etc)</xs:documentation>
+            </xs:annotation>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="type" type="xs:string"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="condition">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Resource Targetting Condition</xs:documentation>
+            </xs:annotation>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="evaluator" type="xs:string" default="org.milyn.javabean.expression.BeanMapExpressionEvaluator" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="param">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Resource Parameter</xs:documentation>
+            </xs:annotation>
+            <xs:complexContent>
+                <xs:extension base="xs:anyType">
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                    <xs:attribute name="type" type="xs:string"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

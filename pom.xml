@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.milyn</groupId>
+    <artifactId>milyn</artifactId>
+    <packaging>pom</packaging>
+    <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    <name>Milyn (Base POM)</name>
+    <url>http://milyn.codehaus.org</url>
+
+    <properties>
+        <milyn.smooks.core.version.base>1.4</milyn.smooks.core.version.base> <!-- ## Smooks Version ## -->
+        <milyn.smooks.core.version>${milyn.smooks.core.version.base}-SNAPSHOT</milyn.smooks.core.version> <!-- ## Smooks Version ## --> <!-- add/remove "-SNAPSHOT" here as necessary -->
+
+        <milyn.commons.version.base>${milyn.smooks.core.version.base}</milyn.commons.version.base>
+        <milyn.commons.version>${milyn.smooks.core.version}</milyn.commons.version>
+
+        <milyn.magger.version.base>${milyn.smooks.core.version.base}</milyn.magger.version.base>
+        <milyn.magger.version>${milyn.smooks.core.version}</milyn.magger.version>
+
+        <milyn.tinak.version.base>${milyn.smooks.core.version.base}</milyn.tinak.version.base>
+        <milyn.tinak.version>${milyn.smooks.core.version}</milyn.tinak.version>
+
+		<milyn.edisax.parser.version.base>${milyn.smooks.core.version.base}</milyn.edisax.parser.version.base>
+        <milyn.edisax.parser.version>${milyn.smooks.core.version}</milyn.edisax.parser.version>
+
+		<milyn.scribe.core.version.base>${milyn.smooks.core.version.base}</milyn.scribe.core.version.base>
+        <milyn.scribe.core.version>${milyn.smooks.core.version}</milyn.scribe.core.version>
+
+        <milyn.scribe.jpa.version.base>${milyn.smooks.core.version.base}</milyn.scribe.jpa.version.base>
+        <milyn.scribe.jpa.version>${milyn.smooks.core.version}</milyn.scribe.jpa.version>
+
+        <milyn.scribe.hibernate.version.base>${milyn.smooks.core.version.base}</milyn.scribe.hibernate.version.base>
+        <milyn.scribe.hibernate.version>${milyn.smooks.core.version}</milyn.scribe.hibernate.version>
+
+        <milyn.scribe.ibatis.version.base>${milyn.smooks.core.version.base}</milyn.scribe.ibatis.version.base>
+        <milyn.scribe.ibatis.version>${milyn.smooks.core.version}</milyn.scribe.ibatis.version>
+
+        <camel.version>2.4.0</camel.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <xerces.version>2.7.1</xerces.version>
+        <xalan.version>2.7.1</xalan.version>
+        <xml_apis.version>1.3.02</xml_apis.version>
+        <xstream.version>1.2.2</xstream.version>
+        <commons_lang.version>2.4</commons_lang.version>
+        <nekohtml.version>0.9.5</nekohtml.version>
+        <dtdparser.version>1.21</dtdparser.version>
+        <freemarker.version>2.3.15</freemarker.version>
+        <opencsv.version>1.8</opencsv.version>
+        <ant.version>1.7.0</ant.version>
+        <javassist.version>3.10.0.GA</javassist.version>
+        <mvel.version>2.0.17</mvel.version>
+        <groovy.version>1.5.7</groovy.version>
+        <jaxen.version>1.1.1</jaxen.version>
+		<javax.transaction.version>1.1</javax.transaction.version>
+		<mockejb.version>0.6-beta2</mockejb.version>
+		<mockito.version>1.8.0</mockito.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>testres</module>
+        <module>commons</module>
+        <module>smooks-core</module>
+        <module>magger</module>
+        <module>tinak</module>
+        <module>scribe</module>
+        <module>edi/edisax</module> <!-- Purposely building ECT and EJC after Smooks components... -->
+        <module>smooks-cartridges</module>
+        <module>smooks-all</module>
+
+        <!-- Purposely not building EDI Gen... -->
+        <module>edi/ect</module>
+        <module>edi/ect/maven-ect-plugin</module>
+        <module>edi/ejc</module>
+        <module>edi/ejc/maven-ejc-plugin</module>
+
+        <module>smooks-examples</module>
+    </modules>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.1</version>
+            <scope>test</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.1</version>
+            <scope>test</scope>
+         </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons_lang.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>logkit</groupId>
+                    <artifactId>logkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>avalon-framework</groupId>
+                    <artifactId>avalon-framework</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2</version>
+                <configuration>
+                    <descriptor>assemblies.xml</descriptor>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+				<version>2.6</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/Test*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                    <exclude>**/*.svn</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/*.svn</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                    <exclude>**/*.svn</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <excludes>
+                    <exclude>**/*.svn</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>codehaus.maven.repo</id>
+            <name>Milyn Central Maven2 Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/milyn/</url>
+        </repository>
+        <snapshotRepository>
+            <id>codehaus.maven.repo</id>
+            <name>Milyn Central Maven2 SNAPSHOT Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/milyn/</url>
+        </snapshotRepository>
+        <site>
+            <id>codehaus.maven.repo</id>
+            <url>dav:https://dav.codehaus.org/xfire/</url>
+        </site>
+    </distributionManagement>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+                <configuration>
+                    <overview>${basedir}/src/main/java/overview.html</overview>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/commons</link>
+                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/tinak</link>
+                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/smooks</link>
+                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/magger</link>
+                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/edisax</link>
+                        <link>http://www.w3.org/Style/CSS/SAC/doc/</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+				<version>2.5</version>
+                <configuration>
+                    <linkXref>true</linkXref>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <format>html</format>
+                    <targetJdk>1.5</targetJdk>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </reporting>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>codehaus</id>
+            <url>http://repository.codehaus.org/</url>
+        </repository>
+        <repository>
+            <id>jfrog</id>
+            <url>http://www.jfrog.org/artifactory/plugins-releases</url>
+        </repository>
+        <repository>
+            <id>test</id>
+            <url>http://repository.jboss.org/maven2/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus</id>
+            <url>http://repository.codehaus.org</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>

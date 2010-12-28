@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <!-- Capture all the internal Id's so we can resolve them against the anchors... -->
+    <resource-config selector="*">
+        <resource>org.milyn.distro.html.visitors.IdLogger</resource>
+    </resource-config>
+
+    <!-- Resolve the internal anchors... -->
+    <resource-config selector="a">
+        <resource>org.milyn.distro.html.visitors.URLRewriter</resource>
+    </resource-config>
+
+</smooks-resource-list>

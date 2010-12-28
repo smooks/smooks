@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>milyn-scribe-adapter</artifactId>
+        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+    <name>Milyn Scribe Ibitas adapter</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-scribe-ibatis</artifactId>
+	<version>${milyn.scribe.ibatis.version}</version>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+
+		<!-- TEST -->
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<classifier>jdk15</classifier>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+</project>

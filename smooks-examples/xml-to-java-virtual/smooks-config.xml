@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd">
+
+    <!--
+        The "xml-to-java-virtual" sample config is the same as that of the "xml-to-java" sample accept for the fact that
+        xml-to-java-virtual uses HashMaps (virtual) in place of a fully defined (physical) object model.
+    -->
+
+    <!--
+    Create an "java.util.HashMap" bean instance when we visit the start of the <order> element.
+    Assign the new bean instance to the beanId of "order".
+    Wire in the "header" and "orderItems" beans.
+    -->
+    <jb:bean beanId="order" class="java.util.HashMap" createOnElement="order">
+        <jb:wiring property="header" beanIdRef="header" />
+        <jb:wiring property="orderItems" beanIdRef="orderItems" />
+    </jb:bean>
+
+    <!--
+    Create an ArrayList bean instance when we visit the start of the <order> element.
+    This bean is wired into the "order" bean.
+    -->
+    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="order">
+        <jb:wiring beanIdRef="orderItem" />
+    </jb:bean>
+
+    <!--
+    Create an "java.util.HashMap" bean instance when we visit the start of the <header> element.
+    This bean is wired into the "order" bean.
+    -->
+    <jb:bean beanId="header" class="java.util.HashMap" createOnElement="header">
+        <jb:value property="date" decoder="Date" data="header/date">
+            <jb:decodeParam name="format">EEE MMM dd HH:mm:ss z yyyy</jb:decodeParam>
+            <jb:decodeParam name="locale-language">en</jb:decodeParam>
+            <jb:decodeParam name="locale-country">IE</jb:decodeParam>
+        </jb:value>
+        <jb:value property="customerNumber" decoder="Long" data="header/customer/@number" />
+        <jb:value property="customerName" data="header/customer" />
+    </jb:bean>
+
+    <!--
+    Create an "java.util.HashMap" bean instance when we visit the start of the <order-item> element.
+    This bean is wired into the "orderItems" ArrayList bean.
+    -->
+    <jb:bean beanId="orderItem" class="java.util.HashMap" createOnElement="order-item">
+        <jb:value property="productId" decoder="Long" data="order-item/product" />
+        <jb:value property="quantity" decoder="Integer" data="order-item/quantity" />
+        <jb:value property="price" decoder="Double" data="order-item/price" />
+    </jb:bean>
+
+</smooks-resource-list>

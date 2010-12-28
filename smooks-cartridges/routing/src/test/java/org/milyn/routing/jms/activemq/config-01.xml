@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd"
+                      xmlns:jms="http://www.milyn.org/xsd/smooks/jms-routing-1.2.xsd"
+                      xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+    
+    <jb:bindings beanId="object" class="java.util.HashMap" createOnElement="a">
+        <jb:value property="a" data="a" />
+    </jb:bindings>
+
+    <ftl:freemarker applyOnElement="a">
+        <ftl:template>${object.a}</ftl:template>
+        <ftl:use>
+            <ftl:bindTo id="orderItem_xml"/>
+        </ftl:use>
+    </ftl:freemarker>
+
+    <jms:router routeOnElement="a" beanId="object" destination="objectAQueue">
+        <jms:message>
+            <jms:correlationIdPattern>${object.a}</jms:correlationIdPattern>
+        </jms:message>
+        <jms:jndi properties="/org/milyn/routing/jms/activemq/activemq.1.jndi.properties" />
+    </jms:router>
+
+</smooks-resource-list>

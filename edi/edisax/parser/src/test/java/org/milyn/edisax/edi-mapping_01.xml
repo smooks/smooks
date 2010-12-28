@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.0.xsd">
+
+	<medi:description name="Test Message" version="1.0" />
+
+	<medi:delimiters segment="&#10;" field="*" component="^" sub-component="~" />
+
+	<medi:segments xmltag="message-x">
+		<medi:segment segcode="segement-x-abc" xmltag="segement-x">
+			<medi:field xmltag="field-x">
+				<medi:component xmltag="component-x">
+					<medi:sub-component xmltag="sub-component-x" />
+				</medi:component>
+			</medi:field>
+			<medi:segment segcode="segement-x-abc" xmltag="segement-x" minOccurs="1" maxOccurs="-1">
+				<medi:field xmltag="field-x">
+					<medi:component xmltag="component-x">
+						<medi:sub-component xmltag="sub-component-x" />
+					</medi:component>
+				</medi:field>
+			</medi:segment>
+		</medi:segment>
+		<medi:segment segcode="segement-x-abc" xmltag="segement-x">
+			<medi:field xmltag="field-x" />
+		</medi:segment>
+	</medi:segments>
+</medi:edimap>

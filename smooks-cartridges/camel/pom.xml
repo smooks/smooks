@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-cartridge-base-pom</artifactId>
+        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    </parent>
+    <name>Milyn Smooks Cartridge - Camel</name>
+    <groupId>org.milyn</groupId>
+    <artifactId>milyn-smooks-camel</artifactId>
+    <version>${milyn.smooks.camel.version}</version>
+
+	<dependencies>
+
+		<dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${camel.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                 <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-spring</artifactId>
+                 </exclusion>
+           </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+            <version>${camel.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-javabean</artifactId>
+            <version>${milyn.smooks.javabean.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-edi</artifactId>
+            <version>${milyn.smooks.edi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-csv</artifactId>
+            <version>${milyn.smooks.csv.version}</version>
+			<scope>test</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-templating</artifactId>
+            <version>${milyn.smooks.templating.version}</version>
+			<scope>test</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+	</dependencies>
+
+    <repositories>
+        <repository>
+            <id>codehaus.m2.snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+</project>

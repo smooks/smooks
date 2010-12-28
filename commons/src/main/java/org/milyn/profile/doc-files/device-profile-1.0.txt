@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding="UTF-8"?>
+
+<!-- root element -->
+<!ELEMENT device-profiles (device-profile+) >
+
+<!ELEMENT device-profile  EMPTY>
+<!ATTLIST device-profile
+	name 	CDATA 		#REQUIRED
+	list 	CDATA 		#REQUIRED
+>

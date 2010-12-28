@@ -1,0 +1,24 @@
+<Order>
+    <header>
+        <orderId>A188127</orderId>
+        <username>user1</username>
+        <name>
+            <firstname>Harry</firstname>
+            <lastname>Fletcher</lastname>
+        </name>
+        <email>harry.fletcher@gmail.</email>
+        <state>South Dakota</state>
+    </header>
+    <order-item>
+        <quantity>1</quantity>
+        <productId>364b</productId>
+        <title>The 40-Year-Old Virgin</title>
+        <price>29.98</price>
+    </order-item>
+    <order-item>
+        <quantity>2</quantity>
+        <productId>299</productId>
+        <title>Pulp Fiction</title>
+        <price>29.99</price>
+    </order-item>
+</Order>

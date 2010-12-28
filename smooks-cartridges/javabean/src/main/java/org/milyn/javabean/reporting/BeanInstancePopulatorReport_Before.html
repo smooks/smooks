@@ -1,0 +1,13 @@
+<#if resource.parameters.wireBeanId??>
+    <#if resource.parameters.property??>
+        Created lifecycle association for binding bean <b>${resource.parameters.wireBeanId}</b> onto property <b>${resource.parameters.property}</b> of bean <b>${resource.parameters.beanId}</b>.  Actual binding occurs later!
+    <#else>
+        Creating lifecycle association for binding bean <b>${resource.parameters.wireBeanId}</b> of bean <b>${resource.parameters.beanId}</b>.  Actual binding occurs later!
+    </#if>
+<#else>
+	Extracting value from attribute <b>${resource.parameters.valueAttributeName}</b> and <#if resource.parameters.property??>binding it on property <b>${resource.parameters.property}</b> <@beanType/> of <#else>adding it <@beanType/> to the</#if> bean <b>${resource.parameters.beanId}</b>.
+</#if>
+
+<#macro beanType>
+	<#if !resource.parameters.expression??>(type <b>${resource.parameters.type!'String'}</b>)</#if>
+</#macro>
