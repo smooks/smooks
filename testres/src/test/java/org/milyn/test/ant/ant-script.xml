@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="xtarg" name="Test">
+
+    <target name="xtarg">
+        <echo message="Hello ${xvar}!!" />
+    </target>
+
+    <target name="ytarg">
+        <echo message="Goodbye ${xvar}!!" />
+    </target>
+
+</project>
+
