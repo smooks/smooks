@@ -63,14 +63,11 @@
         <module>testres</module>
         <module>commons</module>
         <module>smooks-core</module>
-        <module>magger</module>
-        <module>tinak</module>
         <module>scribe</module>
         <module>edi/edisax</module> <!-- Purposely building ECT and EJC after Smooks components... -->
         <module>smooks-cartridges</module>
         <module>smooks-all</module>
 
-        <!-- Purposely not building EDI Gen... -->
         <module>edi/ect</module>
         <module>edi/ect/maven-ect-plugin</module>
         <module>edi/ejc</module>
