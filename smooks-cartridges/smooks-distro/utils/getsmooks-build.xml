@@ -7,7 +7,7 @@
     </description>
 
     <property environment="env"/>
-    <property name="maven.ant.version" value="2.0.9"/>
+    <property name="maven.ant.version" value="2.1.1"/>
     <property name="maven.dir" value="org/apache/maven/maven-ant-tasks/${maven.ant.version}"/>
     <property name="maven.jar" value="maven-ant-tasks-${maven.ant.version}.jar"/>
     <pathconvert targetos="unix" property="maven.repo.dir">
