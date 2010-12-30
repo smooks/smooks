@@ -15,19 +15,21 @@
 package org.milyn.ant;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.jar.JarFile;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.FileResource;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.milyn.ResourceMerger;
+import org.milyn.archive.Archive;
+import org.milyn.io.FileUtils;
 
 /**
  * ResourceMergerTask is an ANT task that delegate to {@link ResourceMerger}
@@ -60,11 +62,6 @@ public class ResourceMergerTask extends Task
 	 */
 	private FileSet fileSet;
 	
-	/**
-	 * True indicates that it is OK to overwrite an existing jar file. False will produce a build error.
-	 */
-    private boolean overwrite;
-    
     /**
      * The jar MANIFEST.MF to be used.
      */
@@ -76,6 +73,7 @@ public class ResourceMergerTask extends Task
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try
         {
+	        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             mergeJars();
         } 
         catch (final IOException e)
@@ -93,24 +91,28 @@ public class ResourceMergerTask extends Task
         log("Building " + jarName);
         final List<File> jars = getJarsFromFileSet();
         final ResourceMerger resourceMerger = new ResourceMerger(resourcesPaths);
-        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        final JavaArchive mergedJar = resourceMerger.mergeJars(jarName, ResourceMerger.fromFiles(jars));
-        mergedJar.setManifest(manifest);
-        addAllClasses(mergedJar);
-        
+        final Archive mergedJar = resourceMerger.mergeJars(jarName, jars.toArray(new File[]{}));
+        setManifest(mergedJar);
         final File newJar = exportJarFile(mergedJar, jarName);
-        
         log("Produced [" + newJar.getAbsolutePath());
     }
     
-    private File exportJarFile(final JavaArchive jar, final String jarname)
+    private void setManifest(Archive to) throws IOException
+    {
+        if (manifest != null)
+        {
+	        to.addEntry(JarFile.MANIFEST_NAME, FileUtils.readFile(manifest));
+        }
+    }
+    
+    private File exportJarFile(final Archive jar, final String jarname) throws IOException
     {
         final File newJar = new File(jarName);
         if (newJar.exists())
         {
             newJar.delete();
         }
-        jar.as(ZipExporter.class).exportZip(newJar, overwrite);
+        jar.toOutputStream(new java.util.zip.ZipOutputStream(new FileOutputStream(newJar)));
         return newJar;
     }
     
@@ -124,14 +126,6 @@ public class ResourceMergerTask extends Task
             jars.add(((FileResource) iterator.next()).getFile());
         }
         return jars;
-    }
-
-    private void addAllClasses(final JavaArchive to)
-    {
-        for (String className : classes)
-        {
-            to.addClass(className.trim());
-        }
     }
 
     public void addFileSet(FileSet jars)
@@ -156,11 +150,6 @@ public class ResourceMergerTask extends Task
     public void setManifest(File manifest)
     {
         this.manifest = manifest;
-    }
-
-    public void setOverwrite(boolean overwrite)
-    {
-        this.overwrite = overwrite;
     }
 
     public void setClasses(String classes)

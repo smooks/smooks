@@ -15,20 +15,15 @@
 	<modules>
 		<module>camel-integration</module>
 		<module>camel-dataformat</module>
+		<module>camel-csv-to-xml</module>
 	</modules>
 
     <dependencies>
 
         <dependency>
             <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-camel</artifactId>
-            <version>${milyn.smooks.camel.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <artifactId>milyn-smooks-all</artifactId>
+            <version>${milyn.smooks.core.version}</version>
         </dependency>
 
 		<!-- Camel dependencies -->

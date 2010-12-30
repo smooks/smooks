@@ -131,4 +131,28 @@ public class ArchiveTest extends TestCase {
         assertEquals("my/emptyfile.xxx/", archive2.getEntryName(2));
         assertEquals(3, archive2.getEntries().size());        
     }
+    
+    public void test_merge() throws Exception
+    {
+        Archive archive1 = new Archive();
+        archive1.addEntry("archive1/resource.txt", new ByteArrayInputStream("Hi!!".getBytes()));
+        archive1.addEntry("archive1/emptyfile.xxx/");
+        archive1.addEntry(JarFile.MANIFEST_NAME, new ByteArrayInputStream("Manifestio".getBytes()));
+        
+        Archive archive2 = new Archive();
+        archive2.addEntry("archive2/resource.txt", new ByteArrayInputStream("Hi!!".getBytes()));
+        Archive merged = archive1.merge(archive2);
+        assertNotNull(merged);
+        assertEquals("archive1/resource.txt", merged.getEntryName(0));
+        assertEquals("archive1/emptyfile.xxx/", merged.getEntryName(1));
+        assertEquals(JarFile.MANIFEST_NAME, merged.getEntryName(2));
+        assertEquals("archive2/resource.txt", merged.getEntryName(3));
+    }
+    
+    public void test_contains() throws Exception
+    {
+        Archive archive1 = new Archive();
+        archive1.addEntry("archive1/resource.txt", new ByteArrayInputStream("Hi!!".getBytes()));
+        assertTrue(archive1.contains("archive1/resource.txt"));
+    }
 }

@@ -6,9 +6,9 @@
 		<artifactId>milyn-smooks-example-camel</artifactId>
 		<version>1.0</version>
 	</parent>
-    <name>Milyn Smooks Example - Smooks Camel Dataformat</name>
+    <name>Milyn Smooks Example - Smooks Camel CVS to XML</name>
 	<groupId>org.milyn</groupId>
-	<artifactId>milyn-smooks-example-camel-dataformat</artifactId>
+	<artifactId>milyn-smooks-example-camel-csv-to-xml</artifactId>
 	<version>1.0</version>
     <packaging>bundle</packaging>
     
@@ -28,9 +28,6 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Import-Package>
 							org.apache.camel.*;version="2.6", 
-							org.milyn.*;version="${milyn.smooks.core.version}", 
-							org.milyn.smooks.edi;version="${milyn.smooks.core.version}", 
-							org.milyn.smooks.camel.dataformat;version="${milyn.smooks.core.version}",
 							org.springframework.*;version="1.2.0",
 							*;-nouses:=true
 						</Import-Package>
@@ -44,7 +41,6 @@
         <directory>${basedir}</directory>
         <includes>
           <include>smooks-config.xml</include>
-          <include>edi-to-xml-order-mapping.xml</include>
         </includes>
       </resource>
 		<resource>
@@ -56,6 +52,12 @@
 	</build>
 
 	<dependencies>
+        <dependency>
+            <groupId>net.sf.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>1.8</version>
+            <scope>test</scope>
+        </dependency>
        <dependency>
            <groupId>org.apache.felix</groupId>
            <artifactId>org.osgi.core</artifactId>
