@@ -3,12 +3,19 @@ Deploying Smooks as an OSGi Bundle
 
 Requirements
 ------------
-Smooks requires jaxen 1.1.1 which is available as a bundle from the SpringSource repository and needs to be installed into your OSGi container
-1. Download http://repository.springsource.com/maven/bundles/external/org/jaxen/com.springsource.org.jaxen/1.1.1/com.springsource.org.jaxen-1.1.1.jar
-2. Copy this to your containers deploy directory
+Smooks has a number of dependencies that must be deployed into an OSGI environment. 
+The complete list of bundles required for this version of Smooks can be found in target/test-classes/features.xml.
 
 Deploying Smooks
 ================
 1. mvn install
-2. copy target/milyn-smooks-all-<version>.jar to your OSGi containers deploy directory.
+2. copy all the dependencies listed in the file target/test-classes/features.xml to your OSGI Containers deploy directory.
+3. copy target/milyn-smooks-all-<version>.jar to your OSGi containers deploy directory.
+
+Apache Karaf/Apache ServiceMix 4.x
+==================================
+You can install the target/test-classes/feature.xml file directly into Karaf by using:
+karaf@root> features:addUrl  file:///path/to/smooks/smooks-all/target/test-classes/features.xml
+karaf@root> features:install smooks
+
 

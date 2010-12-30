@@ -205,6 +205,7 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
         {
             smooks = createSmooks(configUri);
         }
+        smooks.setClassLoader(getClass().getClassLoader());
         smooks.getApplicationContext().setAttribute(CamelContext.class, camelContext);
         addAppenders(smooks, visitorAppenders);
         addVisitors(smooks, selectorVisitorMap);

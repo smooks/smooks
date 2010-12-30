@@ -12,31 +12,33 @@
  * See the GNU Lesser General Public License for more details:
  * http://www.gnu.org/licenses/lgpl.txt
  */
-package org.milyn;
+package example;
 
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Filter;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.test.junit4.CamelTestSupport;
+import org.junit.Test;
 
 /**
  * 
  * @author Daniel Bevenius
- *
+ * 
  */
-public class ResourceFilter implements Filter<ArchivePath>
+public class ExampleRouteBuilderTest extends CamelTestSupport
 {
-    private final String resourceName;
-
-    public ResourceFilter(final String resourceName)
+    @Override
+    public RouteBuilder createRouteBuilder()
     {
-        this.resourceName = resourceName;
+        return new ExampleRouteBuilder();
     }
 
-    public boolean include(ArchivePath object)
+    @Test
+    public void route() throws Exception
     {
-        if (object.get().toString().equals(resourceName))
-            return true;
-        else
-            return false;
+        MockEndpoint result = getMockEndpoint("mock:result");
+        result.setExpectedMessageCount(1);
+        Thread.sleep(1000);
+        result.assertIsSatisfied(1000);
     }
 
 }

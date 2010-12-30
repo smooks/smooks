@@ -15,7 +15,10 @@
 package org.milyn;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -25,14 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.jar.JarInputStream;
+import java.util.zip.ZipInputStream;
 
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.milyn.archive.Archive;
+import org.milyn.assertion.AssertArgument;
 
 /**
  * ResourceMerger is able to merge java archives (jars) and in the process merge
@@ -51,6 +51,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public class ResourceMerger
 {
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private List<String> resourcePaths = new ArrayList<String>();
 
     /**
@@ -60,6 +61,7 @@ public class ResourceMerger
      */
     public ResourceMerger(final String resourcePath)
     {
+        AssertArgument.isNotNull(resourcePath, "resourcePath");
         resourcePaths.add(resourcePath);
     }
 
@@ -70,6 +72,7 @@ public class ResourceMerger
      */
     public ResourceMerger(final List<String> resourcesPaths)
     {
+        AssertArgument.isNotNull(resourcePaths, "resourcePaths");
         this.resourcePaths.addAll(resourcesPaths);
     }
 
@@ -82,16 +85,19 @@ public class ResourceMerger
      *            archive created.
      * @param archives
      *            An array of jar that are to be merge together.
-     * @return {@link JavaArchive} A new jar that will be the result of merging
+     * @return {@link Archive} A new jar that will be the result of merging
      *         the jars and will have the contents of the resources merged.
      * @throws IOException
      */
-    public JavaArchive mergeJars(final String jarname, final File... archives) throws IOException
+    public Archive mergeJars(final String jarname, final File... archives) throws IOException
     {
-        final List<JavaArchive> jars = new ArrayList<JavaArchive>();
+        AssertArgument.isNotNull(jarname, "jarname");
+        AssertArgument.isNotNull(archives, "archives");
+        
+        final List<Archive> jars = new ArrayList<Archive>();
         for (File jar : archives)
         {
-            jars.add(ShrinkWrap.createFromZipFile(JavaArchive.class, jar));
+            jars.add(new Archive(new JarInputStream(new FileInputStream(jar))));
         }
         return mergeJars(jarname, jars);
     }
@@ -105,73 +111,81 @@ public class ResourceMerger
      *            archive created.
      * @param archives
      *            An array of jar that are to be merge together.
-     * @return {@link JavaArchive} A new jar that will be the result of merging
+     * @return {@link Archive} A new jar that will be the result of merging
      *         the jars and will have the contents of the resources merged.
      * @throws IOException
      */
-    public JavaArchive mergeJars(final String newJarName, final List<JavaArchive> archives) throws IOException
+    public Archive mergeJars(final String jarname, final List<Archive> archives) throws IOException
     {
-        final JavaArchive all = getOrCreateJavaArchive(newJarName);
-        final Map<String, List<Node>> pathToNodeMap = new HashMap<String, List<Node>>();
+        AssertArgument.isNotNull(jarname, "jarname");
+        AssertArgument.isNotNull(archives, "archives");
+        
+        final Archive all = getOrCreateArchive(jarname);
+        final Map<String, List<byte[]>> pathToBytesMap = new HashMap<String, List<byte[]>>();
 
-        for (JavaArchive jar : archives)
+        for (Archive jar : archives)
         {
             for (String resourcePath : resourcePaths)
             {
-                if (jar.contains(resourcePath))
+                Map<String, byte[]> entries = jar.getEntries();
+                if (entries.containsKey(resourcePath))
                 {
-                    final Map<ArchivePath, Node> content = jar.getContent(new ResourceFilter(resourcePath));
-                    final Node node = content.get(ArchivePaths.create(resourcePath));
-                    if (node != null)
+                    byte[] content = entries.get(resourcePath);
+                    if (content != null)
                     {
-                        List<Node> list = getNodesForResource(pathToNodeMap, resourcePath);
-                        list.add(node);
-                        pathToNodeMap.put(resourcePath, list);
+                        List<byte[]> list = getContentListForResource(pathToBytesMap, resourcePath);
+                        list.add(content);
+                        pathToBytesMap.put(resourcePath, list);
                     }
                 }
             }
             all.merge(jar);
         }
-        return mergeResources(pathToNodeMap, all);
+        return mergeResources(pathToBytesMap, all);
     }
 
-    private JavaArchive getOrCreateJavaArchive(final String jarname)
+    private Archive getOrCreateArchive(final String jarname) throws FileNotFoundException, IOException
     {
         final File jarfile = new File(jarname);
-        return jarfile.exists() ? ShrinkWrap.createFromZipFile(JavaArchive.class, jarfile) : ShrinkWrap.create(
-                JavaArchive.class, jarname);
+        if (jarfile.exists())
+        {
+            return new Archive(new ZipInputStream(new FileInputStream(jarfile)));
+        }
+        else
+        {
+            return new Archive(jarname);
+        }
     }
 
-    private JavaArchive mergeResources(Map<String, List<Node>> pathToNodeMap, JavaArchive jar) throws IOException
+    private Archive mergeResources(Map<String, List<byte[]>> pathToBytesMap, Archive jar) throws IOException
     {
-        final Set<Entry<String, List<Node>>> entrySet = pathToNodeMap.entrySet();
-        for (Entry<String, List<Node>> resourceEntries : entrySet)
+        final Set<Entry<String, List<byte[]>>> entrySet = pathToBytesMap.entrySet();
+        for (Entry<String, List<byte[]>> resourceEntries : entrySet)
         {
             final String resourcePath = resourceEntries.getKey();
-            final List<Node> nodes = resourceEntries.getValue();
-            jar.delete(ArchivePaths.create(resourcePath));
+            final List<byte[]> nodes = resourceEntries.getValue();
 
             final StringWriter stringWriter = new StringWriter();
-            for (Node resoureFileNode : nodes)
+            for (byte[] content : nodes)
             {
-                append(resoureFileNode.getAsset(), stringWriter);
+                append(content, stringWriter);
             }
-            jar.addResource(new StringAsset(stringWriter.toString()), resourcePath);
+            jar.addEntry(resourcePath, stringWriter.toString());
         }
         return jar;
     }
 
-    private void append(final Asset asset, final StringWriter to) throws IOException
+    private void append(final byte[] content, final StringWriter to) throws IOException
     {
         BufferedReader in = null;
         try
         {
-            in = new BufferedReader(new InputStreamReader(asset.openStream()));
-            final char[] buffer = new char[1024];
-            int n;
-            while ((n = in.read(buffer)) != -1) 
+            in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(content)));
+            String line;
+            while ((line = in.readLine()) != null) 
             {
-	            to.write(buffer, 0, n);
+                to.write(line);
+                to.write(LINE_SEPARATOR);
             }
         } 
         finally
@@ -183,24 +197,14 @@ public class ResourceMerger
         }
     }
 
-    private List<Node> getNodesForResource(final Map<String, List<Node>> map, final String resourcePath)
+    private List<byte[]> getContentListForResource(final Map<String, List<byte[]>> map, final String resourcePath)
     {
-        List<Node> list = map.get(resourcePath);
+        List<byte[]> list = map.get(resourcePath);
         if (list == null)
         {
-            list = new ArrayList<Node>();
+            list = new ArrayList<byte[]>();
         }
         return list;
-    }
-
-    public static List<JavaArchive> fromFiles(final List<File> jars)
-    {
-        final List<JavaArchive> javaArchives = new ArrayList<JavaArchive>();
-        for (File jar : jars)
-        {
-            javaArchives.add(ShrinkWrap.createFromZipFile(JavaArchive.class, jar));
-        }
-        return javaArchives;
     }
 
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<smooks-resource-list 
+	xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" 
+	xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd"
+    xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.2.xsd">
+
+    <csv:reader fields="firstname,lastname,gender,age,country" rootElementName="people" recordElementName="person" />
+    
+    <core:exports>
+        <core:result type="org.milyn.payload.StringResult"/>
+    </core:exports>
+
+</smooks-resource-list>
