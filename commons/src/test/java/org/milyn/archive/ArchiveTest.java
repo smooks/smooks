@@ -17,11 +17,14 @@ package org.milyn.archive;
 
 import junit.framework.TestCase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.milyn.io.StreamUtils;
 
@@ -36,6 +39,12 @@ public class ArchiveTest extends TestCase {
         archive.addEntry("//my/resource.txt", new ByteArrayInputStream("Hi!!".getBytes()));
         archive.addEntry("my/folder");
         archive.addEntry(Archive.class);
+
+        assertEquals("my/resource.txt", archive.getEntryName(0));
+        assertEquals("my/folder/", archive.getEntryName(1));
+        assertEquals("org/milyn/archive/Archive.class", archive.getEntryName(2));
+
+        assertEquals("Hi!!", new String(archive.getEntryValue(0)));
 
         ZipInputStream zipInputStream = archive.toInputStream();
         ZipEntry zipEntry;
@@ -96,5 +105,28 @@ public class ArchiveTest extends TestCase {
         assertTrue(new File(folder, "my/resource.txt").exists());
         assertTrue(new File(folder, "my/emptyfile.xxx").exists());
         assertTrue(new File(folder, "org/milyn/archive/Archive.class").exists());
+    }
+
+    public void test_ManifestIsFirstWrite() throws IOException {
+        Archive archive1 = new Archive();
+
+        archive1.addEntry("my/resource.txt", new ByteArrayInputStream("Hi!!".getBytes()));
+        archive1.addEntry("my/emptyfile.xxx");
+        archive1.addEntry(JarFile.MANIFEST_NAME, new ByteArrayInputStream("Manifestio".getBytes()));
+
+        assertEquals("my/resource.txt", archive1.getEntryName(0));
+        assertEquals("my/emptyfile.xxx/", archive1.getEntryName(1));
+        assertEquals(JarFile.MANIFEST_NAME, archive1.getEntryName(2));
+
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+        archive1.toOutputStream(new ZipOutputStream(outStream));
+
+        Archive archive2 = new Archive(new ZipInputStream(new ByteArrayInputStream(outStream.toByteArray())));
+
+        // The Manifest should have been moved to being the first entry after archive1 was serialized...
+        assertEquals(JarFile.MANIFEST_NAME, archive2.getEntryName(0));
+        assertEquals("my/resource.txt", archive2.getEntryName(1));
+        assertEquals("my/emptyfile.xxx/", archive2.getEntryName(2));
     }
 }

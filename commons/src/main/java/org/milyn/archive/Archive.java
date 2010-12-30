@@ -16,6 +16,7 @@
 package org.milyn.archive;
 
 import java.util.*;
+import java.util.jar.JarFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipEntry;
@@ -253,6 +254,46 @@ public class Archive {
     }
 
     /**
+     * Get the name of the entry at the specified index in the archive.
+     * @param index The index.
+     * @return The entry name at that index.
+     */
+    public String getEntryName(int index) {
+        Set<Map.Entry<String, byte[]>> entrySet = entries.entrySet();
+        int i = 0;
+
+        for (Map.Entry<String, byte[]> entry : entrySet) {
+            if(i == index) {
+                return entry.getKey();
+            }
+
+            i++;
+        }
+
+        throw new ArrayIndexOutOfBoundsException(index);
+    }
+
+    /**
+     * Get the value of the entry at the specified index in the archive.
+     * @param index The index.
+     * @return The entry value at that index.
+     */
+    public byte[] getEntryValue(int index) {
+        Set<Map.Entry<String, byte[]>> entrySet = entries.entrySet();
+        int i = 0;
+
+        for (Map.Entry<String, byte[]> entry : entrySet) {
+            if(i == index) {
+                return entry.getValue();
+            }
+
+            i++;
+        }
+
+        throw new ArrayIndexOutOfBoundsException(index);
+    }
+
+    /**
      * Create an archive of the specified name and containing entries
      * for the data contained in the streams supplied entries arg.
      * specifying the entry name and the value is a InputStream containing
@@ -322,17 +363,30 @@ public class Archive {
     }
 
     private void writeEntriesToArchive(ZipOutputStream archiveStream) throws IOException {
+        byte[] manifest = entries.get(JarFile.MANIFEST_NAME);
+
+        // Always write the jar manifest as the first entry, if it exists...
+        if(manifest != null) {
+            writeEntry(JarFile.MANIFEST_NAME, manifest, archiveStream);
+        }
+
         Set<Map.Entry<String, byte[]>> entrySet = entries.entrySet();
         for (Map.Entry<String, byte[]> entry : entrySet) {
-            try {
-                archiveStream.putNextEntry(new ZipEntry(entry.getKey()));
-                if(entry.getValue() != null) {
-                    archiveStream.write(entry.getValue());
-                }
-                archiveStream.closeEntry();
-            } catch (Exception e) {
-                throw (IOException) new IOException("Unable to create archive entry '" + entry.getKey() + "'.").initCause(e);
+            if(!entry.getKey().equals(JarFile.MANIFEST_NAME)) {
+                writeEntry(entry.getKey(), entry.getValue(), archiveStream);
             }
+        }
+    }
+
+    private void writeEntry(String entryName, byte[] entryValue, ZipOutputStream archiveStream) throws IOException {
+        try {
+            archiveStream.putNextEntry(new ZipEntry(entryName));
+            if(entryValue != null) {
+                archiveStream.write(entryValue);
+            }
+            archiveStream.closeEntry();
+        } catch (Exception e) {
+            throw (IOException) new IOException("Unable to create archive entry '" + entryName + "'.").initCause(e);
         }
     }
 
