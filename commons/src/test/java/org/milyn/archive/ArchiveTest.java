@@ -117,6 +117,7 @@ public class ArchiveTest extends TestCase {
         assertEquals("my/resource.txt", archive1.getEntryName(0));
         assertEquals("my/emptyfile.xxx/", archive1.getEntryName(1));
         assertEquals(JarFile.MANIFEST_NAME, archive1.getEntryName(2));
+        assertEquals(3, archive1.getEntries().size());        
 
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
@@ -128,5 +129,6 @@ public class ArchiveTest extends TestCase {
         assertEquals(JarFile.MANIFEST_NAME, archive2.getEntryName(0));
         assertEquals("my/resource.txt", archive2.getEntryName(1));
         assertEquals("my/emptyfile.xxx/", archive2.getEntryName(2));
+        assertEquals(3, archive2.getEntries().size());        
     }
 }
