@@ -1,3 +1,0 @@
-To Build the distro:
-
-"mvn clean package"
