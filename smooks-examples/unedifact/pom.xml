@@ -18,11 +18,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-	 <parent>
+    <parent>
         <groupId>org.milyn</groupId>
         <artifactId>smooks-examples</artifactId>
-        <version>1.4-SNAPSHOT</version>
-	 </parent>
+        <version>1.4</version> <!-- base pom version - do not remove this comment -->
+    </parent>
     <artifactId>unedifact-examples</artifactId>
     <name>Milyn Smooks UN/EDIFACT Examples</name>
     <packaging>pom</packaging>

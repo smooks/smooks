@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.milyn</groupId>
 		<artifactId>unedifact-examples</artifactId>
-        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.4</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Example - UN/EDIFACT - Java Binding</name>
     <artifactId>milyn-smooks-example-unedifact-java-binding</artifactId>

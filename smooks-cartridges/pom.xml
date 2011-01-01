@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn</artifactId>
-        <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.4</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Cartridges (Base POM)</name>
     <groupId>org.milyn</groupId>
     <artifactId>smooks-cartridge-base-pom</artifactId>
     <packaging>pom</packaging>
-    <version>1.4-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    <version>1.4</version> <!-- base pom version - do not remove this comment -->
 
     <properties>
         <milyn.smooks.servlet.version.base>${milyn.smooks.core.version}</milyn.smooks.servlet.version.base>
@@ -70,15 +70,12 @@
     </properties>
 
     <modules>
-        <module>css</module>
         <module>csv</module>
-        <module>dtd</module>
         <module>javabean</module>
         <module>edi</module>
         <module>json</module>
         <module>misc</module>
         <module>scripting</module>
-        <module>servlet</module>
         <module>templating</module>
         <module>routing</module>
 		<module>calc</module>

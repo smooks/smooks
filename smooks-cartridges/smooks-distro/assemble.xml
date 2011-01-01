@@ -3,7 +3,7 @@
 
     <property name="version.base" value="1.4"/>
     <property name="version" value="${version.base}-Beta1"/>
-    <property name="mvn.version" value="1.4-SNAPSHOT"/>
+    <property name="mvn.version" value="1.4"/>
 
     <property name="mainDistroName" value="smooks-${version}"/>
     <property name="mainTargetdir" value="target/${mainDistroName}"/>
