@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>org.milyn</groupId>
 		<artifactId>milyn-scribe</artifactId>
-        <version>1.4</version> <!-- base pom version - do not remove this comment -->
+        <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
 	<packaging>pom</packaging>
     <name>Milyn Scribe Adapter</name>
 	<groupId>org.milyn</groupId>
 	<artifactId>milyn-scribe-adapter</artifactId>
-	<version>1.4</version> <!-- base pom version - do not remove this comment -->
+	<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 
     <modules>
     	<module>jpa</module>
