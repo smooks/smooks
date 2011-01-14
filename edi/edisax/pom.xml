@@ -4,8 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn</artifactId>
+        <artifactId>milyn-edi</artifactId>
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+		<relativePath>../pom.xml</relativePath>
     </parent>
     <name>Milyn EdiSax</name>
     <groupId>org.milyn</groupId>
