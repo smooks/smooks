@@ -2,6 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>milyn</artifactId>
+		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
     <groupId>org.milyn</groupId>
     <artifactId>milyn-edi</artifactId>
     <packaging>pom</packaging>
