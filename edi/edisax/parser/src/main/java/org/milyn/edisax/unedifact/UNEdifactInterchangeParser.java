@@ -87,7 +87,7 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        contentHandler.startElement(XMLConstants.NULL_NS_URI, "unEdifact", "unEdifact", new AttributesImpl());
 	
 	        while(true) {
-		        segCode = segmentReader.peek(3);
+		        segCode = segmentReader.peek(3, true);
 		        if(segCode.length() == 3) {
                     ControlBlockHandlerFactory controlBlockHandlerFactory = new UNEdifact41ControlBlockHandlerFactory(hierarchyChangeListener);
                     interchangeContext = createInterchangeContext(segmentReader, validate, controlBlockHandlerFactory);
