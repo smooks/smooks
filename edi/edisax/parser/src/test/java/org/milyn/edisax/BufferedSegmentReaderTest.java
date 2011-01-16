@@ -81,9 +81,9 @@ public class BufferedSegmentReaderTest extends TestCase {
             if (segIndex == 0) {
 			    assertEquals("Segment comparison failure.", "SEG" + segIndex, reader.getCurrentSegmentFields()[0]);
             } else if (segIndex == 1) {
-                assertEquals("Segment comparison failure.", "\nSEG" + segIndex, reader.getCurrentSegmentFields()[0]);
+                assertEquals("Segment comparison failure.", "SEG" + segIndex, reader.getCurrentSegmentFields()[0]);
             } else if (segIndex == 2) {
-                assertEquals("Segment comparison failure.", "\r\nSEG" + segIndex, reader.getCurrentSegmentFields()[0]);
+                assertEquals("Segment comparison failure.", "SEG" + segIndex, reader.getCurrentSegmentFields()[0]);
             } else {
                 assertTrue("More segments than expected in test case.", false);
             }

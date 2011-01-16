@@ -197,6 +197,22 @@ public class BufferedSegmentReader {
         }
 	}
 
+    /**
+     * Peek a fixed number of characters from the input source.
+     * <p/>
+     * Peek differs from {@link #read(int)} in that it leaves the
+     * characters in the segment buffer.
+     *
+     * @param numChars The number of characters to peeked.
+     * @return The characters in a String.  If the end of the input source
+     * was reached, the length of the string will be less than the requested number
+     * of characters.
+     * @throws IOException Error reading from input source.
+     */
+    public String peek(int numChars) throws IOException {
+        return peek(numChars, false);
+    }
+
 	/**
 	 * Peek a fixed number of characters from the input source.
 	 * <p/>
@@ -204,12 +220,13 @@ public class BufferedSegmentReader {
 	 * characters in the segment buffer.
 	 * 
 	 * @param numChars The number of characters to peeked.
+     * @param ignoreLeadingWhitespace Ignore leading whitespace.
 	 * @return The characters in a String.  If the end of the input source
 	 * was reached, the length of the string will be less than the requested number
 	 * of characters.
 	 * @throws IOException Error reading from input source.
 	 */
-	public String peek(int numChars) throws IOException {
+	public String peek(int numChars, boolean ignoreLeadingWhitespace) throws IOException {
         boolean ignoreCRLF;
 
         // Ignoring of new lines can be set as part of the segment delimiter, or
@@ -218,8 +235,14 @@ public class BufferedSegmentReader {
 
 		if(segmentBuffer.length() < numChars) {
 			int c;
-	        while((c = reader.read()) != -1) {
-	        	charReadCount++;
+
+            if(ignoreLeadingWhitespace) {
+                c = forwardPastWhitespace();
+            } else {
+                c = readChar();
+            }
+
+            while(c  != -1) {
 	            if (ignoreCRLF && (c == '\n' || c == '\r')) {
 	                continue;
 	            }
@@ -228,6 +251,8 @@ public class BufferedSegmentReader {
 	        	if(segmentBuffer.length() == numChars) {
 	        		break;
 	        	}
+
+                c = readChar();
 	        }
     	}
     	
@@ -236,7 +261,7 @@ public class BufferedSegmentReader {
     	return segmentBuffer.substring(0, endIndex);
 	}
 
-	/**
+    /**
 	 * Set the segment listener.
 	 * @param segmentListener The segment listener.
 	 */
@@ -271,8 +296,7 @@ public class BufferedSegmentReader {
         int escapeLen = escape != null ? escape.length() : 0;
         boolean ignoreCRLF;
         
-        int c = reader.read();
-        charReadCount++;
+        int c = readChar();
 
         // Ignoring of new lines can be set as part of the segment delimiter, or
         // as a feature on the parser (the later is the preferred method)...
@@ -288,14 +312,16 @@ public class BufferedSegmentReader {
         if(c == -1) {
             return false;
         }
-        
+
+        // Ignore leading whitespace on a segment...
+        c = forwardPastWhitespace(c);
+
         // Read the next segment...
         while(c != -1) {
         	char theChar = (char) c;
 
             if (ignoreCRLF && (theChar == '\n' || theChar == '\r')) {
-                c = reader.read();
-                charReadCount++;
+                c = readChar();
                 continue;
             }
 
@@ -334,9 +360,8 @@ public class BufferedSegmentReader {
                     break;
 	            }
             }
-            
-            c = reader.read();
-            charReadCount++;
+
+            c = readChar();
         }
 
         if(logger.isDebugEnabled()) {
@@ -351,7 +376,7 @@ public class BufferedSegmentReader {
         	return true;
         }
     }
-    
+
     /**
      * Does the read have a segment buffered and ready for processing.
      * @return True if a current segment exists, otherwise false.
@@ -391,8 +416,8 @@ public class BufferedSegmentReader {
             		  currentSegmentFields[endIndex] = currentSegmentFields[endIndex].substring(0, stringLen - 1);
             	  }
               }
-        }    	
-    	
+        }
+
         return currentSegmentFields;
     }
 
@@ -405,6 +430,31 @@ public class BufferedSegmentReader {
 	public int getCurrentSegmentNumber() {
 		return currentSegmentNumber;
 	}
+
+    private int forwardPastWhitespace() throws IOException {
+        return forwardPastWhitespace(readChar());
+    }
+
+    private int forwardPastWhitespace(int c) throws IOException {
+        while(c != -1) {
+            if(!Character.isWhitespace((char)c)) {
+                // It's not whitespace... stop here and start processing the segment...
+                break;
+            }
+
+            // It's whitespace... move to next character in segment stream...
+            c = readChar();
+        }
+        return c;
+    }
+
+    private int readChar() throws IOException {
+        try {
+            return reader.read();
+        } finally {
+            charReadCount++;
+        }
+    }
 
 	/**
 	 * Assert that there is a current segment.
