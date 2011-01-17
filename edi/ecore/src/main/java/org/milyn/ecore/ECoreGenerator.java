@@ -1,4 +1,4 @@
-package org.mylin.ecore;
+package org.milyn.ecore;
 
 import java.io.IOException;
 import java.util.ArrayList;
