@@ -1,6 +1,6 @@
-package org.mylin.ecore;
+package org.milyn.ecore;
 
-import static org.mylin.ecore.SmooksMetadata.ANNOTATION_TYPE_KEY;
+import static org.milyn.ecore.SmooksMetadata.ANNOTATION_TYPE_KEY;
 
 import java.util.Map;
 
