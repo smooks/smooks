@@ -69,7 +69,7 @@ class UNBHandler implements ControlBlockHandler {
 		}
 		
         while(true) {
-	        String segCode = segmentReader.peek(3);
+	        String segCode = segmentReader.peek(3, true);
 	        
 	        if(segCode.equals("UNZ")) {
 	    		segmentReader.moveToNextSegment(false);
