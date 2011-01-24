@@ -17,6 +17,7 @@
 package org.milyn.javabean.binding.model;
 
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.javabean.BeanInstanceCreator;
 import org.milyn.javabean.BeanRuntimeInfo;
 
@@ -41,6 +42,10 @@ public class Bean {
     public Bean(BeanInstanceCreator creator) {
         this.creator = creator;
         this.beanId = creator.getBeanId();
+    }
+
+    public SmooksResourceConfiguration getConfig() {
+        return creator.getConfig();
     }
 
     public BeanInstanceCreator getCreator() {
@@ -102,13 +107,11 @@ public class Bean {
                 String wiredBeanId = wiredBinding.getWiredBeanId();
                 Bean beanToBeWired = baseBeans.get(wiredBeanId);
 
-                if(beanToBeWired == null) {
-                    throw new SmooksConfigurationException("Bean '" + beanId + "' has a wiring of bean '" + wiredBeanId + "' onto property '" + wiredBinding.getProperty() + "'.  Unknown beanId '" + wiredBeanId + "'.");
-                }
-
-                if(parentBean == null || (!parentBean.getBeanId().equals(wiredBeanId) && parentBean.getParentBean(wiredBeanId) == null)) {
-                    wiredBinding.setWiredBean(beanToBeWired.clone(baseBeans, beanClone));
-                    beanClone.bindings.add(wiredBinding);
+                if(beanToBeWired != null) {
+                    if(parentBean == null || (!parentBean.getBeanId().equals(wiredBeanId) && parentBean.getParentBean(wiredBeanId) == null)) {
+                        wiredBinding.setWiredBean(beanToBeWired.clone(baseBeans, beanClone));
+                        beanClone.bindings.add(wiredBinding);
+                    }
                 }
             } else {
                 beanClone.bindings.add(bindingClone);

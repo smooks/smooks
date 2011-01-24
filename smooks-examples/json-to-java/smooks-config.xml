@@ -47,15 +47,15 @@
     Target the to be created Customer instance under the beanId "customer" via the ${customer} bean binding.
     As soon as this bean is created it will be set on this bean instance.
     -->
-    <jb:bean class="example.model.Header" beanId="header" createOnElement="order">
+    <jb:bean class="example.model.Header" beanId="header" createOnElement="#order/header">
     	<jb:wiring property="customer" beanIdRef="customer"/>
 
-    	<jb:value property="orderId" data="header order-id" />
-    	<jb:value property="orderStatus" data="header status-code" decoder="Long" />
-    	<jb:value property="netAmount" data="header net-amount" decoder="BigDecimal"/>
-    	<jb:value property="totalAmount" data="header total-amount" decoder="BigDecimal"/>
-    	<jb:value property="tax" data="header tax" decoder="BigDecimal"/>
-    	<jb:value property="date" data="header date-and-time" decoder="Date">
+    	<jb:value property="orderId" data="#/order-id" />
+    	<jb:value property="orderStatus" data="#/status-code" decoder="Long" />
+    	<jb:value property="netAmount" data="#/net-amount" decoder="BigDecimal"/>
+    	<jb:value property="totalAmount" data="#/total-amount" decoder="BigDecimal"/>
+    	<jb:value property="tax" data="#/tax" decoder="BigDecimal"/>
+    	<jb:value property="date" data="#/date-and-time" decoder="Date">
             <jb:decodeParam name="format">EEE MMM dd HH:mm:ss z yyyy</jb:decodeParam>
             <jb:decodeParam name="locale-language">en</jb:decodeParam>
             <jb:decodeParam name="locale-country">IE</jb:decodeParam>
@@ -69,10 +69,10 @@
     it is target by that bean via a bean binding.
     -->
     <jb:bean class="example.model.Customer" beanId="customer" createOnElement="customer-details">
-    	<jb:value property="userName" data="customer-details username" />
-    	<jb:value property="firstName" data="customer-details firstname" />
-    	<jb:value property="lastName" data="customer-details lastname"/>
-    	<jb:value property="state" data="customer-details state"/>
+    	<jb:value property="userName" data="#/username" />
+    	<jb:value property="firstName" data="#/firstname" />
+    	<jb:value property="lastName" data="#/lastname"/>
+    	<jb:value property="state" data="#/state"/>
     </jb:bean>
 
 	<!--
@@ -91,11 +91,11 @@
     This bean is add to the on the previous declared ArrayList as soon as it is created, because
     it is target by that ArrayList via a bean binding.
     -->
-    <jb:bean class="example.model.OrderItem" beanId="orderItem" createOnElement="order-item element">
-    	<jb:value property="quantity" data="order-item element quantity" decoder="Integer"/>
-        <jb:value property="productId" data="order-item element product-id" />
-        <jb:value property="price" data="order-item element price" decoder="BigDecimal" />
-        <jb:value property="title" data="order-item element title" />
+    <jb:bean class="example.model.OrderItem" beanId="orderItem" createOnElement="order-item/element">
+    	<jb:value property="quantity" data="#/quantity" decoder="Integer"/>
+        <jb:value property="productId" data="#/product-id" />
+        <jb:value property="price" data="#/price" decoder="BigDecimal" />
+        <jb:value property="title" data="#/title" />
     </jb:bean>
 
 </smooks-resource-list>

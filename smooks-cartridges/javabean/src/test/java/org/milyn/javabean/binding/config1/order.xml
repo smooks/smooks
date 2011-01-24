@@ -1,7 +1,7 @@
 <order>
     <header>
         <date>2006-06-23</date>
-        <customer number="123123">Joe</customer>
+        <customer number="123123">Joe &amp; Ray</customer>
     </header>
     <order-items>
         <order-item>

@@ -29,6 +29,8 @@ import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.ContentDeliveryConfigBuilderLifecycleEvent;
+import org.milyn.delivery.ContentDeliveryConfigBuilderLifecycleListener;
 import org.milyn.delivery.Fragment;
 import org.milyn.delivery.VisitLifecycleCleanable;
 import org.milyn.delivery.annotation.Initialize;
@@ -41,6 +43,7 @@ import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
 import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.javabean.BeanRuntimeInfo.Classification;
+import org.milyn.javabean.binding.model.ModelSet;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.ext.BeanConfigUtil;
 import org.milyn.javabean.factory.Factory;
@@ -67,7 +70,7 @@ import java.util.Set;
 @VisitAfterReport(condition = "parameters.containsKey('setOn') || parameters.beanClass.value.endsWith('[]')",
         summary = "Ended bean lifecycle. Set bean on any targets.",
         detailTemplate = "reporting/BeanInstanceCreatorReport_After.html")
-public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, Producer, VisitLifecycleCleanable {
+public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, ContentDeliveryConfigBuilderLifecycleListener, Producer, VisitLifecycleCleanable {
 
     private static Log logger = LogFactory.getLog(BeanInstanceCreator.class);
 
@@ -190,6 +193,12 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
 
         	initValsExpression = new MVELExpressionEvaluator();
         	initValsExpression.setExpression(initValsExpressionString.toString());
+        }
+    }
+
+    public void handle(ContentDeliveryConfigBuilderLifecycleEvent event) throws SmooksConfigurationException {
+        if(event == ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED) {
+            ModelSet.build(appContext);
         }
     }
 

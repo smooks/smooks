@@ -46,24 +46,24 @@
     Create an "example.beans.Header" bean instance when we visit the start of the <header> element.
     This bean is wired into the "order" bean.
     -->
-    <jb:bean beanId="header" class="org.milyn.javabean.binding.ordermodel.Header" createOnElement="/ord:order/ord:header">
-        <jb:value property="date" decoder="Date" data="/ord:order/ord:header/ord:date">
+    <jb:bean beanId="header" class="org.milyn.javabean.binding.ordermodel.Header" createOnElement="#order/ord:header">
+        <jb:value property="date" decoder="Date" data="#/ord:date">
             <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
             <jb:decodeParam name="locale-language">en</jb:decodeParam>
             <jb:decodeParam name="locale-country">IE</jb:decodeParam>
         </jb:value>
-        <jb:value property="customerNumber" decoder="Long" data="/ord:order/ord:header/ord:customer/@ord:number" />
-        <jb:value property="customerName" data="/ord:order/ord:header/ord:customer" />
+        <jb:value property="customerNumber" data="#/ord:customer/@ord:number" />
+        <jb:value property="customerName" data="#/ord:customer" />
     </jb:bean>
 
     <!--
     Create an "example.beans.OrderItem" bean instance when we visit the start of the <order-item> element.
     This bean is wired into the "orderItems" ArrayList bean.
     -->
-    <jb:bean beanId="orderItem" class="org.milyn.javabean.binding.ordermodel.OrderItem" createOnElement="/ord:order/ord:order-items/orditem:order-item">
-        <jb:value property="productId" decoder="Long" data="/ord:order/ord:order-items/orditem:order-item/orditem:product" />
-        <jb:value property="quantity" decoder="Integer" data="/ord:order/ord:order-items/orditem:order-item/orditem:quantity" />
-        <jb:value property="price" decoder="Double" data="/ord:order/ord:order-items/orditem:order-item/orditem:price" />
+    <jb:bean beanId="orderItem" class="org.milyn.javabean.binding.ordermodel.OrderItem" createOnElement="#order/ord:order-items/orditem:order-item">
+        <jb:value property="productId" data="#/orditem:product" />
+        <jb:value property="quantity" data="#/orditem:quantity" />
+        <jb:value property="price" data="#/orditem:price" />
     </jb:bean>
 
 </smooks-resource-list>

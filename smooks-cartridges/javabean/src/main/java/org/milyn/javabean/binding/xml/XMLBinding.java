@@ -31,7 +31,7 @@ import org.milyn.javabean.binding.SerializationContext;
 import org.milyn.javabean.binding.model.Bean;
 import org.milyn.javabean.binding.model.Binding;
 import org.milyn.javabean.binding.model.DataBinding;
-import org.milyn.javabean.binding.model.Model;
+import org.milyn.javabean.binding.model.ModelSet;
 import org.milyn.javabean.binding.model.WiredBinding;
 import org.milyn.javabean.binding.model.get.ConstantGetter;
 import org.milyn.javabean.binding.model.get.GetterGraph;
@@ -56,7 +56,7 @@ import java.util.List;
  */
 public class XMLBinding extends AbstractBinding {
 
-    private Model beanModel;
+    private ModelSet beanModelSet;
     private List<XMLElementSerializationNode> graphs;
     private Set<QName> rootElementNames = new HashSet<QName>();
     private Map<Class, XMLElementSerializationNode> serializers = new LinkedHashMap<Class, XMLElementSerializationNode>();
@@ -68,7 +68,8 @@ public class XMLBinding extends AbstractBinding {
 
     @Override
     public XMLBinding add(String smooksConfigURI) throws IOException, SAXException {
-        return (XMLBinding) super.add(smooksConfigURI);
+        super.add(smooksConfigURI);
+        return this;
     }
 
     @Override
@@ -77,13 +78,17 @@ public class XMLBinding extends AbstractBinding {
     }
 
     @Override
+    public XMLBinding setReportPath(String reportPath) {
+        super.setReportPath(reportPath);
+        return this;
+    }
+
+    @Override
     public XMLBinding intiailize() {
         super.intiailize();
 
-        SmooksResourceConfigurationList userConfigList = getUserDefinedResourceList();
-
-        beanModel = new Model(userConfigList);
-        graphs = createExpandedXMLOutputGraphs(userConfigList);
+        beanModelSet = ModelSet.get(getSmooks().getApplicationContext());
+        graphs = createExpandedXMLOutputGraphs(getUserDefinedResourceList());
         createRootSerializers(graphs);
         mergeBeanModelsIntoXMLGraphs();
 
@@ -144,7 +149,7 @@ public class XMLBinding extends AbstractBinding {
         Set<Map.Entry<Class, XMLElementSerializationNode>> serializerSet = serializers.entrySet();
 
         for(Map.Entry<Class, XMLElementSerializationNode> serializer : serializerSet) {
-            Bean model = beanModel.getModel(serializer.getKey());
+            Bean model = beanModelSet.getModel(serializer.getKey());
             if(model == null) {
                 throw new IllegalStateException("Unexpected error.  No Bean model for type '" + serializer.getKey().getName() + "'.");
             }
@@ -190,7 +195,7 @@ public class XMLBinding extends AbstractBinding {
     }
 
     private void createRootSerializers(List<XMLElementSerializationNode> graphs) {
-        Collection<Bean> beanModels = beanModel.getModels().values();
+        Collection<Bean> beanModels = beanModelSet.getModels().values();
 
         for(Bean model : beanModels) {
             BeanInstanceCreator creator = model.getCreator();
@@ -282,7 +287,7 @@ public class XMLBinding extends AbstractBinding {
             if(selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR) || selector.contains(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
                 throw new SmooksConfigurationException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
             }
-            if(!selector.startsWith("/")) {
+            if(!selector.startsWith("/") && !selector.startsWith("#")) {
                 throw new SmooksConfigurationException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
             }
             rootElementNames.add(config.getSelectorSteps()[0].getTargetElement());

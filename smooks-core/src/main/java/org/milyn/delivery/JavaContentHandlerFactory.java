@@ -45,18 +45,14 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
      * to be created.
      * @return Java {@link ContentHandler} instance.
 	 */
-	public synchronized ContentHandler create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
+	public synchronized Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
         Object javaResource = resourceConfig.getJavaResourceObject();
 
         if(javaResource != null) {
-            if(javaResource instanceof ContentHandler) {
-                return (ContentHandler) javaResource;
-            } else {
-                throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  Resource instance already has an attached Java resource object instance, but is not of type ContentHandler.");
-            }
+            return javaResource;
         }
 
-		ContentHandler contentHandler = null;
+		Object contentHandler = null;
         Exception exception = null;
         String className = null;
 		
@@ -66,9 +62,9 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
 			Constructor constructor;
 			try {
 				constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
-				contentHandler = (ContentHandler) constructor.newInstance(new Object[] {resourceConfig});
+				contentHandler = constructor.newInstance(new Object[] {resourceConfig});
 			} catch (NoSuchMethodException e) {
-				contentHandler = (ContentHandler) classRuntime.newInstance();
+				contentHandler = classRuntime.newInstance();
 			}
             Configurator.configure(contentHandler, resourceConfig, appContext);
         } catch (InstantiationException e) {

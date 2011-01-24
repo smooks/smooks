@@ -187,6 +187,9 @@ public class ContentDeliveryConfigBuilder {
             domConfig.initializeXMLReaderPool();
             domConfig.configureFilterBypass();
 
+            // Tell all interested listeners that the config builder for the profile has now been created.
+            fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
+
             return domConfig;
         } else {
             SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
@@ -212,6 +215,9 @@ public class ContentDeliveryConfigBuilder {
             saxConfig.initializeXMLReaderPool();
 
             saxConfig.addIndexCounters();
+
+            // Tell all interested listeners that the config builder for the profile has now been created.
+            fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
 
             return saxConfig;
         }
@@ -325,7 +331,7 @@ public class ContentDeliveryConfigBuilder {
 		// Build and sort the resourceConfigTable table - non-transforming elements.
 		buildSmooksResourceConfigurationTable(resourceConfigsList);
 		sortSmooksResourceConfigurations(resourceConfigTable);
-		
+
 		// If there's a DTD for this device, get it and add it to the DTDStore.
 		List dtdSmooksResourceConfigurations = resourceConfigTable.get("dtd");
 		if(dtdSmooksResourceConfigurations != null && dtdSmooksResourceConfigurations.size() > 0) {
@@ -348,12 +354,15 @@ public class ContentDeliveryConfigBuilder {
         // Extract the ContentDeliveryUnits and build the tables
         extractContentHandlers();
 
+        // Tell all interested listeners that all the handlers have now been created.
+        fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.HANDLERS_CREATED);
+
         if(logger.isDebugEnabled()) {
             logResourceConfig();
         }
 	}
 
-	/**
+    /**
 	 * Print a debug log of the resource configurations for the associated profile.
 	 */
 	private void logResourceConfig() {
@@ -520,6 +529,16 @@ public class ContentDeliveryConfigBuilder {
         configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message));
     }
 
+    private void fireEvent(ContentDeliveryConfigBuilderLifecycleEvent event) {
+        List<Object> initializedObjects = applicationContext.getStore().getInitializedObjects();
+
+        for(Object object : initializedObjects) {
+            if(object instanceof ContentDeliveryConfigBuilderLifecycleListener) {
+                ((ContentDeliveryConfigBuilderLifecycleListener) object).handle(event);
+            }
+        }
+    }
+
     /**
 	 * ContentHandler extraction strategy.
 	 * @author tfennelly
@@ -545,7 +564,7 @@ public class ContentDeliveryConfigBuilder {
             if(resourceConfig.isJavaContentHandler()) {
     			try {                
     				creator = store.getContentHandlerFactory("class");
-    				if(addCDU(elementName, resourceConfig, creator)) {
+    				if(addCDU(resourceConfig, creator)) {
     					// Job done - it's a CDU and we've added it!
     					return true;
     				}
@@ -567,7 +586,7 @@ public class ContentDeliveryConfigBuilder {
             if(creator != null) {
                 if(!(creator instanceof JavaContentHandlerFactory)) {
                     try {
-                        return addCDU(elementName, resourceConfig, creator);
+                        return addCDU(resourceConfig, creator);
                     } catch (InstantiationException e) {
                         logger.warn("ContentHandler creation failure.", e);
                     }
@@ -609,14 +628,13 @@ public class ContentDeliveryConfigBuilder {
 
         /**
 		 * Add a {@link ContentHandler} for the specified element and configuration.
-		 * @param elementName Element name against which to associate the CDU.
 		 * @param resourceConfig Configuration.
 		 * @param handlerFactory CDU Creator class.
 		 * @throws InstantiationException Failed to instantia
          * @return True if the CDU was added, otherwise false. 
 		 */
-		private boolean addCDU(String elementName, SmooksResourceConfiguration resourceConfig, ContentHandlerFactory handlerFactory) throws InstantiationException {
-			ContentHandler contentHandler;
+		private boolean addCDU(SmooksResourceConfiguration resourceConfig, ContentHandlerFactory handlerFactory) throws InstantiationException {
+			Object contentHandler;
 
 			// Create the ContentHandler.
 			try {

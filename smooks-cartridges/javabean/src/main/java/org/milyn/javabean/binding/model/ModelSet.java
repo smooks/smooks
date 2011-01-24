@@ -19,20 +19,25 @@ package org.milyn.javabean.binding.model;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksResourceConfigurationList;
+import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.cdr.xpath.SelectorStepBuilder;
+import org.milyn.container.ApplicationContext;
 import org.milyn.javabean.BeanInstanceCreator;
 import org.milyn.javabean.BeanInstancePopulator;
 
+import javax.xml.namespace.QName;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
+ * Bean binding model set.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class Model {
+public class ModelSet {
 
     /**
-     * Model base beans.
+     * ModelSet base beans.
      * <p/>
      * A Smooks configuration can have multiple <jb:baseBeans> that can be wired together
      * in all sorts of ways to create models.  This is a Map of these baseBeans.  These
@@ -48,9 +53,10 @@ public class Model {
      */
     private Map<String, Bean> models = new LinkedHashMap<String, Bean>();
 
-    public Model(SmooksResourceConfigurationList userConfigList) throws SmooksConfigurationException {
+    private ModelSet(SmooksResourceConfigurationList userConfigList) throws SmooksConfigurationException {
         createBaseBeanMap(userConfigList);
         createExpandedModels();
+        resolveModelSelectors(userConfigList);
     }
 
     public Bean getModel(String beanId) {
@@ -101,5 +107,77 @@ public class Model {
         for(Bean bean : baseBeans.values()) {
             models.put(bean.getBeanId(), bean.clone(baseBeans, null));
         }
+    }
+
+    private void resolveModelSelectors(SmooksResourceConfigurationList userConfigList) {
+        // Do the beans first...
+        for(Bean model : models.values()) {
+            resolveModelSelectors(model);
+        }
+
+        // Now run over all configs.. there may be router configs etc using hashed selectors...
+        for(int i = 0; i < userConfigList.size(); i++) {
+            expandSelector(userConfigList.get(i), false, null);
+        }
+    }
+
+    private void resolveModelSelectors(Bean model) {
+        SmooksResourceConfiguration beanConfig = model.getConfig();
+
+        expandSelector(beanConfig, true, null);
+
+        for(Binding binding : model.getBindings()) {
+            SmooksResourceConfiguration bindingConfig = binding.getConfig();
+            expandSelector(bindingConfig, true, beanConfig);
+
+            if(binding instanceof WiredBinding) {
+                resolveModelSelectors(((WiredBinding) binding).getWiredBean());
+            }
+        }
+    }
+
+    private void expandSelector(SmooksResourceConfiguration resourceConfiguration, boolean failOnMissingBean, SmooksResourceConfiguration context) {
+        SelectorStep[] selectorSteps = resourceConfiguration.getSelectorSteps();
+        QName targetElement = selectorSteps[0].getTargetElement();
+
+        if(targetElement == null) {
+            return;
+        }
+
+        String localPart = targetElement.getLocalPart();
+        if(localPart.equals("#") && context != null) {
+            resourceConfiguration.setSelectorSteps(concat(context.getSelectorSteps(), selectorSteps));
+        } else if(localPart.startsWith("#") && !localPart.equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+            String beanId = localPart.substring(1);
+            Bean bean = baseBeans.get(beanId);
+
+            if(bean != null) {
+                resourceConfiguration.setSelectorSteps(concat(bean.getConfig().getSelectorSteps(), selectorSteps));
+            } else if(failOnMissingBean) {
+                throw new SmooksConfigurationException("Invalid selector '" + SelectorStepBuilder.toString(selectorSteps) + "'.  Unknown beanId '" + beanId + "'.");
+            }
+
+        }
+    }
+
+    private SelectorStep[] concat(SelectorStep[] context, SelectorStep[] beanSelectorSteps) {
+        SelectorStep[] newSteps = new SelectorStep[context.length + beanSelectorSteps.length - 1];
+
+        System.arraycopy(context, 0, newSteps, 0, context.length);
+        System.arraycopy(beanSelectorSteps, 1, newSteps, context.length, beanSelectorSteps.length - 1);
+
+        return newSteps;
+    }
+
+    public static void build(ApplicationContext appContext) {
+        ModelSet modelSet = get(appContext);
+        if(modelSet == null) {
+            modelSet = new ModelSet(appContext.getStore().getUserDefinedResourceList());
+            appContext.setAttribute(ModelSet.class, modelSet);
+        }
+    }
+
+    public static ModelSet get(ApplicationContext appContext) {
+        return (ModelSet) appContext.getAttribute(ModelSet.class);
     }
 }

@@ -112,8 +112,9 @@ public class AbstractBinding {
      *
      * @param reportPath The execution report output path.
      */
-    public void setReportPath(String reportPath) {
+    public AbstractBinding setReportPath(String reportPath) {
         this.reportPath = reportPath;
+        return this;
     }
 
     /**
