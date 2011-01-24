@@ -1,0 +1,18 @@
+<ord:order xmlns:ord="http://order" xmlns:ordI="http://orderItem">
+    <ord:header>
+        <ord:date>2006-06-23</ord:date>
+        <ord:customer ord:number="123123">Joe</ord:customer>
+    </ord:header>
+    <ord:order-items>
+        <ordI:order-item>
+            <ordI:product>111</ordI:product>
+            <ordI:quantity>2</ordI:quantity>
+            <ordI:price>8.9</ordI:price>
+        </ordI:order-item>
+        <ordI:order-item>
+            <ordI:product>222</ordI:product>
+            <ordI:quantity>7</ordI:quantity>
+            <ordI:price>5.2</ordI:price>
+        </ordI:order-item>
+    </ord:order-items>
+</ord:order>

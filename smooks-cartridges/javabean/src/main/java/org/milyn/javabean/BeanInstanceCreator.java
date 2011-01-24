@@ -139,6 +139,10 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
         return beanIdName;
     }
 
+    public SmooksResourceConfiguration getConfig() {
+        return config;
+    }
+
     /**
      * Set the resource configuration on the bean populator.
      * @throws SmooksConfigurationException Incorrectly configured resource.

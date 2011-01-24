@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2011
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd">
+
+    <core:namespaces>
+        <core:namespace prefix="ord" uri="http://order"/>
+        <core:namespace prefix="orditem" uri="http://orderItem"/>
+    </core:namespaces>
+
+    <jb:bean beanId="order" class="org.milyn.javabean.binding.ordermodel.Order" createOnElement="/ord:order">
+        <jb:wiring property="header" beanIdRef="header" />
+        <jb:wiring property="orderItems" beanIdRef="orderItems" />
+    </jb:bean>
+
+    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="/ord:order">
+        <jb:wiring beanIdRef="orderItem" />
+    </jb:bean>
+
+    <jb:bean beanId="header" class="org.milyn.javabean.binding.ordermodel.Header" createOnElement="/ord:order/ord:header">
+        <jb:value property="date" decoder="Date" data="/ord:order/ord:header/ord:date">
+            <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
+            <jb:decodeParam name="locale-language">en</jb:decodeParam>
+            <jb:decodeParam name="locale-country">IE</jb:decodeParam>
+        </jb:value>
+        <jb:value property="customerNumber" data="/ord:order/ord:header/ord:customer/@ord:number" />
+        <jb:value property="customerName" data="/ord:order/ord:header/ord:customer" />
+    </jb:bean>
+
+    <jb:bean beanId="orderItem" class="org.milyn.javabean.binding.ordermodel.OrderItem" createOnElement="/ord:order/ord:order-items/orditem:order-item">
+        <jb:value property="productId" data="/ord:order/ord:order-items/orditem:order-item/orditem:product" />
+        <jb:value property="quantity" data="/ord:order/ord:order-items/orditem:order-item/orditem:quantity" />
+        <jb:value property="price" data="/ord:order/ord:order-items/orditem:order-item/orditem:price" />
+        <jb:wiring property="details" beanIdRef="details" />
+    </jb:bean>
+
+    <jb:bean beanId="details" class="org.milyn.javabean.binding.ordermodel.ItemDetails" createOnElement="/ord:order/ord:order-items/orditem:order-item/orditem:item-details">
+        <jb:value property="useBy" decoder="Date" data="/ord:order/ord:order-items/orditem:order-item/orditem:item-details/orditem:useby">
+            <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
+            <jb:decodeParam name="locale-language">en</jb:decodeParam>
+            <jb:decodeParam name="locale-country">IE</jb:decodeParam>
+        </jb:value>
+        <jb:value property="quantityInStock" data="/ord:order/ord:order-items/orditem:order-item/orditem:item-details/orditem:stock" />
+    </jb:bean>
+
+</smooks-resource-list>

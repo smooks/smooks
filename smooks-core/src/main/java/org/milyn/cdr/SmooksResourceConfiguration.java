@@ -227,6 +227,10 @@ public class SmooksResourceConfiguration {
      */
     private String resource;
     /**
+     * Java resource object instance.
+     */
+    private Object javaResourceObject;
+    /**
      * Is this resource defined inline in the configuration, or is it
      * referenced through a URI.
      */
@@ -535,6 +539,24 @@ public class SmooksResourceConfiguration {
                 isInline = true;
             }
         }
+    }
+
+    /**
+     * Get the Java resource object instance associated with this resource, if one exists and
+     * it has been create.
+     * @return The Java resource object instance associated with this resource, if one exists and
+     * it has been create, otherwise null.
+     */
+    public Object getJavaResourceObject() {
+        return javaResourceObject;
+    }
+
+    /**
+     * Set the Java resource object instance associated with this resource.
+     * @param javaResourceObject The Java resource object instance associated with this resource.
+     */
+    public void setJavaResourceObject(Object javaResourceObject) {
+        this.javaResourceObject = javaResourceObject;
     }
 
     /**
@@ -1607,6 +1629,12 @@ public class SmooksResourceConfiguration {
         builder.append("</resource-config>");
 
         return builder.toString();
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        // Do not override this method !!
+        return super.equals(obj);
     }
 
     /**

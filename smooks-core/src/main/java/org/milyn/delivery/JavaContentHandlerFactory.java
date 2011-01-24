@@ -46,7 +46,17 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
      * @return Java {@link ContentHandler} instance.
 	 */
 	public synchronized ContentHandler create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
-		ContentHandler deliveryUnit = null;
+        Object javaResource = resourceConfig.getJavaResourceObject();
+
+        if(javaResource != null) {
+            if(javaResource instanceof ContentHandler) {
+                return (ContentHandler) javaResource;
+            } else {
+                throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  Resource instance already has an attached Java resource object instance, but is not of type ContentHandler.");
+            }
+        }
+
+		ContentHandler contentHandler = null;
         Exception exception = null;
         String className = null;
 		
@@ -56,11 +66,11 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
 			Constructor constructor;
 			try {
 				constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
-				deliveryUnit = (ContentHandler) constructor.newInstance(new Object[] {resourceConfig});
+				contentHandler = (ContentHandler) constructor.newInstance(new Object[] {resourceConfig});
 			} catch (NoSuchMethodException e) {
-				deliveryUnit = (ContentHandler) classRuntime.newInstance();
+				contentHandler = (ContentHandler) classRuntime.newInstance();
 			}
-            Configurator.configure(deliveryUnit, resourceConfig, appContext);
+            Configurator.configure(contentHandler, resourceConfig, appContext);
         } catch (InstantiationException e) {
             exception = e;
         } catch (IllegalAccessException e) {
@@ -77,7 +87,9 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
                 throw state;
             }
         }
-		
-		return deliveryUnit;
+
+        resourceConfig.setJavaResourceObject(contentHandler);
+
+		return contentHandler;
 	}
 }
