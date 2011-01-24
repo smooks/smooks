@@ -15,16 +15,12 @@
 */
 package org.milyn.javabean.binding.xml;
 
-import org.milyn.FilterSettings;
 import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.Parameter;
-import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksResourceConfigurationList;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.cdr.xpath.SelectorStepBuilder;
-import org.milyn.delivery.Filter;
 import org.milyn.javabean.BeanInstanceCreator;
 import org.milyn.javabean.BeanInstancePopulator;
 import org.milyn.javabean.DataDecoder;
@@ -35,7 +31,7 @@ import org.milyn.javabean.binding.SerializationContext;
 import org.milyn.javabean.binding.model.Bean;
 import org.milyn.javabean.binding.model.Binding;
 import org.milyn.javabean.binding.model.DataBinding;
-import org.milyn.javabean.binding.model.Model;
+import org.milyn.javabean.binding.model.ModelSet;
 import org.milyn.javabean.binding.model.WiredBinding;
 import org.milyn.javabean.binding.model.get.ConstantGetter;
 import org.milyn.javabean.binding.model.get.GetterGraph;
@@ -47,6 +43,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
@@ -59,7 +56,7 @@ import java.util.List;
  */
 public class XMLBinding extends AbstractBinding {
 
-    private Model beanModel;
+    private ModelSet beanModelSet;
     private List<XMLElementSerializationNode> graphs;
     private Set<QName> rootElementNames = new HashSet<QName>();
     private Map<Class, XMLElementSerializationNode> serializers = new LinkedHashMap<Class, XMLElementSerializationNode>();
@@ -70,15 +67,33 @@ public class XMLBinding extends AbstractBinding {
     }
 
     @Override
-    public void intiailize() {
+    public XMLBinding add(String smooksConfigURI) throws IOException, SAXException {
+        super.add(smooksConfigURI);
+        return this;
+    }
+
+    @Override
+    public XMLBinding add(InputStream smooksConfigStream) throws IOException, SAXException {
+        super.add(smooksConfigStream);
+        return this;
+    }
+
+    @Override
+    public XMLBinding setReportPath(String reportPath) {
+        super.setReportPath(reportPath);
+        return this;
+    }
+
+    @Override
+    public XMLBinding intiailize() {
         super.intiailize();
 
-        SmooksResourceConfigurationList userConfigList = getUserDefinedResourceList();
-
-        beanModel = new Model(userConfigList);
-        graphs = createExpandedXMLOutputGraphs(userConfigList);
+        beanModelSet = ModelSet.get(getSmooks().getApplicationContext());
+        graphs = createExpandedXMLOutputGraphs(getUserDefinedResourceList());
         createRootSerializers(graphs);
         mergeBeanModelsIntoXMLGraphs();
+
+        return this;
     }
 
     public XMLBinding setOmitXMLDeclaration(boolean omitXMLDeclaration) {
@@ -86,8 +101,12 @@ public class XMLBinding extends AbstractBinding {
         return this;
     }
 
-    public <T> T fromXML(String inputSource, Class<T> toType) throws IOException {
-        return bind(new StringSource(inputSource), toType);
+    public <T> T fromXML(String inputSource, Class<T> toType) {
+        try {
+            return bind(new StringSource(inputSource), toType);
+        } catch (IOException e) {
+            throw new IllegalStateException("Unexpected IOException from a String input.", e);
+        }
     }
 
     public <T> T fromXML(Source inputSource, Class<T> toType) throws IOException {
@@ -111,13 +130,19 @@ public class XMLBinding extends AbstractBinding {
         outputWriter.flush();
     }
 
-    public String toXML(Object object) throws BeanSerializationException, IOException {
+    public String toXML(Object object) throws BeanSerializationException {
         StringWriter writer = new StringWriter();
         try {
             toXML(object, writer);
             return writer.toString();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unexpected IOException writing to a StringWriter.", e);
         } finally {
-            writer.close();
+            try {
+                writer.close();
+            } catch (IOException e) {
+                throw new IllegalStateException("Unexpected IOException closing a StringWriter.", e);
+            }
         }
     }
 
@@ -125,7 +150,7 @@ public class XMLBinding extends AbstractBinding {
         Set<Map.Entry<Class, XMLElementSerializationNode>> serializerSet = serializers.entrySet();
 
         for(Map.Entry<Class, XMLElementSerializationNode> serializer : serializerSet) {
-            Bean model = beanModel.getModel(serializer.getKey());
+            Bean model = beanModelSet.getModel(serializer.getKey());
             if(model == null) {
                 throw new IllegalStateException("Unexpected error.  No Bean model for type '" + serializer.getKey().getName() + "'.");
             }
@@ -171,7 +196,7 @@ public class XMLBinding extends AbstractBinding {
     }
 
     private void createRootSerializers(List<XMLElementSerializationNode> graphs) {
-        Collection<Bean> beanModels = beanModel.getModels().values();
+        Collection<Bean> beanModels = beanModelSet.getModels().values();
 
         for(Bean model : beanModels) {
             BeanInstanceCreator creator = model.getCreator();
@@ -263,7 +288,7 @@ public class XMLBinding extends AbstractBinding {
             if(selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR) || selector.contains(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
                 throw new SmooksConfigurationException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
             }
-            if(!selector.startsWith("/")) {
+            if(!selector.startsWith("/") && !selector.startsWith("#")) {
                 throw new SmooksConfigurationException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
             }
             rootElementNames.add(config.getSelectorSteps()[0].getTargetElement());

@@ -38,12 +38,12 @@ public interface ContentHandlerFactory extends ContentHandler {
     public static final String PARAM_RESTYPE = "restype";
 
 	/**
-	 * Create the {@link ContentHandler} instance.
+	 * Create the content handler instance.
 	 * @param resourceConfig The SmooksResourceConfiguration for the {@link ContentHandler}
      * to be created.
-	 * @return {@link ContentHandler} instance.
+	 * @return Content handler instance.
      * @throws SmooksConfigurationException Successfully created ContentHandler, but an error occured during configuration.
 	 * @throws InstantiationException Unable to create ContentHandler instance.
 	 */
-	public ContentHandler create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException;
+	public Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException;
 }

@@ -66,6 +66,19 @@ public class SelectorStep {
      * Public constructor.
      * @param xpathExpression The XPath expression of which the {@link Step} is a
      * part.
+     * @throws SAXPathException Error constructing the selector step.
+     */
+    public SelectorStep(String xpathExpression) throws SAXPathException {
+        AssertArgument.isNotNull(xpathExpression, "xpathExpression");
+        this.xpathExpression = xpathExpression;
+        targetElement = new QName(xpathExpression);
+        initFlags();
+    }
+
+    /**
+     * Public constructor.
+     * @param xpathExpression The XPath expression of which the {@link Step} is a
+     * part.
      * @param step The XPath {@link Step}.
      * @throws SAXPathException Error constructing the selector step.
      */

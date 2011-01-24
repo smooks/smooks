@@ -14,22 +14,22 @@
  * http://www.gnu.org/licenses/lgpl.txt
  */
 
-package org.milyn.javabean.binding.model.get;
+package org.milyn.delivery;
 
-import org.milyn.javabean.binding.BeanSerializationException;
+import org.milyn.cdr.SmooksConfigurationException;
 
 /**
- * Bean ModelSet node getter.
+ * Lifecycle listener for events fired during building of the {@link ContentDeliveryConfig}
+ * for a profile.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface Getter<T> {
+public interface ContentDeliveryConfigBuilderLifecycleListener {
 
     /**
-     * Get a value from the supplied context object.
-     * @param contextObject The context object from which the get operation is to be applied.
-     * @return The value returned from the get invocation.
-     * @throws BeanSerializationException Exception applying get operation on the context object instance.
+     * Event handler.
+     * @param event The event.
+     * @throws SmooksConfigurationException Smooks configuration exception.
      */
-    Object get(final T contextObject) throws BeanSerializationException;
+    void handle(final ContentDeliveryConfigBuilderLifecycleEvent event) throws SmooksConfigurationException;
 }

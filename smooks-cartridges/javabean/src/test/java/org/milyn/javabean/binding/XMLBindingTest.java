@@ -45,11 +45,14 @@ public class XMLBindingTest extends TestCase {
 
     private void test(String config) throws IOException, SAXException {
         String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"));
-        XMLBinding xmlBinding = (XMLBinding) new XMLBinding().add(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
+//        XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream(config + "/order-binding-config.xml")).setReportPath("/Users/tfennelly/zap/smooksreport.html");
+        XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
         xmlBinding.intiailize();
 
         // Read...
         Order order = xmlBinding.fromXML(inputXML, Order.class);
+
+        assertEquals("Joe & Ray", order.getHeader().getCustomerName());
 
         // write...
         String outputXML = xmlBinding.toXML(order);

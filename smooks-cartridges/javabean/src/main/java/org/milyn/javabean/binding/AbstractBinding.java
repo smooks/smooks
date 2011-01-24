@@ -60,7 +60,6 @@ public class AbstractBinding {
      */
     protected AbstractBinding() throws IOException, SAXException {
         smooks = new Smooks();
-        smooks.setFilterSettings(FilterSettings.newSAXSettings());
     }
 
     /**
@@ -92,10 +91,11 @@ public class AbstractBinding {
     /**
      * Initialize the binding instance.
      */
-    public void intiailize() {
+    public AbstractBinding intiailize() {
         assertNotInitialized();
         smooks.createExecutionContext();
         this.initialized = true;
+        return this;
     }
 
     /**
@@ -112,8 +112,9 @@ public class AbstractBinding {
      *
      * @param reportPath The execution report output path.
      */
-    public void setReportPath(String reportPath) {
+    public AbstractBinding setReportPath(String reportPath) {
         this.reportPath = reportPath;
+        return this;
     }
 
     /**

@@ -86,6 +86,19 @@ public class SelectorStepBuilder {
 
         if(xpathExpression.startsWith("/")) {
             isRooted = true;
+        } else if(xpathExpression.startsWith("#") && !xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+            String[] tokens = xpathExpression.split("/");
+
+            selectorSteps.add(new SelectorStep(tokens[0]));
+
+            StringBuilder reconstructedExpression = new StringBuilder();
+            for(int i = 1; i < tokens.length; i++) {
+                if(reconstructedExpression.length() > 0) {
+                    reconstructedExpression.append('/');
+                }
+                reconstructedExpression.append(tokens[i]);
+            }
+            xpathExpression = reconstructedExpression.toString();
         }
         if(xpathExpression.endsWith("//")) {
             endsStarStar = true;

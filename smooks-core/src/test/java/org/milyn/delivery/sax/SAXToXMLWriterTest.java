@@ -52,7 +52,7 @@ public class SAXToXMLWriterTest extends TestCase {
 		smooks.filterSource(new StringSource("<a><b>some&amp;text</b></a>"), stringResult);
 		
 		assertEquals("<a><b>{{some&#38;text}}</b></a>", stringResult.getResult());
-		assertEquals("some&amp;#38;text", VisitAfterWrittingVisitor.elementText);
+		assertEquals("some&#38;text", VisitAfterWrittingVisitor.elementText);
 	}	
 	
 	private class AllWrittingVisitor implements SAXElementVisitor {

@@ -16,6 +16,7 @@
 
 package org.milyn.javabean.binding.model;
 
+import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.javabean.BeanInstancePopulator;
 
 /**
@@ -30,6 +31,10 @@ public abstract class Binding {
     public Binding(BeanInstancePopulator populator) {
         this.populator = populator;
         this.property = populator.getProperty();
+    }
+
+    public SmooksResourceConfiguration getConfig() {
+        return populator.getConfig();
     }
 
     public BeanInstancePopulator getPopulator() {

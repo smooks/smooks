@@ -102,7 +102,7 @@ public class ContentDeliveryConfigBuilderTest extends TestCase {
             String expected = StreamUtils.trimLines(getClass().getResourceAsStream("smooks-config-invalid-error.txt")).toString();
             String actual = StreamUtils.trimLines(new StringReader(e.getMessage())).toString();
 
-            assertEquals(expected, actual);
+            assertEquals(expected.toLowerCase(), actual.toLowerCase());
         }
     }
 }

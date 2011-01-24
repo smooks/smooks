@@ -57,8 +57,6 @@ public class DefaultProfileStoreTest extends TestCase {
 		}
 		try {
 			assertEquals(set2, store.getProfileSet("device2"));
-			assertEquals(set2, store.getProfileSet("DEVICE2"));
-			assertEquals(set2, store.getProfileSet(" DEVICE2"));
 		} catch (UnknownProfileMemberException e1) {
 			fail("failed to get set");
 		}
