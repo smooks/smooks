@@ -490,7 +490,7 @@ public class ContentDeliveryConfigBuilder {
 	 * @return List of element names.
 	 */
 	private String[] getDTDElements(String string) {
-		String tmpString = string.toLowerCase();
+		String tmpString = string;
 
 		if(tmpString.startsWith(ELCSPEC_PREFIX)) {
 			tmpString = tmpString.substring(ELCSPEC_PREFIX.length());

@@ -59,7 +59,7 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
         if(profile.equalsIgnoreCase(baseProfile)) {
             return true;
         } else {
-            return containsKey(profile.trim().toLowerCase());
+            return containsKey(profile.trim());
         }
     }
 
@@ -70,7 +70,7 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 	 *            The profile to add.
 	 */
 	public void addProfile(String profile) {
-		addProfile(new BasicProfile(profile.toLowerCase()));
+		addProfile(new BasicProfile(profile));
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 					"null 'profile' arg in method call.");
 		}
 
-		put(profile.getName().toLowerCase(), profile);
+		put(profile.getName(), profile);
 	}
 
 	/**

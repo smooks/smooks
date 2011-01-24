@@ -136,7 +136,7 @@ public class SAXHandler extends SmooksContentHandler {
         if(isRoot) {
             elementVisitorConfig = deliveryConfig.getCombinedOptimizedConfig(new String[] {SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
-            elementVisitorConfig = visitorConfigMap.get(elementName.toLowerCase());
+            elementVisitorConfig = visitorConfigMap.get(elementName);
         }
 
         if(elementVisitorConfig == null) {

@@ -67,13 +67,11 @@ public class DefaultProfileSetTest extends TestCase {
 		assertTrue(!set.isMember("xxx"));
 		set.addProfile("xxx");
 		assertTrue(set.isMember("xxx"));
-		assertTrue(set.isMember("XXX"));
 
 		assertTrue(!set.isMember("yyy"));
-		set.addProfile(" yyy");
-		assertTrue(set.isMember("yyy"));
-		assertTrue(set.isMember(" yyy"));
-		assertTrue(set.isMember("yyy "));
+		set.addProfile(" YYY");
 		assertTrue(set.isMember("YYY"));
+		assertTrue(set.isMember(" YYY"));
+		assertTrue(set.isMember("YYY "));
 	}
 }

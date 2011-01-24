@@ -14,7 +14,7 @@
     Assign the new bean instance to the beanId of "order".
     The "header" and "orderItemList" beans are wired in.
     -->
-    <jb:bean beanId="order" class="example.model.Order" createOnElement="order">
+    <jb:bean beanId="order" class="example.model.Order" createOnElement="Order">
         <jb:wiring property="header" beanIdRef="header" />
         <jb:wiring property="orderItems" beanIdRef="orderItemList" />
     </jb:bean>
@@ -24,7 +24,7 @@
     Note, we're creating this bean instance before we encounter the actual <header> element.
     This bean is wired into the "order" bean.
     -->
-    <jb:bean beanId="header" class="example.model.Header" createOnElement="order">
+    <jb:bean beanId="header" class="example.model.Header" createOnElement="Order">
         <jb:wiring property="customer" beanIdRef="customer" />
         <jb:value property="orderId" data="header/order-id" />
         <jb:value property="orderStatus" decoder="Long" data="header/status-code" />
@@ -53,7 +53,7 @@
 	Create an ArrayList when we visit the start of the <order> element.
 	The "orderItem" beans are wired into this list and this list is wired into the "order" bean.
 	 -->
-    <jb:bean beanId="orderItemList" class="java.util.ArrayList" createOnElement="order">
+    <jb:bean beanId="orderItemList" class="java.util.ArrayList" createOnElement="Order">
         <jb:wiring beanIdRef="orderItem" />
     </jb:bean>
 

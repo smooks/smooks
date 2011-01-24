@@ -246,7 +246,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
     private void addIndexCounter(ElementIndexCounter indexCounter) {
         SelectorStep selectorStep = indexCounter.getSelectorStep();
         QName targetElement = selectorStep.getTargetElement();
-        String targetElementName = targetElement.getLocalPart().toLowerCase();
+        String targetElementName = targetElement.getLocalPart();
         String targetNS = targetElement.getNamespaceURI();
         SAXElementVisitorMap visitorMap = optimizedVisitorConfig.get(targetElementName);
 
@@ -280,7 +280,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         combinedConfig.setVisitCleanables(new ArrayList<ContentHandlerConfigMap<VisitLifecycleCleanable>>());
 
         for(String elementName : elementNames) {
-            SAXElementVisitorMap elementConfig = optimizedVisitorConfig.get(elementName.toLowerCase());
+            SAXElementVisitorMap elementConfig = optimizedVisitorConfig.get(elementName);
 
             if(elementConfig != null) {
                 List<ContentHandlerConfigMap<SAXVisitBefore>> elementVisitBefores = elementConfig.getVisitBefores();

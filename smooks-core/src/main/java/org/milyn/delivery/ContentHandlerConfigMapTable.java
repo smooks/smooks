@@ -49,11 +49,11 @@ public class ContentHandlerConfigMapTable<T extends ContentHandler> {
      * @param mapInst The mapping instance to be added.
      */
     private void addMapping(String elementName, ContentHandlerConfigMap<T> mapInst) {
-        List<ContentHandlerConfigMap<T>> elementMappings = table.get(elementName.toLowerCase());
+        List<ContentHandlerConfigMap<T>> elementMappings = table.get(elementName);
 
         if(elementMappings == null) {
             elementMappings = new Vector<ContentHandlerConfigMap<T>>();
-            table.put(elementName.toLowerCase(), elementMappings);
+            table.put(elementName, elementMappings);
         }
         elementMappings.add(mapInst);
         list.add(mapInst);
@@ -91,7 +91,7 @@ public class ContentHandlerConfigMapTable<T extends ContentHandler> {
      * @return It's list of {@link ContentHandlerConfigMap} instances, or null if there are none.
      */
     public List<ContentHandlerConfigMap<T>> getMappings(String selector) {
-        return table.get(selector.toLowerCase());
+        return table.get(selector);
     }
 
     /**
@@ -104,7 +104,7 @@ public class ContentHandlerConfigMapTable<T extends ContentHandler> {
         List<ContentHandlerConfigMap<T>> combinedList = new ArrayList<ContentHandlerConfigMap<T>>();
 
         for(String selector : selectors) {
-            List<ContentHandlerConfigMap<T>> selectorList = table.get(selector.toLowerCase());
+            List<ContentHandlerConfigMap<T>> selectorList = table.get(selector);
             if(selectorList != null) {
                 combinedList.addAll(selectorList);
             }

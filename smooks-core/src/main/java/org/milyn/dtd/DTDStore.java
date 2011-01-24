@@ -177,14 +177,14 @@ public class DTDStore {
 		 * @return List of allowed element names ({@link String}s).
 		 */
 		public List getChildElements(String elementName) {
-			Vector childElements = (Vector)elementElements.get(elementName.toLowerCase());
+			Vector childElements = (Vector)elementElements.get(elementName);
 			
 			if(childElements == null) {
 				DTDElement element = getElement(elementName);
 				
 				if(element != null) {
 					childElements = new Vector();
-					elementElements.put(elementName.toLowerCase(), childElements);
+					elementElements.put(elementName, childElements);
 					if(element.content instanceof DTDContainer) {
 						DTDContainer container = (DTDContainer)element.content;
 						Vector itemsVec = container.getItemsVec();
@@ -209,14 +209,14 @@ public class DTDStore {
 		 * function for undefined elements. 
 		 */
 		public List getElementAttributes(String elementName) throws ElementNotDefined {
-			Vector attributes = (Vector)elementAttributes.get(elementName.toLowerCase());
+			Vector attributes = (Vector)elementAttributes.get(elementName);
 			
 			if(attributes == null) {
 				DTDElement element = getElement(elementName);
 				
 				if(element != null) {
 					attributes = new Vector();
-					elementAttributes.put(elementName.toLowerCase(), attributes);				
+					elementAttributes.put(elementName, attributes);
 					attributes.addAll(element.attributes.keySet());
 				} else {
 					throw new ElementNotDefined("Element [" + elementName + "] not defined in DTD.");

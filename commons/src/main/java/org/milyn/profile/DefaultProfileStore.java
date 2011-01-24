@@ -46,7 +46,7 @@ public class DefaultProfileStore implements ProfileStore {
 
 		assertProfileMemberNameOK(profileMember);
 
-		set = store.get(profileMember.trim().toLowerCase());
+		set = store.get(profileMember.trim());
 		if (set == null) {
 			throw new UnknownProfileMemberException(
 					"Failed to get ProfileSet.  Unknown profile member name ["
@@ -75,7 +75,7 @@ public class DefaultProfileStore implements ProfileStore {
 					"'profileSet' arg must be an instanceof DefaultProfileSet.");
 		}
 
-		store.put(profileSet.getBaseProfile().trim().toLowerCase(), profileSet);
+		store.put(profileSet.getBaseProfile().trim(), profileSet);
         expandProfiles();
     }
 
