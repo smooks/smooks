@@ -15,16 +15,12 @@
 */
 package org.milyn.javabean.binding.xml;
 
-import org.milyn.FilterSettings;
 import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.Parameter;
-import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksResourceConfigurationList;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.cdr.xpath.SelectorStepBuilder;
-import org.milyn.delivery.Filter;
 import org.milyn.javabean.BeanInstanceCreator;
 import org.milyn.javabean.BeanInstancePopulator;
 import org.milyn.javabean.DataDecoder;
@@ -47,6 +43,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
@@ -70,7 +67,17 @@ public class XMLBinding extends AbstractBinding {
     }
 
     @Override
-    public void intiailize() {
+    public XMLBinding add(String smooksConfigURI) throws IOException, SAXException {
+        return (XMLBinding) super.add(smooksConfigURI);
+    }
+
+    @Override
+    public XMLBinding add(InputStream smooksConfigStream) throws IOException, SAXException {
+        return (XMLBinding) super.add(smooksConfigStream);
+    }
+
+    @Override
+    public XMLBinding intiailize() {
         super.intiailize();
 
         SmooksResourceConfigurationList userConfigList = getUserDefinedResourceList();
@@ -79,6 +86,8 @@ public class XMLBinding extends AbstractBinding {
         graphs = createExpandedXMLOutputGraphs(userConfigList);
         createRootSerializers(graphs);
         mergeBeanModelsIntoXMLGraphs();
+
+        return this;
     }
 
     public XMLBinding setOmitXMLDeclaration(boolean omitXMLDeclaration) {
@@ -86,8 +95,12 @@ public class XMLBinding extends AbstractBinding {
         return this;
     }
 
-    public <T> T fromXML(String inputSource, Class<T> toType) throws IOException {
-        return bind(new StringSource(inputSource), toType);
+    public <T> T fromXML(String inputSource, Class<T> toType) {
+        try {
+            return bind(new StringSource(inputSource), toType);
+        } catch (IOException e) {
+            throw new IllegalStateException("Unexpected IOException from a String input.", e);
+        }
     }
 
     public <T> T fromXML(Source inputSource, Class<T> toType) throws IOException {
@@ -111,13 +124,19 @@ public class XMLBinding extends AbstractBinding {
         outputWriter.flush();
     }
 
-    public String toXML(Object object) throws BeanSerializationException, IOException {
+    public String toXML(Object object) throws BeanSerializationException {
         StringWriter writer = new StringWriter();
         try {
             toXML(object, writer);
             return writer.toString();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unexpected IOException writing to a StringWriter.", e);
         } finally {
-            writer.close();
+            try {
+                writer.close();
+            } catch (IOException e) {
+                throw new IllegalStateException("Unexpected IOException closing a StringWriter.", e);
+            }
         }
     }
 
