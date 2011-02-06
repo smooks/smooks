@@ -29,7 +29,7 @@
         <jb:wiring property="orderItems" beanIdRef="orderItems" />
     </jb:bean>
 
-    <jb:bean beanId="header" class="org.milyn.javabean.binding.ordermodel.Header" createOnElement="#order/ord:header">
+    <jb:bean beanId="header" class="org.milyn.javabean.binding.ordermodel.Header" createOnElement="${order}/ord:header">
         <jb:value property="date" decoder="Date" data="#/ord:date">
             <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
             <jb:decodeParam name="locale-language">en</jb:decodeParam>
@@ -39,18 +39,18 @@
         <jb:value property="customerName" data="#/ord:customer/@ord:name" />
     </jb:bean>
 
-    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="#order/ord:order-items">
+    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="${order}/ord:order-items">
         <jb:wiring beanIdRef="orderItem" />
     </jb:bean>
 
-    <jb:bean beanId="orderItem" class="org.milyn.javabean.binding.ordermodel.OrderItem" createOnElement="#orderItems/ordi:order-item">
+    <jb:bean beanId="orderItem" class="org.milyn.javabean.binding.ordermodel.OrderItem" createOnElement="${orderItems}/ordi:order-item">
         <jb:value property="productId" data="#/ordi:product" />
         <jb:value property="quantity" data="#/ordi:quantity" />
         <jb:value property="price" data="#/ordi:price" />
         <jb:wiring property="details" beanIdRef="details" />
     </jb:bean>
 
-    <jb:bean beanId="details" class="org.milyn.javabean.binding.ordermodel.ItemDetails" createOnElement="#orderItem/ordi:item-details">
+    <jb:bean beanId="details" class="org.milyn.javabean.binding.ordermodel.ItemDetails" createOnElement="${orderItem}/ordi:item-details">
         <jb:value property="useBy" decoder="Date" data="#/ordi:useby">
             <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
             <jb:decodeParam name="locale-language">en</jb:decodeParam>

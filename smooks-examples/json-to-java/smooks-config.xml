@@ -47,7 +47,7 @@
     Target the to be created Customer instance under the beanId "customer" via the ${customer} bean binding.
     As soon as this bean is created it will be set on this bean instance.
     -->
-    <jb:bean class="example.model.Header" beanId="header" createOnElement="#order/header">
+    <jb:bean class="example.model.Header" beanId="header" createOnElement="${order}/header">
     	<jb:wiring property="customer" beanIdRef="customer"/>
 
     	<jb:value property="orderId" data="#/order-id" />

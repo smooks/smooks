@@ -176,17 +176,17 @@ public class XMLBinding extends AbstractBinding {
                 Bean wiredBean = ((WiredBinding) binding).getWiredBean();
                 XMLElementSerializationNode node = (XMLElementSerializationNode) serializer.findNode(wiredBean.getCreator().getConfig().getSelectorSteps());
 
-                if(isCollection) {
-                    if(node != null) {
+                if(node != null) {
+                    if(isCollection) {
                         // Mark the node that creates the wiredBean as being a collection item node...
                         Bean collectionBean = wiredBean.getWiredInto();
                         GetterGraph getter = constructContextualGetter(collectionBean);
 
                         node.setIsCollection(true);
                         node.setCollectionGetter(wiredBean.getBeanId(), getter);
+                    } else {
+                        node.setGetter(constructContextualGetter(wiredBean));
                     }
-                } else {
-                    node.setGetter(constructContextualGetter(wiredBean));
                 }
 
                 merge(serializer, wiredBean);
@@ -287,7 +287,7 @@ public class XMLBinding extends AbstractBinding {
             if(selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR) || selector.contains(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
                 throw new SmooksConfigurationException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
             }
-            if(!selector.startsWith("/") && !selector.startsWith("#")) {
+            if(!selector.startsWith("/") && !selector.startsWith("${") && !selector.startsWith("#")) {
                 throw new SmooksConfigurationException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
             }
             rootElementNames.add(config.getSelectorSteps()[0].getTargetElement());

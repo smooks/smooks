@@ -46,7 +46,7 @@
     Create an "example.beans.Header" bean instance when we visit the start of the <header> element.
     This bean is wired into the "order" bean.
     -->
-    <jb:bean beanId="header" class="org.milyn.javabean.binding.ordermodel.Header" createOnElement="#order/ord:header">
+    <jb:bean beanId="header" class="org.milyn.javabean.binding.ordermodel.Header" createOnElement="${order}/ord:header">
         <jb:value property="date" decoder="Date" data="#/ord:date">
             <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
             <jb:decodeParam name="locale-language">en</jb:decodeParam>
@@ -60,7 +60,7 @@
     Create an "example.beans.OrderItem" bean instance when we visit the start of the <order-item> element.
     This bean is wired into the "orderItems" ArrayList bean.
     -->
-    <jb:bean beanId="orderItem" class="org.milyn.javabean.binding.ordermodel.OrderItem" createOnElement="#order/ord:order-items/orditem:order-item">
+    <jb:bean beanId="orderItem" class="org.milyn.javabean.binding.ordermodel.OrderItem" createOnElement="${order}/ord:order-items/orditem:order-item">
         <jb:value property="productId" data="#/orditem:product" />
         <jb:value property="quantity" data="#/orditem:quantity" />
         <jb:value property="price" data="#/orditem:price" />

@@ -24,10 +24,13 @@ import org.milyn.cdr.xpath.SelectorStepBuilder;
 import org.milyn.container.ApplicationContext;
 import org.milyn.javabean.BeanInstanceCreator;
 import org.milyn.javabean.BeanInstancePopulator;
+import org.milyn.util.DollarBraceDecoder;
 
 import javax.xml.namespace.QName;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Bean binding model set.
@@ -147,8 +150,12 @@ public class ModelSet {
         String localPart = targetElement.getLocalPart();
         if(localPart.equals("#") && context != null) {
             resourceConfiguration.setSelectorSteps(concat(context.getSelectorSteps(), selectorSteps));
-        } else if(localPart.startsWith("#") && !localPart.equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
-            String beanId = localPart.substring(1);
+            return;
+        }
+
+        List<String> dollarBraceTokens = DollarBraceDecoder.getTokens(localPart);
+        if(dollarBraceTokens.size() == 1) {
+            String beanId = dollarBraceTokens.get(0);
             Bean bean = baseBeans.get(beanId);
 
             if(bean != null) {
