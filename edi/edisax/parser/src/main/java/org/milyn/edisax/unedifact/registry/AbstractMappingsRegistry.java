@@ -57,7 +57,12 @@ public abstract class AbstractMappingsRegistry implements MappingsRegistry {
 		String lookupName = lookupNameBuilder.toString().trim();
 		EdifactModel result = content.get(lookupName);
 		if (result == null) {
-			content.putAll(demandLoading(nameComponents));
+            synchronized (content) {
+                result = content.get(lookupName);
+		        if (result == null) {
+			        content.putAll(demandLoading(nameComponents));
+                }
+            }
 			// Try again
 			result = content.get(lookupName);
 			if (result != null) {

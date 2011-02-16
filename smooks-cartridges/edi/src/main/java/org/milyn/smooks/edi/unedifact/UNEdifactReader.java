@@ -63,7 +63,6 @@ public class UNEdifactReader extends UNEdifactInterchangeParser implements
 			SAXException {
 		ignoreNewLines(ignoreNewLines);
 		validate(validate);
-		applicationContext.getAttribute(UNEdifactReader.class);
 		// Default Mappings Registry is already set to LazyMappingsRegistry
 		// only if mappingModel is defined we should set another instance
 		if (!StringUtils.isEmpty(mappingModel)) {
