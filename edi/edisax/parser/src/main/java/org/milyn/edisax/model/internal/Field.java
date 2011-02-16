@@ -28,14 +28,14 @@ public class Field extends ValueNode implements ContainerNode {
     public Field() {    	
     }
 
-	public Field(String xmltag, Boolean required) {
-		super(xmltag);
+	public Field(String xmltag, String namespace, Boolean required) {
+		super(xmltag, namespace);
 		this.required = required;
 		this.truncatable = true;
 	}
 
-	public Field(String xmltag, Boolean required, Boolean truncatable) {
-		super(xmltag);
+	public Field(String xmltag, String namespace, Boolean required, Boolean truncatable) {
+		super(xmltag, namespace);
 		this.required = required;
 		this.truncatable = truncatable;
 	}

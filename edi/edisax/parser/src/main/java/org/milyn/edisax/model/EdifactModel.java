@@ -16,20 +16,31 @@
 
 package org.milyn.edisax.model;
 
-import org.milyn.assertion.AssertArgument;
-import org.milyn.edisax.EDIConfigurationException;
-import org.milyn.edisax.EDIParseException;
-import org.milyn.edisax.model.internal.*;
-import org.milyn.io.StreamUtils;
-import org.milyn.resource.URIResourceLocator;
-import org.xml.sax.SAXException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.milyn.assertion.AssertArgument;
+import org.milyn.edisax.EDIConfigurationException;
+import org.milyn.edisax.EDIParseException;
+import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.Delimiters;
+import org.milyn.edisax.model.internal.Description;
+import org.milyn.edisax.model.internal.Edimap;
+import org.milyn.edisax.model.internal.Field;
+import org.milyn.edisax.model.internal.Import;
+import org.milyn.edisax.model.internal.Segment;
+import org.milyn.edisax.model.internal.SegmentGroup;
+import org.milyn.io.StreamUtils;
+import org.milyn.resource.URIResourceLocator;
+import org.xml.sax.SAXException;
 
 /**                                          
  * EdifactModel contains all logic for handling imports for the
@@ -37,10 +48,11 @@ import java.util.*;
  */
 public class EdifactModel {
 
-    private Description description;
+    private static final URI UNSPECIFIED = URI.create("unspecified");
+	private Description description;
     private String mappingConfig;
-    private URI modelURI;
-    private URI importBaseURI;
+    private final URI modelURI;
+    private final URI importBaseURI;
 
     private volatile Edimap edimap;
     private Collection<EdifactModel> associateModels;
@@ -52,6 +64,8 @@ public class EdifactModel {
     public EdifactModel(Edimap edimap) {
         AssertArgument.isNotNull(edimap, "edimap");
         this.edimap = edimap;
+        modelURI = UNSPECIFIED;
+        importBaseURI = URIResourceLocator.getSystemBaseURI();
     }
 
     /**
@@ -60,7 +74,8 @@ public class EdifactModel {
     public EdifactModel(InputStream mappingModelStream) throws IOException {
         AssertArgument.isNotNull(mappingModelStream, "mappingModelStream");
 		this.importBaseURI = URIResourceLocator.getSystemBaseURI();
-        try {
+        modelURI = UNSPECIFIED;
+		try {
             this.mappingConfig = StreamUtils.readStreamAsString(mappingModelStream);
         } finally {
             mappingModelStream.close();

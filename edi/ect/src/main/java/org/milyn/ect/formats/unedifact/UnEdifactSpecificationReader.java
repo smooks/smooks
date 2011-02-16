@@ -18,6 +18,7 @@ package org.milyn.ect.formats.unedifact;
 import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.ect.EdiParseException;
 import org.milyn.edisax.util.EDIUtils;
+import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Field;
@@ -100,11 +101,11 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
         ugh.setSegcode("UGH");
         ugh.setXmltag("UGH");
-        ugh.addField(new Field("id", true));
+        ugh.addField(new Field("id",ControlBlockHandler.NAMESPACE, true));
 
         ugt.setSegcode("UGT");
         ugt.setXmltag("UGT");
-        ugt.addField(new Field("id", true));
+        ugt.addField(new Field("id",ControlBlockHandler.NAMESPACE, true));
 
         definitionModel.getSegments().getSegments().add(ugh);
         definitionModel.getSegments().getSegments().add(ugt);

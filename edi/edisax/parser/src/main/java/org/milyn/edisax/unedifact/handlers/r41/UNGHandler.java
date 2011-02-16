@@ -41,7 +41,7 @@ class UNGHandler implements ControlBlockHandler {
     public void process(InterchangeContext interchangeContext) throws IOException, SAXException {
 		BufferedSegmentReader segmentReader = interchangeContext.getSegmentReader();
 
-		interchangeContext.getControlSegmentParser().startElement("group", true);
+		interchangeContext.getControlSegmentParser().startElement("group", ControlBlockHandler.NAMESPACE, true);
 
 		segmentReader.moveToNextSegment(false);
 		interchangeContext.mapControlSegment(ungSegment, true);
@@ -59,7 +59,7 @@ class UNGHandler implements ControlBlockHandler {
 	        }
         }
 
-        interchangeContext.getControlSegmentParser().endElement("group", true);
+        interchangeContext.getControlSegmentParser().endElement("group",ControlBlockHandler.NAMESPACE, true);
 	}
 
     private static void createSegmentsDefs() {
@@ -68,34 +68,36 @@ class UNGHandler implements ControlBlockHandler {
 		ungSegment = new Segment();
 		ungSegment.setSegcode("UNG");
 		ungSegment.setXmltag("UNG");
+		ungSegment.setNamespace(ControlBlockHandler.NAMESPACE);
 		ungSegment.setDescription("UNG - Group Header");
 		ungSegment.setTruncatable(true);
-		ungSegment.addField(new Field("groupId", false));
-		ungSegment.addField(new Field("senderApp",  false).
-                addComponent(new Component("id",            true)).
-                addComponent(new Component("codeQualifier", false)));
-		ungSegment.addField(new Field("recipientApp", false).
-                addComponent(new Component("id",              true)).
-                addComponent(new Component("codeQualifier",   false)));
-		ungSegment.addField(new Field("dateTime",  false).
-                addComponent(new Component("date", true)).
-                addComponent(new Component("time", true)));
-		ungSegment.addField(new Field("groupRef", true));
-		ungSegment.addField(new Field("controllingAgencyCode", false));
-		ungSegment.addField(new Field("messageVersion",        false).
-                addComponent(new Component("versionNum",       true)).
-                addComponent(new Component("releaseNum",       true)).
-                addComponent(new Component("associationCode", false)));
-		ungSegment.addField(new Field("applicationPassword",  false));
+		ungSegment.addField(new Field("groupId",ControlBlockHandler.NAMESPACE, false));
+		ungSegment.addField(new Field("senderApp",ControlBlockHandler.NAMESPACE,  false).
+                addComponent(new Component("id",ControlBlockHandler.NAMESPACE,            true)).
+                addComponent(new Component("codeQualifier",ControlBlockHandler.NAMESPACE, false)));
+		ungSegment.addField(new Field("recipientApp",ControlBlockHandler.NAMESPACE, false).
+                addComponent(new Component("id",ControlBlockHandler.NAMESPACE,              true)).
+                addComponent(new Component("codeQualifier",ControlBlockHandler.NAMESPACE,   false)));
+		ungSegment.addField(new Field("dateTime",ControlBlockHandler.NAMESPACE,  false).
+                addComponent(new Component("date",ControlBlockHandler.NAMESPACE, true)).
+                addComponent(new Component("time",ControlBlockHandler.NAMESPACE, true)));
+		ungSegment.addField(new Field("groupRef",ControlBlockHandler.NAMESPACE, true));
+		ungSegment.addField(new Field("controllingAgencyCode",ControlBlockHandler.NAMESPACE, false));
+		ungSegment.addField(new Field("messageVersion",ControlBlockHandler.NAMESPACE,        false).
+                addComponent(new Component("versionNum",ControlBlockHandler.NAMESPACE,       true)).
+                addComponent(new Component("releaseNum",ControlBlockHandler.NAMESPACE,       true)).
+                addComponent(new Component("associationCode",ControlBlockHandler.NAMESPACE, false)));
+		ungSegment.addField(new Field("applicationPassword",ControlBlockHandler.NAMESPACE,  false));
 
 		// UNE Segment Definition...
 		// http://www.gefeg.com/jswg/v41/se/se14.htm
 		uneSegment = new Segment();
 		uneSegment.setSegcode("UNE");
 		uneSegment.setXmltag("UNE");
+		uneSegment.setNamespace(ControlBlockHandler.NAMESPACE);
 		uneSegment.setDescription("UNE - Group Trailer");
 		uneSegment.setTruncatable(true);
-		uneSegment.addField(new Field("controlCount", true));
-		uneSegment.addField(new Field("groupRef", true));
+		uneSegment.addField(new Field("controlCount",ControlBlockHandler.NAMESPACE, true));
+		uneSegment.addField(new Field("groupRef",ControlBlockHandler.NAMESPACE, true));
 	}
 }

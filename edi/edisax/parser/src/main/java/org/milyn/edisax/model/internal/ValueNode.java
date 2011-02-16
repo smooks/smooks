@@ -43,8 +43,8 @@ public class ValueNode extends MappingNode {
     public ValueNode() {
 	}
     
-	public ValueNode(String xmltag) {
-		super(xmltag);
+	public ValueNode(String xmltag, String namespace) {
+		super(xmltag, namespace);
 		minLength = 0;
 		maxLength = 1;
 	}
