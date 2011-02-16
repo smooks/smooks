@@ -42,6 +42,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.ext.Attributes2Impl;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -83,7 +84,10 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        segmentReader.setIgnoreNewLines(getFeature(EDIParser.FEATURE_IGNORE_NEWLINES));
 	        
 	        contentHandler.startDocument();
-	        contentHandler.startElement(XMLConstants.NULL_NS_URI, "unEdifact", "unEdifact", new AttributesImpl());
+	        contentHandler.startPrefixMapping("h", ControlBlockHandler.NAMESPACE);
+	        Attributes2Impl attrs = new Attributes2Impl();
+	        attrs.addAttribute(XMLConstants.NULL_NS_URI, "xmlns:h", "xmlns:h", "CDATA", ControlBlockHandler.NAMESPACE);
+	        contentHandler.startElement(ControlBlockHandler.NAMESPACE, "unEdifact", "h:unEdifact", attrs);
 	
 	        while(true) {
 		        segCode = segmentReader.peek(3, true);
@@ -102,7 +106,8 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        }
 	        
 	        contentHandler.characters(new char[] {'\n'}, 0, 1);
-	        contentHandler.endElement(XMLConstants.NULL_NS_URI, "unEdifact", "unEdifact");
+	        contentHandler.endElement(ControlBlockHandler.NAMESPACE, "unEdifact", "h:unEdifact");
+	        contentHandler.endPrefixMapping("h");
 	        contentHandler.endDocument();
         } finally {
         	contentHandler = null;

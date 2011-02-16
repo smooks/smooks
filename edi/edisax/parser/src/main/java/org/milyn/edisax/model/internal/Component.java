@@ -28,14 +28,14 @@ public class Component extends ValueNode implements ContainerNode {
 	public Component() {
 	}
     
-	public Component(String xmltag, Boolean required) {
-		super(xmltag);
+	public Component(String xmltag, String namespace, Boolean required) {
+		super(xmltag, namespace);
 		this.required = required;
 		this.truncatable = true;
 	}
     
-	public Component(String xmltag, Boolean required, Boolean truncatable) {
-		super(xmltag);
+	public Component(String xmltag, String namespace, Boolean required, Boolean truncatable) {
+		super(xmltag, namespace);
 		this.required = required;
 		this.truncatable = truncatable;
 	}

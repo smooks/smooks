@@ -15,19 +15,30 @@
 */
 package org.milyn.edisax.util;
 
-import org.milyn.edisax.model.internal.*;
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.lang.StringUtils;
+import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.Delimiters;
+import org.milyn.edisax.model.internal.Description;
+import org.milyn.edisax.model.internal.Edimap;
+import org.milyn.edisax.model.internal.Field;
+import org.milyn.edisax.model.internal.Import;
+import org.milyn.edisax.model.internal.MappingNode;
+import org.milyn.edisax.model.internal.Segment;
+import org.milyn.edisax.model.internal.SegmentGroup;
+import org.milyn.edisax.model.internal.SubComponent;
 import org.milyn.util.ClassUtil;
 import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  * EdimapWriter
@@ -41,7 +52,7 @@ public class EdimapWriter {
         docBuilderFactory.setNamespaceAware(true);
     }
 
-    private static final String NS = "http://www.milyn.org/schema/edi-message-mapping-1.4.xsd";
+    private static final String NS = "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd";
 
     private Document doc;
 
@@ -66,7 +77,9 @@ public class EdimapWriter {
 
     private void write(Edimap edimap) {
         Element edimapEl = newElement("edimap", doc);
-
+        if (!StringUtils.isEmpty(edimap.getNamespace())) {
+        	edimapEl.setAttribute("namespace", edimap.getNamespace());
+        }
         addImports(edimap.getImports(), edimapEl);
         addDescription(edimap.getDescription(), edimapEl);
         addDelimiters(edimap.getDelimiters(), edimapEl);

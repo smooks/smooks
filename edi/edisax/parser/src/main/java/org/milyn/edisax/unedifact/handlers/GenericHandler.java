@@ -39,9 +39,9 @@ public class GenericHandler implements ControlBlockHandler {
 		
 		segBuffer.getChars(0, segBuffer.length(), segChars, 0);
 		
-		interchangeContext.getControlSegmentParser().startElement(fields[0], true);
+		interchangeContext.getControlSegmentParser().startElement(fields[0], ControlBlockHandler.NAMESPACE, true);
 		interchangeContext.getControlSegmentParser().getContentHandler().characters(segChars, 0, segChars.length);
-		interchangeContext.getControlSegmentParser().endElement(fields[0], false);		
+		interchangeContext.getControlSegmentParser().endElement(fields[0], ControlBlockHandler.NAMESPACE, false);		
 
 		// And clear out the buffer...
 		segmentReader.getSegmentBuffer().setLength(0);

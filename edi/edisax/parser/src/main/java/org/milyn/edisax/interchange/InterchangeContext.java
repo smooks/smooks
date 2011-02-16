@@ -36,6 +36,8 @@ import org.xml.sax.SAXException;
 public class InterchangeContext {
 
     public static final String INTERCHANGE_MESSAGE_BLOCK_ELEMENT_NAME = "interchangeMessage";
+    
+    public static final String INTERCHANGE_MESSAGE_BLOCK_NAMESPACE = ControlBlockHandler.NAMESPACE;
 
 	private BufferedSegmentReader segmentReader; 
 	private ContentHandler contentHandler;
@@ -110,9 +112,9 @@ public class InterchangeContext {
 	}
 
     public void mapControlSegment(Segment controlSegment, boolean clearSegmentBuffer) throws SAXException {
-		controlSegmentParser.startElement(controlSegment.getXmltag(), true);
+		controlSegmentParser.startElement(controlSegment, true);
 		controlSegmentParser.mapFields(segmentReader.getCurrentSegmentFields(), controlSegment);
-		controlSegmentParser.endElement(controlSegment.getXmltag(), true);
+		controlSegmentParser.endElement(controlSegment, true);
 
 		// And clear the buffer... we're finished with this data...
 		if(clearSegmentBuffer) {

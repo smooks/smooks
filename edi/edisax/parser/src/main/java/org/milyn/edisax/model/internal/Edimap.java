@@ -31,6 +31,7 @@ public class Edimap {
     private Description description;
     private Delimiters delimiters;
     private SegmentGroup segments;
+    private String namespace;
 
     public Edimap() {    	
     }
@@ -77,4 +78,12 @@ public class Edimap {
     public void write(Writer writer) throws IOException {
         EdimapWriter.write(this, writer);
     }
+
+	public void setNamespace(String uri) {
+		this.namespace = uri;
+	}
+
+	public String getNamespace() {
+		return namespace;
+	}
 }
