@@ -15,13 +15,12 @@
 */
 package org.milyn.smooks.edi;
 
-import org.milyn.ReaderConfigurator;
-import org.milyn.GenericReaderConfigurator;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.assertion.AssertArgument;
-
-import java.util.ArrayList;
 import java.util.List;
+
+import org.milyn.GenericReaderConfigurator;
+import org.milyn.ReaderConfigurator;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.cdr.SmooksResourceConfiguration;
 
 /**
  * EDI Reader configurator.

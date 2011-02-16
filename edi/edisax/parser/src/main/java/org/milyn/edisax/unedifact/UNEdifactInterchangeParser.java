@@ -16,25 +16,21 @@
 package org.milyn.edisax.unedifact;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
 
 import org.milyn.assertion.AssertArgument;
 import org.milyn.edisax.BufferedSegmentReader;
-import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDIParser;
-import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
-import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
-import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.interchange.ControlBlockHandler;
+import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
 import org.milyn.edisax.interchange.InterchangeContext;
-import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Delimiters;
-import org.milyn.edisax.model.internal.Description;
+import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
+import org.milyn.edisax.unedifact.registry.LazyMappingsRegistry;
+import org.milyn.edisax.unedifact.registry.MappingsRegistry;
 import org.milyn.xml.hierarchy.HierarchyChangeListener;
 import org.milyn.xml.hierarchy.HierarchyChangeReader;
 import org.xml.sax.ContentHandler;
@@ -59,7 +55,10 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	
 	public static final Delimiters defaultUNEdifactDelimiters = new Delimiters().setSegment("'").setField("+").setComponent(":").setEscape("?").setDecimalSeparator(".");
 	
-	private Map<Description, EdifactModel> mappingModels = new LinkedHashMap<Description, EdifactModel>();
+	/**
+	 * By default we are using {@link LazyMappingsRegistry} instance
+	 */
+	protected MappingsRegistry registry = new LazyMappingsRegistry();
 	private ContentHandler contentHandler;
     private HierarchyChangeListener hierarchyChangeListener;
     private InterchangeContext interchangeContext;
@@ -71,8 +70,8 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
             throw new IllegalStateException("'contentHandler' not set.  Cannot parse EDI stream.");
         }
 
-        if(mappingModels == null || mappingModels.isEmpty()) {
-            throw new IllegalStateException("'mappingModels' not set.  Cannot parse EDI stream.");
+        if(registry == null) {
+            throw new IllegalStateException("'mappingsRegistry' not set.  Cannot parse EDI stream.");
         }
 		
         try {
@@ -111,15 +110,11 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	}
 
     protected InterchangeContext createInterchangeContext(BufferedSegmentReader segmentReader, boolean validate, ControlBlockHandlerFactory controlBlockHandlerFactory) {
-        return new InterchangeContext(segmentReader, mappingModels, contentHandler, controlBlockHandlerFactory, validate);
+        return new InterchangeContext(segmentReader, registry, contentHandler, controlBlockHandlerFactory, validate);
     }
 
     public InterchangeContext getInterchangeContext() {
         return interchangeContext;
-    }
-
-    public Map<Description, EdifactModel> getMappingModels() {
-        return mappingModels;
     }
 
     /**
@@ -130,53 +125,9 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	 * @param mappingModels The mapping model.
 	 * @return This parser instance.
 	 */
-	public UNEdifactInterchangeParser setMappingModels(Map<Description, EdifactModel> mappingModels) {
-		AssertArgument.isNotNullAndNotEmpty(mappingModels, "mappingModels");
-		this.mappingModels = mappingModels;
-		return this;
-	}
-
-	/**
-	 * Add EDI mapping model to be used in all subsequent parse operations.
-	 * <p/>
-	 * The model can be generated through a call to the {@link EDIParser}.
-	 * 
-	 * @param mappingModels The mapping model.
-	 * @return This parser instance.
-	 */
-	public UNEdifactInterchangeParser addMappingModels(Map<Description, EdifactModel> mappingModels) {
-		AssertArgument.isNotNullAndNotEmpty(mappingModels, "mappingModels");		
-		this.mappingModels.putAll(mappingModels);
-		return this;
-	}
-
-	/**
-	 * Add EDI mapping model to be used in all subsequent parse operations.
-	 * 
-	 * @param mappingModelFiles Semi-colon separated list of mapping model files.  Supports zip files.
-	 * @param baseURI The base URI against which the mapping model URIs is to be resolved.
-	 * 
-	 * @return This parser instance.
-	 * @throws EDIConfigurationException Error processing one of the Mapping Model configs.
-	 * @throws SAXException 
-	 * @throws IOException 
-	 */
-	public UNEdifactInterchangeParser addMappingModels(String mappingModelFiles, URI baseURI) throws EDIConfigurationException, IOException, SAXException {
-		EDIUtils.loadMappingModels(mappingModelFiles, mappingModels, baseURI);
-		return this;
-	}
-
-	/**
-	 * Add EDI mapping model to be used in all subsequent parse operations.
-	 * <p/>
-	 * The model can be generated through a call to the {@link EDIParser}.
-	 * 
-	 * @param mappingModel The mapping model.
-	 * @return This parser instance.
-	 */
-	public UNEdifactInterchangeParser addMappingModel(EdifactModel mappingModel) {
-		AssertArgument.isNotNull(mappingModel, "mappingModel");		
-		this.mappingModels.put(mappingModel.getEdimap().getDescription(), mappingModel);
+	public UNEdifactInterchangeParser setMappingsRegistry(MappingsRegistry registry) {
+		AssertArgument.isNotNull(registry, "mappingsRegistry");
+		this.registry = registry;
 		return this;
 	}
 

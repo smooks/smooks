@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
  * UN/EDIFACT utility methods.
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ * @deprecated
  */
 public abstract class UNEdifactUtil {
 

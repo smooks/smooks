@@ -27,6 +27,7 @@ import org.milyn.edisax.EDIParser;
 import org.milyn.edisax.MockContentHandler;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
+import org.milyn.edisax.unedifact.registry.DefaultMappingsRegistry;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -43,7 +44,7 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
 		
 		UNEdifactInterchangeParser parser = new UNEdifactInterchangeParser();
-		parser.addMappingModel(model1).addMappingModel(model2);
+		parser.setMappingsRegistry(new DefaultMappingsRegistry(model1, model2));
 		parser.ignoreNewLines(true);
 
 		MockContentHandler handler;
@@ -70,7 +71,7 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
 		
 		UNEdifactInterchangeParser parser = new UNEdifactInterchangeParser();
-		parser.addMappingModel(model1).addMappingModel(model2);
+		parser.setMappingsRegistry(new DefaultMappingsRegistry(model1, model2));
 		parser.ignoreNewLines(true);
 
 		MockContentHandler handler;
@@ -91,7 +92,7 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
 		
 		UNEdifactInterchangeParser parser = new UNEdifactInterchangeParser();
-		parser.addMappingModel(model1).addMappingModel(model2);
+		parser.setMappingsRegistry(new DefaultMappingsRegistry(model1, model2));
 		parser.ignoreNewLines(true);
 
 		MockContentHandler handler;
@@ -110,7 +111,7 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
 		
 		UNEdifactInterchangeParser parser = new UNEdifactInterchangeParser();
-		parser.addMappingModel(model1).addMappingModel(model2);
+		parser.setMappingsRegistry(new DefaultMappingsRegistry(model1, model2));
 		parser.ignoreNewLines(true);
 
 		MockContentHandler handler;

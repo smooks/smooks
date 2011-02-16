@@ -55,10 +55,10 @@ public class EJCExecutor {
 
         Properties interchangeProperties = EDIUtils.getInterchangeProperties(ediMappingModel);
 
-        Map<Description, EdifactModel> mappingModels = new LinkedHashMap<Description, EdifactModel>();
+        Map<String, EdifactModel> mappingModels = new LinkedHashMap<String, EdifactModel>();
         EDIUtils.loadMappingModels(ediMappingModel, mappingModels, URIResourceLocator.DEFAULT_BASE_URI);
 
-        EdifactModel definitionsModel = mappingModels.get(EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION);
+        EdifactModel definitionsModel = mappingModels.get(EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION_LOOKUP_NAME);
         String commonsPackageName = packageName + ".common";
         ClassModel definitionsClassModel = null;
 
@@ -72,12 +72,12 @@ public class EJCExecutor {
         }
 
         List<MessageDefinition> messageSetDefinitions = new ArrayList<MessageDefinition>();
-        Set<Map.Entry<Description, EdifactModel>> modelSet = mappingModels.entrySet();
+        Set<Map.Entry<String, EdifactModel>> modelSet = mappingModels.entrySet();
         StringBuilder rootClassesListFileBuilder = new StringBuilder();
-        for(Map.Entry<Description, EdifactModel> model : modelSet) {
-            Description description = model.getKey();
+        for(Map.Entry<String, EdifactModel> model : modelSet) {
+            Description description = model.getValue().getDescription();
 
-            if(description.equals(EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION)) {
+            if(description.equals(EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION_LOOKUP_NAME)) {
                 // Already done (above).  Skip it...
                 continue;
             }

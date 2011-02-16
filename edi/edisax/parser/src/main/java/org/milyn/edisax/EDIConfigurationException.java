@@ -25,6 +25,11 @@ import org.milyn.SmooksException;
 public class EDIConfigurationException extends SmooksException {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Creates a new EDIConfigurationException.   
      * @param message the message.
      */
