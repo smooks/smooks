@@ -44,7 +44,6 @@ public class SmooksServiceFactory implements ServiceFactory
 
     public void ungetService(Bundle bundle, ServiceRegistration registration, Object service)
     {
-        System.out.println("SmooksServiceFactory ungetService " + service);
         Smooks smooks = (Smooks) service;
         if (smooks != null)
         {

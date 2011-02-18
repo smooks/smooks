@@ -29,6 +29,7 @@ import org.apache.camel.processor.MarshalProcessor;
 import org.apache.camel.processor.UnmarshalProcessor;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.milyn.io.StreamUtils;
@@ -53,7 +54,15 @@ public class SmooksDataFormatTest extends CamelTestSupport
     {
         camelContext = new DefaultCamelContext();
         dataFormatter = new SmooksDataFormat(SMOOKS_CONFIG);
+        dataFormatter.setCamelContext(camelContext);
+        dataFormatter.start();
         XMLUnit.setIgnoreWhitespace(true);
+    }
+    
+    @After
+    public void stopDataFormatter() throws Exception
+    {
+        dataFormatter.stop();
     }
     
     @Override
