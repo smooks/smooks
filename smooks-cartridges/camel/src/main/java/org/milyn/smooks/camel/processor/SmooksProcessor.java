@@ -205,7 +205,6 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
         {
             smooks = createSmooks(configUri);
         }
-        smooks.setClassLoader(getClass().getClassLoader());
         smooks.getApplicationContext().setAttribute(CamelContext.class, camelContext);
         addAppenders(smooks, visitorAppenders);
         addVisitors(smooks, selectorVisitorMap);
@@ -215,7 +214,16 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
     private Smooks createSmooks(String configUri) throws IOException, SAXException
     {
         if (smooks != null)
+        {
             return smooks;
+        }
+        
+        final Smooks service = (Smooks) camelContext.getRegistry().lookup(Smooks.class.getName());
+        if (service != null)
+        {
+            log.info("Found smooks in registry: " + service.getClass().getName());
+            return service;
+        }
 
         return new Smooks(configUri);
     }

@@ -312,12 +312,12 @@
 	</dependencies>
 
     <build>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
-			</testResource>
-		</testResources>
+			</resource>
+		</resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -386,8 +386,6 @@
 						<Bundle-Activator>org.milyn.SmooksActivator</Bundle-Activator>
 						<Export-Package>
 							org.milyn.*;-split-package:=merge-first;version="${milyn.smooks.core.version}",
-							org.milyn.validation;version="${milyn.smooks.core.version}",
-                            org.milyn.csv.*;version="${milyn.smooks.core.version}",
 							META-INF.xsd.smooks.*;-split-package:=merge-first,
 							!META-INF.services.*,
 							!META-INF.maven.*
@@ -424,6 +422,28 @@
                     </provision>
                 </configuration>
             </plugin>
+            <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+         <artifactId>build-helper-maven-plugin</artifactId>
+         <executions>
+           <execution>
+             <id>attach-artifacts</id>
+             <phase>package</phase>
+             <goals>
+               <goal>attach-artifact</goal>
+             </goals>
+             <configuration>
+               <artifacts>
+                 <artifact>
+                   <file>target/classes/features.xml</file>
+                   <type>xml</type>
+                   <classifier>features</classifier>
+                 </artifact>
+               </artifacts>
+             </configuration>
+           </execution>
+         </executions>
+       </plugin>
         </plugins>
     </build>
 

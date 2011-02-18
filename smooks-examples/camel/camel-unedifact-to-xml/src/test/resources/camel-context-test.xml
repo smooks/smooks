@@ -7,13 +7,10 @@
 	  	<constructor-arg><value>smooks-config.xml</value></constructor-arg>
 	</bean>
 	
+	<bean id="exampleRouteBuilder" class="example.ExampleRouteBuilder"/>
+	
 	<camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
-		<route>
-			<from uri="file://${input.dir}?fileName=input-message.edi"/>
-			<log message="Before unmarshal  ${body}"/>
-			<unmarshal ref="smooks"/>
-			<log message="After unmarshal  ${body}"/>
-		</route>
+		<routeBuilder ref="exampleRouteBuilder" />    
 	</camelContext>
 
 </beans>

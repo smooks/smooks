@@ -26,16 +26,13 @@ public class SmooksActivator implements BundleActivator
 
     public void start(BundleContext context) throws Exception
     {
-        System.out.println("Starting Smooks Bundle [" + context.getBundle().getHeaders().get("Bundle-Version") + "]");
         SmooksServiceFactory smooksOSGIFactory = new SmooksServiceFactory();
         registerService = context.registerService(Smooks.class.getName(), smooksOSGIFactory, new Properties());
-        System.out.println("Registered : "  + Smooks.class.getName());
         
     }
 
     public void stop(BundleContext context) throws Exception
     {
-        System.out.println("Stopping Smooks Bundle [" + context.getBundle().getHeaders().get("Bundle-Version") + "]");
         registerService.unregister();
     }
 
