@@ -45,8 +45,14 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
      * to be created.
      * @return Java {@link ContentHandler} instance.
 	 */
-	public synchronized ContentHandler create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
-		ContentHandler deliveryUnit = null;
+	public synchronized Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
+        Object javaResource = resourceConfig.getJavaResourceObject();
+
+        if(javaResource != null) {
+            return javaResource;
+        }
+
+		Object contentHandler = null;
         Exception exception = null;
         String className = null;
 		
@@ -56,11 +62,11 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
 			Constructor constructor;
 			try {
 				constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
-				deliveryUnit = (ContentHandler) constructor.newInstance(new Object[] {resourceConfig});
+				contentHandler = constructor.newInstance(new Object[] {resourceConfig});
 			} catch (NoSuchMethodException e) {
-				deliveryUnit = (ContentHandler) classRuntime.newInstance();
+				contentHandler = classRuntime.newInstance();
 			}
-            Configurator.configure(deliveryUnit, resourceConfig, appContext);
+            Configurator.configure(contentHandler, resourceConfig, appContext);
         } catch (InstantiationException e) {
             exception = e;
         } catch (IllegalAccessException e) {
@@ -77,7 +83,9 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
                 throw state;
             }
         }
-		
-		return deliveryUnit;
+
+        resourceConfig.setJavaResourceObject(contentHandler);
+
+		return contentHandler;
 	}
 }

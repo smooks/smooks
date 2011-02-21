@@ -86,6 +86,19 @@ public class SelectorStepBuilder {
 
         if(xpathExpression.startsWith("/")) {
             isRooted = true;
+        } else if(isEncodedToken(xpathExpression)) {
+            String[] tokens = xpathExpression.split("/");
+
+            selectorSteps.add(new SelectorStep(tokens[0]));
+
+            StringBuilder reconstructedExpression = new StringBuilder();
+            for(int i = 1; i < tokens.length; i++) {
+                if(reconstructedExpression.length() > 0) {
+                    reconstructedExpression.append('/');
+                }
+                reconstructedExpression.append(tokens[i]);
+            }
+            xpathExpression = reconstructedExpression.toString();
         }
         if(xpathExpression.endsWith("//")) {
             endsStarStar = true;
@@ -152,6 +165,16 @@ public class SelectorStepBuilder {
         }
 
         return selectorSteps.toArray(new SelectorStep[selectorSteps.size()]);
+    }
+
+    private static boolean isEncodedToken(String xpathExpression) {
+        if(xpathExpression.startsWith("#") && !xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+            return true;
+        } else if(xpathExpression.startsWith("$") && !xpathExpression.startsWith(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

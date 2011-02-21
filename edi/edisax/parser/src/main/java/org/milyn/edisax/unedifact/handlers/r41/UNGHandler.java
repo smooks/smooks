@@ -47,7 +47,7 @@ class UNGHandler implements ControlBlockHandler {
 		interchangeContext.mapControlSegment(ungSegment, true);
 
         while(true) {
-	        String segCode = segmentReader.peek(3);
+	        String segCode = segmentReader.peek(3, true);
 
 	        if(segCode.equals("UNE")) {
 	    		segmentReader.moveToNextSegment(false);

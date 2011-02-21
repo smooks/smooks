@@ -59,7 +59,7 @@ public class CSVReaderTest extends TestCase {
 		SmooksResourceConfiguration config;
         ExecutionContext context;
 
-        config = new SmooksResourceConfiguration("org.xml.sax.driver", "type:Order-List and from:Acme", readerClass.getName());
+        config = new SmooksResourceConfiguration("org.xml.sax.driver", "type:Order-List AND from:Acme", readerClass.getName());
 		config.setParameter("fields", "string-list", "name,address");
 		SmooksUtil.registerResource(config, smooks);
 		SmooksUtil.registerProfileSet(DefaultProfileSet.create("Order-List-Acme-AcmePartner1", new String[] {"type:Order-List", "from:Acme", "to:AcmePartner1"}), smooks);

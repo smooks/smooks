@@ -253,7 +253,7 @@ public class SAXElement {
             textAccumulator.getBuffer().setLength(0);
             for(SAXText textObj : text) {
                 try {
-                    textObj.toWriter(textAccumulator);
+                    textObj.toWriter(textAccumulator, false);
                 } catch (IOException e) {
                     throw new RuntimeException("Unexpected IOException.", e);
                 }

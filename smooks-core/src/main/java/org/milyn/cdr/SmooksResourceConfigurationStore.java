@@ -107,6 +107,7 @@ public class SmooksResourceConfigurationStore {
 
         // add the default list to the list.
         configLists.add(defaultList);
+        defaultList.setSystemConfigList(true);
 
         registerInstalledHandlerFactories();
         if(registerInstalledResources) {
@@ -161,6 +162,7 @@ public class SmooksResourceConfigurationStore {
             for(int i = 0; i < resourceList.size(); i++) {
             	resourceList.get(i).setDefaultResource(true);
             }
+            resourceList.setSystemConfigList(true);
         } catch (Exception e) {
             throw new IllegalStateException("Error processing resource file '" + resourceFile + "'.", e);
         }
@@ -332,46 +334,51 @@ public class SmooksResourceConfigurationStore {
 	 * @return An Object instance from the SmooksResourceConfiguration.
 	 */
 	public Object getObject(SmooksResourceConfiguration resourceConfig) {
-		Object object = null;
-        String className = ClasspathUtils.toClassName(resourceConfig.getResource());
+		Object object = resourceConfig.getJavaResourceObject();
 
-        // Load the runtime class...
-		Class classRuntime;
-		try {
-			classRuntime = ClassUtil.forName(className, getClass());
-		} catch (ClassNotFoundException e) {
-			IllegalStateException state = new IllegalStateException("Error loading Java class: " + className);
-			state.initCause(e);
-			throw state;
-		}
+        if(object == null) {
+            String className = ClasspathUtils.toClassName(resourceConfig.getResource());
 
-		// Try constructing via a SmooksResourceConfiguration constructor...
-		Constructor constructor;
-		try {
-			constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
-			object = constructor.newInstance(new Object[] {resourceConfig});
-		} catch (NoSuchMethodException e) {
-			// OK, we'll try a default constructor later...
-		} catch (Exception e) {
-			IllegalStateException state = new IllegalStateException("Error loading Java class: " + className);
-			state.initCause(e);
-			throw state;
-		}
+            // Load the runtime class...
+            Class classRuntime;
+            try {
+                classRuntime = ClassUtil.forName(className, getClass());
+            } catch (ClassNotFoundException e) {
+                IllegalStateException state = new IllegalStateException("Error loading Java class: " + className);
+                state.initCause(e);
+                throw state;
+            }
 
-		// If we still don't have an object, try constructing via the default construtor...
-		if(object == null) {
-			try {
-				object = classRuntime.newInstance();
-			} catch (Exception e) {
-				IllegalStateException state = new IllegalStateException("Java class " + className + " must contain a default constructor if it does not contain a constructor that takes an instance of " + SmooksResourceConfiguration.class.getName() + ".");
-				state.initCause(e);
-				throw state;
-			}
-		}
+            // Try constructing via a SmooksResourceConfiguration constructor...
+            Constructor constructor;
+            try {
+                constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
+                object = constructor.newInstance(new Object[] {resourceConfig});
+            } catch (NoSuchMethodException e) {
+                // OK, we'll try a default constructor later...
+            } catch (Exception e) {
+                IllegalStateException state = new IllegalStateException("Error loading Java class: " + className);
+                state.initCause(e);
+                throw state;
+            }
 
-		if(object instanceof ContentHandler || object instanceof DataDecoder) {
-			Configurator.configure(object, resourceConfig, applicationContext);
-            initializedObjects.add(object);
+            // If we still don't have an object, try constructing via the default construtor...
+            if(object == null) {
+                try {
+                    object = classRuntime.newInstance();
+                } catch (Exception e) {
+                    IllegalStateException state = new IllegalStateException("Java class " + className + " must contain a default constructor if it does not contain a constructor that takes an instance of " + SmooksResourceConfiguration.class.getName() + ".");
+                    state.initCause(e);
+                    throw state;
+                }
+            }
+
+            if(object instanceof ContentHandler || object instanceof DataDecoder) {
+                Configurator.configure(object, resourceConfig, applicationContext);
+                initializedObjects.add(object);
+            }
+
+            resourceConfig.setJavaResourceObject(object);
         }
 
 		return object;
@@ -467,5 +474,18 @@ public class SmooksResourceConfigurationStore {
         }
 
         return resultSet;
+    }
+
+
+    public SmooksResourceConfigurationList getUserDefinedResourceList() {
+        SmooksResourceConfigurationList userDefinedResources = new SmooksResourceConfigurationList("userDefinedResources");
+
+        for(SmooksResourceConfigurationList configList : configLists) {
+            if(!configList.isSystemConfigList()) {
+                userDefinedResources.addAll(configList);
+            }
+        }
+
+        return userDefinedResources;
     }
 }

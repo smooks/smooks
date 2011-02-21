@@ -41,6 +41,10 @@ public class SmooksResourceConfigurationList {
      */
     private String name;
     /**
+     * Is the config list one of the "system" installed config lists.
+     */
+    private boolean isSystemConfigList = false;
+    /**
      * {@link ProfileSet} list.
      */
     private List<ProfileSet> profiles = new Vector<ProfileSet>();
@@ -82,6 +86,16 @@ public class SmooksResourceConfigurationList {
         }
     }
 
+
+    /**
+     * Add all the {@link SmooksResourceConfiguration} instances in the specified
+     * {@link SmooksResourceConfigurationList} to this list.
+     * @param configList {@link SmooksResourceConfigurationList} instance to add.
+     */
+    public void addAll(SmooksResourceConfigurationList configList) {
+        list.addAll(configList.list);
+    }
+
     /**
      * Add a {@link ProfileSet} instance to this list.
      * @param profileSet {@link ProfileSet} instance to add.
@@ -98,6 +112,22 @@ public class SmooksResourceConfigurationList {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Is this configuration list instance one of the system installed config lists.
+     * @return True if this configuration list instance one of the system installed config lists, otherwise false.
+     */
+    public boolean isSystemConfigList() {
+        return isSystemConfigList;
+    }
+
+    /**
+     * Set whether or not this configuration list instance is one of the system installed config lists.
+     * @param systemConfigList True if this configuration list instance one of the system installed config lists, otherwise false.
+     */
+    public void setSystemConfigList(boolean systemConfigList) {
+        isSystemConfigList = systemConfigList;
     }
 
     /**

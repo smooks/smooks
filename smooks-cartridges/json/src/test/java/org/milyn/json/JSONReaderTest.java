@@ -87,7 +87,7 @@ public class JSONReaderTest extends TestCase {
 		Smooks smooks = new Smooks();
 		SmooksResourceConfiguration config;
 
-        config = new SmooksResourceConfiguration("org.xml.sax.driver", "type:Order-List and from:Acme", JSONReader.class.getName());
+        config = new SmooksResourceConfiguration("org.xml.sax.driver", "type:Order-List AND from:Acme", JSONReader.class.getName());
 		SmooksUtil.registerResource(config, smooks);
 		SmooksUtil.registerProfileSet(DefaultProfileSet.create("Order-List-Acme-AcmePartner1", new String[] {"type:Order-List", "from:Acme", "to:AcmePartner1"}), smooks);
 

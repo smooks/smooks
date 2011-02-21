@@ -227,6 +227,10 @@ public class SmooksResourceConfiguration {
      */
     private String resource;
     /**
+     * Java resource object instance.
+     */
+    private Object javaResourceObject;
+    /**
      * Is this resource defined inline in the configuration, or is it
      * referenced through a URI.
      */
@@ -417,14 +421,15 @@ public class SmooksResourceConfiguration {
      *
      * @param selector The selector definition.
      */
-    public void setSelector(String selector) {
+    public void setSelector(final String selector) {
         if (selector == null || selector.trim().equals("")) {
             throw new IllegalArgumentException("null or empty 'selector' arg in constructor call.");
         }
         if(selector.equals(LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
-            selector = DOCUMENT_FRAGMENT_SELECTOR;
+            this.selector = DOCUMENT_FRAGMENT_SELECTOR;
+        } else {
+            this.selector = selector;
         }
-        this.selector = selector.toLowerCase().intern();
 
         // If there's a "#document" token in the selector, but it's not at the very start,
         // then we have an invalid selector...
@@ -493,7 +498,7 @@ public class SmooksResourceConfiguration {
             String splitToken = splitTokens[i];
 
             if (!splitToken.startsWith("@")) {
-                splitTokens[i] = splitToken.toLowerCase();
+                splitTokens[i] = splitToken;
             }
             if (splitToken.equals(LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
                 splitTokens[i] = DOCUMENT_FRAGMENT_SELECTOR;
@@ -535,6 +540,24 @@ public class SmooksResourceConfiguration {
                 isInline = true;
             }
         }
+    }
+
+    /**
+     * Get the Java resource object instance associated with this resource, if one exists and
+     * it has been create.
+     * @return The Java resource object instance associated with this resource, if one exists and
+     * it has been create, otherwise null.
+     */
+    public Object getJavaResourceObject() {
+        return javaResourceObject;
+    }
+
+    /**
+     * Set the Java resource object instance associated with this resource.
+     * @param javaResourceObject The Java resource object instance associated with this resource.
+     */
+    public void setJavaResourceObject(Object javaResourceObject) {
+        this.javaResourceObject = javaResourceObject;
     }
 
     /**
@@ -604,6 +627,14 @@ public class SmooksResourceConfiguration {
      */
     public String[] getContextualSelector() {
         return SelectorStepBuilder.toContextualSelector(selectorSteps);
+    }
+
+    /**
+     * Set the selector steps.
+     * @param selectorSteps The selector steps.
+     */
+    public void setSelectorSteps(SelectorStep[] selectorSteps) {
+        this.selectorSteps = selectorSteps;
     }
 
     /**
@@ -794,7 +825,7 @@ public class SmooksResourceConfiguration {
      */
     private void parseTargetingExpressions(String targetProfiles) {
         // Parse the profiles.  Seperation tokens: ',' '|' and ';'
-        StringTokenizer tokenizer = new StringTokenizer(targetProfiles.toLowerCase(), ",|;");
+        StringTokenizer tokenizer = new StringTokenizer(targetProfiles, ",|;");
         if (tokenizer.countTokens() == 0) {
             throw new IllegalArgumentException("Empty 'target-profile'. [" + selector + "][" + resource + "]");
         } else {
@@ -1150,15 +1181,14 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Is this resource a Java {@link org.milyn.delivery.ContentHandler} resource.
+     * Is this resource a Java Class.
      *
-     * @return True if this resource refers to an instance of the
-     *         {@link org.milyn.delivery.ContentHandler} class, otherwise false.
+     * @return True if this resource is a Java class, otherwise false.
      */
     public boolean isJavaContentHandler() {
         Class runtimeClass = toJavaResource();
 
-        return (runtimeClass != null && ContentHandler.class.isAssignableFrom(runtimeClass));
+        return (runtimeClass != null);
     }
 
     /**
@@ -1607,6 +1637,12 @@ public class SmooksResourceConfiguration {
         builder.append("</resource-config>");
 
         return builder.toString();
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        // Do not override this method !!
+        return super.equals(obj);
     }
 
     /**

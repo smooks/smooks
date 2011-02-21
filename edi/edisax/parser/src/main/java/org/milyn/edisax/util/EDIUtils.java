@@ -23,7 +23,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.logging.Log;
@@ -58,6 +62,11 @@ public class EDIUtils {
      * Most model sets contain a set of common definitions (common types).
      */
     public static final Description MODEL_SET_DEFINITIONS_DESCRIPTION = new Description().setName("__modelset_definitions").setVersion("local");
+    
+    /**
+     * Lookup name (string representation) of {@link #MODEL_SET_DEFINITIONS_DESCRIPTION}
+     */
+    public static final String MODEL_SET_DEFINITIONS_DESCRIPTION_LOOKUP_NAME = toLookupName(MODEL_SET_DEFINITIONS_DESCRIPTION);
 
     /**
      * Splits a String by delimiter as long as delimiter does not follow an escape sequence.
@@ -92,7 +101,7 @@ public class EDIUtils {
         return putCharacterSequenceIntoResult(charSequences);
     }
     
-    public static void loadMappingModels(String mappingModelFiles, Map<Description, EdifactModel> mappingModels, URI baseURI) throws EDIConfigurationException, IOException, SAXException {
+    public static void loadMappingModels(String mappingModelFiles, Map<String, EdifactModel> mappingModels, URI baseURI) throws EDIConfigurationException, IOException, SAXException {
 		AssertArgument.isNotNullAndNotEmpty(mappingModelFiles, "mappingModelFiles");
 		AssertArgument.isNotNull(mappingModels, "mappingModels");
 		AssertArgument.isNotNull(baseURI, "baseURI");
@@ -132,10 +141,10 @@ public class EDIUtils {
         }
     }
 
-    private static boolean loadXMLMappingModel(String mappingModelFile, Map<Description, EdifactModel> mappingModels, URI baseURI) throws EDIConfigurationException {
+    private static boolean loadXMLMappingModel(String mappingModelFile, Map<String, EdifactModel> mappingModels, URI baseURI) throws EDIConfigurationException {
 		try {
 			EdifactModel model = EDIParser.parseMappingModel(mappingModelFile, baseURI);
-			mappingModels.put(model.getEdimap().getDescription(), model);
+			mappingModels.put(toLookupName(model.getEdimap().getDescription()), model);
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -145,7 +154,7 @@ public class EDIUtils {
 		}
 	}
 
-    private static boolean loadZippedMappingModels(String mappingModelFile, Map<Description, EdifactModel> mappingModels, URI baseURI) throws IOException, SAXException, EDIConfigurationException {
+    private static boolean loadZippedMappingModels(String mappingModelFile, Map<String, EdifactModel> mappingModels, URI baseURI) throws IOException, SAXException, EDIConfigurationException {
 		URIResourceLocator locator = new URIResourceLocator();
 
 		locator.setBaseURI(baseURI);
@@ -180,20 +189,21 @@ public class EDIUtils {
 		return false;
 	}
 
-    private static void loadMappingModels(Map<Description, EdifactModel> mappingModels, URI baseURI, List<String> rootMappingModels) throws IOException, SAXException, EDIConfigurationException {
+    private static void loadMappingModels(Map<String, EdifactModel> mappingModels, URI baseURI, List<String> rootMappingModels) throws IOException, SAXException, EDIConfigurationException {
         for (String rootMappingModel : rootMappingModels) {
             try {
                 EdifactModel mappingModel = EDIParser.parseMappingModel(rootMappingModel, baseURI);
 
                 mappingModel.setAssociateModels(mappingModels.values());
-                mappingModels.put(mappingModel.getDescription(), mappingModel);
+                mappingModels.put(toLookupName(mappingModel.getDescription()), mappingModel);
             } catch(Exception e) {
                 throw new EDIConfigurationException("Error parsing EDI Mapping Model '" + rootMappingModel + "'.", e);
             }
         }
     }
 
-    private static List<String> getMappingModelList(Archive archive) throws IOException {
+    @SuppressWarnings("unchecked")
+	private static List<String> getMappingModelList(Archive archive) throws IOException {
 		byte[] zipEntryBytes = archive.getEntries().get(EDI_MAPPING_MODEL_ZIP_LIST_FILE);
 
 		if(zipEntryBytes != null) {
@@ -271,15 +281,25 @@ public class EDIUtils {
 
     private static InputStream getMappingModelConfigStream(String urn, String fileName) throws IOException, EDIConfigurationException {
         List<URL> urnFiles = ClassUtil.getResources(EDI_MAPPING_MODEL_URN, EDIUtils.class);
-
+        boolean ignoreVersion = false;
+        
         if(urn.startsWith("urn:")) {
             urn = urn.substring(4);
         }
-
+        if (urn.endsWith(":*")) {
+        	// We have an wildcard as a version
+        	ignoreVersion = true;
+        	urn = urn.substring(0, urn.lastIndexOf(':'));
+        }
+        
         for(URL urnFile : urnFiles) {
             InputStream urnStream = urnFile.openStream();
             try {
                 String archiveURN = StreamUtils.readStreamAsString(urnStream);
+                if (ignoreVersion) {
+                	// Cut the version out
+                	archiveURN = archiveURN.substring(0, archiveURN.lastIndexOf(':'));
+                }
                 if(archiveURN.equals(urn)) {
                     String urnFileString = urnFile.toString();
                     String modelConfigFile = urnFileString.substring(0, urnFileString.length() - EDI_MAPPING_MODEL_URN.length()) + fileName;
@@ -473,6 +493,18 @@ public class EDIUtils {
         }
     }
 
+	/**
+	 * Convert {@link Description} to the string representation
+	 * that is used for lookup in the hashmaps
+	 * 
+	 * @param description
+	 * @return
+	 */
+	public static String toLookupName(Description description) {
+		return description.getName() + ":"
+				+ description.getVersion();
+	}    
+    
     private enum CharSequenceTypeEnum {
         PLAIN,
         ESCAPE,

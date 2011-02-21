@@ -164,10 +164,10 @@ public class SorterTest extends TestCase {
             Sorter.sort(sortList, Sorter.SortOrder.PRODUCERS_FIRST);
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
-                    "\tTarget Profile: [[org.milyn.profile.profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\tdepends-on: Target Profile: [[org.milyn.profile.profile#default_profile]], Selector: [1], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\tdepends-on: Target Profile: [[org.milyn.profile.profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n", e.getMessage());
+            assertEquals(("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
+                    "\tTarget Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\tdepends-on: Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [1], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\tdepends-on: Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
         }
     }
 
@@ -181,12 +181,12 @@ public class SorterTest extends TestCase {
             Sorter.sort(sortList, Sorter.SortOrder.PRODUCERS_FIRST);
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
-                    "\tTarget Profile: [[org.milyn.profile.profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\tdepends-on: Target Profile: [[org.milyn.profile.profile#default_profile]], Selector: [1], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\tdepends-on: Target Profile: [[org.milyn.profile.profile#default_profile]], Selector: [2], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\t\tdepends-on: Target Profile: [[org.milyn.profile.profile#default_profile]], Selector: [3], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\t\t\tdepends-on: Target Profile: [[org.milyn.profile.profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n", e.getMessage());
+            assertEquals(("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
+                    "\tTarget Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\tdepends-on: Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [1], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\tdepends-on: Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [2], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\t\tdepends-on: Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [3], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\t\t\tdepends-on: Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.milyn.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
         }
     }
 

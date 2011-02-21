@@ -49,9 +49,9 @@ public class ProfileTargetingExpression {
 		if(expression == null || expression.trim().equals("")) {
 			throw new IllegalArgumentException("null or empty 'expression' arg.");
 		}
-		this.expression = expression = expression.toLowerCase();
+		this.expression = expression;
 		
-		String[] tokens = expression.split(" and ");
+		String[] tokens = expression.split(" AND ");
 		expressionTokens = new ExpressionToken[tokens.length];
 		for(int i = 0; i < tokens.length; i++) {
 			String token = tokens[i].trim();

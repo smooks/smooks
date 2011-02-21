@@ -16,7 +16,6 @@
 package org.milyn.edisax.unedifact.handlers.r41;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.milyn.edisax.BufferedSegmentListener;
 import org.milyn.edisax.BufferedSegmentReader;
@@ -25,10 +24,9 @@ import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.interchange.InterchangeContext;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Component;
-import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Field;
 import org.milyn.edisax.model.internal.Segment;
-import org.milyn.edisax.unedifact.UNEdifactUtil;
+import org.milyn.edisax.unedifact.registry.MappingsRegistry;
 import org.milyn.xml.hierarchy.HierarchyChangeListener;
 import org.xml.sax.SAXException;
 
@@ -54,8 +52,8 @@ class UNHHandler implements ControlBlockHandler {
 
     public void process(InterchangeContext interchangeContext) throws IOException, SAXException {
 		BufferedSegmentReader segmentReader = interchangeContext.getSegmentReader();
-		Map<Description, EdifactModel> mappingModels = interchangeContext.getMappingModels();
-
+		MappingsRegistry registry = interchangeContext.getRegistry();
+		
 		interchangeContext.getControlSegmentParser().startElement(InterchangeContext.INTERCHANGE_MESSAGE_BLOCK_ELEMENT_NAME, true);
 
 		// Move to the end of the UNH segment and map it's fields..
@@ -65,7 +63,7 @@ class UNHHandler implements ControlBlockHandler {
 		// Select the mapping model to use for this message...
 		String[] fields = segmentReader.getCurrentSegmentFields();
 		String messageName = fields[2];
-		EdifactModel mappingModel = UNEdifactUtil.getMappingModel(messageName, segmentReader.getDelimiters(), mappingModels);
+		EdifactModel mappingModel = registry.getMappingModel(messageName, segmentReader.getDelimiters());
 
 		// Map the message... stopping at the UNT segment...
 		try {

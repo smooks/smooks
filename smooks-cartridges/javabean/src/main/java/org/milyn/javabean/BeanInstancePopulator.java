@@ -18,6 +18,9 @@ package org.milyn.javabean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.Config;
+import org.milyn.delivery.ContentDeliveryConfig;
 import org.milyn.delivery.Fragment;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
@@ -122,6 +125,9 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
     @ConfigParam(name= NOTIFY_POPULATE, defaultVal = "false")
     private boolean notifyPopulate;
 
+    @Config
+    private SmooksResourceConfiguration config;
+
     @AppContext
     private ApplicationContext appContext;
 
@@ -145,12 +151,24 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
     private BeanWiringObserver wireByBeanIdObserver;
 	private ListToArrayChangeObserver listToArrayChangeObserver;
 
+    public SmooksResourceConfiguration getConfig() {
+        return config;
+    }
+
     public void setBeanId(String beanId) {
         this.beanIdName = beanId;
     }
 
+    public String getBeanId() {
+        return beanIdName;
+    }
+
     public void setWireBeanId(String wireBeanId) {
         this.wireBeanIdName = wireBeanId;
+    }
+
+    public String getWireBeanId() {
+        return wireBeanIdName;
     }
 
     public void setExpression(MVELExpressionEvaluator expression) {
@@ -159,6 +177,10 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
 
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    public String getProperty() {
+        return property;
     }
 
     public void setSetterMethod(String setterMethod) {
@@ -181,8 +203,16 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         this.decoder = decoder;
     }
 
+    public DataDecoder getDecoder() {
+        return decoder;
+    }
+
     public void setDefaultVal(String defaultVal) {
         this.defaultVal = defaultVal;
+    }
+
+    public boolean isBeanWiring() {
+        return isBeanWiring;
     }
 
     /**
@@ -250,14 +280,14 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
             	expressionEvaluator.setToType(bindingType);
         	}
         }
-        
+
         if(wireBeanIdName != null) {
     		wireBeanId = beanIdStore.getBeanId(wireBeanIdName);
 			if(wireBeanId == null) {
 	            wireBeanId = beanIdStore.register(wireBeanIdName);
 	        }
         }
-	     
+
         if(isBeanWiring) {
 			// These observers can be used concurrently across multiple execution contexts...
 	        wireByBeanIdObserver = new BeanWiringObserver(beanId, this).watchedBeanId(wireBeanId).watchedBeanType(wireBeanType).watchedBeanAnnotation(wireBeanAnnotation);
@@ -584,8 +614,12 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
 
 
 	private DataDecoder getDecoder(ExecutionContext executionContext) throws DataDecodeException {
-		@SuppressWarnings("unchecked")
-		List decoders = executionContext.getDeliveryConfig().getObjects("decoder:" + typeAlias);
+        return getDecoder(executionContext.getDeliveryConfig());
+    }
+
+    public DataDecoder getDecoder(ContentDeliveryConfig deliveryConfig) {
+        @SuppressWarnings("unchecked")
+        List decoders = deliveryConfig.getObjects("decoder:" + typeAlias);
 
         if (decoders == null || decoders.isEmpty()) {
             if(typeAlias != null) {
@@ -598,7 +632,7 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         } else {
             decoder = (DataDecoder) decoders.get(0);
         }
-        
+
         if(decoder instanceof PreprocessDecoder) {
             PreprocessDecoder preprocessDecoder = (PreprocessDecoder) decoder;
             if(preprocessDecoder.getBaseDecoder() == null) {

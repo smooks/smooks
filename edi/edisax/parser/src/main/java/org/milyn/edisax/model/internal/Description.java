@@ -75,5 +75,5 @@ public class Description {
 		if(name == null || version == null) {
 			throw new IllegalStateException("Description 'name' and/or 'version' properties are not initialized.");
 		}
-	}    
+	}
 }

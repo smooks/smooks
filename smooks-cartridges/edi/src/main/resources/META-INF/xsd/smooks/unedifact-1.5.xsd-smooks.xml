@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/unedifact-1.4.xsd">
+
+    <!-- Configure the Model Loader -->
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.smooks.edi.ModelLoader</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">mappingModel</param>
+    </resource-config>
+
+    <!-- Configure the UNEdifactReader -->
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.smooks.edi.unedifact.UNEdifactReader</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
+        <param name="setOn">selector</param>
+        <param name="value">org.xml.sax.driver</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">mappingModel</param>
+    </resource-config>
+    
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">ignoreNewLines</param>
+    </resource-config>
+    
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">validate</param>
+    </resource-config>
+
+</smooks-resource-list>

@@ -15,15 +15,13 @@
  */
 package org.milyn.smooks.edi.unedifact;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.milyn.GenericReaderConfigurator;
 import org.milyn.ReaderConfigurator;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.smooks.edi.EDIReader;
-import org.milyn.smooks.edi.ModelLoader;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * UN/EDIFACT Reader configurator.
@@ -36,7 +34,24 @@ public class UNEdifactReaderConfigurator implements ReaderConfigurator {
 
     private String mappingModel;
     private String targetProfile;
+    
+    /**
+     * Configure UNEdifactReader to dynamically look-up mapping
+     * models in the classpath
+     * 
+     * @param mappingModel
+     */
+    public UNEdifactReaderConfigurator() {
+        this.mappingModel = "";
+    }
 
+    
+    
+    /**
+     * Specific mapping models
+     * 
+     * @param mappingModel
+     */
     public UNEdifactReaderConfigurator(String mappingModel) {
         AssertArgument.isNotNullAndNotEmpty(mappingModel, "mappingModel");
         this.mappingModel = mappingModel;
@@ -50,12 +65,6 @@ public class UNEdifactReaderConfigurator implements ReaderConfigurator {
 
     public List<SmooksResourceConfiguration> toConfig() {
         List<SmooksResourceConfiguration> configList = new ArrayList<SmooksResourceConfiguration>();
-
-        // Add the ModelLoader config...
-        SmooksResourceConfiguration modelLoaderResource = new SmooksResourceConfiguration();
-        modelLoaderResource.setResource(ModelLoader.class.getName());
-        modelLoaderResource.setParameter("mappingModel", mappingModel);
-        configList.add(modelLoaderResource);
 
         // Add the reader config...
         GenericReaderConfigurator configurator = new GenericReaderConfigurator(UNEdifactReader.class);

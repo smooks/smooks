@@ -137,7 +137,7 @@ public class DOMBuilder extends SmooksContentHandler {
             }
 
             currentNode.appendChild(newElement);
-            if(!emptyElements.contains(startEvent.qName != null?startEvent.qName.toLowerCase():startEvent.localName.toLowerCase())) {
+            if(!emptyElements.contains(startEvent.qName != null?startEvent.qName:startEvent.localName)) {
                 nodeStack.push(newElement);
             }
         } catch(DOMException e) {
@@ -175,9 +175,9 @@ public class DOMBuilder extends SmooksContentHandler {
         String elName;
 
         if(endEvent.qName != null && !endEvent.qName.equals("")) {
-            elName = endEvent.qName.toLowerCase();
+            elName = endEvent.qName;
         }else {
-            elName = endEvent.localName.toLowerCase();
+            elName = endEvent.localName;
         }
 
         if(!emptyElements.contains(elName)) {
@@ -213,7 +213,7 @@ public class DOMBuilder extends SmooksContentHandler {
             Node node = (Node)nodeStack.elementAt(i);
             if(node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element)node;
-                if(element.getTagName().toLowerCase().equals(elName)) {
+                if(element.getTagName().equals(elName)) {
                     return i;
                 }
             }

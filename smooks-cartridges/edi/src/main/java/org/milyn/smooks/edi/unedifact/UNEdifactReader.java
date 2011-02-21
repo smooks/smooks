@@ -12,25 +12,22 @@
 
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
-*/
+ */
 package org.milyn.smooks.edi.unedifact;
 
 import java.io.IOException;
-import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.edisax.BufferedSegmentReader;
-import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
 import org.milyn.edisax.interchange.InterchangeContext;
-import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Delimiters;
-import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
-import org.milyn.smooks.edi.ModelLoader;
+import org.milyn.edisax.unedifact.registry.DefaultMappingsRegistry;
 import org.milyn.xml.SmooksXMLReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -40,52 +37,55 @@ import org.xml.sax.SAXException;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class UNEdifactReader extends UNEdifactInterchangeParser implements SmooksXMLReader  {
-	
+public class UNEdifactReader extends UNEdifactInterchangeParser implements
+		SmooksXMLReader {
+
 	@ConfigParam
 	private String mappingModel;
 
 	@ConfigParam(defaultVal = "false")
 	private boolean validate;
-    
+
 	@ConfigParam(defaultVal = "false")
 	private boolean ignoreNewLines;
 
-    @AppContext
-    private ApplicationContext applicationContext;
-    
-    private ExecutionContext executionContext;
+	@AppContext
+	private ApplicationContext applicationContext;
 
-    public void setExecutionContext(ExecutionContext executionContext) {
-        this.executionContext = executionContext;
+	private ExecutionContext executionContext;
+
+	public void setExecutionContext(ExecutionContext executionContext) {
+		this.executionContext = executionContext;
 	}
 
 	@Override
-	public void parse(InputSource unedifactInterchange) throws IOException, SAXException {
-		Map<Description, EdifactModel> mappingModelMap;
-		
-		try {
-			mappingModelMap = ModelLoader.getMappingModels(mappingModel, applicationContext);
-		} catch (EDIConfigurationException e) {
-			throw (IOException)(new IOException("Failed to load mapping model(s) '" + mappingModel + "'.").initCause(e));
-		}
-		
-		setMappingModels(mappingModelMap);
+	public void parse(InputSource unedifactInterchange) throws IOException,
+			SAXException {
 		ignoreNewLines(ignoreNewLines);
 		validate(validate);
-		
+		// Default Mappings Registry is already set to LazyMappingsRegistry
+		// only if mappingModel is defined we should set another instance
+		if (!StringUtils.isEmpty(mappingModel)) {
+			setMappingsRegistry(new DefaultMappingsRegistry(mappingModel,
+					applicationContext.getResourceLocator().getBaseURI()));
+		}
 		super.parse(unedifactInterchange);
 	}
 
-    @Override
-    protected InterchangeContext createInterchangeContext(BufferedSegmentReader segmentReader, boolean validate, ControlBlockHandlerFactory controlBlockHandlerFactory) {
-        return new InterchangeContext(segmentReader, getMappingModels(), getContentHandler(), controlBlockHandlerFactory, validate) {
-            @Override
-            public void pushDelimiters(Delimiters delimiters) {
-                super.pushDelimiters(delimiters);
-                // Bind the delimiters into the bean context.  Will then get auto-wired into interchanges...
-                executionContext.getBeanContext().addBean("interchangeDelimiters", delimiters);
-            }
-        };
-    }
+	@Override
+	protected InterchangeContext createInterchangeContext(
+			BufferedSegmentReader segmentReader, boolean validate,
+			ControlBlockHandlerFactory controlBlockHandlerFactory) {
+		return new InterchangeContext(segmentReader, registry,
+				getContentHandler(), controlBlockHandlerFactory, validate) {
+			@Override
+			public void pushDelimiters(Delimiters delimiters) {
+				super.pushDelimiters(delimiters);
+				// Bind the delimiters into the bean context. Will then get
+				// auto-wired into interchanges...
+				executionContext.getBeanContext().addBean(
+						"interchangeDelimiters", delimiters);
+			}
+		};
+	}
 }

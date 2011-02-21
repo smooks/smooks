@@ -80,7 +80,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      * @return List of SmooksResourceConfiguration instances, or null.
      */
     public List getSmooksResourceConfigurations(String selector) {
-        return resourceConfigTable.get(selector.toLowerCase());
+        return resourceConfigTable.get(selector);
     }
 
     public void setSmooksResourceConfigurations(Map<String, List<SmooksResourceConfiguration>> resourceConfigTable) {
@@ -114,7 +114,6 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     public List getObjects(String selector) {
         Vector objects;
 
-        selector = selector.toLowerCase();
         objects = (Vector)objectsTable.get(selector);
         if(objects == null) {
             List unitDefs = resourceConfigTable.get(selector);

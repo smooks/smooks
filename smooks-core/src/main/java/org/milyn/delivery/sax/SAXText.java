@@ -156,24 +156,37 @@ public class SAXText {
      */
     public void toWriter(Writer writer, boolean encodeSpecialChars) throws IOException {
         if(writer != null) {
-            if(type == TextType.TEXT) {
-                if(encodeSpecialChars) {
-                    XmlUtil.encodeTextValue(characters, offset, length, writer);
-                } else {
-                    writer.write(characters, offset, length);
+            switch(type) {
+                case TEXT: {
+                    if(encodeSpecialChars) {
+                        XmlUtil.encodeTextValue(characters, offset, length, writer);
+                    } else {
+                        writer.write(characters, offset, length);
+                    }
+                    break;
                 }
-            } else if(type == TextType.COMMENT) {
-                writer.write("<!--");
-                writer.write(characters, offset, length);
-                writer.write("-->");
-            } else if(type == TextType.CDATA) {
-                writer.write("<![CDATA[");
-                writer.write(characters, offset, length);
-                writer.write("]]>");
-            } else if(type == TextType.ENTITY) {
-                writer.write("&");
-                writer.write(HTMLEntityLookup.getEntityRef(characters[0]));
-                writer.write(';');
+                case COMMENT: {
+                    writer.write("<!--");
+                    writer.write(characters, offset, length);
+                    writer.write("-->");
+                    break;
+                }
+                case CDATA: {
+                    writer.write("<![CDATA[");
+                    writer.write(characters, offset, length);
+                    writer.write("]]>");
+                    break;
+                }
+                case ENTITY: {
+                    if(encodeSpecialChars) {
+                        writer.write("&");
+                        writer.write(HTMLEntityLookup.getEntityRef(characters[offset]));
+                        writer.write(';');
+                    } else {
+                        writer.write(characters, offset, 1);
+                    }
+                    break;
+                }
             }
         }
     }
