@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="Repository">
+
+	<feature name="smooks" version="${project.version}">
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.antlr-${spring.antlr.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.freemarker-${spring.freemarker.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.org.apache.commons.logging-${spring.commons.logging.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.org.apache.log4j-${spring.log4j.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.org.codehaus.groovy-${spring.groovy.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.org.jaxen-${spring.jaxen.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.org.objectweb.asm-${spring.objectweb.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.org.objectweb.asm.tree-${spring.objectweb.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.org.objectweb.asm.tree.analysis-${spring.objectweb.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/com.springsource.org.objectweb.asm.util-${spring.objectweb.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/commons-lang-${commons.lang.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/dependency/ow2-bundles-externals-opencsv-${opencsv.version}.jar</bundle>
+		<bundle>file:///Users/danbev/work/smooks/git/smooks/smooks-all/target/milyn-smooks-all-${project.version}.jar</bundle>
+	</feature>
+
+</features>

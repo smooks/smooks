@@ -23,12 +23,6 @@
 
     <dependencies>
 
-		<dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi_R4_core</artifactId>

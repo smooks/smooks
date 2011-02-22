@@ -27,24 +27,12 @@ How to Run?
 Run in Servicemix 4.2
 =====================
 
-Install and configure Servicemix 4.2.0
---------------------------------------
-1. Install Servicemix 4.2 (http://servicemix.apache.org/servicemix-420.html)
-2. Start Servicemix:
-	${SERVICEMIX_HOME}/bin/servicemix
-3. tail -f ${SERVICEMIX_HOME}/data/log/servicemix.log
-
-
 Deploy Smooks OSGi Bundle
 -------------------------
 1. Deploy Smooks OSGi bundle
-	a) cd trunk/smooks-all
-	b) mvn install
-	c) copy target/milyn-smooks-all-<version>.jar ${SERVICEMIX_HOME}/deploy
-	d) Download http://repository.springsource.com/maven/bundles/external/org/jaxen/com.springsource.org.jaxen/1.1.1/com.springsource.org.jaxen-1.1.1.jar
-	e) copy com.springsource.org.jaxen-1.1.1.jar to ${SERVICEMIX_HOME}/deploy
+    
 2. Deploy the example
-	cp target/milyn-smooks-example-camel-dataformat-1.0.jar to ${SERVICEMIX_HOME}/deploy
+    karaf@root> osgi:install -s mvn:org.milyn/milyn-smooks-example-camel-dataformat/1.0
 
 Run the example
 ---------------

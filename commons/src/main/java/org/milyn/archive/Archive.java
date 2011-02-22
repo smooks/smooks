@@ -16,6 +16,7 @@
 package org.milyn.archive;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -400,5 +401,18 @@ public class Archive {
             }
         }
         return builder.toString();
+    }
+
+    public Archive merge(Archive archive) {
+        Map<String, byte[]> entriesToMerge = archive.getEntries();
+        for (Entry<String, byte[]> entry : entriesToMerge.entrySet()) {
+            addEntry(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+
+    public boolean contains(String path)
+    {
+        return entries.containsKey(path);
     }
 }

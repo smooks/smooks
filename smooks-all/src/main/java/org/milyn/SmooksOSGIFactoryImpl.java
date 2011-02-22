@@ -35,8 +35,14 @@ public class SmooksOSGIFactoryImpl implements SmooksOSGIFactory
     {
         final Smooks smooks = new Smooks();
         smooks.setClassLoader(new BundleClassLoaderDelegator(bundle, getClass().getClassLoader()));
-        System.out.println("SmooksOSGIFactory [" + config + "]");
-        smooks.addConfigurations(config);
+        if (config != null)
+        {
+	        smooks.addConfigurations(config);
+        }
+        else
+        {
+            smooks.addConfigurations("smooks-config.xml");
+        }
         return smooks;
     }
     

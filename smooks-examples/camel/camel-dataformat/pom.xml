@@ -27,10 +27,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Import-Package>
-							org.apache.camel.*;version="2.2", 
-							org.milyn.*;version="${milyn.smooks.core.version}", 
-							org.milyn.smooks.edi;version="${milyn.smooks.core.version}", 
-							org.milyn.smooks.camel.dataformat;version="${milyn.smooks.core.version}",
+							org.apache.camel.*;version="2.6", 
 							org.springframework.*;version="1.2.0",
 							*;-nouses:=true
 						</Import-Package>
@@ -56,11 +53,6 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-edi</artifactId>
-			<version>${milyn.smooks.edi.version}</version>
-        </dependency>
        <dependency>
            <groupId>org.apache.felix</groupId>
            <artifactId>org.osgi.core</artifactId>
