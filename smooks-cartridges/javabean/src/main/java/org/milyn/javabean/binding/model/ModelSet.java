@@ -16,15 +16,19 @@
 
 package org.milyn.javabean.binding.model;
 
+import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksResourceConfigurationList;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.cdr.xpath.SelectorStepBuilder;
 import org.milyn.container.ApplicationContext;
+import org.milyn.db.TransactionManagerType;
 import org.milyn.javabean.BeanInstanceCreator;
 import org.milyn.javabean.BeanInstancePopulator;
+import org.milyn.javabean.DataDecoder;
 import org.milyn.util.DollarBraceDecoder;
+import org.milyn.xml.NamespaceMappings;
 
 import javax.xml.namespace.QName;
 import java.util.LinkedHashMap;
@@ -55,6 +59,10 @@ public class ModelSet {
      * parent baseBeans etc.
      */
     private Map<String, Bean> models = new LinkedHashMap<String, Bean>();
+    /**
+     * Is the associated Smooks instance a binding only configuration.
+     */
+    private Boolean isBindingOnlyConfig;
 
     private ModelSet(SmooksResourceConfigurationList userConfigList) throws SmooksConfigurationException {
         createBaseBeanMap(userConfigList);
@@ -79,6 +87,10 @@ public class ModelSet {
         return models;
     }
 
+    public boolean isBindingOnlyConfig() {
+        return isBindingOnlyConfig;
+    }
+
     private void createBaseBeanMap(SmooksResourceConfigurationList userConfigList) {
         for(int i = 0; i < userConfigList.size(); i++) {
             SmooksResourceConfiguration config = userConfigList.get(i);
@@ -89,6 +101,10 @@ public class ModelSet {
                 Bean bean = new Bean(beanCreator).setCloneable(true);
 
                 baseBeans.put(bean.getBeanId(), bean);
+
+                if(isBindingOnlyConfig == null) {
+                    isBindingOnlyConfig = true;
+                }
             } else if(javaResource instanceof BeanInstancePopulator) {
                 BeanInstancePopulator beanPopulator = (BeanInstancePopulator) javaResource;
                 Bean bean = baseBeans.get(beanPopulator.getBeanId());
@@ -102,8 +118,28 @@ public class ModelSet {
                 } else {
                     bean.getBindings().add(new DataBinding(beanPopulator));
                 }
+            } else if(isNonBindingResource(javaResource) && !isGlobalParamsConfig(config)) {
+                // The user has configured something other than a bean binding config.
+                isBindingOnlyConfig = false;
             }
         }
+    }
+
+    private boolean isNonBindingResource(Object javaResource) {
+        if(javaResource instanceof DataDecoder) {
+            return false;
+        }
+
+        // Ignore resource that do not manipulate the event stream...
+        if(javaResource instanceof NamespaceMappings) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isGlobalParamsConfig(SmooksResourceConfiguration config) {
+        return ParameterAccessor.GLOBAL_PARAMETERS.equals(config.getSelector());
     }
 
     private void createExpandedModels() {

@@ -15,6 +15,7 @@
 */
 package org.milyn.javabean.binding.xml;
 
+import org.milyn.Smooks;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -62,8 +63,12 @@ public class XMLBinding extends AbstractBinding {
     private Map<Class, XMLElementSerializationNode> serializers = new LinkedHashMap<Class, XMLElementSerializationNode>();
     private boolean omitXMLDeclaration = false;
 
-    public XMLBinding() throws IOException, SAXException {
+    public XMLBinding() {
         super();
+    }
+
+    public XMLBinding(Smooks smooks) {
+        super(smooks);
     }
 
     @Override
