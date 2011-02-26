@@ -262,9 +262,14 @@ public class XMLBinding extends AbstractBinding {
             throw new IllegalStateException("Invalid binding configuration.  All <jb:bean> configuration elements must specify fully qualified selector paths (createOnElement, data, executeOnElement attributes etc.).");
         }
 
-        XMLElementSerializationNode root = XMLElementSerializationNode.getElement(selectorSteps[0], graphRoots, true);
+        SelectorStep rootSelectorStep = selectorSteps[0];
+        XMLElementSerializationNode root = XMLElementSerializationNode.getElement(rootSelectorStep, graphRoots, true);
+
         if(selectorSteps.length > 1) {
             return root.getPathNode(selectorSteps, 1, true);
+        } else if(rootSelectorStep.getTargetAttribute() != null) {
+            // It's an attribute node...
+            return XMLElementSerializationNode.addAttributeNode(root, rootSelectorStep, true);
         } else {
             return root;
         }

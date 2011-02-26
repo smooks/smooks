@@ -14,9 +14,8 @@
   ~ http://www.gnu.org/licenses/lgpl.txt
   -->
 
-<ord:order xmlns:ord="http://order" xmlns:ordI="http://orderItem">
+<ord:order xmlns:ord="http://order" xmlns:ordI="http://orderItem" ord:date="2006-06-23">
     <ord:header>
-        <ord:date>2006-06-23</ord:date>
         <ord:customer ord:number="123123" ord:name="Joe &amp; Ray"/>
     </ord:header>
     <ord:order-items>

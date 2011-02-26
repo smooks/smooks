@@ -23,7 +23,7 @@ import java.io.StringWriter;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class StringResult extends StreamResult {
+public class StringResult extends StreamResult implements ResultExtractor<StringResult> {
 
     public StringResult() {
         super();
@@ -36,6 +36,10 @@ public class StringResult extends StreamResult {
     }
 
     public String toString() {
+        return getResult();
+    }
+
+    public Object extractFromResult(StringResult result, Export export) {
         return getResult();
     }
 }

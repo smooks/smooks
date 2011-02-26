@@ -21,9 +21,11 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
 import org.milyn.io.StreamUtils;
+import org.milyn.javabean.binding.config5.Person;
 import org.milyn.javabean.binding.model.ModelSet;
 import org.milyn.javabean.binding.ordermodel.Order;
 import org.milyn.javabean.binding.xml.XMLBinding;
+import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -51,6 +53,18 @@ public class XMLBindingTest extends TestCase {
     public void test_with_namespaces_03() throws IOException, SAXException {
         test_pre_created_Smooks("config4");
         test_post_created_Smooks("config4");
+    }
+
+    public void test_Person_binding() throws IOException, SAXException {
+        XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream("config5/person-binding-config.xml"));
+        xmlBinding.intiailize();
+
+        Person person = xmlBinding.fromXML("<person name='Max' age='50' />", Person.class);
+        String xml = xmlBinding.toXML(person);
+        System.out.println(xml);
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual("<person name='Max' age='50' />", xml);
+
     }
 
     public void test_add_fails_after_smooks_constructed() throws IOException, SAXException {
@@ -92,7 +106,7 @@ public class XMLBindingTest extends TestCase {
         // write...
         String outputXML = xmlBinding.toXML(order);
 
-//        System.out.println(outputXML);
+        System.out.println(outputXML);
 
         // Compare...
         XMLUnit.setIgnoreWhitespace(true);
