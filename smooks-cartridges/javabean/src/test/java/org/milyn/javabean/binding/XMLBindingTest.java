@@ -61,7 +61,6 @@ public class XMLBindingTest extends TestCase {
 
         Person person = xmlBinding.fromXML("<person name='Max' age='50' />", Person.class);
         String xml = xmlBinding.toXML(person);
-        System.out.println(xml);
         XMLUnit.setIgnoreWhitespace(true);
         XMLAssert.assertXMLEqual("<person name='Max' age='50' />", xml);
 
@@ -106,7 +105,7 @@ public class XMLBindingTest extends TestCase {
         // write...
         String outputXML = xmlBinding.toXML(order);
 
-        System.out.println(outputXML);
+//        System.out.println(outputXML);
 
         // Compare...
         XMLUnit.setIgnoreWhitespace(true);
