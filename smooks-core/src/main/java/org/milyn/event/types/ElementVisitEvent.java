@@ -149,7 +149,7 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
                 reportSummary = template.apply(templateParams);
             } catch (Exception e) {
                 reportSummary = "Report Template Summary Error: " + e.getMessage();
-                logger.error("Failed to apply Summary Template.", e);
+                logger.debug("Failed to apply Summary Template.", e);
             }
         }
 
@@ -159,7 +159,7 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
                 reportDetail = template.apply(templateParams);
             } catch (Exception e) {
                 reportSummary = "Report Template Detail Error: " + e.getMessage();
-                logger.error("Failed to apply Detail Template.", e);
+                logger.debug("Failed to apply Detail Template.", e);
             }
         }
     }

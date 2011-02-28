@@ -158,7 +158,7 @@ public class RegexProvider implements RuleProvider
             }
             catch (final IOException e)
             {
-                logger.error("Error closing InputStream to Regex Rule file '" + ruleFile + "'.", e);
+                logger.debug("Error closing InputStream to Regex Rule file '" + ruleFile + "'.", e);
             }
         }
 

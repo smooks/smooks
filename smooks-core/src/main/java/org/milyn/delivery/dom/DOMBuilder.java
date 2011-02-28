@@ -185,7 +185,7 @@ public class DOMBuilder extends SmooksContentHandler {
             if(index != -1) {
                 nodeStack.setSize(index);
             } else {
-                logger.warn("Ignoring unexpected end [" + endEvent.localName + "] element event. Request: [" + execContext.getDocumentSource() + "] - document location: [" + getCurPath() + "]");
+                logger.debug("Ignoring unexpected end [" + endEvent.localName + "] element event. Request: [" + execContext.getDocumentSource() + "] - document location: [" + getCurPath() + "]");
             }
         }
     }

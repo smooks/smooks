@@ -367,7 +367,7 @@ public class FileOutputStreamResource extends AbstractOutputStreamResource
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    logger.error("Failed to close list file '" + getListFileName(executionContext) + "'.", e);
+                    logger.debug("Failed to close list file '" + getListFileName(executionContext) + "'.", e);
                 }
             }
         }

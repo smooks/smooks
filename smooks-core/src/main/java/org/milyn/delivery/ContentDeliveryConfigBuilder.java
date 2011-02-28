@@ -588,7 +588,7 @@ public class ContentDeliveryConfigBuilder {
                     try {
                         return addCDU(resourceConfig, creator);
                     } catch (InstantiationException e) {
-                        logger.warn("ContentHandler creation failure.", e);
+                        logger.debug("ContentHandler creation failure.", e);
                     }
                 }
             } else {
@@ -646,9 +646,9 @@ public class ContentDeliveryConfigBuilder {
                 String message = "ContentHandlerFactory [" + handlerFactory.getClass().getName()  + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
 
                 if(logger.isDebugEnabled()) {
-                    logger.warn(message, thrown);
+                    logger.debug(message, thrown);
                 } else {
-                    logger.warn(message + thrown.getMessage());
+                    logger.debug(message + thrown.getMessage());
 				}
                 configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message, thrown));
                 

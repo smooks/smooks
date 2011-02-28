@@ -248,7 +248,7 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
 
         // Can't insert before or after the root element...
         if(parent instanceof Document && (action == Action.INSERT_BEFORE || action == Action.INSERT_AFTER)) {
-            logger.warn("Insert before/after root element not allowed.  Consider using the replace action!!");
+            logger.debug("Insert before/after root element not allowed.  Consider using the replace action!!");
             return;
         }
 

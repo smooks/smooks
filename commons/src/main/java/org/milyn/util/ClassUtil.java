@@ -303,7 +303,7 @@ public class ClassUtil {
                 try {
                     clazz = forName(className, ClassUtil.class);
                 } catch (ClassNotFoundException e) {
-                    logger.warn("Failed to load class '" + className + "'. Class not found.");
+                    logger.debug("Failed to load class '" + className + "'. Class not found.", e);
                     continue;
                 }
 
@@ -350,7 +350,7 @@ public class ClassUtil {
 			}
     		catch (IOException e)
 			{
-    			logger.warn( "Exception while trying to close : " + closable, e);
+    			logger.debug( "Exception while trying to close : " + closable, e);
 			}
     	}
     }

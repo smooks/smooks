@@ -806,7 +806,7 @@ public class SmooksResourceConfiguration {
         if (restype != null && !restype.trim().equals("")) {
             // Ala DTD v1.0, where we weren't able to specify the type in any other way.
             if (getParameter(PARAM_RESDATA) == null) {
-                logger.warn("Resource configuration defined with '" + PARAM_RESTYPE + "' parameter but no '" + PARAM_RESDATA + "' parameter.");
+                logger.debug("Resource configuration defined with '" + PARAM_RESTYPE + "' parameter but no '" + PARAM_RESDATA + "' parameter.");
             }
         } else if (resourceType != null) {
             // Ala DTD v2.0, where the type is set through the "type" attribute on the <resource> element.
@@ -1370,7 +1370,7 @@ public class SmooksResourceConfiguration {
                 if(!parentStep.isStarStar()) {
                     XPathExpressionEvaluator evaluator = parentStep.getPredicatesEvaluator();
                     if(evaluator == null) {
-                        logger.warn("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+                        logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
                     } else if(!evaluator.evaluate(parentElement, index.executionContext)) {
                         return false;
                     }
@@ -1383,7 +1383,7 @@ public class SmooksResourceConfiguration {
             if(!selectorSteps[index.i].isStarStar()) {
                 XPathExpressionEvaluator evaluator = selectorSteps[index.i].getPredicatesEvaluator();
                 if(evaluator == null) {
-                    logger.warn("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+                    logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
                 } else if(!evaluator.evaluate(element, index.executionContext)) {
                     return false;
                 }
@@ -1434,7 +1434,7 @@ public class SmooksResourceConfiguration {
                 if(!parentStep.isStarStar()) {
                     XPathExpressionEvaluator evaluator = parentStep.getPredicatesEvaluator();
                     if(evaluator == null) {
-                        logger.warn("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+                        logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
                     } else if(!evaluator.evaluate(parentElement, index.executionContext)) {
                         return false;
                     }
@@ -1447,7 +1447,7 @@ public class SmooksResourceConfiguration {
             if(!selectorSteps[index.i].isStarStar()) {
                 XPathExpressionEvaluator evaluator = selectorSteps[index.i].getPredicatesEvaluator();
                 if(evaluator == null) {
-                    logger.warn("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+                    logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
                 } else if(!evaluator.evaluate(element, index.executionContext)) {
                     return false;
                 }
@@ -1499,7 +1499,7 @@ public class SmooksResourceConfiguration {
 
         XPathExpressionEvaluator evaluator = selectorStep.getPredicatesEvaluator();
         if(evaluator == null) {
-            logger.warn("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+            logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
         } else if(!evaluator.evaluate(element, executionContext)) {
             return false;
         }
@@ -1552,7 +1552,7 @@ public class SmooksResourceConfiguration {
 
         XPathExpressionEvaluator evaluator = selectorStep.getPredicatesEvaluator();
         if(evaluator == null) {
-            logger.warn("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+            logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
         } else if(!evaluator.evaluate(element, executionContext)) {
             return false;
         }

@@ -107,7 +107,7 @@ public class MVELProvider implements RuleProvider {
             try {
                 ruleStream.close();
             } catch (IOException e) {
-                logger.error("Error closing MVEL rule file '" + src + "'.", e);
+                logger.debug("Error closing MVEL rule file '" + src + "'.", e);
             }
         }
 
@@ -117,7 +117,7 @@ public class MVELProvider implements RuleProvider {
                 String ruleExpression = ruleLine[1];
 
                 if(rules.containsKey(ruleName)) {
-                    logger.warn("Duplicate rule definition '" + ruleName + "' in MVEL rule file '" + ruleName + "'.  Ignoring duplicate.");
+                    logger.debug("Duplicate rule definition '" + ruleName + "' in MVEL rule file '" + ruleName + "'.  Ignoring duplicate.");
                     continue;
                 }
 

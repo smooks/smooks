@@ -329,7 +329,7 @@ public class CSVReader implements SmooksXMLReader, VisitorAppender {
 	        	lineNumber++; // First line is line "1"
 	
 	        	if(csvRecord.length < expectedCount && strict) {
-	        		logger.warn("[CORRUPT-CSV] CSV line #" + lineNumber + " invalid [" + Arrays.asList(csvRecord) + "].  The line should contain number of items at least as in CSV config file " + csvFields.length + " fields [" + csvFields + "], but contains " + csvRecord.length + " fields.  Ignoring!!");
+	        		logger.debug("[CORRUPT-CSV] CSV line #" + lineNumber + " invalid [" + Arrays.asList(csvRecord) + "].  The line should contain number of items at least as in CSV config file " + csvFields.length + " fields [" + csvFields + "], but contains " + csvRecord.length + " fields.  Ignoring!!");
 	        		continue;
 	        	}
 	

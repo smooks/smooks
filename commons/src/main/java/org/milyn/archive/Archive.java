@@ -235,7 +235,7 @@ public class Archive {
             try {
                 zipStream.close();
             } catch (IOException e) {
-                logger.error("Unexpected error closing EDI Mapping Model Zip stream.", e);
+                logger.debug("Unexpected error closing EDI Mapping Model Zip stream.", e);
             }
         }
 

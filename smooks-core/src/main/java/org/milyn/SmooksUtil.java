@@ -57,7 +57,7 @@ public abstract class SmooksUtil {
         ProfileStore profileStore = smooks.getApplicationContext().getProfileStore();
         try {
             profileStore.getProfileSet(profileSet.getBaseProfile());
-            logger.warn("ProfileSet [" + profileSet.getBaseProfile() + "] already registered.  Not registering new profile set.");
+            logger.debug("ProfileSet [" + profileSet.getBaseProfile() + "] already registered.  Not registering new profile set.");
         } catch (UnknownProfileMemberException e) {
             // It's an unregistered profileset...
             profileStore.addProfileSet(profileSet);

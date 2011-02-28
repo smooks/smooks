@@ -67,7 +67,7 @@ public class BeanRepositoryPerformance {
 		long end  = System.currentTimeMillis();
 
 		if(!warmup) {
-			log.error("BeanRepository performance beans: " + beans + "; loops: " + loops + "; time: " + (end - begin) + "ms");
+			log.debug("BeanRepository performance beans: " + beans + "; loops: " + loops + "; time: " + (end - begin) + "ms");
 		}
 	}
 
@@ -101,7 +101,7 @@ public class BeanRepositoryPerformance {
 		long end  = System.currentTimeMillis();
 
 		if(!warmup) {
-			log.error("BeanRepository performance beans: " + beans + "; loops: " + loops + "; time: " + (end - begin) + "ms");
+			log.debug("BeanRepository performance beans: " + beans + "; loops: " + loops + "; time: " + (end - begin) + "ms");
 		}
 	}
 

@@ -85,7 +85,7 @@ public class JNDIUtil {
                 context.close();
             }
             catch (NamingException ne) {
-                logger.error("Failed to close Naming Context.", ne);
+                logger.debug("Failed to close Naming Context.", ne);
             }
         }
 

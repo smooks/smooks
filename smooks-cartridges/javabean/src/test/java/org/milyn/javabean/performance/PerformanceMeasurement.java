@@ -64,7 +64,7 @@ public class PerformanceMeasurement {
 
 
 		} catch (Exception e) {
-			logger.error("Exception", e);
+			logger.debug("Exception", e);
 		}
 	}
 

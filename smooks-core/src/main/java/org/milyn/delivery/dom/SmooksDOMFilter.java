@@ -252,7 +252,7 @@ public class SmooksDOMFilter extends Filter {
                     serialize(resultNode, writer);
                     writer.flush();
                 } catch (IOException e) {
-                    logger.error("Error writing result to output stream.", e);
+                    logger.debug("Error writing result to output stream.", e);
                 }
             } else if (result instanceof DOMResult) {
                 ((DOMResult) result).setNode(resultNode);
@@ -310,7 +310,7 @@ public class SmooksDOMFilter extends Filter {
 
         // Apply assembly phase...
         if (doc.getDocumentElement() == null) {
-            logger.warn("Empty Document [" + executionContext.getDocumentSource() + "].  Not performaing any processing.");
+            logger.debug("Empty Document [" + executionContext.getDocumentSource() + "].  Not performaing any processing.");
             return doc;
         }
 
@@ -823,7 +823,7 @@ public class SmooksDOMFilter extends Filter {
                 throw new SmooksException(errorMsg, error);
             }
         } else {
-            logger.error(errorMsg, error);
+            logger.debug(errorMsg, error);
         }
     }
 }
