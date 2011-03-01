@@ -16,19 +16,23 @@
 
 package org.milyn.ect;
 
-import junit.framework.TestCase;
-import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
-import org.milyn.edisax.EDIConfigurationException;
-import org.milyn.edisax.EDIParser;
-import org.milyn.edisax.model.EDIConfigDigester;
-import org.milyn.edisax.model.internal.Edimap;
-import org.milyn.resource.URIResourceLocator;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import junit.framework.TestCase;
+
+import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
+import org.milyn.edisax.EDIConfigurationException;
+import org.milyn.edisax.model.EDIConfigDigester;
+import org.milyn.edisax.model.internal.Edimap;
+import org.xml.sax.SAXException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

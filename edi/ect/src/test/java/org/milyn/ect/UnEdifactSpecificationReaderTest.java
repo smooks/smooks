@@ -1,5 +1,5 @@
 /*
-	Milyn - Copyright (C) 2006 - 2010
+	Milyn - Copyright (C) 2006 - 2011
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -15,9 +15,30 @@
 */
 package org.milyn.ect;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Set;
+import java.util.zip.ZipInputStream;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+import org.jdom.xpath.XPath;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDIParser;
@@ -29,76 +50,65 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
-import java.util.Set;
-import java.util.zip.ZipInputStream;
-
 /**
  * UnEdifactSpecificationReaderTest.
  * 
  * @author bardl
  */
-public class UnEdifactSpecificationReaderTest extends TestCase {
+public class UnEdifactSpecificationReaderTest  {
 
-    public void _disabled_test_D08A_Messages() throws InstantiationException, IllegalAccessException, IOException, EdiParseException {
+	private static UnEdifactSpecificationReader d08AReader;
+	private XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());;
 
-        InputStream inputStream = getClass().getResourceAsStream("D08A.zip");
+	@BeforeClass
+	public static void parseD08A() throws Exception {
+        InputStream inputStream = UnEdifactSpecificationReaderTest.class.getResourceAsStream("D08A.zip");
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-
-        EdiSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(zipInputStream, false);
-
-        test("BANSTA", ediSpecificationReader);
-        test("CASRES", ediSpecificationReader);
-        test("INVOIC", ediSpecificationReader);
-        test("PAYMUL", ediSpecificationReader);
-        test("TPFREP", ediSpecificationReader);
+        d08AReader = new UnEdifactSpecificationReader(zipInputStream, false);
+	}
+	
+    public void _disabled_test_D08A_Messages() throws InstantiationException, IllegalAccessException, IOException, EdiParseException {
+        test("BANSTA", d08AReader);
+        test("CASRES", d08AReader);
+        test("INVOIC", d08AReader);
+        test("PAYMUL", d08AReader);
+        test("TPFREP", d08AReader);
     }
 
+    @Test
     public void test_getMessages() throws InstantiationException, IllegalAccessException, IOException {
-        InputStream inputStream = getClass().getResourceAsStream("D08A.zip");
-        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-
-        EdiSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(zipInputStream, false);
-
-        Set<String> messages = ediSpecificationReader.getMessageNames();
+        Set<String> messages = d08AReader.getMessageNames();
         for(String message : messages) {
-            Edimap model = ediSpecificationReader.getMappingModel(message);
+            Edimap model = d08AReader.getMappingModel(message);
             StringWriter writer = new StringWriter();
             model.write(writer);
         }
     }
 
-    public void test_D08A_Segments() throws InstantiationException, IllegalAccessException, IOException, EdiParseException, ParserConfigurationException, SAXException {
+    @Test
+    public void test_D08A_Segments() throws InstantiationException, IllegalAccessException, IOException, EdiParseException, ParserConfigurationException, SAXException, JDOMException {
 
-        InputStream inputStream = getClass().getResourceAsStream("D08A.zip");
-        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-
-        UnEdifactSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(zipInputStream, false);
-        Edimap edimap = ediSpecificationReader.getDefinitionModel();
+        Edimap edimap = d08AReader.getDefinitionModel();
 
         StringWriter stringWriter = new StringWriter();
         edimap.write(stringWriter);
 
-        String result = stringWriter.toString();
-
-        testSegment("BGM", result);
-        testSegment("DTM", result);
-        testSegment("NAD", result);
-        testSegment("PRI", result);        
+        Document document = new SAXBuilder().build(new StringReader(stringWriter.toString()));
+        
+        testSegment("BGM", document);
+        testSegment("DTM", document);
+        testSegment("NAD", document);
+        testSegment("PRI", document);        
     }
 
+    @Test
     public void testRealLifeInputFilesD08A() throws IOException, InstantiationException, IllegalAccessException, EDIConfigurationException, SAXException {
-        InputStream inputStream = ClassUtil.getResourceAsStream("D08A.zip", this.getClass());
-        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-
-        EdiSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(zipInputStream, false);
-
         //Test INVOIC
-        String mappingModel = getEdiMessageAsString(ediSpecificationReader, "INVOIC");
+        String mappingModel = getEdiMessageAsString(d08AReader, "INVOIC");
         testPackage("d96a-invoic-1", mappingModel);
     }
 
+    @Test
     public void testRealLifeInputFilesD93A() throws IOException, InstantiationException, IllegalAccessException, EDIConfigurationException, SAXException {
         InputStream inputStream = ClassUtil.getResourceAsStream("d93a.zip", this.getClass());
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
@@ -138,23 +148,15 @@ public class UnEdifactSpecificationReaderTest extends TestCase {
         return sw.toString();
     }
 
-    private void testSegment(String segmentCode, String definitions) throws IOException {
+	private void testSegment(final String segmentCode, Document doc) throws IOException, SAXException, JDOMException {
         String expected = new String(StreamUtils.readStream(getClass().getResourceAsStream("d08a/segment/expected-" + segmentCode.toLowerCase() + ".xml"))).trim();
-        String result = removeCRLF(definitions);
-        expected = removeCRLF(expected);
-
-        if(!result.contains(expected)) {
-            System.out.println("Expected: \n[" + expected + "]");
-            System.out.println("Actual: \n[" + result + "]");
-        }
-
-//        XMLUnit.setIgnoreWhitespace( true );
-//        try {
-//            XMLAssert.assertXMLEqual(new StringReader(expected), new StringReader(definitions));
-//        } catch (SAXException e) {
-//            e.printStackTrace();
-//            fail(e.getMessage());
-//        }
+        XPath lookup = XPath.newInstance("//medi:segment[@segcode='" + segmentCode + "']");
+        lookup.addNamespace("medi", "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd");
+        Element node = (Element) lookup.selectSingleNode(doc);
+        assertNotNull("Node with segment code " + segmentCode + " wasn't found", node);
+        XMLUnit.setIgnoreWhitespace( true );
+        XMLUnit.setIgnoreAttributeOrder(true);
+    	XMLAssert.assertXMLEqual("Failed to compare XMLs for " + segmentCode, new StringReader(expected), new StringReader(out.outputString(node)));
     }
     
     private void test(String messageName, EdiSpecificationReader ediSpecificationReader) throws IOException {
@@ -213,6 +215,6 @@ public class UnEdifactSpecificationReaderTest extends TestCase {
 
         public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
             xmlMapping.append("</").append(localName).append(">");
-        }
-    }
+		}
+	}
 }

@@ -1,46 +1,46 @@
-<unEdifact>
-	<UNB>
-		<syntaxIdentifier>
-			<id>UNOA</id>
-			<versionNum>3</versionNum>
-		</syntaxIdentifier>
-		<sender>
-			<id>Acme</id>
-			<codeQualifier>1</codeQualifier>
-		</sender>
-		<recipient>
-			<id>AcmeRecipient</id>
-			<codeQualifier>1</codeQualifier>
-		</recipient>
-		<dateTime>
-			<date>20051107</date>
-			<time>1159</time>
-		</dateTime>
-		<controlRef>6002</controlRef>
-	</UNB>
-	<group>
-		<UNG>
-			<groupId>G1</groupId>
-			<senderApp>
-				<id>G1 Division</id>
-			</senderApp>
-			<recipientApp>
-				<id>RecipDivision2</id>
-			</recipientApp>
-			<dateTime>
-			</dateTime>
-			<groupRef>groupref11111</groupRef>
-		</UNG>
-		<interchangeMessage>
-			<UNH>
-				<messageRefNum>0001</messageRefNum>
-				<messageIdentifier>
-					<id>MSG2</id>
-					<versionNum>S</versionNum>
-					<releaseNum>93A</releaseNum>
-					<controllingAgencyCode>UN</controllingAgencyCode>
-				</messageIdentifier>
-			</UNH>
+<h:unEdifact xmlns:h="http://www.milyn.org/schema/edi/un/header-4.1.xsd">
+	<h:UNB xmlns:h="http://www.milyn.org/schema/edi/un/header-4.1.xsd">
+		<h:syntaxIdentifier>
+			<h:id>UNOA</h:id>
+			<h:versionNum>3</h:versionNum>
+		</h:syntaxIdentifier>
+		<h:sender>
+			<h:id>Acme</h:id>
+			<h:codeQualifier>1</h:codeQualifier>
+		</h:sender>
+		<h:recipient>
+			<h:id>AcmeRecipient</h:id>
+			<h:codeQualifier>1</h:codeQualifier>
+		</h:recipient>
+		<h:dateTime>
+			<h:date>20051107</h:date>
+			<h:time>1159</h:time>
+		</h:dateTime>
+		<h:controlRef>6002</h:controlRef>
+	</h:UNB>
+	<h:group xmlns:h="http://www.milyn.org/schema/edi/un/header-4.1.xsd">
+		<h:UNG>
+			<h:groupId>G1</h:groupId>
+			<h:senderApp>
+				<h:id>G1 Division</h:id>
+			</h:senderApp>
+			<h:recipientApp>
+				<h:id>RecipDivision2</h:id>
+			</h:recipientApp>
+			<h:dateTime>
+			</h:dateTime>
+			<h:groupRef>groupref11111</h:groupRef>
+		</h:UNG>
+		<h:interchangeMessage>
+			<h:UNH>
+				<h:messageRefNum>0001</h:messageRefNum>
+				<h:messageIdentifier>
+					<h:id>MSG2</h:id>
+					<h:versionNum>S</h:versionNum>
+					<h:releaseNum>93A</h:releaseNum>
+					<h:controllingAgencyCode>UN</h:controllingAgencyCode>
+				</h:messageIdentifier>
+			</h:UNH>
 			<message2>
 				<segBB>
 					<field-a>f1</field-a>
@@ -48,26 +48,27 @@
 					<field-c>f3</field-c>
 				</segBB>
 			</message2>
-			<UNT>
-				<segmentCount>25</segmentCount>
-				<messageRefNum>0001</messageRefNum>
-			</UNT>
-		</interchangeMessage>
-		<UNE>
-			<controlCount>1</controlCount>
-			<groupRef>groupref11111</groupRef>
-		</UNE>
-	</group>
-	<interchangeMessage>
-		<UNH>
-			<messageRefNum>0001</messageRefNum>
-			<messageIdentifier>
-				<id>MSG2</id>
-				<versionNum>S</versionNum>
-				<releaseNum>93A</releaseNum>
-				<controllingAgencyCode>UN</controllingAgencyCode>
-			</messageIdentifier>
-		</UNH>
+			<h:UNT>
+				<h:segmentCount>25</h:segmentCount>
+				<h:messageRefNum>0001</h:messageRefNum>
+			</h:UNT>
+		</h:interchangeMessage>
+		<h:UNE>
+			<h:controlCount>1</h:controlCount>
+			<h:groupRef>groupref11111</h:groupRef>
+		</h:UNE>
+	</h:group>
+	<h:interchangeMessage
+		xmlns:h="http://www.milyn.org/schema/edi/un/header-4.1.xsd">
+		<h:UNH>
+			<h:messageRefNum>0001</h:messageRefNum>
+			<h:messageIdentifier>
+				<h:id>MSG2</h:id>
+				<h:versionNum>S</h:versionNum>
+				<h:releaseNum>93A</h:releaseNum>
+				<h:controllingAgencyCode>UN</h:controllingAgencyCode>
+			</h:messageIdentifier>
+		</h:UNH>
 		<message2>
 			<segBB>
 				<field-a>f11</field-a>
@@ -75,21 +76,22 @@
 				<field-c>f33</field-c>
 			</segBB>
 		</message2>
-		<UNT>
-			<segmentCount>25</segmentCount>
-			<messageRefNum>0001</messageRefNum>
-		</UNT>
-	</interchangeMessage>
-	<interchangeMessage>
-		<UNH>
-			<messageRefNum>0001</messageRefNum>
-			<messageIdentifier>
-				<id>MSG1</id>
-				<versionNum>S</versionNum>
-				<releaseNum>93A</releaseNum>
-				<controllingAgencyCode>UN</controllingAgencyCode>
-			</messageIdentifier>
-		</UNH>
+		<h:UNT>
+			<h:segmentCount>25</h:segmentCount>
+			<h:messageRefNum>0001</h:messageRefNum>
+		</h:UNT>
+	</h:interchangeMessage>
+	<h:interchangeMessage
+		xmlns:h="http://www.milyn.org/schema/edi/un/header-4.1.xsd">
+		<h:UNH>
+			<h:messageRefNum>0001</h:messageRefNum>
+			<h:messageIdentifier>
+				<h:id>MSG1</h:id>
+				<h:versionNum>S</h:versionNum>
+				<h:releaseNum>93A</h:releaseNum>
+				<h:controllingAgencyCode>UN</h:controllingAgencyCode>
+			</h:messageIdentifier>
+		</h:UNH>
 		<message1>
 			<segA>
 				<field-1>f1</field-1>
@@ -99,13 +101,13 @@
 				<field-11>f11</field-11>
 			</segB>
 		</message1>
-		<UNT>
-			<segmentCount>25</segmentCount>
-			<messageRefNum>0001</messageRefNum>
-		</UNT>
-	</interchangeMessage>
-	<UNZ>
-		<controlCount>1</controlCount>
-		<controlRef>00000000000001</controlRef>
-	</UNZ>
-</unEdifact>
+		<h:UNT>
+			<h:segmentCount>25</h:segmentCount>
+			<h:messageRefNum>0001</h:messageRefNum>
+		</h:UNT>
+	</h:interchangeMessage>
+	<h:UNZ xmlns:h="http://www.milyn.org/schema/edi/un/header-4.1.xsd">
+		<h:controlCount>1</h:controlCount>
+		<h:controlRef>00000000000001</h:controlRef>
+	</h:UNZ>
+</h:unEdifact>

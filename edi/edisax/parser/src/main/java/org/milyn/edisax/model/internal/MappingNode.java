@@ -24,12 +24,15 @@ public class MappingNode {
     private String nodeTypeRef;
     private String documentation;
     private MappingNode parent;
+
+	private String namespace;
     
 	public MappingNode() {
 	}
     
-	public MappingNode(String xmltag) {
+	public MappingNode(String xmltag, String namespace) {
 		this.xmltag = xmltag;
+		this.namespace = namespace;
 	}
 
 	public String getXmltag() {
@@ -73,4 +76,17 @@ public class MappingNode {
             return xmltag;
         }
     }
+
+    /**
+     * Returns a namespace of the element
+     * 
+     * @return
+     */
+	public String getNamespace() {
+		return namespace;
+	}
+	
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
 }
