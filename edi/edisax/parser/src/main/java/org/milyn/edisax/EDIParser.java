@@ -28,7 +28,6 @@ import org.milyn.javabean.DataDecodeException;
 import org.milyn.lang.MutableInt;
 import org.milyn.resource.URIResourceLocator;
 import org.xml.sax.*;
-import org.xml.sax.ext.Attributes2Impl;
 import org.xml.sax.helpers.AttributesImpl;
 
 import java.io.*;
@@ -837,7 +836,7 @@ public class EDIParser implements XMLReader {
             if (!declareNamespace) {
             	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, EMPTY_ATTRIBS);
             } else {
-            	Attributes2Impl attrs = new Attributes2Impl();
+            	AttributesImpl attrs = new AttributesImpl();
             	attrs.addAttribute(null, "xmlns:" + alias, "xmlns:" + alias, "CDATA", namespace);
             	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, attrs);
             }

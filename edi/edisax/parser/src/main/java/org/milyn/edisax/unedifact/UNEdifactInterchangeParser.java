@@ -42,7 +42,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.ext.Attributes2Impl;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -85,7 +84,7 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        
 	        contentHandler.startDocument();
 	        contentHandler.startPrefixMapping("h", ControlBlockHandler.NAMESPACE);
-	        Attributes2Impl attrs = new Attributes2Impl();
+	        AttributesImpl attrs = new AttributesImpl();
 	        attrs.addAttribute(XMLConstants.NULL_NS_URI, "xmlns:h", "xmlns:h", "CDATA", ControlBlockHandler.NAMESPACE);
 	        contentHandler.startElement(ControlBlockHandler.NAMESPACE, "unEdifact", "h:unEdifact", attrs);
 	
