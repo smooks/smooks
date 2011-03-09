@@ -18,6 +18,7 @@ package org.milyn.ect.formats.unedifact;
 import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.ect.EdiParseException;
 import org.milyn.edisax.util.EDIUtils;
+import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Field;
@@ -27,6 +28,8 @@ import org.milyn.util.ClassUtil;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -46,6 +49,12 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
     private Map<String, byte[]> definitionFiles;
     private Map<String, byte[]> messageFiles;
     private Edimap definitionModel;
+    private Set<String> versions = new HashSet<String>();
+
+    /**
+     * Matcher to recognize and parse entries like CUSCAR_D.08A
+     */
+	private Pattern entryFileName = Pattern.compile("^([A-Z]+)_([A-Z])\\.([0-9]+[AB])$");
 
     public UnEdifactSpecificationReader(ZipInputStream specificationInStream, boolean useImport) throws IOException {
         this.useImport = useImport;
@@ -53,11 +62,16 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         definitionFiles = new HashMap<String, byte[]>();
         messageFiles = new HashMap<String, byte[]>();
         readDefinitionEntries(specificationInStream, new ZipDirectoryEntry("eded.", definitionFiles), new ZipDirectoryEntry("edcd.", definitionFiles), new ZipDirectoryEntry("edsd.", definitionFiles), new ZipDirectoryEntry("edmd.", "*", messageFiles));
-
+        
+        if (versions.size() != 1) {
+        	throw new EdiParseException("Seems that we have a directories of more than one version inside: " + versions);
+        }
+        String version = versions.iterator().next();
         // Read Definition Configuration
         definitionModel = parseEDIDefinitionFiles();
 
         addMissingDefinitions(definitionModel);
+        definitionModel.setNamespace("http://www.milyn.org/schema/edi/un/" + version + "/common.xsd");
 
         //Interchange envelope is inserted into the definitions. Handcoded at the moment.
         try {
@@ -100,11 +114,11 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
         ugh.setSegcode("UGH");
         ugh.setXmltag("UGH");
-        ugh.addField(new Field("id", true));
+        ugh.addField(new Field("id",ControlBlockHandler.NAMESPACE, true));
 
         ugt.setSegcode("UGT");
         ugt.setXmltag("UGT");
-        ugt.addField(new Field("id", true));
+        ugt.addField(new Field("id",ControlBlockHandler.NAMESPACE, true));
 
         definitionModel.getSegments().getSegments().add(ugh);
         definitionModel.getSegments().getSegments().add(ugt);
@@ -158,7 +172,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
     }
 
-    private static void readDefinitionEntries(ZipInputStream folderZip, ZipDirectoryEntry... entries) throws IOException {
+    private void readDefinitionEntries(ZipInputStream folderZip, ZipDirectoryEntry... entries) throws IOException {
 
         ZipEntry fileEntry = folderZip.getNextEntry();
         while (fileEntry != null) {
@@ -183,13 +197,14 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         }
     }
 
-    private static boolean readZipEntry(Map<String, byte[]> files, ZipInputStream folderZip, String entry) throws IOException {
+    private  boolean readZipEntry(Map<String, byte[]> files, ZipInputStream folderZip, String entry) throws IOException {
 
         boolean result = false;
 
         ZipEntry fileEntry = folderZip.getNextEntry();
         while (fileEntry != null) {
-            String fName = new File(fileEntry.getName().toLowerCase()).getName().replaceFirst("tr", "ed");
+            String fileName = fileEntry.getName();
+			String fName = new File(fileName.toLowerCase()).getName().replaceFirst("tr", "ed");
             if (fName.startsWith(entry) || entry.equals("*")) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -202,8 +217,11 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
                 result = true;
                 if (entry.equals("*")) {
-                    if (fileEntry.getName().indexOf('_') != -1) {
-                        files.put(fName.substring(0, fName.indexOf('_')).toUpperCase(), baos.toByteArray());
+					Matcher match = entryFileName.matcher(fileName.toUpperCase());
+					if (match.matches()) {
+                        String entryName = match.group(1);
+						files.put(entryName, baos.toByteArray());
+						versions.add((match.group(2) + match.group(3)).toLowerCase());
                     }
                 } else {
                     files.put(entry, baos.toByteArray());

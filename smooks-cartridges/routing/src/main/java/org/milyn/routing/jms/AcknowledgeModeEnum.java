@@ -54,7 +54,7 @@ public enum AcknowledgeModeEnum
 			}
 			catch (IllegalArgumentException e)
 			{
-				log.warn("' " + ackMode + "' is invalid : " + ".Will use default '" + AcknowledgeModeEnum.AUTO_ACKNOWLEDGE);
+				log.debug("' " + ackMode + "' is invalid : " + ". Will use default '" + AcknowledgeModeEnum.AUTO_ACKNOWLEDGE);
 			}
 		}
 		return AcknowledgeModeEnum.AUTO_ACKNOWLEDGE;

@@ -232,7 +232,7 @@ public abstract class Filter {
                     }
                 }
             } catch (Throwable throwable) {
-                logger.warn("Failed to close input stream/reader.", throwable);
+                logger.debug("Failed to close input stream/reader.", throwable);
             }
         }
     }

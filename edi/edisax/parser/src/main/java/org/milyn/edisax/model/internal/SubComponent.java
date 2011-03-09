@@ -23,8 +23,8 @@ public class SubComponent extends ValueNode {
 	public SubComponent() {
 	}
 
-	public SubComponent(String xmltag, Boolean required) {
-		super(xmltag);
+	public SubComponent(String xmltag, String namespace, Boolean required) {
+		super(xmltag, namespace);
 		this.required = required;
 	}
 

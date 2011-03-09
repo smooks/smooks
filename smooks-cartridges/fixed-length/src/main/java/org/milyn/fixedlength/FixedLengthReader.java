@@ -318,7 +318,7 @@ public class FixedLengthReader implements SmooksXMLReader, VisitorAppender {
 	        	boolean invalidLength = flRecord.length() < totalFieldLenght;
 	        	if(invalidLength && strict) {
 	        		if(logger.isWarnEnabled()) {
-	            		logger.warn("[WARNING-FIXEDLENGTH] Fixed Length line #" + lineNumber + " is invalid.  The line doesn't contain enough characters to fill all the fields. This line is skipped.");
+	            		logger.debug("[WARNING-FIXEDLENGTH] Fixed Length line #" + lineNumber + " is invalid.  The line doesn't contain enough characters to fill all the fields. This line is skipped.");
 	            	}
 	        		continue;
 	        	}

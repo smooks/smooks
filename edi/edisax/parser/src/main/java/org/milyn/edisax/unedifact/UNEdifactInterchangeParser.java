@@ -83,7 +83,10 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        segmentReader.setIgnoreNewLines(getFeature(EDIParser.FEATURE_IGNORE_NEWLINES));
 	        
 	        contentHandler.startDocument();
-	        contentHandler.startElement(XMLConstants.NULL_NS_URI, "unEdifact", "unEdifact", new AttributesImpl());
+	        contentHandler.startPrefixMapping("h", ControlBlockHandler.NAMESPACE);
+	        AttributesImpl attrs = new AttributesImpl();
+	        attrs.addAttribute(XMLConstants.NULL_NS_URI, "xmlns:h", "xmlns:h", "CDATA", ControlBlockHandler.NAMESPACE);
+	        contentHandler.startElement(ControlBlockHandler.NAMESPACE, "unEdifact", "h:unEdifact", attrs);
 	
 	        while(true) {
 		        segCode = segmentReader.peek(3, true);
@@ -102,7 +105,8 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        }
 	        
 	        contentHandler.characters(new char[] {'\n'}, 0, 1);
-	        contentHandler.endElement(XMLConstants.NULL_NS_URI, "unEdifact", "unEdifact");
+	        contentHandler.endElement(ControlBlockHandler.NAMESPACE, "unEdifact", "h:unEdifact");
+	        contentHandler.endPrefixMapping("h");
 	        contentHandler.endDocument();
         } finally {
         	contentHandler = null;

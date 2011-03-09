@@ -200,9 +200,9 @@ public final class XMLConfigDigester {
 
         try {
             configDoc = XmlUtil.parseStream(new StringReader(streamData), getDTDEntityResolver(), XmlUtil.VALIDATION_TYPE.DTD, true);
-            logger.warn("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
+            logger.debug("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
             digestV10DTDValidatedConfig(configDoc);
-            logger.warn("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
+            logger.debug("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
         } catch (Exception e) {
             // Must be an XSD based config...
             try {
@@ -524,7 +524,7 @@ public final class XMLConfigDigester {
         resourcelist.add(resourceConfig);
         if (resource == null) {
             if (resourceConfig.getParameters(SmooksResourceConfiguration.PARAM_RESDATA) != null) {
-                logger.warn("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
+                logger.debug("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
             } else {
                 logger.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
             }

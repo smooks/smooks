@@ -16,8 +16,10 @@
 package org.milyn.container.plugin;
 
 import org.milyn.payload.JavaSource;
+import org.w3c.dom.Node;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -43,14 +45,16 @@ public class SourceFactory {
         Source source;
         if (from instanceof String) {
             source = new StreamSource(new StringReader((String) from));
-        } else if (from instanceof byte[]) {
-            source = new StreamSource(new ByteArrayInputStream((byte[]) from));
-        } else if (from instanceof Reader) {
-            source = new StreamSource((Reader) from);
         } else if (from instanceof InputStream) {
             source = new StreamSource((InputStream) from);
+        } else if (from instanceof Reader) {
+            source = new StreamSource((Reader) from);
+        } else if (from instanceof Node) {
+            source = new DOMSource((Node) from);
         } else if (from instanceof Source) {
             source = (Source) from;
+        } else if (from instanceof byte[]) {
+            source = new StreamSource(new ByteArrayInputStream((byte[]) from));
         } else {
             source = new JavaSource(from);
         }

@@ -165,6 +165,9 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
 
     public XMLSerializationNode findNode(SelectorStep[] selectorSteps) {
         if(selectorSteps.length == 1) {
+            if(selectorSteps[0].getTargetAttribute() != null) {
+                return getAttribute(selectorSteps[0], attributes, false);
+            }
             return this;
         }
         return getPathNode(selectorSteps, 1, false);
@@ -179,12 +182,8 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
 
         if(stepIndex == selectorSteps.length - 1 && selectorStep.getTargetAttribute() != null) {
             // It's an attribute node...
-            XMLElementSerializationNode childElement = getElement(selectorStep, elements, create);
-            XMLAttributeSerializationNode attribute = getAttribute(selectorStep, childElement.attributes, create);
-            if(attribute != null) {
-                attribute.setParent(childElement);
-            }
-            return attribute;
+            XMLElementSerializationNode elementNode = getElement(selectorStep, elements, create);
+            return addAttributeNode(elementNode, selectorStep, create);
         } else {
             // It's an element...
             XMLElementSerializationNode childElement = getElement(selectorStep, elements, create);
@@ -200,6 +199,14 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
                 return null;
             }
         }
+    }
+
+    public static XMLSerializationNode addAttributeNode(XMLElementSerializationNode elementNode, SelectorStep selectorStep, boolean create) {
+        XMLAttributeSerializationNode attribute = getAttribute(selectorStep, elementNode.attributes, create);
+        if(attribute != null) {
+            attribute.setParent(elementNode);
+        }
+        return attribute;
     }
 
     public static XMLElementSerializationNode getElement(SelectorStep step, Collection<XMLElementSerializationNode> elementList, boolean create) {

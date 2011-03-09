@@ -180,7 +180,7 @@ public class ModelBuilder {
 			try {
 				message.close();
 			} catch (IOException e) {
-				logger.error("Exception closing message reader.", e);
+				logger.debug("Exception closing message reader.", e);
 			}
 		}
 	}

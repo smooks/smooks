@@ -474,6 +474,7 @@ if (components.get(linePart.getId()) == null) {
         List<Segment> segments = UnEdifactDefinitionReader.readSegments(segmentReader, composites, datas);
 
         Edimap edimap = new Edimap();
+        edimap.setNamespace("Commonone");
         edimap.setSegments(new SegmentGroup());
         edimap.getSegments().getSegments().addAll(segments);
         return edimap;

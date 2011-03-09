@@ -218,7 +218,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
         } finally {
             if ( context != null )
             {
-                try { context.close(); } catch (NamingException e) { logger.warn( "NamingException while trying to close initial Context"); }
+                try { context.close(); } catch (NamingException e) { logger.debug( "NamingException while trying to close initial Context"); }
             }
 
             if(!initialized) {
@@ -528,7 +528,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
 			catch (JMSException e)
 			{
 				final String errorMsg = "JMSException while trying to close connection";
-				logger.error( errorMsg, e );
+				logger.debug( errorMsg, e );
 			}
 		}
 	}
@@ -544,7 +544,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
 			catch (JMSException e)
 			{
 				final String errorMsg = "JMSException while trying to close session";
-				logger.error( errorMsg, e );
+				logger.debug( errorMsg, e );
 			}
 		}
 	}
@@ -643,7 +643,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
                     }
                 }
             } catch (JMSException e) {
-                logger.error("JMSException while trying to stop JMS Connection.", e);
+                logger.debug("JMSException while trying to stop JMS Connection.", e);
             } finally {
                 connection.close();
                 connection = null;
@@ -656,7 +656,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
             try {
                 msgProducer.close();
             } catch (JMSException e) {
-                logger.error("JMSException while trying to close JMS Message Producer.", e);
+                logger.debug("JMSException while trying to close JMS Message Producer.", e);
             } finally {
                 msgProducer = null;
             }
@@ -668,7 +668,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
             try {
                 session.close();
             } catch (JMSException e) {
-                logger.error("JMSException while trying to close JMS Session.", e);
+                logger.debug("JMSException while trying to close JMS Session.", e);
             } finally {
                 session = null;
             }

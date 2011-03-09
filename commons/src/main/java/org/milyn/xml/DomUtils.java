@@ -75,7 +75,7 @@ public abstract class DomUtils {
 		Node parentNode = oldNode.getParentNode();
 		
 		if(parentNode == null) {
-			logger.warn("Cannot replace node [" + oldNode + "] with [" + newNode + "]. [" + oldNode + "] has no parent.");
+			logger.debug("Cannot replace node [" + oldNode + "] with [" + newNode + "]. [" + oldNode + "] has no parent.");
 		} else {
 			parentNode.replaceChild(newNode, oldNode);
 		}
@@ -105,7 +105,7 @@ public abstract class DomUtils {
 		Node parentNode = oldNode.getParentNode();
 
         if(parentNode == null) {
-			logger.warn("Cannot replace [" + oldNode + "] with a NodeList. [" + oldNode + "] has no parent.");
+			logger.debug("Cannot replace [" + oldNode + "] with a NodeList. [" + oldNode + "] has no parent.");
 			return;
 		}
 		
@@ -123,11 +123,11 @@ public abstract class DomUtils {
 			List elements = DomUtils.getElements(newNodes, "*", null);
 
 			if(!elements.isEmpty()) {
-                logger.warn("Request to replace the Document root node with a 1+ in length NodeList.  Replacing root node with the first element node from the NodeList.");
+                logger.debug("Request to replace the Document root node with a 1+ in length NodeList.  Replacing root node with the first element node from the NodeList.");
 	            parentNode.removeChild(oldNode);
 	            parentNode.appendChild((Node)elements.get(0));
 			} else {
-				logger.warn("Cannot replace document root element with a NodeList that doesn't contain an element node.");
+				logger.debug("Cannot replace document root element with a NodeList that doesn't contain an element node.");
 			}
         } else {
     		for(int i = 0; i < nodeCount; i++) {
@@ -154,12 +154,12 @@ public abstract class DomUtils {
     	Node parentNode = refNode.getParentNode();
     	
     	if(parentNode == null) {
-			logger.warn("Cannot insert [" + newNode + "] before [" + refNode + "]. [" + refNode + "] has no parent.");
+			logger.debug("Cannot insert [" + newNode + "] before [" + refNode + "]. [" + refNode + "] has no parent.");
 			return;
 		}
         
         if(parentNode instanceof Document && newNode.getNodeType() == Node.ELEMENT_NODE) {
-            logger.warn("Request to insert an element before the Document root node.  This is not allowed.  Replacing the Document root with the new Node.");
+            logger.debug("Request to insert an element before the Document root node.  This is not allowed.  Replacing the Document root with the new Node.");
             parentNode.removeChild(refNode);
             parentNode.appendChild(newNode);
         } else {
@@ -180,7 +180,7 @@ public abstract class DomUtils {
 		Node parentNode = refNode.getParentNode();
 		
 		if(parentNode == null) {
-			logger.warn("Cannot insert a NodeList before [" + refNode + "]. [" + refNode + "] has no parent.");
+			logger.debug("Cannot insert a NodeList before [" + refNode + "]. [" + refNode + "] has no parent.");
 			return;
 		}
 		
@@ -195,11 +195,11 @@ public abstract class DomUtils {
 			List elements = DomUtils.getElements(newNodes, "*", null);
 
 			if(!elements.isEmpty()) {
-	            logger.warn("Request to insert a NodeList before the Document root node.  Will replace the root element with the 1st element node from the NodeList.");
+	            logger.debug("Request to insert a NodeList before the Document root node.  Will replace the root element with the 1st element node from the NodeList.");
 	            parentNode.removeChild(refNode);
 	            parentNode.appendChild((Node)elements.get(0));
 			} else {
-				logger.warn("Cannot insert beforen the document root element from a NodeList that doesn't contain an element node.");
+				logger.debug("Cannot insert beforen the document root element from a NodeList that doesn't contain an element node.");
 			}
         	
     		for(int i = 0; i < nodeCount; i++) {
@@ -287,7 +287,7 @@ public abstract class DomUtils {
 
 		Node parent = element.getParentNode();
 		if(parent == null) {
-			logger.warn("Cannot remove element [" + element + "]. [" + element + "] has no parent.");
+			logger.debug("Cannot remove element [" + element + "]. [" + element + "] has no parent.");
 			return;
 		}
 		
@@ -297,7 +297,7 @@ public abstract class DomUtils {
 			List childElements = null;
 			
 			if(!keepChildren) {
-				logger.warn("Cannot remove document root element [" + DomUtils.getName(element) + "] without keeping child content.");
+				logger.debug("Cannot remove document root element [" + DomUtils.getName(element) + "] without keeping child content.");
 			} else {
 				if(children != null && children.getLength() > 0) {
 					childElements = DomUtils.getElements(element, "*", null);
@@ -307,7 +307,7 @@ public abstract class DomUtils {
 					parent.removeChild(element);
 					parent.appendChild((Element)childElements.get(0));
 				} else {
-					logger.warn("Cannot remove empty document root element [" + DomUtils.getName(element) + "].");
+					logger.debug("Cannot remove empty document root element [" + DomUtils.getName(element) + "].");
 				}
 			}
 		} else {
@@ -519,7 +519,7 @@ public abstract class DomUtils {
 
 		Node parent = node.getParentNode();
         if(parent == null) {
-			logger.warn("Cannot get node [" + node + "] previous sibling. [" + node + "] has no parent.");
+			logger.debug("Cannot get node [" + node + "] previous sibling. [" + node + "] has no parent.");
 			return null;
 		}
 		

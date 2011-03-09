@@ -268,7 +268,7 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
             }
             catch (IOException e)
             {
-                log.error( "IOException while trying to flush output resource '" + resourceName + "': ", e );
+                log.debug( "IOException while trying to flush output resource '" + resourceName + "': ", e );
             }
         }
 
@@ -278,7 +278,7 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
 		}
 		catch (IOException e)
 		{
-			log.error( "IOException while trying to close output resource '" + resourceName + "': ", e );
+			log.debug( "IOException while trying to close output resource '" + resourceName + "': ", e );
 		}
 	}
 

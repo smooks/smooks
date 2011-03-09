@@ -15,6 +15,7 @@
 */
 package org.milyn.javabean.binding.xml;
 
+import org.milyn.Smooks;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -62,8 +63,12 @@ public class XMLBinding extends AbstractBinding {
     private Map<Class, XMLElementSerializationNode> serializers = new LinkedHashMap<Class, XMLElementSerializationNode>();
     private boolean omitXMLDeclaration = false;
 
-    public XMLBinding() throws IOException, SAXException {
+    public XMLBinding() {
         super();
+    }
+
+    public XMLBinding(Smooks smooks) {
+        super(smooks);
     }
 
     @Override
@@ -257,9 +262,14 @@ public class XMLBinding extends AbstractBinding {
             throw new IllegalStateException("Invalid binding configuration.  All <jb:bean> configuration elements must specify fully qualified selector paths (createOnElement, data, executeOnElement attributes etc.).");
         }
 
-        XMLElementSerializationNode root = XMLElementSerializationNode.getElement(selectorSteps[0], graphRoots, true);
+        SelectorStep rootSelectorStep = selectorSteps[0];
+        XMLElementSerializationNode root = XMLElementSerializationNode.getElement(rootSelectorStep, graphRoots, true);
+
         if(selectorSteps.length > 1) {
             return root.getPathNode(selectorSteps, 1, true);
+        } else if(rootSelectorStep.getTargetAttribute() != null) {
+            // It's an attribute node...
+            return XMLElementSerializationNode.addAttributeNode(root, rootSelectorStep, true);
         } else {
             return root;
         }

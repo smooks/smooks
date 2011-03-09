@@ -19,9 +19,13 @@ package org.milyn.javabean.binding;
 import junit.framework.TestCase;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.milyn.Smooks;
 import org.milyn.io.StreamUtils;
+import org.milyn.javabean.binding.config5.Person;
+import org.milyn.javabean.binding.model.ModelSet;
 import org.milyn.javabean.binding.ordermodel.Order;
 import org.milyn.javabean.binding.xml.XMLBinding;
+import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -32,23 +36,67 @@ import java.io.IOException;
 public class XMLBindingTest extends TestCase {
 
     public void test_no_namespaces() throws IOException, SAXException {
-        test("config1");
+        test_pre_created_Smooks("config1");
+        test_post_created_Smooks("config1");
     }
 
     public void test_with_namespaces_01() throws IOException, SAXException {
-        test("config2");
+        test_pre_created_Smooks("config2");
+        test_post_created_Smooks("config2");
     }
 
     public void test_with_namespaces_02() throws IOException, SAXException {
-        test("config3");
+        test_pre_created_Smooks("config3");
+        test_post_created_Smooks("config3");
     }
 
-    private void test(String config) throws IOException, SAXException {
+    public void test_with_namespaces_03() throws IOException, SAXException {
+        test_pre_created_Smooks("config4");
+        test_post_created_Smooks("config4");
+    }
+
+    public void test_Person_binding() throws IOException, SAXException {
+        XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream("config5/person-binding-config.xml"));
+        xmlBinding.intiailize();
+
+        Person person = xmlBinding.fromXML("<person name='Max' age='50' />", Person.class);
+        String xml = xmlBinding.toXML(person);
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual("<person name='Max' age='50' />", xml);
+
+    }
+
+    public void test_add_fails_after_smooks_constructed() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("config1/order-binding-config.xml"));
+        XMLBinding xmlBinding = new XMLBinding(smooks);
+
+        try {
+            xmlBinding.add("blah");
+        } catch (IllegalStateException e) {
+            assertEquals("Illegal call to method after all configurations have been added.", e.getMessage());
+        }
+    }
+
+    private void test_pre_created_Smooks(String config) throws IOException, SAXException {
         String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"));
-//        XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream(config + "/order-binding-config.xml")).setReportPath("/Users/tfennelly/zap/smooksreport.html");
+        Smooks smooks = new Smooks(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
+        XMLBinding xmlBinding = new XMLBinding(smooks);
+        xmlBinding.intiailize();
+
+        assertTrue("Should be a binding only config.", ModelSet.get(smooks.getApplicationContext()).isBindingOnlyConfig());
+
+        test(inputXML, xmlBinding);
+    }
+
+    private void test_post_created_Smooks(String config) throws IOException, SAXException {
+        String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"));
         XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
         xmlBinding.intiailize();
 
+        test(inputXML, xmlBinding);
+    }
+
+    private void test(String inputXML, XMLBinding xmlBinding) throws SAXException, IOException {
         // Read...
         Order order = xmlBinding.fromXML(inputXML, Order.class);
 
@@ -60,7 +108,7 @@ public class XMLBindingTest extends TestCase {
 //        System.out.println(outputXML);
 
         // Compare...
-        XMLUnit.setIgnoreWhitespace( true );
+        XMLUnit.setIgnoreWhitespace(true);
         XMLAssert.assertXMLEqual(inputXML, outputXML);
     }
 }

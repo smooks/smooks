@@ -64,7 +64,6 @@ public class UNEdifactReaderTest extends TestCase {
 		
 		smooks.setFilterSettings(filterSettings);
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01.edi")), result);
-
 		XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));		
 	}

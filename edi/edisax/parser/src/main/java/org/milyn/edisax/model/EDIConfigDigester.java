@@ -16,23 +16,42 @@
 
 package org.milyn.edisax.model;
 
-import org.milyn.resource.URIResourceLocator;
-import org.milyn.xml.XmlUtil;
-import org.milyn.xml.XsdDOMValidator;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.milyn.assertion.AssertArgument;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDITypeEnum;
-import org.milyn.edisax.model.internal.*;
+import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.Delimiters;
+import org.milyn.edisax.model.internal.Description;
+import org.milyn.edisax.model.internal.Edimap;
+import org.milyn.edisax.model.internal.Field;
+import org.milyn.edisax.model.internal.Import;
+import org.milyn.edisax.model.internal.MappingNode;
+import org.milyn.edisax.model.internal.ParamEntry;
+import org.milyn.edisax.model.internal.Segment;
+import org.milyn.edisax.model.internal.SegmentGroup;
+import org.milyn.edisax.model.internal.SubComponent;
+import org.milyn.edisax.model.internal.ValueNode;
 import org.milyn.javabean.decoders.CustomDecoder;
+import org.milyn.resource.URIResourceLocator;
+import org.milyn.xml.XmlUtil;
+import org.milyn.xml.XsdDOMValidator;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.w3c.dom.*;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URI;
-import java.util.*;
 
 
 /**
@@ -50,6 +69,7 @@ public class EDIConfigDigester {
     public static final String XSD_V12 = "http://www.milyn.org/schema/edi-message-mapping-1.2.xsd";
     public static final String XSD_V13 = "http://www.milyn.org/schema/edi-message-mapping-1.3.xsd";
     public static final String XSD_V14 = "http://www.milyn.org/schema/edi-message-mapping-1.4.xsd";
+    public static final String XSD_V15 = "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd";
     private static final String NAMESPACE_SUFFIX = ":";
     
     /**
@@ -154,7 +174,7 @@ public class EDIConfigDigester {
      * @return true if ediNS is valid, false otherwise.
      */
     private static boolean assertValidXSD(String ediNS) {
-        return XSD_V10.equals(ediNS) || XSD_V11.equals(ediNS) || XSD_V12.equals(ediNS) || XSD_V13.equals(ediNS) || XSD_V14.equals(ediNS);
+        return XSD_V10.equals(ediNS) || XSD_V11.equals(ediNS) || XSD_V12.equals(ediNS) || XSD_V13.equals(ediNS) || XSD_V14.equals(ediNS) || XSD_V15.equals(ediNS);
     }
 
     /**
@@ -166,10 +186,18 @@ public class EDIConfigDigester {
      */
     private void digestXSDValidatedConfig(Document configDoc, Edimap edimap, String schemaName) throws EDIConfigurationException {
 
+    	// Check the namespace attribute
+    	Element documentElement = configDoc.getDocumentElement();
+		if (documentElement.hasAttribute("namespace")) {
+			edimap.setNamespace(documentElement.getAttribute("namespace"));
+    	} else {
+    		edimap.setNamespace(XMLConstants.NULL_NS_URI);
+    	}
+    	
         //Retrieve the namespace for the schema.
-        String namespacePrefix = retrieveNamespace(configDoc.getDocumentElement(), schemaName);
+        String namespacePrefix = retrieveNamespace(documentElement, schemaName);
 
-        NodeList nodes = configDoc.getDocumentElement().getChildNodes();
+        NodeList nodes = documentElement.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
 
@@ -239,9 +267,10 @@ public class EDIConfigDigester {
      * @param namespacePrefix the prefix used to name elements in xml.
      * @throws org.milyn.edisax.EDIConfigurationException is thrown when values are badly formatted.
      */
-    private static void digestSegments(Node node, Edimap edimap, String namespacePrefix) throws EDIConfigurationException {
+    private void digestSegments(Node node, Edimap edimap, String namespacePrefix) throws EDIConfigurationException {
         SegmentGroup segments = new SegmentGroup();
         setValuesForMappingNode(node, segments, namespacePrefix, null);
+        segments.setNamespace(edimap.getNamespace());
         edimap.setSegments(segments);
 
         NodeList nodes = node.getChildNodes();
@@ -259,7 +288,7 @@ public class EDIConfigDigester {
      * @param namespacePrefix the prefix used to name elements in xml.
      * @throws org.milyn.edisax.EDIConfigurationException is thrown when values are badly formatted.
      */
-    private static void digestSegment(Node node, SegmentGroup segmentGroup, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
+    private void digestSegment(Node node, SegmentGroup segmentGroup, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
 
         if(segmentGroup instanceof Segment) {
             Segment segment = (Segment) segmentGroup;
@@ -291,7 +320,7 @@ public class EDIConfigDigester {
         }
     }
 
-    private static boolean digestSegmentGroup(Node currentNode, List<SegmentGroup> segmentGroupList, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
+    private boolean digestSegmentGroup(Node currentNode, List<SegmentGroup> segmentGroupList, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
 
         if (currentNode.getNodeName().equalsIgnoreCase(namespacePrefix + "segmentGroup")) {
             SegmentGroup segment = new SegmentGroup();
@@ -318,7 +347,7 @@ public class EDIConfigDigester {
      * @param namespacePrefix the prefix used to name elements in xml.
      * @throws org.milyn.edisax.EDIConfigurationException is thrown when values are badly formatted.
      */
-    private static void digestField(Node node, Field field, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
+    private void digestField(Node node, Field field, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
         setValuesForField(field, node, namespacePrefix, parent);
 
         NodeList nodes = node.getChildNodes();
@@ -340,7 +369,7 @@ public class EDIConfigDigester {
      * @param namespacePrefix the prefix used to name elements in xml.
      * @throws org.milyn.edisax.EDIConfigurationException is thrown when values are badly formatted.
      */
-    private static void digestComponent(Node node, Component component, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
+    private void digestComponent(Node node, Component component, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
         setValuesForComponent(component, node, namespacePrefix, parent);
 
         NodeList nodes = node.getChildNodes();
@@ -360,7 +389,7 @@ public class EDIConfigDigester {
      * @param segment the {@link org.milyn.edisax.model.internal.Segment} to populate.
      * @param node the Segment element.
      */
-    private static void setValuesForSegment(Segment segment, Node node, String namespacePrefix, MappingNode parent) {
+    private void setValuesForSegment(Segment segment, Node node, String namespacePrefix, MappingNode parent) {
         segment.setMaxOccurs(getNodeValueAsInteger(node, "maxOccurs"));
         segment.setMinOccurs(getNodeValueAsInteger(node, "minOccurs"));
         segment.setSegcode(getAttributeValue(node, "segcode"));
@@ -382,7 +411,7 @@ public class EDIConfigDigester {
      * @param node the Field element.
      * @throws org.milyn.edisax.EDIConfigurationException is thrown when values are badly formatted.
      */
-    private static void setValuesForField(Field field, Node node, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
+    private void setValuesForField(Field field, Node node, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
         field.setRequired(getNodeValueAsBoolean(node, "required"));
         field.setTruncatable(getNodeValueAsBoolean(node, "truncatable"));
         setValuesForValueNode(node, field, namespacePrefix, parent);
@@ -394,7 +423,7 @@ public class EDIConfigDigester {
      * @param node the Component element.
      * @throws org.milyn.edisax.EDIConfigurationException is thrown when values are badly formatted.
      */
-    private static void setValuesForComponent(Component component, Node node, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
+    private void setValuesForComponent(Component component, Node node, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
         component.setRequired(getNodeValueAsBoolean(node, "required"));
         component.setTruncatable(getNodeValueAsBoolean(node, "truncatable"));
         setValuesForValueNode(node, component, namespacePrefix, parent);
@@ -406,7 +435,7 @@ public class EDIConfigDigester {
      * @param subComponent the SubComponent element.
      * @throws org.milyn.edisax.EDIConfigurationException is thrown when values are badly formatted.
      */
-    private static void setValuesForSubComponent(Node node, SubComponent subComponent, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
+    private void setValuesForSubComponent(Node node, SubComponent subComponent, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
         subComponent.setRequired(getNodeValueAsBoolean(node, "required"));
         setValuesForValueNode(node, subComponent, namespacePrefix, parent);
     }
@@ -416,11 +445,14 @@ public class EDIConfigDigester {
      * @param node the {@link org.milyn.edisax.model.internal.MappingNode} to populate.
      * @param mappingNode the MappingNode element.
      */
-    private static void setValuesForMappingNode(Node node, MappingNode mappingNode, String namespacePrefix, MappingNode parent) {
+    private void setValuesForMappingNode(Node node, MappingNode mappingNode, String namespacePrefix, MappingNode parent) {
         mappingNode.setXmltag(getAttributeValue(node, "xmltag"));
         mappingNode.setNodeTypeRef(getAttributeValue(node, "nodeTypeRef"));
         mappingNode.setDocumentation(getNodeValue(node, namespacePrefix + "documentation"));
         mappingNode.setParent(parent);
+        if (parent != null) {
+        	mappingNode.setNamespace(parent.getNamespace());
+        }
     }
 
     /**
@@ -429,7 +461,7 @@ public class EDIConfigDigester {
      * @param valueNode the ValueNode element.
      * @throws org.milyn.edisax.EDIConfigurationException is thrown when values are badly formatted.
      */
-    private static void setValuesForValueNode(Node node, ValueNode valueNode, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
+    private void setValuesForValueNode(Node node, ValueNode valueNode, String namespacePrefix, MappingNode parent) throws EDIConfigurationException {
         setValuesForMappingNode(node, valueNode, namespacePrefix, parent);
         String type = getAttributeValue(node, "dataType");
         if(type != null) {
@@ -487,21 +519,6 @@ public class EDIConfigDigester {
             }
 
         }
-    }
-
-    /**
-     * Gets attribute value from node if it exists. Otherwise returns null.
-     * @param node the node.
-     * @param name the name of the attribute.
-     * @param defaultVal The default value.
-     * @return Boolean value if attribute exists in node.
-     */
-    private static Boolean getNodeValueAsBoolean(Node node, String name, Boolean defaultVal) {
-        Boolean value = getNodeValueAsBoolean(node, name);
-        if (value == null) {
-            return defaultVal;
-        }
-        return value;
     }
 
     /**

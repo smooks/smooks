@@ -15,6 +15,8 @@
 package org.milyn.payload;
 
 
+import javax.xml.transform.Result;
+
 /**
  * An extractor of results produces by Smooks.
  * 
@@ -25,7 +27,7 @@ package org.milyn.payload;
  * @author Daniel Bevenius
  * @since 1.4
  */
-public interface ResultExtractor<T>
+public interface ResultExtractor<T extends Result>
 {
     Object extractFromResult(T result, Export export);
 }

@@ -48,18 +48,29 @@ public class AbstractBinding {
      */
     private String reportPath;
     /**
+     * All configurations added flag.
+     */
+    private boolean allConfigsAdded = false;
+    /**
      * Initialized flag.
      */
     private boolean initialized = false;
 
     /**
      * Constructor.
-     *
-     * @throws IOException  Error reading resource stream.
-     * @throws SAXException Error parsing the resource stream.
      */
-    protected AbstractBinding() throws IOException, SAXException {
+    protected AbstractBinding() {
         smooks = new Smooks();
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param smooks Smooks instance.
+     */
+    protected AbstractBinding(Smooks smooks) {
+        this.smooks = smooks;
+        allConfigsAdded = true;
     }
 
     /**
@@ -70,6 +81,7 @@ public class AbstractBinding {
      * @throws SAXException Error parsing the resource stream.
      */
     public AbstractBinding add(String smooksConfigURI) throws IOException, SAXException {
+        assertNotAllConfigsAdded();
         assertNotInitialized();
         smooks.addConfigurations(smooksConfigURI);
         return this;
@@ -83,6 +95,7 @@ public class AbstractBinding {
      * @throws SAXException Error parsing the resource stream.
      */
     public AbstractBinding add(InputStream smooksConfigStream) throws IOException, SAXException {
+        assertNotAllConfigsAdded();
         assertNotInitialized();
         smooks.addConfigurations(smooksConfigStream);
         return this;
@@ -94,6 +107,7 @@ public class AbstractBinding {
     public AbstractBinding intiailize() {
         assertNotInitialized();
         smooks.createExecutionContext();
+        this.allConfigsAdded = true;
         this.initialized = true;
         return this;
     }
@@ -198,6 +212,12 @@ public class AbstractBinding {
     protected void assertInitialized() {
         if(!initialized) {
             throw new IllegalStateException("Illegal call to method before instance is initialized.  Must call the 'initialize' method first.");
+        }
+    }
+
+    protected void assertNotAllConfigsAdded() {
+        if(allConfigsAdded) {
+            throw new IllegalStateException("Illegal call to method after all configurations have been added.");
         }
     }
 

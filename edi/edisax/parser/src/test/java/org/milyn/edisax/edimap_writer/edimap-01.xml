@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.4.xsd">
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd">
 
 	<medi:description name="Test Message" version="1.0" />
 

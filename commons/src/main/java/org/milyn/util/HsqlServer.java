@@ -69,7 +69,7 @@ public class HsqlServer {
             hsqlServer.signalCloseAllServerConnections();
             connection.close();
         } catch (final SQLException ignored) {
-            logger.error(ignored.getMessage(), ignored);
+            logger.debug(ignored.getMessage(), ignored);
         } 
         finally {
             hsqlServer.stop();

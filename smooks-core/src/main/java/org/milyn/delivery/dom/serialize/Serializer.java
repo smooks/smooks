@@ -271,7 +271,7 @@ public class Serializer {
                     throw new SmooksException(error, thrown);
                 }
             } else {
-                logger.error(error, thrown);
+                logger.debug(error, thrown);
             }
 		}
 	}

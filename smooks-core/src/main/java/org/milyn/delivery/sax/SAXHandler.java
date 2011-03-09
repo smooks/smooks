@@ -489,7 +489,7 @@ public class SAXHandler extends SmooksContentHandler {
             try {
                 writer.flush();
             } catch (IOException e) {
-                logger.error("Error flushing writer.", e);
+                logger.debug("Error flushing writer.", e);
             }
         }
     }
@@ -573,7 +573,7 @@ public class SAXHandler extends SmooksContentHandler {
                 throw new SmooksException(errorMsg, error);
             }
         } else {
-            logger.error(errorMsg, error);
+            logger.debug(errorMsg, error);
         }
     }
 

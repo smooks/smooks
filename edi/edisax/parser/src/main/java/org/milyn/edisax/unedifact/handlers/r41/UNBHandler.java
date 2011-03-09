@@ -98,46 +98,48 @@ class UNBHandler implements ControlBlockHandler {
 		unbSegment = new Segment();
 		unbSegment.setSegcode("UNB");
 		unbSegment.setXmltag("UNB");
+		unbSegment.setNamespace(ControlBlockHandler.NAMESPACE);
 		unbSegment.setDescription("UNB - Interchange Header");
 		unbSegment.setTruncatable(true);
-		unbSegment.addField(new Field("syntaxIdentifier",               true).
-                addComponent(new Component("id",                        true)).
-                addComponent(new Component("versionNum",                true)).
-                addComponent(new Component("serviceCodeListDirVersion", false)).
-                addComponent(new Component("codedCharacterEncoding",    false)).
-                addComponent(new Component("releaseNum",                false)));
-		unbSegment.addField(new Field("sender",             true).
-                addComponent(new Component("id",            true)).
-                addComponent(new Component("codeQualifier", false)).
-                addComponent(new Component("internalId",    false)).
-                addComponent(new Component("internalSubId", false)));
-		unbSegment.addField(new Field("recipient",          true).
-                addComponent(new Component("id",            true)).
-                addComponent(new Component("codeQualifier", false)).
-                addComponent(new Component("internalId",    false)).
-                addComponent(new Component("internalSubId", false)));
-		unbSegment.addField(new Field("dateTime",  true).
-                addComponent(new Component("date", true)).
-                addComponent(new Component("time", true)));
-		unbSegment.addField(new Field("controlRef",   true));
-		unbSegment.addField(new Field("recipientRef",      false).
-                addComponent(new Component("ref",          true)).
-                addComponent(new Component("refQualifier", false)));
-		unbSegment.addField(new Field("applicationRef", false));
-		unbSegment.addField(new Field("processingPriorityCode", false));
-		unbSegment.addField(new Field("ackRequest", false));
-		unbSegment.addField(new Field("agreementId", false));
-		unbSegment.addField(new Field("testIndicator", false));
+		unbSegment.addField(new Field("syntaxIdentifier",ControlBlockHandler.NAMESPACE,               true).
+                addComponent(new Component("id",ControlBlockHandler.NAMESPACE,                        true)).
+                addComponent(new Component("versionNum",ControlBlockHandler.NAMESPACE,                true)).
+                addComponent(new Component("serviceCodeListDirVersion",ControlBlockHandler.NAMESPACE, false)).
+                addComponent(new Component("codedCharacterEncoding",ControlBlockHandler.NAMESPACE,    false)).
+                addComponent(new Component("releaseNum",ControlBlockHandler.NAMESPACE,                false)));
+		unbSegment.addField(new Field("sender",ControlBlockHandler.NAMESPACE,             true).
+                addComponent(new Component("id",ControlBlockHandler.NAMESPACE,            true)).
+                addComponent(new Component("codeQualifier",ControlBlockHandler.NAMESPACE, false)).
+                addComponent(new Component("internalId",ControlBlockHandler.NAMESPACE,    false)).
+                addComponent(new Component("internalSubId",ControlBlockHandler.NAMESPACE, false)));
+		unbSegment.addField(new Field("recipient",ControlBlockHandler.NAMESPACE,          true).
+                addComponent(new Component("id",ControlBlockHandler.NAMESPACE,            true)).
+                addComponent(new Component("codeQualifier",ControlBlockHandler.NAMESPACE, false)).
+                addComponent(new Component("internalId",ControlBlockHandler.NAMESPACE,    false)).
+                addComponent(new Component("internalSubId",ControlBlockHandler.NAMESPACE, false)));
+		unbSegment.addField(new Field("dateTime",ControlBlockHandler.NAMESPACE,  true).
+                addComponent(new Component("date",ControlBlockHandler.NAMESPACE, true)).
+                addComponent(new Component("time",ControlBlockHandler.NAMESPACE, true)));
+		unbSegment.addField(new Field("controlRef",ControlBlockHandler.NAMESPACE,   true));
+		unbSegment.addField(new Field("recipientRef",ControlBlockHandler.NAMESPACE,      false).
+                addComponent(new Component("ref",ControlBlockHandler.NAMESPACE,          true)).
+                addComponent(new Component("refQualifier",ControlBlockHandler.NAMESPACE, false)));
+		unbSegment.addField(new Field("applicationRef",ControlBlockHandler.NAMESPACE, false));
+		unbSegment.addField(new Field("processingPriorityCode",ControlBlockHandler.NAMESPACE, false));
+		unbSegment.addField(new Field("ackRequest",ControlBlockHandler.NAMESPACE, false));
+		unbSegment.addField(new Field("agreementId",ControlBlockHandler.NAMESPACE, false));
+		unbSegment.addField(new Field("testIndicator",ControlBlockHandler.NAMESPACE, false));
 
 		// UNZ Segment Definition...
 		// http://www.gefeg.com/jswg/v41/se/se21.htm
 		unzSegment = new Segment();
 		unzSegment.setSegcode("UNZ");
 		unzSegment.setXmltag("UNZ");
+		unzSegment.setNamespace(ControlBlockHandler.NAMESPACE);
 		unzSegment.setDescription("UNZ - Interchange Trailer");
 		unzSegment.setTruncatable(true);
-		unzSegment.addField(new Field("controlCount", true));
-		unzSegment.addField(new Field("controlRef", true));
+		unzSegment.addField(new Field("controlCount",ControlBlockHandler.NAMESPACE, true));
+		unzSegment.addField(new Field("controlRef",ControlBlockHandler.NAMESPACE, true));
 	}
 
 	private static void createRepertoireToCharsetMap() {

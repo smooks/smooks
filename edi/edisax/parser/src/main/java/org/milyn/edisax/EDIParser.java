@@ -16,7 +16,11 @@
 
 package org.milyn.edisax;
 
+import static javax.xml.XMLConstants.NULL_NS_URI;
+
+import org.apache.commons.lang.StringUtils;
 import org.milyn.assertion.AssertArgument;
+import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.*;
 import org.milyn.edisax.util.EDIUtils;
@@ -32,8 +36,11 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.XMLConstants;
 
 /**
  * EDI Parser.
@@ -124,6 +131,13 @@ public class EDIParser implements XMLReader {
     
     private Map<String, Boolean> features;
 
+    /**
+     * Fields required for namespace support
+     */
+    private static final Map<String, String> aliasesMap = new HashMap<String, String>();
+    private final Stack<String> nsStack = new Stack<String>();
+
+    
     private ContentHandler contentHandler;
     private MutableInt indentDepth;
     private static Attributes EMPTY_ATTRIBS = new AttributesImpl();
@@ -380,7 +394,7 @@ public class EDIParser implements XMLReader {
 	}
 
 	private void parse(boolean indent) throws SAXException, IOException, EDIParseException {
-		startElement(edifactModel.getEdimap().getSegments().getXmltag(), indent);
+		startElement(edifactModel.getEdimap().getSegments(), indent);
 
 		// Work through all the segments in the model.  Move to the first segment before starting...
 		if(segmentReader.moveToNextSegment()) {
@@ -396,7 +410,7 @@ public class EDIParser implements XMLReader {
 		}
 
 		// Fire the endDocument event, as well as the endElement event...
-		endElement(edifactModel.getEdimap().getSegments().getXmltag(), true);
+		endElement(edifactModel.getEdimap().getSegments(), true);
 	}
 
     /**
@@ -480,15 +494,9 @@ public class EDIParser implements XMLReader {
             if(expectedSegmentGroup instanceof Segment) {
                 mapSegment(currentSegmentFields, (Segment) expectedSegmentGroup);
             } else {
-                String xmlTag = expectedSegmentGroup.getXmltag();
-
-                if(xmlTag != null) {
-                    startElement(xmlTag, true);
-                }
+                startElement(expectedSegmentGroup, true);
                 mapSegments(expectedSegmentGroup.getSegments(), currentSegmentFields);
-                if(xmlTag != null) {
-                    endElement(xmlTag, true);
-                }
+                endElement(expectedSegmentGroup, true);
             }
 
             // Increment the count on the number of times the current "expected" mapping config has been applied...
@@ -511,14 +519,14 @@ public class EDIParser implements XMLReader {
      * @throws SAXException EDI processing exception.
 	 */
 	private void mapSegment(String[] currentSegmentFields, Segment expectedSegment) throws IOException, SAXException {
-        startElement(expectedSegment.getXmltag(), true);
+        startElement(expectedSegment, true);
 
         mapFields(currentSegmentFields, expectedSegment);
 		if(segmentReader.moveToNextSegment()) {
 			mapSegments(expectedSegment.getSegments());
 		}
 
-        endElement(expectedSegment.getXmltag(), true);
+        endElement(expectedSegment, true);
 	}
 
 	/**
@@ -571,7 +579,7 @@ public class EDIParser implements XMLReader {
 	private void mapField(String fieldMessageVal, Field expectedField, int fieldIndex, String segmentCode) throws SAXException {
 		List<Component> expectedComponents = expectedField.getComponents();
 
-        startElement(expectedField.getXmltag(), true);
+        startElement(expectedField, true);
 
 		// If there are components defined on this field...
 		if(expectedComponents.size() != 0) {
@@ -587,14 +595,14 @@ public class EDIParser implements XMLReader {
 
 				mapComponent(componentMessageVal, expectedComponent, fieldIndex, i, segmentCode, expectedField.getXmltag());
 			}
-	        endElement(expectedField.getXmltag(), true);
+	        endElement(expectedField, true);
 		} else {
             if(expectedField.isRequired() && fieldMessageVal.length() == 0) {
                 throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segmentCode + "], field " + (fieldIndex + 1) + " (" + expectedField.getXmltag() + ") expected to contain a value.  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedField, segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
             }
 
             writeToContentHandler(fieldMessageVal);
-            endElement(expectedField.getXmltag(), false);
+            endElement(expectedField, false);
 		}
 	}
 
@@ -611,7 +619,7 @@ public class EDIParser implements XMLReader {
 	private void mapComponent(String componentMessageVal, Component expectedComponent, int fieldIndex, int componentIndex, String segmentCode, String field) throws SAXException {
 		List<SubComponent> expectedSubComponents = expectedComponent.getSubComponents();
 
-		startElement(expectedComponent.getXmltag(), true);
+		startElement(expectedComponent, true);
 
 		if(expectedSubComponents.size() != 0) {
             Delimiters delimiters = segmentReader.getDelimiters();
@@ -624,18 +632,18 @@ public class EDIParser implements XMLReader {
                     throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segmentCode + "], field " + (fieldIndex + 1) + " (" + field + "), component " + (componentIndex + 1) + " (" + expectedComponent.getXmltag() + "), sub-component " + (i + 1) + " (" + expectedSubComponents.get(i).getXmltag() + ") expected to contain a value.  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedSubComponents.get(i), segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
                 }
 
-				startElement(expectedSubComponents.get(i).getXmltag(), true);
+				startElement(expectedSubComponents.get(i), true);
                 writeToContentHandler(currentComponentSubComponents[i]);
-				endElement(expectedSubComponents.get(i).getXmltag(), false);
+				endElement(expectedSubComponents.get(i), false);
 			}
-			endElement(expectedComponent.getXmltag(), true);
+			endElement(expectedComponent, true);
 		} else {
             if(expectedComponent.isRequired() && componentMessageVal.length() == 0) {
                 throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segmentCode + "], field " + (fieldIndex + 1) + " (" + field + "), component " + (componentIndex + 1) + " (" + expectedComponent.getXmltag() + ") expected to contain a value.  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedComponent, segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
             }
 			
             writeToContentHandler(componentMessageVal);
-			endElement(expectedComponent.getXmltag(), false);
+			endElement(expectedComponent, false);
 		}
 	}
 
@@ -802,22 +810,91 @@ public class EDIParser implements XMLReader {
         }
     }
 
-    public void startElement(String elementName, boolean indent) throws SAXException {
+	public void startElement(MappingNode node, boolean indent) throws SAXException {
+		if (node.getXmltag() != null) {
+			startElement(node.getXmltag(), node.getNamespace(), indent);
+		}
+	}
+    
+    public void startElement(String elementName, String namespace, boolean indent) throws SAXException {
         if(indent) {
             indent();
         }
-        contentHandler.startElement(null, elementName, elementName, EMPTY_ATTRIBS);
+        AssertArgument.isNotNull(namespace, "Empty namespace detected for elemnet " + elementName);
+        if (NULL_NS_URI.equals(namespace)) {
+        	// No namespace support
+        	contentHandler.startElement(NULL_NS_URI, elementName, elementName, EMPTY_ATTRIBS);
+        } else {
+        	// With namespace support
+            String alias = getNamespaceAlias(namespace);
+            boolean declareNamespace = false;
+            if (nsStack.isEmpty() || !nsStack.peek().equals(alias)) {
+            	contentHandler.startPrefixMapping(alias, namespace);
+            	declareNamespace = true;
+            }
+            nsStack.push(alias);
+            if (!declareNamespace) {
+            	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, EMPTY_ATTRIBS);
+            } else {
+            	AttributesImpl attrs = new AttributesImpl();
+            	attrs.addAttribute(null, "xmlns:" + alias, "xmlns:" + alias, "CDATA", namespace);
+            	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, attrs);
+            }
+        }
         indentDepth.value++;
     }
 
-    public void endElement(String elementName, boolean indent) throws SAXException {
+    public void endElement(MappingNode node, boolean indent) throws SAXException {
+    	if (node.getXmltag() != null) {
+    		endElement(node.getXmltag(), node.getNamespace(), indent);
+    	}
+    }
+
+    
+    public void endElement(String elementName, String namespace, boolean indent) throws SAXException {
     	indentDepth.value--;
         if(indent) {
             indent();
         }
-        contentHandler.endElement(null, elementName, elementName);
+        if (XMLConstants.NULL_NS_URI.equals(namespace)) {
+        	// No namespace support
+        	contentHandler.endElement(NULL_NS_URI, elementName, elementName);
+        } else {
+        	// With namespace support
+	        String alias = getNamespaceAlias(namespace);
+	        contentHandler.endPrefixMapping(nsStack.pop());
+	        contentHandler.endElement(namespace, elementName, alias + ":" + elementName);
+        }
     }
 
+    /**
+     * This method returns a namespace prefix associated with
+     * given namespace. If no association was found it will
+     * create an prefix "an[0-9]+"
+     * 
+     * Important is that for equal namespaces we have equal aliases
+     * 
+     * @param namespace
+     * @return
+     * @throws SAXException 
+     */
+    public static String getNamespaceAlias(String namespace) throws SAXException {
+    	if (StringUtils.isEmpty(namespace) || StringUtils.isBlank(namespace)) {
+    		return "";
+    	}
+    	String result = aliasesMap.get(namespace);
+    	if (result == null) {
+    		if (ControlBlockHandler.NAMESPACE.equals(namespace)) {
+    			result = "h";
+    		} else {
+    			result = "ns" + aliasesMap.size();
+    		}
+    		aliasesMap.put(namespace, result);
+    	}
+    	return result;
+	}
+
+    
     // HACK :-) it's hardly going to be deeper than this!!
     private static final char[] indentChars = (new String("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t").toCharArray());
     private void indent() throws SAXException {

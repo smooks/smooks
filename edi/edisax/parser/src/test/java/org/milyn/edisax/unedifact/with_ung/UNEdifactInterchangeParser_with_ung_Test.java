@@ -25,6 +25,7 @@ import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDIParseException;
 import org.milyn.edisax.EDIParser;
 import org.milyn.edisax.MockContentHandler;
+import org.milyn.edisax.MockContentHandlerNS;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 import org.milyn.edisax.unedifact.registry.DefaultMappingsRegistry;
@@ -47,18 +48,18 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		parser.setMappingsRegistry(new DefaultMappingsRegistry(model1, model2));
 		parser.ignoreNewLines(true);
 
-		MockContentHandler handler;
+		MockContentHandlerNS handler;
 		
 		// Test message 01 - no UNA segment...
-		handler = new MockContentHandler();
-		parser.setContentHandler(handler);		
+		handler = new MockContentHandlerNS();
+		parser.setContentHandler(handler);
 		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-01.edi")));		
-//		System.out.println(handler.xmlMapping);
+		//System.out.println(handler.xmlMapping);
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(handler.xmlMapping.toString()));
 
 		// Test message 01 - has a UNA segment...
-		handler = new MockContentHandler();
+		handler = new MockContentHandlerNS();
 		parser.setContentHandler(handler);		
 		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-02.edi")));
 		
@@ -95,13 +96,13 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		parser.setMappingsRegistry(new DefaultMappingsRegistry(model1, model2));
 		parser.ignoreNewLines(true);
 
-		MockContentHandler handler;
+		MockContentHandlerNS handler;
 		
 		// Test message 01 - no UNA segment...
-		handler = new MockContentHandler();
+		handler = new MockContentHandlerNS();
 		parser.setContentHandler(handler);		
 		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-04.edi")));		
-//		System.out.println(handler.xmlMapping);
+		//System.out.println(handler.xmlMapping);
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-02.xml")), new StringReader(handler.xmlMapping.toString()));
 	}

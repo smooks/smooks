@@ -249,7 +249,7 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
             if(failOnWarning) {
                 throw exception;
             } else {
-                logger.warn("XSL Warning.", exception);
+                logger.debug("XSL Warning.", exception);
             }
         }
 

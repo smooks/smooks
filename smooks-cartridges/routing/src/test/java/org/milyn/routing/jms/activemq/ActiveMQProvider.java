@@ -88,7 +88,7 @@ public class ActiveMQProvider {
                 try {
                     consumer.close();
                 } catch (Exception e) {
-                    logger.error("Failed to close consumer.", e);
+                    logger.debug("Failed to close consumer.", e);
                 }
             }
 
@@ -223,7 +223,7 @@ public class ActiveMQProvider {
             }
         }
         catch (Throwable e) {
-            logger.error("Failed to stop JMS connection.", e);
+            logger.debug("Failed to stop JMS connection.", e);
             conn = null;
         }
         try {
@@ -233,7 +233,7 @@ public class ActiveMQProvider {
             }
         }
         catch (Throwable e) {
-            logger.error("Failed to close JMS session.", e);
+            logger.debug("Failed to close JMS session.", e);
         }
         finally {
             session = null;
@@ -245,7 +245,7 @@ public class ActiveMQProvider {
             }
         }
         catch (Throwable e) {
-            logger.error("Failed to close JMS connection.", e);
+            logger.debug("Failed to close JMS connection.", e);
         }
         finally {
             conn = null;

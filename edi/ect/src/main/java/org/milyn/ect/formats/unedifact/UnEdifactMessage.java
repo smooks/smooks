@@ -158,7 +158,7 @@ public class UnEdifactMessage {
             edimap = new Edimap();
             SegmentGroup rootGroup = new SegmentGroup();
             rootGroup.setXmltag(XmlTagEncoder.encode(type));
-            edimap.setSegments(rootGroup);            
+            edimap.setSegments(rootGroup);
 
             Delimiters delimiters = new Delimiters();
             delimiters.setSegment(DELIMITER_SEGMENT);
@@ -171,6 +171,7 @@ public class UnEdifactMessage {
             edimap.setDescription(new Description());
             edimap.getDescription().setName(type);
             edimap.getDescription().setVersion(version + ":" + release + ":" + agency);
+            edimap.setNamespace("http://www.milyn.org/schema/edi/" + agency.toLowerCase() + "/" + version.toLowerCase() + release.toLowerCase() + "/" + type.toLowerCase() + ".xsd");
 
             Map<String, Segment> segmentDefinitions = null;
             if (isSplitIntoImport) {
