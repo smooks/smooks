@@ -22,6 +22,7 @@ public class Description {
 
     private String name;
     private String version;
+    private String namespace;
 
     public String getName() {
         return name;
@@ -43,7 +44,21 @@ public class Description {
         return this;
     }
 
-	@Override
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public Description setNamespace(String namespace) {
+        this.namespace = namespace;
+        return this;
+    }
+
+    @Override
+    public Object clone() {
+        return new Description().setName(name).setVersion(version).setNamespace(namespace);
+    }
+
+    @Override
 	public boolean equals(Object obj) {
 		assertInitialized();		
 

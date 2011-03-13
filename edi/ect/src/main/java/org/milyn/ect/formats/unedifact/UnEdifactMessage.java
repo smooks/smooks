@@ -18,6 +18,7 @@ package org.milyn.ect.formats.unedifact;
 import org.milyn.ect.EdiParseException;
 import org.milyn.edisax.model.internal.*;
 import org.milyn.ect.common.XmlTagEncoder;
+import org.milyn.edisax.unedifact.UNEdifactNamespaceResolver;
 
 import java.io.*;
 import java.util.*;
@@ -171,7 +172,7 @@ public class UnEdifactMessage {
             edimap.setDescription(new Description());
             edimap.getDescription().setName(type);
             edimap.getDescription().setVersion(version + ":" + release + ":" + agency);
-            edimap.setNamespace("http://www.milyn.org/schema/edi/" + agency.toLowerCase() + "/" + version.toLowerCase() + release.toLowerCase() + "/" + type.toLowerCase() + ".xsd");
+            edimap.getDescription().setNamespace(UNEdifactNamespaceResolver.NAMESPACE_ROOT + ":" + agency.toLowerCase() + ":" + version.toLowerCase() + release.toLowerCase() + ":" + type.toLowerCase());
 
             Map<String, Segment> segmentDefinitions = null;
             if (isSplitIntoImport) {

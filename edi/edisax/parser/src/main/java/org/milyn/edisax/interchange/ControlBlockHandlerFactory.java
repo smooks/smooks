@@ -15,6 +15,7 @@
  */
 package org.milyn.edisax.interchange;
 
+import org.milyn.namespace.NamespaceResolver;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -24,6 +25,18 @@ import java.io.IOException;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public interface ControlBlockHandlerFactory {
+
+    /**
+     * Get the transmission namespace.
+     * @return The transmission namespace.
+     */
+    String getNamespace();
+
+    /**
+     * Get a new NamespaceResolver instance for the transmission namespace associated with this factory.
+     * @return A new NamespaceResolver instance for the transmission namespace associated with this factory.
+     */
+    NamespaceResolver newNamespaceResolver();
 
     /**
      * Get a {@link ControlBlockHandler} instance for the specified interchange segment code.

@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.milyn.edisax.BufferedSegmentReader;
 import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.interchange.InterchangeContext;
+import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -39,9 +40,9 @@ public class GenericHandler implements ControlBlockHandler {
 		
 		segBuffer.getChars(0, segBuffer.length(), segChars, 0);
 		
-		interchangeContext.getControlSegmentParser().startElement(fields[0], ControlBlockHandler.NAMESPACE, true);
+		interchangeContext.getControlSegmentParser().startElement(fields[0], interchangeContext.getNamespace(), true);
 		interchangeContext.getControlSegmentParser().getContentHandler().characters(segChars, 0, segChars.length);
-		interchangeContext.getControlSegmentParser().endElement(fields[0], ControlBlockHandler.NAMESPACE, false);		
+		interchangeContext.getControlSegmentParser().endElement(fields[0], interchangeContext.getNamespace(), false);
 
 		// And clear out the buffer...
 		segmentReader.getSegmentBuffer().setLength(0);

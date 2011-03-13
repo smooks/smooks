@@ -193,6 +193,7 @@ public class EdifactModel {
         EDIConfigDigester digester = new EDIConfigDigester(modelURI, importBaseURI);
 
         edimap = digester.digestEDIConfig(new StringReader(mappingConfig));
+        description = edimap.getDescription();
         importFiles(tree.getRoot(), edimap, tree);
     }
 
