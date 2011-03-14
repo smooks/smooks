@@ -31,6 +31,7 @@ import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
 import org.milyn.edisax.unedifact.registry.LazyMappingsRegistry;
 import org.milyn.edisax.unedifact.registry.MappingsRegistry;
+import org.milyn.namespace.NamespaceResolver;
 import org.milyn.xml.hierarchy.HierarchyChangeListener;
 import org.milyn.xml.hierarchy.HierarchyChangeReader;
 import org.xml.sax.ContentHandler;
@@ -73,28 +74,31 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
         if(registry == null) {
             throw new IllegalStateException("'mappingsRegistry' not set.  Cannot parse EDI stream.");
         }
-		
+
         try {
+            ControlBlockHandlerFactory handlerFactory = new UNEdifact41ControlBlockHandlerFactory(hierarchyChangeListener);
 	        BufferedSegmentReader segmentReader = new BufferedSegmentReader(unedifactInterchange, defaultUNEdifactDelimiters);
 	        boolean validate = getFeature(EDIParser.FEATURE_VALIDATE);
 	        String segCode;
 	        
 	        segmentReader.mark();
 	        segmentReader.setIgnoreNewLines(getFeature(EDIParser.FEATURE_IGNORE_NEWLINES));
-	        
+
+            NamespaceResolver namespaceResolver = handlerFactory.newNamespaceResolver();
+            String envelopePrefix = namespaceResolver.getPrefix(handlerFactory.getNamespace());
+
 	        contentHandler.startDocument();
-	        contentHandler.startPrefixMapping("h", ControlBlockHandler.NAMESPACE);
+	        contentHandler.startPrefixMapping(envelopePrefix, handlerFactory.getNamespace());
 	        AttributesImpl attrs = new AttributesImpl();
-	        attrs.addAttribute(XMLConstants.NULL_NS_URI, "xmlns:h", "xmlns:h", "CDATA", ControlBlockHandler.NAMESPACE);
-	        contentHandler.startElement(ControlBlockHandler.NAMESPACE, "unEdifact", "h:unEdifact", attrs);
+	        attrs.addAttribute(XMLConstants.NULL_NS_URI, "xmlns:" + envelopePrefix, "xmlns:" + envelopePrefix, "CDATA", handlerFactory.getNamespace());
+	        contentHandler.startElement(handlerFactory.getNamespace(), "unEdifact", envelopePrefix + ":unEdifact", attrs);
 	
 	        while(true) {
 		        segCode = segmentReader.peek(3, true);
 		        if(segCode.length() == 3) {
-                    ControlBlockHandlerFactory controlBlockHandlerFactory = new UNEdifact41ControlBlockHandlerFactory(hierarchyChangeListener);
-                    interchangeContext = createInterchangeContext(segmentReader, validate, controlBlockHandlerFactory);
+                    interchangeContext = createInterchangeContext(segmentReader, validate, handlerFactory, namespaceResolver);
 
-                    ControlBlockHandler handler = controlBlockHandlerFactory.getControlBlockHandler(segCode);
+                    ControlBlockHandler handler = handlerFactory.getControlBlockHandler(segCode);
 
 					interchangeContext.indentDepth.value++;
 		        	handler.process(interchangeContext);
@@ -105,16 +109,16 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        }
 	        
 	        contentHandler.characters(new char[] {'\n'}, 0, 1);
-	        contentHandler.endElement(ControlBlockHandler.NAMESPACE, "unEdifact", "h:unEdifact");
-	        contentHandler.endPrefixMapping("h");
+	        contentHandler.endElement(handlerFactory.getNamespace(), "unEdifact", envelopePrefix + ":unEdifact");
+	        contentHandler.endPrefixMapping(envelopePrefix);
 	        contentHandler.endDocument();
         } finally {
         	contentHandler = null;
         }
 	}
 
-    protected InterchangeContext createInterchangeContext(BufferedSegmentReader segmentReader, boolean validate, ControlBlockHandlerFactory controlBlockHandlerFactory) {
-        return new InterchangeContext(segmentReader, registry, contentHandler, controlBlockHandlerFactory, validate);
+    protected InterchangeContext createInterchangeContext(BufferedSegmentReader segmentReader, boolean validate, ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceResolver namespaceResolver) {
+        return new InterchangeContext(segmentReader, registry, contentHandler, controlBlockHandlerFactory, namespaceResolver, validate);
     }
 
     public InterchangeContext getInterchangeContext() {
@@ -126,7 +130,7 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	 * <p/>
 	 * The model can be generated through a call to the {@link EDIParser}.
 	 *
-	 * @param mappingModels The mapping model.
+	 * @param registry The mapping model registry.
 	 * @return This parser instance.
 	 */
 	public UNEdifactInterchangeParser setMappingsRegistry(MappingsRegistry registry) {
@@ -204,4 +208,5 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 
     public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
     }
+
 }

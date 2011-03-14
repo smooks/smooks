@@ -44,7 +44,7 @@ public class NamespacesTest extends TestCase {
 				.getResourceAsStream("edi-to-xml-mapping.xml"));
 		assertNotNull(msg1);
 		Edimap edimap = msg1.getEdimap();
-		assertEquals(NS,edimap.getNamespace());
+		assertEquals(NS,edimap.getDescription().getNamespace());
 		SegmentGroup group = edimap.getSegments();
 		assertEquals(NS,group.getNamespace());
 		List<SegmentGroup> segments = group.getSegments();

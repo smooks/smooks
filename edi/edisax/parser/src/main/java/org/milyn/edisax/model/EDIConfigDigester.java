@@ -188,12 +188,7 @@ public class EDIConfigDigester {
 
     	// Check the namespace attribute
     	Element documentElement = configDoc.getDocumentElement();
-		if (documentElement.hasAttribute("namespace")) {
-			edimap.setNamespace(documentElement.getAttribute("namespace"));
-    	} else {
-    		edimap.setNamespace(XMLConstants.NULL_NS_URI);
-    	}
-    	
+
         //Retrieve the namespace for the schema.
         String namespacePrefix = retrieveNamespace(documentElement, schemaName);
 
@@ -238,8 +233,16 @@ public class EDIConfigDigester {
     private static void digestDescription(Node node, Edimap edimap) {
         Description description = new Description();
         edimap.setDescription(description);
+
         description.setName(getAttributeValue(node, "name"));
         description.setVersion(getAttributeValue(node, "version"));
+
+        String namespace = getAttributeValue(node, "namespace");
+        if (namespace != null) {
+            description.setNamespace(namespace);
+        } else {
+            description.setNamespace(XMLConstants.NULL_NS_URI);
+        }
     }
 
     /**
@@ -270,7 +273,7 @@ public class EDIConfigDigester {
     private void digestSegments(Node node, Edimap edimap, String namespacePrefix) throws EDIConfigurationException {
         SegmentGroup segments = new SegmentGroup();
         setValuesForMappingNode(node, segments, namespacePrefix, null);
-        segments.setNamespace(edimap.getNamespace());
+        segments.setNamespace(edimap.getDescription().getNamespace());
         edimap.setSegments(segments);
 
         NodeList nodes = node.getChildNodes();

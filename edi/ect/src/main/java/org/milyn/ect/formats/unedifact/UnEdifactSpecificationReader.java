@@ -17,8 +17,10 @@ package org.milyn.ect.formats.unedifact;
 
 import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.ect.EdiParseException;
+import org.milyn.edisax.model.internal.Description;
+import org.milyn.edisax.unedifact.UNEdifactNamespaceResolver;
+import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
 import org.milyn.edisax.util.EDIUtils;
-import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Field;
@@ -41,7 +43,7 @@ import java.util.zip.ZipInputStream;
 public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
     public static final String INTERCHANGE_TYPE = "UNEDIFACT";
-    
+
     private static final int BUFFER = 2048;
     private static final String INTERCHANGE_DEFINITION = "un-edifact-interchange-definition.xml";
 
@@ -75,7 +77,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         definitionModel = parseEDIDefinitionFiles();
 
         addMissingDefinitions(definitionModel);
-        definitionModel.setNamespace("http://www.milyn.org/schema/edi/un/" + version + "/common.xsd");
+        definitionModel.getDescription().setNamespace(UNEdifactNamespaceResolver.NAMESPACE_ROOT + ":un:" + version + ":common");
 
         //Interchange envelope is inserted into the definitions. Handcoded at the moment.
         try {
@@ -118,11 +120,11 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
         ugh.setSegcode("UGH");
         ugh.setXmltag("UGH");
-        ugh.addField(new Field("id",ControlBlockHandler.NAMESPACE, true));
+        ugh.addField(new Field("id", UNEdifact41ControlBlockHandlerFactory.NAMESPACE, true));
 
         ugt.setSegcode("UGT");
         ugt.setXmltag("UGT");
-        ugt.addField(new Field("id",ControlBlockHandler.NAMESPACE, true));
+        ugt.addField(new Field("id", UNEdifact41ControlBlockHandlerFactory.NAMESPACE, true));
 
         definitionModel.getSegments().getSegments().add(ugh);
         definitionModel.getSegments().getSegments().add(ugt);
@@ -158,7 +160,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
             segmentISR = new InputStreamReader(new ByteArrayInputStream(definitionFiles.get("edsd.")));
 
             edifactModel = UnEdifactDefinitionReader.parse(dataISR, compositeISR, segmentISR);
-            edifactModel.setDescription(EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION);
+            edifactModel.setDescription((Description) EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION.clone());
             edifactModel.getSegments().setXmltag("DefinitionMap");
             edifactModel.setDelimiters(UNEdifactInterchangeParser.defaultUNEdifactDelimiters);
         } finally {

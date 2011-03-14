@@ -18,7 +18,6 @@
 				<xs:element ref="delimiters" />
 				<xs:element ref="segments" />
 			</xs:sequence>
-			<xs:attribute name="namespace" type="xs:anyURI" use="optional"></xs:attribute>
 		</xs:complexType>
 		<xs:unique name="uniqueNamespaces">
 			<xs:selector xpath="import"/>
@@ -66,6 +65,7 @@ truncatable attribute for all Components in edi-definition.
 		<xs:complexType>
 			<xs:attribute name="name" type="xs:string" use="required"/>
 			<xs:attribute name="version" type="xs:string" use="required"/>
+            <xs:attribute name="namespace" type="xs:anyURI" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="delimiters">
