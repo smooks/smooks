@@ -50,11 +50,12 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
     private Map<String, byte[]> messageFiles;
     private Edimap definitionModel;
     private Set<String> versions = new HashSet<String>();
+    private Set<String> messages = new HashSet<String>();
 
     /**
      * Matcher to recognize and parse entries like CUSCAR_D.08A
      */
-	private Pattern entryFileName = Pattern.compile("^([A-Z]+)_([A-Z])\\.([0-9]+[AB])$");
+	private Pattern entryFileName = Pattern.compile("^([A-Z]+)_([A-Z])\\.([0-9]+[A-Z])$");
 
     public UnEdifactSpecificationReader(ZipInputStream specificationInStream, boolean useImport) throws IOException {
         this.useImport = useImport;
@@ -64,7 +65,10 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         readDefinitionEntries(specificationInStream, new ZipDirectoryEntry("eded.", definitionFiles), new ZipDirectoryEntry("edcd.", definitionFiles), new ZipDirectoryEntry("edsd.", definitionFiles), new ZipDirectoryEntry("edmd.", "*", messageFiles));
         
         if (versions.size() != 1) {
-        	throw new EdiParseException("Seems that we have a directories of more than one version inside: " + versions);
+            if (versions.size() == 0) {
+                throw new EdiParseException("Seems that we have a directory containing 0 parseable version inside: " + versions + ".\n All messages:\n\t" + messages);
+            }
+            throw new EdiParseException("Seems that we have a directory containing more than one parseable version inside: " + versions + ".\n All messages:\n\t" + messages);
         }
         String version = versions.iterator().next();
         // Read Definition Configuration
@@ -215,9 +219,13 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
                     baos.write(bytes, 0, size);
                   }
 
+                File file = new File(fileName);
+                String messageName = file.getName().toUpperCase();
+
                 result = true;
+                messages.add(messageName);
                 if (entry.equals("*")) {
-					Matcher match = entryFileName.matcher(fileName.toUpperCase());
+					Matcher match = entryFileName.matcher(messageName);
 					if (match.matches()) {
                         String entryName = match.group(1);
 						files.put(entryName, baos.toByteArray());
