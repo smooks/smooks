@@ -31,9 +31,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.xsd.XSDSchema;
-import org.eclipse.xsd.ecore.EcoreXMLSchemaBuilder;
 import org.eclipse.xsd.util.XSDResourceFactoryImpl;
 import org.milyn.archive.Archive;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
@@ -61,7 +59,7 @@ public class SchemaConverter {
 	 * 
 	 * @param directoryInputStream
 	 */
-	public Archive createArchive(InputStream directoryStream, String pluginID, boolean saveEcore)
+	public Archive createArchive(InputStream directoryStream, String pluginID)
 			throws IOException {
 		String qualifier = qualifierFormat.format(Calendar.getInstance()
 				.getTime());
@@ -86,15 +84,9 @@ public class SchemaConverter {
 
 		for (EPackage pkg : packages) {
 			String message = pkg.getName();
-			if (saveEcore) {
-				// Creating ecore resource
-				Resource resource = rs.createResource(URI.createFileURI(message
-						+ ".ecore"));
-				resource.getContents().add(pkg);
-			}
 			// Creating XSD resource
 			try {
-				EcoreXMLSchemaBuilder schemaBuilder = new EcoreXMLSchemaBuilder();
+				CustomSchemaBuilder schemaBuilder = new CustomSchemaBuilder();
 				Collection<EObject> generate = schemaBuilder.generate(pkg);
 				Resource xsd = rs.createResource(URI.createFileURI(message
 						+ ".xsd"));
@@ -115,13 +107,8 @@ public class SchemaConverter {
 			EObject obj = resource.getContents().get(0);
 			String fileName = resource.getURI().lastSegment();
 			String ecoreEntryPath = pathPrefix + "/" + fileName;
-			if (obj instanceof EPackage && saveEcore) {
-				ecoreExtension.append(savePackage(archive, ecoreEntryPath,
-						resource, ((EPackage) obj).getNsURI()));
-			} else {
-				xmlExtension.append(saveSchema(archive, ecoreEntryPath,
-						resource, ((XSDSchema) obj).getTargetNamespace()));
-			}
+			xmlExtension.append(saveSchema(archive, ecoreEntryPath,
+					resource, ((XSDSchema) obj).getTargetNamespace()));
 		}
 		ecoreExtension.append("\t</extension>\n");
 		xmlExtension.append("\t</catalogContribution></extension>\n");
@@ -157,28 +144,6 @@ public class SchemaConverter {
 		return result.toString();
 	}
 
-	private String savePackage(Archive archive, String ecoreEntryPath,
-			Resource resource, String ns) {
-		StringBuilder result = new StringBuilder();
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			resource.save(out, null);
-			// Add the generated mapping model to the archive...
-			archive.addEntry(ecoreEntryPath, out.toByteArray());
-			// Add dynamic package to plugin.xml
-			result.append("\t\t<resource \n\t\t\tlocation=\"");
-			result.append(ecoreEntryPath);
-			result.append("\" \n\t\t\turi=\"");
-			result.append(ns);
-			result.append("\">\n\t\t</resource>\n");
-
-		} catch (Exception e) {
-			System.err.println("Failed to save package " + ns);
-			e.printStackTrace();
-		}
-		return result.toString();
-	}
-
 	private String generateManifest(String pluginID, String qualfier) {
 		StringBuilder result = new StringBuilder();
 		result.append("Manifest-Version: 1.0\n");
@@ -196,8 +161,6 @@ public class SchemaConverter {
 		/*
 		 * Register XML Factory implementation using DEFAULT_EXTENSION
 		 */
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-				.put("ecore", new EcoreResourceFactoryImpl());
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
 				.put("xsd", new XSDResourceFactoryImpl());
 

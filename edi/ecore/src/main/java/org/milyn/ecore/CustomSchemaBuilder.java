@@ -15,19 +15,19 @@
  */
 package org.milyn.ecore;
 
-import java.io.File;
-import java.io.InputStream;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.xsd.ecore.EcoreXMLSchemaBuilder;
 
-import junit.framework.TestCase;
+public class CustomSchemaBuilder extends EcoreXMLSchemaBuilder {
 
-import org.milyn.archive.Archive;
-
-public class XSDExportTest extends TestCase {
-
-	public void testSchemaExport() throws Exception {
-		InputStream inputStream = getClass().getResourceAsStream("/D99A.zip");
-		Archive archive = SchemaConverter.INSTANCE.createArchive(inputStream, "org.milyn.edi.unedifact.d99a");
-		archive.toFileSystem(new File("./target/" + ((System.currentTimeMillis() / 1000) % 10000)));
+	@Override
+	protected boolean makeAttributeDeclaration(EAttribute attribute) {
+		return false;
 	}
-
+	
+	@Override
+	protected boolean makeAttributeElementDeclaration(EAttribute attribute) {
+		return true;
+	}
+	
 }
