@@ -26,8 +26,8 @@ public class XSDExportTest extends TestCase {
 
 	public void testSchemaExport() throws Exception {
 		InputStream inputStream = getClass().getResourceAsStream("/D99A.zip");
-		Archive archive = SchemaConverter.INSTANCE.createArchive(inputStream, "org.test");
-		archive.toFileSystem(new File("./target/"));
+		Archive archive = SchemaConverter.INSTANCE.createArchive(inputStream, "org.milyn.edi.unedifact.d99a", true);
+		archive.toFileSystem(new File("./target/" + ((System.currentTimeMillis() / 1000) % 10000)));
 	}
 
 }

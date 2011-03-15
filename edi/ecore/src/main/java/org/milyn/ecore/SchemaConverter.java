@@ -61,7 +61,7 @@ public class SchemaConverter {
 	 * 
 	 * @param directoryInputStream
 	 */
-	public Archive createArchive(InputStream directoryStream, String pluginID)
+	public Archive createArchive(InputStream directoryStream, String pluginID, boolean saveEcore)
 			throws IOException {
 		String qualifier = qualifierFormat.format(Calendar.getInstance()
 				.getTime());
@@ -86,10 +86,12 @@ public class SchemaConverter {
 
 		for (EPackage pkg : packages) {
 			String message = pkg.getName();
-			// Creating ecore resource
-			Resource resource = rs.createResource(URI.createFileURI(message
-					+ ".ecore"));
-			resource.getContents().add(pkg);
+			if (saveEcore) {
+				// Creating ecore resource
+				Resource resource = rs.createResource(URI.createFileURI(message
+						+ ".ecore"));
+				resource.getContents().add(pkg);
+			}
 			// Creating XSD resource
 			try {
 				EcoreXMLSchemaBuilder schemaBuilder = new EcoreXMLSchemaBuilder();
@@ -113,7 +115,7 @@ public class SchemaConverter {
 			EObject obj = resource.getContents().get(0);
 			String fileName = resource.getURI().lastSegment();
 			String ecoreEntryPath = pathPrefix + "/" + fileName;
-			if (obj instanceof EPackage) {
+			if (obj instanceof EPackage && saveEcore) {
 				ecoreExtension.append(savePackage(archive, ecoreEntryPath,
 						resource, ((EPackage) obj).getNsURI()));
 			} else {
@@ -143,11 +145,11 @@ public class SchemaConverter {
 				throw new RuntimeException("Duplicate entry " + entryPath);
 			}
 			archive.addEntry(entryPath, out.toByteArray());
-			result.append("<uri name=\"");
+			result.append("\t<uri name=\"");
 			result.append(ns);
 			result.append("\" uri=\"");
 			result.append(entryPath);
-			result.append("\"/>");
+			result.append("\"/>\n");
 		} catch (Exception e) {
 			System.err.println("Failed to save XML Schema " + ns);
 			e.printStackTrace();
