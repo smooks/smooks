@@ -64,6 +64,7 @@
         <module>commons</module>
         <module>smooks-core</module>
         <module>scribe</module>
+        <module>edi</module> <!-- Default build only installs the POM... -->
         <module>edi/edisax</module> <!-- Purposely building ECT and EJC after Smooks components... -->
         <module>smooks-cartridges</module>
         <module>smooks-all</module>

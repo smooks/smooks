@@ -14,13 +14,29 @@
     <name>Milyn EDI</name>
     <url>http://milyn.codehaus.org</url>
 
-    <modules>
-        <module>edisax</module>
-        <module>ect</module>
-        <module>ect/maven-ect-plugin</module>
-        <module>ejc</module>
-        <module>ejc/maven-ejc-plugin</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>edisax</module>
+                <module>ect</module>
+                <module>ect/maven-ect-plugin</module>
+                <module>ejc</module>
+                <module>ejc/maven-ejc-plugin</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>deploy</id>
+            <modules>
+                <!--
+                 Don't build anything.  Just install the POM...
+                -->
+            </modules>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>
