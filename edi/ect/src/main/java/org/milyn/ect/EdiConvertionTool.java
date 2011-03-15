@@ -16,12 +16,6 @@
 
 package org.milyn.ect;
 
-import org.milyn.archive.Archive;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
-import org.milyn.edisax.util.EDIUtils;
-import org.milyn.edisax.model.internal.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +27,22 @@ import java.util.Set;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.emf.ecore.EPackage;
+import org.milyn.archive.Archive;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.ect.ecore.ECoreGenerator;
+import org.milyn.ect.ecore.SchemaConverter;
+import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
+import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.Edimap;
+import org.milyn.edisax.model.internal.Field;
+import org.milyn.edisax.model.internal.MappingNode;
+import org.milyn.edisax.model.internal.Segment;
+import org.milyn.edisax.model.internal.SegmentGroup;
+import org.milyn.edisax.util.EDIUtils;
+
 /**
  * EDI Convertion Tool.
  * <p/>
@@ -43,6 +53,8 @@ import java.util.zip.ZipOutputStream;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class EdiConvertionTool {
+
+    private static final Log logger = LogFactory.getLog(EdiConvertionTool.class);
 
     /**
      * Write an EDI Mapping Model configuration set from a UN/EDIFACT
@@ -77,6 +89,8 @@ public class EdiConvertionTool {
 
             // Now output the generated archive...
             archive.toOutputStream(modelSetOutStream);
+        } catch (Throwable t) {
+            logger.fatal("Error while generating EDI Mapping Model archive for '" + urn + "'.", t);
         } finally {
             modelSetOutStream.close();
         }
@@ -119,29 +133,26 @@ public class EdiConvertionTool {
     private static Archive createArchive(EdiSpecificationReader ediSpecificationReader, String urn) throws IOException {
         Archive archive = new Archive();
         StringBuilder modelListBuilder = new StringBuilder();
-        Set<String> messages = ediSpecificationReader.getMessageNames();
         StringWriter messageEntryWriter = new StringWriter();
         String pathPrefix = urn.replace(".", "_").replace(":", "/");
+        EdiDirectory ediDirectory = ediSpecificationReader.getEdiDirectory();
 
-        for(String message : messages) {
-            Edimap model = ediSpecificationReader.getMappingModel(message);
-            String messageEntryPath = pathPrefix + "/" + message + ".xml";
+        // Add the common model...
+        addModel(ediDirectory.getCommonModel(), pathPrefix, modelListBuilder, messageEntryWriter, archive);
 
-            removeDuplicateSegments(model.getSegments());
-
-            // Generate the mapping model for this message...
-            messageEntryWriter.getBuffer().setLength(0);
-            model.write(messageEntryWriter);
-
-            // Add the generated mapping model to the archive...
-            archive.addEntry(messageEntryPath, messageEntryWriter.toString());
-
-            // Add this messages archive entry to the mapping model list file...
-            modelListBuilder.append("/" + messageEntryPath);
-            modelListBuilder.append("!" + model.getDescription().getName());
-            modelListBuilder.append("!" + model.getDescription().getVersion());
-            modelListBuilder.append("\n");
+        // Add each of the messages...
+        for(Edimap messageModel : ediDirectory.getMessageModels()) {
+            addModel(messageModel, pathPrefix, modelListBuilder, messageEntryWriter, archive);
         }
+
+        // Now create XML Schemas
+        Set<EPackage> packages = new ECoreGenerator().generatePackages(ediDirectory);
+        String pluginID = "org.milyn.edi.unedifact.unknown";
+        if (urn.lastIndexOf(':') > 0) {
+        	pluginID = urn.substring(0, urn.lastIndexOf(':')).replace(':', '.').toLowerCase();
+        }
+        Archive schemas = SchemaConverter.INSTANCE.createArchive(packages, pluginID, pathPrefix);
+        archive.merge(schemas);
 
         // Add the generated mapping model to the archive...
         archive.addEntry(EDIUtils.EDI_MAPPING_MODEL_ZIP_LIST_FILE, modelListBuilder.toString());
@@ -163,7 +174,24 @@ public class EdiConvertionTool {
         return archive;
     }
 
-    private static void removeDuplicateSegments(SegmentGroup segmentGroup) {
+    private static void addModel(Edimap model, String pathPrefix, StringBuilder modelListBuilder, StringWriter messageEntryWriter, Archive archive) throws IOException {
+        String messageEntryPath = pathPrefix + "/" + model.getDescription().getName() + ".xml";
+
+        // Generate the mapping model for this message...
+        messageEntryWriter.getBuffer().setLength(0);
+        model.write(messageEntryWriter);
+
+        // Add the generated mapping model to the archive...
+        archive.addEntry(messageEntryPath, messageEntryWriter.toString());
+
+        // Add this messages archive entry to the mapping model list file...
+        modelListBuilder.append("/" + messageEntryPath);
+        modelListBuilder.append("!" + model.getDescription().getName());
+        modelListBuilder.append("!" + model.getDescription().getVersion());
+        modelListBuilder.append("\n");
+    }
+
+    public static void removeDuplicateSegments(SegmentGroup segmentGroup) {
         if(segmentGroup instanceof Segment) {
             removeDuplicateFields(((Segment)segmentGroup).getFields()); 
         }

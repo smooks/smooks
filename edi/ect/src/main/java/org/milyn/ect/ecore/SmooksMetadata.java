@@ -1,4 +1,4 @@
-package org.milyn.ecore;
+package org.milyn.ect.ecore;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EModelElement;

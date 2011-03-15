@@ -71,6 +71,6 @@ public class UnEdifact_EdiConvertionTool_Test extends TestCase {
 
         jupreq.write(writer);
 
-        Edimap edimap = EDIConfigDigester.digestConfig(new ByteArrayInputStream(serializedMap.toByteArray()));
+        EDIConfigDigester.digestConfig(new ByteArrayInputStream(serializedMap.toByteArray()));
     }
 }

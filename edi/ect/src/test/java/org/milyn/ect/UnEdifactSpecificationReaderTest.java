@@ -43,7 +43,6 @@ import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDIParser;
 import org.milyn.edisax.model.internal.Edimap;
-import org.milyn.edisax.unedifact.UNEdifactNamespaceResolver;
 import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
 import org.milyn.io.StreamUtils;
 import org.milyn.util.ClassUtil;
