@@ -34,7 +34,7 @@ import org.milyn.edisax.model.internal.SegmentGroup;
  */
 public class ECoreGenerator {
 
-	private static final String COMMON_PACKAGE_NAME = "commonDefinitions";
+	private static final String COMMON_PACKAGE_NAME = "common";
 
 	private static final Log log = LogFactory.getLog(ECoreGenerator.class);
 
@@ -60,12 +60,7 @@ public class ECoreGenerator {
 		EPackage commonPackage = EcoreFactory.eINSTANCE.createEPackage();
 		commonPackage.setName(COMMON_PACKAGE_NAME);
 		commonPackage.setNsPrefix("common");
-		// We still have an issue that version of common mapping model is local
-		String version = reader
-				.getMappingModel(getNotCommonMappingName(reader))
-				.getDescription().getVersion().replaceAll(":", "");
-		commonPackage.setNsURI("http://smooks.org/UNEDI/" + version
-				+ "/modelsetDefinitions");
+		commonPackage.setNsURI(commonModel.getDescription().getNamespace());
 		Collection<EClass> clzz = createCommonClasses(commonModel,
 				commonClasses);
 		commonPackage.getEClassifiers().addAll(clzz);
@@ -90,20 +85,6 @@ public class ECoreGenerator {
 		log.debug("Converted EDIFACT Model  into " + result.size()
 				+ " EPackages");
 		return result;
-	}
-
-	private String getNotCommonMappingName(UnEdifactSpecificationReader reader)
-			throws IOException {
-		String commonDefName = reader.getDefinitionModel().getDescription()
-				.getName();
-		Set<String> names = reader.getMessageNames();
-		for (String name : names) {
-			if (!name.equals(commonDefName)) {
-				return name;
-			}
-		}
-		throw new IllegalArgumentException(
-				"Can't find non-common mapping package");
 	}
 
 	/**

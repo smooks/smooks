@@ -75,8 +75,7 @@ public class ECoreConversionUtils {
 		Description desc = mapModel.getDescription();
 		pkg.setName(desc.getName().toLowerCase());
 		pkg.setNsPrefix(desc.getName().toLowerCase());
-		pkg.setNsURI("http://smooks.org/UNEDI/"
-				+ desc.getVersion().replaceAll(":", "") + "/" + desc.getName());
+		pkg.setNsURI(desc.getNamespace());
 		if (mapModel.getSrc() != null) {
 			annotate(pkg, "src", mapModel.getSrc().toASCIIString());
 		}
