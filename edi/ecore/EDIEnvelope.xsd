@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:org.milyn.edi.unedifact.v41"
+	elementFormDefault="qualified" ecore:nsPrefix="env" ecore:name="envelope"
+	xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:org.milyn.edi.unedifact.v41"
+	xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:smooks="smooks-mapping-data">
+
+	<element name="unEdifact" type="tns:unEdifactType" />
+
+	<complexType name="unEdifactType" ecore:name="UNEdifact"
+		smooks:type="group">
+		<sequence>
+			<element name="UNB" type="tns:UNBType" minOccurs="1"
+				maxOccurs="1" smooks:segcode="UNB" smooks:type="segment" />
+			<element name="interchangeMessage" type="tns:interchangeMessageType"
+				maxOccurs="unbounded" ecore:name="messages" smooks:type="group" />
+			<element name="UNZ" type="tns:UNZType" minOccurs="1"
+				maxOccurs="1" smooks:type="segment" smooks:segcode="UNZ" />
+		</sequence>
+	</complexType>
+
+	<complexType name="UNBType">
+		<sequence>
+			<element name="syntaxIdentifier" type="tns:SyntaxIdentifierType"
+				smooks:type="field" maxOccurs="1" minOccurs="1" />
+			<element name="sender" type="tns:SenderType" smooks:type="field"
+				maxOccurs="1" minOccurs="1" />
+			<element name="recipient" type="tns:RecipientType"
+				smooks:type="field" maxOccurs="1" minOccurs="1" />
+			<element name="dateTime" type="tns:DateTimeType" smooks:type="field"
+				maxOccurs="1" minOccurs="1" />
+			<element name="controlRef" type="string" smooks:type="field"
+				maxOccurs="1" minOccurs="1" />
+			<element name="recipientRef" type="tns:RecipientRefType"
+				smooks:type="field" maxOccurs="1" minOccurs="0" />
+			<element name="applicationRef" type="string" smooks:type="field"
+				maxOccurs="1" minOccurs="0" />
+			<element name="processingPriorityCode" type="string"
+				smooks:type="field" maxOccurs="1" minOccurs="0" />
+			<element name="ackRequest" type="string" smooks:type="field"
+				maxOccurs="1" minOccurs="0" />
+			<element name="agreementId" type="string" smooks:type="field"
+				maxOccurs="1" minOccurs="0" />
+			<element name="testIndicator" type="string" smooks:type="field"
+				maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="UNZType">
+		<sequence>
+			<element name="controlCount" type="long" smooks:type="field" />
+			<element name="controlRef" type="string" smooks:type="field" />
+		</sequence>
+	</complexType>
+
+	<complexType name="interchangeMessageType" mixed="false">
+		<sequence>
+			<element name="UNH" type="tns:UNHType" minOccurs="1"
+				maxOccurs="1" smooks:type="segment" smooks:segcode="UNH" />
+			<any maxOccurs="1" minOccurs="1" namespace="##any"
+				processContents="lax" ecore:name="message" smooks:type="group" />
+			<element name="UNT" minOccurs="1" maxOccurs="1" type="tns:UNTType"
+				smooks:type="segment" smooks:segcode="UNT" />
+		</sequence>
+	</complexType>
+
+	<complexType name="UNHType" mixed="false">
+		<sequence>
+			<element name="messageRefNum" type="string" smooks:type="field" />
+			<element name="messageIdentifier" type="tns:MessageIdentifierType"
+				smooks:type="field" />
+		</sequence>
+	</complexType>
+
+
+	<complexType name="SyntaxIdentifierType" mixed="false">
+		<sequence>
+			<element name="id" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="1" />
+			<element name="versionNum" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="1" />
+			<element name="serviceCodeListDirVersion" type="string"
+				smooks:type="component" maxOccurs="1" minOccurs="0" />
+			<element name="codedCharacterEncoding" type="string"
+				smooks:type="component" maxOccurs="1" minOccurs="0" />
+			<element name="releaseNum" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="SenderType" mixed="false">
+		<sequence>
+			<element name="id" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="1" />
+			<element name="codeQualifier" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="0" />
+			<element name="internalId" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="0" />
+			<element name="internalSubId" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="RecipientType" mixed="false">
+		<sequence>
+			<element name="id" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="1" />
+
+			<element name="codeQualifier" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="0" />
+			<element name="internalId" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="0" />
+			<element name="internalSubId" type="string" smooks:type="component"
+				maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="DateTimeType" mixed="false">
+		<sequence>
+			<element name="date" type="string" smooks:type="component" />
+			<element name="time" type="string" smooks:type="component" />
+		</sequence>
+	</complexType>
+
+	<complexType name="MessageIdentifierType">
+		<sequence>
+			<element name="id" type="string" smooks:type="component" />
+			<element name="versionNum" type="string" smooks:type="component" />
+			<element name="releaseNum" type="string" smooks:type="component" />
+			<element name="controllingAgencyCode" type="string"
+				smooks:type="component" />
+			<element name="associationAssignedCode" type="string"
+				smooks:type="component" />
+		</sequence>
+	</complexType>
+
+	<complexType name="UNTType">
+		<sequence>
+			<element name="segmentCount" type="long" smooks:type="field" />
+			<element name="messageRefNum" type="string" smooks:type="field" />
+		</sequence>
+	</complexType>
+
+	<complexType name="RecipientRefType">
+		<sequence>
+			<element name="ref" minOccurs="1" maxOccurs="1" type="string"
+				smooks:type="field" />
+			<element name="refQualifier" minOccurs="0" maxOccurs="1"
+				type="string" smooks:type="field" />
+		</sequence>
+	</complexType>
+</schema>

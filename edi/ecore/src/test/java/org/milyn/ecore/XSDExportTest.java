@@ -16,7 +16,9 @@
 package org.milyn.ecore;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.zip.ZipOutputStream;
 
 import junit.framework.TestCase;
 
@@ -25,9 +27,9 @@ import org.milyn.archive.Archive;
 public class XSDExportTest extends TestCase {
 
 	public void testSchemaExport() throws Exception {
-		InputStream inputStream = getClass().getResourceAsStream("/D99A.zip");
-		Archive archive = SchemaConverter.INSTANCE.createArchive(inputStream, "org.milyn.edi.unedifact.d99a");
-		archive.toFileSystem(new File("./target/" + ((System.currentTimeMillis() / 1000) % 10000)));
+		InputStream inputStream = getClass().getResourceAsStream("/d03b.zip");
+		Archive archive = SchemaConverter.INSTANCE.createArchive(inputStream, "org.milyn.edi.unedifact.d03b");
+		archive.toOutputStream(new ZipOutputStream(new FileOutputStream(new File("./target/" + archive.getArchiveName()))));
 	}
 
 }
