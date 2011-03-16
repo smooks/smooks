@@ -1167,6 +1167,12 @@ public class SmooksResourceConfiguration {
             }
 
             return null;
+        } catch (IllegalArgumentException e) {
+    		if (resource.equals(className)) {
+    			logger.debug("The string [" + resource + "] contains unescaped characters that are illegal in a Java resource name.");
+    		}
+
+    		return null;
         }
     }
 
