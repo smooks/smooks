@@ -104,7 +104,11 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         }
     }
 
-    public Properties getInterchangeProperties() {
+	public String getCommmonMessageName() {
+		return EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION.getName();
+	}
+
+	public Properties getInterchangeProperties() {
         Properties properties = new Properties();
 
         properties.setProperty(EdiSpecificationReader.INTERCHANGE_TYPE, INTERCHANGE_TYPE);
@@ -295,6 +299,5 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
             return entries;
         }
     }
-
 
 }

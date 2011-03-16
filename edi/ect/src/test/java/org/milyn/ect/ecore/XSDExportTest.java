@@ -18,17 +18,27 @@ package org.milyn.ect.ecore;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Set;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import junit.framework.TestCase;
 
+import org.eclipse.emf.ecore.EPackage;
 import org.milyn.archive.Archive;
+import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 
 public class XSDExportTest extends TestCase {
 
 	public void testSchemaExport() throws Exception {
 		InputStream inputStream = getClass().getResourceAsStream("/d03b.zip");
-		Archive archive = SchemaConverter.INSTANCE.createArchive(inputStream, "org.milyn.edi.unedifact.d03b");
+		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+		UnEdifactSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(
+				zipInputStream, false);
+		ECoreGenerator ecoreGen = new ECoreGenerator();
+		Set<EPackage> packages = ecoreGen
+				.generatePackages(ediSpecificationReader);
+		Archive archive = SchemaConverter.INSTANCE.createArchive(packages, "org.milyn.edi.unedifact.d03b");
 		archive.toOutputStream(new ZipOutputStream(new FileOutputStream(new File("./target/" + archive.getArchiveName()))));
 	}
 

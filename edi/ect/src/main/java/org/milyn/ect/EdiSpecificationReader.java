@@ -64,9 +64,19 @@ public interface EdiSpecificationReader {
      */
     Edimap getMappingModel(String messageName) throws IOException;
 
+    
+    
     /**
      * Get the message interchange properties for the associated EDI specification.
      * @return The message interchange properties for the associated EDI specification.
      */
     Properties getInterchangeProperties();
+
+    /**
+     * Returns a name of the message directory that is common for all other 
+     * mapping model names
+     * 
+     * @return a name of the common model or null
+     */
+	String getCommmonMessageName();
 }

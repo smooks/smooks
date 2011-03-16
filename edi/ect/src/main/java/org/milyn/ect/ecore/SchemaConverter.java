@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Set;
-import java.util.zip.ZipInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +34,6 @@ import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceFactoryImpl;
 import org.milyn.archive.Archive;
-import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 
 public class SchemaConverter {
 
@@ -62,16 +60,10 @@ public class SchemaConverter {
 	 * 
 	 * @param directoryInputStream
 	 */
-	public Archive createArchive(InputStream directoryStream, String pluginID)
+	public Archive createArchive(Set<EPackage> packages, String pluginID)
 			throws IOException {
 		String qualifier = qualifierFormat.format(Calendar.getInstance()
 				.getTime());
-		ZipInputStream zipInputStream = new ZipInputStream(directoryStream);
-		UnEdifactSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(
-				zipInputStream, false);
-		ECoreGenerator ecoreGen = new ECoreGenerator();
-		Set<EPackage> packages = ecoreGen
-				.generatePackages(ediSpecificationReader);
 		ResourceSet rs = prepareResourceSet();
 
 		Archive archive = new Archive(pluginID + "_1.0.0.v" + qualifier

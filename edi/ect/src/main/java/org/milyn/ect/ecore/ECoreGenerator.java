@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.milyn.ect.EdiSpecificationReader;
-import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Field;
 import org.milyn.edisax.model.internal.Segment;
@@ -49,27 +48,32 @@ public class ECoreGenerator {
 	 * @return
 	 * @throws IOException
 	 */
-	public Set<EPackage> generatePackages(UnEdifactSpecificationReader reader)
+	public Set<EPackage> generatePackages(EdiSpecificationReader reader)
 			throws IOException {
 		log.debug("Converting UN EDIFACT Model");
 		Set<EPackage> result = new HashSet<EPackage>();
 
 		// Creating common package
 		Map<String, EClass> commonClasses = new HashMap<String, EClass>();
-		Edimap commonModel = reader.getDefinitionModel();
-		EPackage commonPackage = EcoreFactory.eINSTANCE.createEPackage();
-		commonPackage.setName(COMMON_PACKAGE_NAME);
-		commonPackage.setNsPrefix("common");
-		commonPackage.setNsURI(commonModel.getDescription().getNamespace());
-		Collection<EClass> clzz = createCommonClasses(commonModel,
-				commonClasses);
-		commonPackage.getEClassifiers().addAll(clzz);
-		result.add(commonPackage);
+		String commonModelName = reader.getCommmonMessageName();
+		if (commonModelName != null) {
+			// If we have a common model then we need to process it
+			// first
+			Edimap commonModel = reader.getMappingModel(commonModelName);
+			EPackage commonPackage = EcoreFactory.eINSTANCE.createEPackage();
+			commonPackage.setName(COMMON_PACKAGE_NAME);
+			commonPackage.setNsPrefix("common");
+			commonPackage.setNsURI(commonModel.getDescription().getNamespace());
+			Collection<EClass> clzz = createCommonClasses(commonModel,
+					commonClasses);
+			commonPackage.getEClassifiers().addAll(clzz);
+			result.add(commonPackage);
+		}
 
 		// Processing individual packages
 		Set<String> messageNames = reader.getMessageNames();
 		for (String messageName : messageNames) {
-			if (!commonModel.getDescription().getName().equals(messageName)) {
+			if (!(commonModelName != null && messageName.equals(commonModelName))) {
 				Edimap mappingModel = reader.getMappingModel(messageName);
 				EPackage pkg = ECoreConversionUtils
 						.mappingModelToEPackage(mappingModel);

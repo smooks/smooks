@@ -70,4 +70,8 @@ public class CustomEdiSpecificationReader implements EdiSpecificationReader {
 
         return edimap;
     }
+
+	public String getCommmonMessageName() {
+		return null;
+	}
 }
