@@ -31,14 +31,17 @@ import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 public class XSDExportTest extends TestCase {
 
 	public void testSchemaExport() throws Exception {
-		InputStream inputStream = getClass().getResourceAsStream("/d03b.zip");
+		String directory = "d03b";
+		String pluginID = "org.milyn.edi.unedifact." + directory;
+		String pathPrefix = pluginID.replace('.', '/');
+		InputStream inputStream = getClass().getResourceAsStream("/" + directory + ".zip");
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 		UnEdifactSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(
 				zipInputStream, false);
 		ECoreGenerator ecoreGen = new ECoreGenerator();
 		Set<EPackage> packages = ecoreGen
 				.generatePackages(ediSpecificationReader);
-		Archive archive = SchemaConverter.INSTANCE.createArchive(packages, "org.milyn.edi.unedifact.d03b");
+		Archive archive = SchemaConverter.INSTANCE.createArchive(packages, pluginID, pathPrefix);
 		archive.toOutputStream(new ZipOutputStream(new FileOutputStream(new File("./target/" + archive.getArchiveName()))));
 	}
 

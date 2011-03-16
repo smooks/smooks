@@ -60,7 +60,7 @@ public class SchemaConverter {
 	 * 
 	 * @param directoryInputStream
 	 */
-	public Archive createArchive(Set<EPackage> packages, String pluginID)
+	public Archive createArchive(Set<EPackage> packages, String pluginID, String pathPrefix)
 			throws IOException {
 		String qualifier = qualifierFormat.format(Calendar.getInstance()
 				.getTime());
@@ -75,7 +75,6 @@ public class SchemaConverter {
 				"\t<extension point=\"org.eclipse.emf.ecore.dynamic_package\">\n");
 		StringBuilder xmlExtension = new StringBuilder(
 				"\t<extension point=\"org.eclipse.wst.xml.core.catalogContributions\"><catalogContribution>\n");
-		String pathPrefix = pluginID.replace(".", "/");
 
 		for (EPackage pkg : packages) {
 			Resource resource = addSchemaResource(rs, pkg);

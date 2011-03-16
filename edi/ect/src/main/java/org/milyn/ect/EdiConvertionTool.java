@@ -16,12 +16,6 @@
 
 package org.milyn.ect;
 
-import org.milyn.archive.Archive;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
-import org.milyn.edisax.util.EDIUtils;
-import org.milyn.edisax.model.internal.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +26,20 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import org.eclipse.emf.ecore.EPackage;
+import org.milyn.archive.Archive;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.ect.ecore.ECoreGenerator;
+import org.milyn.ect.ecore.SchemaConverter;
+import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
+import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.Edimap;
+import org.milyn.edisax.model.internal.Field;
+import org.milyn.edisax.model.internal.MappingNode;
+import org.milyn.edisax.model.internal.Segment;
+import org.milyn.edisax.model.internal.SegmentGroup;
+import org.milyn.edisax.util.EDIUtils;
 
 /**
  * EDI Convertion Tool.
@@ -142,6 +150,15 @@ public class EdiConvertionTool {
             modelListBuilder.append("!" + model.getDescription().getVersion());
             modelListBuilder.append("\n");
         }
+        
+        // Now create XML Schemas
+        Set<EPackage> packages = new ECoreGenerator().generatePackages(ediSpecificationReader);
+        String pluginID = "org.milyn.edi.unedifact.unknown";
+        if (urn.lastIndexOf(':') > 0) {
+        	pluginID = urn.substring(0, urn.lastIndexOf(':')).replace(':', '.').toLowerCase();
+        }
+        Archive schemas = SchemaConverter.INSTANCE.createArchive(packages, pluginID, pathPrefix);
+        archive.merge(schemas);
 
         // Add the generated mapping model to the archive...
         archive.addEntry(EDIUtils.EDI_MAPPING_MODEL_ZIP_LIST_FILE, modelListBuilder.toString());
