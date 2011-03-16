@@ -4,6 +4,7 @@ import static org.milyn.ecore.SmooksMetadata.ANNOTATION_TYPE_KEY;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -133,7 +134,8 @@ public class ECoreConversionUtils {
 		metadata.setContentKind(clazz, ExtendedMetaData.ELEMENT_ONLY_CONTENT);
 	}
 
-	private static void addMappingInformation(EStructuralFeature ref, MappingNode node) {
+	private static void addMappingInformation(EStructuralFeature ref,
+			MappingNode node) {
 		metadata.setName(ref, node.getXmltag());
 		metadata.setFeatureKind(ref, ExtendedMetaData.ELEMENT_FEATURE);
 		setTargetNamespace(ref);
@@ -148,14 +150,16 @@ public class ECoreConversionUtils {
 	 * @param value
 	 */
 	private static void annotate(EModelElement element, String key, String value) {
-		EAnnotation annotation = element
-				.getEAnnotation(SmooksMetadata.ANNOTATION_TYPE);
-		if (annotation == null) {
-			annotation = EcoreFactory.eINSTANCE.createEAnnotation();
-			annotation.setSource(SmooksMetadata.ANNOTATION_TYPE);
-			element.getEAnnotations().add(annotation);
+		if (!StringUtils.isEmpty(value)) {
+			EAnnotation annotation = element
+					.getEAnnotation(SmooksMetadata.ANNOTATION_TYPE);
+			if (annotation == null) {
+				annotation = EcoreFactory.eINSTANCE.createEAnnotation();
+				annotation.setSource(SmooksMetadata.ANNOTATION_TYPE);
+				element.getEAnnotations().add(annotation);
+			}
+			annotation.getDetails().put(key, value);
 		}
-		annotation.getDetails().put(key, value);
 	}
 
 	/**

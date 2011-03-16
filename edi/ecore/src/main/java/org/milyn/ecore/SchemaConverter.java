@@ -20,10 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -31,7 +32,9 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.ecore.EcoreSchemaBuilder;
 import org.eclipse.xsd.util.XSDResourceFactoryImpl;
 import org.milyn.archive.Archive;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
@@ -49,6 +52,8 @@ public class SchemaConverter {
 
 	private static final SimpleDateFormat qualifierFormat = new SimpleDateFormat(
 			"yyyyMMdd-HHmm");
+
+	private static final Log log = LogFactory.getLog(SchemaConverter.class);
 
 	protected SchemaConverter() {
 		// noop
@@ -85,21 +90,25 @@ public class SchemaConverter {
 		for (EPackage pkg : packages) {
 			String message = pkg.getName();
 			// Creating XSD resource
+			log.info("Generating XML Schema for " + pkg.getName());
+			long start = System.currentTimeMillis();
 			try {
-				CustomSchemaBuilder schemaBuilder = new CustomSchemaBuilder();
-				Collection<EObject> generate = schemaBuilder.generate(pkg);
+				EcoreSchemaBuilder schemaBuilder = new EcoreSchemaBuilder(
+						ExtendedMetaData.INSTANCE);
+				XSDSchema schema = schemaBuilder.getSchema(pkg);
 				Resource xsd = rs.createResource(URI.createFileURI(message
 						+ ".xsd"));
 				if (!xsd.getContents().isEmpty()) {
 					throw new RuntimeException("Duplicate schema "
 							+ xsd.getURI());
 				}
-				XSDSchema schema = (XSDSchema) generate.iterator().next();
 				xsd.getContents().add(schema);
 			} catch (Exception e) {
-				System.err.println("Failed to generate schema for "
-						+ pkg.getNsURI());
+				log.error("Failed to generate schema for " + pkg.getNsURI(), e);
 			}
+			log.info("Generation of XML Schema for package " + pkg.getName()
+					+ " took " + (System.currentTimeMillis() - start) / 1000
+					+ " sec.");
 		}
 
 		EList<Resource> resources = rs.getResources();
@@ -107,8 +116,8 @@ public class SchemaConverter {
 			EObject obj = resource.getContents().get(0);
 			String fileName = resource.getURI().lastSegment();
 			String ecoreEntryPath = pathPrefix + "/" + fileName;
-			xmlExtension.append(saveSchema(archive, ecoreEntryPath,
-					resource, ((XSDSchema) obj).getTargetNamespace()));
+			xmlExtension.append(saveSchema(archive, ecoreEntryPath, resource,
+					((XSDSchema) obj).getTargetNamespace()));
 		}
 		ecoreExtension.append("\t</extension>\n");
 		xmlExtension.append("\t</catalogContribution></extension>\n");
@@ -126,6 +135,7 @@ public class SchemaConverter {
 			Resource resource, String ns) {
 		StringBuilder result = new StringBuilder();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		log.info("Saving XML Schema " + ns);
 		try {
 			resource.save(out, null);
 			if (archive.getEntries().containsKey(entryPath)) {
@@ -138,8 +148,7 @@ public class SchemaConverter {
 			result.append(entryPath);
 			result.append("\"/>\n");
 		} catch (Exception e) {
-			System.err.println("Failed to save XML Schema " + ns);
-			e.printStackTrace();
+			log.error("Failed to save XML Schema " + ns, e);
 		}
 		return result.toString();
 	}
