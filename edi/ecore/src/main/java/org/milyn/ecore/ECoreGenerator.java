@@ -34,7 +34,7 @@ import org.milyn.edisax.model.internal.SegmentGroup;
  */
 public class ECoreGenerator {
 
-	private static final String COMMON_PACKAGE_NAME = "common";
+	public static final String COMMON_PACKAGE_NAME = "common";
 
 	private static final Log log = LogFactory.getLog(ECoreGenerator.class);
 
