@@ -103,7 +103,7 @@ public class SchemaConverter {
 	private Resource addSchemaResource(ResourceSet rs, EPackage pkg) {
 		String message = pkg.getName();
 		// Creating XSD resource
-		log.info("Generating XML Schema for " + pkg.getName());
+		log.debug(pkg.getName() + " schema generation start");
 		Resource xsd = null;
 		long start = System.currentTimeMillis();
 		try {
@@ -120,8 +120,7 @@ public class SchemaConverter {
 		} catch (Exception e) {
 			log.error("Failed to generate schema for " + pkg.getNsURI(), e);
 		}
-		log.info("Generation of XML Schema for package " + pkg.getName()
-				+ " took " + (System.currentTimeMillis() - start) / 1000f
+		log.info(pkg.getName() + " schema generation took " + (System.currentTimeMillis() - start) / 1000f
 				+ " sec.");
 		return xsd;
 	}

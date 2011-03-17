@@ -18,6 +18,7 @@ package org.milyn.ect.ecore;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -41,7 +42,14 @@ public class XSDExportTest extends TestCase {
 		ECoreGenerator ecoreGen = new ECoreGenerator();
 		Set<EPackage> packages = ecoreGen
 				.generatePackages(ediSpecificationReader);
-		Archive archive = SchemaConverter.INSTANCE.createArchive(packages, pluginID, pathPrefix);
+		// To make tests execution faster let us just select a small subset of packages
+		Set<EPackage> smallerSet = new HashSet<EPackage>();
+		for (EPackage pkg : packages) {
+			if ("cuscar".equals(pkg.getName()) || "invoic".equals(pkg.getName())) {
+				smallerSet.add(pkg);
+			}
+		}
+		Archive archive = SchemaConverter.INSTANCE.createArchive(smallerSet, pluginID, pathPrefix);
 		archive.toOutputStream(new ZipOutputStream(new FileOutputStream(new File("./target/" + archive.getArchiveName()))));
 	}
 
