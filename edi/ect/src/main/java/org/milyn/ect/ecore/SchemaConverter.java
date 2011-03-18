@@ -85,7 +85,6 @@ public class SchemaConverter {
 					((XSDSchema) obj).getTargetNamespace()));
 			// Save memory
 			resource.unload();
-			System.gc();
 		}
 
 		ecoreExtension.append("\t</extension>\n");

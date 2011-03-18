@@ -15,14 +15,17 @@
  */
 package org.milyn.ect.ecore;
 
+import java.util.Map;
+
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.xsd.ecore.EcoreSchemaBuilder;
+import org.w3c.dom.Element;
 
 /**
  * Extension of {@link EcoreSchemaBuilder} to simplify the namespace prefix
  * 
  * @author zubairov
- *
+ * 
  */
 public class CustomSchemaBuilder extends EcoreSchemaBuilder {
 
@@ -37,5 +40,17 @@ public class CustomSchemaBuilder extends EcoreSchemaBuilder {
 		}
 		return super.qualifiedPackageName(namespace);
 	}
-	
+
+	@Override
+	public void createAnnotation(Map<String, String> qNamePrefixToNamespaceMap,
+			Element element, String namespace, String key, String value) {
+		// Do nothing for now
+	}
+
+	@Override
+	protected void createEcoreAnnotation(
+			Map<String, String> qNamePrefixToNamespaceMap, Element element,
+			String key, String value) {
+		// Do nothing for now
+	}
 }
