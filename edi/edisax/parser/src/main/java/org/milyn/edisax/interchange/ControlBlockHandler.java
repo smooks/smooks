@@ -25,9 +25,7 @@ import org.xml.sax.SAXException;
  */
 public interface ControlBlockHandler {
 
-	public static final String NAMESPACE = "http://www.milyn.org/schema/edi/un/header-4.1.xsd";
-
-	/**
+    /**
 	 * Process an interchange control block.
 	 * @param interchangeContext The interchange context.
      * @throws IOException Error reading from stream.

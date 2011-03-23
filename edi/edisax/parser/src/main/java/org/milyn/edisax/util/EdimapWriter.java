@@ -34,6 +34,7 @@ import org.milyn.edisax.model.internal.MappingNode;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
 import org.milyn.edisax.model.internal.SubComponent;
+import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 import org.milyn.util.ClassUtil;
 import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Document;
@@ -75,11 +76,22 @@ public class EdimapWriter {
         }
     }
 
+    public static void write(Segment segment, Writer writer) throws IOException {
+        Edimap ediMap = new Edimap();
+
+        SegmentGroup segments = new SegmentGroup();
+        segments.getSegments().add(segment);
+
+        ediMap.setSegments(segments);
+        ediMap.setDelimiters(UNEdifactInterchangeParser.defaultUNEdifactDelimiters);
+        ediMap.setDescription(new Description().setName("TODO").setVersion("TODO"));
+
+        write(ediMap, writer);
+    }
+
     private void write(Edimap edimap) {
         Element edimapEl = newElement("edimap", doc);
-        if (!StringUtils.isEmpty(edimap.getNamespace())) {
-        	edimapEl.setAttribute("namespace", edimap.getNamespace());
-        }
+
         addImports(edimap.getImports(), edimapEl);
         addDescription(edimap.getDescription(), edimapEl);
         addDelimiters(edimap.getDelimiters(), edimapEl);
@@ -98,7 +110,12 @@ public class EdimapWriter {
     }
 
     private void addDescription(Description description, Element edimapEl) {
-        mapBeanProperties(description, newElement("description", edimapEl), "name", "version");
+        Element descriptionElement = newElement("description", edimapEl);
+
+        mapBeanProperties(description, descriptionElement, "name", "version");
+        if (!StringUtils.isEmpty(description.getNamespace())) {
+        	descriptionElement.setAttribute("namespace", description.getNamespace());
+        }
     }
 
     private void addDelimiters(Delimiters delimiters, Element edimapEl) {

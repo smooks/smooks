@@ -14,39 +14,28 @@
     <name>Milyn EDI</name>
     <url>http://milyn.codehaus.org</url>
 
-    <modules>
-        <module>edisax</module>
-        <module>ect</module>
-        <module>ect/maven-ect-plugin</module>
-        <module>ejc</module>
-        <module>ejc/maven-ejc-plugin</module>
-    </modules>
-
-    <repositories>
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>codehaus.maven.repo</id>
-            <name>Milyn Central Maven2 Repository</name>
-            <url>dav:https://dav.codehaus.org/repository/milyn/</url>
-        </repository>
-        <snapshotRepository>
-            <id>codehaus.maven.repo</id>
-            <name>Milyn Central Maven2 SNAPSHOT Repository</name>
-            <url>dav:https://dav.codehaus.org/snapshots.repository/milyn/</url>
-        </snapshotRepository>
-        <site>
-            <id>codehaus.maven.repo</id>
-            <url>dav:https://dav.codehaus.org/xfire/</url>
-        </site>
-    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>edisax</module>
+                <module>ect</module>
+                <module>ect/maven-ect-plugin</module>
+                <module>ejc</module>
+                <module>ejc/maven-ejc-plugin</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>deploy</id>
+            <modules>
+                <!--
+                 Don't build anything.  Just install the POM...
+                -->
+            </modules>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
 
 </project>

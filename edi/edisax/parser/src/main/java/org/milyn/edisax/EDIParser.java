@@ -20,12 +20,12 @@ import static javax.xml.XMLConstants.NULL_NS_URI;
 
 import org.apache.commons.lang.StringUtils;
 import org.milyn.assertion.AssertArgument;
-import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.*;
 import org.milyn.edisax.util.EDIUtils;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.lang.MutableInt;
+import org.milyn.namespace.NamespaceResolver;
 import org.milyn.resource.URIResourceLocator;
 import org.xml.sax.*;
 import org.xml.sax.helpers.AttributesImpl;
@@ -134,7 +134,7 @@ public class EDIParser implements XMLReader {
     /**
      * Fields required for namespace support
      */
-    private static final Map<String, String> aliasesMap = new HashMap<String, String>();
+    private NamespaceResolver namespaceResolver;
     private final Stack<String> nsStack = new Stack<String>();
 
     
@@ -277,7 +277,31 @@ public class EDIParser implements XMLReader {
 		return edifactModel;
     }
 
-	/**
+    /**
+     * Set the namespace resolver for this reader instance.
+     * @param namespaceResolver The namespace resolver.
+     */
+    public void setNamespaceResolver(NamespaceResolver namespaceResolver) {
+        this.namespaceResolver = namespaceResolver;
+    }
+
+    /**
+     * Get the namespace resolver for this reader instance.
+     * @return The namespace resolver.
+     */
+    public NamespaceResolver getNamespaceResolver() {
+        return namespaceResolver;
+    }
+
+    /**
+     * Get the namespace stack for this reader instance.
+     * @return The namespace stack.
+     */
+    public Stack<String> getNamespaceStack() {
+        return nsStack;
+    }
+
+    /**
 	 * Get the actual mapping configuration data (the XML).
 	 * @param resourceLocator Resource locator used to open the config stream.
 	 * @param mappingConfig Mapping config path.
@@ -815,29 +839,40 @@ public class EDIParser implements XMLReader {
 			startElement(node.getXmltag(), node.getNamespace(), indent);
 		}
 	}
-    
+
     public void startElement(String elementName, String namespace, boolean indent) throws SAXException {
+        startElement(elementName, namespace, indent, EMPTY_ATTRIBS);
+    }
+
+    public void startElement(String elementName, String namespace, boolean indent, Attributes attributes) throws SAXException {
         if(indent) {
             indent();
         }
         AssertArgument.isNotNull(namespace, "Empty namespace detected for elemnet " + elementName);
         if (NULL_NS_URI.equals(namespace)) {
         	// No namespace support
-        	contentHandler.startElement(NULL_NS_URI, elementName, elementName, EMPTY_ATTRIBS);
+        	contentHandler.startElement(NULL_NS_URI, elementName, elementName, attributes);
         } else {
         	// With namespace support
             String alias = getNamespaceAlias(namespace);
             boolean declareNamespace = false;
-            if (nsStack.isEmpty() || !nsStack.peek().equals(alias)) {
+            if (nsStack.isEmpty() || !nsStack.contains(namespace)) {
             	contentHandler.startPrefixMapping(alias, namespace);
             	declareNamespace = true;
             }
-            nsStack.push(alias);
+            nsStack.push(namespace);
             if (!declareNamespace) {
-            	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, EMPTY_ATTRIBS);
+            	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, attributes);
             } else {
-            	AttributesImpl attrs = new AttributesImpl();
-            	attrs.addAttribute(null, "xmlns:" + alias, "xmlns:" + alias, "CDATA", namespace);
+            	AttributesImpl attrs;
+
+                if(attributes != null && attributes != EMPTY_ATTRIBS) {
+                    attrs = new AttributesImpl(attributes);
+                } else {
+                    attrs = new AttributesImpl();
+                }
+
+            	attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:" + alias, "xmlns:" + alias, "CDATA", namespace);
             	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, attrs);
             }
         }
@@ -878,20 +913,16 @@ public class EDIParser implements XMLReader {
      * @return
      * @throws SAXException 
      */
-    public static String getNamespaceAlias(String namespace) throws SAXException {
+    private String getNamespaceAlias(String namespace) throws SAXException {
     	if (StringUtils.isEmpty(namespace) || StringUtils.isBlank(namespace)) {
     		return "";
     	}
-    	String result = aliasesMap.get(namespace);
-    	if (result == null) {
-    		if (ControlBlockHandler.NAMESPACE.equals(namespace)) {
-    			result = "h";
-    		} else {
-    			result = "ns" + aliasesMap.size();
-    		}
-    		aliasesMap.put(namespace, result);
-    	}
-    	return result;
+
+        if(namespaceResolver == null) {
+            throw new SAXException("Unable to resolve namespace prefix for namespace '" + namespace + "' because the EDIParser instance does not have a NamespaceResolver.");
+        }
+
+        return namespaceResolver.getPrefix(namespace);
 	}
 
     

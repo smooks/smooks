@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd" namespace="http://smooks.org/edi/un/test.xsd">
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd">
 
-	<medi:description name="Test Message" version="1.0" />
+	<medi:description name="Test Message" version="1.0" namespace="http://smooks.org/edi/un/test.xsd" />
 
 	<medi:delimiters segment="&#10;" field="|" fieldRepeat="~" component="^" sub-component="&amp;" escape="\" />
 

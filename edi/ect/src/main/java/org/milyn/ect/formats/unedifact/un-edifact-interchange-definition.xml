@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd" namespace="http://www.milyn.org/schema/edi/unedifact-header-41.xsd">
-	<medi:description version="ALL" name="UN-EDIFACT"/>
-	<medi:delimiters sub-component=":" segment="&#39;" field="+" component="~"/>
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd">
+	<medi:description version="ALL" name="UN-EDIFACT" namespace="urn:org.milyn.edi.unedifact.v41" />
+	<medi:delimiters sub-component=":" segment="&#39;" field="+" component="~" />
 	<medi:segments xmltag="UN-EDIFACT-INTERCHANGE-DEFINITION">
 
 		<medi:segment xmltag="SECTION_CONTROL" segcode="UNS" description="To separate Header, Detail and Summary sections of a message" truncatable="true">

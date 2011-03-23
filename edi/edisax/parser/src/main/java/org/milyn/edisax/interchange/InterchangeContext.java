@@ -25,6 +25,8 @@ import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.unedifact.registry.MappingsRegistry;
 import org.milyn.lang.MutableInt;
+import org.milyn.namespace.NamespaceResolver;
+import org.milyn.namespace.SimpleNamespaceResolver;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -36,27 +38,27 @@ import org.xml.sax.SAXException;
 public class InterchangeContext {
 
     public static final String INTERCHANGE_MESSAGE_BLOCK_ELEMENT_NAME = "interchangeMessage";
-    
-    public static final String INTERCHANGE_MESSAGE_BLOCK_NAMESPACE = ControlBlockHandler.NAMESPACE;
 
-	private BufferedSegmentReader segmentReader; 
+	private BufferedSegmentReader segmentReader;
 	private ContentHandler contentHandler;
 	private EDIParser controlSegmentParser;
     public MutableInt indentDepth = new MutableInt(0);
     private ControlBlockHandlerFactory controlBlockHandlerFactory;
     private boolean validate;
 	private MappingsRegistry registry;
+    private NamespaceResolver namespaceResolver;
 
     /**
 	 * Public constructor.
 	 * 
 	 * @param segmentReader The interchange {@link org.milyn.edisax.BufferedSegmentReader} instance.
-     * @param mappingModels The {@link org.milyn.edisax.model.EdifactModel Mapping Models} to be used for translating the interchange.
+     * @param registry The {@link org.milyn.edisax.model.EdifactModel Mapping Models} registry.
      * @param contentHandler The {@link org.xml.sax.ContentHandler content handler} instance to receive the interchange events.
      * @param controlBlockHandlerFactory Control Block Handler Factory.
+     * @param namespaceResolver Namespace resolver.
      * @param validate Validate the data types of the EDI message data as defined in the mapping model.
 	 */
-	public InterchangeContext(BufferedSegmentReader segmentReader, MappingsRegistry registry, ContentHandler contentHandler, ControlBlockHandlerFactory controlBlockHandlerFactory, boolean validate) {
+	public InterchangeContext(BufferedSegmentReader segmentReader, MappingsRegistry registry, ContentHandler contentHandler, ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceResolver namespaceResolver, boolean validate) {
 		AssertArgument.isNotNull(segmentReader, "segmentReader");
 		AssertArgument.isNotNull(registry, "registry");
 		AssertArgument.isNotNull(contentHandler, "contentHandler");
@@ -66,9 +68,11 @@ public class InterchangeContext {
 		this.contentHandler = contentHandler;
         this.controlBlockHandlerFactory = controlBlockHandlerFactory;
 		this.validate = validate;
-		
+        this.namespaceResolver = namespaceResolver;
+
 		controlSegmentParser = new EDIParser();
 		controlSegmentParser.setBufferedSegmentReader(segmentReader);
+        controlSegmentParser.setNamespaceResolver(namespaceResolver);
 		controlSegmentParser.setContentHandler(contentHandler);
 		controlSegmentParser.setIndentDepth(indentDepth);
 
@@ -95,9 +99,14 @@ public class InterchangeContext {
 		return validate;
 	}
 
+    public String getNamespace() {
+        return controlBlockHandlerFactory.getNamespace();
+    }
+
     public EDIParser newParser(EdifactModel mappingModel) {
 		EDIParser parser = new EDIParser();
 
+        parser.setNamespaceResolver(namespaceResolver.clone());
 		parser.setContentHandler(contentHandler);
 		parser.setMappingModel(mappingModel);
 		parser.setBufferedSegmentReader(segmentReader);

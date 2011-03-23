@@ -2,6 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.codehaus</groupId>
+        <artifactId>codehaus-parent</artifactId>
+        <version>3</version>
+    </parent>
+
     <groupId>org.milyn</groupId>
     <artifactId>milyn</artifactId>
     <packaging>pom</packaging>
@@ -64,6 +71,7 @@
         <module>commons</module>
         <module>smooks-core</module>
         <module>scribe</module>
+        <module>edi</module> <!-- Default build only installs the POM... -->
         <module>edi/edisax</module> <!-- Purposely building ECT and EJC after Smooks components... -->
         <module>smooks-cartridges</module>
         <module>smooks-all</module>
@@ -208,23 +216,6 @@
         </testResources>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>codehaus.maven.repo</id>
-            <name>Milyn Central Maven2 Repository</name>
-            <url>dav:https://dav.codehaus.org/repository/milyn/</url>
-        </repository>
-        <snapshotRepository>
-            <id>codehaus.maven.repo</id>
-            <name>Milyn Central Maven2 SNAPSHOT Repository</name>
-            <url>dav:https://dav.codehaus.org/snapshots.repository/milyn/</url>
-        </snapshotRepository>
-        <site>
-            <id>codehaus.maven.repo</id>
-            <url>dav:https://dav.codehaus.org/xfire/</url>
-        </site>
-    </distributionManagement>
-
     <reporting>
         <plugins>
             <plugin>
@@ -259,18 +250,13 @@
 
     </reporting>
 
+    <scm>
+        <connection>scm:git:git@github.com:smooks/smooks.git</connection>
+        <developerConnection>scm:git:git@github.com:smooks/smooks.git</developerConnection>
+        <url>git@github.com:smooks/smooks.git</url>
+    </scm>
+
     <repositories>
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>codehaus</id>
-            <url>http://repository.codehaus.org/</url>
-        </repository>
         <repository>
             <id>jfrog</id>
             <url>http://www.jfrog.org/artifactory/plugins-releases</url>
