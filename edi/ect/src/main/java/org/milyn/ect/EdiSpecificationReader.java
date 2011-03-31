@@ -64,9 +64,21 @@ public interface EdiSpecificationReader {
      */
     Edimap getMappingModel(String messageName) throws IOException;
 
+    
+    
     /**
      * Get the message interchange properties for the associated EDI specification.
      * @return The message interchange properties for the associated EDI specification.
      */
     Properties getInterchangeProperties();
+
+    /**
+     * Get the {@link EdiDirectory} instance for specification.
+     * <p/>
+     * Implementations should cache this instance.
+     *
+     * @return The EdiDirector instance.
+     * @throws IOException Error reading specification.
+     */
+    EdiDirectory getEdiDirectory() throws IOException;
 }

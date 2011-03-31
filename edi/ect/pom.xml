@@ -26,6 +26,21 @@
           <version>${ant.version}</version>
           <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+        	<groupId>org.eclipse.emf</groupId>
+        	<artifactId>ecore</artifactId>
+        	<version>2.3.0-v200706262000</version>
+        	<type>jar</type>
+        	<scope>compile</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse</groupId>
+        	<artifactId>xsd</artifactId>
+        	<version>2.3.0-v200706262000</version>
+        	<type>jar</type>
+        	<scope>compile</scope>
+        </dependency>        
 
     </dependencies>
     

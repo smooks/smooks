@@ -15,6 +15,10 @@
 */
 package org.milyn.ect.formats.unedifact;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.milyn.ect.EdiConvertionTool;
+import org.milyn.ect.EdiDirectory;
 import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.ect.EdiParseException;
 import org.milyn.edisax.model.internal.Description;
@@ -42,6 +46,8 @@ import java.util.zip.ZipInputStream;
  */
 public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
+    private static final Log logger = LogFactory.getLog(UnEdifactSpecificationReader.class);
+
     public static final String INTERCHANGE_TYPE = "UNEDIFACT";
 
     private static final int BUFFER = 2048;
@@ -53,7 +59,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
     private Edimap definitionModel;
     private Set<String> versions = new HashSet<String>();
     private Set<String> messages = new HashSet<String>();
-
+    private EdiDirectory ediDirectory;
     /**
      * Matcher to recognize and parse entries like CUSCAR_D.08A
      */
@@ -104,7 +110,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         }
     }
 
-    public Properties getInterchangeProperties() {
+	public Properties getInterchangeProperties() {
         Properties properties = new Properties();
 
         properties.setProperty(EdiSpecificationReader.INTERCHANGE_TYPE, INTERCHANGE_TYPE);
@@ -112,6 +118,39 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         properties.setProperty(EdiSpecificationReader.INTERCHANGE_BINDING_CONFIG, "/org/milyn/smooks/edi/unedifact/model/r41/bindings/unedifact-interchange.xml");
 
         return properties;
+    }
+
+    public EdiDirectory getEdiDirectory() throws IOException {
+        if(ediDirectory == null) {
+            String commonMessageName = getCommmonMessageName();
+            Set<String> messages = getMessageNames();
+            Edimap commonModel = null;
+            List<Edimap> models = new ArrayList<Edimap>();
+
+            for(String message : messages) {
+                Edimap model = getMappingModel(message);
+
+                EdiConvertionTool.removeDuplicateSegments(model.getSegments());
+
+                if(message.equals(commonMessageName)) {
+                    if(commonModel == null) {
+                        commonModel = model;
+                    } else {
+                        logger.warn("Common model message '" + commonMessageName + "' already read.");
+                    }
+                } else {
+                    models.add(model);
+                }
+            }
+
+            ediDirectory = new EdiDirectory(commonModel, models);
+        }
+
+        return ediDirectory;
+    }
+
+    private String getCommmonMessageName() {
+        return EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION.getName();
     }
 
     private void addMissingDefinitions(Edimap definitionModel) {
@@ -295,6 +334,5 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
             return entries;
         }
     }
-
 
 }

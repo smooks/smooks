@@ -1,9 +1,12 @@
-package org.milyn.ecore;
+package org.milyn.ect.ecore;
 
-import static org.milyn.ecore.SmooksMetadata.ANNOTATION_TYPE_KEY;
+import static org.milyn.ect.ecore.SmooksMetadata.ANNOTATION_TYPE_KEY;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -14,8 +17,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcoreFactory;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 import org.milyn.edisax.model.internal.Component;
 import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Edimap;
@@ -37,11 +40,13 @@ public class ECoreConversionUtils {
 	 * Supported data types for conversion
 	 * 
 	 */
-	private static final EDataType ETYPES[] = { EcorePackage.Literals.ESTRING,
-			EcorePackage.Literals.ELONG, EcorePackage.Literals.EBIG_DECIMAL,
-			EcorePackage.Literals.EFLOAT };
+	private static final EDataType ETYPES[] = { XMLTypePackage.Literals.STRING,
+			XMLTypePackage.Literals.LONG, XMLTypePackage.Literals.DECIMAL,
+			XMLTypePackage.Literals.FLOAT };
 
 	private static ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
+	
+	private static final Log log = LogFactory.getLog(ECoreConversionUtils.class);
 
 	/**
 	 * Converting {@link Segment} to {@link EClass}
@@ -75,8 +80,7 @@ public class ECoreConversionUtils {
 		Description desc = mapModel.getDescription();
 		pkg.setName(desc.getName().toLowerCase());
 		pkg.setNsPrefix(desc.getName().toLowerCase());
-		pkg.setNsURI("http://smooks.org/UNEDI/"
-				+ desc.getVersion().replaceAll(":", "") + "/" + desc.getName());
+		pkg.setNsURI(desc.getNamespace());
 		if (mapModel.getSrc() != null) {
 			annotate(pkg, "src", mapModel.getSrc().toASCIIString());
 		}
@@ -134,7 +138,8 @@ public class ECoreConversionUtils {
 		metadata.setContentKind(clazz, ExtendedMetaData.ELEMENT_ONLY_CONTENT);
 	}
 
-	private static void addMappingInformation(EStructuralFeature ref, MappingNode node) {
+	private static void addMappingInformation(EStructuralFeature ref,
+			MappingNode node) {
 		metadata.setName(ref, node.getXmltag());
 		metadata.setFeatureKind(ref, ExtendedMetaData.ELEMENT_FEATURE);
 		setTargetNamespace(ref);
@@ -149,14 +154,16 @@ public class ECoreConversionUtils {
 	 * @param value
 	 */
 	private static void annotate(EModelElement element, String key, String value) {
-		EAnnotation annotation = element
-				.getEAnnotation(SmooksMetadata.ANNOTATION_TYPE);
-		if (annotation == null) {
-			annotation = EcoreFactory.eINSTANCE.createEAnnotation();
-			annotation.setSource(SmooksMetadata.ANNOTATION_TYPE);
-			element.getEAnnotations().add(annotation);
+		if (!StringUtils.isEmpty(value)) {
+			EAnnotation annotation = element
+					.getEAnnotation(SmooksMetadata.ANNOTATION_TYPE);
+			if (annotation == null) {
+				annotation = EcoreFactory.eINSTANCE.createEAnnotation();
+				annotation.setSource(SmooksMetadata.ANNOTATION_TYPE);
+				element.getEAnnotations().add(annotation);
+			}
+			annotation.getDetails().put(key, value);
 		}
-		annotation.getDetails().put(key, value);
 	}
 
 	/**
@@ -204,9 +211,9 @@ public class ECoreConversionUtils {
 		if (field.getTypeClass() != null) {
 			attr.setEType(toEType(field.getTypeClass()));
 		} else {
-			System.err.println("WARN: Field " + field.getXmltag()
+			log.warn("Field " + field.getXmltag()
 					+ " has no type! Setting it's type to String");
-			attr.setEType(EcorePackage.Literals.ESTRING);
+			attr.setEType(XMLTypePackage.Literals.STRING);
 		}
 		addMappingInformation(attr, field);
 		annotateField(field, attr);

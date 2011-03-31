@@ -1,6 +1,6 @@
-package org.milyn.ecore;
+package org.milyn.ect.ecore;
 
-import static org.milyn.ecore.ECoreConversionUtils.toJavaName;
+import static org.milyn.ect.ecore.ECoreConversionUtils.toJavaName;
 
 import java.io.InputStream;
 import java.util.HashSet;
@@ -28,16 +28,20 @@ public class ECoreGenerationTest extends TestCase {
 				zipInputStream, false);
 		ECoreGenerator generator = new ECoreGenerator();
 		Set<EPackage> packages = generator
-				.generatePackages(ediSpecificationReader);
+				.generatePackages(ediSpecificationReader.getEdiDirectory());
 		for (EPackage pkg : packages) {
 			validatePackage(pkg);
 			if ("cuscar".equals(pkg.getName())) {
 				checkCUSCAR(pkg);
 			}
+			if ("common".equals(pkg.getName())) {
+				assertEquals("Common namespace don't match", "urn:org.milyn.edi.unedifact:un:d99a:common", pkg.getNsURI());
+			}
 		}
 	}
 
 	private void checkCUSCAR(EPackage pkg) {
+		assertEquals("Namespace don't match", "urn:org.milyn.edi.unedifact:un:d99a:cuscar", pkg.getNsURI());
 		EClass clazz = (EClass) pkg.getEClassifier("CUSCAR");
 		assertNotNull(clazz);
 		assertEquals(13, clazz.getEStructuralFeatures().size());
