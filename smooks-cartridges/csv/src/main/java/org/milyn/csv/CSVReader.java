@@ -148,6 +148,7 @@ import java.util.Map;
  * of the consuming entities.
  *
  * @author tfennelly
+ * @deprecated Use the {@link org.milyn.flatfile.FlatFileReader} configured with the {@link CSVRecordParserFactory}.
  */
 public class CSVReader implements SmooksXMLReader, VisitorAppender {
 
@@ -410,14 +411,14 @@ public class CSVReader implements SmooksXMLReader, VisitorAppender {
 	private void validateHeader(final au.com.bytecode.opencsv.CSVReader reader) throws IOException {
 		String[] headers = reader.readNext();
 		if (headers == null) {
-			throw new CSVHeaderValidationException(getFieldNames(fields));
+			throw new CSVHeaderValidationException(Arrays.asList(getFieldNames(fields)));
 		}
 
 		if (validateHeader(fields, headers)) {
 			return;
 		}
 
-		throw new CSVHeaderValidationException(getFieldNames(fields), headers);
+		throw new CSVHeaderValidationException(Arrays.asList(getFieldNames(fields)), Arrays.asList(headers));
 	}
 
 	private String[] getFieldNames(final Field[] fields) {

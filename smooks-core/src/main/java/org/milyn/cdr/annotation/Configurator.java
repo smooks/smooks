@@ -33,8 +33,8 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
- * Utility class for processing configuration annotations on a
- * {@link org.milyn.delivery.ContentHandler} instance and applying resource configurations from the
+ * Utility class for processing Smooks configuration annotations on an
+ * object instance and applying resource configurations from the
  * supplied {@link SmooksResourceConfiguration}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

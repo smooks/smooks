@@ -18,28 +18,31 @@ package org.milyn.csv;
 import org.apache.commons.lang.StringUtils;
 import org.milyn.SmooksException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CSVHeaderValidationException extends SmooksException {
 
 	private static final long serialVersionUID = 1L;
 
-	private String[] expected;
-	private String[] found;
+	private List<String> expected;
+	private List<String> found;
 
-	public CSVHeaderValidationException(final String[] expected) {
-		this(expected, new String[] {});
+	public CSVHeaderValidationException(final List<String> expected) {
+		this(expected, new ArrayList<String>());
 	}
 
-	public CSVHeaderValidationException(final String[] expected, final String[] found) {
+	public CSVHeaderValidationException(final List<String> expected, final List<String> found) {
 		super("CSV Header Validation Failure.");
 		this.expected = expected;
 		this.found = found;
 	}
 
-	public String[] getExpected() {
+	public List<String> getExpected() {
 		return expected;
 	}
 
-	public String[] getFound() {
+	public List<String> getFound() {
 		return found;
 	}
 
@@ -47,7 +50,7 @@ public class CSVHeaderValidationException extends SmooksException {
 		return "expected == " + format(expected) + "; found == " + format(found);
 	}
 
-	private String format(final String[] strings) {
+	private String format(final List<String> strings) {
 		return StringUtils.join(strings, ",");
 	}
 

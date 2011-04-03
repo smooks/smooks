@@ -17,11 +17,11 @@ package example;
 
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
-import org.milyn.csv.CSVReaderConfigurator;
-import org.milyn.csv.CSVBinding;
-import org.milyn.csv.CSVBindingType;
 import org.milyn.container.ExecutionContext;
+import org.milyn.csv.CSVRecordParserConfigurator;
 import org.milyn.event.report.HtmlReportGenerator;
+import org.milyn.flatfile.Binding;
+import org.milyn.flatfile.BindingType;
 import org.milyn.io.StreamUtils;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringSource;
@@ -48,8 +48,8 @@ public class Main {
             // And here's the configuration... configuring the CSV reader and the direct
             // binding config to create a List of Person objects (List<Person>)...
             // ****
-            smooks.setReaderConfig(new CSVReaderConfigurator("firstName,lastName,gender,age,country")
-                    .setBinding(new CSVBinding("customerList", Customer.class, CSVBindingType.LIST)));
+            smooks.setReaderConfig(new CSVRecordParserConfigurator("firstName,lastName,gender,age,country")
+                    .setBinding(new Binding("customerList", Customer.class, BindingType.LIST)));
 
             // Configure the execution context to generate a report...
             ExecutionContext executionContext = smooks.createExecutionContext();
