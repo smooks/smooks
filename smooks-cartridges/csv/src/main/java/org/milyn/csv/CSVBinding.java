@@ -23,6 +23,7 @@ import org.milyn.assertion.AssertArgument;
  * For more complex bindings, use the main java binding framwework.
  * 
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * @deprecated Use the {@link org.milyn.flatfile.FlatFileReader} configured with the {@link CSVRecordParserFactory}.
  */
 public class CSVBinding {
 

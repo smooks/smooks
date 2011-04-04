@@ -61,7 +61,10 @@
    
 		<milyn.smooks.fixed-length.version.base>${milyn.smooks.core.version}</milyn.smooks.fixed-length.version.base>
         <milyn.smooks.fixed-length.version>${milyn.smooks.fixed-length.version.base}</milyn.smooks.fixed-length.version>
-        
+
+        <milyn.smooks.flatfile.version.base>${milyn.smooks.core.version}</milyn.smooks.flatfile.version.base>
+        <milyn.smooks.flatfile.version>${milyn.smooks.csv.version.base}</milyn.smooks.flatfile.version>
+
 		<milyn.smooks.yaml.version.base>${milyn.smooks.core.version}</milyn.smooks.yaml.version.base>
         <milyn.smooks.yaml.version>${milyn.smooks.yaml.version.base}</milyn.smooks.yaml.version>
 
@@ -70,6 +73,7 @@
     </properties>
 
     <modules>
+        <module>flatfile</module>
         <module>csv</module>
         <module>javabean</module>
         <module>edi</module>

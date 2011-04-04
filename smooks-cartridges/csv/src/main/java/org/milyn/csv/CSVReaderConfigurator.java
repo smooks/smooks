@@ -20,6 +20,7 @@ import org.milyn.GenericReaderConfigurator;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.assertion.AssertArgument;
+import org.milyn.flatfile.FlatFileReader;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.List;
  * Supports programmatic {@link CSVReader} configuration on a {@link org.milyn.Smooks#setReaderConfig(org.milyn.ReaderConfigurator) Smooks} instance.
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * @deprecated Use the {@link CSVRecordParserConfigurator}.
  */
 public class CSVReaderConfigurator implements ReaderConfigurator {
 
@@ -109,8 +111,9 @@ public class CSVReaderConfigurator implements ReaderConfigurator {
     }
 
     public List<SmooksResourceConfiguration> toConfig() {
-        GenericReaderConfigurator configurator = new GenericReaderConfigurator(CSVReader.class);
+        GenericReaderConfigurator configurator = new GenericReaderConfigurator(FlatFileReader.class);
 
+        configurator.getParameters().setProperty("parserFactory", CSVRecordParserFactory.class.getName());
         configurator.getParameters().setProperty("fields", csvFields);
         configurator.getParameters().setProperty("separator", Character.toString(separatorChar));
         configurator.getParameters().setProperty("quote-char", Character.toString(quoteChar));

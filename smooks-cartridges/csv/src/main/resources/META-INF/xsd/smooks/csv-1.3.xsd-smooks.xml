@@ -7,13 +7,19 @@
 
     <resource-config selector="reader">
         <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.csv.CSVReader</param>
+        <param name="resource">org.milyn.flatfile.FlatFileReader</param>
     </resource-config>
 
     <resource-config selector="reader">
         <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">org.xml.sax.driver</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
+        <param name="setOn">parserFactory</param>
+        <param name="value">org.milyn.csv.CSVRecordParserFactory</param>
     </resource-config>
 
     <resource-config selector="reader">
@@ -46,11 +52,13 @@
 	<resource-config selector="reader">
         <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">rootElementName</param>
+        <param name="defaultValue">csv-set</param>
     </resource-config>
 
     <resource-config selector="reader">
         <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">recordElementName</param>
+        <param name="defaultValue">csv-record</param>
     </resource-config>
 
     <resource-config selector="reader">

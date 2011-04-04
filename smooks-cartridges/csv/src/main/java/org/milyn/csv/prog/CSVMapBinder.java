@@ -17,14 +17,13 @@ package org.milyn.csv.prog;
 
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
-import org.milyn.csv.CSVReaderConfigurator;
-import org.milyn.csv.CSVBinding;
-import org.milyn.csv.CSVBindingType;
+import org.milyn.csv.CSVRecordParserConfigurator;
+import org.milyn.flatfile.Binding;
+import org.milyn.flatfile.BindingType;
 import org.milyn.payload.JavaResult;
 import org.milyn.assertion.AssertArgument;
 
 import javax.xml.transform.stream.StreamSource;
-import java.util.List;
 import java.util.UUID;
 import java.util.Map;
 import java.io.Reader;
@@ -62,8 +61,8 @@ public class CSVMapBinder {
 
         smooks = new Smooks();
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
-        smooks.setReaderConfig(new CSVReaderConfigurator(fields)
-                .setBinding(new CSVBinding(beanId, recordType, CSVBindingType.MAP).setKeyField(keyField)));
+        smooks.setReaderConfig(new CSVRecordParserConfigurator(fields)
+                .setBinding(new Binding(beanId, recordType, BindingType.MAP).setKeyField(keyField)));
     }
 
     public Map bind(Reader csvStream) {

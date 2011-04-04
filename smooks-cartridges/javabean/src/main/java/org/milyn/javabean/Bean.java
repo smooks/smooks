@@ -147,7 +147,7 @@ public class Bean extends BindingAppender {
      * @param factory		   The factory that will create the runtime object
      */
     public <T> Bean(Class<T> beanClass, String beanId, Factory<? extends T> factory) {
-    	this(beanClass, beanId, "$document", (String)null, factory);
+    	this(beanClass, beanId, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, (String)null, factory);
     }
 
     /**

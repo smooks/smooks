@@ -1,0 +1,22 @@
+<sales>
+	<book number="1">
+		<name>book</name>
+		<author>22 Britannia Road</author>
+	</book>
+	<magazine number="2">
+		<field_0>magazine</field_0>
+		<field_1>Time</field_1>
+		<field_2>April</field_2>
+		<field_3>2011</field_3>
+	</magazine>
+	<magazine number="3">
+		<field_0>magazine</field_0>
+		<field_1>Irish Garden</field_1>
+		<field_2>Jan</field_2>
+		<field_3>2011</field_3>
+	</magazine>
+	<book number="4">
+		<name>book</name>
+		<author>The Finkler Question</author>
+	</book>
+</sales>

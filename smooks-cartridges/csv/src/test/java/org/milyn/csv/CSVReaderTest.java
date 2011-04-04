@@ -22,19 +22,16 @@ import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.SmooksUtil;
 import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
+import org.milyn.flatfile.Binding;
+import org.milyn.flatfile.BindingType;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
-import org.milyn.profile.DefaultProfileSet;
-import org.milyn.xml.XmlUtil;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,50 +40,6 @@ import java.util.Map;
  * @author tfennelly
  */
 public class CSVReaderTest extends TestCase {
-
-	public void test_01_csv_reader() throws SmooksException, UnsupportedEncodingException {
-		test_01(CSVReader.class);
-	}
-
-	@SuppressWarnings("deprecation")
-	public void test_01_csv_parser() throws SmooksException, UnsupportedEncodingException {
-		test_01(CSVParser.class);
-	}
-
-	
-	public void test_01(Class<?> readerClass) throws SmooksException, UnsupportedEncodingException {
-		Smooks smooks = new Smooks();
-		SmooksResourceConfiguration config;
-        ExecutionContext context;
-
-        config = new SmooksResourceConfiguration("org.xml.sax.driver", "type:Order-List AND from:Acme", readerClass.getName());
-		config.setParameter("fields", "string-list", "name,address");
-		SmooksUtil.registerResource(config, smooks);
-		SmooksUtil.registerProfileSet(DefaultProfileSet.create("Order-List-Acme-AcmePartner1", new String[] {"type:Order-List", "from:Acme", "to:AcmePartner1"}), smooks);
-
-		String csvMessage;
-        DOMResult domResult = new DOMResult();
-
-		csvMessage = "Tom Fennelly,Ireland";
-        context = smooks.createExecutionContext("Order-List-Acme-AcmePartner1");
-        smooks.filterSource(context, new StreamSource(new ByteArrayInputStream(csvMessage.getBytes("UTF-8"))), domResult);
-        assertEquals("Tom Fennelly", XmlUtil.getString(domResult.getNode(), "/csv-set/csv-record[1]/name/text()"));
-		assertEquals("Ireland", XmlUtil.getString(domResult.getNode(), "/csv-set/csv-record[1]/address/text()"));
-
-		csvMessage = "Tom Fennelly,Ireland\nJoe Bloggs,England";
-        context = smooks.createExecutionContext("Order-List-Acme-AcmePartner1");
-        smooks.filterSource(context, new StreamSource(new ByteArrayInputStream(csvMessage.getBytes("UTF-8"))), domResult);
-		assertEquals("Tom Fennelly", XmlUtil.getString(domResult.getNode(), "/csv-set/csv-record[1]/name/text()"));
-		assertEquals("Ireland", XmlUtil.getString(domResult.getNode(), "/csv-set/csv-record[1]/address/text()"));
-		assertEquals("Joe Bloggs", XmlUtil.getString(domResult.getNode(), "/csv-set/csv-record[2]/name/text()"));
-		assertEquals("England", XmlUtil.getString(domResult.getNode(), "/csv-set/csv-record[2]/address/text()"));
-
-		csvMessage = "Tom Fennelly\nJoe Bloggs,England";
-        context = smooks.createExecutionContext("Order-List-Acme-AcmePartner1");
-        smooks.filterSource(context, new StreamSource(new ByteArrayInputStream(csvMessage.getBytes("UTF-8"))), domResult);
-		assertEquals("Joe Bloggs", XmlUtil.getString(domResult.getNode(), "/csv-set/csv-record[1]/name/text()"));
-		assertEquals("England", XmlUtil.getString(domResult.getNode(), "/csv-set/csv-record[1]/address/text()"));
-	}
 
     public void test_02() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
@@ -142,7 +95,7 @@ public class CSVReaderTest extends TestCase {
     public void test_07() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setReaderConfig(new CSVReaderConfigurator("firstname,lastname,gender,age,country"));
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,gender,age,country"));
 
         StringResult result = new StringResult();
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-01.csv")), result);
@@ -153,7 +106,7 @@ public class CSVReaderTest extends TestCase {
     public void test_08() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setReaderConfig(new CSVReaderConfigurator("firstname,lastname,gender,age,country")
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,gender,age,country")
                 .setSeparatorChar('|')
                 .setQuoteChar('\'')
                 .setSkipLineCount(1)
@@ -189,8 +142,8 @@ public class CSVReaderTest extends TestCase {
     public void test_10() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setReaderConfig(new CSVReaderConfigurator("firstname,lastname,$ignore$,gender,age,country")
-                .setBinding(new CSVBinding("people", Person.class, CSVBindingType.LIST)));
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
+                .setBinding(new Binding("people", Person.class, BindingType.LIST)));
 
         JavaResult result = new JavaResult();
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-05.csv")), result);
@@ -202,8 +155,8 @@ public class CSVReaderTest extends TestCase {
     public void test_11() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setReaderConfig(new CSVReaderConfigurator("firstname,lastname,$ignore$,gender,age,country")
-                .setBinding(new CSVBinding("person", Person.class, CSVBindingType.SINGLE)));
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
+                .setBinding(new Binding("person", Person.class, BindingType.SINGLE)));
 
         JavaResult result = new JavaResult();
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-05.csv")), result);
@@ -215,8 +168,8 @@ public class CSVReaderTest extends TestCase {
     public void test_12() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setReaderConfig(new CSVReaderConfigurator("firstname,lastname,$ignore$,gender,age,country")
-                .setBinding(new CSVBinding("people", HashMap.class, CSVBindingType.LIST)));
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
+                .setBinding(new Binding("people", HashMap.class, BindingType.LIST)));
 
         JavaResult result = new JavaResult();
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-05.csv")), result);
@@ -273,8 +226,8 @@ public class CSVReaderTest extends TestCase {
     public void test_13_programmatic(FilterSettings filterSettings) throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setReaderConfig(new CSVReaderConfigurator("firstname,lastname,$ignore$,gender,age,country")
-                .setBinding(new CSVBinding("people", Person.class, CSVBindingType.MAP).setKeyField("age")));
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
+                .setBinding(new Binding("people", Person.class, BindingType.MAP).setKeyField("age")));
 
         smooks.setFilterSettings(filterSettings);
         test_13(smooks);
@@ -320,8 +273,8 @@ public class CSVReaderTest extends TestCase {
     public void test_14_programmatic(FilterSettings filterSettings) throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setReaderConfig(new CSVReaderConfigurator("firstname,lastname,$ignore$,gender,age,country")
-                .setBinding(new CSVBinding("people", HashMap.class, CSVBindingType.MAP).setKeyField("firstname")));
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
+                .setBinding(new Binding("people", HashMap.class, BindingType.MAP).setKeyField("firstname")));
 
         smooks.setFilterSettings(filterSettings);
         test_14(smooks);
@@ -394,11 +347,20 @@ public class CSVReaderTest extends TestCase {
 
 	}
 
+    public void test_17_wildcard() throws SmooksException, IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-13-wildcard.xml"));
+        StringResult result = new StringResult();
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-13.csv")), result);
+
+        assertEquals("<main-set><record number=\"1\"><field_0>Tom</field_0><field_1>Fennelly</field_1><field_2>Male</field_2><field_3>A</field_3><field_4>B</field_4><field_5>C</field_5><field_6>4</field_6><field_7>IR</field_7><field_8>Ireland</field_8><field_9>2</field_9><field_10>3</field_10></record><record number=\"2\"><field_0>Mike</field_0><field_1>Fennelly</field_1><field_2>Male</field_2><field_3>D</field_3><field_4>F</field_4><field_5>G</field_5><field_6>2</field_6><field_7>IR</field_7><field_8>Ireland</field_8><field_9>4</field_9></record></main-set>", result.toString());
+    }
+
     public void test_18() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setReaderConfig(new CSVReaderConfigurator("firstname?upper_case,lastname?uncap_first,$ignore$5")
-                .setBinding(new CSVBinding("people", HashMap.class, CSVBindingType.LIST)));
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname?upper_case,lastname?uncap_first,$ignore$5")
+                .setBinding(new Binding("people", HashMap.class, BindingType.LIST)));
 
         JavaResult result = new JavaResult();
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-05.csv")), result);

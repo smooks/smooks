@@ -22,6 +22,7 @@ import java.util.Map;
  * CSV Binding type.
  * 
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * @deprecated Use the {@link org.milyn.flatfile.FlatFileReader} configured with the {@link CSVRecordParserFactory}.
  */
 public enum CSVBindingType {
     /**
