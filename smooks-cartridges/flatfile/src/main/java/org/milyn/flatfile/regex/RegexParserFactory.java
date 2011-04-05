@@ -14,48 +14,41 @@
  * http://www.gnu.org/licenses/lgpl.txt
  */
 
-package org.milyn.csv;
+package org.milyn.flatfile.regex;
 
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.flatfile.RecordParser;
 import org.milyn.flatfile.variablefield.VariableFieldRecordParserFactory;
+import org.milyn.javabean.DataDecodeException;
+import org.milyn.javabean.DataDecoder;
+
+import java.util.regex.Pattern;
 
 /**
- * CSV Record Parser factory.
+ * Regex record parser factory.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class CSVRecordParserFactory extends VariableFieldRecordParserFactory {
+public class RegexParserFactory extends VariableFieldRecordParserFactory {
 
-    @ConfigParam(defaultVal = ",")
-    private char separator;
-
-    @ConfigParam(name = "quote-char", defaultVal = "\"")
-    private char quoteChar;
-
-    @ConfigParam(name = "skip-line-count", defaultVal = "0")
-    private int skipLines;
-
-    @ConfigParam(defaultVal = "false")
-    private boolean validateHeader;
+    @ConfigParam(decoder = RegexPatternDecoder.class)
+    private Pattern regexPattern;
 
     public RecordParser newRecordParser() {
-        return new CSVRecordParser();
+        return new RegexParser();
     }
 
-    public char getSeparator() {
-        return separator;
+    /**
+     * Get the Regex Pattern instance to be used for parsing.
+     * @return The Regex Pattern instance to be used for parsing.
+     */
+    public Pattern getRegexPattern() {
+        return regexPattern;
     }
 
-    public char getQuoteChar() {
-        return quoteChar;
-    }
-
-    public int getSkipLines() {
-        return skipLines;
-    }
-
-    public boolean validateHeader() {
-        return validateHeader;
+    public static class RegexPatternDecoder implements DataDecoder {
+        public Object decode(String data) throws DataDecodeException {
+            return Pattern.compile(data);
+        }
     }
 }

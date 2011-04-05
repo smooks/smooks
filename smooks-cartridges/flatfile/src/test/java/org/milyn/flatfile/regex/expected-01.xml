@@ -1,0 +1,12 @@
+<records>
+	<record number="1">
+		<field_0>a</field_0>
+		<field_1>b</field_1>
+		<field_2>c</field_2>
+	</record>
+	<record number="2">
+		<field_0>d</field_0>
+		<field_1>e</field_1>
+		<field_2>f</field_2>
+	</record>
+</records>

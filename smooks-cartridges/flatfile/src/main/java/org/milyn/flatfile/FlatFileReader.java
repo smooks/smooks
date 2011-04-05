@@ -30,7 +30,6 @@ import org.milyn.delivery.VisitorAppender;
 import org.milyn.delivery.VisitorConfigMap;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.xml.SmooksXMLReader;
-import org.milyn.xml.XmlUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -76,38 +75,22 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
     private Class<? extends RecordParserFactory> parserFactoryClass;
     private RecordParserFactory parserFactory;
 
-    @ConfigParam(defaultVal = "\n")
-    private String recordDelimiter;
-
-    @ConfigParam(defaultVal="record-set")
+    @ConfigParam(defaultVal="records")
     private String rootElementName;
 
     @ConfigParam(defaultVal="false")
     private boolean indent;
 
-    @ConfigParam(defaultVal="true")
-    private boolean strict;
-
 	@Initialize
 	public void initialize() throws IllegalAccessException, InstantiationException {
         parserFactory = parserFactoryClass.newInstance();
         Configurator.configure(parserFactory, config, appContext);
-
-        // Fixup the record delimiter...
-        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\n", '\n');
-        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\r", '\r');
-        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\t", '\t');
-        recordDelimiter = XmlUtil.removeEntities(recordDelimiter);
 	}
 
     public void addVisitors(VisitorConfigMap visitorMap) {
         if(parserFactory instanceof VisitorAppender) {
             ((VisitorAppender) parserFactory).addVisitors(visitorMap);
         }
-    }
-
-    private static String removeSpecialCharEncodeString(String string, String encodedString, char replaceChar) {
-        return string.replaceAll(encodedString, new String(new char[] {replaceChar}));
     }
 
     /* (non-Javadoc)
@@ -209,54 +192,6 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
         	execContext = null;
         }
 	}
-
-    private void readRecord(Reader recordReader, StringBuilder recordBuffer) throws IOException {
-        recordBuffer.setLength(0);
-
-        int c;
-        boolean removeCRLF = true;
-        while((c = recordReader.read()) != -1) {
-            if(removeCRLF) {
-                if(c == '\n' || c == '\r') {
-                    // A leading CR or LF... ignore...
-                    continue;
-                } else {
-                    // All leading CR and LF chars are skipped...
-                    removeCRLF = false;
-                }
-            }
-
-            recordBuffer.append((char)c);
-            if(builderEndsWith(recordBuffer, recordDelimiter)) {
-                // Strip off the delimiter from the end before returning...
-                recordBuffer.setLength(recordBuffer.length() - recordDelimiter.length());
-                break;
-            }
-        }
-    }
-
-    private static boolean builderEndsWith(StringBuilder stringBuilder, String string) {
-        if(string == null) {
-            return false;
-        }
-
-        int builderLen = stringBuilder.length();
-        int stringLen = string.length();
-
-        if(builderLen < stringLen) {
-            return false;
-        }
-
-        int stringIndx = 0;
-        for(int i = (builderLen - stringLen); i < builderLen; i++) {
-            if(stringBuilder.charAt(i) != string.charAt(stringIndx)) {
-                return false;
-            }
-            stringIndx++;
-        }
-
-        return true;
-    }
 
     public void setContentHandler(ContentHandler contentHandler) {
         this.contentHandler = contentHandler;

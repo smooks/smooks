@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.milyn.org/xsd/smooks/flatfile-1.5.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-flatfile="http://www.milyn.org/xsd/smooks/flatfile-1.5.xsd">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Smooks Flat File Reader Configuration</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="reader" type="smooks-flatfile:reader" substitutionGroup="smooks:abstract-reader">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			Flat File Reader Configuration.
+    		</xs:documentation>
+    	</xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="baseReader">
+    	<xs:annotation>
+    		 <xs:documentation xml:lang="en">Base Flat File Reader</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:abstract-reader">
+                <xs:choice minOccurs="0" maxOccurs="1" >
+                    <xs:element name="singleBinding" type="smooks-flatfile:binding" />
+                    <xs:element name="listBinding" type="smooks-flatfile:binding" />
+                    <xs:element name="mapBinding" type="smooks-flatfile:mapBinding" />
+                </xs:choice>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="reader">
+    	<xs:annotation>
+    		 <xs:documentation xml:lang="en">Flat File Reader</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks-flatfile:baseReader">
+                <xs:choice>
+                    <xs:element minOccurs="0" maxOccurs="1" ref="smooks:params" />
+                </xs:choice>
+                <xs:attribute name="parserFactory" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Record parser factory.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    			<xs:attribute name="fields" type="xs:string" use="optional">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Comma separated list of Flat File record field names.
+                            <p />
+                            Also supports multi record message sets (variable fields).  See User Guide.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="rootElementName" type="xs:string" use="optional" default="records">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Name of the root element.  Defaults to "records".
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="recordElementName" type="xs:string" use="optional" default="record">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Name of record element.  Defaults to "record".
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+                <xs:attribute name="recordDelimiter" type="xs:string" use="optional" default="\n">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Record delimiter.  Defaults to newline ("\n").
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="indent" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Add indentation character data to the generated event stream.  This simply makes
+                            the generated event stream easier to read in its serialized form.  Useful for
+                            testing etc.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="strict" type="xs:boolean" use="optional" default="true">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            This flag simply adds to the generated event stream all invalid Flat File record elements (#tokens less #expected tokens).
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="binding">
+    	<xs:annotation>
+            <xs:documentation xml:lang="en">
+                Flat File Binding Configuration.
+                <p/>
+                Supports simple automatic java binding of Flat File records onto a bean based on the configured field
+                names matching the target bean's property names.  For more complex binding, use the main Java
+                binding configurations.
+            </xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:abstract-resource-config">
+                <xs:attribute name="beanId" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The ID under which the created bean is to be bound in the bean context.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="class" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The fully qualified bean Class name.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="mapBinding">
+    	<xs:annotation>
+            <xs:documentation xml:lang="en">
+                Flat File Binding Configuration.
+                <p/>
+                Supports simple automatic java binding of Flat File records onto a bean based on the configured field
+                names matching the target bean's property names.  For more complex binding, use the main Java
+                binding configurations.
+            </xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks-flatfile:binding">
+                <xs:attribute name="keyField" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The Flat File field whose value is used as the Map key value.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="char">
+    	<xs:restriction base="xs:string">
+    		<xs:length value="1"></xs:length>
+    	</xs:restriction>
+    </xs:simpleType>
+</xs:schema>
