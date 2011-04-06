@@ -38,9 +38,11 @@ import org.milyn.flatfile.RecordParserFactory;
 import org.milyn.function.StringFunctionExecutor;
 import org.milyn.javabean.Bean;
 import org.milyn.javabean.context.BeanContext;
+import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -61,6 +63,9 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     private RecordMetaData recordMetaData; // Initialized if there's only one record type defined
     private Map<String, RecordMetaData> recordMetaDataMap; // Initialized if there's multiple record types defined
 
+    @ConfigParam(defaultVal = "\n")
+    private String recordDelimiter;
+
     @ConfigParam(defaultVal = "record")
     private String recordElementName;
 
@@ -75,6 +80,9 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     @ConfigParam(use = ConfigParam.Use.OPTIONAL)
     private String bindMapKeyField;
     private static final String RECORD_BEAN = "recordBean";
+
+    @ConfigParam(defaultVal="true")
+    private boolean strict;
 
     public static final Pattern SINGLE_RECORD_PATTERN = Pattern.compile("^[\\w|[?$-_, ]]+$");
     public static final Pattern MULTI_RECORD_PATTERN = Pattern.compile("^([\\w|[?$-_*]]+)\\[([\\w|[?$-_, *]]+)\\]$");
@@ -152,6 +160,14 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
         return recordElementName;
     }
 
+    /**
+     * Is this parser instance strict.
+     * @return True if the parser is strict, otherwise false.
+     */
+    public boolean strict() {
+        return strict;
+    }
+
     public void addVisitors(VisitorConfigMap visitorMap) {
         if(bindBeanId != null && bindBeanClass != null) {
             Bean bean;
@@ -195,6 +211,15 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     }
 
     @Initialize
+    public final void fixupRecordDelimiter() {
+        // Fixup the record delimiter...
+        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\n", '\n');
+        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\r", '\r');
+        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\t", '\t');
+        recordDelimiter = XmlUtil.removeEntities(recordDelimiter);
+    }
+
+    @Initialize
     public final void buildRecordMetaData() {
         if(fields == null) {
             recordMetaData = new RecordMetaData(recordElementName, new ArrayList<FieldMetaData>(), true);
@@ -230,6 +255,60 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
                 }
             }
         }
+    }
+
+    /**
+     * Read a record from the specified reader (up to the next recordDelimiter).
+     * @param recordReader
+     * @param recordBuffer
+     * @throws IOException
+     */
+    public void readRecord(Reader recordReader, StringBuilder recordBuffer) throws IOException {
+        recordBuffer.setLength(0);
+
+        int c;
+        boolean removeCRLF = true;
+        while((c = recordReader.read()) != -1) {
+            if(removeCRLF) {
+                if(c == '\n' || c == '\r') {
+                    // A leading CR or LF... ignore...
+                    continue;
+                } else {
+                    // All leading CR and LF chars are skipped...
+                    removeCRLF = false;
+                }
+            }
+
+            recordBuffer.append((char)c);
+            if(builderEndsWith(recordBuffer, recordDelimiter)) {
+                // Strip off the delimiter from the end before returning...
+                recordBuffer.setLength(recordBuffer.length() - recordDelimiter.length());
+                break;
+            }
+        }
+    }
+
+    private static boolean builderEndsWith(StringBuilder stringBuilder, String string) {
+        if(string == null) {
+            return false;
+        }
+
+        int builderLen = stringBuilder.length();
+        int stringLen = string.length();
+
+        if(builderLen < stringLen) {
+            return false;
+        }
+
+        int stringIndx = 0;
+        for(int i = (builderLen - stringLen); i < builderLen; i++) {
+            if(stringBuilder.charAt(i) != string.charAt(stringIndx)) {
+                return false;
+            }
+            stringIndx++;
+        }
+
+        return true;
     }
 
     private RecordMetaData buildMultiRecordMetaData(String recordDef) {
@@ -287,6 +366,9 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
         }
     }
 
+    private static String removeSpecialCharEncodeString(String string, String encodedString, char replaceChar) {
+        return string.replace(encodedString, new String(new char[] {replaceChar}));
+    }
 
     private class MapBindingWiringVisitor implements DOMVisitAfter, SAXVisitAfter, Consumer {
 

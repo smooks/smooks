@@ -1,0 +1,12 @@
+<records>
+	<record number="1">
+		<first>a</first>
+		<second>b</second>
+		<third>c</third>
+	</record>
+	<record number="2">
+		<first>d</first>
+		<second>e</second>
+		<third>f</third>
+	</record>
+</records>

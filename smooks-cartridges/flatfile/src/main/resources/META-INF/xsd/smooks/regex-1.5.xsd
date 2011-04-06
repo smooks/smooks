@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<xs:schema targetNamespace="http://www.milyn.org/xsd/smooks/regex-1.5.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks-regex="http://www.milyn.org/xsd/smooks/regex-1.5.xsd">
+
+    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Smooks Regular Expression Reader Configuration</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="reader" type="smooks-regex:reader" substitutionGroup="smooks:abstract-reader">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			Regular Expression Reader Configuration.
+    		</xs:documentation>
+    	</xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="baseReader">
+    	<xs:annotation>
+    		 <xs:documentation xml:lang="en">Base Regular Expression Reader</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:abstract-reader">
+                <xs:choice minOccurs="0" maxOccurs="1" >
+                    <xs:element name="singleBinding" type="smooks-regex:binding" />
+                    <xs:element name="listBinding" type="smooks-regex:binding" />
+                    <xs:element name="mapBinding" type="smooks-regex:mapBinding" />
+                </xs:choice>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="reader">
+    	<xs:annotation>
+    		 <xs:documentation xml:lang="en">Regular Expression Reader</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks-regex:baseReader">
+                <xs:attribute name="regexPattern" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Regular Expression pattern.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    			<xs:attribute name="fields" type="xs:string" use="optional">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Comma separated list of Regular Expression record field names.
+                            <p />
+                            Also supports multi record message sets (variable fields).  See User Guide.
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="rootElementName" type="xs:string" use="optional" default="records">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Name of the root element.  Defaults to "records".
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="recordElementName" type="xs:string" use="optional" default="record">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						Name of record element.  Defaults to "record".
+    					</xs:documentation>
+    				</xs:annotation>
+    			</xs:attribute>
+                <xs:attribute name="recordDelimiter" type="xs:string" use="optional" default="\n">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Record delimiter.  Defaults to newline ("\n").
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="indent" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Add indentation character data to the generated event stream.  This simply makes
+                            the generated event stream easier to read in its serialized form.  Useful for
+                            testing etc.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="strict" type="xs:boolean" use="optional" default="true">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            This flag simply adds to the generated event stream all invalid Regular Expression record elements (#tokens less #expected tokens).
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="binding">
+    	<xs:annotation>
+            <xs:documentation xml:lang="en">
+                Regular Expression Binding Configuration.
+                <p/>
+                Supports simple automatic java binding of Regular Expression records onto a bean based on the configured field
+                names matching the target bean's property names.  For more complex binding, use the main Java
+                binding configurations.
+            </xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:abstract-resource-config">
+                <xs:attribute name="beanId" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The ID under which the created bean is to be bound in the bean context.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="class" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The fully qualified bean Class name.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="mapBinding">
+    	<xs:annotation>
+            <xs:documentation xml:lang="en">
+                Regular Expression Binding Configuration.
+                <p/>
+                Supports simple automatic java binding of Regular Expression records onto a bean based on the configured field
+                names matching the target bean's property names.  For more complex binding, use the main Java
+                binding configurations.
+            </xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks-regex:binding">
+                <xs:attribute name="keyField" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The Regular Expression field whose value is used as the Map key value.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="char">
+    	<xs:restriction base="xs:string">
+    		<xs:length value="1"></xs:length>
+    	</xs:restriction>
+    </xs:simpleType>
+</xs:schema>
