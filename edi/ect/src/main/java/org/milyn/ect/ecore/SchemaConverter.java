@@ -64,7 +64,6 @@ public class SchemaConverter {
 			throws IOException {
 		String qualifier = qualifierFormat.format(Calendar.getInstance()
 				.getTime());
-		ResourceSet rs = prepareResourceSet();
 
 		Archive archive = new Archive(pluginID + "_1.0.0.v" + qualifier
 				+ ".jar");
@@ -77,6 +76,7 @@ public class SchemaConverter {
 				"\t<extension point=\"org.eclipse.wst.xml.core.catalogContributions\"><catalogContribution>\n");
 
 		for (EPackage pkg : packages) {
+			ResourceSet rs = createResourceSet();
 			Resource resource = addSchemaResource(rs, pkg);
 			EObject obj = resource.getContents().get(0);
 			String fileName = resource.getURI().lastSegment();
@@ -84,7 +84,7 @@ public class SchemaConverter {
 			xmlExtension.append(saveSchema(archive, ecoreEntryPath, resource,
 					((XSDSchema) obj).getTargetNamespace()));
 			// Save memory
-			resource.unload();
+			System.gc();
 		}
 
 		ecoreExtension.append("\t</extension>\n");
@@ -158,7 +158,7 @@ public class SchemaConverter {
 		return result.toString();
 	}
 
-	private ResourceSet prepareResourceSet() {
+	private ResourceSet createResourceSet() {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		/*
 		 * Register XML Factory implementation using DEFAULT_EXTENSION
