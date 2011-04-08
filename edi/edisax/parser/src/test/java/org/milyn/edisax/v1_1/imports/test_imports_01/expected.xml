@@ -24,9 +24,6 @@
 	</DTM>
 	<FTX>
 		<TextSubjectQualifier>INV</TextSubjectQualifier>
-		<TextFunctionCode></TextFunctionCode>
-		<TEXT_REFERENCE>
-		</TEXT_REFERENCE>
 		<TEXT_LITERAL>
 			<freeText1>GODS</freeText1>
 		</TEXT_LITERAL>
@@ -38,15 +35,10 @@
 			<codeListQualifier></codeListQualifier>
 			<codeListAgencyCode>87</codeListAgencyCode>
 		</PARTY_IDENTIFICATION>
-		<NAME_ADDRESS>
-		</NAME_ADDRESS>
 		<PARTY_NAME>
 			<partyName1>COMPANY INC</partyName1>
 		</PARTY_NAME>
-		<STREET>
-		</STREET>
 		<City>TOWN</City>
-		<Country></Country>
 		<PostCode>422 80</PostCode>
 		<RFF>
 			<REFERENCE>
@@ -60,15 +52,10 @@
 					<codeListQualifier></codeListQualifier>
 					<codeListAgencyCode>87</codeListAgencyCode>
 				</PARTY_IDENTIFICATION>
-				<NAME_ADDRESS>
-				</NAME_ADDRESS>
 				<PARTY_NAME>
 					<partyName1>COMPANY INC</partyName1>
 				</PARTY_NAME>
-				<STREET>
-				</STREET>
 				<City>TOWN</City>
-				<Country></Country>
 				<PostCode>422 80</PostCode>
 			</sgroup2>
 		</RFF>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:unedifact="urn:org.milyn.edi.unedifact.v41"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:org.milyn.edi.unedifact.v41">
+	<xsd:element name="unEdifact" type="unedifact:unEdifact" />
+	<xsd:complexType name="Unz">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="controlCount" type="xsd:string" />
+			<xsd:element form="qualified" name="controlRef" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Une">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="controlCount" type="xsd:string" />
+			<xsd:element form="qualified" name="groupRef" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Unb">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="syntaxIdentifier"
+				type="unedifact:Syntaxidentifier" />
+			<xsd:element form="qualified" name="sender" type="unedifact:Sender" />
+			<xsd:element form="qualified" name="recipient" type="unedifact:Recipient" />
+			<xsd:element form="qualified" name="dateTime" type="unedifact:Datetime" />
+			<xsd:element form="qualified" name="controlRef" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="recipientRef"
+				type="unedifact:Recipientref" />
+			<xsd:element form="qualified" minOccurs="0" name="applicationRef"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="processingPriorityCode" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="ackRequest"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="agreementId"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="testIndicator"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="interchangeMessageType" mixed="false">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="UNH" type="unedifact:Unh" />
+			<xsd:any maxOccurs="1" minOccurs="1" namespace="##any"
+				processContents="lax" />
+			<xsd:element form="qualified" name="UNT" type="unedifact:Unt" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="unEdifact">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="UNB" type="unedifact:Unb"/>
+			<xsd:element form="qualified" name="interchangeMessage"
+				type="unedifact:interchangeMessageType" maxOccurs="unbounded"/>
+			<xsd:element form="qualified" name="UNZ" type="unedifact:Unz" />
+			<!-- <xsd:element form="qualified" name="UNG" type="unedifact:Ung" />
+			<xsd:element form="qualified" name="UNE" type="unedifact:Une" /> -->
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Unh">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="messageRefNum" type="xsd:string" />
+			<xsd:element form="qualified" name="messageIdentifier"
+				type="unedifact:Messageidentifier" />
+			<xsd:element form="qualified" minOccurs="0" name="commonAccessRef"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="transferStatus"
+				type="unedifact:Transferstatus" />
+			<xsd:element form="qualified" minOccurs="0" name="subset"
+				type="unedifact:Subset" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="implementationGuideline" type="unedifact:Implementationguideline" />
+			<xsd:element form="qualified" minOccurs="0" name="scenario"
+				type="unedifact:Scenario" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Unt">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="segmentCount" type="xsd:string" />
+			<xsd:element form="qualified" name="messageRefNum" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Ung">
+		<xsd:sequence>
+			<xsd:element form="qualified" minOccurs="0" name="groupId"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="senderApp"
+				type="unedifact:Senderapp" />
+			<xsd:element form="qualified" minOccurs="0" name="recipientApp"
+				type="unedifact:Recipientapp" />
+			<xsd:element form="qualified" minOccurs="0" name="dateTime"
+				type="unedifact:Datetime" />
+			<xsd:element form="qualified" name="groupRef" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="controllingAgencyCode" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="messageVersion"
+				type="unedifact:Messageversion" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="applicationPassword" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Scenario">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="versionNum"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="releaseNum"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="controllingAgencyCode" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Messageversion">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="versionNum" type="xsd:string" />
+			<xsd:element form="qualified" name="releaseNum" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="associationCode"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Transferstatus">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="sequence" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="firstAndLast"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Datetime">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="date" type="xsd:string" />
+			<xsd:element form="qualified" name="time" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Recipientref">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="ref" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="refQualifier"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Sender">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="codeQualifier"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="internalId"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="internalSubId"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Recipientapp">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="codeQualifier"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Senderapp">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="codeQualifier"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Implementationguideline">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="versionNum"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="releaseNum"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="controllingAgencyCode" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Messageidentifier">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" name="versionNum" type="xsd:string" />
+			<xsd:element form="qualified" name="releaseNum" type="xsd:string" />
+			<xsd:element form="qualified" name="controllingAgencyCode"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="associationAssignedCode" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="codeListDirVersionNum" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="typeSubFunctionId" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Subset">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="versionNum"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="releaseNum"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="controllingAgencyCode" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Recipient">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="codeQualifier"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="internalId"
+				type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="internalSubId"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Syntaxidentifier">
+		<xsd:sequence>
+			<xsd:element form="qualified" name="id" type="xsd:string" />
+			<xsd:element form="qualified" name="versionNum" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="serviceCodeListDirVersion" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0"
+				name="codedCharacterEncoding" type="xsd:string" />
+			<xsd:element form="qualified" minOccurs="0" name="releaseNum"
+				type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

@@ -2,7 +2,6 @@
 	<outer-seg>
 		<field-1>1</field-1>
 		<field-2>2</field-2>
-		<field-3></field-3>
 		<field-4>4</field-4>
 		<field-5>5</field-5>
 		<inner-seg>
@@ -13,7 +12,6 @@
 					<a.1>Some</a.1>
 					<a.2>stuff</a.2>
 				</a>
-				<b></b>
 				<c>yes!</c>
 			</inner-inner-seg>
 			<inner-inner-seg>
@@ -21,7 +19,6 @@
 					<a.1>Some</a.1>
 					<a.2>stuff</a.2>
 				</a>
-				<b></b>
 				<c>yes!</c>
 			</inner-inner-seg>
 			<inner-inner-seg>
@@ -29,7 +26,6 @@
 					<a.1>Some</a.1>
 					<a.2>stuff</a.2>
 				</a>
-				<b></b>
 				<c>yes!</c>
 			</inner-inner-seg>
 		</inner-seg>

@@ -113,7 +113,12 @@ public class ECoreConversionUtils {
 		annotate(reference, SmooksMetadata.ANNOTATION_TYPE_KEY,
 				SmooksMetadata.SEGMENT_TYPE);
 		annotate(reference, SmooksMetadata.SEGCODE, segment.getSegcode());
-		reference.setName(segment.getSegcode());
+		String name = segment.getSegcode();
+		char lastChar = reference.getName().charAt(reference.getName().length() - 1);
+		if (Character.isDigit(lastChar)) {
+			name = name + lastChar;
+		}
+		reference.setName(name);
 		return reference;
 	}
 
@@ -296,6 +301,9 @@ public class ECoreConversionUtils {
 	}
 
 	private static EClassifier toEType(Class<?> typeClass) {
+		if (typeClass == null) {
+			typeClass = String.class;
+		}
 		for (EDataType type : ETYPES) {
 			if (type.getInstanceClass() == typeClass) {
 				return type;
@@ -314,8 +322,10 @@ public class ECoreConversionUtils {
 	 * @return
 	 */
 	private static EClass fieldToEClass(Field field) {
-		String classifierName = toJavaName(field.getXmltag(), true) + "_"
-				+ field.getNodeTypeRef();
+		String classifierName = toJavaName(field.getXmltag(), true);
+		if (field.getNodeTypeRef() != null) {
+			classifierName += "_" + field.getNodeTypeRef();
+		}
 		EClass newClass = EcoreFactory.eINSTANCE.createEClass();
 		newClass.setName(classifierName);
 		addMappingInformation(newClass, field);

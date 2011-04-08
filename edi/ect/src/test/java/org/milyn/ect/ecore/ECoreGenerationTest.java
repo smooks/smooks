@@ -72,5 +72,34 @@ public class ECoreGenerationTest extends TestCase {
 			}
 		}
 	}
+	
+	public void testMissingSegmentNames() throws Exception {
+		InputStream inputStream = getClass().getResourceAsStream("/d96b.zip");
+		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+
+		UnEdifactSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(
+				zipInputStream, false);
+		ECoreGenerator generator = new ECoreGenerator();
+		Set<EPackage> packages = generator
+				.generatePackages(ediSpecificationReader.getEdiDirectory());
+		boolean found = false;
+		for (EPackage pkg : packages) {
+			validatePackage(pkg);
+			if ("cusdec".equals(pkg.getName())) {
+				checkCUSDEC(pkg);
+				found = true;
+			}
+		}
+		assertTrue("Can't find cusdec package", found);
+	}
+
+	private void checkCUSDEC(EPackage pkg) {
+		EClass root = (EClass) pkg.getEClassifier("CUSDEC");
+		assertNotNull(root);
+		assertEquals(23, root.getEStructuralFeatures().size());
+		assertNotNull(root.getEStructuralFeature("UNS1"));
+		assertNotNull(root.getEStructuralFeature("UNS2"));
+		assertNull(root.getEStructuralFeature("UNS"));
+	}
 
 }

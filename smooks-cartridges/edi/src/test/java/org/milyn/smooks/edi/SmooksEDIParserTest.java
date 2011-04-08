@@ -136,7 +136,7 @@ public class SmooksEDIParserTest extends TestCase {
 		Document doc = parser.parse(new StreamSource(input));
 
 		Diff diff = new Diff(expected, XmlUtil.serialize(doc.getChildNodes()));
-		assertTrue(diff.identical());
+		assertTrue(diff.toString(), diff.identical());
 	}
 
     private void test_cyclic_dependency(String mapping) throws IOException, SAXException {
@@ -174,6 +174,6 @@ public class SmooksEDIParserTest extends TestCase {
 
 
 		Diff diff = new Diff(expected, XmlUtil.serialize(domResult.getNode().getChildNodes()));
-		assertTrue(diff.identical());
+		assertTrue(diff.toString(), diff.identical());
 	}
 }

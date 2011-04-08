@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.milyn</groupId>
+		<artifactId>milyn-edi</artifactId>
+		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+	</parent>
+	<name>Edifact Utils</name>
+	<groupId>org.milyn</groupId>
+	<artifactId>milyn-smooks-ediutils</artifactId>
+	<packaging>jar</packaging>
+	<version>${milyn.smooks.core.version}</version>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.milyn</groupId>
+			<artifactId>milyn-smooks-edi</artifactId>
+			<version>${milyn.smooks.core.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.9.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.milyn.edi.unedifact</groupId>
+			<artifactId>d99a-mapping</artifactId>
+			<version>${milyn.smooks.core.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.milyn.edi.unedifact</groupId>
+			<artifactId>d96b-mapping</artifactId>
+			<version>${milyn.smooks.core.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>
