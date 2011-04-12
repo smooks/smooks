@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.milyn.org/xsd/smooks/jxls-1.1.xsd" 
-		xmlns:tns="http://www.milyn.org/jxls-1.1" 
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://maven.powere2e.com/xsd/smooks/jxls-1.1.xsd" 
 		elementFormDefault="qualified"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
-        xmlns:smooks-jxls="http://www.milyn.org/xsd/jxls-1.1.xsd">
+        xmlns:smooks-jxls="http://maven.powere2e.com/xsd/smooks/jxls-1.1.xsd">
 		
 	<xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
 
