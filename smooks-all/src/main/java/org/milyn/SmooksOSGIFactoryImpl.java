@@ -39,10 +39,6 @@ public class SmooksOSGIFactoryImpl implements SmooksOSGIFactory
         {
 	        smooks.addConfigurations(config);
         }
-        else
-        {
-            smooks.addConfigurations("smooks-config.xml");
-        }
         return smooks;
     }
     
