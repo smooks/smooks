@@ -41,7 +41,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+       
+        <dependency>
+            <groupId>net.sf.jxls</groupId>
+            <artifactId>jxls</artifactId>
+            <version>0.9.9</version>
+        </dependency>
+        
 		<!--
 			Testing dependencies.
 		-->
