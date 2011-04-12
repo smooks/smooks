@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarFile;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
@@ -42,7 +44,10 @@ import org.milyn.io.FileUtils;
  */
 public class ResourceMergerTask extends Task
 {
-    /**
+
+    private final Log log = LogFactory.getLog(ResourceMergerTask.class);
+
+	/**
      * The name of an existing jar or will be used as name of the jar that will be created.
      */
 	private String jarName;
@@ -78,7 +83,8 @@ public class ResourceMergerTask extends Task
         } 
         catch (final IOException e)
         {
-            throw new BuildException(e.getMessage(), e);
+        	log.error(e.getMessage());
+        	throw new BuildException(e.getMessage(), e);
         }
         finally
         {

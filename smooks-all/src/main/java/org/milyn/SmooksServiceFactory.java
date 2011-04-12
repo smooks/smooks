@@ -14,6 +14,8 @@
  */
 package org.milyn;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
@@ -27,7 +29,9 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class SmooksServiceFactory implements ServiceFactory
 {
-    public Object getService(Bundle bundle, ServiceRegistration registration)
+    private final Log log = LogFactory.getLog(SmooksServiceFactory.class);
+
+	public Object getService(Bundle bundle, ServiceRegistration registration)
     {
         Smooks smooks = null;
         try
@@ -37,7 +41,7 @@ public class SmooksServiceFactory implements ServiceFactory
         } 
         catch (Exception e)
         {
-            e.printStackTrace();
+        	log.error("Error was thrown while creating a Smooks instance", e);
         } 
         return smooks;
     }
