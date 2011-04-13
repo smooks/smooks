@@ -225,7 +225,8 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
         if (service != null)
         {
             log.info("Found smooks in registry: " + service.getClass().getName());
-            if ((Boolean) service.getApplicationContext().getAttribute("ConfiguredWithOSGIHeader") != true){
+            if (!Boolean.TRUE.equals(service.getApplicationContext().getAttribute("ConfiguredWithOSGIHeader")))
+            {
             	service.addConfigurations(configUri);
             }
             return service;
