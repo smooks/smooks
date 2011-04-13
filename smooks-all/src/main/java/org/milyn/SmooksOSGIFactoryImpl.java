@@ -38,6 +38,7 @@ public class SmooksOSGIFactoryImpl implements SmooksOSGIFactory
         if (config != null)
         {
 	        smooks.addConfigurations(config);
+	        smooks.getApplicationContext().setAttribute("ConfiguredWithOSGIHeader", true);	        
         }
         return smooks;
     }
