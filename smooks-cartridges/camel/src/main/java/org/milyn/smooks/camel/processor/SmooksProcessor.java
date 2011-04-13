@@ -225,6 +225,7 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
         if (service != null)
         {
             log.info("Found smooks in registry: " + service.getClass().getName());
+        	service.addConfigurations(configUri);
             return service;
         }
 
