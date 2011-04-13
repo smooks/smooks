@@ -51,6 +51,7 @@
                 <module>dynamic-model-builder</module>
                 <module>camel</module>
                 <module>osgi</module>
+                <module>csv-to-xls</module>
             </modules>
             <activation>
                 <activeByDefault>true</activeByDefault>
