@@ -1,0 +1,16 @@
+<#macro outputReourceDetails>
+    <#assign action = resource.parameters.action!'replace'>
+    <#if resource.inline>
+        Applied inlined <a href="http://jxls.sourceforge.net/">jXLS</a> Template.  See Template in Resource Configuration (below).
+    <#else>
+        Applied <a href="http://jxls.sourceforge.net/">jXLS</a> Template <b>${resource.resource}</b>.
+    </#if>
+    <p/>
+    Templating action: <b>'${action}'</b>.
+    <#if action == "bindto" && resource.parameters.bindId??>
+        Binding templating result to beanId '${resource.parameters.bindId}'.
+    </#if>
+    <#if resource.parameters.outputStreamResource??>
+        Writing templating result to OutputStream resource '${resource.parameters.outputStreamResource}'.
+    </#if>
+</#macro>        

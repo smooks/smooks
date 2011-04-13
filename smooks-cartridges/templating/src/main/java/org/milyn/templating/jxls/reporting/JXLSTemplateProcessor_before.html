@@ -1,0 +1,7 @@
+<#import "jXLSTemplateProcessor_common.html" as commons>
+<#assign applyTemplateBefore = resource.parameters.applyTemplateBefore!'false'>
+<#if applyTemplateBefore == "true">
+<@commons.outputReourceDetails></@commons.outputReourceDetails>
+<#else>
+Only acquiring ownership of the Result writer!!  Not applying template on this event.  Resource will be applied on the visitAfter event for this element.
+</#if>
