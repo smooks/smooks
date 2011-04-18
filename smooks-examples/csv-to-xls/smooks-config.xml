@@ -3,7 +3,7 @@
 <smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
                       xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.2.xsd"
                       xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd"
-                      xmlns:jxls="http://maven.powere2e.com/xsd/smooks/jxls-1.1.xsd">
+                      xmlns:jxls="http://www.milyn.org/xsd/smooks/jxls-1.1.xsd">
 
     <csv:reader fields="firstname?capitalize,lastname?capitalize,gender?lower_case,age,country" rootElementName="customerlist" recordElementName="Customer">
         <csv:listBinding beanId="customerlist" class="example.Customer"/>
