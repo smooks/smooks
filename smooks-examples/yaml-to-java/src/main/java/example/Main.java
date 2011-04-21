@@ -31,6 +31,7 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.io.StreamUtils;
 import org.milyn.javabean.repository.BeanRepositoryManager;
+import org.milyn.payload.StringResult;
 import org.milyn.xml.XmlUtil;
 import org.xml.sax.SAXException;
 
@@ -57,17 +58,17 @@ public class Main {
             Locale defaultLocale = Locale.getDefault();
             Locale.setDefault(new Locale("en", "IE"));
 
-            DOMResult domResult = new DOMResult();
+            StringResult result = new StringResult();
 
             // Configure the execution context to generate a report...
             executionContext.setEventListener(new HtmlReportGenerator("target/report/report.html"));
 
             // Filter the input message to the outputWriter, using the execution context...
-            smooks.filterSource(executionContext, new StreamSource(new ByteArrayInputStream(messageIn)), domResult);
+            smooks.filterSource(executionContext, new StreamSource(new ByteArrayInputStream(messageIn)), result);
 
             Locale.setDefault(defaultLocale);
 
-            return XmlUtil.serialize(domResult.getNode().getChildNodes(), true);
+            return result.toString();
         } finally {
             smooks.close();
         }

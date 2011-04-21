@@ -18,6 +18,7 @@ package org.milyn.delivery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.milyn.FilterSettings;
 import org.milyn.SmooksException;
 import org.milyn.StreamFilterType;
 import org.milyn.cdr.Parameter;
@@ -235,9 +236,9 @@ public class ContentDeliveryConfigBuilder {
         if(visitorConfig.getSaxVisitorCount() == visitorConfig.getVisitorCount() && visitorConfig.getDomVisitorCount() == visitorConfig.getVisitorCount()) {
 
             if(filterTypeParam == null) {
-                filterType = StreamFilterType.DOM;
+                filterType = StreamFilterType.SAX;
                 logger.debug("All configured XML Element Content Handler resource configurations can be " +
-                        "applied using the SAX or DOM Stream Filter.  Defaulting to DOM Filter.  Set '" + ParameterAccessor.GLOBAL_PARAMETERS + ":"
+                        "applied using the SAX or DOM Stream Filter.  Defaulting to " + filterType + " Filter.  Set '" + ParameterAccessor.GLOBAL_PARAMETERS + ":"
                         + Filter.STREAM_FILTER_TYPE + "'.");
                 logger.debug("You can explicitly select the Filter type as follows:\n" +
                         "\t\t<resource-config selector=\"" + ParameterAccessor.GLOBAL_PARAMETERS + "\">\n" +

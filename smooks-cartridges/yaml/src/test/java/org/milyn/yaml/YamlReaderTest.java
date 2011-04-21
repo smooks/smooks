@@ -25,6 +25,8 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.SmooksUtil;
@@ -33,6 +35,7 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.io.StreamUtils;
 import org.milyn.profile.DefaultProfileSet;
 import org.milyn.yaml.YamlReader;
+import org.xml.sax.SAXException;
 
 /**
  * @author <a href="mailto:maurice@zeijen.net">maurice@zeijen.net</a>
@@ -282,7 +285,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig(testName, smooks);
     }
 
-    private void testProgrammaticConfig(String testName, Smooks smooks) throws IOException {
+    private void testProgrammaticConfig(String testName, Smooks smooks) throws IOException, SAXException {
         ExecutionContext context = smooks.createExecutionContext();
         String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("/test/" + testName + "/input-message.yaml"), smooks);
 
@@ -293,11 +296,11 @@ public class YamlReaderTest extends TestCase {
         assertEquals("/test/" + testName + "/expected.xml", result.getBytes());
     }
 
-	private void assertEquals(String fileExpected, byte[] actual) throws IOException {
+	private void assertEquals(String fileExpected, byte[] actual) throws IOException, SAXException {
 
-		byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream(fileExpected));
+		String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream(fileExpected));
 
-        assertTrue("Expected XML and result XML are not the same!", StreamUtils.compareCharStreams(new ByteArrayInputStream(actual), new ByteArrayInputStream(expected)));
-
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual(expected, new String(actual));
 	}
 }

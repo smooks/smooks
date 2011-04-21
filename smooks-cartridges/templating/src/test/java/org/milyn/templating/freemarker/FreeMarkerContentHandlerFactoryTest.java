@@ -16,6 +16,8 @@
 package org.milyn.templating.freemarker;
 
 import junit.framework.TestCase;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
 import org.milyn.StreamFilterType;
 import org.milyn.FilterSettings;
@@ -54,7 +56,9 @@ public class FreeMarkerContentHandlerFactoryTest extends TestCase {
         Smooks smooks = new Smooks("/org/milyn/templating/freemarker/test-configs-05.cdrl");
 
         smooks.setFilterSettings(new FilterSettings(filterType));
-        test_ftl(smooks, "<a><b><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>", "'cvalue1''cvalue2''cvalue3'");
+        StringResult result = new StringResult();
+        smooks.filterSource(new StringSource("<a><b><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>"), result);
+        assertEquals("'cvalue1''cvalue2''cvalue3'", result.toString());
     }
 
     public void test_nodeModel_2() throws IOException, SAXException {
@@ -76,7 +80,9 @@ public class FreeMarkerContentHandlerFactoryTest extends TestCase {
         Smooks smooks = new Smooks("/org/milyn/templating/freemarker/test-configs-07.cdrl");
 
         smooks.setFilterSettings(new FilterSettings(filterType));
-        test_ftl(smooks, "<a><b javabind='javaval'><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>", "'cvalue1''cvalue2''cvalue3' javaVal=javaval");
+        StringResult result = new StringResult();
+        smooks.filterSource(new StringSource("<a><b javabind='javaval'><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>"), result);
+        assertEquals("'cvalue1''cvalue2''cvalue3' javaVal=javaval", result.toString());
     }
 
     public void testFreeMarkerTrans_01(String config) throws SAXException, IOException {
@@ -235,20 +241,21 @@ public class FreeMarkerContentHandlerFactoryTest extends TestCase {
     public void test_no_default_ser() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-no-default-ser.cdrl"));
 
-        test_ftl(smooks, "<a><e><b x='xvalueonc1' /><c/><d/><b x='xvalueonc2' /></e></a>",
-                         "<mybean>xvalueonc1</mybean><d /><mybean>xvalueonc2</mybean>");
+        StringResult result = new StringResult();
+        smooks.filterSource(new StringSource("<a><e><b x='xvalueonc1' /><c/><d/><b x='xvalueonc2' /></e></a>"), result);
+        assertEquals("<mybean>xvalueonc1</mybean><d /><mybean>xvalueonc2</mybean>", result.toString());
     }
 
-    private void test_ftl(Smooks smooks, String input, String expected) {
+    private void test_ftl(Smooks smooks, String input, String expected) throws IOException, SAXException {
         ExecutionContext context = smooks.createExecutionContext();
         test_ftl(smooks, context, input, expected);
     }
 
-    private void test_ftl(Smooks smooks, ExecutionContext context, String input, String expected) {
+    private void test_ftl(Smooks smooks, ExecutionContext context, String input, String expected) throws IOException, SAXException {
         StringResult result = new StringResult();
 
         smooks.filterSource(context, new StringSource(input), result);
-
-        assertEquals(expected, result.getResult());
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual(expected, result.getResult());
     }
 }

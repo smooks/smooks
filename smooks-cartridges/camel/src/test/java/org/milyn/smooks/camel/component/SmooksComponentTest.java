@@ -27,8 +27,10 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.milyn.delivery.Filter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -48,6 +50,13 @@ public class SmooksComponentTest extends CamelTestSupport
     public static void setup()
     {
         XMLUnit.setIgnoreWhitespace(true);
+        System.setProperty(Filter.STREAM_FILTER_TYPE, "DOM");
+    }
+
+    @AfterClass
+    public static void resetFilter()
+    {
+        System.getProperties().remove(Filter.STREAM_FILTER_TYPE);
     }
 
     @Test

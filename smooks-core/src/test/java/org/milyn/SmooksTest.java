@@ -18,11 +18,9 @@ package org.milyn;
 
 import junit.framework.TestCase;
 import org.milyn.container.ExecutionContext;
-import org.milyn.container.standalone.StandaloneExecutionContext;
 import org.milyn.delivery.JavaContentHandlerFactory;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.dom.DOMVisitBefore;
-import org.milyn.delivery.dom.SmooksDOMFilter;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
@@ -31,16 +29,11 @@ import org.milyn.payload.StringSource;
 import org.milyn.profile.DefaultProfileSet;
 import org.milyn.resource.URIResourceLocator;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  *
@@ -48,48 +41,13 @@ import javax.xml.transform.stream.StreamSource;
  */
 public class SmooksTest extends TestCase {
 
-    private ExecutionContext execContext;
-
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         Smooks smooks = new Smooks();
         SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[] {"profile1"}), smooks);
-        execContext = new StandaloneExecutionContext("device1", smooks.getApplicationContext(), null);
     }
-
-		public void test_applyTransform_bad_params() {
-			SmooksDOMFilter smooks = new SmooksDOMFilter(execContext);
-
-			try {
-				smooks.filter((Source)null);
-				fail("Expected exception on null stream");
-			} catch (IllegalArgumentException e) {
-				//Expected
-			} catch (SmooksException e) {
-				e.printStackTrace();
-				fail("unexpected exception: " + e.getMessage());
-			}
-		}
-
-
-		public void test_applyTransform_DocumentCheck() {
-			SmooksDOMFilter smooks;
-			InputStream stream = null;
-			Node deliveryNode = null;
-
-			stream = getClass().getResourceAsStream("html_1.html");
-			smooks = new SmooksDOMFilter(execContext);
-			try {
-				deliveryNode = smooks.filter(new StreamSource( stream));
-			} catch (SmooksException e) {
-				e.printStackTrace();
-				fail("unexpected exception: " + e.getMessage());
-			}
-			assertNotNull("Null transform 'Document' return.", deliveryNode);
-		}
-
 
     public void test_setClassPath() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_setClassLoader_01.xml"));

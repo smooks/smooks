@@ -20,6 +20,8 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.io.StreamUtils;
 import org.xml.sax.SAXException;
 
@@ -29,10 +31,11 @@ import org.xml.sax.SAXException;
 public class JSONtoJavaTest extends TestCase {
 
     public void test() throws IOException, SAXException {
-        byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream("expected.xml"));
+        String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
         Main smooksMain = new Main();
         String result = smooksMain.runSmooksTransform();
 
-        assertTrue("The result and the expected result are not the same.",StreamUtils.compareCharStreams(new ByteArrayInputStream(expected), new ByteArrayInputStream(result.getBytes())));
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual(expected, result);
     }
 }

@@ -37,10 +37,10 @@ public class ValidationExampleTest extends TestCase {
         assertEquals(3, errors.size());
         assertEquals(1, warnings.size());
 
-        assertEquals("Invalid customer number 'user1' at '/Order/header/username'.  Customer number must begin with an uppercase character, followed by 5 digits.", errors.get(0).getMessage());
-        assertEquals("Invalid product ID '364b' at '/Order/order-item/productId'.  Product ID must match pattern '[0-9]{3}'.", errors.get(1).getMessage());
+        assertEquals("Invalid customer number 'user1' at 'Order/header/username'.  Customer number must begin with an uppercase character, followed by 5 digits.", errors.get(0).getMessage());
+        assertEquals("Invalid product ID '364b' at 'Order/order-item/productId'.  Product ID must match pattern '[0-9]{3}'.", errors.get(1).getMessage());
         assertEquals("Order A188127 contains an order item for product 299 with a quantity of 2 and a unit price of 29.99. This exceeds the permitted per order item total.", errors.get(2).getMessage());
 
-        assertEquals("Invalid email address 'harry.fletcher@gmail.' at '/Order/header/email'.  Email addresses match pattern '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$'.", warnings.get(0).getMessage());
+        assertEquals("Invalid email address 'harry.fletcher@gmail.' at 'Order/header/email'.  Email addresses match pattern '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$'.", warnings.get(0).getMessage());
     }
 }

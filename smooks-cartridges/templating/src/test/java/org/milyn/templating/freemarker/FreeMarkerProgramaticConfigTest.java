@@ -16,6 +16,8 @@
 package org.milyn.templating.freemarker;
 
 import junit.framework.TestCase;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
 import org.milyn.StreamFilterType;
 import org.milyn.FilterSettings;
@@ -41,13 +43,10 @@ import java.io.StringReader;
 public class FreeMarkerProgramaticConfigTest extends TestCase {
 
     public void testFreeMarkerTrans_01() throws SAXException, IOException {
-Smooks smooks = new Smooks();
+        Smooks smooks = new Smooks();
 
-smooks.addVisitor(new Bean(MyBean.class, "myBeanData", "c").bindTo("x", "c/@x"));
-smooks.addVisitor(
-        new FreeMarkerTemplateProcessor(new TemplatingConfiguration("/org/milyn/templating/freemarker/test-template.ftl")),
-        "c"
-);
+        smooks.addVisitor(new Bean(MyBean.class, "myBeanData", "c").bindTo("x", "c/@x"));
+        smooks.addVisitor(new FreeMarkerTemplateProcessor(new TemplatingConfiguration("/org/milyn/templating/freemarker/test-template.ftl")),"c");
 
         test_ftl(smooks, "<a><b><c x='xvalueonc1' /><c x='xvalueonc2' /></b></a>", "<a><b><mybean>xvalueonc1</mybean><mybean>xvalueonc2</mybean></b></a>");
         // Test transformation via the <context-object /> by transforming the root element using StringTemplate.
@@ -68,7 +67,10 @@ smooks.addVisitor(
         );
 
         smooks.setFilterSettings(new FilterSettings(filterType));
-        test_ftl(smooks, "<a><b><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>", "'cvalue1''cvalue2''cvalue3'");
+
+        StringResult result = new StringResult();
+        smooks.filterSource(new StringSource("<a><b><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>"), result);
+        assertEquals("'cvalue1''cvalue2''cvalue3'", result.getResult());
     }
 
     public void test_nodeModel_2() throws IOException, SAXException, ParserConfigurationException {
@@ -223,16 +225,17 @@ smooks.addVisitor(
         assertEquals("data to outstream", MockOutStreamResource.outputStream.toString());
     }
 
-    private void test_ftl(Smooks smooks, String input, String expected) {
+    private void test_ftl(Smooks smooks, String input, String expected) throws IOException, SAXException {
         ExecutionContext context = smooks.createExecutionContext();
         test_ftl(smooks, context, input, expected);
     }
 
-    private void test_ftl(Smooks smooks, ExecutionContext context, String input, String expected) {
+    private void test_ftl(Smooks smooks, ExecutionContext context, String input, String expected) throws IOException, SAXException {
         StringResult result = new StringResult();
 
         smooks.filterSource(context, new StringSource(input), result);
 
-        assertEquals(expected, result.getResult());
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual(expected, result.getResult());
     }
 }

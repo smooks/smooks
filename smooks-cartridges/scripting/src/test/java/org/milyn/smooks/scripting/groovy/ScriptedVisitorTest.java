@@ -20,6 +20,9 @@ import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.FilterSettings;
 import org.milyn.StreamFilterType;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.Filter;
+import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.io.StreamUtils;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
@@ -35,11 +38,22 @@ import java.util.Map;
  */
 public class ScriptedVisitorTest extends TestCase {
 
+    public void setUp() {
+        System.setProperty(Filter.STREAM_FILTER_TYPE, "DOM");
+    }
+
+    public void tearDown() {
+        System.getProperties().remove(Filter.STREAM_FILTER_TYPE);
+    }
+
     public void test_templated_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-01.xml"));
         StringResult result = new StringResult();
 
-        smooks.filterSource(new StringSource("<a><b><c/></b></a>"), result);
+        ExecutionContext execContext = smooks.createExecutionContext();
+        execContext.setEventListener(new HtmlReportGenerator("/Users/tfennelly/zap/report.html"));
+
+        smooks.filterSource(execContext, new StringSource("<a><b><c/></b></a>"), result);
         assertEquals("<a><b><xxx newElementAttribute=\"1234\"></xxx></b></a>", result.getResult());
     }
 

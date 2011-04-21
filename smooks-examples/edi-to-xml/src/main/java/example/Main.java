@@ -30,6 +30,7 @@ import org.milyn.SmooksException;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.container.ExecutionContext;
 import org.milyn.io.StreamUtils;
+import org.milyn.payload.StringResult;
 import org.milyn.xml.XmlUtil;
 import org.xml.sax.SAXException;
 
@@ -52,17 +53,17 @@ public class Main {
              // Create an exec context - no profiles....
             ExecutionContext executionContext = smooks.createExecutionContext();
 
-            DOMResult domResult = new DOMResult();
+            StringResult result = new StringResult();
 
             // Configure the execution context to generate a report...
             executionContext.setEventListener(new HtmlReportGenerator("target/report/report.html"));
 
             // Filter the input message to the outputWriter, using the execution context...
-            smooks.filterSource(executionContext, new StreamSource(new ByteArrayInputStream(messageIn)), domResult);
+            smooks.filterSource(executionContext, new StreamSource(new ByteArrayInputStream(messageIn)), result);
 
             Locale.setDefault(defaultLocale);
 
-            return XmlUtil.serialize(domResult.getNode().getChildNodes(), true);
+            return result.getResult();
         } finally {
             smooks.close();
         }
