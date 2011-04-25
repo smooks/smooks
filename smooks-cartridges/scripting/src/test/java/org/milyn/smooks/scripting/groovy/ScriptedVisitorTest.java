@@ -51,7 +51,6 @@ public class ScriptedVisitorTest extends TestCase {
         StringResult result = new StringResult();
 
         ExecutionContext execContext = smooks.createExecutionContext();
-        execContext.setEventListener(new HtmlReportGenerator("/Users/tfennelly/zap/report.html"));
 
         smooks.filterSource(execContext, new StringSource("<a><b><c/></b></a>"), result);
         assertEquals("<a><b><xxx newElementAttribute=\"1234\"></xxx></b></a>", result.getResult());
