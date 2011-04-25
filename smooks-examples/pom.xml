@@ -27,6 +27,8 @@
                 <module>xml-to-java-virtual</module>
                 <module>model-driven-basic</module>
                 <module>model-driven-basic-virtual</module>
+                <module>xml-read-write</module>
+                <module>xml-read-write-transform</module>
                 <module>java-to-xml</module>
                 <module>java-to-java</module>
                 <module>csv-to-xml</module>

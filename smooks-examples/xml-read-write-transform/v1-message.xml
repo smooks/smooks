@@ -1,0 +1,34 @@
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<ord:order xmlns:ord="http://acme.com/v1/order">
+    <ord:header>
+        <ord:date>Wed Nov 15 2006</ord:date>
+        <ord:customer number="123123">Joe</ord:customer>
+    </ord:header>
+    <ord:order-items>
+        <ord:order-item>
+            <ord:product>111</ord:product>
+            <ord:quantity>2</ord:quantity>
+            <ord:price>8.90</ord:price>
+        </ord:order-item>
+        <ord:order-item>
+            <ord:product>222</ord:product>
+            <ord:quantity>7</ord:quantity>
+            <ord:price>5.20</ord:price>
+        </ord:order-item>
+    </ord:order-items>
+</ord:order>

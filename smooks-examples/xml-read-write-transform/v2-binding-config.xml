@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <core:namespaces>
+        <core:namespace prefix="ord" uri="http://acme.com/v2/order" />
+    </core:namespaces>
+
+    <jb:bean beanId="order" class="example.model.Order" createOnElement="/ord:orderV2">
+        <jb:wiring property="header" beanIdRef="header"/>
+        <jb:wiring property="orderItems" beanIdRef="orderItems"/>
+    </jb:bean>
+
+    <jb:bean beanId="header" class="example.model.Header" createOnElement="/ord:orderV2">
+        <jb:value property="date" decoder="Date" data="/ord:orderV2/@date">
+            <jb:decodeParam name="format">dd-MM-yyyy</jb:decodeParam>
+            <jb:decodeParam name="locale">en_IE</jb:decodeParam>
+        </jb:value>
+        <jb:value property="customerNumber" data="#/ord:customer-details/ord:id"/>
+        <jb:value property="customerName" data="#/ord:customer-details/ord:name"/>
+    </jb:bean>
+
+    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="/ord:orderV2/ord:items">
+        <jb:wiring beanIdRef="orderItem"/>
+    </jb:bean>
+
+    <jb:bean beanId="orderItem" class="example.model.OrderItem" createOnElement="/ord:orderV2/ord:items/ord:item">
+        <jb:value property="productId" data="#/ord:prodcode"/>
+        <jb:value property="quantity" data="#/ord:quantity"/>
+        <jb:value property="price" data="#/ord:price" />
+    </jb:bean>
+
+</smooks-resource-list>
