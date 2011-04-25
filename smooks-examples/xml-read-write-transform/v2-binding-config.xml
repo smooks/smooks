@@ -29,7 +29,7 @@
     </jb:bean>
 
     <jb:bean beanId="header" class="example.model.Header" createOnElement="/ord:orderV2">
-        <jb:value property="date" decoder="Date" data="/ord:orderV2/@date">
+        <jb:value property="date" decoder="Date" data="#/@date">
             <jb:decodeParam name="format">dd-MM-yyyy</jb:decodeParam>
             <jb:decodeParam name="locale">en_IE</jb:decodeParam>
         </jb:value>
