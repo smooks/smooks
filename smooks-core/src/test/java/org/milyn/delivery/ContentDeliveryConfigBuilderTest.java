@@ -18,6 +18,7 @@ package org.milyn.delivery;
 import junit.framework.TestCase;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
+import org.milyn.StreamFilterType;
 import org.milyn.io.StreamUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMContentDeliveryConfig;
@@ -67,8 +68,8 @@ public class ContentDeliveryConfigBuilderTest extends TestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-1.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        // Should default to DOM
-        assertTrue(execContext.getDeliveryConfig() instanceof DOMContentDeliveryConfig);
+        // Should default to SAX
+        assertTrue(execContext.getDeliveryConfig() instanceof SAXContentDeliveryConfig);
     }
 
     public void test_dom_sax_2() throws IOException, SAXException {
@@ -89,6 +90,24 @@ public class ContentDeliveryConfigBuilderTest extends TestCase {
             fail("Expected SmooksException");
         } catch(SmooksException e) {
             assertEquals("Invalid 'stream.filter.type' configuration parameter value of 'xxxx'.  Must be 'SAX' or 'DOM'.", e.getMessage());
+        }
+    }
+
+    public void test_dom_sax_3() throws IOException, SAXException {
+        String origDefault = System.setProperty(Filter.STREAM_FILTER_TYPE, StreamFilterType.DOM.toString());
+
+        try {
+            Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-1.xml"));
+            ExecutionContext execContext = smooks.createExecutionContext();
+
+            // Should default to DOM
+            assertTrue(execContext.getDeliveryConfig() instanceof DOMContentDeliveryConfig);
+        } finally {
+            if(origDefault != null) {
+                System.setProperty(Filter.STREAM_FILTER_TYPE, origDefault);
+            } else {
+                System.getProperties().remove(Filter.STREAM_FILTER_TYPE);
+            }
         }
     }
 

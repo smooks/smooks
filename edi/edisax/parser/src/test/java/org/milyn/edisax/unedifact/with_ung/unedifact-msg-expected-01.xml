@@ -27,8 +27,6 @@
 			<env:recipientApp>
 				<env:id>RecipDivision2</env:id>
 			</env:recipientApp>
-			<env:dateTime>
-			</env:dateTime>
 			<env:groupRef>groupref11111</env:groupRef>
 		</env:UNG>
 		<env:interchangeMessage>

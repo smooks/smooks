@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <core:namespaces>
+        <core:namespace prefix="ord" uri="http://acme.com/order" />
+    </core:namespaces>
+
+    <!--
+    Create an "example.beans.Order" bean instance when we visit the start of the <order> element.
+    Assign the new bean instance to the beanId of "order".
+    Wire in the "header" and "orderItems" beans.
+    -->
+    <jb:bean beanId="order" class="example.model.Order" createOnElement="/ord:order">
+        <jb:wiring property="header" beanIdRef="header"/>
+        <jb:wiring property="orderItems" beanIdRef="orderItems"/>
+    </jb:bean>
+
+    <!--
+    Create an "example.beans.Header" bean instance when we visit the start of the <header> element.
+    This bean is wired into the "order" bean.
+    -->
+    <jb:bean beanId="header" class="example.model.Header" createOnElement="/ord:order/ord:header">
+        <jb:value property="date" decoder="Date" data="#/ord:date">
+            <jb:decodeParam name="format">EEE MMM dd HH:mm:ss z yyyy</jb:decodeParam>
+            <jb:decodeParam name="locale">en_IE</jb:decodeParam>
+        </jb:value>
+        <jb:value property="customerNumber" data="#/ord:customer/@number"/>
+        <jb:value property="customerName" data="#/ord:customer"/>
+    </jb:bean>
+
+    <!--
+    Create an ArrayList bean instance when we visit the start of the <order-items> element.
+    This bean is wired into the "order" bean.
+    -->
+    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="/ord:order/ord:order-items">
+        <jb:wiring beanIdRef="orderItem"/>
+    </jb:bean>
+
+    <!--
+    Create an "example.beans.OrderItem" bean instance when we visit the start of the <order-item> element.
+    This bean is wired into the "orderItems" ArrayList bean.
+    -->
+    <jb:bean beanId="orderItem" class="example.model.OrderItem" createOnElement="/ord:order/ord:order-items/ord:order-item">
+        <jb:value property="productId" data="#/ord:product"/>
+        <jb:value property="quantity" data="#/ord:quantity"/>
+        <jb:value property="price" data="#/ord:price" decoder="Double">
+            <jb:decodeParam name="format">###.00</jb:decodeParam>
+            <jb:decodeParam name="locale">en_IE</jb:decodeParam>
+        </jb:value>
+    </jb:bean>
+
+</smooks-resource-list>

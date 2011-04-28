@@ -71,7 +71,7 @@ public class JavaSourceTest extends TestCase {
         StringResult result = new StringResult();
 
         smooks.filterSource(new JavaSource(new MyBean1()), result);
-        assertEquals("<nullsource-document></nullsource-document>", result.getResult());
+        assertEquals("<nullsource-document />", result.getResult());
     }
 
     public void test_streamingOff_02() throws IOException, SAXException {
@@ -83,7 +83,7 @@ public class JavaSourceTest extends TestCase {
         javaSource.setEventStreamRequired(false);
 
         smooks.filterSource(javaSource, result);
-        assertEquals("<nullsource-document></nullsource-document>", result.getResult());
+        assertEquals("<nullsource-document />", result.getResult());
     }
 
     public void test_streamingOn_01() throws IOException, SAXException {

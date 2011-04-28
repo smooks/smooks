@@ -312,6 +312,12 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc10.isTargetedAtElement(e, null));
     }
 
+    public void test_hashedSelector() {
+        SmooksResourceConfiguration resource = new SmooksResourceConfiguration("#/@b");
+
+        System.out.println();
+    }
+
     private SAXElement buildE() {
         SAXElement element;
 

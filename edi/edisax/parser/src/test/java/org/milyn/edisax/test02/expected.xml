@@ -2,14 +2,12 @@
 	<message-seg>
 		<field-1>1</field-1>
 		<field-2>2</field-2>
-		<field-3></field-3>
 		<field-4>4</field-4>
 		<field-5>5</field-5>
 	</message-seg>
 	<message-seg>
 		<field-1>6</field-1>
 		<field-2>7</field-2>
-		<field-3></field-3>
 		<field-4>9</field-4>
 		<field-5>10</field-5>
 	</message-seg>

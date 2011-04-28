@@ -23,6 +23,7 @@
                 <module>ect/maven-ect-plugin</module>
                 <module>ejc</module>
                 <module>ejc/maven-ejc-plugin</module>
+				<module>utils</module>
             </modules>
         </profile>
         <profile>

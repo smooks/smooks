@@ -20,6 +20,8 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
 
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.xml.sax.SAXException;
 import org.milyn.io.StreamUtils;
 import org.milyn.xml.XmlUtil;
@@ -30,9 +32,10 @@ import org.milyn.xml.XmlUtil;
 public class GroovyXsltTest extends TestCase {
 
     public void test() throws IOException, SAXException {
-        byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream("expected.xml"));
-        String result = XmlUtil.serialize(Main.runSmooksTransform().getChildNodes());
+        String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
+        String result = Main.runSmooksTransform();
 
-        assertTrue(StreamUtils.compareCharStreams(new ByteArrayInputStream(expected), new ByteArrayInputStream(result.getBytes())));
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual(expected, result);
     }
 }

@@ -243,17 +243,18 @@ public class BufferedSegmentReader {
             }
 
             while(c  != -1) {
-	            if (ignoreCRLF && (c == '\n' || c == '\r')) {
-	                continue;
-	            }
+            	if (ignoreCRLF && (c == '\n' || c == '\r')) {
+            		c = readChar();
+            		continue;
+            	}
 
-	        	segmentBuffer.append((char)c);
-	        	if(segmentBuffer.length() == numChars) {
-	        		break;
-	        	}
+            	segmentBuffer.append((char)c);
+            	if(segmentBuffer.length() == numChars) {
+            		break;
+            	}
 
-                c = readChar();
-	        }
+            	c = readChar();
+            }
     	}
     	
     	int endIndex = Math.min(numChars, segmentBuffer.length());

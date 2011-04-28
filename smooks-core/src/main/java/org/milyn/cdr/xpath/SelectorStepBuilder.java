@@ -83,6 +83,7 @@ public class SelectorStepBuilder {
         List<SelectorStep> selectorSteps = new ArrayList<SelectorStep>();
         boolean isRooted = false;
         boolean endsStarStar = false;
+        boolean isHashedAttribute = false;
 
         if(xpathExpression.startsWith("/")) {
             isRooted = true;
@@ -99,6 +100,12 @@ public class SelectorStepBuilder {
                 reconstructedExpression.append(tokens[i]);
             }
             xpathExpression = reconstructedExpression.toString();
+
+            if(xpathExpression.startsWith("@")) {
+                // Hack to make hashed attribute selectors work (MILYN-598)...
+                xpathExpression = "dummyHashedAttributeElement/" + xpathExpression;
+                isHashedAttribute = true;
+            }
         }
         if(xpathExpression.endsWith("//")) {
             endsStarStar = true;
@@ -133,7 +140,10 @@ public class SelectorStepBuilder {
                         if(i == steps.size() - 2) {
                             Step nextStep = steps.get(i + 1);
                             if(nextStep.getAxis() == Axis.ATTRIBUTE) {
-                                selectorSteps.add(new SelectorStep(xpathExpression, step, nextStep));
+                                SelectorStep selectorStep = new SelectorStep(xpathExpression, step, nextStep);
+
+                                selectorStep.setIsHashedAttribute(isHashedAttribute);
+                                selectorSteps.add(selectorStep);
                                 // We end here.  The next step is the last step and we've merged it into
                                 // the last evaluator...
                                 break;

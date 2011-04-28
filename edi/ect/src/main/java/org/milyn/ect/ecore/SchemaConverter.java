@@ -18,6 +18,7 @@ package org.milyn.ect.ecore;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Set;
@@ -34,6 +35,7 @@ import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceFactoryImpl;
 import org.milyn.archive.Archive;
+import org.milyn.edisax.model.internal.Edimap;
 
 public class SchemaConverter {
 
@@ -64,7 +66,6 @@ public class SchemaConverter {
 			throws IOException {
 		String qualifier = qualifierFormat.format(Calendar.getInstance()
 				.getTime());
-		ResourceSet rs = prepareResourceSet();
 
 		Archive archive = new Archive(pluginID + "_1.0.0.v" + qualifier
 				+ ".jar");
@@ -77,6 +78,7 @@ public class SchemaConverter {
 				"\t<extension point=\"org.eclipse.wst.xml.core.catalogContributions\"><catalogContribution>\n");
 
 		for (EPackage pkg : packages) {
+			ResourceSet rs = createResourceSet();
 			Resource resource = addSchemaResource(rs, pkg);
 			EObject obj = resource.getContents().get(0);
 			String fileName = resource.getURI().lastSegment();
@@ -84,7 +86,7 @@ public class SchemaConverter {
 			xmlExtension.append(saveSchema(archive, ecoreEntryPath, resource,
 					((XSDSchema) obj).getTargetNamespace()));
 			// Save memory
-			resource.unload();
+			System.gc();
 		}
 
 		ecoreExtension.append("\t</extension>\n");
@@ -158,7 +160,7 @@ public class SchemaConverter {
 		return result.toString();
 	}
 
-	private ResourceSet prepareResourceSet() {
+	private ResourceSet createResourceSet() {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		/*
 		 * Register XML Factory implementation using DEFAULT_EXTENSION
@@ -167,6 +169,21 @@ public class SchemaConverter {
 				.put("xsd", new XSDResourceFactoryImpl());
 
 		return resourceSet;
+	}
+
+	/**
+	 * Converts a single {@link Edimap} to XML Schema
+	 * 
+	 * @param pkg
+	 * @param out
+	 * @throws IOException 
+	 */
+	public void convertEDIMap(EPackage pkg, OutputStream out) throws IOException {
+		ResourceSet rs = createResourceSet();
+		Resource resource = addSchemaResource(rs, pkg);
+		resource.save(out, null);
+		resource = null;
+		System.gc();
 	}
 
 }

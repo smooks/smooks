@@ -34,10 +34,12 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.spi.ManagementAgent;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.milyn.delivery.Filter;
 import org.milyn.io.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -58,6 +60,13 @@ public class SmooksProcessorTest extends CamelTestSupport
     public static void setup()
     {
         XMLUnit.setIgnoreWhitespace(true);
+        System.setProperty(Filter.STREAM_FILTER_TYPE, "DOM");
+    }
+
+    @AfterClass
+    public static void resetFilter()
+    {
+        System.getProperties().remove(Filter.STREAM_FILTER_TYPE);
     }
 
     @Before

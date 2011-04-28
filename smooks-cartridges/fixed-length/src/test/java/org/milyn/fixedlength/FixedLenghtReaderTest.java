@@ -359,7 +359,7 @@ public class FixedLenghtReaderTest extends TestCase {
 
         result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("/input-message-06.txt"), smooks);
 
-		expected = "<set><record truncated=\"true\"><first>aa</first><second>bbb</second><third truncated=\"true\"></third></record></set>";
+		expected = "<set><record truncated=\"true\"><first>aa</first><second>bbb</second><third truncated=\"true\" /></record></set>";
         assertEquals(expected, result);        
 	}
 }

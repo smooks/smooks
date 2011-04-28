@@ -52,8 +52,14 @@ import java.util.List;
 
 /**
  * XML Binding class.
+ * <p/>
+ * This class is designed specifically for reading and writing XML data (does not work for other data formats)
+ * to and from Java Object models using nothing more than standard &lt;jb:bean&gt; configurations i.e.
+ * no need to write a template for serializing the Java Objects to an output character based format,
+ * as with Smooks v1.4 and before.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ * @since 1.5
  */
 public class XMLBinding extends AbstractBinding {
 
@@ -63,10 +69,23 @@ public class XMLBinding extends AbstractBinding {
     private Map<Class, XMLElementSerializationNode> serializers = new LinkedHashMap<Class, XMLElementSerializationNode>();
     private boolean omitXMLDeclaration = false;
 
+    /**
+     * Public constructor.
+     * <p/>
+     * Must be followed by calls to the {@link #add(java.io.InputStream)} (or {@link #add(String)}) method
+     * and then the {@link #intiailize()} method.
+     */
     public XMLBinding() {
         super();
     }
 
+    /**
+     * Public constructor.
+     * <p/>
+     * Create an instance using a pre-configured Smooks instance.
+     *
+     * @param smooks The pre-configured Smooks instance.
+     */
     public XMLBinding(Smooks smooks) {
         super(smooks);
     }
@@ -100,11 +119,23 @@ public class XMLBinding extends AbstractBinding {
         return this;
     }
 
+    /**
+     * Turn on/off outputting of the XML declaration when executing the {@link #toXML(Object, java.io.Writer)} method.
+     * @param omitXMLDeclaration True if the order is to be omitted, otherwise false.
+     * @return <code>this</code> instance.
+     */
     public XMLBinding setOmitXMLDeclaration(boolean omitXMLDeclaration) {
         this.omitXMLDeclaration = omitXMLDeclaration;
         return this;
     }
 
+    /**
+     * Bind from the XML into the Java Object model.
+     * @param inputSource The XML input.
+     * @param toType The Java type to which the XML data is to be bound.
+     * @param <T> The Java type to which the XML data is to be bound.
+     * @return The populated Java instance.
+     */
     public <T> T fromXML(String inputSource, Class<T> toType) {
         try {
             return bind(new StringSource(inputSource), toType);
@@ -113,11 +144,27 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
+    /**
+     * Bind from the XML into the Java Object model.
+     * @param inputSource The XML input.
+     * @param toType The Java type to which the XML data is to be bound.
+     * @param <T> The Java type to which the XML data is to be bound.
+     * @return The populated Java instance.
+     */
     public <T> T fromXML(Source inputSource, Class<T> toType) throws IOException {
         return bind(inputSource, toType);
     }
 
-    public void toXML(Object object, Writer outputWriter) throws BeanSerializationException, IOException {
+    /**
+     * Write the supplied Object instance to XML.
+     * @param object The Object instance.
+     * @param outputWriter The output writer.
+     * @param <W> The Writer type.
+     * @return The supplied {@link Writer} instance}.
+     * @throws BeanSerializationException Error serializing the bean.
+     * @throws IOException Error writing to the supplied Writer instance.
+     */
+    public <W extends Writer> W toXML(Object object, W outputWriter) throws BeanSerializationException, IOException {
         AssertArgument.isNotNull(object, "object");
         assertInitialized();
 
@@ -132,8 +179,20 @@ public class XMLBinding extends AbstractBinding {
 
         serializer.serialize(outputWriter, new SerializationContext(object));
         outputWriter.flush();
+
+        return outputWriter;
     }
 
+    /**
+     * Write the supplied Object instance to XML.
+     * <p/>
+     * This is a simple wrapper on the {@link #toXML(Object, java.io.Writer)} method.
+     *
+     * @param object The Object instance.
+     * @return The XML as a String.
+     * @throws BeanSerializationException Error serializing the bean.
+     * @throws IOException Error writing to the supplied Writer instance.
+     */
     public String toXML(Object object) throws BeanSerializationException {
         StringWriter writer = new StringWriter();
         try {

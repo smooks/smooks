@@ -65,6 +65,12 @@ public class BufferedSegmentReaderTest extends TestCase {
 			segIndex++;
 		}
         assertTrue("The number of segments read should be three", segIndex-1 == 2);
+
+        // Check that BufferedSegmentReader can peek through \r or \n characters
+        reader = createSegmentReader(edi1, segmentDelimiter, fieldDelimiter);
+        segIndex = 0;
+        String peek = reader.peek(edi1.length());
+        assertTrue("Peek should return all characters but \n and \r", peek.equals(edi2));
         
     }
 

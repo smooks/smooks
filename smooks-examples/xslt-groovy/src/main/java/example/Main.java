@@ -29,6 +29,7 @@ import org.milyn.SmooksException;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.container.ExecutionContext;
 import org.milyn.io.StreamUtils;
+import org.milyn.payload.StringResult;
 import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -41,7 +42,7 @@ public class Main {
 
     private static byte[] messageIn = readInputMessage();
 
-    protected static Node runSmooksTransform() throws IOException, SAXException, SmooksException {
+    protected static String runSmooksTransform() throws IOException, SAXException, SmooksException {
     	
     	Locale defaultLocale = Locale.getDefault();
     	Locale.setDefault(new Locale("en", "IE"));
@@ -53,17 +54,17 @@ public class Main {
              // Create an exec context - no profiles....
             ExecutionContext executionContext = smooks.createExecutionContext();
 
-            DOMResult domResult = new DOMResult();
+            StringResult result = new StringResult();
 
             // Configure the execution context to generate a report...
             executionContext.setEventListener(new HtmlReportGenerator("target/report/report.html"));
 
             // Filter the input message to the outputWriter, using the execution context...
-            smooks.filterSource(executionContext, new StreamSource(new ByteArrayInputStream(messageIn)), domResult);
+            smooks.filterSource(executionContext, new StreamSource(new ByteArrayInputStream(messageIn)), result);
 
             Locale.setDefault(defaultLocale);
 
-            return domResult.getNode();
+            return result.toString();
         } finally {
             smooks.close();
         }
@@ -76,10 +77,10 @@ public class Main {
         System.out.println(new String(messageIn));
         System.out.println("======================================\n");
 
-        Node messageOut = Main.runSmooksTransform();
+        String messageOut = Main.runSmooksTransform();
 
         System.out.println("==============Message Out=============");
-        System.out.println(XmlUtil.serialize(messageOut.getChildNodes(), true));
+        System.out.println(messageOut);
         System.out.println("======================================");
         System.out.println("\n**** Used XSLT Processor: " + transformerFactory.getClass().getName());
         System.out.println("\n**** To switch XSLT Processor, update the <dependencies> in pom.xml.");

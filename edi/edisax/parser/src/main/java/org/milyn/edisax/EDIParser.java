@@ -603,7 +603,6 @@ public class EDIParser implements XMLReader {
 	private void mapField(String fieldMessageVal, Field expectedField, int fieldIndex, String segmentCode) throws SAXException {
 		List<Component> expectedComponents = expectedField.getComponents();
 
-        startElement(expectedField, true);
 
 		// If there are components defined on this field...
 		if(expectedComponents.size() != 0) {
@@ -611,22 +610,26 @@ public class EDIParser implements XMLReader {
 			String[] currentFieldComponents = EDIUtils.split(fieldMessageVal, delimiters.getComponent(), delimiters.getEscape());
 
             assertComponentsOK(expectedField, fieldIndex, segmentCode, expectedComponents, currentFieldComponents);
-
-            // Iterate over the field components and map them...
-			for(int i = 0; i < currentFieldComponents.length; i++) {
-				String componentMessageVal = currentFieldComponents[i];
-				Component expectedComponent = expectedComponents.get(i);
-
-				mapComponent(componentMessageVal, expectedComponent, fieldIndex, i, segmentCode, expectedField.getXmltag());
-			}
-	        endElement(expectedField, true);
+            if (currentFieldComponents.length > 0) {
+            	startElement(expectedField, true);
+	            // Iterate over the field components and map them...
+				for(int i = 0; i < currentFieldComponents.length; i++) {
+					String componentMessageVal = currentFieldComponents[i];
+					Component expectedComponent = expectedComponents.get(i);
+	
+					mapComponent(componentMessageVal, expectedComponent, fieldIndex, i, segmentCode, expectedField.getXmltag());
+				}
+		        endElement(expectedField, true);
+            }
 		} else {
             if(expectedField.isRequired() && fieldMessageVal.length() == 0) {
                 throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segmentCode + "], field " + (fieldIndex + 1) + " (" + expectedField.getXmltag() + ") expected to contain a value.  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedField, segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
             }
-
-            writeToContentHandler(fieldMessageVal);
-            endElement(expectedField, false);
+            if (fieldMessageVal.length() > 0) {
+                startElement(expectedField, true);
+                writeToContentHandler(fieldMessageVal);
+                endElement(expectedField, false);
+            }
 		}
 	}
 

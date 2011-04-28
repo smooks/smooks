@@ -18,18 +18,20 @@ package org.milyn.smooks.edi;
 
 import junit.framework.TestCase;
 import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.delivery.dom.DOMParser;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.io.StreamUtils;
+import org.milyn.payload.StringResult;
 import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.dom.DOMResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -136,7 +138,7 @@ public class SmooksEDIParserTest extends TestCase {
 		Document doc = parser.parse(new StreamSource(input));
 
 		Diff diff = new Diff(expected, XmlUtil.serialize(doc.getChildNodes()));
-		assertTrue(diff.identical());
+		assertTrue(diff.toString(), diff.identical());
 	}
 
     private void test_cyclic_dependency(String mapping) throws IOException, SAXException {
@@ -166,14 +168,13 @@ public class SmooksEDIParserTest extends TestCase {
     private void test(String mapping) throws IOException, SAXException {
 		String expected = new String(StreamUtils.readStream(getClass().getResourceAsStream("expected.xml")));
         Smooks smooks = new Smooks();
-        DOMResult domResult = new DOMResult();
+        StringResult result = new StringResult();
 
         // Create and initialise the Smooks config for the parser...
         smooks.setReaderConfig(new EDIReaderConfigurator(mapping));
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("edi-input.txt")), domResult);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("edi-input.txt")), result);
 
-
-		Diff diff = new Diff(expected, XmlUtil.serialize(domResult.getNode().getChildNodes()));
-		assertTrue(diff.identical());
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual(expected, result.toString());
 	}
 }

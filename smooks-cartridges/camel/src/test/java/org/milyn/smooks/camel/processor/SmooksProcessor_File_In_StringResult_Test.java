@@ -39,7 +39,7 @@ public class SmooksProcessor_File_In_StringResult_Test extends CamelTestSupport 
 
         assertMockEndpointsSatisfied();
 
-        assertEquals("<blah></blah>", mock.getExchanges().get(0).getIn().getBody(String.class));
+        assertEquals("<blah />", mock.getExchanges().get(0).getIn().getBody(String.class));
     }
 
 	/* (non-Javadoc)

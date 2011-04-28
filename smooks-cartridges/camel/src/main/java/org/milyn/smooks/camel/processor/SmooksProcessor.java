@@ -55,6 +55,7 @@ import org.xml.sax.SAXException;
 public class SmooksProcessor implements Processor, Service, CamelContextAware
 {
     public static final String SMOOKS_EXECUTION_CONTEXT = "CamelSmooksExecutionContext";
+    public static final String CAMEL_CHARACTER_ENCODING = "CamelCharsetName";
     private final Log log = LogFactory.getLog(SmooksProcessor.class);
     private Smooks smooks;
     private String configUri;
@@ -83,6 +84,11 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
         
     	final ExecutionContext executionContext = smooks.createExecutionContext();
         executionContext.setAttribute(Exchange.class, exchange);
+        String charsetName = (String) exchange.getProperty(CAMEL_CHARACTER_ENCODING);
+        if (charsetName != null) //if provided use the came character encoding
+        {
+        	executionContext.setContentEncoding(charsetName);
+        }
         exchange.getIn().setHeader(SMOOKS_EXECUTION_CONTEXT, executionContext);
         setupSmooksReporting(executionContext);
 

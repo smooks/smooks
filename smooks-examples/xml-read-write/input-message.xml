@@ -1,0 +1,18 @@
+<ord:order xmlns:ord="http://acme.com/order">
+    <ord:header>
+        <ord:date>Wed Nov 15 13:45:28 EST 2006</ord:date>
+        <ord:customer number="123123">Joe</ord:customer>
+    </ord:header>
+    <ord:order-items>
+        <ord:order-item>
+            <ord:product>111</ord:product>
+            <ord:quantity>2</ord:quantity>
+            <ord:price>8.90</ord:price>
+        </ord:order-item>
+        <ord:order-item>
+            <ord:product>222</ord:product>
+            <ord:quantity>7</ord:quantity>
+            <ord:price>5.20</ord:price>
+        </ord:order-item>
+    </ord:order-items>
+</ord:order>

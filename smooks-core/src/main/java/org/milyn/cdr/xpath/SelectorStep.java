@@ -61,6 +61,7 @@ public class SelectorStep {
     private QName targetElement;
     private QName targetAttribute;
     private XPathExpressionEvaluator predicatesEvaluator;
+    private boolean hashedAttribute;
 
     /**
      * Public constructor.
@@ -112,8 +113,7 @@ public class SelectorStep {
             throw new IllegalArgumentException("Unexpected 'attributeStep' arg '" + attributeStep.getText() + "'.  Must be an ATTRIBUTE Axis step.");
         }
 
-        this.attributeStep = attributeStep;
-        targetAttribute = toQName(attributeStep, null);
+        setAttributeStep(attributeStep);
         initFlags();
     }
 
@@ -144,6 +144,43 @@ public class SelectorStep {
         AssertArgument.isNotNull(targetAttributeName, "targetAttributeName");
 
         targetAttribute = new QName(targetAttributeName);
+    }
+
+    public Step getAttributeStep() {
+        return attributeStep;
+    }
+
+    public void setAttributeStep(Step attributeStep) {
+        this.attributeStep = attributeStep;
+        try {
+            targetAttribute = toQName(attributeStep, null);
+        } catch (SAXPathException e) {
+            throw new IllegalStateException("Unexpected SAXPathException setting attribute SelectorStep.", e);
+        }
+    }
+
+    @Override
+    public SelectorStep clone() {
+        SelectorStep clone;
+
+        try {
+            clone = new SelectorStep(xpathExpression);
+        } catch (SAXPathException e) {
+            throw new IllegalStateException("Unexpected SAXPathException cloning SelectorStep.", e);
+        }
+
+        clone.xpathExpression = xpathExpression;
+        clone.step = step;
+        clone.attributeStep = attributeStep;
+        clone.isRooted = isRooted;
+        clone.isStar = isStar;
+        clone.isStarStar = isStarStar;
+        clone.targetElement = targetElement;
+        clone.targetAttribute = targetAttribute;
+        clone.predicatesEvaluator = predicatesEvaluator;
+        clone.hashedAttribute = hashedAttribute;
+
+        return clone;
     }
 
     /**
@@ -403,5 +440,21 @@ public class SelectorStep {
         }
 
         return steps;
+    }
+
+    /**
+     * Is this selector step a hashed attribute selector step.
+     * @return True if the selector step is a hashed attribute selector, otherwise false.
+     */
+    public boolean isHashedAttribute() {
+        return hashedAttribute;
+    }
+
+    /**
+     * Set the isHashedAttribute selector step flag.
+     * @param hashedAttribute True if the selector step is a hashed attribute selector, otherwise false.
+     */
+    public void setIsHashedAttribute(boolean hashedAttribute) {
+        this.hashedAttribute = hashedAttribute;
     }
 }
