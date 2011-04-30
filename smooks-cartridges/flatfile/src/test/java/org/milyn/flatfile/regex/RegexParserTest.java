@@ -35,26 +35,26 @@ import java.util.List;
 public class RegexParserTest extends TestCase {
 
     public void test_01() throws IOException, SAXException {
-        test("01");
+        test("01", "a|b|c\n\rd|e|f");
     }
 
     public void test_02() throws IOException, SAXException {
-        test("02");
+        test("02", "a|b|c\n\rd|e|f");
     }
 
     public void test_03() throws IOException, SAXException {
-        test("03");
+        test("03", "a|b|c\nd|e|f");
     }
 
     public void test_04() throws IOException, SAXException {
-        test("04");
+        test("04", "a|b|c\nd|e|f");
     }
 
     public void test_05() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
         JavaResult result = new JavaResult();
 
-            smooks.filterSource(new StringSource("a|b|c\n\rd|e|f"), result);
+        smooks.filterSource(new StringSource("a|b|c\n\rd|e|f"), result);
 
         List<FSTRecord> fstRecords = (List<FSTRecord>) result.getBean("fstRecords");
 
@@ -63,12 +63,34 @@ public class RegexParserTest extends TestCase {
         assertEquals("d|e|f", fstRecords.get(1).toString());
     }
 
-    public void test(String config) throws IOException, SAXException {
+    public void test_06() throws IOException, SAXException {
+        // Should result in unmatched records because the regex's do
+        // not match the input...
+        test("06", "name|Tom|Fennelly\n\r" +
+                   "address|Skeagh Bridge|Tinnakill");
+    }
+
+    public void test_07() throws IOException, SAXException {
+        test("07", "name|Tom|Fennelly\n\r" +
+                   "address|Skeagh Bridge|Tinnakill");
+    }
+
+    public void test_08() throws IOException, SAXException {
+        test("08", "name|Tom|Fennelly\n\r" +
+                   "address|Skeagh Bridge|Tinnakill");
+    }
+
+    public void test_09() throws IOException, SAXException {
+        test("09", "1|Tom|Fennelly" +
+                   "2|Mike|Fennelly");
+    }
+
+    public void test(String config, String message) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-" + config + ".xml"));
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-" + config + ".xml"));
 
         StringResult result = new StringResult();
-        smooks.filterSource(new StringSource("a|b|c\n\rd|e|f"), result);
+        smooks.filterSource(new StringSource(message), result);
 
 //        System.out.println(result);
         XMLUnit.setIgnoreWhitespace(true);

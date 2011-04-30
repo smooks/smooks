@@ -54,7 +54,7 @@ public class RegexParser<T extends RegexParserFactory> extends VariableFieldReco
         Pattern pattern = factory.getRegexPattern();
 
         readerBuffer.setLength(0);
-        factory.readRecord(reader, readerBuffer);
+        factory.readRecord(reader, readerBuffer, (getRecordCount() + 1));
 
         if(readerBuffer.length() == 0) {
             return null;

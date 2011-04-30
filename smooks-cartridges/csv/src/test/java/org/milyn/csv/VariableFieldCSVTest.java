@@ -37,7 +37,7 @@ public class VariableFieldCSVTest extends TestCase {
         StringResult result = new StringResult();
 
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-14.csv")), result);
-//        System.out.println(result);
+        System.out.println(result);
 
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("input-message-14.xml"));
         XMLUnit.setIgnoreWhitespace(true);

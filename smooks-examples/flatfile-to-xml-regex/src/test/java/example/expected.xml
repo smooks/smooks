@@ -1,0 +1,92 @@
+<logs>
+	<log number="1">
+		<time>21:35:07,788</time>
+		<severity>INFO</severity>
+		<category>AbstractServer</category>
+		<message>Starting: JBossAS [6.0.0.Final "Neo"]</message>
+	</log>
+	<log number="2">
+		<time>21:35:10,228</time>
+		<severity>INFO</severity>
+		<category>ServerInfo</category>
+		<message>Java version: 1.6.0_24,Apple Inc.</message>
+	</log>
+	<log number="3">
+		<time>21:35:10,228</time>
+		<severity>INFO</severity>
+		<category>ServerInfo</category>
+		<message>Java Runtime: Java(TM) SE Runtime Environment (build 1.6.0_24-b07-334-10M3326)</message>
+	</log>
+	<log number="4">
+		<time>21:35:10,229</time>
+		<severity>INFO</severity>
+		<category>ServerInfo</category>
+		<message>Java VM: Java HotSpot(TM) 64-Bit Server VM 19.1-b02-334,Apple Inc.</message>
+	</log>
+	<log number="5">
+		<time>21:35:10,229</time>
+		<severity>INFO</severity>
+		<category>ServerInfo</category>
+		<message>OS-System: Mac OS X 10.6.7,x86_64</message>
+	</log>
+	<log number="6">
+		<time>21:35:10,230</time>
+		<severity>INFO</severity>
+		<category>ServerInfo</category>
+		<message>VM arguments: -Xms128m -Xmx1024m -XX:MaxPermSize=256m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000 -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n -Dprogram.name=run.sh -Djava.library.path=/Users/tfennelly/packs/jboss_home/bin/native/lib64 -Djava.endorsed.dirs=/Users/tfennelly/packs/jboss_home/lib/endorsed</message>
+	</log>
+	<log number="7">
+		<time>21:35:10,320</time>
+		<severity>INFO</severity>
+		<category>JMXKernel</category>
+		<message>Legacy JMX core initialized</message>
+	</log>
+	<log number="8">
+		<time>21:35:18,951</time>
+		<severity>INFO</severity>
+		<category>AbstractServerConfig</category>
+		<message>JBoss Web Services - Stack CXF Server 3.4.1.GA</message>
+	</log>
+	<log number="9">
+		<time>21:35:20,146</time>
+		<severity>INFO</severity>
+		<category>JSFImplManagementDeployer</category>
+		<message>Initialized 3 JSF configurations: [Mojarra-1.2, MyFaces-2.0, Mojarra-2.0]</message>
+	</log>
+	<log number="10">
+		<time>21:35:20,514</time>
+		<severity>INFO</severity>
+		<category>Bootstrap</category>
+		<message>Bootstrapping TorqueBox AS</message>
+	</log>
+	<log number="11">
+		<time>21:35:20,530</time>
+		<severity>INFO</severity>
+		<category>Bootstrap</category>
+		<message>Using JRuby: "/Users/tfennelly/packs/tb_home/jruby"</message>
+	</log>
+	<log number="12">
+		<time>21:35:23,885</time>
+		<severity>INFO</severity>
+		<category>RubyRuntimeFactoryImpl</category>
+		<message>Creating ruby runtime (ruby_version: RUBY1_8, compile_mode: JIT, context: torquebox.global)</message>
+	</log>
+	<log number="13">
+		<time>21:35:51,280</time>
+		<severity>INFO</severity>
+		<category>QuartzScheduler</category>
+		<message>Scheduler meta-data: Quartz Scheduler (v1.8.3) 'JBossQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' &lt;with 10 threads&gt;.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.</message>
+	</log>
+	<log number="14">
+		<time>21:35:51,281</time>
+		<severity>INFO</severity>
+		<category>StdSchedulerFactory</category>
+		<message>Quartz scheduler 'JBossQuartzScheduler' initialized from an externally opened InputStream.</message>
+	</log>
+</logs>

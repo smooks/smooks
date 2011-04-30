@@ -93,6 +93,13 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
+                <xs:attribute name="keepDelimiter" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Keep the Record delimiter as part of the record text.  Defaults to false..
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="indent" type="xs:boolean" use="optional" default="false">
                     <xs:annotation>
                         <xs:documentation xml:lang="en">
