@@ -90,7 +90,7 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        contentHandler.startDocument();
 	        contentHandler.startPrefixMapping(envelopePrefix, handlerFactory.getNamespace());
 	        AttributesImpl attrs = new AttributesImpl();
-	        attrs.addAttribute(XMLConstants.NULL_NS_URI, "xmlns:" + envelopePrefix, "xmlns:" + envelopePrefix, "CDATA", handlerFactory.getNamespace());
+	        attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE + ":" + envelopePrefix, XMLConstants.XMLNS_ATTRIBUTE + ":" + envelopePrefix, "CDATA", handlerFactory.getNamespace());
 	        contentHandler.startElement(handlerFactory.getNamespace(), "unEdifact", envelopePrefix + ":unEdifact", attrs);
 	
 	        while(true) {

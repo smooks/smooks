@@ -189,7 +189,7 @@ public class EDIUtils {
 		return false;
 	}
 
-    private static void loadMappingModels(Map<String, EdifactModel> mappingModels, URI baseURI, List<String> rootMappingModels) throws IOException, SAXException, EDIConfigurationException {
+    public static void loadMappingModels(Map<String, EdifactModel> mappingModels, URI baseURI, List<String> rootMappingModels) throws IOException, SAXException, EDIConfigurationException {
         for (String rootMappingModel : rootMappingModels) {
             try {
                 EdifactModel mappingModel = EDIParser.parseMappingModel(rootMappingModel, baseURI);
@@ -320,7 +320,7 @@ public class EDIUtils {
         throw new EDIConfigurationException("Failed to locate jar file for EDI Mapping Model URN '" + urn + "'.  Jar must be available on classpath.");
     }
 
-    private static List<String> getMappingModelList(InputStream modelListStream) throws IOException {
+    public static List<String> getMappingModelList(InputStream modelListStream) throws IOException {
         List<String> rootMappingModels = new ArrayList<String>();
 
         try {
