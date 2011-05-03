@@ -1,0 +1,20 @@
+<sales>
+	<book number="1">
+		<name>22 Britannia Road</name>
+		<author>Amanda Hodgkinson</author>
+	</book>
+	<magazine number="2">
+		<field_0>Time</field_0>
+		<field_1>April</field_1>
+		<field_2>2011</field_2>
+	</magazine>
+	<magazine number="3">
+		<field_0>Irish Garden</field_0>
+		<field_1>Jan</field_1>
+		<field_2>2011</field_2>
+	</magazine>
+	<book number="4">
+		<name>The Finkler Question</name>
+		<author>Howard Jacobson</author>
+	</book>
+</sales>

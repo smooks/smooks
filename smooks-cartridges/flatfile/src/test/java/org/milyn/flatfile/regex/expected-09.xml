@@ -1,0 +1,10 @@
+<records>
+	<record number="1">
+		<fname>Tom</fname>
+		<lname>Fennelly</lname>
+	</record>
+	<record number="2">
+		<fname>Mike</fname>
+		<lname>Fennelly</lname>
+	</record>
+</records>

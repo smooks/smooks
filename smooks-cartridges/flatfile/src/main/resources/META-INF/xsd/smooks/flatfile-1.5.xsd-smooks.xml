@@ -42,6 +42,11 @@
 
     <resource-config selector="reader">
         <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">keepDelimiter</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">indent</param>
     </resource-config>
 
