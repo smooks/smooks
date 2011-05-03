@@ -18,29 +18,50 @@ package org.milyn.edisax;
 
 import static javax.xml.XMLConstants.NULL_NS_URI;
 
-import org.apache.commons.lang.StringUtils;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.edisax.model.EdifactModel;
-import org.milyn.edisax.model.internal.*;
-import org.milyn.edisax.util.EDIUtils;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.lang.MutableInt;
-import org.milyn.namespace.NamespaceResolver;
-import org.milyn.resource.URIResourceLocator;
-import org.xml.sax.*;
-import org.xml.sax.helpers.AttributesImpl;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
+
+import org.apache.commons.lang.StringUtils;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.edisax.model.EdifactModel;
+import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.Delimiters;
+import org.milyn.edisax.model.internal.Description;
+import org.milyn.edisax.model.internal.Field;
+import org.milyn.edisax.model.internal.MappingNode;
+import org.milyn.edisax.model.internal.Segment;
+import org.milyn.edisax.model.internal.SegmentGroup;
+import org.milyn.edisax.model.internal.SubComponent;
+import org.milyn.edisax.model.internal.ValueNode;
+import org.milyn.edisax.util.EDIUtils;
+import org.milyn.edisax.util.NamespaceDeclarationStack;
+import org.milyn.javabean.DataDecodeException;
+import org.milyn.lang.MutableInt;
+import org.milyn.namespace.NamespaceResolver;
+import org.milyn.resource.URIResourceLocator;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * EDI Parser.
@@ -128,6 +149,7 @@ public class EDIParser implements XMLReader {
 
     public static final String FEATURE_VALIDATE = "http://xml.org/sax/features/validation";
     public static final String FEATURE_IGNORE_NEWLINES = "http://xml.org/sax/features/ignore-newlines";
+	private static final Attributes EMPTY_ATTRIBS = new AttributesImpl();
     
     private Map<String, Boolean> features;
 
@@ -135,12 +157,11 @@ public class EDIParser implements XMLReader {
      * Fields required for namespace support
      */
     private NamespaceResolver namespaceResolver;
-    private final Stack<String> nsStack = new Stack<String>();
+    private NamespaceDeclarationStack nsStack;
 
     
     private ContentHandler contentHandler;
     private MutableInt indentDepth;
-    private static Attributes EMPTY_ATTRIBS = new AttributesImpl();
     private static Pattern EMPTY_LINE = Pattern.compile("[\n\r ]*");
 
     private EdifactModel edifactModel;
@@ -294,14 +315,6 @@ public class EDIParser implements XMLReader {
     }
 
     /**
-     * Get the namespace stack for this reader instance.
-     * @return The namespace stack.
-     */
-    public Stack<String> getNamespaceStack() {
-        return nsStack;
-    }
-
-    /**
 	 * Get the actual mapping configuration data (the XML).
 	 * @param resourceLocator Resource locator used to open the config stream.
 	 * @param mappingConfig Mapping config path.
@@ -371,6 +384,8 @@ public class EDIParser implements XMLReader {
         if(edifactModel == null || edifactModel.getEdimap() == null) {
             throw new IllegalStateException("'mappingModel' not set.  Cannot parse EDI stream.");
         }
+        // Initializing namespace declaration stack
+        nsStack = new NamespaceDeclarationStack(contentHandler);
         
         try {
 	        // Create a reader for reading the EDI segments...
@@ -858,26 +873,8 @@ public class EDIParser implements XMLReader {
         } else {
         	// With namespace support
             String alias = getNamespaceAlias(namespace);
-            boolean declareNamespace = false;
-            if (nsStack.isEmpty() || !nsStack.contains(namespace)) {
-            	contentHandler.startPrefixMapping(alias, namespace);
-            	declareNamespace = true;
-            }
-            nsStack.push(namespace);
-            if (!declareNamespace) {
-            	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, attributes);
-            } else {
-            	AttributesImpl attrs;
-
-                if(attributes != null && attributes != EMPTY_ATTRIBS) {
-                    attrs = new AttributesImpl(attributes);
-                } else {
-                    attrs = new AttributesImpl();
-                }
-
-            	attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:" + alias, "xmlns:" + alias, "CDATA", namespace);
-            	contentHandler.startElement(namespace, elementName, alias + ":" + elementName, attrs);
-            }
+            Attributes modifiedAttributes = nsStack.push(alias, namespace, attributes);
+			contentHandler.startElement(namespace, elementName, alias + ":" + elementName, modifiedAttributes);
         }
         indentDepth.value++;
     }
@@ -900,7 +897,7 @@ public class EDIParser implements XMLReader {
         } else {
         	// With namespace support
 	        String alias = getNamespaceAlias(namespace);
-	        contentHandler.endPrefixMapping(nsStack.pop());
+	        nsStack.pop();
 	        contentHandler.endElement(namespace, elementName, alias + ":" + elementName);
         }
     }
@@ -940,6 +937,7 @@ public class EDIParser implements XMLReader {
 
     public void setContentHandler(ContentHandler contentHandler) {
         this.contentHandler = contentHandler;
+        nsStack = new NamespaceDeclarationStack(contentHandler);
     }
 
     public ContentHandler getContentHandler() {
