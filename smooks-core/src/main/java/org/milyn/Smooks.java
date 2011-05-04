@@ -24,6 +24,7 @@ import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.preinstalled.Time;
 import org.milyn.javabean.context.preinstalled.UniqueID;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.xml.NamespaceMappings;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
@@ -506,10 +507,13 @@ public class Smooks {
                     FilterSource.setSource(executionContext, source);
                     FilterResult.setResults(executionContext, results);
 
-                    // Add pre installed beans...
+                    // Add pre installed beans + global BeanContext lifecycle observers...
                     BeanContext beanContext = executionContext.getBeanContext();
                     beanContext.addBean(Time.BEAN_ID, new Time());
                     beanContext.addBean(UniqueID.BEAN_ID, new UniqueID());
+                    for(BeanContextLifecycleObserver observer : context.getBeanContextLifecycleObservers()) {
+                        beanContext.addObserver(observer);
+                    }
 
                     try {
                         deliveryConfig.executeHandlerInit(executionContext);

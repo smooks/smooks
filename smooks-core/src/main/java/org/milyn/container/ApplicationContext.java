@@ -17,10 +17,13 @@
 package org.milyn.container;
 
 import org.milyn.cdr.SmooksResourceConfigurationStore;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.resource.ContainerResourceLocator;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.profile.ProfileStore;
+
+import java.util.Collection;
 
 /**
  * Smooks Application context interface definition.
@@ -57,6 +60,29 @@ public interface ApplicationContext extends BoundAttributeStore {
      * @return The BeanIdStore
      */
     public BeanIdStore getBeanIdStore();
+
+    /**
+     * Registers a bean context observer.
+     * <p/>
+     * This observer instance will be automatically added to all
+     * {@link BeanContext#addObserver(org.milyn.javabean.lifecycle.BeanContextLifecycleObserver) BeanContext}
+     * instances.
+     *
+     * @param observer The actual BeanObserver instance.
+     */
+    public abstract void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer);
+
+    /**
+     * Get bean context observers.
+     * <p/>
+     * These observer instances will be automatically added to all
+     * {@link BeanContext#addObserver(org.milyn.javabean.lifecycle.BeanContextLifecycleObserver) BeanContext}
+     * instances.
+     *
+     * @return The collection of BeanObserver instance.
+     * @see #addBeanContextLifecycleObserver(org.milyn.javabean.lifecycle.BeanContextLifecycleObserver)
+     */
+    public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers();
 
     /**
      * Get the {@link ClassLoader} to be used by the associated Smooks instance

@@ -17,13 +17,18 @@
 package org.milyn.container.standalone;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.milyn.cdr.SmooksResourceConfigurationStore;
 import org.milyn.container.ApplicationContext;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.javabean.context.StandaloneBeanContextFactory;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.profile.*;
 import org.milyn.resource.ContainerResourceLocator;
 import org.milyn.resource.URIResourceLocator;
@@ -42,6 +47,7 @@ public class StandaloneApplicationContext implements ApplicationContext {
 	private SmooksResourceConfigurationStore resStore;
 	private DefaultProfileStore profileStore = new DefaultProfileStore();
 	private BeanIdStore beanIdStore = new BeanIdStore();
+    private List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
     private ClassLoader classLoader;
 
     /**
@@ -104,6 +110,14 @@ public class StandaloneApplicationContext implements ApplicationContext {
 	public BeanIdStore getBeanIdStore() {
 		return beanIdStore;
 	}
+
+    public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
+        beanContextObservers.add(observer);
+    }
+
+    public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
+        return Collections.unmodifiableCollection(beanContextObservers);
+    }
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
