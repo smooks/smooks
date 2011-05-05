@@ -66,7 +66,7 @@ public class StreamReaderTest
         assertTrue(Arrays.equals(bytes, MockReader.readBytes));
     }
 
-    public static class MockReader implements SmooksXMLReader, StreamReader
+    public static class MockReader implements SmooksXMLReader
     {
         private ContentHandler handler;
         private static byte[] readBytes;

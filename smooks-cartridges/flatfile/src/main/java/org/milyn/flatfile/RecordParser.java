@@ -16,8 +16,9 @@
 
 package org.milyn.flatfile;
 
+import org.xml.sax.InputSource;
+
 import java.io.IOException;
-import java.io.Reader;
 
 /**
  * Flat file Record Parser.
@@ -33,10 +34,10 @@ public interface RecordParser<T extends RecordParserFactory>  {
     void setRecordParserFactory(T factory);
 
     /**
-     * Set the Flat File data stream on the parser.
-     * @param reader The flat file data stream.
+     * Set the Flat File data source on the parser.
+     * @param source The flat file data source.
      */
-    void setReader(Reader reader);
+    void setDataSource(InputSource source);
 
     /**
      * Parse the next record from the message stream and produce a {@link Record} instance.

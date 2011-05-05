@@ -17,6 +17,7 @@
 package org.milyn.flatfile.regex;
 
 import org.milyn.flatfile.variablefield.VariableFieldRecordParser;
+import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,7 +43,13 @@ public class RegexParser<T extends RegexParserFactory> extends VariableFieldReco
     private StringBuilder readerBuffer;
     private int groupCount;
 
-    public void setReader(Reader reader) {
+    public void setDataSource(InputSource source) {
+        Reader reader = source.getCharacterStream();
+
+        if(reader ==  null) {
+            throw new IllegalStateException("Invalid InputSource type supplied to RegexParser.  Must contain a Reader instance.");
+        }
+
         this.reader = new BufferedReader(reader);
         this.readerBuffer = new StringBuilder();
         this.groupCount = getFactory().getRegexPattern().matcher("").groupCount();
