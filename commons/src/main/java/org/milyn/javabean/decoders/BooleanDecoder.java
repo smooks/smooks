@@ -15,8 +15,11 @@
 */
 package org.milyn.javabean.decoders;
 
-import org.milyn.javabean.DataDecoder;
+import java.util.Arrays;
+import java.util.List;
+
 import org.milyn.javabean.DataDecodeException;
+import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.DecodeType;
 
 /**
@@ -27,11 +30,19 @@ import org.milyn.javabean.DecodeType;
 @DecodeType({Boolean.class, boolean.class})
 public class BooleanDecoder implements DataDecoder {
 
+    private static List<String> trueValues = Arrays.asList("y", "yes", "true", "1");
+    private static List<String> falseValues = Arrays.asList("n", "no", "false", "0");
+    
     public Object decode(String data) throws DataDecodeException {
-        try {
-            return Boolean.parseBoolean(data.trim());
-        } catch(NumberFormatException e) {
-            throw new DataDecodeException("Failed to decode Boolean value '" + data + "'.", e);
+        Boolean retval = null;
+        if(trueValues.contains(data.trim().toLowerCase())) {
+            retval = Boolean.TRUE;
+        } else if(falseValues.contains(data.trim().toLowerCase())) {
+            retval = Boolean.FALSE;
         }
+        if(null==retval) {
+            throw new DataDecodeException("Failed to decode Boolean value '" + data + "'.");
+        }
+        return retval;
     }
 }
