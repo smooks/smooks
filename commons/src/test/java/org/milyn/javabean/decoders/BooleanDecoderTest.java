@@ -1,7 +1,3 @@
-/**
- * Copyright 2011 AT&T Intellectual Property. All Rights Reserved.
- */
-
 package org.milyn.javabean.decoders;
 
 import org.milyn.javabean.DataDecodeException;
