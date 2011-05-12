@@ -73,7 +73,7 @@
     					</xs:documentation>
     				</xs:annotation>
     			</xs:attribute>
-                <xs:attribute name="recordDelimiter" type="xs:string" use="optional" default="\n">
+                <xs:attribute name="recordDelimiter" type="xs:string" use="optional">
                     <xs:annotation>
                         <xs:documentation xml:lang="en">
                             Record delimiter.  Defaults to newline ("\n").

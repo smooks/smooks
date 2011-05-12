@@ -63,7 +63,7 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     private RecordMetaData recordMetaData; // Initialized if there's only one record type defined
     private Map<String, RecordMetaData> recordMetaDataMap; // Initialized if there's multiple record types defined
 
-    @ConfigParam(defaultVal = "\n")
+    @ConfigParam(use = ConfigParam.Use.OPTIONAL)
     private String recordDelimiter;
     private Pattern recordDelimiterPattern;
 
@@ -229,6 +229,10 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     @Initialize
     public final void fixupRecordDelimiter() {
+        if(recordDelimiter == null) {
+            return;
+        }
+
         // Fixup the record delimiter...
         if(recordDelimiter.startsWith("regex:")) {
             recordDelimiterPattern = Pattern.compile(recordDelimiter.substring("regex:".length()), (Pattern.MULTILINE | Pattern.DOTALL));
@@ -421,26 +425,38 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
         @Override
         boolean atEndOfRecord() {
             int builderLen = recordBuffer.length();
-            int stringLen = recordDelimiter.length();
+            char lastChar = recordBuffer.charAt(builderLen - 1);
 
-            if(builderLen < stringLen) {
-                return false;
-            }
+            if(recordDelimiter != null) {
+                int stringLen = recordDelimiter.length();
 
-            int stringIndx = 0;
-            for(int i = (builderLen - stringLen); i < builderLen; i++) {
-                if(recordBuffer.charAt(i) != recordDelimiter.charAt(stringIndx)) {
+                if(builderLen < stringLen) {
                     return false;
                 }
-                stringIndx++;
+
+                int stringIndx = 0;
+                for(int i = (builderLen - stringLen); i < builderLen; i++) {
+                    if(recordBuffer.charAt(i) != recordDelimiter.charAt(stringIndx)) {
+                        return false;
+                    }
+                    stringIndx++;
+                }
+
+                if(!keepDelimiter) {
+                    // Strip off the delimiter from the end before returning...
+                    recordBuffer.setLength(builderLen - stringLen);
+                }
+
+                return true;
+            } else if (lastChar ==  '\r' || lastChar ==  '\n'){
+                if(!keepDelimiter) {
+                    // Strip off the delimiter from the end before returning...
+                    recordBuffer.setLength(builderLen - 1);
+                }
+                return true;
             }
 
-            if(!keepDelimiter) {
-                // Strip off the delimiter from the end before returning...
-                recordBuffer.setLength(recordBuffer.length() - recordDelimiter.length());
-            }
-
-            return true;
+            return false;
         }
 
         @Override

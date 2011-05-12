@@ -37,7 +37,6 @@
     <resource-config selector="reader">
         <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">recordDelimiter</param>
-        <param name="defaultValue">\n</param>
     </resource-config>
 
     <resource-config selector="reader">
