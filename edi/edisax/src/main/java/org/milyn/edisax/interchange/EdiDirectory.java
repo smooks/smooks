@@ -14,7 +14,7 @@
  * http://www.gnu.org/licenses/lgpl.txt
  */
 
-package org.milyn.ect;
+package org.milyn.edisax.interchange;
 
 import org.milyn.edisax.model.internal.Edimap;
 

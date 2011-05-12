@@ -15,7 +15,7 @@
 */
 package org.milyn.ect.configreader;
 
-import org.milyn.ect.EdiDirectory;
+import org.milyn.edisax.interchange.EdiDirectory;
 import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.ect.EdiParseException;
 import org.milyn.edisax.model.internal.Edimap;
@@ -45,7 +45,7 @@ public class CustomEdiSpecificationReader implements EdiSpecificationReader {
         return new Properties();
     }
 
-    public EdiDirectory getEdiDirectory() throws IOException {
+    public EdiDirectory getEdiDirectory(String... includeMessages) throws IOException {
         return null;
     }
 

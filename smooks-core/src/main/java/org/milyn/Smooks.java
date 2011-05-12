@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.classpath.CascadingClassLoaderSet;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.preinstalled.Time;
 import org.milyn.javabean.context.preinstalled.UniqueID;
@@ -395,15 +396,20 @@ public class Smooks {
      */
     public ExecutionContext createExecutionContext(String targetProfile) throws UnknownProfileMemberException {
         if(classLoader != null) {
-            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(classLoader);
+            ClassLoader originalTCCL = Thread.currentThread().getContextClassLoader();
+            CascadingClassLoaderSet newTCCL = new CascadingClassLoaderSet();
+
+            newTCCL.addClassLoader(classLoader);
+            newTCCL.addClassLoader(originalTCCL);
+
+            Thread.currentThread().setContextClassLoader(newTCCL);
             try {
                 if(isConfigurable) {
                     initializeResourceConfigurations();
                 }
                 return new StandaloneExecutionContext(targetProfile, context, visitorConfigMap);
             } finally {
-                Thread.currentThread().setContextClassLoader(contextClassLoader);
+                Thread.currentThread().setContextClassLoader(originalTCCL);
             }
         } else {
             if(isConfigurable) {

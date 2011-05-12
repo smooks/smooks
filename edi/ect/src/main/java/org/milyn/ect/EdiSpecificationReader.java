@@ -15,6 +15,7 @@
 */
 package org.milyn.ect;
 
+import org.milyn.edisax.interchange.EdiDirectory;
 import org.milyn.edisax.model.internal.Edimap;
 
 import java.io.IOException;
@@ -73,12 +74,13 @@ public interface EdiSpecificationReader {
     Properties getInterchangeProperties();
 
     /**
-     * Get the {@link EdiDirectory} instance for specification.
+     * Get the {@link org.milyn.edisax.interchange.EdiDirectory} instance for specification.
      * <p/>
      * Implementations should cache this instance.
      *
+     * @param includeMessages Messages to include.
      * @return The EdiDirector instance.
      * @throws IOException Error reading specification.
      */
-    EdiDirectory getEdiDirectory() throws IOException;
+    EdiDirectory getEdiDirectory(String... includeMessages) throws IOException;
 }

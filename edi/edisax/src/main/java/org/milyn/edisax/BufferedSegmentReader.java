@@ -22,6 +22,7 @@ import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.util.EDIUtils;
 import org.xml.sax.InputSource;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,7 +62,16 @@ public class BufferedSegmentReader {
      * @param rootDelimiters Root currentDelimiters.  New currentDelimiters can be pushed and popped.
      */
     public BufferedSegmentReader(InputSource ediInputSource, Delimiters rootDelimiters) {
-    	underlyingByteStream = ediInputSource.getByteStream();
+        InputStream inStream = ediInputSource.getByteStream();
+
+        if (inStream != null) {
+            if (inStream.markSupported()) {
+                underlyingByteStream = inStream;
+            } else {
+                underlyingByteStream = new BufferedInputStream(inStream, 1024 * 3);
+            }
+        }
+
         reader = ediInputSource.getCharacterStream();
         if(reader == null) {
         	readEncoding = Charset.defaultCharset();
@@ -125,7 +135,7 @@ public class BufferedSegmentReader {
         
 		// Create a new reader and skip passed the already read characters...
     	reader = new InputStreamReader(underlyingByteStream, encoding);
-    	reader.skip(charReadCount);
+    	underlyingByteStream.skip(charReadCount);
     	try {
     		return readEncoding;
     	} finally {

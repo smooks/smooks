@@ -178,6 +178,10 @@ public class EJCExecutor {
         }
     }
 
+    public void setMessages(Set<String> messages) {
+        this.messages = messages;
+    }
+
     public void setDestDir(File destDir) {
         this.destDir = destDir;
     }

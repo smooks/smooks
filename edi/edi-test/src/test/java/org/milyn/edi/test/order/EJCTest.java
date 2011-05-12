@@ -13,14 +13,14 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.milyn.ejc.order;
+package org.milyn.edi.test.order;
 
 import junit.framework.TestCase;
 
 import java.io.IOException;
 
 import org.milyn.edisax.EDIConfigurationException;
-import org.milyn.ejc.EJCTestUtil;
+import org.milyn.edi.test.EJCTestUtil;
 import org.milyn.ejc.IllegalNameException;
 import org.xml.sax.SAXException;
 

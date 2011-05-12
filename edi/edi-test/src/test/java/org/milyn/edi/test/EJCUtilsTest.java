@@ -13,9 +13,12 @@
  * See the GNU Lesser General Public License for more details:
  * http://www.gnu.org/licenses/lgpl.txt
  */
-package org.milyn.ejc;
+package org.milyn.edi.test;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.milyn.ejc.EJCUtils;
+import org.milyn.ejc.IllegalNameException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

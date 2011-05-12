@@ -65,16 +65,16 @@ public class UNBHandler implements ControlBlockHandler {
 		
         while(true) {
 	        String segCode = segmentReader.peek(3, true);
-	        
+
 	        if(segCode.equals("UNZ")) {
 	    		segmentReader.moveToNextSegment(false);
 	    		interchangeContext.mapControlSegment(unzSegment, true);
 	    		break;
-	        } else {	        	
+	        } else {
 	        	ControlBlockHandler handler = interchangeContext.getControlBlockHandler(segCode);
 	        	handler.process(interchangeContext);
 	        }
-        }		
+        }
 	}
 
 	private void changeReadEncoding(String code, BufferedSegmentReader bufferedSegmentReader) throws EDIParseException, IOException {

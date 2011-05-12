@@ -14,9 +14,8 @@
  * http://www.gnu.org/licenses/lgpl.txt
  */
 
-package org.milyn.ejc.util;
+package org.milyn.edi.test;
 
-import junit.framework.TestCase;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 import org.milyn.io.StreamUtils;
@@ -67,7 +66,7 @@ public class InterchangeTestUtil {
 
         // We expect the result to be the same as the input...
         String expected = StreamUtils.readStreamAsString(InterchangeTestUtil.class.getResourceAsStream(messageInFile));
-        TestCase.assertEquals(StreamUtils.normalizeLines(expected, false), StreamUtils.normalizeLines(writer.toString(), false));
+        assertEquals(expected, writer.toString());
     }
 
     public static void test_Interchange(UNEdifactInterchangeFactory factory, boolean dump, Class<?>... messageTypes) throws IOException {
@@ -97,7 +96,7 @@ public class InterchangeTestUtil {
 
         String messageV2 = writer.toString();
 
-        TestCase.assertEquals(messageV1, messageV2);
+        assertEquals(messageV1, messageV2);
 
         if(dump) {
             System.out.println(messageV1);
@@ -138,11 +137,19 @@ public class InterchangeTestUtil {
         return interchange41;
     }
 
+    private static void assertEquals(String expected, String actual) throws IOException {
+        expected = StreamUtils.normalizeLines(expected, false);
+        actual = StreamUtils.normalizeLines(actual, false);
+        if (!expected.equals(actual)) {
+            throw new IllegalStateException("Expected message \n" + expected + "\n not equal to actual message \n" + actual);
+        }
+    }
+
     public static void test_loads(UNEdifactInterchangeFactory factory, boolean dump, String ejcClassListFile, int numMessages) throws IOException, ClassNotFoundException {
         InputStream stream = InterchangeTestUtil.class.getResourceAsStream(ejcClassListFile);
 
         if(stream == null) {
-            TestCase.fail("Unable to load EJC list file '" + ejcClassListFile + "' from classpath.");
+            throw new IllegalStateException("Unable to load EJC list file '" + ejcClassListFile + "' from classpath.");
         }
 
         try {

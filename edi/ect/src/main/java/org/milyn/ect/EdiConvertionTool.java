@@ -18,6 +18,8 @@ package org.milyn.ect;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.LinkedHashSet;
@@ -35,7 +37,9 @@ import org.milyn.assertion.AssertArgument;
 import org.milyn.ect.ecore.ECoreGenerator;
 import org.milyn.ect.ecore.SchemaConverter;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
+import org.milyn.edisax.interchange.EdiDirectory;
 import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Field;
 import org.milyn.edisax.model.internal.MappingNode;
@@ -71,6 +75,42 @@ public class EdiConvertionTool {
         } finally {
             specification.close();
         }
+    }
+
+    /**
+     * Write an EDI Mapping Model configuration set from a UN/EDIFACT
+     * specification.
+     *
+     * @param specification The UN/EDIFACT specification zip file.
+     * @param urn The URN for the EDI Mapping model configuration set.
+     * @return Smooks EDI Mapping model Archive.
+     * @throws IOException Error writing Mapping Model configuration set.
+     */
+    public static Archive fromUnEdifactSpec(File specification, String urn) throws IOException {
+        return fromUnEdifactSpec(specification, urn, null);
+    }
+
+    /**
+     * Write an EDI Mapping Model configuration set from a UN/EDIFACT
+     * specification.
+     *
+     * @param specification The UN/EDIFACT specification zip file.
+     * @param urn The URN for the EDI Mapping model configuration set.
+     * @param messages The messages to be included in the generated Archive.
+     *
+     * @return Smooks EDI Mapping model Archive.
+     * @throws IOException Error writing Mapping Model configuration set.
+     */
+    public static Archive fromUnEdifactSpec(File specification, String urn, String... messages) throws IOException {
+         ZipInputStream definitionZipStream;
+
+        try {
+            definitionZipStream = new ZipInputStream(new FileInputStream(specification));
+        } catch (FileNotFoundException e) {
+            throw new EdiParseException("Error opening zip file containing the Un/Edifact specification '" + specification.getAbsoluteFile() + "'.", e);
+        }
+
+        return createArchive(new UnEdifactSpecificationReader(definitionZipStream, true), urn, messages);
     }
 
     /**
@@ -130,12 +170,12 @@ public class EdiConvertionTool {
         archive.toFileSystem(modelSetOutFolder);
     }
 
-    private static Archive createArchive(EdiSpecificationReader ediSpecificationReader, String urn) throws IOException {
+    private static Archive createArchive(EdiSpecificationReader ediSpecificationReader, String urn, String... messages) throws IOException {
         Archive archive = new Archive();
         StringBuilder modelListBuilder = new StringBuilder();
         StringWriter messageEntryWriter = new StringWriter();
         String pathPrefix = urn.replace(".", "_").replace(":", "/");
-        EdiDirectory ediDirectory = ediSpecificationReader.getEdiDirectory();
+        EdiDirectory ediDirectory = ediSpecificationReader.getEdiDirectory(messages);
 
         // Add the common model...
         addModel(ediDirectory.getCommonModel(), pathPrefix, modelListBuilder, messageEntryWriter, archive);
@@ -175,7 +215,8 @@ public class EdiConvertionTool {
     }
 
     private static void addModel(Edimap model, String pathPrefix, StringBuilder modelListBuilder, StringWriter messageEntryWriter, Archive archive) throws IOException {
-        String messageEntryPath = pathPrefix + "/" + model.getDescription().getName() + ".xml";
+        Description modelDesc = model.getDescription();
+        String messageEntryPath = pathPrefix + "/" + modelDesc.getName() + ".xml";
 
         // Generate the mapping model for this message...
         messageEntryWriter.getBuffer().setLength(0);
@@ -186,8 +227,9 @@ public class EdiConvertionTool {
 
         // Add this messages archive entry to the mapping model list file...
         modelListBuilder.append("/" + messageEntryPath);
-        modelListBuilder.append("!" + model.getDescription().getName());
-        modelListBuilder.append("!" + model.getDescription().getVersion());
+        modelListBuilder.append("!" + modelDesc.getName());
+        modelListBuilder.append("!" + modelDesc.getVersion());
+        modelListBuilder.append("!" + modelDesc.getNamespace());
         modelListBuilder.append("\n");
     }
 

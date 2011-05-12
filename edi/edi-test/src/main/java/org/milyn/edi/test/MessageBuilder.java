@@ -14,7 +14,7 @@
  * http://www.gnu.org/licenses/lgpl.txt
  */
 
-package org.milyn.ejc.util;
+package org.milyn.edi.test;
 
 import org.milyn.edisax.model.internal.Delimiters;
 
