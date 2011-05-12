@@ -74,7 +74,10 @@ public class RegexParser<T extends RegexParserFactory> extends VariableFieldReco
 
             if(matcher.matches()) {
                 for(int i = 0; i < matcher.groupCount(); i++) {
-                    fields.add(matcher.group(i + 1));
+                    String fieldValue = matcher.group(i + 1);
+                    if (fieldValue != null) {
+                        fields.add(fieldValue);
+                    }
                 }
             } else {
                 // Add the full record text as the only field value

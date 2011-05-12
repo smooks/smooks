@@ -85,6 +85,14 @@ public class RegexParserTest extends TestCase {
                    "2|Mike|Fennelly");
     }
 
+    public void test_10() throws IOException, SAXException {
+        test("10", "10/26 03:04:21.016 A1 : EVENT=Msg_Rcvd, E_ID=1, D_ID=D1, M_ID=M1, R=23525235\n" +
+                   "10/26 03:04:21.032 B12 : EVENT=Msg_Sent, E_ID=2, D_ID=D1, M_ID=M1, R=34523455\n" +
+                   "10/26 03:04:21.040 A1 : EVENT=Msg_Rcvd, E_ID=3, D_ID=D2, M_ID=M2, R=15894578\n" +
+                   "10/26 03:04:22.000 A1 : EVENT=Filler\n" +
+                   "10/26 03:04:21.076 A30 : EVENT=Msg_Rcvd, E_ID=7, D_ID=D2, M_ID=M4, R=97847854");
+    }
+
     public void test(String config, String message) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-" + config + ".xml"));
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-" + config + ".xml"));
