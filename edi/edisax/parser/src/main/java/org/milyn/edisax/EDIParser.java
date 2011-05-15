@@ -157,7 +157,7 @@ public class EDIParser implements XMLReader {
      * Fields required for namespace support
      */
     private NamespaceResolver namespaceResolver;
-    private NamespaceDeclarationStack nsStack;
+    private NamespaceDeclarationStack nsStack = new NamespaceDeclarationStack(this);
 
     
     private ContentHandler contentHandler;
@@ -384,9 +384,7 @@ public class EDIParser implements XMLReader {
         if(edifactModel == null || edifactModel.getEdimap() == null) {
             throw new IllegalStateException("'mappingModel' not set.  Cannot parse EDI stream.");
         }
-        // Initializing namespace declaration stack
-        nsStack = new NamespaceDeclarationStack(contentHandler);
-        
+
         try {
 	        // Create a reader for reading the EDI segments...
 	        segmentReader = new BufferedSegmentReader(ediInputSource, edifactModel.getDelimiters());
@@ -937,7 +935,6 @@ public class EDIParser implements XMLReader {
 
     public void setContentHandler(ContentHandler contentHandler) {
         this.contentHandler = contentHandler;
-        nsStack = new NamespaceDeclarationStack(contentHandler);
     }
 
     public ContentHandler getContentHandler() {

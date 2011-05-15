@@ -27,6 +27,7 @@ import javax.xml.XMLConstants;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -37,14 +38,13 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class NamespaceDeclarationStack {
 
-	private final ContentHandler handler;
-	
-	private final Stack<List<String>> nsStack = new Stack<List<String>>();
-	
-	public NamespaceDeclarationStack(ContentHandler handler) {
-		this.handler = handler;
-	}
-	
+    private XMLReader xmlReader;
+    private final Stack<List<String>> nsStack = new Stack<List<String>>();
+
+    public NamespaceDeclarationStack(XMLReader xmlReader) {
+        this.xmlReader = xmlReader;
+    }
+
 	/**
 	 * Pop element out of the namespace declaration stack and notifying
 	 * {@link ContentHandler} if required
@@ -55,7 +55,7 @@ public class NamespaceDeclarationStack {
         List<String> pop = nsStack.pop();
         Collections.reverse(pop);
         for (String ns : pop) {
-    		handler.endPrefixMapping(ns);
+    		xmlReader.getContentHandler().endPrefixMapping(ns);
 		}
 	}
 	
@@ -95,7 +95,7 @@ public class NamespaceDeclarationStack {
         // Now call start prefixes if namespaces are not empty
         for (String nsPrefix : namespaces) {
         	String uri = nsToURI.get(nsPrefix);
-			handler.startPrefixMapping(nsPrefix, uri);
+			xmlReader.getContentHandler().startPrefixMapping(nsPrefix, uri);
 		}
 		return attrs;
 	}
