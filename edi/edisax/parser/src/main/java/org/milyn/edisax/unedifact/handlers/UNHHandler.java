@@ -74,8 +74,8 @@ public class UNHHandler implements ControlBlockHandler {
             if(nameComponentIndex != -1) {
                 commonNS = namespace.substring(0, nameComponentIndex) + ":common";
                 messageNSPrefix = description.getName().toLowerCase();
-                attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:c", "xmlns:c", "CDATA", commonNS);
-                attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:" + messageNSPrefix, "xmlns:" + messageNSPrefix, "CDATA", namespace);
+                attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "c", "xmlns:c", "CDATA", commonNS);
+                attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, messageNSPrefix, "xmlns:" + messageNSPrefix, "CDATA", namespace);
             }
         }
 
@@ -89,8 +89,6 @@ public class UNHHandler implements ControlBlockHandler {
             if(commonNS != null) {
                 parser.getNamespaceResolver().addNamespace(commonNS, "c");
                 parser.getNamespaceResolver().addNamespace(namespace, messageNSPrefix);
-                parser.getNamespaceStack().push(commonNS);
-                parser.getNamespaceStack().push(namespace);
             }
 
 			segmentReader.setSegmentListener(untSegmentListener);

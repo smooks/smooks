@@ -48,7 +48,7 @@ public class RegexParserFactory extends VariableFieldRecordParserFactory {
 
     public static class RegexPatternDecoder implements DataDecoder {
         public Object decode(String data) throws DataDecodeException {
-            return Pattern.compile(data);
+            return Pattern.compile(data, (Pattern.MULTILINE | Pattern.DOTALL));
         }
     }
 }

@@ -44,9 +44,7 @@ public class SchemaConverter {
 	 */
 	public static final SchemaConverter INSTANCE = new SchemaConverter();
 
-	public static final String PLUGIN_XML_ENTRY = "plugin.xml";
-
-	private static final String MANIFEST = "META-INF/MANIFEST.MF";
+	public static final String FRAGMENT_XML_ENTRY = "fragment.xml";
 
 	private static final SimpleDateFormat qualifierFormat = new SimpleDateFormat(
 			"yyyyMMdd-HHmm");
@@ -72,8 +70,6 @@ public class SchemaConverter {
 		StringBuilder pluginBuilder = new StringBuilder(
 				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 						+ "<?eclipse version=\"3.0\"?>\n" + "<plugin>\n");
-		StringBuilder ecoreExtension = new StringBuilder(
-				"\t<extension point=\"org.eclipse.emf.ecore.dynamic_package\">\n");
 		StringBuilder xmlExtension = new StringBuilder(
 				"\t<extension point=\"org.eclipse.wst.xml.core.catalogContributions\"><catalogContribution>\n");
 
@@ -84,19 +80,15 @@ public class SchemaConverter {
 			String fileName = resource.getURI().lastSegment();
 			String ecoreEntryPath = pathPrefix + "/" + fileName;
 			xmlExtension.append(saveSchema(archive, ecoreEntryPath, resource,
-					((XSDSchema) obj).getTargetNamespace()));
+					((XSDSchema) obj).getTargetNamespace(), pluginID));
 			// Save memory
 			System.gc();
 		}
 
-		ecoreExtension.append("\t</extension>\n");
 		xmlExtension.append("\t</catalogContribution></extension>\n");
-		pluginBuilder.append(ecoreExtension);
 		pluginBuilder.append(xmlExtension);
 		pluginBuilder.append("</plugin>");
-		archive.addEntry(PLUGIN_XML_ENTRY, pluginBuilder.toString());
-
-		archive.addEntry(MANIFEST, generateManifest(pluginID, qualifier));
+		archive.addEntry(FRAGMENT_XML_ENTRY, pluginBuilder.toString());
 
 		return archive;
 	}
@@ -127,7 +119,7 @@ public class SchemaConverter {
 	}
 
 	private String saveSchema(Archive archive, String entryPath,
-			Resource resource, String ns) {
+			Resource resource, String ns, String pluginID) {
 		StringBuilder result = new StringBuilder();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		log.info("Saving XML Schema " + ns);
@@ -139,24 +131,12 @@ public class SchemaConverter {
 			archive.addEntry(entryPath, out.toByteArray());
 			result.append("\t<uri name=\"");
 			result.append(ns);
-			result.append("\" uri=\"");
+			result.append("\" uri=\"platform:/fragment/" + pluginID + "/");
 			result.append(entryPath);
 			result.append("\"/>\n");
 		} catch (Exception e) {
 			log.error("Failed to save XML Schema " + ns, e);
 		}
-		return result.toString();
-	}
-
-	private String generateManifest(String pluginID, String qualfier) {
-		StringBuilder result = new StringBuilder();
-		result.append("Manifest-Version: 1.0\n");
-		result.append("Bundle-ManifestVersion: 2\n");
-		result.append("Bundle-Name: " + pluginID + "\n");
-		result.append("Bundle-SymbolicName: " + pluginID + ";singleton:=true\n");
-		result.append("Bundle-Version: 1.0.0.v" + qualfier + "\n");
-		result.append("Bundle-ClassPath: .\n");
-		result.append("Bundle-ActivationPolicy: lazy\n");
 		return result.toString();
 	}
 

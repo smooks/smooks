@@ -57,7 +57,7 @@ public class EDISchemaEntityManager extends XMLEntityManager {
 	 * @throws IOException
 	 */
 	public static EDISchemaEntityManager createInstance() throws IOException {
-		List<URL> urnFiles = ClassUtil.getResources("/plugin.xml",
+		List<URL> urnFiles = ClassUtil.getResources("/fragment.xml",
 				EDISchemaEntityManager.class);
 		Map<String, String> catalog = new HashMap<String, String>();
 		log.debug("Loading XML schemas information from " + urnFiles);
@@ -74,7 +74,13 @@ public class EDISchemaEntityManager extends XMLEntityManager {
 						Element next = it.next();
 						String uri = next.getAttributeValue("uri");
 						String name = next.getAttributeValue("name");
-						catalog.put(name, "/" + uri);
+						// URI is now something like platform:/fragment/org.milyn.edi.unedifact.d99a-mapping/path/path/file.xsd
+						// we need only /path/path/file.xsd
+						// cut platform:/fragment/
+						uri = uri.substring(19);
+						// cut after first '/'
+						uri = uri.substring(uri.indexOf('/'));
+						catalog.put(name, uri);
 					}
 				}
 			} catch (JDOMException e) {

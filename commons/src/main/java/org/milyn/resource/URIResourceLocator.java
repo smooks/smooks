@@ -101,10 +101,22 @@ public class URIResourceLocator implements ContainerResourceLocator {
             fileResolved = new File(uri.resolvedURI.getPath());
             errorBuilder.append("\tFile System: " + fileResolved.getAbsolutePath() + "\n");
         }
-
-        if (fileUnresolved.exists()) {
+        
+        boolean unresolvedExists = false;
+        boolean resolvedExists = false;
+        try {
+        	unresolvedExists = fileUnresolved.exists();
+        } catch (Exception e) {
+        	// On GAE we will get a security exception
+        }
+        try {
+        	resolvedExists = fileResolved.exists();
+        } catch (Exception e) {
+        	// On GAE we will get a security exception
+        }
+		if (unresolvedExists) {
             stream = new FileInputStream(fileUnresolved);
-        } else if (fileResolved != null && fileResolved.exists()) {
+        } else if (fileResolved != null && resolvedExists) {
             stream = new FileInputStream(fileResolved);
         } else if (scheme == null || scheme.equals(SCHEME_CLASSPATH)) {
             String path = uri.resolvedURI.getPath();

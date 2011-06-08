@@ -9,13 +9,13 @@
             <xs:annotation>
                 <xs:documentation xml:lang="en">List of Smooks Resource Configuration.</xs:documentation>
             </xs:annotation>
-            <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element minOccurs="0" maxOccurs="1" ref="smooks:params"/>
                 <xs:element minOccurs="0" maxOccurs="1" ref="smooks:conditions"/>
                 <xs:element minOccurs="0" maxOccurs="1" ref="smooks:profiles"/>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="smooks:abstract-reader"/>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="smooks:abstract-resource-config"/>
-            </xs:sequence>
+            </xs:choice>
             <xs:attribute name="default-target-profile" type="xs:string"/>
             <xs:attribute name="default-selector" type="xs:string"/>
             <xs:attribute name="default-selector-namespace" type="xs:anyURI"/>

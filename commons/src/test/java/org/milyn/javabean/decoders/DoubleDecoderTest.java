@@ -86,6 +86,18 @@ public class DoubleDecoderTest extends TestCase {
         assertEquals(0.3d, doubleVal);
     }
 
+    public void test_decode_format_config_03() {
+        DoubleDecoder decoder = new DoubleDecoder();
+        Properties config = new Properties();
+
+        config.setProperty(DoubleDecoder.TYPE, NumberDecoder.NumberType.CURRENCY.toString());
+        config.setProperty(DoubleDecoder.LOCALE, "en_US");
+        decoder.setConfiguration(config);
+
+        double doubleVal = (Double) decoder.decode("$29.99");
+        assertEquals(29.99d, doubleVal);
+    }
+
     public void test_encode_format_config() {
         DoubleDecoder decoder = new DoubleDecoder();
         Properties config = new Properties();

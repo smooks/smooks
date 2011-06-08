@@ -35,7 +35,9 @@
                 <module>csv-to-xml-2</module>
                 <module>csv-to-java</module>
                 <module>csv-to-java-programmatic</module>
+                <module>csv-variable-record</module>
                 <module>fixed-length-to-java</module>
+                <module>flatfile-to-xml-regex</module>
                 <module>edi-to-xml</module>
                 <module>edi-to-java</module>
                 <module>profiling</module>
@@ -53,6 +55,7 @@
                 <module>dynamic-model-builder</module>
                 <module>camel</module>
                 <module>osgi</module>
+                <module>drools-fusion</module>
             </modules>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -72,6 +75,7 @@
     <properties>
         <milyn.smooks.core.version>1.5-SNAPSHOT</milyn.smooks.core.version> <!-- ## Smooks Version ## -->
         <milyn.smooks.servlet.version>${milyn.smooks.core.version}</milyn.smooks.servlet.version>
+        <milyn.smooks.flatfile.version>${milyn.smooks.core.version}</milyn.smooks.flatfile.version>
         <milyn.smooks.misc.version>${milyn.smooks.core.version}</milyn.smooks.misc.version>
         <milyn.smooks.dtd.version>${milyn.smooks.core.version}</milyn.smooks.dtd.version>
         <milyn.smooks.css.version>${milyn.smooks.core.version}</milyn.smooks.css.version>

@@ -103,7 +103,7 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
 	/* (non-Javadoc)
 	 * @see org.xml.sax.XMLReader#parse(org.xml.sax.InputSource)
 	 */
-	public void parse(InputSource csvInputSource) throws IOException, SAXException {
+	public void parse(InputSource inputSource) throws IOException, SAXException {
         if(contentHandler == null) {
             throw new IllegalStateException("'contentHandler' not set.  Cannot parse Record stream.");
         }
@@ -114,16 +114,10 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
         try {
 			Reader recordReader;
 
-			// Get a reader for the CSV source...
-	        recordReader = csvInputSource.getCharacterStream();
-	        if(recordReader == null) {
-	            recordReader = new InputStreamReader(csvInputSource.getByteStream(), execContext.getContentEncoding());
-	        }
-
             // Create the record parser....
             RecordParser recordParser = parserFactory.newRecordParser();
             recordParser.setRecordParserFactory(parserFactory);
-            recordParser.setReader(recordReader);
+            recordParser.setDataSource(inputSource);
 
 	        // Start the document and add the root "record-set" element...
 	        contentHandler.startDocument();

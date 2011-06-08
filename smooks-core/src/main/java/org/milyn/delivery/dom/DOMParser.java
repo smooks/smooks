@@ -143,7 +143,7 @@ public class DOMParser extends AbstractParser {
 
                 attachXMLReader(domReader, executionContext);
                 configureReader(domReader, contentHandler, executionContext, source);
-		        domReader.parse(createInputSource(domReader, source, executionContext.getContentEncoding()));
+		        domReader.parse(createInputSource(source, executionContext.getContentEncoding()));
 	  		} finally {
                 try {
                     if(domReader instanceof HierarchyChangeReader) {
@@ -166,7 +166,7 @@ public class DOMParser extends AbstractParser {
   		} else {
 	  		XMLReader domReader = createXMLReader();
 	        configureReader(domReader, contentHandler, null, source);
-	        domReader.parse(createInputSource(domReader, source, Charset.defaultCharset().name()));
+	        domReader.parse(createInputSource(source, Charset.defaultCharset().name()));
   		}
   	}
 }

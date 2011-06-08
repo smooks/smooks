@@ -63,8 +63,12 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     private RecordMetaData recordMetaData; // Initialized if there's only one record type defined
     private Map<String, RecordMetaData> recordMetaDataMap; // Initialized if there's multiple record types defined
 
-    @ConfigParam(defaultVal = "\n")
+    @ConfigParam(use = ConfigParam.Use.OPTIONAL)
     private String recordDelimiter;
+    private Pattern recordDelimiterPattern;
+
+    @ConfigParam(defaultVal = "false")
+    private boolean keepDelimiter;
 
     @ConfigParam(defaultVal = "record")
     private String recordElementName;
@@ -84,8 +88,17 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     @ConfigParam(defaultVal="true")
     private boolean strict;
 
+    private String overFlowFromLastRecord = "";
+
     public static final Pattern SINGLE_RECORD_PATTERN = Pattern.compile("^[\\w|[?$-_, ]]+$");
+
     public static final Pattern MULTI_RECORD_PATTERN = Pattern.compile("^([\\w|[?$-_*]]+)\\[([\\w|[?$-_, *]]+)\\]$");
+    protected static RecordMetaData unknownVRecordType;
+
+    static {
+        unknownVRecordType = new RecordMetaData("UNMATCHED", new ArrayList<FieldMetaData>());
+        unknownVRecordType.getFields().add(new FieldMetaData("value"));
+    }
 
     /**
      * Is this a parser factory for a multi-record type data stream.
@@ -148,7 +161,11 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
         if(!isMultiTypeRecordSet()) {
             return recordMetaData;
         } else {
-            return recordMetaDataMap.get(record.iterator().next().trim());
+            RecordMetaData vrecordMetaData = recordMetaDataMap.get(record.iterator().next().trim());
+            if(vrecordMetaData == null) {
+                vrecordMetaData = unknownVRecordType;
+            }
+            return vrecordMetaData;
         }
     }
 
@@ -212,11 +229,19 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     @Initialize
     public final void fixupRecordDelimiter() {
+        if(recordDelimiter == null) {
+            return;
+        }
+
         // Fixup the record delimiter...
-        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\n", '\n');
-        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\r", '\r');
-        recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\t", '\t');
-        recordDelimiter = XmlUtil.removeEntities(recordDelimiter);
+        if(recordDelimiter.startsWith("regex:")) {
+            recordDelimiterPattern = Pattern.compile(recordDelimiter.substring("regex:".length()), (Pattern.MULTILINE | Pattern.DOTALL));
+        } else {
+            recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\n", '\n');
+            recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\r", '\r');
+            recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\t", '\t');
+            recordDelimiter = XmlUtil.removeEntities(recordDelimiter);
+        }
     }
 
     @Initialize
@@ -259,56 +284,37 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     /**
      * Read a record from the specified reader (up to the next recordDelimiter).
-     * @param recordReader
-     * @param recordBuffer
-     * @throws IOException
+     * @param recordReader The record {@link Reader}.
+     * @param recordBuffer The record buffer into which the record is read.
+     * @throws IOException Error reading record.
      */
-    public void readRecord(Reader recordReader, StringBuilder recordBuffer) throws IOException {
+    public void readRecord(Reader recordReader, StringBuilder recordBuffer, int recordNumber) throws IOException {
         recordBuffer.setLength(0);
+        recordBuffer.append(overFlowFromLastRecord);
+
+        RecordBoundaryLocator boundaryLocator;
+        if(recordDelimiterPattern != null) {
+            boundaryLocator = new RegexRecordBoundaryLocator(recordBuffer, recordNumber);
+        } else {
+            boundaryLocator = new SimpleRecordBoundaryLocator(recordBuffer, recordNumber);
+        }
 
         int c;
-        boolean removeCRLF = true;
         while((c = recordReader.read()) != -1) {
-            if(removeCRLF) {
+            if(recordBuffer.length() == 0) {
                 if(c == '\n' || c == '\r') {
                     // A leading CR or LF... ignore...
                     continue;
-                } else {
-                    // All leading CR and LF chars are skipped...
-                    removeCRLF = false;
                 }
             }
 
             recordBuffer.append((char)c);
-            if(builderEndsWith(recordBuffer, recordDelimiter)) {
-                // Strip off the delimiter from the end before returning...
-                recordBuffer.setLength(recordBuffer.length() - recordDelimiter.length());
+            if(boundaryLocator.atEndOfRecord()) {
                 break;
             }
         }
-    }
 
-    private static boolean builderEndsWith(StringBuilder stringBuilder, String string) {
-        if(string == null) {
-            return false;
-        }
-
-        int builderLen = stringBuilder.length();
-        int stringLen = string.length();
-
-        if(builderLen < stringLen) {
-            return false;
-        }
-
-        int stringIndx = 0;
-        for(int i = (builderLen - stringLen); i < builderLen; i++) {
-            if(stringBuilder.charAt(i) != string.charAt(stringIndx)) {
-                return false;
-            }
-            stringIndx++;
-        }
-
-        return true;
+        overFlowFromLastRecord = boundaryLocator.getOverflowCharacters();
     }
 
     private RecordMetaData buildMultiRecordMetaData(String recordDef) {
@@ -408,5 +414,112 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
             return false;
         }
+    }
+
+    private class SimpleRecordBoundaryLocator extends RecordBoundaryLocator {
+
+        private SimpleRecordBoundaryLocator(StringBuilder recordBuffer, int recordNumber) {
+            super(recordBuffer, recordNumber);
+        }
+
+        @Override
+        boolean atEndOfRecord() {
+            int builderLen = recordBuffer.length();
+            char lastChar = recordBuffer.charAt(builderLen - 1);
+
+            if(recordDelimiter != null) {
+                int stringLen = recordDelimiter.length();
+
+                if(builderLen < stringLen) {
+                    return false;
+                }
+
+                int stringIndx = 0;
+                for(int i = (builderLen - stringLen); i < builderLen; i++) {
+                    if(recordBuffer.charAt(i) != recordDelimiter.charAt(stringIndx)) {
+                        return false;
+                    }
+                    stringIndx++;
+                }
+
+                if(!keepDelimiter) {
+                    // Strip off the delimiter from the end before returning...
+                    recordBuffer.setLength(builderLen - stringLen);
+                }
+
+                return true;
+            } else if (lastChar ==  '\r' || lastChar ==  '\n'){
+                if(!keepDelimiter) {
+                    // Strip off the delimiter from the end before returning...
+                    recordBuffer.setLength(builderLen - 1);
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        @Override
+        String getOverflowCharacters() {
+            return "";
+        }
+    }
+
+    private class RegexRecordBoundaryLocator extends RecordBoundaryLocator {
+
+        private int startFindIndex;
+        private int endRecordIndex;
+        private String overFlow = "";
+
+        protected RegexRecordBoundaryLocator(StringBuilder recordBuffer, int recordNumber) {
+            super(recordBuffer, recordNumber);
+            startFindIndex = recordBuffer.length();
+        }
+
+        @Override
+        boolean atEndOfRecord() {
+            Matcher matcher = recordDelimiterPattern.matcher(recordBuffer);
+
+            if(matcher.find(startFindIndex)) {
+                if(recordNumber == 1 && startFindIndex == 0) {
+                    // Need to find the second instance of the pattern in the first record buffer
+                    // The second instance marks the start of the second record, which will be captured
+                    // as overflow from this record read and will be auto added to the read of the next record.
+                    startFindIndex = matcher.end();
+                    return false;
+                } else {
+                    // For records following the first record, we already have the start so we just need to find
+                    // the first instance of the pattern, which marks the start of the next record, which again
+                    // will be captured as overflow from this record read and will be auto added to the read of
+                    // the next record.
+                    endRecordIndex = matcher.start();
+                    overFlow = recordBuffer.substring(endRecordIndex);
+                    recordBuffer.setLength(endRecordIndex);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        String getOverflowCharacters() {
+            return overFlow;
+        }
+    }
+
+    private abstract class RecordBoundaryLocator {
+
+        protected StringBuilder recordBuffer;
+        protected int recordNumber;
+
+        protected RecordBoundaryLocator(StringBuilder recordBuffer, int recordNumber) {
+            this.recordBuffer = recordBuffer;
+            this.recordNumber = recordNumber;
+        }
+
+        abstract boolean atEndOfRecord();
+
+        abstract String getOverflowCharacters();
     }
 }

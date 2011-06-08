@@ -28,10 +28,9 @@ public class NestedExecutionVisitorTest extends TestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
         StringResult result = new StringResult();
         JavaResult beans = new JavaResult();
-        ExecutionContext executionContext = smooks.createExecutionContext();
         final List<String> orderItems = new ArrayList<String>();
 
-        executionContext.getBeanContext().addObserver(new BeanContextLifecycleObserver() {
+        smooks.getApplicationContext().addBeanContextLifecycleObserver(new BeanContextLifecycleObserver() {
             public void onBeanLifecycleEvent(BeanContextLifecycleEvent event) {
                 if(event.getLifecycle() == BeanLifecycle.REMOVE && event.getBeanId().getName().equals("orderItem")) {
                     orderItems.add((String) event.getBean());
@@ -39,7 +38,7 @@ public class NestedExecutionVisitorTest extends TestCase {
             }
         });
 
-        smooks.filterSource(executionContext, new StreamSource(getClass().getResourceAsStream("order-message.xml")), result, beans);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order-message.xml")), result, beans);
 
         XMLUnit.setIgnoreWhitespace(true);
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("order-message.xml")), new StringReader(result.toString()));

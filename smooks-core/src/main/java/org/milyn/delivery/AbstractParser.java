@@ -170,13 +170,17 @@ public class AbstractParser {
     }
 
 	private static Reader systemIdToReader(String systemId, String contentEncoding) {
-		try {
-			return streamToReader(systemIdToURL(systemId).openStream(), contentEncoding);
-		} catch (IOException e) {
-		    throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Unable to open stream to resource.", e);
-		}
+        return streamToReader(systemIdToStream(systemId), contentEncoding);
 	}
-	
+
+    private static InputStream systemIdToStream(String systemId) {
+        try {
+            return systemIdToURL(systemId).openStream();
+        } catch (IOException e) {
+            throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Unable to open stream to resource.", e);
+        }
+    }
+
 	private static URL systemIdToURL(final String systemId)
 	{
 		try {
@@ -199,55 +203,43 @@ public class AbstractParser {
 		}
 	}
 
-    protected InputSource createInputSource(XMLReader inputReader, Source source, String contentEncoding) {
-        InputSource inputSource;
-        if (inputReader instanceof StreamReader) { // Base on marker interface StreamReader, the Source will be created from Reader or from inputStream
-            inputSource = new InputSource(getInputStream(source));
-        } else {
-            inputSource = createInputSource(source, contentEncoding);
-        }
-        
-        return inputSource;
-
-    }
-
-    public static InputSource createInputSource(Source source, String contentEncoding) {
-        Reader reader = getReader(source, contentEncoding);
-        InputSource inputSource = new InputSource(reader);
-
+    protected InputSource createInputSource(Source source, String contentEncoding) {
         // Also attach the underlying stream to the InputSource...
         if(source instanceof StreamSource) {
-            final StreamSource streamSource = (StreamSource) source;
-            final InputStream inputStream = streamSource.getInputStream();
-            final String systemId = streamSource.getSystemId();
-            if (inputStream != null) {
-	            inputSource.setByteStream(((StreamSource) source).getInputStream());
-            } else if (systemId != null) {
-                URL resourceURL = systemIdToURL(systemId);
-                try {
-                    inputSource.setByteStream(resourceURL.openStream());
-                } catch (final IOException e) {
-				    throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Unable to open stream to resource.", e);
+            StreamSource streamSource = (StreamSource) source;
+            InputStream inputStream;
+            Reader reader;
+
+            inputStream = getInputStream(streamSource);
+            reader = streamSource.getReader();
+            if(reader == null) {
+                if(inputStream == null) {
+                    throw new SmooksException("Invalid StreamSource.  Unable to extract an InputStream (even by systemId) or Reader instance.");
                 }
+                reader = streamToReader(inputStream, contentEncoding);
             }
+
+            InputSource inputSource = new InputSource();
+            inputSource.setByteStream(inputStream);
+            inputSource.setCharacterStream(reader);
+
+            return inputSource;
+        } else {
+            return new InputSource(getReader(source, contentEncoding));
         }
-        
-        return inputSource;
     }
 
-    protected InputStream getInputStream(Source source) {
-        if (source instanceof StreamSource) {
-            StreamSource streamSource = (StreamSource) source;
-            InputStream inputStream = streamSource.getInputStream();
-            if(inputStream == null) {
-                throw new SmooksException("Invalid Source instance.  Must contain an InputStream instance.");
-            }
+    protected InputStream getInputStream(StreamSource streamSource) {
+        InputStream inputStream = streamSource.getInputStream();
+        String systemId = streamSource.getSystemId();
+
+        if (inputStream != null) {
             return inputStream;
-        } else {
-            throw new SmooksException("Invalid Source instance.  Expecteding a StreamSource.");
+        } else if (systemId != null) {
+            return systemIdToStream(systemId);
         }
 
-
+        return null;
     }
 
 

@@ -33,16 +33,27 @@ import java.util.Properties;
 public abstract class NumberDecoder extends LocaleAwareDecoder implements DataEncoder {
 
     /**
-     * Date numberFormat configuration key.
+     * Format.
      */
     public static final String FORMAT = "format";
+    /**
+     * Type.
+     */
+    public static final String TYPE = "type";
+    private NumberType type;
+
+    public static enum NumberType {
+        RAW,
+        PERCENTAGE,
+        CURRENCY
+    }
 
     private NumberFormat numberFormat;
-    private boolean isPercentage;
 
     public void setConfiguration(Properties config) throws SmooksConfigurationException {
         super.setConfiguration(config);
         String pattern = config.getProperty(FORMAT);
+        String typeConfig = config.getProperty(TYPE);
         Locale locale = getLocale();
 
         if(locale == null && pattern == null) {
@@ -55,17 +66,27 @@ public abstract class NumberDecoder extends LocaleAwareDecoder implements DataEn
             locale = Locale.getDefault();
         }
 
-        if(pattern != null && pattern.indexOf('%') != -1) {
+        if(typeConfig == null) {
+            type = NumberType.RAW;
+        } else {
+            try {
+                type = NumberType.valueOf(typeConfig);
+            } catch(Exception e) {
+                throw new SmooksConfigurationException("Unsupported Number type specification '" + typeConfig + "'.  Must be one of '" + NumberType.values() + "'.");
+            }
+        }
+
+        if(type == NumberType.PERCENTAGE || (pattern != null && pattern.indexOf('%') != -1)) {
+            type = NumberType.PERCENTAGE;
             numberFormat = NumberFormat.getPercentInstance(locale);
-            isPercentage = true;
+        } else if(type == NumberType.CURRENCY) {
+            numberFormat = NumberFormat.getCurrencyInstance(locale);
         } else {
             numberFormat = NumberFormat.getInstance(locale);
             numberFormat.setGroupingUsed(false);
-        }
-
-
-        if(pattern != null && numberFormat instanceof DecimalFormat) {
-            ((DecimalFormat) numberFormat).applyPattern(pattern);
+            if(pattern != null && numberFormat instanceof DecimalFormat) {
+                ((DecimalFormat) numberFormat).applyPattern(pattern);
+            }
         }
     }
 
@@ -81,8 +102,12 @@ public abstract class NumberDecoder extends LocaleAwareDecoder implements DataEn
         }
     }
 
+    public NumberType getType() {
+        return type;
+    }
+
     public boolean isPercentage() {
-        return isPercentage;
+        return type == NumberType.PERCENTAGE;
     }
 
     public String encode(Object object) throws DataDecodeException {

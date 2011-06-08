@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.milyn.flatfile.FieldMetaData;
 import org.milyn.flatfile.RecordMetaData;
 import org.milyn.flatfile.variablefield.VariableFieldRecordParser;
+import org.xml.sax.InputSource;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -42,7 +43,13 @@ public class CSVRecordParser<T extends CSVRecordParserFactory> extends VariableF
     /**
      * {@inheritDoc}
      */
-    public void setReader(Reader reader) {
+    public void setDataSource(InputSource source) {
+        Reader reader = source.getCharacterStream();
+
+        if(reader ==  null) {
+            throw new IllegalStateException("Invalid InputSource type supplied to CSVRecordParser.  Must contain a Reader instance.");
+        }
+
         // Create the CSV line reader...
         T factory = getFactory();
         csvLineReader = new au.com.bytecode.opencsv.CSVReader(

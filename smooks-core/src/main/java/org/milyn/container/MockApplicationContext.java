@@ -16,10 +16,15 @@
 
 package org.milyn.container;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.milyn.cdr.SmooksResourceConfigurationStore;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.resource.ContainerResourceLocator;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.profile.ProfileStore;
@@ -30,14 +35,16 @@ import org.milyn.profile.DefaultProfileStore;
  * @author tfennelly
  */
 public class MockApplicationContext implements ApplicationContext {
-	public MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
+
+    public MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
     public ProfileStore profileStore = new DefaultProfileStore();
     private Hashtable<Object, Object> attributes = new Hashtable<Object, Object>();
     private BeanIdStore beanIdStore = new BeanIdStore();
+    private List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
 
-	/* (non-Javadoc)
-	 * @see org.milyn.container.ApplicationContext#getResourceLocator()
-	 */
+    /* (non-Javadoc)
+      * @see org.milyn.container.ApplicationContext#getResourceLocator()
+      */
 	public ContainerResourceLocator getResourceLocator() {
 		return containerResourceLocator;
 	}
@@ -94,6 +101,14 @@ public class MockApplicationContext implements ApplicationContext {
 	public BeanIdStore getBeanIdStore() {
 		return beanIdStore;
 	}
+
+    public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
+        beanContextObservers.add(observer);
+    }
+
+    public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
+        return Collections.unmodifiableCollection(beanContextObservers);
+    }
 
     public ClassLoader getClassLoader() {
         return getClass().getClassLoader();

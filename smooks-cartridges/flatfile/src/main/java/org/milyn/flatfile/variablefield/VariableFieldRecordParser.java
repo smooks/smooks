@@ -35,6 +35,7 @@ import java.util.List;
 public abstract class VariableFieldRecordParser<T extends VariableFieldRecordParserFactory> implements RecordParser<T> {
 
     private T factory;
+    private int recordCount = 0;
 
     /**
      * Parse the next record from the flat file input stream and produce
@@ -60,52 +61,81 @@ public abstract class VariableFieldRecordParser<T extends VariableFieldRecordPar
     }
 
     /**
+     * Get the number of records read so far by this parser instance.
+     * @return The number of records read so far by this parser instance.
+     */
+    public int getRecordCount() {
+        return recordCount;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public final Record nextRecord() throws IOException {
         List<String> fieldValues = nextRecordFieldValues();
 
-        if(fieldValues == null) {
+        if(fieldValues == null || fieldValues.isEmpty()) {
             return null;
         }
 
         RecordMetaData recordMetaData = factory.getRecordMetaData(fieldValues);
         List<Field> fields = new ArrayList<Field>();
-        List<FieldMetaData> fieldsMetaData = recordMetaData.getFields();
 
-        for(int i = 0; i < fieldValues.size(); i++) {
-            if(!recordMetaData.isWildCardRecord() && i > fieldsMetaData.size() - 1) {
-                // We're done... ignore the rest of the fields...
-                break;
-            }
-
-            String value = fieldValues.get(i);
-            Field field;
-
-            if(recordMetaData.isWildCardRecord() || i > fieldsMetaData.size()) {
-                field = new Field("field_" + i, value);
+        try {
+            if(recordMetaData == VariableFieldRecordParserFactory.unknownVRecordType) {
+                fields.add(new Field(recordMetaData.getFields().get(0).getName(), fieldValues.get(0)));
+                return new Record(recordMetaData.getName(), fields, recordMetaData);
             } else {
-                FieldMetaData fieldMetaData = fieldsMetaData.get(i);
+                List<FieldMetaData> fieldsMetaData = recordMetaData.getFields();
+                int fieldValueOffset = 0;
 
-                if(fieldMetaData.ignore()) {
-                    i += fieldMetaData.getIgnoreCount() - 1;
-                    if(i < 0) {
-                        // An overflow has resulted...
-                        i = Integer.MAX_VALUE - 1;
+                if(factory.isMultiTypeRecordSet()) {
+                    // Skip the first field value because it's the field name...
+                    fieldValueOffset = +1;
+                }
+
+                for(int i = 0; i < fieldValues.size(); i++) {
+                    int fieldValueIndex = i + fieldValueOffset;
+
+                    if(fieldValueIndex > fieldValues.size() - 1) {
+                        break;
                     }
-                    continue;
-                }
+                    if(!recordMetaData.isWildCardRecord() && i > fieldsMetaData.size() - 1) {
+                        // We're done... ignore the rest of the fields...
+                        break;
+                    }
 
-                StringFunctionExecutor stringFunction = fieldMetaData.getStringFunctionExecutor();
-                if(stringFunction != null) {
-                    value = stringFunction.execute(value);
-                }
+                    Field field;
+                    String value = fieldValues.get(fieldValueIndex);
 
-                field = new Field(fieldMetaData.getName(), value);
-                field.setMetaData(fieldMetaData);
+                    if(recordMetaData.isWildCardRecord() || i > fieldsMetaData.size()) {
+                        field = new Field("field_" + i, value);
+                    } else {
+                        FieldMetaData fieldMetaData = fieldsMetaData.get(i);
+
+                        if(fieldMetaData.ignore()) {
+                            i += fieldMetaData.getIgnoreCount() - 1;
+                            if(i < 0) {
+                                // An overflow has resulted...
+                                i = Integer.MAX_VALUE - 1;
+                            }
+                            continue;
+                        }
+
+                        StringFunctionExecutor stringFunction = fieldMetaData.getStringFunctionExecutor();
+                        if(stringFunction != null) {
+                            value = stringFunction.execute(value);
+                        }
+
+                        field = new Field(fieldMetaData.getName(), value);
+                        field.setMetaData(fieldMetaData);
+                    }
+
+                    fields.add(field);
+                }
             }
-
-            fields.add(field);
+        } finally {
+            recordCount++;
         }
 
         return new Record(recordMetaData.getName(), fields, recordMetaData);

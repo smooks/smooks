@@ -67,9 +67,9 @@ public class SAXParser extends AbstractParser {
                 if(saxReader instanceof HierarchyChangeReader) {
                     ((HierarchyChangeReader)saxReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
                 }
-	            saxReader.parse(createInputSource(saxReader, source, executionContext.getContentEncoding()));
+	            saxReader.parse(createInputSource(source, executionContext.getContentEncoding()));
             } else {
-                saxReader.parse(createInputSource(saxReader, source, Charset.defaultCharset().name()));
+                saxReader.parse(createInputSource(source, Charset.defaultCharset().name()));
             }
         } finally {
             try {
