@@ -7,9 +7,7 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Core</name>
-    <groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-core</artifactId>
-	<version>${milyn.smooks.core.version}</version>
 
     <dependencies>
         <dependency>

@@ -8,8 +8,6 @@
         <version>1.0</version>
     </parent>
     <name>Milyn Smooks Example - File Router (Consumer)</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-example-file-consumer</artifactId>
-    <version>1.0</version>
 
 </project>

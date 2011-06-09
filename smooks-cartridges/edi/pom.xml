@@ -7,9 +7,7 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Cartridge - EDI</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-edi</artifactId>
-	<version>${milyn.smooks.edi.version}</version>
 
     <dependencies>
 

@@ -7,9 +7,7 @@
 		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Commons</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-commons</artifactId>
-	<version>${milyn.commons.version}</version>
 
 	<dependencies>
         <dependency>

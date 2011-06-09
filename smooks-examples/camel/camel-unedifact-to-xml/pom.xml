@@ -7,9 +7,7 @@
 		<version>1.0</version>
 	</parent>
     <name>Milyn Smooks Example - Smooks Camel UNEDIFACT to String</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-example-camel-unedifact-to-xml</artifactId>
-	<version>1.0</version>
     <packaging>bundle</packaging>
     
     <properties>

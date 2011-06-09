@@ -8,7 +8,6 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Example - EJC - Model Gen</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
     <version>1.0</version>
 

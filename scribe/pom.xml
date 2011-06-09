@@ -8,9 +8,7 @@
 	</parent>
 	<packaging>pom</packaging>
     <name>Milyn Scribe</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-scribe</artifactId>
-	<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 
     <modules>
     	<module>core</module>

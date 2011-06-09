@@ -23,7 +23,6 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks All</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-all</artifactId>
 	<packaging>bundle</packaging>
 

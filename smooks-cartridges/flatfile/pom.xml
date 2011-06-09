@@ -23,9 +23,7 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Cartridge - Flat File</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-flatfile</artifactId>
-	<version>${milyn.smooks.flatfile.version}</version>
 
     <dependencies>
 

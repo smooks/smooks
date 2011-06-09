@@ -23,7 +23,6 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Example - Flat File to XML (Using Regex)</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-example-flatfile-to-xml-regex</artifactId>
 	<version>1.0</version>
 

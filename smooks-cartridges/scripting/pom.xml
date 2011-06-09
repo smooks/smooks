@@ -7,9 +7,7 @@
 		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Cartridge - Scripting</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-scripting</artifactId>
-	<version>${milyn.smooks.scripting.version}</version>
 
     <dependencies>
 

@@ -7,9 +7,7 @@
 		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Cartridge - Routing</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-routing</artifactId>
-	<version>${milyn.smooks.routing.version}</version>
 
 	<build>
 		<plugins>
