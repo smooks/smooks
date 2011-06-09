@@ -7,9 +7,7 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Scribe core</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-scribe-core</artifactId>
-	<version>${milyn.scribe.core.version}</version>
 
     <dependencies>
 

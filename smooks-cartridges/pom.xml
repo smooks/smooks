@@ -8,10 +8,8 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Cartridges (Base POM)</name>
-    <groupId>org.milyn</groupId>
     <artifactId>smooks-cartridge-base-pom</artifactId>
     <packaging>pom</packaging>
-    <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 
     <properties>
         <milyn.smooks.servlet.version.base>${milyn.smooks.core.version}</milyn.smooks.servlet.version.base>

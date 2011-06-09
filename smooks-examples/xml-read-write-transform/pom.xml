@@ -24,7 +24,6 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Example - XML Read/Write</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-example-xml-rw-transform</artifactId>
     <version>1.0</version>
 

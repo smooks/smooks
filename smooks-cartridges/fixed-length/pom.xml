@@ -8,9 +8,7 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Cartridge - Fixed Length Reader</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-fixed-length</artifactId>
-    <version>${milyn.smooks.fixed-length.version}</version>
 
 	<description>A Smooks cartridge that can read fixed length files. The code of this cartridge was donated by Cedric Rathgeb.</description>
 

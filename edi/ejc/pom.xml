@@ -8,10 +8,8 @@
 		<relativePath>../../pom.xml</relativePath>
     </parent>
     <name>Edifact Java Compiler</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-ejc</artifactId>
     <packaging>jar</packaging>
-    <version>${milyn.smooks.core.version}</version>
 	    
 	<dependencies>
         <dependency>

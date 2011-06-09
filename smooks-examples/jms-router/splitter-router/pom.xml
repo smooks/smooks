@@ -8,9 +8,7 @@
         <version>1.0</version>
     </parent>
     <name>Milyn Smooks Example - JMS Splitter-Router</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-example-jms-splitter-router</artifactId>
-    <version>1.0</version>
 
     <dependencies>
         <dependency>

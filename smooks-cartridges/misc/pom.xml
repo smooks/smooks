@@ -7,9 +7,7 @@
 		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Cartridge - Misc</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-misc</artifactId>
-	<version>${milyn.smooks.misc.version}</version>
 
     <repositories>
         <repository>

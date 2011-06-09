@@ -7,7 +7,6 @@
 		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Example - YAML-to-Java</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-example-yaml-to-java</artifactId>
 	<version>1.0</version>
 

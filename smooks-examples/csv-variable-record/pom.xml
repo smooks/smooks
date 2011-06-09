@@ -23,7 +23,6 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Example - CSV-to-XML (Variable Record)</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-example-csv-variable-record</artifactId>
 	<version>1.0</version>
 

@@ -7,9 +7,7 @@
 		<version>1.0</version>
 	</parent>
     <name>Milyn Smooks Example - Smooks Camel Dataformat</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-example-camel-dataformat</artifactId>
-	<version>1.0</version>
     <packaging>bundle</packaging>
     
     <properties>

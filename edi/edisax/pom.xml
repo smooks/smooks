@@ -9,9 +9,7 @@
 		<relativePath>../pom.xml</relativePath>
     </parent>
     <name>Milyn EdiSax</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-edisax</artifactId>
-    <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     <packaging>pom</packaging>
 
 	<properties>

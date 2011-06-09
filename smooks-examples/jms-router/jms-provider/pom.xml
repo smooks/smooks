@@ -8,9 +8,7 @@
         <version>1.0</version>
     </parent>
     <name>Milyn Smooks Example - JMS Router (Provider)</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-example-jms-router-provider</artifactId>
-    <version>1.0</version>
 
     <build>
         <plugins>

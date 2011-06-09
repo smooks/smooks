@@ -8,10 +8,8 @@
 		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
 	<name>Edifact Utils</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-ediutils</artifactId>
 	<packaging>jar</packaging>
-	<version>${milyn.smooks.core.version}</version>
 
 	<dependencies>
 

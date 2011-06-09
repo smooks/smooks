@@ -8,9 +8,7 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Cartridge - Javabean</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-javabean</artifactId>
-    <version>${milyn.smooks.javabean.version}</version>
 
     <repositories>
         <repository>

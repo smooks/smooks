@@ -8,10 +8,8 @@
 		<relativePath>../../../pom.xml</relativePath>
     </parent>
     <name>Edifact Convertion Tool - Maven Plugin Mojo</name>
-    <groupId>org.milyn</groupId>
     <artifactId>maven-ect-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 
     <dependencies>
 

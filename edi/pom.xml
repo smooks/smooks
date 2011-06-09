@@ -7,10 +7,8 @@
 		<artifactId>milyn</artifactId>
 		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-edi</artifactId>
     <packaging>pom</packaging>
-    <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     <name>Milyn EDI</name>
     <url>http://milyn.codehaus.org</url>
 

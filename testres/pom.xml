@@ -7,9 +7,7 @@
 		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Test Resources</name>
-	<groupId>org.milyn</groupId>
 	<artifactId>testres</artifactId>
-	<version>${milyn.smooks.core.version}</version>
 
     <dependencies>
 

@@ -8,7 +8,6 @@
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Example - XML-to-Java-Virtual</name>
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-example-xml-to-java-virtual</artifactId>
     <version>1.0</version>
 
