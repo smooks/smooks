@@ -30,6 +30,7 @@ import org.apache.camel.TypeConverter;
 import org.apache.camel.processor.MarshalProcessor;
 import org.apache.camel.spi.DataFormat;
 import org.milyn.Smooks;
+import org.milyn.SmooksFactory;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.Exports;
 import org.milyn.payload.StringResult;
@@ -134,10 +135,10 @@ public class SmooksDataFormat implements DataFormat, CamelContextAware, Service
 
     public void start() throws Exception
     {
-        final Smooks service = (Smooks) camelContext.getRegistry().lookup(Smooks.class.getName());
-        if (service != null)
+        final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookup(SmooksFactory.class.getName());
+        if (smooksFactory != null)
         {
-            smooks = service;
+            smooks = smooksFactory.createInstance(smooksConfig);
         }
         else
         {
