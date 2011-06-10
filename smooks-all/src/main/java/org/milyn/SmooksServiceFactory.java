@@ -20,35 +20,30 @@ import org.osgi.framework.ServiceRegistration;
 
 /**
  * SmooksServiceFactory is a {@link ServiceFactory} implementation that
- * enables the creation of per-bundle customizations of Smooks instances.
+ * enables the creation of per-bundle {@link SmooksOSGIFactory} implementations.
+ * </p>
  * 
  * @author Daniel Bevenius
  *
  */
 public class SmooksServiceFactory implements ServiceFactory
 {
-    public Object getService(Bundle bundle, ServiceRegistration registration)
+    /**
+     * Will return a {@link SmooksOSGIFactory} instance configured with the {@link Bundle}. 
+     * 
+     * @param bundle the OSGi bundle.
+     * @param registration the OSGi registration.
+     * @return {@link SmooksOSGIFactory} that has been configured using the passed-in Bundle.
+     * 
+     */
+    public Object getService(final Bundle bundle, final ServiceRegistration registration)
     {
-        Smooks smooks = null;
-        try
-        {
-	        SmooksOSGIFactory factory = new SmooksOSGIFactoryImpl();
-	        smooks = factory.create(bundle);
-        } 
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        } 
-        return smooks;
+        return new SmooksOSGIFactory(bundle);
     }
 
-    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service)
+    public void ungetService(final Bundle bundle, final ServiceRegistration registration, final Object service)
     {
-        Smooks smooks = (Smooks) service;
-        if (smooks != null)
-        {
-            smooks.close();
-        }
+        //Noop
     }
 
 }
