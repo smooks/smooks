@@ -8,14 +8,13 @@
 	</parent>
     <name>Milyn Smooks Example - CSV-to-XML</name>
 	<artifactId>milyn-smooks-example-csv-to-xml</artifactId>
-	<version>1.0</version>
 
     <dependencies>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-csv</artifactId>
-            <version>${milyn.smooks.csv.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 	</dependencies>

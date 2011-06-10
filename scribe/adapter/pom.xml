@@ -20,7 +20,7 @@
     	<dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-scribe-core</artifactId>
-			<version>${milyn.scribe.core.version}</version>
+			<version>${project.version}</version>
 		</dependency>
     </dependencies>
 

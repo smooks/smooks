@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-commons</artifactId>
-            <version>${milyn.commons.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

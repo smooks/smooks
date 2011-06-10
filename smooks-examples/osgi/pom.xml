@@ -42,7 +42,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-all</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 		<dependency>

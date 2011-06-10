@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-javabean-perfcomp</artifactId>
-    <version>1.0</version>
+    <version>1.5-SNAPSHOT</version>
     
     <properties>
     	<smooks.version>1.4</smooks.version>

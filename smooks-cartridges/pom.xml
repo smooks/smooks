@@ -11,65 +11,6 @@
     <artifactId>smooks-cartridge-base-pom</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-        <milyn.smooks.servlet.version.base>${milyn.smooks.core.version}</milyn.smooks.servlet.version.base>
-        <milyn.smooks.servlet.version>${milyn.smooks.servlet.version.base}</milyn.smooks.servlet.version>
-
-        <milyn.smooks.misc.version.base>${milyn.smooks.core.version}</milyn.smooks.misc.version.base>
-        <milyn.smooks.misc.version>${milyn.smooks.misc.version.base}</milyn.smooks.misc.version>
-
-        <milyn.smooks.dtd.version.base>${milyn.smooks.core.version}</milyn.smooks.dtd.version.base>
-        <milyn.smooks.dtd.version>${milyn.smooks.dtd.version.base}</milyn.smooks.dtd.version>
-
-        <milyn.smooks.calc.version.base>${milyn.smooks.core.version}</milyn.smooks.calc.version.base>
-        <milyn.smooks.calc.version>${milyn.smooks.calc.version.base}</milyn.smooks.calc.version>
-
-        <milyn.smooks.css.version.base>${milyn.smooks.core.version}</milyn.smooks.css.version.base>
-        <milyn.smooks.css.version>${milyn.smooks.css.version.base}</milyn.smooks.css.version>
-
-        <milyn.smooks.javabean.version.base>${milyn.smooks.core.version}</milyn.smooks.javabean.version.base>
-        <milyn.smooks.javabean.version>${milyn.smooks.javabean.version.base}</milyn.smooks.javabean.version>
-
-        <milyn.smooks.json.version.base>${milyn.smooks.core.version}</milyn.smooks.json.version.base>
-        <milyn.smooks.json.version>${milyn.smooks.json.version.base}</milyn.smooks.json.version>
-
-        <milyn.smooks.templating.version.base>${milyn.smooks.core.version}</milyn.smooks.templating.version.base>
-        <milyn.smooks.templating.version>${milyn.smooks.templating.version.base}</milyn.smooks.templating.version>
-
-        <milyn.smooks.csv.version.base>${milyn.smooks.core.version}</milyn.smooks.csv.version.base>
-        <milyn.smooks.csv.version>${milyn.smooks.csv.version.base}</milyn.smooks.csv.version>
-
-        <milyn.smooks.edi.version.base>${milyn.smooks.core.version}</milyn.smooks.edi.version.base>
-        <milyn.smooks.edi.version>${milyn.smooks.edi.version.base}</milyn.smooks.edi.version>
-
-        <milyn.smooks.scripting.version.base>${milyn.smooks.core.version}</milyn.smooks.scripting.version.base>
-        <milyn.smooks.scripting.version>${milyn.smooks.scripting.version.base}</milyn.smooks.scripting.version>
-
-        <milyn.smooks.routing.version.base>${milyn.smooks.core.version}</milyn.smooks.routing.version.base>
-        <milyn.smooks.routing.version>${milyn.smooks.routing.version.base}</milyn.smooks.routing.version>
-
-        <milyn.smooks.persistence.version.base>${milyn.smooks.core.version}</milyn.smooks.persistence.version.base>
-        <milyn.smooks.persistence.version>${milyn.smooks.persistence.version.base}</milyn.smooks.persistence.version>
-
-        <milyn.smooks.rules.version.base>${milyn.smooks.core.version}</milyn.smooks.rules.version.base>
-        <milyn.smooks.rules.version>${milyn.smooks.validation.version.base}</milyn.smooks.rules.version>
-
-        <milyn.smooks.validation.version.base>${milyn.smooks.core.version}</milyn.smooks.validation.version.base>
-        <milyn.smooks.validation.version>${milyn.smooks.validation.version.base}</milyn.smooks.validation.version>
-   
-		<milyn.smooks.fixed-length.version.base>${milyn.smooks.core.version}</milyn.smooks.fixed-length.version.base>
-        <milyn.smooks.fixed-length.version>${milyn.smooks.fixed-length.version.base}</milyn.smooks.fixed-length.version>
-
-        <milyn.smooks.flatfile.version.base>${milyn.smooks.core.version}</milyn.smooks.flatfile.version.base>
-        <milyn.smooks.flatfile.version>${milyn.smooks.csv.version.base}</milyn.smooks.flatfile.version>
-
-		<milyn.smooks.yaml.version.base>${milyn.smooks.core.version}</milyn.smooks.yaml.version.base>
-        <milyn.smooks.yaml.version>${milyn.smooks.yaml.version.base}</milyn.smooks.yaml.version>
-
-        <milyn.smooks.camel.version.base>${milyn.smooks.core.version}</milyn.smooks.camel.version.base>
-        <milyn.smooks.camel.version>${milyn.smooks.camel.version.base}</milyn.smooks.camel.version>
-    </properties>
-
     <modules>
         <module>flatfile</module>
         <module>csv</module>
@@ -93,13 +34,13 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-core</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>dtdparser</groupId>

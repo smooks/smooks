@@ -15,25 +15,25 @@
         <dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-smooks-javabean</artifactId>
-			<version>${milyn.smooks.core.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
         <dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-smooks-edi</artifactId>
-			<version>${milyn.smooks.core.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
         <dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-smooks-ect</artifactId>
-			<version>${milyn.smooks.core.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-edisax-parser</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 

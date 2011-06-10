@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn</artifactId>
+        <artifactId>milyn-edi</artifactId>
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-		<relativePath>../../../pom.xml</relativePath>
+		<relativePath>../../pom.xml</relativePath>
     </parent>
     <name>Edifact Convertion Tool - Maven Plugin Mojo</name>
     <artifactId>maven-ect-plugin</artifactId>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ect</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

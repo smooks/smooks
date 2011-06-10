@@ -12,11 +12,6 @@
     <artifactId>milyn-edisax</artifactId>
     <packaging>pom</packaging>
 
-	<properties>
-		<milyn.edisax.model.version.base>${milyn.smooks.core.version.base}</milyn.edisax.model.version.base>
-        <milyn.edisax.model.version>${milyn.edisax.model.version.base}-SNAPSHOT</milyn.edisax.model.version>
-	</properties>
-
 	<modules>
         <module>parser</module>
     </modules>
@@ -25,7 +20,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

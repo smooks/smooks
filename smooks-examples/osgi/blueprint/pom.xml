@@ -10,13 +10,12 @@
     <name>Milyn Smooks Example - blueprint </name>
     <artifactId>milyn-smooks-example-blueprint</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0</version>
 
     <dependencies>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -35,7 +34,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-all</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 		<dependency>
@@ -121,7 +120,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Import-Package>org.milyn.*;version="${milyn.smooks.core.version}", 
+                        <Import-Package>org.milyn.*;version="${project.version}", 
 							javax.xml.transform.stream, 
 							example.model;version="${project.version}",
                             *;-nouses:=true

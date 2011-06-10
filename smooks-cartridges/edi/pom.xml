@@ -14,13 +14,13 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-edisax-parser</artifactId>
-            <version>${milyn.edisax.parser.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

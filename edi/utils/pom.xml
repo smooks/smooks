@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-smooks-edi</artifactId>
-			<version>${milyn.smooks.core.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>org.milyn.edi.unedifact</groupId>
 			<artifactId>d99a-mapping</artifactId>
-			<version>${milyn.smooks.core.version}</version>
+			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>org.milyn.edi.unedifact</groupId>
 			<artifactId>d96b-mapping</artifactId>
-			<version>${milyn.smooks.core.version}</version>
+			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>

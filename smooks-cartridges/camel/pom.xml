@@ -42,27 +42,27 @@
 		<dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-edi</artifactId>
-            <version>${milyn.smooks.edi.version}</version>
+            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
 
 		<dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-csv</artifactId>
-            <version>${milyn.smooks.csv.version}</version>
+            <version>${project.version}</version>
 			<scope>test</scope>
         </dependency>
 
 		<dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
-            <version>${milyn.smooks.templating.version}</version>
+            <version>${project.version}</version>
 			<scope>test</scope>
         </dependency>
 

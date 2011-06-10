@@ -4,7 +4,7 @@
     <groupId>mveltest</groupId>
     <artifactId>mveltest</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.5-SNAPSHOT</version>
     <name>mveltest</name>
 
     <dependencies>

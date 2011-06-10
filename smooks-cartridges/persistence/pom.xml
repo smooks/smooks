@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-scribe-core</artifactId>
-			<version>${milyn.scribe.core.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Smooks Libs -->
@@ -38,13 +38,13 @@
 		<dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
-            <version>${milyn.smooks.templating.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 		<!-- ORM Libs -->

@@ -4,12 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-perfcomp</artifactId>
-    <version>1.0</version>
+    <version>1.5-SNAPSHOT</version>
     
-    <properties>
-    	<smooks-version>1.4</smooks-version>
-    </properties>
-
     <dependencies>
 
         <dependency>
@@ -61,21 +57,21 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${smooks-version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
 
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
-            <version>${smooks-version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- dependency>
 			<groupId>org.milyn</groupId>
 
 			<artifactId>testres</artifactId>
-            <version>${smooks-version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency -->
 
