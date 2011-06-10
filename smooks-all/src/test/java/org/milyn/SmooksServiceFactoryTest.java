@@ -14,20 +14,30 @@
  */
 package org.milyn;
 
-import java.io.IOException;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
+import org.junit.Test;
 import org.osgi.framework.Bundle;
-import org.xml.sax.SAXException;
+import org.osgi.framework.ServiceFactory;
 
 /**
+ * Unit test for {@link SmooksServiceFactory}.
  * 
  * @author Daniel Bevenius
  *
  */
-public interface SmooksOSGIFactory
+public class SmooksServiceFactoryTest
 {
-    Smooks create(Bundle bundle) throws IOException, SAXException;
-    
-    Smooks create(Bundle bundle, String config) throws IOException, SAXException;
+    @Test
+    public void getService() 
+    {
+        final ServiceFactory serviceFactory = new SmooksServiceFactory();
+        final Bundle bundle = mock(Bundle.class);
+        final Object service = serviceFactory.getService(bundle, null);
+        assertThat(service, is(instanceOf(SmooksFactory.class)));
+    }
 
 }

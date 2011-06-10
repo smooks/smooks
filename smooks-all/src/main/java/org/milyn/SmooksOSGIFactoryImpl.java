@@ -15,33 +15,71 @@
 package org.milyn;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
 
 /**
+ * A factory class for creating Smooks instances in an OSGi environment.
+ * </p>
+ * This factory will create create a class loader that is able to delegate
+ * to the bundles classloader. 
  * 
  * @author Daniel Bevenius
  *
  */
-public class SmooksOSGIFactoryImpl implements SmooksOSGIFactory
+public class SmooksOSGIFactoryImpl implements SmooksFactory
 {
-    public Smooks create(final Bundle bundle) throws IOException, SAXException
+    private final Bundle bundle;
+
+    public SmooksOSGIFactoryImpl(final Bundle bundle)
     {
-        return create(bundle, (String) bundle.getHeaders().get("Smooks-Config"));
+        this.bundle = bundle;
+    }
+
+    /**
+     * Creates a new Smooks instance using the {@link Bundle} passed in.
+     * Calling this method is equivalent to calling {@link #create(String)} and passing 
+     * in {@code null} as the config.
+     * 
+     * @return Smooks a newly created Smooks instance that is un-configured.
+     */
+    public Smooks create() 
+    {
+        return createSmooksWithDelegatingClassloader();
     }
     
-    public Smooks create(final Bundle bundle, final String config) throws IOException, SAXException
-    {
-        final Smooks smooks = new Smooks();
-        smooks.setClassLoader(new BundleClassLoaderDelegator(bundle, getClass().getClassLoader()));
+    /**
+     * Creates a new Smooks instance using the {@link Bundle} passed in and adds the passed-in
+     * configuration.
+     * 
+     * @param bundle the OSGi bundle for which a delegating classloader will be created.
+     * @param config the configuration that should be added to the newly created Smooks instance. If null
+     * then a non-configured Smooks instance will be returned.
+     * @return Smooks a newly created Smooks instance.
+     */
+    public Smooks create(final InputStream config) throws IOException, SAXException {
+        final Smooks smooks = createSmooksWithDelegatingClassloader();
         if (config != null)
         {
 	        smooks.addConfigurations(config);
         }
-        else
+        return smooks;
+    }
+    
+    private Smooks createSmooksWithDelegatingClassloader() {
+        final Smooks smooks = new Smooks();
+        smooks.setClassLoader(new BundleClassLoaderDelegator(bundle, getClass().getClassLoader()));
+        return smooks;
+    }
+
+    public Smooks create(String config) throws IOException, SAXException
+    {
+        final Smooks smooks = createSmooksWithDelegatingClassloader();
+        if (config != null)
         {
-            smooks.addConfigurations("smooks-config.xml");
+	        smooks.addConfigurations(config);
         }
         return smooks;
     }
