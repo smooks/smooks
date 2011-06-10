@@ -396,10 +396,10 @@
 					<instructions>
 						<Bundle-SymbolicName>org.milyn.smooks.osgi</Bundle-SymbolicName>
 						<Bundle-Name>Smooks OSGi</Bundle-Name>
-						<Bundle-Version>${milyn.smooks.core.version}</Bundle-Version>
+						<Bundle-Version>${project.version}</Bundle-Version>
 						<Bundle-Activator>org.milyn.SmooksActivator</Bundle-Activator>
 						<Export-Package>
-							org.milyn.*;-split-package:=merge-first;version="${milyn.smooks.core.version}",
+							org.milyn.*;-split-package:=merge-first;version="${project.version}",
 							META-INF.xsd.smooks.*;-split-package:=merge-first,
 							!META-INF.services.*,
 							!META-INF.maven.*

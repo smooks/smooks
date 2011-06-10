@@ -17,33 +17,6 @@
     <url>http://milyn.codehaus.org</url>
 
     <properties>
-        <milyn.smooks.core.version.base>1.5</milyn.smooks.core.version.base> <!-- ## Smooks Version ## -->
-        <milyn.smooks.core.version>${milyn.smooks.core.version.base}-SNAPSHOT</milyn.smooks.core.version> <!-- ## Smooks Version ## --> <!-- add/remove "-SNAPSHOT" here as necessary -->
-
-        <milyn.commons.version.base>${milyn.smooks.core.version.base}</milyn.commons.version.base>
-        <milyn.commons.version>${milyn.smooks.core.version}</milyn.commons.version>
-
-        <milyn.magger.version.base>${milyn.smooks.core.version.base}</milyn.magger.version.base>
-        <milyn.magger.version>${milyn.smooks.core.version}</milyn.magger.version>
-
-        <milyn.tinak.version.base>${milyn.smooks.core.version.base}</milyn.tinak.version.base>
-        <milyn.tinak.version>${milyn.smooks.core.version}</milyn.tinak.version>
-
-		<milyn.edisax.parser.version.base>${milyn.smooks.core.version.base}</milyn.edisax.parser.version.base>
-        <milyn.edisax.parser.version>${milyn.smooks.core.version}</milyn.edisax.parser.version>
-
-		<milyn.scribe.core.version.base>${milyn.smooks.core.version.base}</milyn.scribe.core.version.base>
-        <milyn.scribe.core.version>${milyn.smooks.core.version}</milyn.scribe.core.version>
-
-        <milyn.scribe.jpa.version.base>${milyn.smooks.core.version.base}</milyn.scribe.jpa.version.base>
-        <milyn.scribe.jpa.version>${milyn.smooks.core.version}</milyn.scribe.jpa.version>
-
-        <milyn.scribe.hibernate.version.base>${milyn.smooks.core.version.base}</milyn.scribe.hibernate.version.base>
-        <milyn.scribe.hibernate.version>${milyn.smooks.core.version}</milyn.scribe.hibernate.version>
-
-        <milyn.scribe.ibatis.version.base>${milyn.smooks.core.version.base}</milyn.scribe.ibatis.version.base>
-        <milyn.scribe.ibatis.version>${milyn.smooks.core.version}</milyn.scribe.ibatis.version>
-
         <camel.version>2.6.0</camel.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <xerces.version>2.7.1</xerces.version>
@@ -226,11 +199,11 @@
                     <overview>${basedir}/src/main/java/overview.html</overview>
                     <links>
                         <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/commons</link>
-                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/tinak</link>
-                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/smooks</link>
-                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/magger</link>
-                        <link>http://www.milyn.org/javadoc/v${milyn.smooks.core.version.base}/edisax</link>
+                        <link>http://www.milyn.org/javadoc/v${project.version}/commons</link>
+                        <link>http://www.milyn.org/javadoc/v${project.version}/tinak</link>
+                        <link>http://www.milyn.org/javadoc/v${project.version}/smooks</link>
+                        <link>http://www.milyn.org/javadoc/v${project.version}/magger</link>
+                        <link>http://www.milyn.org/javadoc/v${project.version}/edisax</link>
                         <link>http://www.w3.org/Style/CSS/SAC/doc/</link>
                     </links>
                 </configuration>
@@ -262,8 +235,18 @@
             <url>http://www.jfrog.org/artifactory/plugins-releases</url>
         </repository>
         <repository>
-            <id>test</id>
-            <url>http://repository.jboss.org/maven2/</url>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Maven Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
     <pluginRepositories>

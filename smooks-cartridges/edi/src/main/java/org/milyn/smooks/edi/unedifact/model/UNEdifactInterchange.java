@@ -17,7 +17,6 @@
 package org.milyn.smooks.edi.unedifact.model;
 
 import org.milyn.edisax.model.internal.Delimiters;
-import org.milyn.smooks.edi.EDIWritable;
 
 import java.io.IOException;
 import java.io.Serializable;

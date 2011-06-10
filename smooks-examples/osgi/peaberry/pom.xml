@@ -10,13 +10,12 @@
     <name>Milyn Smooks Example - peaberry </name>
     <artifactId>milyn-smooks-example-peaberry</artifactId>
     <packaging>bundle</packaging>
-    <version>1.3</version>
 
     <dependencies>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -36,7 +35,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-all</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 		<dependency>
@@ -92,7 +91,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Activator>example.activator.PeaberryActivator</Bundle-Activator>
                         <!--Bundle-Module>example.activator.SmooksModule</Bundle-Module-->
-                        <Import-Package>org.milyn.*;version="${milyn.smooks.core.version}", 
+                        <Import-Package>org.milyn.*;version="${project.version}", 
 							javax.xml.transform.stream, 
 							example.model;version="${project.version}",
 							example.activator;version="${project.version}",

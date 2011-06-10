@@ -8,7 +8,6 @@
 	</parent>
     <name>Milyn Smooks Example - EJC</name>
     <artifactId>milyn-smooks-example-ejc-model-use</artifactId>
-	<version>1.0</version>
 
     <dependencies>
 
@@ -21,19 +20,19 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-edi</artifactId>
-            <version>${milyn.smooks.edi.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ejc</artifactId>
-            <version>${milyn.smooks.ejc.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

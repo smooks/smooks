@@ -9,7 +9,6 @@
     </parent>
     <name>Milyn Smooks Example - Java-to-XML</name>
     <artifactId>milyn-smooks-example-java-to-xml</artifactId>
-    <version>1.0</version>
 
     <dependencies>
 		<dependency>

@@ -20,7 +20,7 @@
             <dependency>
                 <groupId>org.milyn</groupId>
                 <artifactId>testres</artifactId>
-	            <version>${milyn.smooks.core.version}</version>
+	            <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -33,7 +33,7 @@
 			<dependency>
 				<groupId>org.milyn</groupId>
 				<artifactId>milyn-commons</artifactId>
-				<version>${milyn.commons.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<!-- TEST -->

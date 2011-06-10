@@ -10,7 +10,6 @@
     <name>Milyn Smooks Example - service-tracker </name>
     <artifactId>milyn-smooks-example-service-tracker</artifactId>
     <packaging>bundle</packaging>
-	<version>1.3</version>
 
     <build>
         <resources>
@@ -44,7 +43,7 @@
 						<Export-Package>example.model;version="${project.version}", 
 							example.activator;version="${project.version}"
 						</Export-Package>
-						<Import-Package>org.milyn.*;version="${milyn.smooks.core.version}",
+						<Import-Package>org.milyn.*;version="${project.version}",
 							javax.xml.transform.stream,
 							example.model;version="${project.version}",
 							example.activator;version="${project.version}",

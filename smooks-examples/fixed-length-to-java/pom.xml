@@ -8,14 +8,13 @@
 	</parent>
     <name>Milyn Smooks Example - Fixed length records to Java</name>
 	<artifactId>milyn-smooks-example-fixed-length-to-java</artifactId>
-	<version>1.0</version>
 
     <dependencies>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-fixed-length</artifactId>
-            <version>${milyn.smooks.fixed-length.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 	</dependencies>

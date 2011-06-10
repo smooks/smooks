@@ -16,7 +16,15 @@
 package org.milyn.ejc;
 
 import org.milyn.config.Configurable;
-import org.milyn.edisax.model.internal.*;
+import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.ContainerNode;
+import org.milyn.edisax.model.internal.DelimiterType;
+import org.milyn.edisax.model.internal.Delimiters;
+import org.milyn.edisax.model.internal.Field;
+import org.milyn.edisax.model.internal.MappingNode;
+import org.milyn.edisax.model.internal.Segment;
+import org.milyn.edisax.model.internal.SegmentGroup;
+import org.milyn.edisax.model.internal.ValueNode;
 import org.milyn.edisax.util.EDIUtils;
 import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.DataEncoder;

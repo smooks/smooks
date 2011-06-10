@@ -18,8 +18,6 @@ package org.milyn.edisax.interchange;
 import org.milyn.namespace.NamespaceResolver;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-
 /**
  * Interchange control block handler factory.
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

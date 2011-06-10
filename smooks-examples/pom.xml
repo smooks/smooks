@@ -73,27 +73,6 @@
     </profiles>
 
     <properties>
-        <milyn.smooks.core.version>1.5-SNAPSHOT</milyn.smooks.core.version> <!-- ## Smooks Version ## -->
-        <milyn.smooks.servlet.version>${milyn.smooks.core.version}</milyn.smooks.servlet.version>
-        <milyn.smooks.flatfile.version>${milyn.smooks.core.version}</milyn.smooks.flatfile.version>
-        <milyn.smooks.misc.version>${milyn.smooks.core.version}</milyn.smooks.misc.version>
-        <milyn.smooks.dtd.version>${milyn.smooks.core.version}</milyn.smooks.dtd.version>
-        <milyn.smooks.css.version>${milyn.smooks.core.version}</milyn.smooks.css.version>
-        <milyn.smooks.javabean.version>${milyn.smooks.core.version}</milyn.smooks.javabean.version>
-        <milyn.smooks.templating.version>${milyn.smooks.core.version}</milyn.smooks.templating.version>
-        <milyn.smooks.csv.version>${milyn.smooks.core.version}</milyn.smooks.csv.version>
-        <milyn.smooks.fixed-length.version>${milyn.smooks.core.version}</milyn.smooks.fixed-length.version>
-        <milyn.smooks.edi.version>${milyn.smooks.core.version}</milyn.smooks.edi.version>
-        <milyn.smooks.scripting.version>${milyn.smooks.core.version}</milyn.smooks.scripting.version>
-        <milyn.smooks.routing.version>${milyn.smooks.core.version}</milyn.smooks.routing.version>
-        <milyn.smooks.json.version>${milyn.smooks.core.version}</milyn.smooks.json.version>
-		<milyn.smooks.persistence.version>${milyn.smooks.core.version}</milyn.smooks.persistence.version>
-		<milyn.scribe.jpa.version>${milyn.smooks.core.version}</milyn.scribe.jpa.version>
-		<milyn.scribe.ibatis.version>${milyn.smooks.core.version}</milyn.scribe.ibatis.version>
-        <milyn.smooks.validation.version>${milyn.smooks.core.version}</milyn.smooks.validation.version>
-        <milyn.smooks.ejc.version>${milyn.smooks.core.version}</milyn.smooks.ejc.version>
-        <milyn.smooks.yaml.version>${milyn.smooks.core.version}</milyn.smooks.yaml.version>
-        <milyn.smooks.camel.version>${milyn.smooks.core.version}</milyn.smooks.camel.version>
         <camel.version>2.4.0</camel.version>
         <spring.version>2.5.6</spring.version>
     </properties>
@@ -102,13 +81,13 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-core</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>dtdparser</groupId>

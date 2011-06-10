@@ -9,14 +9,13 @@
     </parent>
     <name>Milyn Smooks Example - Basic Model Driven</name>
     <artifactId>milyn-smooks-example-model-driven-basic</artifactId>
-    <version>1.0</version>
 
     <dependencies>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
-            <version>${milyn.smooks.templating.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>xalan</groupId>
@@ -28,7 +27,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

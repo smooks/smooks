@@ -24,14 +24,13 @@
 	</parent>
     <name>Milyn Smooks Example - Flat File to XML (Using Regex)</name>
 	<artifactId>milyn-smooks-example-flatfile-to-xml-regex</artifactId>
-	<version>1.0</version>
 
     <dependencies>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-flatfile</artifactId>
-            <version>${milyn.smooks.flatfile.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 	</dependencies>

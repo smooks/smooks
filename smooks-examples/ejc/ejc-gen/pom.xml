@@ -9,7 +9,6 @@
     </parent>
     <name>Milyn Smooks Example - EJC - Model Gen</name>
     <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
-    <version>1.0</version>
 
     <build>
         <plugins>
@@ -32,7 +31,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ejc</artifactId>
-            <version>${milyn.smooks.core.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

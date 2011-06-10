@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-smooks-javabean</artifactId>
-			<version>${milyn.smooks.javabean.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-smooks-misc</artifactId>
-			<version>${milyn.smooks.misc.version}</version>
+			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

@@ -8,20 +8,19 @@
 	</parent>
     <name>Milyn Smooks Example - JSON-to-Java</name>
 	<artifactId>milyn-smooks-example-json-to-java</artifactId>
-	<version>1.0</version>
 
     <dependencies>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-json</artifactId>
-            <version>${milyn.smooks.json.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 		<dependency>

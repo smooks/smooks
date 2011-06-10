@@ -4,30 +4,20 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn-edi</artifactId>
+        <artifactId>milyn</artifactId>
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-		<relativePath>../pom.xml</relativePath>
     </parent>
-    <name>Milyn EdiSax</name>
-    <artifactId>milyn-edisax</artifactId>
-    <packaging>pom</packaging>
-
-	<properties>
-		<milyn.edisax.model.version.base>${milyn.smooks.core.version.base}</milyn.edisax.model.version.base>
-        <milyn.edisax.model.version>${milyn.edisax.model.version.base}-SNAPSHOT</milyn.edisax.model.version>
-	</properties>
-
-	<modules>
-        <module>parser</module>
-    </modules>
+    <name>Milyn EdiSax Parser</name>
+    <artifactId>milyn-edisax-parser</artifactId>
 
     <dependencies>
+
         <dependency>
             <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
-            <version>${milyn.smooks.core.version}</version>
-            <scope>test</scope>
+            <artifactId>milyn-commons</artifactId>
+            <version>${project.version}</version>
         </dependency>
+
     </dependencies>
 
     <repositories>

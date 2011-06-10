@@ -8,32 +8,31 @@
 	</parent>
     <name>Milyn Smooks Example - DAO Router</name>
 	<artifactId>milyn-smooks-example-dao-router</artifactId>
-	<version>1.0</version>
 
     <dependencies>
 
     	<dependency>
     		<groupId>org.milyn</groupId>
     		<artifactId>milyn-scribe-jpa</artifactId>
-    		<version>${milyn.scribe.jpa.version}</version>
+    		<version>${project.version}</version>
     	</dependency>
 
     	<dependency>
     		<groupId>org.milyn</groupId>
     		<artifactId>milyn-scribe-ibatis</artifactId>
-    		<version>${milyn.scribe.ibatis.version}</version>
+    		<version>${project.version}</version>
     	</dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-persistence</artifactId>
-            <version>${milyn.smooks.persistence.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-routing</artifactId>
-            <version>${milyn.smooks.routing.version}</version>
+            <version>${project.version}</version>
             <exclusions>
             	<exclusion>
             		<groupId>com.mockrunner</groupId>

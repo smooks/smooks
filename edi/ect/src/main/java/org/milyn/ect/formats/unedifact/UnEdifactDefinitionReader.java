@@ -15,9 +15,13 @@
 */
 package org.milyn.ect.formats.unedifact;
 
-import org.milyn.edisax.model.internal.*;
 import org.milyn.ect.EdiParseException;
 import org.milyn.ect.common.XmlTagEncoder;
+import org.milyn.edisax.model.internal.Component;
+import org.milyn.edisax.model.internal.Edimap;
+import org.milyn.edisax.model.internal.Field;
+import org.milyn.edisax.model.internal.Segment;
+import org.milyn.edisax.model.internal.SegmentGroup;
 
 import java.io.*;
 import java.util.*;

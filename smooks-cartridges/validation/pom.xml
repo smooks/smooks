@@ -14,12 +14,12 @@
 		<dependency>
 			<groupId>org.milyn</groupId>
 			<artifactId>milyn-smooks-rules</artifactId>
-			<version>${milyn.smooks.rules.version}</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${milyn.smooks.javabean.version}</version>
+            <version>${project.version}</version>
         </dependency>
 	</dependencies>
 

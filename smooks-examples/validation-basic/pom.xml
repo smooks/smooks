@@ -9,14 +9,13 @@
     </parent>
     <name>Milyn Smooks Example - validation-basic</name>
     <artifactId>milyn-smooks-example-validation-basic</artifactId>
-    <version>1.0</version>
 
     <dependencies>
 		
 		<dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-validation</artifactId>
-            <version>${milyn.smooks.validation.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

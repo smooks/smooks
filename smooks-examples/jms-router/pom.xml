@@ -9,7 +9,6 @@
     </parent>
     <name>Milyn Smooks Example - JMS Router</name>
     <artifactId>milyn-smooks-example-jms-router</artifactId>
-    <version>1.0</version>
     <packaging>pom</packaging>
 
     <modules>

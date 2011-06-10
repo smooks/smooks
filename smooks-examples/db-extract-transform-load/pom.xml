@@ -8,19 +8,18 @@
 	</parent>
     <name>Milyn Smooks Example - EDI-to-DB ETL</name>
 	<artifactId>milyn-smooks-example-db-extract-transform-load</artifactId>
-	<version>1.0</version>
 
     <dependencies>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-edi</artifactId>
-            <version>${milyn.smooks.edi.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-routing</artifactId>
-            <version>${milyn.smooks.routing.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>hsqldb</groupId>

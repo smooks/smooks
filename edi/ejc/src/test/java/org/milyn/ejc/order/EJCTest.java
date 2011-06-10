@@ -19,10 +19,7 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 
-import org.milyn.archive.Archive;
 import org.milyn.edisax.EDIConfigurationException;
-import org.milyn.ejc.ClassModel;
-import org.milyn.ejc.EJC;
 import org.milyn.ejc.EJCTestUtil;
 import org.milyn.ejc.IllegalNameException;
 import org.xml.sax.SAXException;

@@ -17,13 +17,6 @@
 package org.milyn.edisax.v1_2.validation;
 
 import junit.framework.TestCase;
-import java.io.IOException;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.milyn.edisax.EDITypeEnum;
-import org.milyn.edisax.model.internal.ParamEntry;
 
 /**
  * Tests validation of type in ValueNode.
