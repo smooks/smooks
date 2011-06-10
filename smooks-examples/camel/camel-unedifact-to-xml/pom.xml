@@ -4,7 +4,8 @@
 	<parent>
 		<groupId>org.milyn</groupId>
 		<artifactId>milyn-smooks-example-camel</artifactId>
-		<version>1.0</version>
+		<version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <relativePath>../pom.xml</relativePath>
 	</parent>
     <name>Milyn Smooks Example - Smooks Camel UNEDIFACT to String</name>
 	<artifactId>milyn-smooks-example-camel-unedifact-to-xml</artifactId>
