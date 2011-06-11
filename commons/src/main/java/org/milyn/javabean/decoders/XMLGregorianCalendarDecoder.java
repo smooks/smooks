@@ -53,4 +53,12 @@ public class XMLGregorianCalendarDecoder extends DateDecoder {
             throw new DataDecodeException("Error decoding XMLGregorianCalendar data value '" + data + "' with decode format '" + format + "'.", e);
         }
     }
+
+    @Override
+    public String encode(Object date) throws DataDecodeException {
+        if(!(date instanceof XMLGregorianCalendar)) {
+            throw new DataDecodeException("Cannot encode Object type '" + date.getClass().getName() + "'.  Must be type '" + XMLGregorianCalendar.class.getName() + "'.");
+        }
+        return super.encode(((XMLGregorianCalendar)date).toGregorianCalendar().getTime());
+    }
 }
