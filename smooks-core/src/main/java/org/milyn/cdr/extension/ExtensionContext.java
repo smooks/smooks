@@ -17,6 +17,7 @@ package org.milyn.cdr.extension;
 
 import org.milyn.cdr.ConfigSearch;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.SmooksResourceConfigurationChangeListener;
 import org.milyn.cdr.SmooksResourceConfigurationList;
 import org.milyn.cdr.XMLConfigDigester;
 import org.milyn.container.ExecutionContext;
@@ -39,8 +40,34 @@ public class ExtensionContext {
     private String defaultNamespace;
     private String defaultProfile;
     private ExpressionEvaluator defaultConditionEvaluator;
-    
-    private Stack<SmooksResourceConfiguration> resourceStack = new Stack<SmooksResourceConfiguration>();
+
+    private final Stack<SmooksResourceConfiguration> resourceStack = new Stack<SmooksResourceConfiguration>() {
+        @Override
+        public SmooksResourceConfiguration push(SmooksResourceConfiguration smooksResourceConfiguration) {
+            if(!isEmpty()) {
+                smooksResourceConfiguration.addChangeListener(resChangeListener);
+            }
+            return super.push(smooksResourceConfiguration);
+        }
+
+        @Override
+        public SmooksResourceConfiguration pop() {
+            SmooksResourceConfiguration smooksResourceConfiguration = super.pop();
+            if(!isEmpty()) {
+                smooksResourceConfiguration.removeChangeListener(resChangeListener);
+            }
+            return smooksResourceConfiguration;
+        }
+    };
+    private SmooksResourceConfigurationChangeListener resChangeListener = new SmooksResourceConfigurationChangeListener() {
+        public void changed(SmooksResourceConfiguration configuration) {
+            String selector = configuration.getSelector();
+            if(selector != null && selector.startsWith("#/")) {
+                SmooksResourceConfiguration parentResource = resourceStack.get(resourceStack.size() - 2);
+                configuration.setSelector(parentResource.getSelector() + selector.substring(1));
+            }
+        }
+    };
     private List<SmooksResourceConfiguration> resources = new ArrayList<SmooksResourceConfiguration>();
 
     /**

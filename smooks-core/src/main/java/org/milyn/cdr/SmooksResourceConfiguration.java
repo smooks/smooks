@@ -19,7 +19,6 @@ package org.milyn.cdr;
 import org.apache.commons.logging.*;
 import org.milyn.classpath.*;
 import org.milyn.container.*;
-import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.Filter;
 import org.milyn.delivery.Visitor;
 import org.milyn.delivery.sax.*;
@@ -271,6 +270,10 @@ public class SmooksResourceConfiguration {
      * The extended config namespace from which the  resource was created.
      */
     private String extendedConfigNS;
+    /**
+     * Change listeners.
+     */
+    private Set<SmooksResourceConfigurationChangeListener> changeListeners = new HashSet<SmooksResourceConfigurationChangeListener>();
 
     /**
      * Public default constructor.
@@ -446,6 +449,11 @@ public class SmooksResourceConfiguration {
             selectorSteps = constructSelectorStepsFromLegacySelector(selector);
         }
 
+        initTarget();
+        fireChangedEvent();
+    }
+
+    private void initTarget() {
         selectorStep = selectorSteps[selectorSteps.length - 1];
         targetElement = selectorStep.getTargetElement();
         targetAttribute = selectorStep.getTargetAttribute();
@@ -520,6 +528,7 @@ public class SmooksResourceConfiguration {
             } else {
                 this.namespaceURI = namespaceURI.intern();
             }
+            fireChangedEvent();
         }
     }
 
@@ -540,6 +549,7 @@ public class SmooksResourceConfiguration {
                 isInline = true;
             }
         }
+        fireChangedEvent();
     }
 
     /**
@@ -635,6 +645,8 @@ public class SmooksResourceConfiguration {
      */
     public void setSelectorSteps(SelectorStep[] selectorSteps) {
         this.selectorSteps = selectorSteps;
+        initTarget();
+        fireChangedEvent();
     }
 
     /**
@@ -1588,6 +1600,22 @@ public class SmooksResourceConfiguration {
     }
 
     /**
+     * Add the specified change listener to the list of change listeners.
+     * @param listener The listener instance.
+     */
+    public void addChangeListener(SmooksResourceConfigurationChangeListener listener) {
+        changeListeners.add(listener);
+    }
+
+    /**
+     * Remove the specified change listener from the list of change listeners.
+     * @param listener The listener instance.
+     */
+    public void removeChangeListener(SmooksResourceConfigurationChangeListener listener) {
+        changeListeners.remove(listener);
+    }
+
+    /**
      * Generate an XML'ified description of this resource.
      *
      * @return XML'ified description of the resource.
@@ -1718,6 +1746,13 @@ public class SmooksResourceConfiguration {
         public void buildPredicatesEvaluator(Properties namespaces) throws SAXPathException, NotFoundException, CannotCompileException, IllegalAccessException, InstantiationException {
             // Ignore this.
         }
-        
+    }
+
+    private void fireChangedEvent() {
+        if(!changeListeners.isEmpty()) {
+            for(SmooksResourceConfigurationChangeListener listener : changeListeners) {
+                listener.changed(this);
+            }
+        }
     }
 }

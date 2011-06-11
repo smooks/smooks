@@ -32,13 +32,13 @@
     </jb:bean>
 
     <jb:bean beanId="header" class="org.milyn.javabean.binding.ordermodel.Header" createOnElement="/ord:order">
-        <jb:value property="date" decoder="Date" data="/ord:order/@ord:date">
+        <jb:value property="date" decoder="Date" data="#/@ord:date">
             <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
             <jb:decodeParam name="locale-language">en</jb:decodeParam>
             <jb:decodeParam name="locale-country">IE</jb:decodeParam>
         </jb:value>
-        <jb:value property="customerNumber" data="/ord:order/ord:header/ord:customer/@ord:number" />
-        <jb:value property="customerName" data="/ord:order/ord:header/ord:customer/@ord:name" />
+        <jb:value property="customerNumber" data="#/ord:header/ord:customer/@ord:number" />
+        <jb:value property="customerName" data="#/ord:header/ord:customer/@ord:name" />
     </jb:bean>
 
     <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="${order}/ord:order-items">

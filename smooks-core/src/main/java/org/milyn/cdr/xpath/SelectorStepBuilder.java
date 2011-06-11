@@ -83,7 +83,6 @@ public class SelectorStepBuilder {
         List<SelectorStep> selectorSteps = new ArrayList<SelectorStep>();
         boolean isRooted = false;
         boolean endsStarStar = false;
-        boolean isHashedAttribute = false;
 
         if(xpathExpression.startsWith("/")) {
             isRooted = true;
@@ -100,12 +99,6 @@ public class SelectorStepBuilder {
                 reconstructedExpression.append(tokens[i]);
             }
             xpathExpression = reconstructedExpression.toString();
-
-            if(xpathExpression.startsWith("@")) {
-                // Hack to make hashed attribute selectors work (MILYN-598)...
-                xpathExpression = "dummyHashedAttributeElement/" + xpathExpression;
-                isHashedAttribute = true;
-            }
         }
         if(xpathExpression.endsWith("//")) {
             endsStarStar = true;
@@ -140,10 +133,7 @@ public class SelectorStepBuilder {
                         if(i == steps.size() - 2) {
                             Step nextStep = steps.get(i + 1);
                             if(nextStep.getAxis() == Axis.ATTRIBUTE) {
-                                SelectorStep selectorStep = new SelectorStep(xpathExpression, step, nextStep);
-
-                                selectorStep.setIsHashedAttribute(isHashedAttribute);
-                                selectorSteps.add(selectorStep);
+                                selectorSteps.add(new SelectorStep(xpathExpression, step, nextStep));
                                 // We end here.  The next step is the last step and we've merged it into
                                 // the last evaluator...
                                 break;
@@ -237,7 +227,7 @@ public class SelectorStepBuilder {
         // exist inside squaere brackets...
         StringBuilder xpathExpressionBuilder = new StringBuilder();
         boolean normalize = true;
-        
+
         for(int i = 0; i < selectorExpression.length(); i++) {
             char character = selectorExpression.charAt(i);
 
@@ -281,7 +271,7 @@ public class SelectorStepBuilder {
         } else {
             contextualSelector = new String[selectorSteps.length];
         }
-        
+
         for(int i = 0; i < selectorSteps.length; i++) {
             contextualSelector[i] = selectorSteps[i].getTargetElement().getLocalPart();
         }

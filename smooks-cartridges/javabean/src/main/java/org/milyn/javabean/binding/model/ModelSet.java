@@ -204,23 +204,10 @@ public class ModelSet {
     }
 
     private SelectorStep[] concat(SelectorStep[] context, SelectorStep[] beanSelectorSteps) {
-        SelectorStep[] newSteps;
+        SelectorStep[] newSteps = new SelectorStep[context.length + beanSelectorSteps.length - 1];
 
-        if(beanSelectorSteps.length == 2 && beanSelectorSteps[1].isHashedAttribute()) {
-            newSteps = new SelectorStep[context.length];
-
-            System.arraycopy(context, 0, newSteps, 0, context.length);
-
-            // Clone the last step and then set the attributeStep on it by copying it from the last beanSelectorStep...
-            SelectorStep clone = newSteps[newSteps.length - 1].clone();
-            clone.setAttributeStep(beanSelectorSteps[1].getAttributeStep());
-            newSteps[newSteps.length - 1] = clone;
-        } else {
-            newSteps = new SelectorStep[context.length + beanSelectorSteps.length - 1];
-
-            System.arraycopy(context, 0, newSteps, 0, context.length);
-            System.arraycopy(beanSelectorSteps, 1, newSteps, context.length, beanSelectorSteps.length - 1);
-        }
+        System.arraycopy(context, 0, newSteps, 0, context.length);
+        System.arraycopy(beanSelectorSteps, 1, newSteps, context.length, beanSelectorSteps.length - 1);
 
         return newSteps;
     }

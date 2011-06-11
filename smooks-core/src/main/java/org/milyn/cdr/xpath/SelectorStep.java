@@ -61,7 +61,6 @@ public class SelectorStep {
     private QName targetElement;
     private QName targetAttribute;
     private XPathExpressionEvaluator predicatesEvaluator;
-    private boolean hashedAttribute;
 
     /**
      * Public constructor.
@@ -178,7 +177,6 @@ public class SelectorStep {
         clone.targetElement = targetElement;
         clone.targetAttribute = targetAttribute;
         clone.predicatesEvaluator = predicatesEvaluator;
-        clone.hashedAttribute = hashedAttribute;
 
         return clone;
     }
@@ -447,14 +445,6 @@ public class SelectorStep {
      * @return True if the selector step is a hashed attribute selector, otherwise false.
      */
     public boolean isHashedAttribute() {
-        return hashedAttribute;
-    }
-
-    /**
-     * Set the isHashedAttribute selector step flag.
-     * @param hashedAttribute True if the selector step is a hashed attribute selector, otherwise false.
-     */
-    public void setIsHashedAttribute(boolean hashedAttribute) {
-        this.hashedAttribute = hashedAttribute;
+        return false;
     }
 }
