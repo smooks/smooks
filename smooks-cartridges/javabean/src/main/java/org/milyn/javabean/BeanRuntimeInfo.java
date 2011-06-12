@@ -19,6 +19,7 @@ import org.milyn.cdr.*;
 import org.milyn.container.*;
 import org.milyn.util.ClassUtil;
 
+import javax.xml.bind.annotation.XmlType;
 import java.util.*;
 
 /**
@@ -49,6 +50,10 @@ public class BeanRuntimeInfo {
      * actual array type.
      */
     private Class<?> arrayType;
+    /**
+     * Is the type a JAXB Type.
+     */
+    private boolean isJAXBType = false;
 
     /**
      * Bean type classification.
@@ -150,14 +155,6 @@ public class BeanRuntimeInfo {
 
 	        this.setPopulateType(clazz);
             this.setClassification(clazz);
-
-            // check for a default constructor.
-//	        try {
-//	            clazz.getConstructor();
-//	        } catch (NoSuchMethodException e) {
-//	            throw new SmooksConfigurationException("Invalid Smooks bean configuration.  Bean class " + beanClass + " doesn't have a public default constructor.");
-//	        }
-
         }
     }
 
@@ -201,6 +198,7 @@ public class BeanRuntimeInfo {
 
     public void setPopulateType(Class<?> populateType) {
         this.populateType = populateType;
+        isJAXBType = populateType.isAnnotationPresent(XmlType.class);
     }
 
     public Classification getClassification() {
@@ -217,6 +215,10 @@ public class BeanRuntimeInfo {
 
     public void setArrayType(Class<?> arrayType) {
         this.arrayType = arrayType;
+    }
+
+    public boolean isJAXBType() {
+        return isJAXBType;
     }
 
     @Override

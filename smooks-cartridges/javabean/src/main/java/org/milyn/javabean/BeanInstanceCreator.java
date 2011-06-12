@@ -55,6 +55,8 @@ import org.milyn.util.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
@@ -161,10 +163,22 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
             String alias = null;
             String definition = beanFactoryDefinition;
 
-            int aliasSplitterIndex = beanFactoryDefinition.indexOf(':');
+            if (definition.indexOf("#") == -1) {
+                try {
+                    URI definitionURI = new URI(definition);
+                    if (definitionURI.getScheme() == null) {
+                        // Default it to MVEL...
+                        definition = "mvel:" + definition;
+                    }
+                } catch (URISyntaxException e) {
+                    // Let it run...
+                }
+            }
+
+            int aliasSplitterIndex = definition.indexOf(':');
             if(aliasSplitterIndex > 0) {
-                alias = beanFactoryDefinition.substring(0, aliasSplitterIndex);
-                definition = beanFactoryDefinition.substring(aliasSplitterIndex+1);
+                alias = definition.substring(0, aliasSplitterIndex);
+                definition = definition.substring(aliasSplitterIndex+1);
             }
 
     		factory = FactoryDefinitionParserFactory.getInstance(alias, appContext).parse(definition);

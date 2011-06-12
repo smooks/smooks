@@ -52,6 +52,7 @@ import org.milyn.xml.DomUtils;
 import org.milyn.xml.NamespaceMappings;
 import org.w3c.dom.Element;
 
+import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -138,18 +139,18 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
     private BeanId wireBeanId;
 
     private BeanRuntimeInfo beanRuntimeInfo;
-    private BeanRuntimeInfo wiredBeanRuntimeInfo;
 
+    private BeanRuntimeInfo wiredBeanRuntimeInfo;
     private Method propertySetterMethod;
     private boolean checkedForSetterMethod;
     private boolean isAttribute = true;
     private DataDecoder decoder;
+
     private String mapKeyAttribute;
 
     private boolean isBeanWiring;
-
     private BeanWiringObserver wireByBeanIdObserver;
-	private ListToArrayChangeObserver listToArrayChangeObserver;
+    private ListToArrayChangeObserver listToArrayChangeObserver;
 
     public SmooksResourceConfiguration getConfig() {
         return config;
@@ -537,7 +538,6 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         try {
             if(propertySetterMethod != null) {
             	propertySetterMethod.invoke(bean, dataObject);
-
             } else if(beanType == Classification.MAP_COLLECTION) {
                 ((Map)bean).put(mapPropertyName, dataObject);
             } else if(beanType == Classification.ARRAY_COLLECTION || beanType == Classification.COLLECTION_COLLECTION) {
@@ -546,7 +546,20 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
             	if(setterMethod != null) {
                     throw new SmooksConfigurationException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + setterMethod + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
                 } else if(property != null) {
-                    throw new SmooksConfigurationException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + ClassUtil.toSetterName(property) + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
+                    boolean throwException = true;
+
+                    if (beanRuntimeInfo.isJAXBType() && getWiredBeanRuntimeInfo().getClassification() != BeanRuntimeInfo.Classification.NON_COLLECTION) {
+                        // It's a JAXB collection type.  If the wired in bean is created by a factory then it's most
+                        // probable that there's no need to set the collection because the JAXB type is creating it lazily
+                        // in the getter method.  So... we're going to ignore this.
+                        if (wireBeanId.getCreateResourceConfiguration().getParameter("beanFactory") != null) {
+                            throwException = false;
+                        }
+                    }
+
+                    if (throwException) {
+                        throw new SmooksConfigurationException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + ClassUtil.toSetterName(property) + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
+                    }
                 }
             }
 
