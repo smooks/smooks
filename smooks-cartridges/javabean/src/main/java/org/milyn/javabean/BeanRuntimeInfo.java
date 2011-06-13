@@ -19,7 +19,7 @@ import org.milyn.cdr.*;
 import org.milyn.container.*;
 import org.milyn.util.ClassUtil;
 
-import javax.xml.bind.annotation.XmlType;
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
@@ -198,7 +198,15 @@ public class BeanRuntimeInfo {
 
     public void setPopulateType(Class<?> populateType) {
         this.populateType = populateType;
-        isJAXBType = populateType.isAnnotationPresent(XmlType.class);
+
+        // Check the annotations and see if one of them is the XmlType annotation.  Can't use
+        // a type check because XmlType is not in Java5, so need to do a physical name check...
+        for (Annotation anno : populateType.getAnnotations()) {
+            isJAXBType = anno.annotationType().getName().equals("javax.xml.bind.annotation.XmlType");
+            if (isJAXBType) {
+                break;
+            }
+        }
     }
 
     public Classification getClassification() {
