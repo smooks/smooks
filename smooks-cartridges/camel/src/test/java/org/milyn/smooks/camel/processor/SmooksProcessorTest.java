@@ -25,7 +25,9 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Set;
 
 import javax.activation.DataHandler;
@@ -52,8 +54,6 @@ import org.milyn.delivery.Filter;
 import org.milyn.io.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
-import com.sun.istack.internal.ByteArrayDataSource;
 
 /**
  * Unit test for {@link SmooksProcessor}.
@@ -132,7 +132,7 @@ public class SmooksProcessorTest extends CamelTestSupport
     
     private void addAttachment(final String attachment, final String id, final Exchange exchange) 
     {
-        final DataSource ds = new ByteArrayDataSource(attachment.getBytes(), "text/plain");
+        final DataSource ds = new StringDataSource(attachment);
         final DataHandler dataHandler = new DataHandler(ds);
         exchange.getIn().addAttachment(id, dataHandler);
     }
@@ -221,5 +221,37 @@ public class SmooksProcessorTest extends CamelTestSupport
     private String getOrderEdi() throws IOException
     {
         return StreamUtils.readStream(new InputStreamReader(getClass().getResourceAsStream("/data/order.edi")));
+    }
+    
+    private class StringDataSource implements DataSource
+    {
+        private final String string;
+
+        private StringDataSource(final String string) 
+        {
+            this.string = string;
+            
+        }
+        
+        public String getContentType()
+        {
+            return "text/plain";
+        }
+
+        public InputStream getInputStream() throws IOException
+        {
+            return new ByteArrayInputStream(string.getBytes());
+        }
+
+        public String getName()
+        {
+            return "StringDataSource";
+        }
+
+        public OutputStream getOutputStream() throws IOException
+        {
+            throw new IOException("Method 'getOutputStream' is not implmeneted");
+        }
+        
     }
 }
