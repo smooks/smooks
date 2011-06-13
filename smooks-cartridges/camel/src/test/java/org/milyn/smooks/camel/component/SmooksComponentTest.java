@@ -87,7 +87,7 @@ public class SmooksComponentTest extends CamelTestSupport
         {
             public void configure() throws Exception
             {
-                from("file://src/test/data?noop=true")
+                from("file://src/test/resources/data?noop=true")
                 .to("smooks://edi-to-xml-smooks-config.xml")
                 .convertBodyTo(Node.class).to("mock:result");
             }

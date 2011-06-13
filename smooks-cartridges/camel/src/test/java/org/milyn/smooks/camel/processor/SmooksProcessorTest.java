@@ -17,20 +17,29 @@
 package org.milyn.smooks.camel.processor;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Set;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
+import org.apache.camel.CamelExecutionException;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.impl.DefaultExchange;
 import org.apache.camel.spi.ManagementAgent;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -43,6 +52,8 @@ import org.milyn.delivery.Filter;
 import org.milyn.io.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import com.sun.istack.internal.ByteArrayDataSource;
 
 /**
  * Unit test for {@link SmooksProcessor}.
@@ -87,23 +98,55 @@ public class SmooksProcessorTest extends CamelTestSupport
     {
         assertOneProcessedMessage();
     }
-
+    
     private void assertOneProcessedMessage() throws Exception
     {
         result.expectedMessageCount(1);
-
+        template.sendBody("direct://input", getOrderEdi());
+    
         assertMockEndpointsSatisfied();
-
+    
         Exchange exchange = result.assertExchangeReceived(0);
         assertIsInstanceOf(Document.class, exchange.getIn().getBody());
         assertXMLEqual(getExpectedOrderXml(), exchange.getIn().getBody(String.class));
     }
 
     @Test
+    public void processWithAttachment() throws CamelExecutionException, IOException 
+    {
+        final DefaultExchange exchange = new DefaultExchange(context);
+        final String attachmentContent = "A dummy attachment";
+        final String attachmentId = "testAttachment";
+        addAttachment(attachmentContent, attachmentId, exchange);
+        exchange.getIn().setBody(getOrderEdi());
+        
+        template.send("direct://input", exchange);
+        
+        final DataHandler datahandler = result.assertExchangeReceived(0).getIn().getAttachment(attachmentId);
+        assertThat(datahandler, is(notNullValue()));
+        assertThat(datahandler.getContent(), is(instanceOf(ByteArrayInputStream.class)));
+        
+        final String actualAttachmentContent = getAttachmentContent(datahandler);
+        assertThat(actualAttachmentContent, is(equalTo(attachmentContent)));
+    }
+    
+    private void addAttachment(final String attachment, final String id, final Exchange exchange) 
+    {
+        final DataSource ds = new ByteArrayDataSource(attachment.getBytes(), "text/plain");
+        final DataHandler dataHandler = new DataHandler(ds);
+        exchange.getIn().addAttachment(id, dataHandler);
+    }
+    
+    private String getAttachmentContent(final DataHandler datahandler) throws IOException 
+    {
+        final ByteArrayInputStream bs = (ByteArrayInputStream) datahandler.getContent();
+        return new String(StreamUtils.readStream(bs));
+    }
+
+    @Test
     public void assertSmooksReportWasCreated() throws Exception
     {
-        result.expectedMessageCount(1);
-        assertMockEndpointsSatisfied();
+        assertOneProcessedMessage();
 
         File report = new File("target/smooks-report.html");
         report.deleteOnExit();
@@ -165,7 +208,7 @@ public class SmooksProcessorTest extends CamelTestSupport
                 SmooksProcessor processor = new SmooksProcessor("edi-to-xml-smooks-config.xml", context);
                 processor.setReportPath("target/smooks-report.html");
 
-                from("file://src/test/data?noop=true").process(processor).convertBodyTo(Node.class).to("mock:result");
+                from("direct:input").process(processor).convertBodyTo(Node.class).to("mock:result");
             }
         };
     }
@@ -173,5 +216,10 @@ public class SmooksProcessorTest extends CamelTestSupport
     private String getExpectedOrderXml() throws IOException
     {
         return StreamUtils.readStream(new InputStreamReader(getClass().getResourceAsStream("/xml/expected-order.xml")));
+    }
+    
+    private String getOrderEdi() throws IOException
+    {
+        return StreamUtils.readStream(new InputStreamReader(getClass().getResourceAsStream("/data/order.edi")));
     }
 }
