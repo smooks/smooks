@@ -18,7 +18,7 @@ package org.milyn.ect.formats.unedifact;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.ect.EdiConvertionTool;
-import org.milyn.ect.EdiDirectory;
+import org.milyn.edisax.interchange.EdiDirectory;
 import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.ect.EdiParseException;
 import org.milyn.edisax.model.internal.Description;
@@ -120,14 +120,26 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         return properties;
     }
 
-    public EdiDirectory getEdiDirectory() throws IOException {
+    public EdiDirectory getEdiDirectory(String... includeMessages) throws IOException {
         if(ediDirectory == null) {
+            Set<String> includeMessageSet = null;
             String commonMessageName = getCommmonMessageName();
             Set<String> messages = getMessageNames();
             Edimap commonModel = null;
             List<Edimap> models = new ArrayList<Edimap>();
 
+            if(includeMessages != null && includeMessages.length > 0) {
+                includeMessageSet = new HashSet<String>(Arrays.asList(includeMessages));
+            }
+
             for(String message : messages) {
+                if (includeMessageSet != null && !message.equals(commonMessageName)) {
+                    if (!includeMessageSet.contains(message)) {
+                        // Skip this message...
+                        continue;
+                    }
+                }
+
                 Edimap model = getMappingModel(message);
 
                 EdiConvertionTool.removeDuplicateSegments(model.getSegments());

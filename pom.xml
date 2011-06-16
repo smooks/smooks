@@ -53,6 +53,8 @@
         <module>edi/ect/maven-ect-plugin</module>
         <module>edi/ejc</module>
         <module>edi/ejc/maven-ejc-plugin</module>
+        <module>edi/edi-test</module>
+        <!-- module>edi/edi-utils</module -->
 
         <module>smooks-examples</module>
     </modules>

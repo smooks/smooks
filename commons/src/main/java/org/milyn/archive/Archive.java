@@ -243,6 +243,17 @@ public class Archive {
     }
 
     /**
+     * Remove the archive entry at the specified path.
+     *
+     * @param path The target path of the entry to be removed from the archive.
+     * @return This archive instance.
+     */
+    public Archive removeEntry(String path) {
+        entries.remove(path);
+        return this;
+    }
+
+    /**
      * Get the archive entries.
      * <p/>
      * The returned map entries are ordered in line with the order in which they were added
@@ -321,6 +332,28 @@ public class Archive {
     }
 
     /**
+     * Create an archive in the specified File containing entries
+     * for the data contained in the streams supplied entries arg.
+     * specifying the entry name and the value is a InputStream containing
+     * the entry data.
+     * @param file The archive file.
+     * @throws java.io.IOException Write failure.
+     */
+    public void toFile(File file) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+        try {
+            toOutputStream(new ZipOutputStream(fileOutputStream));
+        } finally {
+            try {
+            fileOutputStream.flush();
+            } finally {
+                fileOutputStream.close();
+            }
+        }
+    }
+
+    /**
      * Output the entries to the specified output folder on the file system.
      * @param outputFolder The target output folder.
      * @throws java.io.IOException Write failure.
@@ -329,7 +362,7 @@ public class Archive {
         AssertArgument.isNotNull(outputFolder, "outputFolder");
 
         if(outputFolder.isFile()) {
-            throw new IOException("Cannot write Archive entries to '" + outputFolder.getAbsolutePath() + "'.  This is a normal file i.e. not a directory.");            
+            throw new IOException("Cannot write Archive entries to '" + outputFolder.getAbsolutePath() + "'.  This is a normal file i.e. not a directory.");
         }
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();

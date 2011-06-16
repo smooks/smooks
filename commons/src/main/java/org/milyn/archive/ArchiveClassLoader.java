@@ -19,8 +19,16 @@ package org.milyn.archive;
 import org.milyn.assertion.AssertArgument;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +40,7 @@ public class ArchiveClassLoader extends ClassLoader {
 
     private Archive archive;
     private Map<String, Class> loadedClasses = new HashMap<String, Class>();
+    private File tempFile;
 
     public ArchiveClassLoader(Archive archive) {
         this(Thread.currentThread().getContextClassLoader(), archive);
@@ -71,5 +80,65 @@ public class ArchiveClassLoader extends ClassLoader {
         } else {
             return super.getResourceAsStream(name);
         }
+    }
+
+    @Override
+    protected URL findResource(String resName) {
+        URL resource = getResourceURL(resName);
+
+        if (resource != null) {
+            return resource;
+        }
+
+        return getParent().getResource(resName);
+    }
+
+    @Override
+    protected Enumeration<URL> findResources(String resName) throws IOException {
+        List<URL> resources = new ArrayList<URL>();
+        URL resource = getResourceURL(resName);
+
+        if (resource != null) {
+            resources.add(resource);
+        }
+
+        Enumeration<URL> parentResource = getParent().getResources(resName);
+        resources.addAll(Collections.list(parentResource));
+
+        return Collections.enumeration(resources);
+    }
+
+    private URL getResourceURL(String resName) {
+        byte[] entry = archive.getEntries().get(resName);
+
+        if (entry == null) {
+            return null;
+        }
+
+        if (tempFile == null) {
+            createTempJar();
+        }
+
+        try {
+            return new URL("jar:" + tempFile.toURI() + "!/" + resName);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException("Unable to create temporary archive jar file URL for resource '" + resName + "'.", e);
+        }
+    }
+
+    public synchronized File createTempJar() {
+        if (tempFile == null) {
+            try {
+                tempFile = File.createTempFile("smooks-archive", ".jar");
+
+                tempFile.delete();
+                archive.toFile(tempFile);
+                tempFile.deleteOnExit();
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to create temporary jar file.", e);
+            }
+        }
+
+        return tempFile;
     }
 }

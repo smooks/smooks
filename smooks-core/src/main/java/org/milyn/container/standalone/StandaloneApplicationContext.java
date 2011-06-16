@@ -124,10 +124,6 @@ public class StandaloneApplicationContext implements ApplicationContext {
     }
 
     public ClassLoader getClassLoader() {
-        if(classLoader != null) {
-            return classLoader;
-        }
-        return getClass().getClassLoader();
+        return classLoader;
     }
-
 }

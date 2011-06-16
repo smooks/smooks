@@ -192,6 +192,9 @@ public class EDIParser implements XMLReader {
         } else if(mappingConfigTokens.length == 3) {
             ediMappingModel = mappingConfigTokens[0];
             mappingDescription = new Description().setName(mappingConfigTokens[1]).setVersion(mappingConfigTokens[2]);            
+        } else if(mappingConfigTokens.length == 4) {
+            ediMappingModel = mappingConfigTokens[0];
+            mappingDescription = new Description().setName(mappingConfigTokens[1]).setVersion(mappingConfigTokens[2]).setNamespace(mappingConfigTokens[3]);
         } else {
             throw new EDIConfigurationException("Invalid mapping model configuration '" + mappingConfig + "'.  Must contain either 1 or 3 tokens.");
         }

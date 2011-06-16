@@ -69,7 +69,7 @@ public final class XMLConfigDigester {
 
     private final SmooksResourceConfigurationList resourcelist;
     private final Stack<SmooksConfig> configStack = new Stack<SmooksConfig>();
-    private ClassLoader classLoader = XMLConfigDigester.class.getClassLoader();
+    private ClassLoader classLoader;
 
     private Map<String, Smooks> extendedConfigDigesters = new HashMap<String, Smooks>();
     private static ThreadLocal<Boolean> extentionDigestOn = new ThreadLocal<Boolean>();
@@ -602,7 +602,9 @@ public final class XMLConfigDigester {
             extendedConfigDigesters.put(configNamespace, smooks);
         }
 
-        smooks.setClassLoader(classLoader);
+        if(classLoader != null) {
+            smooks.setClassLoader(classLoader);
+        }
 
         return smooks;
     }

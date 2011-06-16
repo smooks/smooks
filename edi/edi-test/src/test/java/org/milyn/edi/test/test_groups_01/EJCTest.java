@@ -13,11 +13,11 @@
  *  See the GNU Lesser General Public License for more details:
  *  http://www.gnu.org/licenses/lgpl.txt
  */
-package org.milyn.ejc.test_groups_01;
+package org.milyn.edi.test.test_groups_01;
 
 import junit.framework.TestCase;
 import org.milyn.edisax.EDIConfigurationException;
-import org.milyn.ejc.EJCTestUtil;
+import org.milyn.edi.test.EJCTestUtil;
 import org.milyn.ejc.IllegalNameException;
 import org.xml.sax.SAXException;
 
