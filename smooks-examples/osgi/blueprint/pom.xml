@@ -137,13 +137,6 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
 		<repository>
 			<id>zodiac-repository</id>
 			<name>Zodiac Milestone Repository</name>

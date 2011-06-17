@@ -122,20 +122,4 @@
         </testResources>
     </build>
 
-    <repositories>
-
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-
-        <repository>
-            <id>codehaus.m1</id>
-            <url>http://dist.codehaus.org</url>
-        </repository>
-    </repositories>
-
 </project>

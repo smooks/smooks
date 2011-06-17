@@ -462,13 +462,6 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
 		<repository>
 			<id>com.springsource.repository.bundles.release</id>
 			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>

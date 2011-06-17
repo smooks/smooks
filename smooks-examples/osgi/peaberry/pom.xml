@@ -109,20 +109,4 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <!--
-        <repository>
-            <id>spring s3</id>
-            <url>https://s3browse.springsource.com/browse/repository.springsource.com/maven/bundles/external/</url>
-        </repository>
-        -->
-    </repositories>
-
 </project>

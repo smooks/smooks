@@ -24,14 +24,6 @@
 
 	</dependencies>
 
-    <repositories>
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
+
 
 </project>

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn</artifactId>
+        <artifactId>milyn-edi</artifactId>
         <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn EdiSax Parser</name>
@@ -19,15 +19,5 @@
         </dependency>
 
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
 
 </project>
