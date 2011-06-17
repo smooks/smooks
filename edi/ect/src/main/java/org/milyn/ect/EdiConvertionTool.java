@@ -69,9 +69,9 @@ public class EdiConvertionTool {
      * @param urn The URN for the EDI Mapping model configuration set.
      * @throws IOException Error writing Mapping Model configuration set.
      */
-    public static void fromUnEdifactSpec(ZipInputStream specification, ZipOutputStream modelSetOutStream, String urn) throws IOException {
+    public static void fromUnEdifactSpec(ZipInputStream specification, ZipOutputStream modelSetOutStream, String urn, boolean useShortName) throws IOException {
         try {
-            fromSpec(new UnEdifactSpecificationReader(specification, true), modelSetOutStream, urn);
+            fromSpec(new UnEdifactSpecificationReader(specification, true, useShortName), modelSetOutStream, urn);
         } finally {
             specification.close();
         }
@@ -145,9 +145,9 @@ public class EdiConvertionTool {
      * @param urn The URN for the EDI Mapping model configuration set.
      * @throws IOException Error writing Mapping Model configuration set.
      */
-    public static void fromUnEdifactSpec(ZipInputStream specification, File modelSetOutFolder, String urn) throws IOException {
+    public static void fromUnEdifactSpec(ZipInputStream specification, File modelSetOutFolder, String urn, boolean useShortName) throws IOException {
         try {
-            fromSpec(new UnEdifactSpecificationReader(specification, true), modelSetOutFolder, urn);
+            fromSpec(new UnEdifactSpecificationReader(specification, true, useShortName), modelSetOutFolder, urn);
         } finally {
             specification.close();
         }

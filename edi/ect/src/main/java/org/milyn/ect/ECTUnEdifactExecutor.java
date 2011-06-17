@@ -33,9 +33,10 @@ public class ECTUnEdifactExecutor {
     private String urn;
     private File mappingModelZip;
     private File mappingModelFolder;
+    private boolean useShortName = true;
 
     public void execute() throws EdiParseException {
-        assertConfigOK();
+        assertConfigOK();                       
 
         ZipInputStream definitionZipStream;
         try {
@@ -46,9 +47,9 @@ public class ECTUnEdifactExecutor {
 
         try {
             if(mappingModelZip != null) {
-                EdiConvertionTool.fromUnEdifactSpec(definitionZipStream, new ZipOutputStream(new FileOutputStream(mappingModelZip)), urn);
+                EdiConvertionTool.fromUnEdifactSpec(definitionZipStream, new ZipOutputStream(new FileOutputStream(mappingModelZip)), urn, useShortName);
             } else {
-                EdiConvertionTool.fromUnEdifactSpec(definitionZipStream, mappingModelFolder, urn);
+                EdiConvertionTool.fromUnEdifactSpec(definitionZipStream, mappingModelFolder, urn, useShortName);
             }
         } catch (Exception e) {
             throw new EdiParseException("Error parsing the Un/Edifact specification '" + unEdifactZip.getAbsoluteFile() + "'.", e);
@@ -94,5 +95,9 @@ public class ECTUnEdifactExecutor {
 
     public void setMappingModelFolder(File mappingModelFolder) {
         this.mappingModelFolder = mappingModelFolder;
+    }
+
+    public void setUseShortName(boolean useShortName) {
+        this.useShortName = useShortName;
     }
 }

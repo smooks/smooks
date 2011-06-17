@@ -25,7 +25,7 @@ public class ECoreGenerationTest extends TestCase {
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 
 		UnEdifactSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(
-				zipInputStream, false);
+				zipInputStream, false, false);
 		ECoreGenerator generator = new ECoreGenerator();
 		Set<EPackage> packages = generator
 				.generatePackages(ediSpecificationReader.getEdiDirectory());

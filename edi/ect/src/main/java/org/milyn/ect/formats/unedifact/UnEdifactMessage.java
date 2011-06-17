@@ -147,7 +147,7 @@ public class UnEdifactMessage {
     private String agency;
     private Edimap edimap;
 
-    public UnEdifactMessage(Reader reader, boolean isSplitIntoImport, Edimap definitionModel) throws EdiParseException, IOException {
+    public UnEdifactMessage(Reader reader, boolean isSplitIntoImport, boolean useShortName, Edimap definitionModel) throws EdiParseException, IOException {
 
         BufferedReader breader = null;
         try {
@@ -193,7 +193,7 @@ public class UnEdifactMessage {
             Map<String, String> definitions = parseMessageDefinition(breader);
 
 
-            parseMessageStructure(breader, rootGroup, definitions, isSplitIntoImport, segmentDefinitions);
+            parseMessageStructure(breader, rootGroup, definitions, isSplitIntoImport, useShortName, segmentDefinitions);
 
         } finally {
             if (breader != null) {
@@ -247,7 +247,7 @@ public class UnEdifactMessage {
         }
     }
 
-    private void parseMessageStructure(BufferedReader reader, SegmentGroup group, Map<String, String> definitions, boolean isSplitIntoImport, Map<String, Segment> segmentDefinitions) throws IOException {
+    private void parseMessageStructure(BufferedReader reader, SegmentGroup group, Map<String, String> definitions, boolean isSplitIntoImport, boolean useShortName, Map<String, Segment> segmentDefinitions) throws IOException {
         String line = reader.readLine();
         while (!line.matches(SEGMENT_TABLE)) {
             line = reader.readLine();
@@ -256,7 +256,7 @@ public class UnEdifactMessage {
         while (!line.matches(SEGMENT_TABLE_HEADER)) {
             line = reader.readLine();
         }
-        parseNextSegment(reader, group, definitions, isSplitIntoImport, segmentDefinitions, new LineNumber());
+        parseNextSegment(reader, group, definitions, isSplitIntoImport, useShortName, segmentDefinitions, new LineNumber());
     }
 
     private Map<String, String> parseMessageDefinition(BufferedReader reader) throws IOException {
@@ -303,7 +303,7 @@ public class UnEdifactMessage {
         return definitions;
     }
 
-    private int parseNextSegment(BufferedReader reader, SegmentGroup parentGroup, Map<String, String> definitions, boolean isSplitIntoImport, Map<String, Segment> segmentDefinitions, LineNumber lineNo) throws IOException {
+    private int parseNextSegment(BufferedReader reader, SegmentGroup parentGroup, Map<String, String> definitions, boolean isSplitIntoImport, boolean useShortName, Map<String, Segment> segmentDefinitions, LineNumber lineNo) throws IOException {
         String line = reader.readLine();
         while (line != null) {
             if (line.matches(SEGMENT_GROUP_START)) {
@@ -313,7 +313,7 @@ public class UnEdifactMessage {
                 SegmentGroup group = createGroup(id, matcher.group(2), matcher.group(3), matcher.group(4), definitions);
                 parentGroup.getSegments().add(group);
 
-                int result = parseNextSegment(reader, group, definitions, isSplitIntoImport, segmentDefinitions, lineNo);
+                int result = parseNextSegment(reader, group, definitions, isSplitIntoImport, useShortName, segmentDefinitions, lineNo);
                 if (result != 0) {
                     return result - 1;
                 }
@@ -322,7 +322,7 @@ public class UnEdifactMessage {
                 Matcher matcher = Pattern.compile(SEGMENT_GROUP_END).matcher(line);
                 matcher.matches();
                 String id = getLineId(lineNo, matcher.group(1));
-                Segment segment = createSegment(id, matcher.group(2), matcher.group(3), matcher.group(4), matcher.group(5), definitions, isSplitIntoImport, segmentDefinitions);
+                Segment segment = createSegment(id, matcher.group(2), matcher.group(3), matcher.group(4), matcher.group(5), definitions, isSplitIntoImport, useShortName, segmentDefinitions);
                 parentGroup.getSegments().add(segment);
                 return extractPlusCharacter(matcher.group(6)).length() - 1;
             } else if (line.matches(SEGMENT_REGULAR)) {
@@ -330,7 +330,7 @@ public class UnEdifactMessage {
                 matcher.matches();
                 String id = getLineId(lineNo, matcher.group(1));
                 if (!ignoreSegments.contains(matcher.group(2))) {
-                    Segment segment = createSegment(id, matcher.group(2), matcher.group(3), matcher.group(4), matcher.group(5), definitions, isSplitIntoImport, segmentDefinitions);
+                    Segment segment = createSegment(id, matcher.group(2), matcher.group(3), matcher.group(4), matcher.group(5), definitions, isSplitIntoImport, useShortName, segmentDefinitions);
                     parentGroup.getSegments().add(segment);
                 }
             } else if (!line.trim().equals("") && line.matches(SEGMENT_REGULAR_START)) {
@@ -344,7 +344,7 @@ public class UnEdifactMessage {
                 matcher.matches();
                 description += " " + matcher.group(1);
                 if (!ignoreSegments.contains(matcher.group(2))) {
-                    Segment segment = createSegment(id, segcode, description, matcher.group(2), matcher.group(3), definitions, isSplitIntoImport, segmentDefinitions);
+                    Segment segment = createSegment(id, segcode, description, matcher.group(2), matcher.group(3), definitions, isSplitIntoImport, useShortName, segmentDefinitions);
                     parentGroup.getSegments().add(segment);
                 }
             } else if (line.matches(ANNEX)) {
@@ -378,7 +378,7 @@ public class UnEdifactMessage {
         return group;
     }
 
-    private Segment createSegment(String id, String segcode, String description, String mandatory, String maxOccurance, Map<String, String> definitions, boolean isSplitIntoImport, Map<String, Segment> segmentDefinitions) {
+    private Segment createSegment(String id, String segcode, String description, String mandatory, String maxOccurance, Map<String, String> definitions, boolean isSplitIntoImport, boolean useShortName, Map<String, Segment> segmentDefinitions) {
         Segment segment = new Segment();
 
         segment.setSegcode(segcode);
@@ -397,8 +397,12 @@ public class UnEdifactMessage {
                 segment.getSegments().addAll(importedSegment.getSegments());
             }
         }
-        segment.setXmltag(XmlTagEncoder.encode(description.trim()));
-        String test = definitions.get(id);
+
+        if (useShortName) {
+            segment.setXmltag(segcode);
+        } else {
+            segment.setXmltag(XmlTagEncoder.encode(description.trim()));
+        }
 
         segment.setDocumentation(definitions.get(id).trim());
         segment.setMinOccurs(mandatory.equals("M") ? 1 : 0);

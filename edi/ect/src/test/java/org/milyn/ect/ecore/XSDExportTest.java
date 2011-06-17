@@ -38,7 +38,7 @@ public class XSDExportTest extends TestCase {
 		InputStream inputStream = getClass().getResourceAsStream("/" + directory + ".zip");
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 		UnEdifactSpecificationReader ediSpecificationReader = new UnEdifactSpecificationReader(
-				zipInputStream, false);
+				zipInputStream, false, false);
 		ECoreGenerator ecoreGen = new ECoreGenerator();
 		Set<EPackage> packages = ecoreGen
 				.generatePackages(ediSpecificationReader.getEdiDirectory());

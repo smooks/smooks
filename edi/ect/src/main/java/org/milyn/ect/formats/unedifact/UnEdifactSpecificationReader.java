@@ -52,8 +52,10 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
     private static final int BUFFER = 2048;
     private static final String INTERCHANGE_DEFINITION = "un-edifact-interchange-definition.xml";
+    private static final String INTERCHANGE_DEFINITION_SHORTNAME = "un-edifact-interchange-definition-shortname.xml";
 
     private boolean useImport;
+    private boolean useShortName;
     private Map<String, byte[]> definitionFiles;
     private Map<String, byte[]> messageFiles;
     private Edimap definitionModel;
@@ -66,7 +68,12 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 	private Pattern entryFileName = Pattern.compile("^([A-Z]+)_([A-Z])\\.([0-9]+[A-Z])$");
 
     public UnEdifactSpecificationReader(ZipInputStream specificationInStream, boolean useImport) throws IOException {
+        this(specificationInStream, useImport, true);
+    }
+
+    public UnEdifactSpecificationReader(ZipInputStream specificationInStream, boolean useImport, boolean useShortName) throws IOException {
         this.useImport = useImport;
+        this.useShortName = useShortName;
 
         definitionFiles = new HashMap<String, byte[]>();
         messageFiles = new HashMap<String, byte[]>();
@@ -87,7 +94,11 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
         //Interchange envelope is inserted into the definitions. Handcoded at the moment.
         try {
-            EdifactModel interchangeEnvelope = new EdifactModel(ClassUtil.getResourceAsStream(INTERCHANGE_DEFINITION, this.getClass()));
+            String interchangeSegmentDefinitions = INTERCHANGE_DEFINITION_SHORTNAME;
+            if (!useShortName) {
+                interchangeSegmentDefinitions = INTERCHANGE_DEFINITION;
+            }
+            EdifactModel interchangeEnvelope = new EdifactModel(ClassUtil.getResourceAsStream(interchangeSegmentDefinitions, this.getClass()));
             definitionModel.getSegments().getSegments().addAll(interchangeEnvelope.getEdimap().getSegments().getSegments());
         } catch (Exception e) {
             throw new EdiParseException(e.getMessage(), e);
@@ -187,7 +198,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         if (message != null) {
             InputStreamReader reader = new InputStreamReader(new ByteArrayInputStream(message));
             try {
-                return new UnEdifactMessage(reader, useImport, definitionModel);
+                return new UnEdifactMessage(reader, useImport, useShortName, definitionModel);
             } finally {
                 reader.close();
             }
@@ -210,7 +221,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
             compositeISR = new InputStreamReader(new ByteArrayInputStream(definitionFiles.get("edcd.")));
             segmentISR = new InputStreamReader(new ByteArrayInputStream(definitionFiles.get("edsd.")));
 
-            edifactModel = UnEdifactDefinitionReader.parse(dataISR, compositeISR, segmentISR);
+            edifactModel = UnEdifactDefinitionReader.parse(dataISR, compositeISR, segmentISR, useShortName);
             edifactModel.setDescription((Description) EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION.clone());
             edifactModel.getSegments().setXmltag("DefinitionMap");
             edifactModel.setDelimiters(UNEdifactInterchangeParser.defaultUNEdifactDelimiters);

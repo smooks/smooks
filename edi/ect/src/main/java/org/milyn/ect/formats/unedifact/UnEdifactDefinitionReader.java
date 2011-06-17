@@ -36,6 +36,11 @@ import java.util.regex.Matcher;
 public class UnEdifactDefinitionReader {
 
     /**
+     * Prefix used in elementnames when creating short names.
+     */
+    private static final String DATA_ELEMENT_PREFIX = "e";
+
+    /**
      * Matches the line of '-' characters separating the data-, composite- or segment-definitions.
      */
     private static final String ELEMENT_SEPARATOR = "^-+$";
@@ -137,22 +142,22 @@ public class UnEdifactDefinitionReader {
      */
     private static final Pattern SECOND_SEGMENT_ELEMENT = Pattern.compile("^(.*) *( C| M).*");
 
-    private static List<Segment> readSegments(Reader reader, Map<String, Field> composites, Map<String, Component> datas) throws IOException, EdiParseException {
+    private static List<Segment> readSegments(Reader reader, Map<String, Field> composites, Map<String, Component> datas, boolean useShortName) throws IOException, EdiParseException {
         List<Segment> segments = new ArrayList<Segment>();
 
         BufferedReader _reader = new BufferedReader(reader);
         moveToNextPart(_reader);
 
-        Segment segment = getSegment(_reader, composites, datas);
+        Segment segment = getSegment(_reader, composites, datas, useShortName);
         while (segment != null) {
             segments.add(segment);
-            segment = getSegment(_reader, composites, datas);
+            segment = getSegment(_reader, composites, datas, useShortName);
         }
 
         return segments;
     }
 
-    private static Segment getSegment(BufferedReader reader, Map<String, Field> fields, Map<String, Component> componens) throws IOException, EdiParseException {
+    private static Segment getSegment(BufferedReader reader, Map<String, Field> fields, Map<String, Component> componens, boolean useShortName) throws IOException, EdiParseException {
         //Read id and name.
         String line = readUntilValue(reader);
 
@@ -167,6 +172,10 @@ public class UnEdifactDefinitionReader {
             name = headerMatcher.group(2);
         } else {
             throw new EdiParseException("Unable to extract segment code and name for Segment from line [" + line + "].");
+        }
+
+        if (useShortName) {
+            name = segcode;
         }
 
         String description = getValue(reader, "Function:");
@@ -248,25 +257,25 @@ public class UnEdifactDefinitionReader {
         return field;
     }
 
-    private static Map<String, Field> readFields(Reader reader, Map<String, Component> components) throws IOException, EdiParseException {
+    private static Map<String, Field> readFields(Reader reader, Map<String, Component> components, boolean useShortName) throws IOException, EdiParseException {
         Map<String, Field> fields = new HashMap<String, Field>();
 
         BufferedReader _reader = new BufferedReader(reader);
         moveToNextPart(_reader);
 
         Field field = new Field();
-        String id = populateField(_reader, components, field);
+        String id = populateField(_reader, components, field, useShortName);
         while (id != null) {
             fields.put(id, field);
             moveToNextPart(_reader);
             field = new Field();
-            id = populateField(_reader, components, field);
+            id = populateField(_reader, components, field, useShortName);
         }
 
         return fields;
     }
 
-    private static String populateField(BufferedReader reader, Map<String, Component> components, Field field) throws IOException, EdiParseException {
+    private static String populateField(BufferedReader reader, Map<String, Component> components, Field field, boolean useShortName) throws IOException, EdiParseException {
         //Read id and name.
         String line = readUntilValue(reader);
 
@@ -285,6 +294,11 @@ public class UnEdifactDefinitionReader {
 
         String description = getValue(reader, "Desc:");
 
+        if (useShortName) {
+            description = name + " - " + description;
+            name = id;
+        }
+
         field.setNodeTypeRef(id);
         field.setXmltag(XmlTagEncoder.encode(name));
         field.setDocumentation(description);
@@ -296,9 +310,6 @@ public class UnEdifactDefinitionReader {
             if (linePart != null) {
                 Component component = new Component();
                 component.setRequired(linePart.isMandatory());
-if (components.get(linePart.getId()) == null) {
-    System.out.println("POPULATE COMPONENT - " + linePart.getId() + " : " + line);
-}
                 populateComponent(component, components.get(linePart.getId()));
                 field.getComponents().add(component);
             }
@@ -318,25 +329,25 @@ if (components.get(linePart.getId()) == null) {
         toComponent.setXmltag(XmlTagEncoder.encode(fromComponent.getXmltag()));
     }
 
-    private static Map<String, Component> readComponents(Reader reader) throws IOException, EdiParseException {
+    private static Map<String, Component> readComponents(Reader reader, boolean useShortName) throws IOException, EdiParseException {
         Map<String, Component> datas = new HashMap<String, Component>();
 
         BufferedReader _reader = new BufferedReader(reader);
         moveToNextPart(_reader);
 
         Component component = new Component();
-        String id = populateComponent(_reader, component);
+        String id = populateComponent(_reader, component, useShortName);
         while (id != null) {
             datas.put(id, component);
             moveToNextPart(_reader);
             component = new Component();
-            id = populateComponent(_reader, component);
+            id = populateComponent(_reader, component, useShortName);
         }
 
         return datas;
     }
 
-    private static String populateComponent(BufferedReader reader, Component component) throws IOException, EdiParseException {
+    private static String populateComponent(BufferedReader reader, Component component, boolean useShortName) throws IOException, EdiParseException {
 
         //Read id and name.
         String line = readUntilValue(reader);
@@ -364,6 +375,11 @@ if (components.get(linePart.getId()) == null) {
 
         String repr = getValue(reader, "Repr:");
         String[] typeAndOccurance = repr.split(DOTS);
+
+        if (useShortName) {
+            description = name + " - " + description;
+            name = DATA_ELEMENT_PREFIX + id;
+        }
 
         component.setNodeTypeRef(id);
         component.setXmltag(XmlTagEncoder.encode(name.trim()));
@@ -471,11 +487,11 @@ if (components.get(linePart.getId()) == null) {
         return part;
     }
 
-    public static Edimap parse(Reader dataReader, Reader compositeReader, Reader segmentReader) throws IOException, EdiParseException {
+    public static Edimap parse(Reader dataReader, Reader compositeReader, Reader segmentReader, boolean useShortName) throws IOException, EdiParseException {
 
-        Map<String, Component> datas = UnEdifactDefinitionReader.readComponents(dataReader);
-        Map<String, Field> composites = UnEdifactDefinitionReader.readFields(compositeReader, datas);
-        List<Segment> segments = UnEdifactDefinitionReader.readSegments(segmentReader, composites, datas);
+        Map<String, Component> datas = UnEdifactDefinitionReader.readComponents(dataReader, useShortName);
+        Map<String, Field> composites = UnEdifactDefinitionReader.readFields(compositeReader, datas, useShortName);
+        List<Segment> segments = UnEdifactDefinitionReader.readSegments(segmentReader, composites, datas, useShortName);
 
         Edimap edimap = new Edimap();
         edimap.setSegments(new SegmentGroup());
