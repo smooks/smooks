@@ -12,6 +12,15 @@
     <name>Milyn EDI</name>
     <url>http://milyn.codehaus.org</url>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>testres</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <profiles>
         <profile>
             <id>all</id>

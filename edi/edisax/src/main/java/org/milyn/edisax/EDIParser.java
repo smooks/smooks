@@ -318,6 +318,10 @@ public class EDIParser implements XMLReader {
         return namespaceResolver;
     }
 
+    public NamespaceDeclarationStack getNamespaceStack() {
+        return nsStack;
+    }
+
     /**
 	 * Get the actual mapping configuration data (the XML).
 	 * @param resourceLocator Resource locator used to open the config stream.

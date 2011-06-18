@@ -15,6 +15,7 @@
 */
 package org.milyn.edi.test;
 
+import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.archive.Archive;
 import org.milyn.archive.ArchiveClassLoader;
 import org.milyn.assertion.AssertArgument;
@@ -22,6 +23,8 @@ import org.milyn.ect.EdiConvertionTool;
 import org.milyn.ejc.EJCExecutor;
 import org.milyn.ejc.IllegalNameException;
 import org.milyn.io.StreamUtils;
+import org.milyn.payload.StringResult;
+import org.milyn.payload.SystemOutResult;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchangeFactory;
 import org.milyn.test.ant.AntRunner;
@@ -188,6 +191,16 @@ public class EdifactDirTestHarness implements UNEdifactInterchangeFactory {
             throw new IllegalStateException("EDIFACT Java Object model read + write failed to produce an equivalent EDIFACT message.  " +
                     "Input EDIFACT message: \n\n\t" + inputMessage + "\n\n Serialized Java result was: \n\n\t" + writer.toString() + "\n");
         }
+    }
+
+    public void assertXMLOK(InputStream edifactIn, InputStream expectedXMLOut) throws IOException, SAXException {
+        StringResult xmlResult = new StringResult();
+        String expectedXML = StreamUtils.readStreamAsString(expectedXMLOut);
+
+        fromUNEdifact(edifactIn, xmlResult);
+
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.compareXML(expectedXML, xmlResult.getResult());
     }
 
     private Archive buildBindingModel(String urn, String[] messages) throws IOException, SAXException, IllegalNameException, ClassNotFoundException {

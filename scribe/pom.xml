@@ -15,19 +15,21 @@
     	<module>adapter</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>testres</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 	<dependencyManagement>
 		<dependencies>
-            <dependency>
-                <groupId>org.milyn</groupId>
-                <artifactId>testres</artifactId>
-	            <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-
 			<dependency>
 				<groupId>org.milyn</groupId>
 				<artifactId>milyn-scribe-core</artifactId>
-				<version>${version}</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
@@ -36,29 +38,6 @@
 				<version>${project.version}</version>
 			</dependency>
 
-			<!-- TEST -->
-
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-all</artifactId>
-				<version>1.7</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.testng</groupId>
-				<artifactId>testng</artifactId>
-				<version>5.7</version>
-				<classifier>jdk15</classifier>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.14</version>
-				<scope>test</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

@@ -17,7 +17,11 @@ package org.milyn.edi.test.unedifact;
 
 import junit.framework.TestCase;
 import org.milyn.edi.test.EdifactDirTestHarness;
+import org.milyn.payload.StringResult;
+import org.milyn.payload.SystemOutResult;
+import org.xml.sax.SAXException;
 
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 
@@ -30,5 +34,9 @@ public class D03B_Test extends TestCase {
 
     public void test_PAXLST() throws IOException {
         d03bHarness.assertJavaReadWriteOK(getClass().getResourceAsStream("PAXLST.edi"));
+    }
+
+    public void test_PAXLST_test_XML() throws IOException, SAXException {
+        d03bHarness.assertXMLOK(getClass().getResourceAsStream("PAXLST.edi"), getClass().getResourceAsStream("PAXLST.xml"));
     }
 }

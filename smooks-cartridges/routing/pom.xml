@@ -61,6 +61,10 @@
                     <groupId>xerces</groupId>
                     <artifactId>xercesImpl</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
             </exclusions>
 		</dependency>
 		<dependency>
@@ -118,14 +122,6 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
             <scope>test</scope>
-		</dependency>
-		<!-- testng -->
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>5.8</version>
-			<scope>test</scope>
-			<classifier>jdk15</classifier>
 		</dependency>
 
         <!--

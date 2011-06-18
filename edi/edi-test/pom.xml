@@ -18,6 +18,12 @@
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ejc</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.milyn</groupId>
+                    <artifactId>testres</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

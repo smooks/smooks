@@ -117,6 +117,7 @@ public class InterchangeContext {
 		parser.setIndentDepth(indentDepth);
         parser.getFeatures().putAll(features);
 		parser.setFeature(EDIParser.FEATURE_VALIDATE, validate);
+        parser.getNamespaceStack().setParentNamespaceStack(controlSegmentParser.getNamespaceStack());
 
 		return parser;
 	}

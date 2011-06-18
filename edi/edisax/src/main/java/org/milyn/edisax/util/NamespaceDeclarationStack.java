@@ -40,6 +40,7 @@ public class NamespaceDeclarationStack {
 
     private XMLReader xmlReader;
     private final Stack<List<String>> nsStack = new Stack<List<String>>();
+    private NamespaceDeclarationStack parentStack;
 
     public NamespaceDeclarationStack(XMLReader xmlReader) {
         this.xmlReader = xmlReader;
@@ -100,6 +101,10 @@ public class NamespaceDeclarationStack {
 		return attrs;
 	}
 
+    public void setParentNamespaceStack(NamespaceDeclarationStack parentStack) {
+        this.parentStack = parentStack;
+    }
+
 	/**
 	 * This method returns true if namespace with given prefix was already declared higher
 	 * the stack
@@ -113,7 +118,12 @@ public class NamespaceDeclarationStack {
 				return true;
 			}
 		}
-		return false;
+
+        if(parentStack != null) {
+            return parentStack.prefixAlreadyDeclared(prefix);
+        } else {
+            return false;
+        }
 	}
 	
 }
