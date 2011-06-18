@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:smooks-edi="http://www.milyn.org/xsd/smooks/unedifact-1.4.xsd" targetNamespace="http://www.milyn.org/xsd/smooks/unedifact-1.4.xsd" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:smooks-edi="http://www.milyn.org/xsd/smooks/unedifact-1.5.xsd" targetNamespace="http://www.milyn.org/xsd/smooks/unedifact-1.5.xsd" elementFormDefault="qualified">
 	<xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd"/>
 	<xs:annotation>
 		<xs:documentation xml:lang="en">Smooks UN/EDIFACT Reader Configuration</xs:documentation>
@@ -39,6 +39,15 @@
 						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+                <xs:attribute name="ignoreEmptyNodes" type="xs:boolean" use="optional" default="true">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Ignore empty EDIFACT data nodes (fields, components etc). Default "true".
+                            <p/>
+                            Ignoring empty nodes means empty XML elements (events) will not be generated.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
 				<xs:attribute name="validate" type="xs:boolean" use="optional" default="false">
 					<xs:annotation>
 						<xs:documentation xml:lang="en">Specifies whether to perform validation or not when parsing a value-node with a specific type. Default is false.</xs:documentation>

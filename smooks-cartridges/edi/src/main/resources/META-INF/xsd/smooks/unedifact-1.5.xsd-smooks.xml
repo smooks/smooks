@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/unedifact-1.4.xsd">
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/unedifact-1.5.xsd">
 
     <!-- Configure the Model Loader -->
 
@@ -35,7 +35,13 @@
         <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">ignoreNewLines</param>
     </resource-config>
-    
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">ignoreEmptyNodes</param>
+        <param name="defaultValue">true</param>
+    </resource-config>
+
     <resource-config selector="reader">
         <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">validate</param>

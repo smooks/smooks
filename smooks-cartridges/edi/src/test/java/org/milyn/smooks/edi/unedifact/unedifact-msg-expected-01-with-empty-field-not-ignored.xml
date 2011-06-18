@@ -1,0 +1,125 @@
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<env:unEdifact xmlns:env="urn:org.milyn.edi.unedifact.v41">
+	<env:UNB xmlns:env="urn:org.milyn.edi.unedifact.v41">
+		<env:syntaxIdentifier>
+			<env:id>UNOA</env:id>
+			<env:versionNum>3</env:versionNum>
+		</env:syntaxIdentifier>
+		<env:sender>
+			<env:id>Acme</env:id>
+			<env:codeQualifier>1</env:codeQualifier>
+		</env:sender>
+		<env:recipient>
+			<env:id>AcmeRecipient</env:id>
+			<env:codeQualifier>1</env:codeQualifier>
+		</env:recipient>
+		<env:dateTime>
+			<env:date>20051107</env:date>
+			<env:time>1159</env:time>
+		</env:dateTime>
+		<env:controlRef>6002</env:controlRef>
+	</env:UNB>
+	<env:group xmlns:env="urn:org.milyn.edi.unedifact.v41">
+		<env:UNG>
+			<env:groupId>G1</env:groupId>
+			<env:senderApp>
+				<env:id>G1 Division</env:id>
+			</env:senderApp>
+			<env:recipientApp>
+				<env:id>RecipDivision2</env:id>
+			</env:recipientApp>
+			<env:groupRef>groupref11111</env:groupRef>
+		</env:UNG>
+		<env:interchangeMessage>
+			<env:UNH>
+				<env:messageRefNum>0001</env:messageRefNum>
+				<env:messageIdentifier>
+					<env:id>MSG2</env:id>
+					<env:versionNum>S</env:versionNum>
+					<env:releaseNum>93A</env:releaseNum>
+					<env:controllingAgencyCode>UN</env:controllingAgencyCode>
+				</env:messageIdentifier>
+			</env:UNH>
+			<message2>
+				<segBB>
+                    <field-a></field-a>
+					<field-b>f2</field-b>
+					<field-c>f3</field-c>
+				</segBB>
+			</message2>
+			<env:UNT>
+				<env:segmentCount>25</env:segmentCount>
+				<env:messageRefNum>0001</env:messageRefNum>
+			</env:UNT>
+		</env:interchangeMessage>
+		<env:UNE>
+			<env:controlCount>1</env:controlCount>
+			<env:groupRef>groupref11111</env:groupRef>
+		</env:UNE>
+	</env:group>
+	<env:interchangeMessage xmlns:env="urn:org.milyn.edi.unedifact.v41">
+		<env:UNH>
+			<env:messageRefNum>0001</env:messageRefNum>
+			<env:messageIdentifier>
+				<env:id>MSG2</env:id>
+				<env:versionNum>S</env:versionNum>
+				<env:releaseNum>93A</env:releaseNum>
+				<env:controllingAgencyCode>UN</env:controllingAgencyCode>
+			</env:messageIdentifier>
+		</env:UNH>
+		<message2>
+			<segBB>
+				<field-a>f11</field-a>
+				<field-b>f22</field-b>
+				<field-c>f33</field-c>
+			</segBB>
+		</message2>
+		<env:UNT>
+			<env:segmentCount>25</env:segmentCount>
+			<env:messageRefNum>0001</env:messageRefNum>
+		</env:UNT>
+	</env:interchangeMessage>
+	<env:interchangeMessage xmlns:env="urn:org.milyn.edi.unedifact.v41">
+		<env:UNH>
+			<env:messageRefNum>0001</env:messageRefNum>
+			<env:messageIdentifier>
+				<env:id>MSG1</env:id>
+				<env:versionNum>S</env:versionNum>
+				<env:releaseNum>93A</env:releaseNum>
+				<env:controllingAgencyCode>UN</env:controllingAgencyCode>
+			</env:messageIdentifier>
+		</env:UNH>
+		<message1>
+			<segA>
+				<field-1>f1</field-1>
+				<field-2>f2</field-2>
+			</segA>
+			<segB>
+				<field-11>f11</field-11>
+			</segB>
+		</message1>
+		<env:UNT>
+			<env:segmentCount>25</env:segmentCount>
+			<env:messageRefNum>0001</env:messageRefNum>
+		</env:UNT>
+	</env:interchangeMessage>
+	<env:UNZ xmlns:env="urn:org.milyn.edi.unedifact.v41">
+		<env:controlCount>1</env:controlCount>
+		<env:controlRef>00000000000001</env:controlRef>
+	</env:UNZ>
+</env:unEdifact>

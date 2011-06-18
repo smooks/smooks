@@ -118,7 +118,7 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	}
 
     protected InterchangeContext createInterchangeContext(BufferedSegmentReader segmentReader, boolean validate, ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceResolver namespaceResolver) {
-        return new InterchangeContext(segmentReader, registry, contentHandler, controlBlockHandlerFactory, namespaceResolver, validate);
+        return new InterchangeContext(segmentReader, registry, contentHandler, getFeatures(), controlBlockHandlerFactory, namespaceResolver, validate);
     }
 
     public InterchangeContext getInterchangeContext() {
@@ -151,10 +151,18 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 		setFeature(EDIParser.FEATURE_IGNORE_NEWLINES, ignoreNewLines);
 	}
 
+    public void ignoreEmptyNodes(boolean ignoreEmptyNodes) {
+        setFeature(EDIParser.FEATURE_IGNORE_EMPTY_NODES, ignoreEmptyNodes);
+    }
+
 	public void validate(boolean validate) {
 		setFeature(EDIParser.FEATURE_VALIDATE, validate);
 	}
-    
+
+    public Map<String, Boolean> getFeatures() {
+        return features;
+    }
+
     public void setFeature(String name, boolean value) {
     	features.put(name, value);
     }

@@ -38,8 +38,7 @@ import org.xml.sax.SAXException;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class UNEdifactReader extends UNEdifactInterchangeParser implements
-		SmooksXMLReader {
+public class UNEdifactReader extends UNEdifactInterchangeParser implements SmooksXMLReader {
 
 	@ConfigParam
 	private String mappingModel;
@@ -49,6 +48,9 @@ public class UNEdifactReader extends UNEdifactInterchangeParser implements
 
 	@ConfigParam(defaultVal = "false")
 	private boolean ignoreNewLines;
+
+    @ConfigParam(defaultVal = "true")
+    private boolean ignoreEmptyNodes;
 
 	@AppContext
 	private ApplicationContext applicationContext;
@@ -63,12 +65,12 @@ public class UNEdifactReader extends UNEdifactInterchangeParser implements
 	public void parse(InputSource unedifactInterchange) throws IOException,
 			SAXException {
 		ignoreNewLines(ignoreNewLines);
+        ignoreEmptyNodes(ignoreEmptyNodes);
 		validate(validate);
 		// Default Mappings Registry is already set to LazyMappingsRegistry
 		// only if mappingModel is defined we should set another instance
 		if (!StringUtils.isEmpty(mappingModel)) {
-			setMappingsRegistry(new DefaultMappingsRegistry(mappingModel,
-					applicationContext.getResourceLocator().getBaseURI()));
+			setMappingsRegistry(new DefaultMappingsRegistry(mappingModel, applicationContext.getResourceLocator().getBaseURI()));
 		}
 		super.parse(unedifactInterchange);
 	}
@@ -77,8 +79,8 @@ public class UNEdifactReader extends UNEdifactInterchangeParser implements
 	protected InterchangeContext createInterchangeContext(
             BufferedSegmentReader segmentReader, boolean validate,
             ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceResolver namespaceResolver) {
-		return new InterchangeContext(segmentReader, registry,
-				getContentHandler(), controlBlockHandlerFactory, namespaceResolver, validate) {
+
+		return new InterchangeContext(segmentReader, registry, getContentHandler(), getFeatures(), controlBlockHandlerFactory, namespaceResolver, validate) {
 			@Override
 			public void pushDelimiters(Delimiters delimiters) {
 				super.pushDelimiters(delimiters);

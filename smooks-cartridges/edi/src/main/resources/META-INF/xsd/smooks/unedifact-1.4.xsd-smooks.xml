@@ -35,7 +35,13 @@
         <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">ignoreNewLines</param>
     </resource-config>
-    
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">ignoreEmptyNodes</param>
+        <param name="defaultValue">false</param> <!-- This maintains backward compatibility  - 1.5 namespace default it "true" -->
+    </resource-config>
+
     <resource-config selector="reader">
         <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">validate</param>

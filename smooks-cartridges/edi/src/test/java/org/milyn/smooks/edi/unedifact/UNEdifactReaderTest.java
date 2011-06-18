@@ -68,6 +68,41 @@ public class UNEdifactReaderTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));		
 	}
 
+    public void test_with_empty_field_ignored_DOM() throws IOException, SAXException {
+        test_with_empty_field_ignored(FilterSettings.DEFAULT_DOM);
+    }
+
+    public void test_with_empty_field_ignored_SAX() throws IOException, SAXException {
+        test_with_empty_field_ignored(FilterSettings.DEFAULT_SAX);
+    }
+
+    public void test_with_empty_field_ignored(FilterSettings filterSettings) throws IOException, SAXException {
+        Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-xml.xml");
+        StringResult result = new StringResult();
+
+        smooks.setFilterSettings(filterSettings);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01-with-empty-field.edi")), result);
+        XMLUnit.setIgnoreWhitespace( true );
+        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01-with-empty-field-ignored.xml")), new StringReader(result.toString()));
+    }
+
+    public void test_with_empty_field_not_ignored_DOM() throws IOException, SAXException {
+        test_with_empty_field_not_ignored(FilterSettings.DEFAULT_DOM);
+    }
+
+    public void test_with_empty_field_not_ignored_SAX() throws IOException, SAXException {
+        test_with_empty_field_not_ignored(FilterSettings.DEFAULT_SAX);
+    }
+
+    public void test_with_empty_field_not_ignored(FilterSettings filterSettings) throws IOException, SAXException {
+        Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-xml-not-ignored.xml");
+        StringResult result = new StringResult();
+
+        smooks.setFilterSettings(filterSettings);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01-with-empty-field.edi")), result);
+        XMLUnit.setIgnoreWhitespace( true );
+        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01-with-empty-field-not-ignored.xml")), new StringReader(result.toString()));
+    }
 
 	public void test_zipped() throws IOException, SAXException, EDIConfigurationException {
 		createZip();
@@ -92,8 +127,8 @@ public class UNEdifactReaderTest extends TestCase {
 		
 		List<UNEdifactMessage41> messages = (List<UNEdifactMessage41>) jResult.getBean("unEdifactMessages");
 
-		System.out.println(sResult);
-		System.out.println(new XStream().toXML(messages));
+//		System.out.println(sResult);
+//		System.out.println(new XStream().toXML(messages));
 		
 		XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-02.xml")), new StringReader(new XStream().toXML(messages)));		
@@ -110,7 +145,7 @@ public class UNEdifactReaderTest extends TestCase {
 		
 		UNEdifactInterchange41 interchange = jResult.getBean(UNEdifactInterchange41.class);
 
-		System.out.println(new XStream().toXML(interchange));
+//		System.out.println(new XStream().toXML(interchange));
 		
 		XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-03.xml")), new StringReader(new XStream().toXML(interchange)));		
@@ -127,7 +162,7 @@ public class UNEdifactReaderTest extends TestCase {
 
         UNEdifactInterchange41 interchange = jResult.getBean(UNEdifactInterchange41.class);
 
-        System.out.println(new XStream().toXML(interchange));
+//        System.out.println(new XStream().toXML(interchange));
 
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-04.xml")), new StringReader(new XStream().toXML(interchange)));

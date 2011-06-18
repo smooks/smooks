@@ -7,9 +7,9 @@
 
 	<medi:segments xmltag="message2">
 		<medi:segment segcode="BBBB" xmltag="segBB">
-			<medi:field xmltag="field-a" />
-			<medi:field xmltag="field-b" />
-			<medi:field xmltag="field-c" />
+			<medi:field xmltag="field-a" required="false" />
+			<medi:field xmltag="field-b" required="false" />
+			<medi:field xmltag="field-c" required="false" />
 		</medi:segment>
 	</medi:segments>
 	
