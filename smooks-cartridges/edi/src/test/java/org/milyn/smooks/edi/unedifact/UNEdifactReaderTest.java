@@ -68,40 +68,46 @@ public class UNEdifactReaderTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));		
 	}
 
-    public void test_with_empty_field_ignored_DOM() throws IOException, SAXException {
-        test_with_empty_field_ignored(FilterSettings.DEFAULT_DOM);
+    public void test_with_empty_nodes_ignored_DOM() throws IOException, SAXException {
+        test_with_empty_nodes_ignored(FilterSettings.DEFAULT_DOM);
     }
 
-    public void test_with_empty_field_ignored_SAX() throws IOException, SAXException {
-        test_with_empty_field_ignored(FilterSettings.DEFAULT_SAX);
+    public void test_with_empty_nodes_ignored_SAX() throws IOException, SAXException {
+        test_with_empty_nodes_ignored(FilterSettings.DEFAULT_SAX);
     }
 
-    public void test_with_empty_field_ignored(FilterSettings filterSettings) throws IOException, SAXException {
+    public void test_with_empty_nodes_ignored(FilterSettings filterSettings) throws IOException, SAXException {
         Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-xml.xml");
         StringResult result = new StringResult();
 
         smooks.setFilterSettings(filterSettings);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01-with-empty-field.edi")), result);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01-with-empty-nodes.edi")), result);
+
+//        System.out.println(result);
+
         XMLUnit.setIgnoreWhitespace( true );
-        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01-with-empty-field-ignored.xml")), new StringReader(result.toString()));
+        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01-with-empty-nodes-ignored.xml")), new StringReader(result.toString()));
     }
 
-    public void test_with_empty_field_not_ignored_DOM() throws IOException, SAXException {
-        test_with_empty_field_not_ignored(FilterSettings.DEFAULT_DOM);
+    public void test_with_empty_nodes_not_ignored_DOM() throws IOException, SAXException {
+        test_with_empty_nodes_not_ignored(FilterSettings.DEFAULT_DOM);
     }
 
-    public void test_with_empty_field_not_ignored_SAX() throws IOException, SAXException {
-        test_with_empty_field_not_ignored(FilterSettings.DEFAULT_SAX);
+    public void test_with_empty_nodes_not_ignored_SAX() throws IOException, SAXException {
+        test_with_empty_nodes_not_ignored(FilterSettings.DEFAULT_SAX);
     }
 
-    public void test_with_empty_field_not_ignored(FilterSettings filterSettings) throws IOException, SAXException {
+    public void test_with_empty_nodes_not_ignored(FilterSettings filterSettings) throws IOException, SAXException {
         Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-xml-not-ignored.xml");
         StringResult result = new StringResult();
 
         smooks.setFilterSettings(filterSettings);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01-with-empty-field.edi")), result);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01-with-empty-nodes.edi")), result);
+
+//        System.out.println(result);
+
         XMLUnit.setIgnoreWhitespace( true );
-        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01-with-empty-field-not-ignored.xml")), new StringReader(result.toString()));
+        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01-with-empty-nodes-not-ignored.xml")), new StringReader(result.toString()));
     }
 
 	public void test_zipped() throws IOException, SAXException, EDIConfigurationException {

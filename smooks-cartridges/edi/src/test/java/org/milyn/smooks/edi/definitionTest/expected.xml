@@ -32,7 +32,6 @@
 		<PartyQualifier>II</PartyQualifier>
 		<PARTY_IDENTIFICATION>
 			<partyId>0158</partyId>
-			<codeListQualifier></codeListQualifier>
 			<codeListAgencyCode>87</codeListAgencyCode>
 		</PARTY_IDENTIFICATION>
 		<PARTY_NAME>
@@ -49,7 +48,6 @@
 				<PartyQualifier>II</PartyQualifier>
 				<PARTY_IDENTIFICATION>
 					<partyId>0158</partyId>
-					<codeListQualifier></codeListQualifier>
 					<codeListAgencyCode>87</codeListAgencyCode>
 				</PARTY_IDENTIFICATION>
 				<PARTY_NAME>

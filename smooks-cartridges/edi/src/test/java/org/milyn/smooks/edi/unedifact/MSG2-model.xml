@@ -6,10 +6,14 @@
 	<medi:delimiters segment="&#10;" field="*" component="^" sub-component="~" />
 
 	<medi:segments xmltag="message2">
-		<medi:segment segcode="BBBB" xmltag="segBB">
+		<medi:segment segcode="BBBB" xmltag="segBB" truncatable="true">
 			<medi:field xmltag="field-a" required="false" />
 			<medi:field xmltag="field-b" required="false" />
 			<medi:field xmltag="field-c" required="false" />
+            <medi:field xmltag="field-d" required="false">
+                <medi:component xmltag="compa" required="false" />
+                <medi:component xmltag="compb" required="false" />
+            </medi:field>
 		</medi:segment>
 	</medi:segments>
 	

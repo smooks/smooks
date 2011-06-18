@@ -41,7 +41,6 @@
       <Party_qualifier>SU</Party_qualifier>
       <PARTY_IDENTIFICATION_DETAILS>
         <Party_id_identification>123456789</Party_id_identification>
-        <Code_list_qualifier/>
         <Code_list_responsible_agency__coded>9</Code_list_responsible_agency__coded>
      </PARTY_IDENTIFICATION_DETAILS>
       <PARTY_NAME>
@@ -83,7 +82,6 @@
       <Contact_information>
         <Contact_function__coded>AD</Contact_function__coded>
         <DEPARTMENT_OR_EMPLOYEE_DETAILS>
-          <Department_or_employee_identification/>
           <Department_or_employee>reference</Department_or_employee>
        </DEPARTMENT_OR_EMPLOYEE_DETAILS>
      </Contact_information>
@@ -106,7 +104,6 @@
       <Party_qualifier>BY</Party_qualifier>
       <PARTY_IDENTIFICATION_DETAILS>
         <Party_id_identification>1111111111111</Party_id_identification>
-        <Code_list_qualifier/>
         <Code_list_responsible_agency__coded>9</Code_list_responsible_agency__coded>
      </PARTY_IDENTIFICATION_DETAILS>
       <PARTY_NAME>
@@ -141,7 +138,6 @@
       <Party_qualifier>IV</Party_qualifier>
       <PARTY_IDENTIFICATION_DETAILS>
         <Party_id_identification>0000000003</Party_id_identification>
-        <Code_list_qualifier/>
         <Code_list_responsible_agency__coded>ZZZ</Code_list_responsible_agency__coded>
      </PARTY_IDENTIFICATION_DETAILS>
       <PARTY_NAME>
@@ -161,7 +157,6 @@
       <Party_qualifier>DP</Party_qualifier>
       <PARTY_IDENTIFICATION_DETAILS>
         <Party_id_identification>0000000003</Party_id_identification>
-        <Code_list_qualifier/>
         <Code_list_responsible_agency__coded>ZZZ</Code_list_responsible_agency__coded>
      </PARTY_IDENTIFICATION_DETAILS>
       <PARTY_NAME>
@@ -189,7 +184,6 @@
     <Line_item>
       <Line_item_number>1</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -204,9 +198,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -264,9 +255,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -285,7 +273,6 @@
     <Line_item>
       <Line_item_number>2</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -300,9 +287,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>GPRS/3G</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -360,9 +344,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -381,7 +362,6 @@
     <Line_item>
       <Line_item_number>3</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -396,9 +376,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -456,9 +433,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -477,7 +451,6 @@
     <Line_item>
       <Line_item_number>4</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -492,9 +465,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -552,9 +522,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -573,7 +540,6 @@
     <Line_item>
       <Line_item_number>5</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -588,9 +554,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -648,9 +611,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -669,7 +629,6 @@
     <Line_item>
       <Line_item_number>6</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -684,9 +643,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>SMS</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -744,9 +700,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -765,7 +718,6 @@
     <Line_item>
       <Line_item_number>7</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -780,9 +732,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -840,9 +789,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -861,7 +807,6 @@
     <Line_item>
       <Line_item_number>8</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -876,9 +821,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -936,9 +878,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -957,7 +896,6 @@
     <Line_item>
       <Line_item_number>9</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -972,9 +910,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -1032,9 +967,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -1053,7 +985,6 @@
     <Line_item>
       <Line_item_number>10</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -1068,9 +999,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>Monthly charge</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -1128,9 +1056,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -1149,7 +1074,6 @@
     <Line_item>
       <Line_item_number>11</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -1164,9 +1088,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -1231,9 +1152,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -1252,7 +1170,6 @@
     <Line_item>
       <Line_item_number>12</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -1267,9 +1184,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -1334,9 +1248,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -1355,7 +1266,6 @@
     <Line_item>
       <Line_item_number>13</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -1370,9 +1280,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -1437,9 +1344,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -1458,7 +1362,6 @@
     <Line_item>
       <Line_item_number>14</Line_item_number>
       <ITEM_NUMBER_IDENTIFICATION>
-        <Item_number/>
         <Item_number_type__coded>IN</Item_number_type__coded>
      </ITEM_NUMBER_IDENTIFICATION>
    </Line_item>
@@ -1473,9 +1376,6 @@
       <Item_description_type__coded>F</Item_description_type__coded>
       <Item_characteristic__coded>8</Item_characteristic__coded>
       <ITEM_DESCRIPTION>
-        <Item_description_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Item_description>some description</Item_description>
      </ITEM_DESCRIPTION>
    </Item_description>
@@ -1532,9 +1432,6 @@
           <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
        </DUTY_TAX_FEE_TYPE>
         <DUTY_TAX_FEE_DETAIL>
-          <Duty_tax_fee_rate_identification/>
-          <Code_list_qualifier/>
-          <Code_list_responsible_agency__coded/>
           <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
        </DUTY_TAX_FEE_DETAIL>
         <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>
@@ -1605,9 +1502,6 @@
         <Duty_tax_fee_type__coded>VAT</Duty_tax_fee_type__coded>
      </DUTY_TAX_FEE_TYPE>
       <DUTY_TAX_FEE_DETAIL>
-        <Duty_tax_fee_rate_identification/>
-        <Code_list_qualifier/>
-        <Code_list_responsible_agency__coded/>
         <Duty_tax_fee_rate>25</Duty_tax_fee_rate>
      </DUTY_TAX_FEE_DETAIL>
       <Duty_tax_fee_category__coded>S</Duty_tax_fee_category__coded>

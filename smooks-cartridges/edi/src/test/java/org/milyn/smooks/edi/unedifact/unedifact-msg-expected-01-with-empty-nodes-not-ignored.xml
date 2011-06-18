@@ -87,6 +87,10 @@
 				<field-a>f11</field-a>
 				<field-b>f22</field-b>
 				<field-c>f33</field-c>
+                <field-d>
+                    <compa></compa>
+                    <compb>cbval</compb>
+                </field-d>
 			</segBB>
 		</message2>
 		<env:UNT>

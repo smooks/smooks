@@ -626,6 +626,7 @@ public class EDIParser implements XMLReader {
 			String[] currentFieldComponents = EDIUtils.split(fieldMessageVal, delimiters.getComponent(), delimiters.getEscape());
 
             assertComponentsOK(expectedField, fieldIndex, segmentCode, expectedComponents, currentFieldComponents);
+
             if (currentFieldComponents.length > 0 || !ignoreEmptyNodes()) {
             	startElement(expectedField, true);
 	            // Iterate over the field components and map them...
@@ -641,6 +642,7 @@ public class EDIParser implements XMLReader {
             if(expectedField.isRequired() && fieldMessageVal.length() == 0) {
                 throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segmentCode + "], field " + (fieldIndex + 1) + " (" + expectedField.getXmltag() + ") expected to contain a value.  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedField, segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
             }
+
             if (fieldMessageVal.length() > 0 || !ignoreEmptyNodes()) {
                 startElement(expectedField, true);
                 writeToContentHandler(fieldMessageVal);
@@ -662,31 +664,35 @@ public class EDIParser implements XMLReader {
 	private void mapComponent(String componentMessageVal, Component expectedComponent, int fieldIndex, int componentIndex, String segmentCode, String field) throws SAXException {
 		List<SubComponent> expectedSubComponents = expectedComponent.getSubComponents();
 
-		startElement(expectedComponent, true);
-
 		if(expectedSubComponents.size() != 0) {
             Delimiters delimiters = segmentReader.getDelimiters();
 			String[] currentComponentSubComponents = EDIUtils.split(componentMessageVal, delimiters.getSubComponent(), delimiters.getEscape());
 
             assertSubComponentsOK(expectedComponent, fieldIndex, componentIndex, segmentCode, field, expectedSubComponents, currentComponentSubComponents);
 
-            for(int i = 0; i < currentComponentSubComponents.length; i++) {
-                if(expectedSubComponents.get(i).isRequired() && currentComponentSubComponents[i].length() == 0) {
-                    throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segmentCode + "], field " + (fieldIndex + 1) + " (" + field + "), component " + (componentIndex + 1) + " (" + expectedComponent.getXmltag() + "), sub-component " + (i + 1) + " (" + expectedSubComponents.get(i).getXmltag() + ") expected to contain a value.  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedSubComponents.get(i), segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
-                }
+            if (currentComponentSubComponents.length > 0 || !ignoreEmptyNodes()) {
+                startElement(expectedComponent, true);
+                for(int i = 0; i < currentComponentSubComponents.length; i++) {
+                    if(expectedSubComponents.get(i).isRequired() && currentComponentSubComponents[i].length() == 0) {
+                        throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segmentCode + "], field " + (fieldIndex + 1) + " (" + field + "), component " + (componentIndex + 1) + " (" + expectedComponent.getXmltag() + "), sub-component " + (i + 1) + " (" + expectedSubComponents.get(i).getXmltag() + ") expected to contain a value.  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedSubComponents.get(i), segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
+                    }
 
-				startElement(expectedSubComponents.get(i), true);
-                writeToContentHandler(currentComponentSubComponents[i]);
-				endElement(expectedSubComponents.get(i), false);
-			}
-			endElement(expectedComponent, true);
+                    startElement(expectedSubComponents.get(i), true);
+                    writeToContentHandler(currentComponentSubComponents[i]);
+                    endElement(expectedSubComponents.get(i), false);
+                }
+                endElement(expectedComponent, true);
+            }
 		} else {
             if(expectedComponent.isRequired() && componentMessageVal.length() == 0) {
                 throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segmentCode + "], field " + (fieldIndex + 1) + " (" + field + "), component " + (componentIndex + 1) + " (" + expectedComponent.getXmltag() + ") expected to contain a value.  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedComponent, segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
             }
 
-            writeToContentHandler(componentMessageVal);
-			endElement(expectedComponent, false);
+            if (componentMessageVal.length() > 0 || !ignoreEmptyNodes()) {
+                startElement(expectedComponent, true);
+                writeToContentHandler(componentMessageVal);
+                endElement(expectedComponent, false);
+            }
 		}
 	}
 
