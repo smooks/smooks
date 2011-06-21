@@ -18,7 +18,7 @@ package org.milyn.edi.test.test_groups_01;
 import junit.framework.TestCase;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edi.test.EJCTestUtil;
-import org.milyn.ejc.IllegalNameException;
+import org.milyn.edisax.util.IllegalNameException;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

@@ -449,6 +449,7 @@ public class EDIConfigDigester {
      * @param mappingNode the MappingNode element.
      */
     private void setValuesForMappingNode(Node node, MappingNode mappingNode, String namespacePrefix, MappingNode parent) {
+        mappingNode.setName(getAttributeValue(node, "name"));
         mappingNode.setXmltag(getAttributeValue(node, "xmltag"));
         mappingNode.setNodeTypeRef(getAttributeValue(node, "nodeTypeRef"));
         mappingNode.setDocumentation(getNodeValue(node, namespacePrefix + "documentation"));

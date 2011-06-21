@@ -1,14 +1,14 @@
-<medi:segment xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd" description=" To specify date, and/or time, or period." ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" segcode="DTM" truncatable="true" xmltag="DTM">
-  <medi:field nodeTypeRef="C507" required="true" truncatable="true" xmltag="C507">
-    <medi:documentation>DATE/TIME/PERIOD -  Date and/or time, or period relevant to thespecified date/time/period type.</medi:documentation>
-    <medi:component dataType="String" maxLength="3" minLength="0" required="true" truncatable="true" xmltag="e2005">
-      <medi:documentation>Date or time or period function code qualifier           -  Code qualifying the function of a date, time orperiod.</medi:documentation>
+<medi:segment xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd" description=" To specify date, and/or time, or period." ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" name="DATE/TIME/PERIOD" segcode="DTM" truncatable="true" xmltag="DTM">
+  <medi:field name="DATE/TIME/PERIOD" nodeTypeRef="C507" required="true" truncatable="true" xmltag="C507">
+    <medi:documentation>Date and/or time, or period relevant to thespecified date/time/period type.</medi:documentation>
+    <medi:component dataType="String" maxLength="3" minLength="0" name="Date or time or period function code qualifier" required="true" truncatable="true" xmltag="e2005">
+      <medi:documentation>Code qualifying the function of a date, time orperiod.</medi:documentation>
     </medi:component>
-    <medi:component dataType="String" maxLength="35" minLength="0" required="false" truncatable="true" xmltag="e2380">
-      <medi:documentation>Date or time or period text                              -  The value of a date, a date and time, a time or of aperiod in a specified representation.</medi:documentation>
+    <medi:component dataType="String" maxLength="35" minLength="0" name="Date or time or period text" required="false" truncatable="true" xmltag="e2380">
+      <medi:documentation>The value of a date, a date and time, a time or of aperiod in a specified representation.</medi:documentation>
     </medi:component>
-    <medi:component dataType="String" maxLength="3" minLength="0" required="false" truncatable="true" xmltag="e2379">
-      <medi:documentation>Date or time or period format code                       -  Code specifying the representation of a date, time orperiod.</medi:documentation>
+    <medi:component dataType="String" maxLength="3" minLength="0" name="Date or time or period format code" required="false" truncatable="true" xmltag="e2379">
+      <medi:documentation>Code specifying the representation of a date, time orperiod.</medi:documentation>
     </medi:component>
   </medi:field>
 </medi:segment>

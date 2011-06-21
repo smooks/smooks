@@ -19,6 +19,7 @@ import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Description;
+import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.io.FileUtils;
 import org.milyn.javabean.pojogen.JClass;
 import org.milyn.resource.URIResourceLocator;
@@ -98,7 +99,7 @@ public class EJCExecutor {
                         messageSetDefinitions.add(messageDef);
 
                         deleteFile(messagePackageName, EJC.EDIMAPPINGCONFIG_XML);
-                        deleteFile(messagePackageName, EJCUtils.encodeClassName(description.getName()) + "Factory.java");
+                        deleteFile(messagePackageName, EDIUtils.encodeClassName(description.getName()) + "Factory.java");
 
                         JClass beanClass = classModel.getRootBeanConfig().getBeanClass();
                         rootClassesListFileBuilder.append(beanClass.getPackageName()).append(".").append(beanClass.getClassName()).append("\n");

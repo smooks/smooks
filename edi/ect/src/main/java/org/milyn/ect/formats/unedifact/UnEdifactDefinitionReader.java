@@ -174,15 +174,16 @@ public class UnEdifactDefinitionReader {
             throw new EdiParseException("Unable to extract segment code and name for Segment from line [" + line + "].");
         }
 
-        if (useShortName) {
-            name = segcode;
-        }
-
         String description = getValue(reader, "Function:");
 
         Segment segment = new Segment();
         segment.setSegcode(segcode);
-        segment.setXmltag(XmlTagEncoder.encode(name.trim()));
+        segment.setName(name);
+        if (useShortName) {
+            segment.setXmltag(XmlTagEncoder.encode(segcode.trim()));
+        } else {
+            segment.setXmltag(XmlTagEncoder.encode(name.trim()));
+        }
         segment.setDescription(description);
         segment.setTruncatable(true);
 
@@ -230,6 +231,7 @@ public class UnEdifactDefinitionReader {
 
     private static Field convertToField(Component component, boolean isMandatory) {
         Field field = new Field();
+        field.setName(component.getName());
         field.setXmltag(XmlTagEncoder.encode(component.getXmltag()));
         field.setNodeTypeRef(component.getNodeTypeRef());
         field.setDocumentation(component.getDocumentation());
@@ -244,6 +246,7 @@ public class UnEdifactDefinitionReader {
 
     private static Field copyField(Field oldField, boolean isMandatory) {
         Field field = new Field();
+        field.setName(oldField.getName());
         field.setXmltag(XmlTagEncoder.encode(oldField.getXmltag()));
         field.setNodeTypeRef(oldField.getNodeTypeRef());
         field.setDocumentation(oldField.getDocumentation());
@@ -294,13 +297,13 @@ public class UnEdifactDefinitionReader {
 
         String description = getValue(reader, "Desc:");
 
-        if (useShortName) {
-            description = name + " - " + description;
-            name = id;
-        }
-
+        field.setName(name);
         field.setNodeTypeRef(id);
-        field.setXmltag(XmlTagEncoder.encode(name));
+        if (useShortName) {
+            field.setXmltag(XmlTagEncoder.encode(id));
+        } else {
+            field.setXmltag(XmlTagEncoder.encode(name));
+        }
         field.setDocumentation(description);
 
         line = readUntilValue(reader);
@@ -327,6 +330,7 @@ public class UnEdifactDefinitionReader {
         toComponent.setDataType(fromComponent.getDataType());
         toComponent.setDataTypeParameters(fromComponent.getTypeParameters());
         toComponent.setXmltag(XmlTagEncoder.encode(fromComponent.getXmltag()));
+        toComponent.setName(fromComponent.getName());
     }
 
     private static Map<String, Component> readComponents(Reader reader, boolean useShortName) throws IOException, EdiParseException {
@@ -376,13 +380,13 @@ public class UnEdifactDefinitionReader {
         String repr = getValue(reader, "Repr:");
         String[] typeAndOccurance = repr.split(DOTS);
 
-        if (useShortName) {
-            description = name + " - " + description;
-            name = DATA_ELEMENT_PREFIX + id;
-        }
-
+        component.setName(name);
         component.setNodeTypeRef(id);
-        component.setXmltag(XmlTagEncoder.encode(name.trim()));
+        if (useShortName) {
+            component.setXmltag(XmlTagEncoder.encode((DATA_ELEMENT_PREFIX + id).trim()));
+        } else {
+            component.setXmltag(XmlTagEncoder.encode(name.trim()));
+        }
         component.setDataType(getType(typeAndOccurance));
         component.setMinLength(getMinLength(typeAndOccurance));
         component.setMaxLength(getMaxLength(typeAndOccurance));

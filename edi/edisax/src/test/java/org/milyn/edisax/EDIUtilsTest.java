@@ -8,6 +8,7 @@ import org.milyn.edisax.model.internal.DelimiterType;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 import org.milyn.edisax.util.EDIUtils;
+import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.util.CollectionsUtil;
 import org.xml.sax.SAXException;
 
@@ -110,6 +111,28 @@ public class EDIUtilsTest extends TestCase {
         assertEquals("ab", EDIUtils.concatAndTruncate(CollectionsUtil.toList("a", "b", "+:+"), DelimiterType.FIELD, delims));
         assertEquals("ab+:+'", EDIUtils.concatAndTruncate(CollectionsUtil.toList("a", "b", "+:+'"), DelimiterType.FIELD, delims));
         assertEquals("ab+:+", EDIUtils.concatAndTruncate(CollectionsUtil.toList("a", "b", "+:+"), DelimiterType.COMPONENT, delims));
+    }
+
+    public void testEncodeClassName() throws IllegalNameException {
+        assertEquals("Address", EDIUtils.encodeClassName("ADDRESS"));
+        assertEquals("CustomerAddress", EDIUtils.encodeClassName("CUSTOMER_ADDRESS"));
+        assertEquals("CustomerADDRESS", EDIUtils.encodeClassName("Customer_ADDRESS"));
+        assertEquals("CustomerAddress", EDIUtils.encodeClassName("Customer_address"));
+        assertEquals("Default", EDIUtils.encodeClassName("default"));
+        assertEquals("_1CustomerAddressPOBox", EDIUtils.encodeClassName("1CustomerAddressP.O.Box"));
+    }
+
+    public void testEncodeAttribute() throws IllegalNameException {
+        assertEquals("address", EDIUtils.encodeAttributeName("ADDRESS"));
+        assertEquals("addRESS", EDIUtils.encodeAttributeName("addRESS"));
+        assertEquals("addRESS", EDIUtils.encodeAttributeName("AddRESS"));
+        assertEquals("orderId", EDIUtils.encodeAttributeName("orderId"));
+        assertEquals("orderId", EDIUtils.encodeAttributeName("order_id"));
+        assertEquals("_default", EDIUtils.encodeAttributeName("default"));
+        assertEquals("_package", EDIUtils.encodeAttributeName("package"));
+        assertEquals("_package", EDIUtils.encodeAttributeName("Package"));
+        assertEquals("_1address", EDIUtils.encodeAttributeName("1ADDRESS"));
+        assertEquals("_1addressPOBox", EDIUtils.encodeAttributeName("_1addressP.O.Box"));
     }
 
     private String output(String[] value) {

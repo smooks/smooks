@@ -15,7 +15,6 @@
 */
 package org.milyn.persistence;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -36,6 +35,7 @@ import org.milyn.scribe.MappingDao;
 import org.milyn.scribe.register.MapDaoRegister;
 import org.milyn.scribe.register.SingleDaoRegister;
 import org.mockito.Mock;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -125,7 +125,7 @@ public class EntityUpdaterTest extends BaseTestCase {
 
             smooks.filterSource(executionContext, new StringSource(SIMPLE_XML), result);
 
-            assertSame(updated1, result.getBean("updated1"));
+            Assert.assertSame(updated1, result.getBean("updated1"));
         } finally {
             smooks.close();
         }

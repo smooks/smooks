@@ -378,9 +378,12 @@ public class UnEdifactMessage {
         return group;
     }
 
-    private Segment createSegment(String id, String segcode, String description, String mandatory, String maxOccurance, Map<String, String> definitions, boolean isSplitIntoImport, boolean useShortName, Map<String, Segment> segmentDefinitions) {
+    private Segment createSegment(String id, String segcode, String name, String mandatory, String maxOccurance, Map<String, String> definitions, boolean isSplitIntoImport, boolean useShortName, Map<String, Segment> segmentDefinitions) {
         Segment segment = new Segment();
 
+        name = name.trim();
+
+        segment.setName(name);
         segment.setSegcode(segcode);
         segment.setNodeTypeRef(agency + ":" + segcode);
 
@@ -401,13 +404,14 @@ public class UnEdifactMessage {
         if (useShortName) {
             segment.setXmltag(segcode);
         } else {
-            segment.setXmltag(XmlTagEncoder.encode(description.trim()));
+            segment.setXmltag(XmlTagEncoder.encode(name.trim()));
         }
 
         segment.setDocumentation(definitions.get(id).trim());
         segment.setMinOccurs(mandatory.equals("M") ? 1 : 0);
         segment.setMaxOccurs(Integer.valueOf(maxOccurance));
         segment.setTruncatable(true);
+
         return segment;
     }
 

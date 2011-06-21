@@ -20,6 +20,7 @@ import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.model.internal.MappingNode;
+import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.io.StreamUtils;
 import org.milyn.io.FileUtils;
 import org.milyn.javabean.pojogen.JClass;

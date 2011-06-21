@@ -18,6 +18,7 @@ package org.milyn.edisax.unedifact.handlers;
 import java.io.IOException;
 
 import org.milyn.edisax.BufferedSegmentReader;
+import org.milyn.edisax.EDIParseException;
 import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.interchange.InterchangeContext;
 import org.milyn.edisax.model.internal.Segment;
@@ -52,9 +53,11 @@ public class UNGHandler implements ControlBlockHandler {
 	    		segmentReader.moveToNextSegment(false);
 	    		interchangeContext.mapControlSegment(uneSegment, true);
 	    		break;
-	        } else {
+            } else if(segCode.length() > 0) {
 	        	ControlBlockHandler handler = interchangeContext.getControlBlockHandler(segCode);
 	        	handler.process(interchangeContext);
+            } else {
+                throw new EDIParseException("Unexpected end of UN/EDIFACT data stream.  If stream was reset (e.g. after read charset was changed), please make sure underlying stream was properly reset.");
 	        }
         }
 

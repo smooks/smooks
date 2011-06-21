@@ -16,6 +16,8 @@
 
 package org.milyn.edisax.model.internal;
 
+import org.milyn.edisax.util.IllegalNameException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -53,19 +55,6 @@ public class Segment extends SegmentGroup implements ContainerNode {
 
     public Pattern getSegcodePattern() {
         return segcodePattern;
-    }
-
-    @Override
-    public String getJavaName() {
-        if(getNodeTypeRef() != null) {
-            if(importXmlTag != null) {
-                return importXmlTag;
-            } else {
-                return getNodeTypeRef();
-            }
-        } else {
-            return super.getJavaName();
-        }
     }
 
     public boolean isTruncatable() {

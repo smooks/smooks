@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edi.test.EJCTestUtil;
-import org.milyn.ejc.IllegalNameException;
+import org.milyn.edisax.util.IllegalNameException;
 import org.xml.sax.SAXException;
 
 /**

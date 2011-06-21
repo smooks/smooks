@@ -26,6 +26,7 @@ import org.milyn.persistence.test.util.BaseTestCase;
 import org.milyn.persistence.util.PersistenceUtil;
 import org.milyn.scribe.register.MapDaoRegister;
 import org.mockito.Mock;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -33,8 +34,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -79,8 +78,8 @@ public class EntityLocatorTest extends BaseTestCase {
 
             List<String> resultList = (List<String>) result.getBean("theList");
 
-            assertNotNull(resultList);
-            assertSame(searchResult, resultList.get(0));
+            Assert.assertNotNull(resultList);
+            Assert.assertSame(searchResult, resultList.get(0));
 
         }finally {
             smooks.close();

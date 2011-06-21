@@ -207,6 +207,9 @@ public class UnEdifactSpecificationReaderTest {
         lookup.addNamespace("medi", "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd");
         Element node = (Element) lookup.selectSingleNode(doc);
         assertNotNull("Node with segment code " + segmentCode + " wasn't found", node);
+
+//        System.out.println(out.outputString(node));
+
         XMLUnit.setIgnoreWhitespace( true );
         XMLUnit.setIgnoreAttributeOrder(true);
     	XMLAssert.assertXMLEqual("Failed to compare XMLs for " + segmentCode, new StringReader(expected), new StringReader(out.outputString(node)));

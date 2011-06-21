@@ -25,6 +25,8 @@ import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
 import org.milyn.edisax.model.internal.SubComponent;
 import org.milyn.edisax.model.internal.ValueNode;
+import org.milyn.edisax.util.EDIUtils;
+import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.javabean.pojogen.JClass;
 import org.milyn.javabean.pojogen.JMethod;
 import org.milyn.javabean.pojogen.JNamedType;
@@ -65,7 +67,7 @@ public class ClassModelCompiler {
 
         pushNode(segmentGroup);
 
-        JClass rootClass = new JClass(classPackage, EJCUtils.encodeClassName(segmentGroup.getXmltag()), getCurrentClassId()).setSerializable();
+        JClass rootClass = new JClass(classPackage, EDIUtils.encodeClassName(segmentGroup.getJavaName()), getCurrentClassId()).setSerializable();
         BindingConfig rootBeanConfig = new BindingConfig(getCurrentClassId(), getCurrentNodePath(), rootClass, null, null);
 
         //Insert root class into classModel and its' corresponding xmltag-value.
@@ -240,7 +242,7 @@ public class ClassModelCompiler {
             jtype = new JType(String.class);
         }
 
-        String propertyName = EJCUtils.encodeAttributeName(jtype, valueNode.getXmltag());
+        String propertyName = EDIUtils.encodeAttributeName(jtype, valueNode.getJavaName());
         childToParentProperty = new JNamedType(jtype, propertyName);
 
         JClass parentBeanClass = parent.getBeanClass();
@@ -325,7 +327,7 @@ public class ClassModelCompiler {
 
         if(child == null) {
             String packageName = parentBinding.getBeanClass().getPackageName();
-            String className = EJCUtils.encodeClassName(mappingNode.getJavaName());
+            String className = EDIUtils.encodeClassName(mappingNode.getJavaName());
 
             if(mappingNode instanceof Field) {
                 packageName += ".field";
@@ -347,7 +349,7 @@ public class ClassModelCompiler {
             jtype = new JType(child.getSkeletonClass());
         }
 
-        String propertyName = EJCUtils.encodeAttributeName(jtype, mappingNode.getXmltag());
+        String propertyName = EDIUtils.encodeAttributeName(jtype, mappingNode.getJavaName());
         JNamedType childProperty = new JNamedType(jtype, propertyName);
 
         BindingConfig childBeanConfig = new BindingConfig(getCurrentClassId(), getCurrentNodePath(), child, parentBinding, childProperty);

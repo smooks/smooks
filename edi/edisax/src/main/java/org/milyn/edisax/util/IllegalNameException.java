@@ -13,7 +13,7 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.milyn.ejc;
+package org.milyn.edisax.util;
 
 /**
  * IllegalNameException is used when a JClass or JField is given a name matching a reserved keyword in java.

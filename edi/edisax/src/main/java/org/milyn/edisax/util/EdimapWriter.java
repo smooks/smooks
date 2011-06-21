@@ -99,7 +99,7 @@ public class EdimapWriter {
         SegmentGroup segments = edimap.getSegments();
         Element segmentsEl = newElement("segments", edimapEl, segments);
 
-        mapBeanProperties(segments, segmentsEl, "xmltag");
+        mapBeanProperties(segments, segmentsEl, "name", "xmltag");
         addChildSegments(segments, segmentsEl);
     }
 
@@ -137,7 +137,7 @@ public class EdimapWriter {
                 segmentEl = newElement("segmentGroup", parentSegment, childSegment);
             }
 
-            mapBeanProperties(childSegment, segmentEl, "xmltag", "minOccurs", "maxOccurs");
+            mapBeanProperties(childSegment, segmentEl, "name", "xmltag", "minOccurs", "maxOccurs");
 
             addChildSegments(childSegment, segmentEl);
         }
@@ -147,7 +147,7 @@ public class EdimapWriter {
         for(Field field : fields) {
             Element fieldEl = newElement("field", segmentEl, field);
 
-            mapBeanProperties(field, fieldEl, "xmltag", "nodeTypeRef", "truncatable", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
+            mapBeanProperties(field, fieldEl, "name", "xmltag", "nodeTypeRef", "truncatable", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
             addComponents(field.getComponents(), fieldEl);
         }
     }
@@ -156,7 +156,7 @@ public class EdimapWriter {
         for(Component component : components) {
             Element componentEl = newElement("component", fieldEl, component);
 
-            mapBeanProperties(component, componentEl, "xmltag", "nodeTypeRef", "truncatable", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
+            mapBeanProperties(component, componentEl, "name", "xmltag", "nodeTypeRef", "truncatable", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
             addSubComponents(component.getSubComponents(), componentEl);
         }
     }
@@ -165,7 +165,7 @@ public class EdimapWriter {
         for(SubComponent subComponent : subComponents) {
             Element subComponentEl = newElement("sub-component", componentEl, subComponent);
 
-            mapBeanProperties(subComponent, subComponentEl, "xmltag", "nodeTypeRef", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
+            mapBeanProperties(subComponent, subComponentEl, "name", "xmltag", "nodeTypeRef", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
         }
     }
 

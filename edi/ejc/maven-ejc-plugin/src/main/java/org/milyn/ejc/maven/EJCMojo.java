@@ -23,10 +23,9 @@ import org.jfrog.maven.annomojo.annotations.MojoGoal;
 import org.jfrog.maven.annomojo.annotations.MojoPhase;
 import org.jfrog.maven.annomojo.annotations.MojoRequiresDependencyResolution;
 import org.jfrog.maven.annomojo.annotations.MojoParameter;
-import org.milyn.ejc.EJC;
 import org.milyn.ejc.EJCExecutor;
 import org.milyn.ejc.EJCException;
-import org.milyn.ejc.IllegalNameException;
+import org.milyn.edisax.util.IllegalNameException;
 import org.xml.sax.SAXException;
 
 import java.io.File;

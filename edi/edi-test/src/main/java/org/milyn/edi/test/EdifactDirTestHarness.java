@@ -20,11 +20,10 @@ import org.milyn.archive.Archive;
 import org.milyn.archive.ArchiveClassLoader;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.ect.EdiConvertionTool;
+import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.ejc.EJCExecutor;
-import org.milyn.ejc.IllegalNameException;
 import org.milyn.io.StreamUtils;
 import org.milyn.payload.StringResult;
-import org.milyn.payload.SystemOutResult;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchangeFactory;
 import org.milyn.test.ant.AntRunner;
@@ -135,6 +134,10 @@ public class EdifactDirTestHarness implements UNEdifactInterchangeFactory {
         } finally {
             Thread.currentThread().setContextClassLoader(origTCCL);
         }
+    }
+
+    public void setReportPath(String reportPath) {
+        getFactory().setReportPath(reportPath);
     }
 
     public UNEdifactInterchangeFactory getFactory() {

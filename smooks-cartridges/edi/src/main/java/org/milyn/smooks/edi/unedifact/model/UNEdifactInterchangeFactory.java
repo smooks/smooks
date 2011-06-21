@@ -57,4 +57,13 @@ public interface UNEdifactInterchangeFactory {
      * @throws IOException Exception writing interchange.
      */
     void toUNEdifact(UNEdifactInterchange interchange, Writer writer) throws IOException;
+
+    /**
+     * Set the Execution Report output path.
+     * <p/>
+     * Only use for debug purposes.  <b>Do not use in production!!</b>
+     *
+     * @param reportPath Execution Report output path.
+     */
+    void setReportPath(String reportPath);
 }

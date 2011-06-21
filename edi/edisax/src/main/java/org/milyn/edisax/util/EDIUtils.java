@@ -24,7 +24,9 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -42,6 +44,7 @@ import org.milyn.edisax.model.internal.DelimiterType;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.model.internal.Description;
 import org.milyn.io.StreamUtils;
+import org.milyn.javabean.pojogen.JType;
 import org.milyn.resource.URIResourceLocator;
 import org.milyn.util.ClassUtil;
 import org.xml.sax.SAXException;
@@ -67,6 +70,7 @@ public class EDIUtils {
      * Lookup name (string representation) of {@link #MODEL_SET_DEFINITIONS_DESCRIPTION}
      */
     public static final String MODEL_SET_DEFINITIONS_DESCRIPTION_LOOKUP_NAME = toLookupName(MODEL_SET_DEFINITIONS_DESCRIPTION);
+    public static HashSet<String> reservedKeywords = new HashSet<String>();
 
     /**
      * Splits a String by delimiter as long as delimiter does not follow an escape sequence.
@@ -475,6 +479,144 @@ public class EDIUtils {
         return true;
     }
 
+    /**
+     * Encodes a String into standard java class name convention. The following steps are performed
+     * on the name:
+     * 1. First character is set to upper case.
+     * 2. Illegal characters like '-' and whitespace are removed.
+     *
+     * @param name the original class name.
+     * @return the class name complying with standard java class name convention.
+     * @throws IllegalNameException when class name is a reserved keyword in java.
+     */
+    public static String encodeClassName(String name) throws IllegalNameException {
+        String result = name;
+        if (name.toUpperCase().equals(name)) {
+            StringBuilder nameRebuilder = new StringBuilder();
+
+            nameRebuilder.append(name.toLowerCase());
+            nameRebuilder.setCharAt(0, name.charAt(0));
+            result = nameRebuilder.toString();
+        }
+
+        result = deleteWithPascalNotation(result, '_');
+        result = encodeJavaIdentifier(result);
+
+        if(Character.isLowerCase(result.charAt(0))) {
+            result = Character.toUpperCase(result.charAt(0)) + result.substring(1);
+        }
+
+        assertLegalName(result);
+
+        return result;
+    }
+
+    /**
+     * Encodes a String into standard java attribute name convention. The following steps are performed
+     * on the name:
+     * 1. First character is set to lower case.
+     * 2. Illegal characters like '-' and whitespace are removed.
+     * 3. If attributetype is a Collection a 's'-character is appended.
+     *
+     * @param type the type of attribute.
+     * @param name the original attribut name.
+     * @return the attribute name complying with standard java attribute name convention.
+     * @throws IllegalNameException when attribute name is a reserved keyword in java.
+     */
+    public static String encodeAttributeName(JType type, String name) throws IllegalNameException {
+        String result = encodeAttributeName(name);
+
+        if(type != null && Collection.class.isAssignableFrom(type.getClass())) {
+            result += "s";
+        }
+
+        return result;
+    }
+
+    public static String encodeAttributeName(String name) {
+        String result;
+
+        if(name.toUpperCase().equals(name)) {
+            result = name.toLowerCase();
+        } else {
+            result = name;
+        }
+
+        result = deleteWithPascalNotation(result, '_');
+        result = encodeJavaIdentifier(result);
+
+        if(Character.isUpperCase(result.charAt(0))) {
+            result = Character.toLowerCase(result.charAt(0)) + result.substring(1);
+        }
+
+        if (reservedKeywords.contains(result)) {
+            result = "_" + result;
+        }
+
+        return result;
+    }
+
+    public static String encodeJavaIdentifier(String identifier) {
+        StringBuilder result = new StringBuilder();
+        int len = identifier.length();
+        boolean matchPrevious = false;
+        char currentChar;
+
+        for (int i = 0; i < len; i++) {
+            currentChar = identifier.charAt(i);
+
+            if(i == 0 && !Character.isJavaIdentifierStart(currentChar)) {
+                result.append('_');
+            }
+            if(!Character.isJavaIdentifierPart(currentChar)) {
+                matchPrevious = true;
+                continue;
+            }
+            if (matchPrevious) {
+                currentChar = Character.toUpperCase(currentChar);
+                matchPrevious = false;
+            }
+            result.append(currentChar);
+        }
+        return result.toString();
+    }
+
+    /**
+     * Removes all occurances of deleteChar and sets next character in value to uppercase.
+     * @param value the String to perform deletion on.
+     * @param deleteChar the character to delete.
+     * @return the pascal notated String.
+     */
+    public static String deleteWithPascalNotation(String value, char deleteChar) {
+        StringBuilder result = new StringBuilder();
+        boolean matchPrevious = false;
+        char currentChar;
+        for (int i = 0; i < value.length(); i++) {
+            currentChar = value.charAt(i);
+            if (currentChar == deleteChar) {
+                matchPrevious = true;
+                continue;
+            }
+            if (matchPrevious) {
+                currentChar = Character.toUpperCase(currentChar);
+                matchPrevious = false;
+            }
+            result.append(currentChar);
+        }
+        return result.toString();
+    }
+
+    /**
+     * Checks that the name is not a reserved word in java.
+     * @param name the value to check.
+     * @throws IllegalNameException when name is a reserved keyword in java.
+     */
+    public static void assertLegalName(String name) throws IllegalNameException {
+        if (reservedKeywords.contains(name)) {
+            throw new IllegalNameException("Illegal attribute- or class-name. The name [" + name + "] is a reserved keyword in java.");
+        }
+    }
+
     private static class CharSequence {
         String value;
         CharSequenceTypeEnum type;
@@ -509,5 +651,68 @@ public class EDIUtils {
         PLAIN,
         ESCAPE,
         DELIMITER
+    }
+
+
+    // Initialize reservedKeywords Set containing all keywords in java.
+    static {
+        String[] words = new String[]{
+            "abstract",
+            "boolean",
+            "break",
+            "byte",
+            "case",
+            "catch",
+            "char",
+            "class",
+            "const",
+            "continue",
+            "default",
+            "do",
+            "double",
+            "else",
+            "extends",
+            "final",
+            "finally",
+            "float",
+            "for",
+            "goto",
+            "if",
+            "implements",
+            "import",
+            "instanceof",
+            "int",
+            "interface",
+            "long",
+            "native",
+            "new",
+            "package",
+            "private",
+            "protected",
+            "public",
+            "return",
+            "short",
+            "static",
+            "strictfp",
+            "super",
+            "switch",
+            "synchronized",
+            "this",
+            "throw",
+            "throws",
+            "transient",
+            "try",
+            "void",
+            "volatile",
+            "while",
+            "true",
+            "false",
+            "null",
+            "assert",
+            "enum"
+            };
+        for (String w : words) {
+            EDIUtils.reservedKeywords.add(w);
+        }
     }
 }

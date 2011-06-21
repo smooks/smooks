@@ -11,6 +11,8 @@ import org.xml.sax.SAXException;
 import org.milyn.smooks.edi.unedifact.UNEdifactReaderConfigurator;        
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchangeFactory;        
+import org.milyn.container.ExecutionContext;
+import org.milyn.event.report.HtmlReportGenerator;
 
 import org.xml.sax.InputSource;
 import javax.xml.transform.stream.StreamSource;
@@ -27,6 +29,7 @@ public class ${messageSetName}InterchangeFactory implements UNEdifactInterchange
     public static final String INTERCHANGE_BINDING_CONFIG = "${bindingConfig}";
         
     private Smooks smooks;
+    private String reportPath;
 
     public static ${messageSetName}InterchangeFactory getInstance() throws IOException, SAXException {
         return new ${messageSetName}InterchangeFactory();
@@ -55,12 +58,22 @@ public class ${messageSetName}InterchangeFactory implements UNEdifactInterchange
             System.arraycopy(additionalResults, 0, results, 1, numAdditionalRes);
         }
 
-        smooks.filterSource(streamSource, results);
+        ExecutionContext executionContext = smooks.createExecutionContext();
+
+        if(reportPath != null) {
+            executionContext.setEventListener(new HtmlReportGenerator(reportPath));
+        }
+
+        smooks.filterSource(executionContext, streamSource, results);
         return javaResult.getBean(UNEdifactInterchange.class);
     }
 
     public void toUNEdifact(UNEdifactInterchange interchange, Writer writer) throws IOException {
         interchange.write(writer);
+    }
+
+    public void setReportPath(String reportPath) {
+        this.reportPath = reportPath;
     }
 
     private ${messageSetName}InterchangeFactory() throws IOException, SAXException {

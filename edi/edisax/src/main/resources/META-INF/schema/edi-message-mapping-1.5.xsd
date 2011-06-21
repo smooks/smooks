@@ -117,6 +117,11 @@ The escape attribute specifies a character that can be used before a delimiter t
                 <xs:documentation>Specifies a reference identifying the node type specification.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="name" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>The name of the node.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="value-node">
 		<xs:complexContent>

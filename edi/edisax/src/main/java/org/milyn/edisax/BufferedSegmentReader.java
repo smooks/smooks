@@ -62,16 +62,7 @@ public class BufferedSegmentReader {
      * @param rootDelimiters Root currentDelimiters.  New currentDelimiters can be pushed and popped.
      */
     public BufferedSegmentReader(InputSource ediInputSource, Delimiters rootDelimiters) {
-        InputStream inStream = ediInputSource.getByteStream();
-
-        if (inStream != null) {
-            if (inStream.markSupported()) {
-                underlyingByteStream = inStream;
-            } else {
-                underlyingByteStream = new BufferedInputStream(inStream, 1024 * 3);
-            }
-        }
-
+        underlyingByteStream = ediInputSource.getByteStream();
         reader = ediInputSource.getCharacterStream();
         if(reader == null) {
         	readEncoding = Charset.defaultCharset();

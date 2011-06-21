@@ -70,9 +70,11 @@ public class UNBHandler implements ControlBlockHandler {
 	    		segmentReader.moveToNextSegment(false);
 	    		interchangeContext.mapControlSegment(unzSegment, true);
 	    		break;
-	        } else {
+            } else if(segCode.length() > 0) {
 	        	ControlBlockHandler handler = interchangeContext.getControlBlockHandler(segCode);
 	        	handler.process(interchangeContext);
+            } else {
+                throw new EDIParseException("Unexpected end of UN/EDIFACT data stream.  If stream was reset (e.g. after read charset was changed), please make sure underlying stream was properly reset.");
 	        }
         }
 	}

@@ -15,27 +15,26 @@
 */
 package org.milyn.edi.test.unedifact;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.milyn.edi.test.EdifactDirTestHarness;
-import org.milyn.payload.StringResult;
-import org.milyn.payload.SystemOutResult;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class D03B_Test extends TestCase {
+public class D03B_Test {
 
-    private EdifactDirTestHarness d03bHarness = new EdifactDirTestHarness(new File("src/test/resources/d03b.zip"), "PAXLST");
+    private static EdifactDirTestHarness d03bHarness = new EdifactDirTestHarness(new File("src/test/resources/d03b.zip"), "PAXLST");
 
+    @Test
     public void test_PAXLST() throws IOException {
         d03bHarness.assertJavaReadWriteOK(getClass().getResourceAsStream("PAXLST.edi"));
     }
 
+    @Test
     public void test_PAXLST_test_XML() throws IOException, SAXException {
         d03bHarness.assertXMLOK(getClass().getResourceAsStream("PAXLST.edi"), getClass().getResourceAsStream("PAXLST.xml"));
     }

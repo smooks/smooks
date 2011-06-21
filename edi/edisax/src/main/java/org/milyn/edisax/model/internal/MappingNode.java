@@ -16,18 +16,22 @@
 
 package org.milyn.edisax.model.internal;
 
+import org.milyn.edisax.util.EDIUtils;
+import org.milyn.edisax.util.IllegalNameException;
+
 public class MappingNode {
+
+    private String name;
+    private String namespace;
+    private String documentation;
 
     public static final String INDEXED_NODE_SEPARATOR = "_-_-";
 
     private String xmltag;
     private String nodeTypeRef;
-    private String documentation;
     private MappingNode parent;
 
-	private String namespace;
-    
-	public MappingNode() {
+    public MappingNode() {
 	}
     
 	public MappingNode(String xmltag, String namespace) {
@@ -67,21 +71,27 @@ public class MappingNode {
         this.parent = parent;
     }
 
-    public String getJavaName() {
-        int separatorIndex = xmltag.indexOf(INDEXED_NODE_SEPARATOR);
+    public String getJavaName() throws IllegalNameException {
+        String javaName = xmltag.replace(INDEXED_NODE_SEPARATOR, "_");
 
-        if(separatorIndex != -1) {
-            return xmltag.substring(0, separatorIndex);
-        } else {
-            return xmltag;
+        if(name != null && name.trim().length() > 0) {
+            javaName += "_" + EDIUtils.encodeClassName(name);
         }
+
+        return javaName;
     }
 
-    /**
-     * Returns a namespace of the element
-     * 
-     * @return
-     */
+    public void setName(String name) {
+        if (name != null) {
+            name = name.trim();
+        }
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 	public String getNamespace() {
 		return namespace;
 	}

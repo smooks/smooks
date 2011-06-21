@@ -16,6 +16,8 @@
 package org.milyn.ejc;
 
 import org.apache.commons.logging.Log;
+import org.milyn.edisax.util.EDIUtils;
+import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.javabean.pojogen.JClass;
 import org.milyn.util.FreeMarkerTemplate;
 
@@ -93,7 +95,7 @@ public class BeanWriter {
         JClass rootClass = model.getRootBeanConfig().getBeanClass();
         String packageName = rootClass.getPackageName();
         String className = rootClass.getClassName();
-        String classId = EJCUtils.encodeAttributeName(null, rootClass.getClassName());
+        String classId = EDIUtils.encodeAttributeName(null, rootClass.getClassName());
 
         Map<String, Object> configs = new HashMap<String, Object>();
         configs.put("package", packageName);

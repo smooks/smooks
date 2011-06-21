@@ -1,26 +1,26 @@
-<medi:segment xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd" description=" To specify price information." ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" segcode="PRI" truncatable="true" xmltag="PRICE_DETAILS">
-  <medi:field nodeTypeRef="C509" required="false" truncatable="true" xmltag="PRICE_INFORMATION">
+<medi:segment xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd" description=" To specify price information." ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" name="PRICE DETAILS" segcode="PRI" truncatable="true" xmltag="PRICE_DETAILS">
+  <medi:field name="PRICE INFORMATION" nodeTypeRef="C509" required="false" truncatable="true" xmltag="PRICE_INFORMATION">
     <medi:documentation>Identification of price type, price and relateddetails.</medi:documentation>
-    <medi:component dataType="String" maxLength="3" minLength="0" required="true" truncatable="true" xmltag="Price_code_qualifier">
+    <medi:component dataType="String" maxLength="3" minLength="0" name="Price code qualifier" required="true" truncatable="true" xmltag="Price_code_qualifier">
       <medi:documentation>Code qualifying a price.</medi:documentation>
     </medi:component>
-    <medi:component dataType="DABigDecimal" maxLength="15" minLength="0" required="false" truncatable="true" xmltag="Price_amount">
+    <medi:component dataType="DABigDecimal" maxLength="15" minLength="0" name="Price amount" required="false" truncatable="true" xmltag="Price_amount">
       <medi:documentation>To specify a price.</medi:documentation>
     </medi:component>
-    <medi:component dataType="String" maxLength="3" minLength="0" required="false" truncatable="true" xmltag="Price_type_code">
+    <medi:component dataType="String" maxLength="3" minLength="0" name="Price type code" required="false" truncatable="true" xmltag="Price_type_code">
       <medi:documentation>Code specifying the type of price.</medi:documentation>
     </medi:component>
-    <medi:component dataType="String" maxLength="3" minLength="0" required="false" truncatable="true" xmltag="Price_specification_code">
+    <medi:component dataType="String" maxLength="3" minLength="0" name="Price specification code" required="false" truncatable="true" xmltag="Price_specification_code">
       <medi:documentation>Code identifying pricing specification.</medi:documentation>
     </medi:component>
-    <medi:component dataType="DABigDecimal" maxLength="9" minLength="0" required="false" truncatable="true" xmltag="Unit_price_basis_quantity">
+    <medi:component dataType="DABigDecimal" maxLength="9" minLength="0" name="Unit price basis quantity" required="false" truncatable="true" xmltag="Unit_price_basis_quantity">
       <medi:documentation>To specify the basis for a unit price.</medi:documentation>
     </medi:component>
-    <medi:component dataType="String" maxLength="8" minLength="0" required="false" truncatable="true" xmltag="Measurement_unit_code">
+    <medi:component dataType="String" maxLength="8" minLength="0" name="Measurement unit code" required="false" truncatable="true" xmltag="Measurement_unit_code">
       <medi:documentation>Code specifying the unit of measurement.</medi:documentation>
     </medi:component>
   </medi:field>
-  <medi:field dataType="String" maxLength="3" minLength="0" nodeTypeRef="5213" required="false" truncatable="true" xmltag="Sub_line_item_price_change_operation_code">
+  <medi:field dataType="String" maxLength="3" minLength="0" name="Sub-line item price change operation code" nodeTypeRef="5213" required="false" truncatable="true" xmltag="Sub_line_item_price_change_operation_code">
     <medi:documentation>Code specifying the price change operation for a sub-line item.</medi:documentation>
   </medi:field>
 </medi:segment>
