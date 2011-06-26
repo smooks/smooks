@@ -15,7 +15,6 @@
  */
 package org.milyn.edisax.interchange;
 
-import org.milyn.namespace.NamespaceResolver;
 import org.xml.sax.SAXException;
 
 /**
@@ -24,17 +23,14 @@ import org.xml.sax.SAXException;
  */
 public interface ControlBlockHandlerFactory {
 
+    String ENVELOPE_PREFIX = "env";
+    String NAMESPACE_ROOT = "urn:org.milyn.edi.unedifact";
+
     /**
      * Get the transmission namespace.
      * @return The transmission namespace.
      */
     String getNamespace();
-
-    /**
-     * Get a new NamespaceResolver instance for the transmission namespace associated with this factory.
-     * @return A new NamespaceResolver instance for the transmission namespace associated with this factory.
-     */
-    NamespaceResolver newNamespaceResolver();
 
     /**
      * Get a {@link ControlBlockHandler} instance for the specified interchange segment code.

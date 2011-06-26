@@ -46,8 +46,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 
 /**

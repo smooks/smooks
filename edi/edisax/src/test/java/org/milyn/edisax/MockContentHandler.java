@@ -18,13 +18,13 @@ package org.milyn.edisax;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.ext.DefaultHandler2;
 
 /**
  * Mock ContentHandler.
  * @author tfennelly
  */
-public class MockContentHandler extends DefaultHandler {
+public class MockContentHandler extends DefaultHandler2 {
 	
 	public StringBuffer xmlMapping = new StringBuffer();
 

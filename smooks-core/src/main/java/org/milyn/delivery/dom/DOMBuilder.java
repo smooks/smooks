@@ -91,6 +91,7 @@ public class DOMBuilder extends SmooksContentHandler {
     }
 
     public void startDocument() throws SAXException {
+        super.startDocument();
         if(ownerDocument == null) {
             // Parsing a new ownerDocument from scratch - create the DOM Document
             // instance and set it as the startNode.

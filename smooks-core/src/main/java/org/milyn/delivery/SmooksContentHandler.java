@@ -20,12 +20,12 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.replay.EndElementEvent;
 import org.milyn.delivery.replay.SAXEventReplay;
 import org.milyn.delivery.replay.StartElementEvent;
+import org.milyn.namespace.NamespaceDeclarationStack;
+import org.milyn.xml.NamespaceMappings;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.DefaultHandler2;
-
-import java.util.Stack;
 
 /**
  * Abstract SAX Content Handler.
@@ -37,6 +37,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
     private ExecutionContext executionContext;
     private SmooksContentHandler parentContentHandler;
     private SmooksContentHandler nestedContentHandler;
+    private NamespaceDeclarationStack namespaceDeclarationStack;
     private boolean endReplayed = false;
     private SAXEventReplay lastEvent = null;
     private StartElementEvent startEvent = new StartElementEvent();
@@ -53,6 +54,16 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
         }
     }
 
+    public NamespaceDeclarationStack getNamespaceDeclarationStack() {
+        if(namespaceDeclarationStack == null) {
+            namespaceDeclarationStack = NamespaceMappings.getNamespaceDeclarationStack(executionContext);
+            if(namespaceDeclarationStack == null) {
+                throw new IllegalStateException("NamespaceDeclarationStack instance not set on ExecutionContext.");
+            }
+        }
+        return namespaceDeclarationStack;
+    }
+
     public void replayStartElement() {
         // Replay the last sax event from the parent handler on this sax handler...
         parentContentHandler.replay(this);
@@ -60,6 +71,8 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
 
     @Override
     public final void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        getNamespaceDeclarationStack().pushNamespaces(qName, uri, attributes);
+
         startEvent.set(uri, localName, qName, attributes);
         lastEvent = startEvent;
 
@@ -95,6 +108,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
                 parentContentHandler.resetNestedContentHandler();
             }
         }
+        getNamespaceDeclarationStack().popNamespaces();
     }
 
     public abstract void endElement(EndElementEvent endEvent) throws SAXException;

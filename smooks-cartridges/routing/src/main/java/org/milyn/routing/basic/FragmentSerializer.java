@@ -25,8 +25,9 @@ import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanRepository;
+import org.milyn.namespace.NamespaceDeclarationStack;
 import org.milyn.util.CollectionsUtil;
+import org.milyn.xml.NamespaceMappings;
 import org.milyn.xml.XmlUtil;
 import org.milyn.container.ExecutionContext;
 import org.milyn.SmooksException;
@@ -43,7 +44,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 /**
  * Basic message fragment serializer.
@@ -188,10 +188,12 @@ public class FragmentSerializer implements SAXVisitBefore, SAXVisitAfter, DOMVis
 		
     	int depth = 0;
     	StringWriter fragmentWriter = new StringWriter();
-    	Set<String> declaredPrefixes = new HashSet<String>();
 
 		public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-			addNamepsaceDecls(element);			
+            if (depth == 0) {
+                addRootNamespaces(element, executionContext);
+            }
+
 	        if(childContentOnly) {
 	        	// Print child content only, so only print the start if the depth is greater
 	        	// than 1...
@@ -227,40 +229,17 @@ public class FragmentSerializer implements SAXVisitBefore, SAXVisitAfter, DOMVis
 	        }
 		}		
 
-		private void addNamepsaceDecls(SAXElement element) {
-			// This code is here to ensure that, for SAX, we add namespace declarations to the 
-			// serialized fragments.
-			
-			// Check the attribute namespaces...
-			addAttrNamespaceDecls(element);
-			
-			// Check that the element namespace has been declared..
-			QName qName = element.getName();
-			addNamespace(qName.getPrefix(), qName.getNamespaceURI(), element);
-		}
+        private void addRootNamespaces(SAXElement element, ExecutionContext executionContext) {
+            NamespaceDeclarationStack nsDeclStack = NamespaceMappings.getNamespaceDeclarationStack(executionContext);
+            Map<String, String> rootNamespaces = nsDeclStack.getActiveNamespaces();
 
-		private void addAttrNamespaceDecls(SAXElement element) {
-			Attributes attributes = element.getAttributes();
-			int attrCount = attributes.getLength();
-			
-			for (int i = 0; i < attrCount; i++) {
-				String uri = attributes.getURI(i);
-
-				if(uri.equals(XMLConstants.XMLNS_ATTRIBUTE_NS_URI)) {
-					declaredPrefixes.add(attributes.getLocalName(i));					
-				} else {					
-					String qName = attributes.getQName(i);				
-					if(qName != null) {
-						int indexOf = qName.indexOf(':');
-						if(indexOf != -1) {
-							String prefix = qName.substring(0, indexOf);
-							addNamespace(prefix, uri, element);
-						}
-					}
-				}
-				
-			}
-		}
+            if (!rootNamespaces.isEmpty()) {
+                Set<Map.Entry<String,String>> namespaces = rootNamespaces.entrySet();
+                for (Map.Entry<String,String> namespace : namespaces) {
+                    addNamespace(namespace.getKey(), namespace.getValue(), element);
+                }
+            }
+        }
 
 		private void addNamespace(String prefix, String namespaceURI, SAXElement element) {
             if (prefix == null || namespaceURI == null) {
@@ -269,9 +248,6 @@ public class FragmentSerializer implements SAXVisitBefore, SAXVisitAfter, DOMVis
             } else  if(prefix.equals(XMLConstants.DEFAULT_NS_PREFIX) && namespaceURI.equals(XMLConstants.NULL_NS_URI)) {
                 // No namespace.  Ignore...
                 return;
-            } else if(declaredPrefixes.contains(prefix)) {
-				// Already declared (earlier)...
-				return;
 			} else {
 				String prefixNS = element.getAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix);
 				if(prefixNS != null && prefixNS.length() != 0) {
@@ -290,7 +266,6 @@ public class FragmentSerializer implements SAXVisitBefore, SAXVisitAfter, DOMVis
 	        	attributesCopy.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix, "xmlns", null, namespaceURI);
 	        }
 	        element.setAttributes(attributesCopy);
-	        declaredPrefixes.add(prefix);
 		}
 	}
 }

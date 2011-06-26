@@ -28,7 +28,9 @@ import org.milyn.edisax.MockContentHandler;
 import org.milyn.edisax.MockContentHandlerNS;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
-import org.milyn.edisax.unedifact.registry.DefaultMappingsRegistry;
+import org.milyn.edisax.registry.DefaultMappingsRegistry;
+import org.milyn.namespace.NamespaceAwareHandler;
+import org.milyn.namespace.NamespaceDeclarationStack;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -52,7 +54,9 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		
 		// Test message 01 - no UNA segment...
 		handler = new MockContentHandlerNS();
-		parser.setContentHandler(handler);
+        NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack(parser);
+
+        parser.setContentHandler(new NamespaceAwareHandler(handler, namespaceDeclarationStack));
 		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-01.edi")));		
 		//System.out.println(handler.xmlMapping);
         XMLUnit.setIgnoreWhitespace( true );
@@ -63,6 +67,7 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		parser.setContentHandler(handler);		
 		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-02.edi")));
 		
+//		System.out.println(handler.xmlMapping);
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(handler.xmlMapping.toString()));
 	}
@@ -78,8 +83,9 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		MockContentHandler handler;
 		
 		handler = new MockContentHandler();
-		parser.setContentHandler(handler);
-		
+        NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack(parser);
+        parser.setContentHandler(new NamespaceAwareHandler(handler, namespaceDeclarationStack));
+
 		try {
 			parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-03.edi")));
 			fail("Expected EDIParseException");
@@ -100,8 +106,9 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		
 		// Test message 01 - no UNA segment...
 		handler = new MockContentHandlerNS();
-		parser.setContentHandler(handler);		
-		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-04.edi")));		
+        NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack(parser);
+        parser.setContentHandler(new NamespaceAwareHandler(handler, namespaceDeclarationStack));
+		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-04.edi")));
 		//System.out.println(handler.xmlMapping);
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-02.xml")), new StringReader(handler.xmlMapping.toString()));
@@ -119,8 +126,9 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		
 		// Test message 01 - no UNA segment...
 		handler = new MockContentHandler();
-		parser.setContentHandler(handler);		
-		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-05.edi")));		
+        NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack(parser);
+        parser.setContentHandler(new NamespaceAwareHandler(handler, namespaceDeclarationStack));
+		parser.parse(new InputSource(getClass().getResourceAsStream("unedifact-msg-05.edi")));
 //		System.out.println(handler.xmlMapping);
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-03.xml")), new StringReader(handler.xmlMapping.toString()));

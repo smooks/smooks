@@ -36,7 +36,9 @@ import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
+import org.milyn.namespace.NamespaceDeclarationStack;
 import org.milyn.util.CollectionsUtil;
+import org.milyn.xml.NamespaceMappings;
 import org.xml.sax.XMLReader;
 
 import java.io.IOException;
@@ -95,6 +97,13 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         // In case there's an attached event listener...
         nestedExecutionContext.setEventListener(executionContext.getEventListener());
 
+        // Copy over the XMLReader stack...
+        AbstractParser.setReaders(AbstractParser.getReaders(executionContext), nestedExecutionContext);
+
+        // Attach the NamespaceDeclarationStack to the nested execution context...
+        NamespaceDeclarationStack nsStack = NamespaceMappings.getNamespaceDeclarationStack(executionContext);
+        NamespaceMappings.setNamespaceDeclarationStack(nsStack, nestedExecutionContext);
+
         SmooksContentHandler parentContentHandler = SmooksContentHandler.getHandler(executionContext);
 
         if(parentContentHandler.getNestedContentHandler() != null) {
@@ -138,26 +147,30 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
     }
 
     public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
-        ExecutionContext nestedExecutionContext = (ExecutionContext) executionContext.getAttribute(NestedExecutionVisitor.class);
-
         try {
-            if(nestedExecutionContext != null) {
-                BeanContext parentBeanContext = executionContext.getBeanContext();
-                BeanContext nestedBeanContext = nestedExecutionContext.getBeanContext();
+            ExecutionContext nestedExecutionContext = (ExecutionContext) executionContext.getAttribute(NestedExecutionVisitor.class);
 
-                for(BeanId beanId : mapBeanIds) {
-                    Object bean = nestedBeanContext.getBean(beanId.getName());
+            try {
+                if(nestedExecutionContext != null) {
+                    BeanContext parentBeanContext = executionContext.getBeanContext();
+                    BeanContext nestedBeanContext = nestedExecutionContext.getBeanContext();
 
-                    // Add the bean from the nested context onto the parent context and then remove
-                    // it again.  This is enough to fire the wiring and end events...
-                    parentBeanContext.notifyObservers(new BeanContextLifecycleEvent(executionContext, null, BeanLifecycle.START_FRAGMENT, beanId, bean));
-                    parentBeanContext.addBean(beanId, bean);
-                    parentBeanContext.notifyObservers(new BeanContextLifecycleEvent(executionContext, null, BeanLifecycle.END_FRAGMENT, beanId, bean));
-                    parentBeanContext.removeBean(beanId, null);
+                    for(BeanId beanId : mapBeanIds) {
+                        Object bean = nestedBeanContext.getBean(beanId.getName());
+
+                        // Add the bean from the nested context onto the parent context and then remove
+                        // it again.  This is enough to fire the wiring and end events...
+                        parentBeanContext.notifyObservers(new BeanContextLifecycleEvent(executionContext, null, BeanLifecycle.START_FRAGMENT, beanId, bean));
+                        parentBeanContext.addBean(beanId, bean);
+                        parentBeanContext.notifyObservers(new BeanContextLifecycleEvent(executionContext, null, BeanLifecycle.END_FRAGMENT, beanId, bean));
+                        parentBeanContext.removeBean(beanId, null);
+                    }
                 }
+            } finally {
+                executionContext.removeAttribute(NestedExecutionVisitor.class);
             }
         } finally {
-            executionContext.removeAttribute(NestedExecutionVisitor.class);            
+            AbstractParser.detachXMLReader(executionContext);
         }
     }
 }

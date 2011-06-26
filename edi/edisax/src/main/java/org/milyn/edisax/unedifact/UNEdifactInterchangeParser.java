@@ -29,9 +29,10 @@ import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
 import org.milyn.edisax.interchange.InterchangeContext;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
-import org.milyn.edisax.unedifact.registry.LazyMappingsRegistry;
-import org.milyn.edisax.unedifact.registry.MappingsRegistry;
-import org.milyn.namespace.NamespaceResolver;
+import org.milyn.edisax.registry.LazyMappingsRegistry;
+import org.milyn.edisax.registry.MappingsRegistry;
+import org.milyn.namespace.NamespaceDeclarationStack;
+import org.milyn.namespace.NamespaceDeclarationStackAware;
 import org.milyn.xml.hierarchy.HierarchyChangeListener;
 import org.milyn.xml.hierarchy.HierarchyChangeReader;
 import org.xml.sax.ContentHandler;
@@ -50,7 +51,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeReader {
+public class UNEdifactInterchangeParser implements XMLReader, NamespaceDeclarationStackAware, HierarchyChangeReader {
 
     private Map<String, Boolean> features = new HashMap<String, Boolean>();
 	
@@ -63,6 +64,7 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	private ContentHandler contentHandler;
     private HierarchyChangeListener hierarchyChangeListener;
     private InterchangeContext interchangeContext;
+    private NamespaceDeclarationStack namespaceDeclarationStack;
 
     public void parse(InputSource unedifactInterchange) throws IOException, SAXException {
 		AssertArgument.isNotNull(unedifactInterchange, "unedifactInterchange");
@@ -84,19 +86,26 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        segmentReader.mark();
 	        segmentReader.setIgnoreNewLines(getFeature(EDIParser.FEATURE_IGNORE_NEWLINES));
 
-            NamespaceResolver namespaceResolver = handlerFactory.newNamespaceResolver();
-            String envelopePrefix = namespaceResolver.getPrefix(handlerFactory.getNamespace());
-
 	        contentHandler.startDocument();
-	        contentHandler.startPrefixMapping(envelopePrefix, handlerFactory.getNamespace());
 	        AttributesImpl attrs = new AttributesImpl();
-	        attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE + ":" + envelopePrefix, XMLConstants.XMLNS_ATTRIBUTE + ":" + envelopePrefix, "CDATA", handlerFactory.getNamespace());
-	        contentHandler.startElement(handlerFactory.getNamespace(), "unEdifact", envelopePrefix + ":unEdifact", attrs);
+	        attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, ControlBlockHandlerFactory.ENVELOPE_PREFIX, XMLConstants.XMLNS_ATTRIBUTE + ":" + ControlBlockHandlerFactory.ENVELOPE_PREFIX, "CDATA", handlerFactory.getNamespace());
+            String envElementQName = ControlBlockHandlerFactory.ENVELOPE_PREFIX + ":unEdifact";
+            contentHandler.startElement(handlerFactory.getNamespace(), "unEdifact", envElementQName, attrs);
 	
 	        while(true) {
 		        segCode = segmentReader.peek(3, true);
 		        if(segCode.length() == 3) {
-                    interchangeContext = createInterchangeContext(segmentReader, validate, handlerFactory, namespaceResolver);
+                    interchangeContext = createInterchangeContext(segmentReader, validate, handlerFactory, namespaceDeclarationStack);
+                    namespaceDeclarationStack = interchangeContext.getNamespaceDeclarationStack();
+
+                    if(hierarchyChangeListener != null) {
+                        hierarchyChangeListener.attachXMLReader(interchangeContext.getControlSegmentParser());
+                    } else if (!interchangeContext.isContainerManagedNamespaceStack()) {
+                        interchangeContext.getNamespaceDeclarationStack().pushReader(interchangeContext.getControlSegmentParser());
+                    }
+
+                    // Add the UN/EDIFACT namespace to the namespace stack...
+                    namespaceDeclarationStack.pushNamespaces(envElementQName, handlerFactory.getNamespace(), attrs);
 
                     ControlBlockHandler handler = handlerFactory.getControlBlockHandler(segCode);
 
@@ -109,16 +118,23 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 	        }
 	        
 	        contentHandler.characters(new char[] {'\n'}, 0, 1);
-	        contentHandler.endElement(handlerFactory.getNamespace(), "unEdifact", envelopePrefix + ":unEdifact");
-	        contentHandler.endPrefixMapping(envelopePrefix);
+	        contentHandler.endElement(handlerFactory.getNamespace(), "unEdifact", envElementQName);
 	        contentHandler.endDocument();
         } finally {
-        	contentHandler = null;
+            if (namespaceDeclarationStack != null) {
+                namespaceDeclarationStack.popNamespaces();
+                if(hierarchyChangeListener != null) {
+                    hierarchyChangeListener.detachXMLReader();
+                } else if (!interchangeContext.isContainerManagedNamespaceStack()) {
+                    interchangeContext.getNamespaceDeclarationStack().popReader();
+                }
+            }
+            contentHandler = null;
         }
 	}
 
-    protected InterchangeContext createInterchangeContext(BufferedSegmentReader segmentReader, boolean validate, ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceResolver namespaceResolver) {
-        return new InterchangeContext(segmentReader, registry, contentHandler, getFeatures(), controlBlockHandlerFactory, namespaceResolver, validate);
+    protected InterchangeContext createInterchangeContext(BufferedSegmentReader segmentReader, boolean validate, ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceDeclarationStack namespaceDeclarationStack) {
+        return new InterchangeContext(segmentReader, registry, contentHandler, getFeatures(), controlBlockHandlerFactory, namespaceDeclarationStack, validate);
     }
 
     public InterchangeContext getInterchangeContext() {
@@ -175,6 +191,10 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
     	return feature;
     }
 
+    public void setNamespaceDeclarationStack(NamespaceDeclarationStack namespaceDeclarationStack) {
+        this.namespaceDeclarationStack = namespaceDeclarationStack;
+    }
+
     public void setHierarchyChangeListener(HierarchyChangeListener listener) {
         this.hierarchyChangeListener = listener;
     }
@@ -216,5 +236,4 @@ public class UNEdifactInterchangeParser implements XMLReader, HierarchyChangeRea
 
     public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
     }
-
 }

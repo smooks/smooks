@@ -16,8 +16,6 @@
 
 package org.milyn.edisax;
 
-import static javax.xml.XMLConstants.NULL_NS_URI;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,9 +29,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.XMLConstants;
-
-import org.apache.commons.lang.StringUtils;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Component;
@@ -46,10 +41,9 @@ import org.milyn.edisax.model.internal.SegmentGroup;
 import org.milyn.edisax.model.internal.SubComponent;
 import org.milyn.edisax.model.internal.ValueNode;
 import org.milyn.edisax.util.EDIUtils;
-import org.milyn.edisax.util.NamespaceDeclarationStack;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.lang.MutableInt;
-import org.milyn.namespace.NamespaceResolver;
+import org.milyn.namespace.NamespaceDeclarationStack;
 import org.milyn.resource.URIResourceLocator;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -62,6 +56,8 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
+
+import javax.xml.XMLConstants;
 
 /**
  * EDI Parser.
@@ -154,11 +150,7 @@ public class EDIParser implements XMLReader {
     
     private Map<String, Boolean> features;
 
-    /**
-     * Fields required for namespace support
-     */
-    private NamespaceResolver namespaceResolver;
-    private NamespaceDeclarationStack nsStack = new NamespaceDeclarationStack(this);
+    private NamespaceDeclarationStack nsStack;
 
     private ContentHandler contentHandler;
     private MutableInt indentDepth;
@@ -167,6 +159,14 @@ public class EDIParser implements XMLReader {
     private EdifactModel edifactModel;
     private BufferedSegmentReader segmentReader;
     private Boolean ignoreEmptyNodes;
+
+    /**
+     * Set the {@link NamespaceDeclarationStack} to be used by the reader instance.
+     * @param nsStack The {@link NamespaceDeclarationStack} to be used by the reader instance.
+     */
+    public void setNamespaceDeclarationStack(NamespaceDeclarationStack nsStack) {
+        this.nsStack = nsStack;
+    }
 
     /**
      * Parse the supplied mapping model config path and return the generated EdiMap.
@@ -300,26 +300,6 @@ public class EDIParser implements XMLReader {
         edifactModel.setDescription(mappingDescription);
 
 		return edifactModel;
-    }
-
-    /**
-     * Set the namespace resolver for this reader instance.
-     * @param namespaceResolver The namespace resolver.
-     */
-    public void setNamespaceResolver(NamespaceResolver namespaceResolver) {
-        this.namespaceResolver = namespaceResolver;
-    }
-
-    /**
-     * Get the namespace resolver for this reader instance.
-     * @return The namespace resolver.
-     */
-    public NamespaceResolver getNamespaceResolver() {
-        return namespaceResolver;
-    }
-
-    public NamespaceDeclarationStack getNamespaceStack() {
-        return nsStack;
     }
 
     /**
@@ -872,15 +852,14 @@ public class EDIParser implements XMLReader {
             indent();
         }
         AssertArgument.isNotNull(namespace, "Empty namespace detected for elemnet " + elementName);
-        if (NULL_NS_URI.equals(namespace)) {
-        	// No namespace support
-        	contentHandler.startElement(NULL_NS_URI, elementName, elementName, attributes);
+
+        String nsPrefix = getNamespacePrefix(namespace);
+        if(nsPrefix != null) {
+            contentHandler.startElement(namespace, elementName, nsPrefix + ":" + elementName, attributes);
         } else {
-        	// With namespace support
-            String alias = getNamespaceAlias(namespace);
-            Attributes modifiedAttributes = nsStack.push(alias, namespace, attributes);
-			contentHandler.startElement(namespace, elementName, alias + ":" + elementName, modifiedAttributes);
+            contentHandler.startElement(namespace, elementName, elementName, attributes);
         }
+
         indentDepth.value++;
     }
 
@@ -895,39 +874,31 @@ public class EDIParser implements XMLReader {
         if(indent) {
             indent();
         }
-        if (XMLConstants.NULL_NS_URI.equals(namespace)) {
-        	// No namespace support
-        	contentHandler.endElement(NULL_NS_URI, elementName, elementName);
+
+        String nsPrefix = getNamespacePrefix(namespace);
+        if(nsPrefix != null) {
+            contentHandler.endElement(namespace, elementName, nsPrefix + ":" + elementName);
         } else {
-        	// With namespace support
-	        String alias = getNamespaceAlias(namespace);
-	        nsStack.pop();
-	        contentHandler.endElement(namespace, elementName, alias + ":" + elementName);
+            contentHandler.endElement(namespace, elementName, elementName);
         }
     }
 
-
     /**
      * This method returns a namespace prefix associated with
-     * given namespace. If no association was found it will
-     * create an prefix "an[0-9]+"
+     * given namespace.
      *
-     * Important is that for equal namespaces we have equal aliases
-     *
-     * @param namespace
-     * @return
-     * @throws SAXException
+     * @param namespace The namespace.
+     * @return The namespace prefix.
      */
-    private String getNamespaceAlias(String namespace) throws SAXException {
-    	if (StringUtils.isEmpty(namespace) || StringUtils.isBlank(namespace)) {
-    		return "";
+    private String getNamespacePrefix(String namespace) {
+        if(nsStack == null) {
+            return null;
+        }
+    	if (namespace == null || XMLConstants.NULL_NS_URI.equals(namespace)) {
+    		return null;
     	}
 
-        if(namespaceResolver == null) {
-            throw new SAXException("Unable to resolve namespace prefix for namespace '" + namespace + "' because the EDIParser instance does not have a NamespaceResolver.");
-        }
-
-        return namespaceResolver.getPrefix(namespace);
+        return nsStack.getPrefix(namespace);
 	}
 
     // HACK :-) it's hardly going to be deeper than this!!

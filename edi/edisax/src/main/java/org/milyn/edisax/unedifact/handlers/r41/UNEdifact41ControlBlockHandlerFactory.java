@@ -25,13 +25,11 @@ import org.milyn.edisax.model.EDIConfigDigester;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
-import org.milyn.edisax.unedifact.UNEdifactNamespaceResolver;
 import org.milyn.edisax.unedifact.handlers.GenericHandler;
 import org.milyn.edisax.unedifact.handlers.UNAHandler;
 import org.milyn.edisax.unedifact.handlers.UNBHandler;
 import org.milyn.edisax.unedifact.handlers.UNGHandler;
 import org.milyn.edisax.unedifact.handlers.UNHHandler;
-import org.milyn.namespace.NamespaceResolver;
 import org.milyn.xml.hierarchy.HierarchyChangeListener;
 import org.xml.sax.SAXException;
 
@@ -48,7 +46,7 @@ public class UNEdifact41ControlBlockHandlerFactory implements ControlBlockHandle
 
     private static Log logger = LogFactory.getLog(UNBHandler.class);
 
-    public static final String NAMESPACE = UNEdifactNamespaceResolver.NAMESPACE_ROOT + ".v41";
+    public static final String NAMESPACE = NAMESPACE_ROOT + ".v41";
 
     private static Segment unbSegment;
     private static Segment unzSegment;
@@ -66,14 +64,6 @@ public class UNEdifact41ControlBlockHandlerFactory implements ControlBlockHandle
 
     public String getNamespace() {
         return NAMESPACE;
-    }
-
-    public NamespaceResolver newNamespaceResolver() {
-        return new41NamespaceResolver();
-    }
-
-    public static NamespaceResolver new41NamespaceResolver() {
-        return new UNEdifactNamespaceResolver(NAMESPACE);
     }
 
     public ControlBlockHandler getControlBlockHandler(String segCode) throws SAXException {

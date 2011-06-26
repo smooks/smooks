@@ -114,6 +114,7 @@ public class SetElementData_XML_Config_Test extends TestCase {
 
         smooks.filterSource(new StringSource("<a><c><d><xxx:z xmlns:xxx=\"http://xxx\">some text</xxx:z></d></c></a>"), result);
 
+//        System.out.println(result);
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new StringReader("<a><c><d><xxx:z xmlns:xxx=\"http://yyy\">some text</xxx:z></d></c></a>"), new StringReader(result.getResult()));
     }

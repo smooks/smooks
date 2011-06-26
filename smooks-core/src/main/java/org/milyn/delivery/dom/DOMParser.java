@@ -22,9 +22,9 @@ import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.AbstractParser;
 import org.milyn.delivery.ContentDeliveryConfig;
-import org.milyn.delivery.Filter;
 import org.milyn.delivery.XMLReaderHierarchyChangeListener;
-import org.milyn.xml.hierarchy.HierarchyChangeListener;
+import org.milyn.namespace.NamespaceDeclarationStack;
+import org.milyn.xml.NamespaceMappings;
 import org.milyn.xml.hierarchy.HierarchyChangeReader;
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -140,6 +140,10 @@ public class DOMParser extends AbstractParser {
                 if(domReader instanceof HierarchyChangeReader) {
                     ((HierarchyChangeReader)domReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
                 }
+
+                NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
+                NamespaceMappings.setNamespaceDeclarationStack(namespaceDeclarationStack, executionContext);
+                attachNamespaceDeclarationStack(domReader, executionContext);
 
                 attachXMLReader(domReader, executionContext);
                 configureReader(domReader, contentHandler, executionContext, source);

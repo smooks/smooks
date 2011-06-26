@@ -24,6 +24,8 @@ import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Configurator;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.SAXHandler;
+import org.milyn.namespace.NamespaceDeclarationStack;
+import org.milyn.namespace.NamespaceDeclarationStackAware;
 import org.milyn.payload.JavaSource;
 import org.milyn.payload.FilterSource;
 import org.milyn.delivery.java.JavaXMLReader;
@@ -31,6 +33,7 @@ import org.milyn.delivery.java.XStreamXMLReader;
 import org.milyn.io.NullReader;
 import org.milyn.io.NullWriter;
 import org.milyn.util.ClassUtil;
+import org.milyn.xml.NamespaceMappings;
 import org.milyn.xml.NullSourceXMLReader;
 import org.milyn.xml.SmooksXMLReader;
 import org.xml.sax.*;
@@ -96,6 +99,12 @@ public class AbstractParser {
 
     public static void attachXMLReader(XMLReader xmlReader, ExecutionContext execContext) {
         getReaders(execContext).push(xmlReader);
+
+        NamespaceDeclarationStack namespaceDeclarationStack = NamespaceMappings.getNamespaceDeclarationStack(execContext);
+        if(namespaceDeclarationStack == null) {
+            throw new IllegalStateException("No NamespaceDeclarationStack attached to the ExecutionContext.");
+        }
+        namespaceDeclarationStack.pushReader(xmlReader);
     }
 
     public static XMLReader getXMLReader(ExecutionContext execContext) {
@@ -113,17 +122,22 @@ public class AbstractParser {
 
         if(!xmlReaderStack.isEmpty()) {
             xmlReaderStack.pop();
+            NamespaceMappings.getNamespaceDeclarationStack(execContext).popReader();
         }
     }
 
-    private static Stack<XMLReader> getReaders(ExecutionContext execContext) {
+    public static Stack<XMLReader> getReaders(ExecutionContext execContext) {
         Stack<XMLReader> readers = (Stack<XMLReader>) execContext.getAttribute(XMLReader.class);
 
         if(readers == null) {
             readers = new Stack<XMLReader>();
-            execContext.setAttribute(XMLReader.class, readers);
+            setReaders(readers, execContext);
         }
         return readers;
+    }
+
+    public static void setReaders(Stack<XMLReader> readers, ExecutionContext execContext) {
+        execContext.setAttribute(XMLReader.class, readers);
     }
 
     /**
@@ -311,7 +325,19 @@ public class AbstractParser {
         return reader;
     }
 
-	protected void configureReader(XMLReader reader, DefaultHandler2 handler, ExecutionContext execContext, Source source) throws SAXException {
+    protected void attachNamespaceDeclarationStack(XMLReader reader, ExecutionContext execContext) {
+        if (reader instanceof NamespaceDeclarationStackAware) {
+            NamespaceDeclarationStack nsDeclarationStack = NamespaceMappings.getNamespaceDeclarationStack(execContext);
+
+            if (nsDeclarationStack == null) {
+                throw new IllegalStateException("NamespaceDeclarationStack not configured on ExecutionContext.");
+            }
+
+            ((NamespaceDeclarationStackAware) reader).setNamespaceDeclarationStack(nsDeclarationStack);
+        }
+    }
+
+    protected void configureReader(XMLReader reader, DefaultHandler2 handler, ExecutionContext execContext, Source source) throws SAXException {
 		if (reader instanceof SmooksXMLReader) {
             ((SmooksXMLReader) reader).setExecutionContext(execContext);
         }

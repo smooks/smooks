@@ -32,7 +32,7 @@ import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.MockContentHandler;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
-import org.milyn.edisax.unedifact.registry.DefaultMappingsRegistry;
+import org.milyn.edisax.registry.DefaultMappingsRegistry;
 import org.milyn.io.StreamUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

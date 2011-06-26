@@ -98,7 +98,9 @@ public class FragmentSerializerTest extends TestCase {
         smooks.setFilterSettings(filterSettings);
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-02.xml")));
         assertEquals(2, router.routedObjects.size());
-        
+
+//        System.out.println(router.routedObjects.get(0));
+
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("frag1.xml")), new StringReader((String) router.routedObjects.get(0)));
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("frag2.xml")), new StringReader((String) router.routedObjects.get(1)));

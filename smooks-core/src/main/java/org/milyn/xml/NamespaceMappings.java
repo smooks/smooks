@@ -24,7 +24,9 @@ import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.Config;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ApplicationContextInitializer;
+import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
+import org.milyn.namespace.NamespaceDeclarationStack;
 
 /**
  * Namespace Mappings.
@@ -83,4 +85,21 @@ public class NamespaceMappings implements ApplicationContextInitializer {
 		}
 		return properties;
 	}
+
+    /**
+     * Set the {@link NamespaceDeclarationStack} for the current message on the current {@link ExecutionContext}.
+     * @param namespaceDeclarationStack The {@link NamespaceDeclarationStack} instance.
+     * @param executionContext The execution context.
+     */
+    public static void setNamespaceDeclarationStack(NamespaceDeclarationStack namespaceDeclarationStack, ExecutionContext executionContext) {
+        executionContext.setAttribute(NamespaceDeclarationStack.class, namespaceDeclarationStack);
+    }
+
+    /**
+     * Get the {@link NamespaceDeclarationStack} for the current message from the current {@link ExecutionContext}.
+     * @param executionContext The execution context.
+     */
+    public static NamespaceDeclarationStack getNamespaceDeclarationStack(ExecutionContext executionContext) {
+        return (NamespaceDeclarationStack) executionContext.getAttribute(NamespaceDeclarationStack.class);
+    }
 }

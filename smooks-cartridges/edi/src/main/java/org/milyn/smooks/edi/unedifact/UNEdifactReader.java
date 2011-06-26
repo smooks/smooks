@@ -27,8 +27,8 @@ import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
 import org.milyn.edisax.interchange.InterchangeContext;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
-import org.milyn.edisax.unedifact.registry.DefaultMappingsRegistry;
-import org.milyn.namespace.NamespaceResolver;
+import org.milyn.edisax.registry.DefaultMappingsRegistry;
+import org.milyn.namespace.NamespaceDeclarationStack;
 import org.milyn.xml.SmooksXMLReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -78,9 +78,9 @@ public class UNEdifactReader extends UNEdifactInterchangeParser implements Smook
 	@Override
 	protected InterchangeContext createInterchangeContext(
             BufferedSegmentReader segmentReader, boolean validate,
-            ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceResolver namespaceResolver) {
+            ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceDeclarationStack namespaceDeclarationStack) {
 
-		return new InterchangeContext(segmentReader, registry, getContentHandler(), getFeatures(), controlBlockHandlerFactory, namespaceResolver, validate) {
+		return new InterchangeContext(segmentReader, registry, getContentHandler(), getFeatures(), controlBlockHandlerFactory, namespaceDeclarationStack, validate) {
 			@Override
 			public void pushDelimiters(Delimiters delimiters) {
 				super.pushDelimiters(delimiters);

@@ -17,14 +17,14 @@ package org.milyn.edisax;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.ext.DefaultHandler2;
 
 /**
  * Namespace aware Mock ContentHandler.
  *  
  * @author rzubairov
  */
-public class MockContentHandlerNS extends DefaultHandler {
+public class MockContentHandlerNS extends DefaultHandler2 {
 	
 	public StringBuffer xmlMapping = new StringBuffer();
 

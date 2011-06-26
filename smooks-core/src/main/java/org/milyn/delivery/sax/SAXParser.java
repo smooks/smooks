@@ -26,10 +26,11 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.AbstractParser;
 import org.milyn.delivery.ContentDeliveryConfig;
 import org.milyn.delivery.XMLReaderHierarchyChangeListener;
+import org.milyn.namespace.NamespaceDeclarationStack;
+import org.milyn.xml.NamespaceMappings;
 import org.milyn.xml.hierarchy.HierarchyChangeReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.ext.DefaultHandler2;
 
 /**
  * Smooks SAX data stream parser.
@@ -60,6 +61,11 @@ public class SAXParser extends AbstractParser {
             if(saxReader == null) {
                 saxReader = createXMLReader();
             }
+
+            NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
+            NamespaceMappings.setNamespaceDeclarationStack(namespaceDeclarationStack, executionContext);
+
+            attachNamespaceDeclarationStack(saxReader, executionContext);
             attachXMLReader(saxReader, executionContext);
 
             configureReader(saxReader, saxHandler, executionContext, source);

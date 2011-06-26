@@ -23,9 +23,9 @@ import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Segment;
-import org.milyn.edisax.unedifact.registry.MappingsRegistry;
+import org.milyn.edisax.registry.MappingsRegistry;
 import org.milyn.lang.MutableInt;
-import org.milyn.namespace.NamespaceResolver;
+import org.milyn.namespace.NamespaceDeclarationStack;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -48,7 +48,8 @@ public class InterchangeContext {
     private ControlBlockHandlerFactory controlBlockHandlerFactory;
     private boolean validate;
     private MappingsRegistry registry;
-    private NamespaceResolver namespaceResolver;
+    private NamespaceDeclarationStack namespaceDeclarationStack;
+    private boolean containerManagedNamespaceStack = false;
 
     /**
 	 * Public constructor.
@@ -58,10 +59,9 @@ public class InterchangeContext {
      * @param contentHandler The {@link org.xml.sax.ContentHandler content handler} instance to receive the interchange events.
      * @param parserFeatures Parser features.
      * @param controlBlockHandlerFactory Control Block Handler Factory.
-     * @param namespaceResolver Namespace resolver.
      * @param validate Validate the data types of the EDI message data as defined in the mapping model.
      */
-	public InterchangeContext(BufferedSegmentReader segmentReader, MappingsRegistry registry, ContentHandler contentHandler, Map<String, Boolean> parserFeatures, ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceResolver namespaceResolver, boolean validate) {
+	public InterchangeContext(BufferedSegmentReader segmentReader, MappingsRegistry registry, ContentHandler contentHandler, Map<String, Boolean> parserFeatures, ControlBlockHandlerFactory controlBlockHandlerFactory, NamespaceDeclarationStack namespaceDeclarationStack, boolean validate) {
 		AssertArgument.isNotNull(segmentReader, "segmentReader");
 		AssertArgument.isNotNull(registry, "registry");
 		AssertArgument.isNotNull(contentHandler, "contentHandler");
@@ -72,13 +72,19 @@ public class InterchangeContext {
         this.features = parserFeatures;
         this.controlBlockHandlerFactory = controlBlockHandlerFactory;
 		this.validate = validate;
-        this.namespaceResolver = namespaceResolver;
+        this.namespaceDeclarationStack = namespaceDeclarationStack;
 
 		controlSegmentParser = new EDIParser();
 		controlSegmentParser.setBufferedSegmentReader(segmentReader);
-        controlSegmentParser.setNamespaceResolver(namespaceResolver);
 		controlSegmentParser.setContentHandler(contentHandler);
 		controlSegmentParser.setIndentDepth(indentDepth);
+
+        if (this.namespaceDeclarationStack == null) {
+            this.namespaceDeclarationStack= new NamespaceDeclarationStack();
+        } else {
+            this.containerManagedNamespaceStack = true;
+        }
+        controlSegmentParser.setNamespaceDeclarationStack(this.namespaceDeclarationStack);
 
         Edimap controlMap = new Edimap();
         EdifactModel controlModel = new EdifactModel(controlMap);
@@ -107,17 +113,20 @@ public class InterchangeContext {
         return controlBlockHandlerFactory.getNamespace();
     }
 
+    public NamespaceDeclarationStack getNamespaceDeclarationStack() {
+        return namespaceDeclarationStack;
+    }
+
     public EDIParser newParser(EdifactModel mappingModel) {
 		EDIParser parser = new EDIParser();
 
-        parser.setNamespaceResolver(namespaceResolver.clone());
 		parser.setContentHandler(contentHandler);
 		parser.setMappingModel(mappingModel);
 		parser.setBufferedSegmentReader(segmentReader);
 		parser.setIndentDepth(indentDepth);
         parser.getFeatures().putAll(features);
 		parser.setFeature(EDIParser.FEATURE_VALIDATE, validate);
-        parser.getNamespaceStack().setParentNamespaceStack(controlSegmentParser.getNamespaceStack());
+        parser.setNamespaceDeclarationStack(namespaceDeclarationStack);
 
 		return parser;
 	}
@@ -144,13 +153,17 @@ public class InterchangeContext {
     public void popDelimiters() {
         segmentReader.popDelimiters();
     }
-    
+
     /**
      * Returns an instance of {@link MappingsRegistry}
-     * 
+     *
      * @return
      */
     public MappingsRegistry getRegistry() {
 		return registry;
 	}
+
+    public boolean isContainerManagedNamespaceStack() {
+        return containerManagedNamespaceStack;
+    }
 }

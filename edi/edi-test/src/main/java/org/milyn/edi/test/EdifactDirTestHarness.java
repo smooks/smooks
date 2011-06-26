@@ -16,13 +16,16 @@
 package org.milyn.edi.test;
 
 import org.custommonkey.xmlunit.XMLUnit;
+import org.milyn.Smooks;
 import org.milyn.archive.Archive;
 import org.milyn.archive.ArchiveClassLoader;
 import org.milyn.assertion.AssertArgument;
+import org.milyn.classpath.CascadingClassLoaderSet;
 import org.milyn.ect.EdiConvertionTool;
 import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.ejc.EJCExecutor;
 import org.milyn.io.StreamUtils;
+import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchangeFactory;
@@ -32,6 +35,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,7 +73,7 @@ public class EdifactDirTestHarness implements UNEdifactInterchangeFactory {
 
         String zipFileName = edifactSpecFile.getName();
 
-        urn = "org.milyn.smooks.unedifact:" + zipFileName.substring(0, zipFileName.indexOf('.')) + ":1.0";
+        urn = "org.milyn.edi.unedifact:" + zipFileName.substring(0, zipFileName.indexOf('.')) + "-mapping:1.0";
         try {
             mappingModel = EdiConvertionTool.fromUnEdifactSpec(edifactSpecFile, urn, messages);
             mappingModelClassLoader = new ArchiveClassLoader(mappingModel);
@@ -202,8 +206,29 @@ public class EdifactDirTestHarness implements UNEdifactInterchangeFactory {
 
         fromUNEdifact(edifactIn, xmlResult);
 
+//        System.out.println(xmlResult);
         XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.compareXML(expectedXML, xmlResult.getResult());
+    }
+
+    public void smooksFilterSource(String smooksConfig, Source source, Result... results) {
+        ClassLoader origTCCL = Thread.currentThread().getContextClassLoader();
+        CascadingClassLoaderSet filteringClassLoader = new CascadingClassLoaderSet();
+
+        filteringClassLoader.addClassLoader(bindingModelClassLoader);
+        filteringClassLoader.addClassLoader(origTCCL);
+
+        Thread.currentThread().setContextClassLoader(filteringClassLoader);
+
+        try {
+            Smooks smooks = new Smooks(smooksConfig);
+
+            smooks.filterSource(source, results);
+        } catch (Exception e) {
+            throw new IllegalStateException("Error filtering source stream using Smooks configuration file '" + smooksConfig + "' for EDIFACT URN '" + urn + "'.", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(origTCCL);
+        }
     }
 
     private Archive buildBindingModel(String urn, String[] messages) throws IOException, SAXException, IllegalNameException, ClassNotFoundException {

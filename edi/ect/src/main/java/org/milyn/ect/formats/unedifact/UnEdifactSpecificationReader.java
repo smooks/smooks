@@ -18,11 +18,11 @@ package org.milyn.ect.formats.unedifact;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.ect.EdiConvertionTool;
+import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
 import org.milyn.edisax.interchange.EdiDirectory;
 import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.ect.EdiParseException;
 import org.milyn.edisax.model.internal.Description;
-import org.milyn.edisax.unedifact.UNEdifactNamespaceResolver;
 import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
 import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.model.EdifactModel;
@@ -90,7 +90,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         definitionModel = parseEDIDefinitionFiles();
 
         addMissingDefinitions(definitionModel);
-        definitionModel.getDescription().setNamespace(UNEdifactNamespaceResolver.NAMESPACE_ROOT + ":un:" + version + ":common");
+        definitionModel.getDescription().setNamespace(ControlBlockHandlerFactory.NAMESPACE_ROOT + ":un:" + version + ":common");
 
         //Interchange envelope is inserted into the definitions. Handcoded at the moment.
         try {

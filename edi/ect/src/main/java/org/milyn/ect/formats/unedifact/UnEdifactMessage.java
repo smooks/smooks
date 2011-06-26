@@ -17,13 +17,13 @@ package org.milyn.ect.formats.unedifact;
 
 import org.milyn.ect.EdiParseException;
 import org.milyn.ect.common.XmlTagEncoder;
+import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Import;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
-import org.milyn.edisax.unedifact.UNEdifactNamespaceResolver;
 
 import java.io.*;
 import java.util.*;
@@ -177,7 +177,7 @@ public class UnEdifactMessage {
             edimap.setDescription(new Description());
             edimap.getDescription().setName(type);
             edimap.getDescription().setVersion(version + ":" + release + ":" + agency);
-            edimap.getDescription().setNamespace(UNEdifactNamespaceResolver.NAMESPACE_ROOT + ":" + agency.toLowerCase() + ":" + version.toLowerCase() + release.toLowerCase() + ":" + type.toLowerCase());
+            edimap.getDescription().setNamespace(ControlBlockHandlerFactory.NAMESPACE_ROOT + ":" + agency.toLowerCase() + ":" + version.toLowerCase() + release.toLowerCase() + ":" + type.toLowerCase());
 
             Map<String, Segment> segmentDefinitions = null;
             if (isSplitIntoImport) {

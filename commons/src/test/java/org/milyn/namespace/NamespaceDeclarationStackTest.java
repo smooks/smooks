@@ -13,7 +13,7 @@
  * See the GNU Lesser General Public License for more details:
  * http://www.gnu.org/licenses/lgpl.txt
  */
-package org.milyn.edisax.v1_5.namespaces;
+package org.milyn.namespace;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.xml.XMLConstants;
 
-import org.milyn.edisax.util.NamespaceDeclarationStack;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -60,55 +59,46 @@ public class NamespaceDeclarationStackTest extends TestCase {
 	
 	public void testSimpleMaping() throws Exception {
 		MockContentHandler handler = new MockContentHandler();
-		NamespaceDeclarationStack nds = new NamespaceDeclarationStack(new MockXMLReader(handler));
-		Attributes a1 = nds.push("a", "nsa", null);
-		nds.pop();
+        NamespaceDeclarationStack nds = new NamespaceDeclarationStack();
+        nds.pushReader(new MockXMLReader(handler));
+		nds.pushNamespaces("a:element", "nsa", null);
+		nds.popNamespaces();
 		assertEquals("[start:a:nsa, end:a]", handler.history.toString());
-		assertEquals(1, a1.getLength());
-		assertEquals("xmlns:a", a1.getQName(0));
-		assertEquals("nsa", a1.getValue(0));
 	}
 	
 	public void testSimpleMaping2() throws Exception {
 		MockContentHandler handler = new MockContentHandler();
-		NamespaceDeclarationStack nds = new NamespaceDeclarationStack(new MockXMLReader(handler));
-		Attributes a1 = nds.push("a", "nsa", null);
-		Attributes a2 = nds.push("a", "nsa", null);
-		nds.pop();
-		nds.pop();
+        NamespaceDeclarationStack nds = new NamespaceDeclarationStack();
+        nds.pushReader(new MockXMLReader(handler));
+		nds.pushNamespaces("a:element", "nsa", null);
+		nds.pushNamespaces("a:element", "nsa", null);
+		nds.popNamespaces();
+		nds.popNamespaces();
 		assertEquals("[start:a:nsa, end:a]", handler.history.toString());
-		assertEquals(1, a1.getLength());
-		assertEquals("xmlns:a", a1.getQName(0));
-		assertEquals("nsa", a1.getValue(0));
-		assertEquals(0, a2.getLength());
 	}
 	
 	public void testTwoNamespacesMapping() throws Exception {
 		MockContentHandler handler = new MockContentHandler();
-		NamespaceDeclarationStack nds = new NamespaceDeclarationStack(new MockXMLReader(handler));
-		Attributes a1 = nds.push("a", "nsa", null);
-		Attributes a2 = nds.push("b", "nsb", null);
-		nds.pop();
-		nds.pop();
+        NamespaceDeclarationStack nds = new NamespaceDeclarationStack();
+        nds.pushReader(new MockXMLReader(handler));
+		nds.pushNamespaces("a:element", "nsa", null);
+		nds.pushNamespaces("b:element", "nsb", null);
+		nds.popNamespaces();
+		nds.popNamespaces();
 		assertEquals("[start:a:nsa, start:b:nsb, end:b, end:a]", handler.history.toString());
-		assertEquals(1, a1.getLength());
-		assertEquals("xmlns:a", a1.getQName(0));
-		assertEquals("nsa", a1.getValue(0));
-		assertEquals(1, a2.getLength());
-		assertEquals("xmlns:b", a2.getQName(0));
-		assertEquals("nsb", a2.getValue(0));
 	}
 	
 	public void testNamespacesWithAttributes() throws Exception {
 		AttributesImpl attrs = new AttributesImpl();
 		attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "b", "xmlns:b", "CDATA", "nsb");
 		MockContentHandler handler = new MockContentHandler();
-		NamespaceDeclarationStack nds = new NamespaceDeclarationStack(new MockXMLReader(handler));
-		nds.push("a", "nsa", attrs);
-		nds.push("b", "nsb", null);
-		nds.pop();
-		nds.pop();
-		assertEquals("[start:b:nsb, start:a:nsa, end:a, end:b]", handler.history.toString());
+		NamespaceDeclarationStack nds = new NamespaceDeclarationStack();
+        nds.pushReader(new MockXMLReader(handler));
+		nds.pushNamespaces("a:element", "nsa", attrs);
+		nds.pushNamespaces("b:element", "nsb", null);
+		nds.popNamespaces();
+		nds.popNamespaces();
+		assertEquals("[start:b:nsb, start:a:nsa, end:b, end:a]", handler.history.toString());
 	}
 
     private class MockXMLReader implements XMLReader {

@@ -26,7 +26,7 @@ import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Segment;
-import org.milyn.edisax.unedifact.registry.MappingsRegistry;
+import org.milyn.edisax.registry.MappingsRegistry;
 import org.milyn.xml.hierarchy.HierarchyChangeListener;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -86,15 +86,12 @@ public class UNHHandler implements ControlBlockHandler {
 		try {
 			EDIParser parser = interchangeContext.newParser(mappingModel);
 
-            if(commonNS != null) {
-                parser.getNamespaceResolver().addNamespace(commonNS, "c");
-                parser.getNamespaceResolver().addNamespace(namespace, messageNSPrefix);
-            }
-
 			segmentReader.setSegmentListener(untSegmentListener);
 
             if(hierarchyChangeListener != null) {
                 hierarchyChangeListener.attachXMLReader(parser);
+            } else if (!interchangeContext.isContainerManagedNamespaceStack()) {
+                interchangeContext.getNamespaceDeclarationStack().pushReader(parser);
             }
 
             parser.parse();
@@ -102,6 +99,8 @@ public class UNHHandler implements ControlBlockHandler {
 			segmentReader.setSegmentListener(null);
             if(hierarchyChangeListener != null) {
                 hierarchyChangeListener.detachXMLReader();
+            } else if (!interchangeContext.isContainerManagedNamespaceStack()) {
+                interchangeContext.getNamespaceDeclarationStack().popReader();
             }
 		}
 

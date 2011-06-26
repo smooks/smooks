@@ -13,7 +13,7 @@
  * See the GNU Lesser General Public License for more details:
  * http://www.gnu.org/licenses/lgpl.txt
  */
-package org.milyn.edisax.unedifact.registry;
+package org.milyn.edisax.registry;
 
 import java.io.IOException;
 import java.net.URI;
