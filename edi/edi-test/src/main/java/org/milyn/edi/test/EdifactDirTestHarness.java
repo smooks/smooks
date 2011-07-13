@@ -25,8 +25,9 @@ import org.milyn.ect.EdiConvertionTool;
 import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.ejc.EJCExecutor;
 import org.milyn.io.StreamUtils;
-import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
+import org.milyn.payload.StringSource;
+import org.milyn.xml.EclipseFragmentXMLValidator;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchangeFactory;
 import org.milyn.test.ant.AntRunner;
@@ -201,6 +202,10 @@ public class EdifactDirTestHarness implements UNEdifactInterchangeFactory {
     }
 
     public void assertXMLOK(InputStream edifactIn, InputStream expectedXMLOut) throws IOException, SAXException {
+        assertXMLOK(edifactIn, expectedXMLOut, true);
+    }
+
+    public void assertXMLOK(InputStream edifactIn, InputStream expectedXMLOut, boolean validate) throws IOException, SAXException {
         StringResult xmlResult = new StringResult();
         String expectedXML = StreamUtils.readStreamAsString(expectedXMLOut);
 
@@ -209,6 +214,19 @@ public class EdifactDirTestHarness implements UNEdifactInterchangeFactory {
 //        System.out.println(xmlResult);
         XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.compareXML(expectedXML, xmlResult.getResult());
+
+        if (validate) {
+            ClassLoader origTCCL = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(bindingModelClassLoader);
+            try {
+                EclipseFragmentXMLValidator validator = new EclipseFragmentXMLValidator();
+                validator.validate(new StringSource(xmlResult.getResult()));
+            } catch (Exception e) {
+                throw new IllegalStateException("Error processing EDIFACT stream for '" + urn + "'.", e);
+            } finally {
+                Thread.currentThread().setContextClassLoader(origTCCL);
+            }
+        }
     }
 
     public void smooksFilterSource(String smooksConfig, Source source, Result... results) {

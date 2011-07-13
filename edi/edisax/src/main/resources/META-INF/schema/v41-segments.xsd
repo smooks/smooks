@@ -36,24 +36,46 @@
 				type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
-	<xsd:complexType name="interchangeMessageType" mixed="false">
-		<xsd:sequence>
-			<xsd:element form="qualified" name="UNH" type="unedifact:Unh" />
-			<xsd:any maxOccurs="1" minOccurs="1" namespace="##any"
-				processContents="lax" />
-			<xsd:element form="qualified" name="UNT" type="unedifact:Unt" />
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:complexType name="unEdifact">
-		<xsd:sequence>
-			<xsd:element form="qualified" name="UNB" type="unedifact:Unb"/>
-			<xsd:element form="qualified" name="interchangeMessage"
-				type="unedifact:interchangeMessageType" maxOccurs="unbounded"/>
-			<xsd:element form="qualified" name="UNZ" type="unedifact:Unz" />
-			<!-- <xsd:element form="qualified" name="UNG" type="unedifact:Ung" />
-			<xsd:element form="qualified" name="UNE" type="unedifact:Une" /> -->
-		</xsd:sequence>
-	</xsd:complexType>
+
+    <xsd:complexType name="unEdifact">
+        <xsd:sequence>
+            <xsd:element form="qualified" name="UNB" type="unedifact:Unb"/>
+            <xsd:element minOccurs="0" maxOccurs="5" ref="unedifact:abstractMessageBlock"/>
+            <xsd:element form="qualified" name="UNZ" type="unedifact:Unz" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="abstractMessageBlock" type="unedifact:abstractMessageBlock" abstract="true" />
+    <xsd:complexType name="abstractMessageBlock" abstract="true" />
+
+    <xsd:element name="interchangeMessage" substitutionGroup="unedifact:abstractMessageBlock">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="unedifact:abstractMessageBlock">
+                    <xsd:sequence>
+                        <xsd:element form="qualified" name="UNH" type="unedifact:Unh" />
+                        <xsd:any maxOccurs="1" minOccurs="1" namespace="##any" processContents="lax" />
+                        <xsd:element form="qualified" name="UNT" type="unedifact:Unt" />
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="group" substitutionGroup="unedifact:abstractMessageBlock">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="unedifact:abstractMessageBlock">
+                    <xsd:sequence>
+                        <xsd:element form="qualified" name="UNG" type="unedifact:Ung" />
+                        <xsd:element ref="unedifact:interchangeMessage" maxOccurs="5"/>
+                        <xsd:element form="qualified" name="UNE" type="unedifact:Une" />
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
 	<xsd:complexType name="Unh">
 		<xsd:sequence>
 			<xsd:element form="qualified" name="messageRefNum" type="xsd:string" />

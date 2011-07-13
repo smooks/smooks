@@ -13,14 +13,13 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.milyn.edi.test.unedifact;
+package org.milyn.edi.test.unedifact.d03b;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.milyn.edi.test.EdifactDirTestHarness;
 import org.milyn.io.StreamUtils;
 import org.milyn.payload.JavaResult;
-import org.milyn.payload.SystemOutResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -48,7 +47,7 @@ public class D03B_Test {
     public void test_PAXLST_test_fragment_split() throws IOException, SAXException {
         JavaResult result = new JavaResult();
 
-        d03bHarness.smooksFilterSource("/org/milyn/edi/test/unedifact/smooks-unedifact-split.xml", new StreamSource(getClass().getResourceAsStream("PAXLST.edi")), result);
+        d03bHarness.smooksFilterSource("/org/milyn/edi/test/unedifact/d03b/smooks-unedifact-split.xml", new StreamSource(getClass().getResourceAsStream("PAXLST.edi")), result);
 
         String expectedXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream("PAXLST_frag.xml"));
         XMLUnit.setIgnoreWhitespace(true);
