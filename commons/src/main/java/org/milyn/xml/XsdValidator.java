@@ -107,7 +107,11 @@ public class XsdValidator {
 
     private SchemaFactory newSchemaFactory() throws SAXNotRecognizedException, SAXNotSupportedException {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        schemaFactory.setProperty("http://apache.org/xml/properties/security-manager", null);   // Need to turn this thing off, otherwise it throws stupid errors.
+        try {
+            schemaFactory.setProperty("http://apache.org/xml/properties/security-manager", null);   // Need to turn this thing off, otherwise it throws stupid errors.
+        } catch (SAXNotRecognizedException e) {
+            // Ignore...
+        }
         return schemaFactory;
     }
 }
