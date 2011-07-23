@@ -6,7 +6,7 @@ v2.0.8 before raising a JIRA (http://jira.codehaus.org/browse/MILYN).
 
 All of the examples are built and run in the same way:
 
-To Build: "mvn clean install"
+To Build: "mvn -s [path to settings.xml file in examples root] clean install"
 To Run:   "mvn exec:java"
 
 Online Documentation:
