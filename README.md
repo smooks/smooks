@@ -3,9 +3,10 @@
 [Smooks][1] Framework.
 
 To build:
-1. git clone git://github.com/smooks/smooks.git
-2. cd smooks
-3. mvn -s settings.xml clean install
+
+1.  git clone git://github.com/smooks/smooks.git
+2.  cd smooks
+3.  mvn -s settings.xml clean install
 
 Note you will need both maven (version 3+) and git installed on your local machine. 
 
