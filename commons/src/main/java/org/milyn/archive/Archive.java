@@ -562,7 +562,7 @@ public class Archive {
 
                 tmpFile.delete();
                 tmpDir = new File(tmpFile.getParentFile(), UUID.randomUUID().toString());
-//                DeleteOnExitHook.add(tmpDir);
+                DeleteOnExitHook.add(tmpDir);
 
             } catch (IOException e) {
                 throw new SmooksException("Unable to crete temp directory for archive.", e);
