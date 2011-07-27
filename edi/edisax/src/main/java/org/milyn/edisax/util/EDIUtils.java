@@ -208,7 +208,7 @@ public class EDIUtils {
 
     @SuppressWarnings("unchecked")
 	private static List<String> getMappingModelList(Archive archive) throws IOException {
-		byte[] zipEntryBytes = archive.getEntries().get(EDI_MAPPING_MODEL_ZIP_LIST_FILE);
+		byte[] zipEntryBytes = archive.getEntryBytes(EDI_MAPPING_MODEL_ZIP_LIST_FILE);
 
 		if(zipEntryBytes != null) {
             return getMappingModelList(new ByteArrayInputStream(zipEntryBytes));
@@ -243,7 +243,7 @@ public class EDIUtils {
             if(rawZipStream != null) {
                 Archive archive = loadArchive(rawZipStream);
                 if(archive != null) {
-                    byte[] bytes = archive.getEntries().get(EDI_MAPPING_MODEL_INTERCHANGE_PROPERTIES_FILE);
+                    byte[] bytes = archive.getEntryBytes(EDI_MAPPING_MODEL_INTERCHANGE_PROPERTIES_FILE);
                     if(bytes != null) {
                         interchangePropertiesStream = new ByteArrayInputStream(bytes);
                     }

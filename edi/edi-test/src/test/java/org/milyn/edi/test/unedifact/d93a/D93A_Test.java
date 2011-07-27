@@ -70,6 +70,6 @@ public class D93A_Test {
 
     @Test
     public void test_MULTIPLE_INVOIC_xml() throws IOException, SAXException {
-        d03bHarness.assertXMLOK(getClass().getResourceAsStream("MULTIPLE-INVOIC.edi"), getClass().getResourceAsStream("MULTIPLE-INVOIC.xml"));
+        d03bHarness.assertXMLOK(getClass().getResourceAsStream("MULTIPLE-INVOIC.edi"), getClass().getResourceAsStream("MULTIPLE-INVOIC.XML"));
     }
 }

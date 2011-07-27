@@ -85,7 +85,7 @@ public class ResourceMergerTest
     
     private String readContent(final Archive jar, final String path) throws IOException
     {
-        return new String(jar.getEntries().get(path));
+        return new String(jar.getEntryBytes(path));
     }
     
     @Test
@@ -131,7 +131,7 @@ public class ResourceMergerTest
         
         final Archive merged = resourceMerger.mergeJars(jarfile.getAbsolutePath(), Arrays.asList(firstJar));
         
-        final byte[] content = merged.getEntries().get(JarFile.MANIFEST_NAME);
+        final byte[] content = merged.getEntryBytes(JarFile.MANIFEST_NAME);
         assertThat(content, is(notNullValue()));
         
         final File newFile = exportJarToFile(merged, "output.jar");

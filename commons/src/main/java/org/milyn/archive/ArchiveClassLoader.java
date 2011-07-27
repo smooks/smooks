@@ -40,7 +40,6 @@ public class ArchiveClassLoader extends ClassLoader {
 
     private Archive archive;
     private Map<String, Class> loadedClasses = new HashMap<String, Class>();
-    private File tempFile;
 
     public ArchiveClassLoader(Archive archive) {
         this(Thread.currentThread().getContextClassLoader(), archive);
@@ -61,7 +60,7 @@ public class ArchiveClassLoader extends ClassLoader {
         }
 
         String resName = name.replace('.', '/') + ".class";
-        byte[] classBytes = archive.getEntries().get(resName);
+        byte[] classBytes = archive.getEntryBytes(resName);
 
         if(classBytes != null) {
             loadedClass = defineClass(name, classBytes, 0, classBytes.length);
@@ -74,7 +73,7 @@ public class ArchiveClassLoader extends ClassLoader {
 
     @Override
     public InputStream getResourceAsStream(String name) {
-        byte[] bytes = archive.getEntries().get(name);
+        byte[] bytes = archive.getEntryBytes(name);
         if (bytes != null) {
             return new ByteArrayInputStream(bytes);
         } else {
@@ -84,7 +83,7 @@ public class ArchiveClassLoader extends ClassLoader {
 
     @Override
     protected URL findResource(String resName) {
-        URL resource = getResourceURL(resName);
+        URL resource = archive.getEntryURL(resName);
 
         if (resource != null) {
             return resource;
@@ -96,7 +95,7 @@ public class ArchiveClassLoader extends ClassLoader {
     @Override
     protected Enumeration<URL> findResources(String resName) throws IOException {
         List<URL> resources = new ArrayList<URL>();
-        URL resource = getResourceURL(resName);
+        URL resource = archive.getEntryURL(resName);
 
         if (resource != null) {
             resources.add(resource);
@@ -106,39 +105,5 @@ public class ArchiveClassLoader extends ClassLoader {
         resources.addAll(Collections.list(parentResource));
 
         return Collections.enumeration(resources);
-    }
-
-    private URL getResourceURL(String resName) {
-        byte[] entry = archive.getEntries().get(resName);
-
-        if (entry == null) {
-            return null;
-        }
-
-        if (tempFile == null) {
-            createTempJar();
-        }
-
-        try {
-            return new URL("jar:" + tempFile.toURI() + "!/" + resName);
-        } catch (MalformedURLException e) {
-            throw new IllegalStateException("Unable to create temporary archive jar file URL for resource '" + resName + "'.", e);
-        }
-    }
-
-    public synchronized File createTempJar() {
-        if (tempFile == null) {
-            try {
-                tempFile = File.createTempFile("smooks-archive", ".jar");
-
-                tempFile.delete();
-                archive.toFile(tempFile);
-                tempFile.deleteOnExit();
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to create temporary jar file.", e);
-            }
-        }
-
-        return tempFile;
     }
 }

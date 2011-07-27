@@ -16,7 +16,10 @@
 
         <mkdir dir="${ejc.dir}/classes" />
 
-        <javac srcdir="${ejc.dir}/src" destdir="${ejc.dir}/classes" />
+
+        <javac srcdir="${ejc.dir}/src" destdir="${ejc.dir}/classes">
+
+        </javac>
         <jar destfile="${ejc.dir}/ejc.jar">
             <fileset dir="${ejc.dir}/src" excludes="**/*.java" />
             <fileset dir="${ejc.dir}/classes" />

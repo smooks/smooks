@@ -66,7 +66,7 @@ public class ResourceMerger
     }
 
     /**
-     * @param resourcePaths
+     * @param resourcesPaths
      *            The path to the resource that should be merged into the jar
      *            produced by the merge method.
      */
@@ -127,16 +127,12 @@ public class ResourceMerger
         {
             for (String resourcePath : resourcePaths)
             {
-                Map<String, byte[]> entries = jar.getEntries();
-                if (entries.containsKey(resourcePath))
+                byte[] content = jar.getEntryBytes(resourcePath);
+                if (content != null)
                 {
-                    byte[] content = entries.get(resourcePath);
-                    if (content != null)
-                    {
-                        List<byte[]> list = getContentListForResource(pathToBytesMap, resourcePath);
-                        list.add(content);
-                        pathToBytesMap.put(resourcePath, list);
-                    }
+                    List<byte[]> list = getContentListForResource(pathToBytesMap, resourcePath);
+                    list.add(content);
+                    pathToBytesMap.put(resourcePath, list);
                 }
             }
             all.merge(jar);

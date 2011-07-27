@@ -73,4 +73,31 @@ public abstract class FileUtils {
             stream.close();
         }
     }
+
+    /**
+     * Delete directory structure.
+     * <p/>
+     * Performs a recursive delete.
+     *
+     * @param dir The directory to be deleted.
+     * @return true of the directory is deleted, otherwise false.
+     */
+    public static boolean deleteDir(File dir) {
+        AssertArgument.isNotNull(dir, "dir");
+        if (!dir.isDirectory()) {
+            throw new IllegalArgumentException("File '" + dir.getAbsolutePath() + "' is not a directory.");
+        }
+
+        File[] files = dir.listFiles();
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                deleteDir(file);
+            } else {
+                file.delete();
+            }
+        }
+
+        return dir.delete();
+    }
 }

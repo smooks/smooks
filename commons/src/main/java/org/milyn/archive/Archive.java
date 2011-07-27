@@ -15,8 +15,11 @@
 */
 package org.milyn.archive;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.JarFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -25,6 +28,7 @@ import java.io.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.io.FileUtils;
 import org.milyn.io.StreamUtils;
@@ -39,13 +43,15 @@ public class Archive {
     private static Log logger = LogFactory.getLog(Archive.class);
 
 	private String archiveName;
-    private LinkedHashMap<String, byte[]> entries = new LinkedHashMap<String, byte[]>();
+    private File tmpDir;
+    private LinkedHashMap<String, File> entries = new LinkedHashMap<String, File>();
 
     /**
      * Public constructor.
      */
     public Archive() {
         this.archiveName = "Unknown";
+        createTempDir();
     }
 
     /**
@@ -55,6 +61,7 @@ public class Archive {
     public Archive(String archiveName) {
         AssertArgument.isNotNull(archiveName, "archiveName");
         this.archiveName = archiveName;
+        createTempDir();
     }
 
     /**
@@ -64,6 +71,7 @@ public class Archive {
      */
     public Archive(ZipInputStream archiveStream) throws IOException {
         this.archiveName = "Unknown";
+        createTempDir();
         addEntries(archiveStream);
     }
 
@@ -77,6 +85,7 @@ public class Archive {
         AssertArgument.isNotNullAndNotEmpty(archiveName, "archiveName");
         this.archiveName = archiveName;
         addEntries(archiveStream);
+        createTempDir();
     }
 
     /**
@@ -100,7 +109,8 @@ public class Archive {
         AssertArgument.isNotNull(data, "data");
 
         try {
-            entries.put(trimLeadingSlash(path.trim()), StreamUtils.readStream(data));
+            byte[] dataBytes = StreamUtils.readStream(data);
+            addEntry(trimLeadingSlash(path.trim()), dataBytes);
         } finally {
             try {
                 data.close();
@@ -132,14 +142,30 @@ public class Archive {
      * Add the supplied data as an entry in the deployment.
      *
      * @param path The target path of the entry when added to the archive.
-     * @param data The data.
+     * @param data The data.  Pass null to create a directory.
      * @return This archive instance.
      */
     public Archive addEntry(String path, byte[] data) {
         AssertArgument.isNotNullAndNotEmpty(path, "path");
-        AssertArgument.isNotNull(data, "data");
 
-        entries.put(trimLeadingSlash(path.trim()), data);
+        File entryFile = new File(tmpDir, path);
+
+        if (entryFile.exists()) {
+            entryFile.delete();
+        }
+
+        entryFile.getParentFile().mkdirs();
+        if (data == null) {
+            entryFile.mkdir();
+        } else {
+            try {
+                FileUtils.writeFile(data, entryFile);
+            } catch (IOException e) {
+                throw new IllegalStateException("Unexpected error writing Archive file '" + entryFile.getAbsolutePath() + "'.", e);
+            }
+        }
+
+        entries.put(trimLeadingSlash(path.trim()), entryFile);
 
         return this;
     }
@@ -199,7 +225,7 @@ public class Archive {
         AssertArgument.isNotNull(data, "data");
 
         try {
-            entries.put(trimLeadingSlash(path.trim()), data.getBytes("UTF-8"));
+            addEntry(trimLeadingSlash(path.trim()), data.getBytes("UTF-8"));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Unexpected UnsupportedEncodingException exception for encoding 'UTF-8' when writing Archive entry from a StringBuilder instance.", e);
         }
@@ -215,7 +241,7 @@ public class Archive {
      */
     public Archive addEntries(ZipInputStream zipStream) throws IOException {
         AssertArgument.isNotNull(zipStream, "zipStream");
-        
+
         try {
             ZipEntry zipEntry = zipStream.getNextEntry();
             ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
@@ -223,12 +249,15 @@ public class Archive {
             int byteReadCount;
 
             while(zipEntry != null) {
-                while((byteReadCount = zipStream.read(byteReadBuffer)) != -1) {
-                    outByteStream.write(byteReadBuffer, 0, byteReadCount);
+                if (zipEntry.isDirectory()) {
+                    addEntry(zipEntry.getName(), (byte[]) null);
+                } else {
+                    while((byteReadCount = zipStream.read(byteReadBuffer)) != -1) {
+                        outByteStream.write(byteReadBuffer, 0, byteReadCount);
+                    }
+                    addEntry(zipEntry.getName(), outByteStream.toByteArray());
+                    outByteStream.reset();
                 }
-                entries.put(zipEntry.getName(), outByteStream.toByteArray());
-                outByteStream.reset();
-
                 zipEntry = zipStream.getNextEntry();
             }
         } finally {
@@ -258,10 +287,10 @@ public class Archive {
      * <p/>
      * The returned map entries are ordered in line with the order in which they were added
      * to the archive.
-     * 
+     *
      * @return An unmodifiable {@link Map} of the archive entries.
      */
-    public Map<String, byte[]> getEntries() {
+    public Map<String, File> getEntries() {
         return Collections.unmodifiableMap(entries);
     }
 
@@ -271,10 +300,10 @@ public class Archive {
      * @return The entry name at that index.
      */
     public String getEntryName(int index) {
-        Set<Map.Entry<String, byte[]>> entrySet = entries.entrySet();
+        Set<Map.Entry<String, File>> entrySet = entries.entrySet();
         int i = 0;
 
-        for (Map.Entry<String, byte[]> entry : entrySet) {
+        for (Map.Entry<String, File> entry : entrySet) {
             if(i == index) {
                 return entry.getKey();
             }
@@ -291,18 +320,76 @@ public class Archive {
      * @return The entry value at that index.
      */
     public byte[] getEntryValue(int index) {
-        Set<Map.Entry<String, byte[]>> entrySet = entries.entrySet();
+        Set<Map.Entry<String, File>> entrySet = entries.entrySet();
         int i = 0;
 
-        for (Map.Entry<String, byte[]> entry : entrySet) {
+        for (Map.Entry<String, File> entry : entrySet) {
             if(i == index) {
-                return entry.getValue();
+                File entryFile = entry.getValue();
+
+                if (entryFile != null) {
+                    try {
+                        return FileUtils.readFile(entryFile);
+                    } catch (IOException e) {
+                        throw new IllegalStateException("Unexpected error reading Archive file '" + entryFile.getAbsolutePath() + "'.", e);
+                    }
+                } else {
+                    return null;
+                }
             }
 
             i++;
         }
 
         throw new ArrayIndexOutOfBoundsException(index);
+    }
+
+    /**
+     * Get an Archive entries bytes.
+     * @param resName Entry resource name.
+     * @return The bytes, or null if the entry is not in the Archive.
+     */
+    public byte[] getEntryBytes(String resName) {
+        File entryFile = getEntry(resName);
+
+        if (entryFile != null) {
+            try {
+                return FileUtils.readFile(entryFile);
+            } catch (IOException e) {
+                throw new IllegalStateException("Unexpected error reading Archive file '" + entryFile.getAbsolutePath() + "'.", e);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get an Archive entry file.
+     * @param resName Entry resource name.
+     * @return The entry File, or null if the entry is not in the Archive.
+     */
+    public File getEntry(String resName) {
+        AssertArgument.isNotNullAndNotEmpty(resName, "resName");
+        return entries.get(resName);
+    }
+
+    /**
+     * Get an Archive entry resource URL.
+     * @param resName Entry resource name.
+     * @return The entry resource URL, or null if the entry is not in the Archive.
+     */
+    public URL getEntryURL(String resName) {
+        File entry = getEntry(resName);
+
+        if (entry != null) {
+            try {
+                return entry.toURI().toURL();
+            } catch (MalformedURLException e) {
+                throw new IllegalStateException("Unexpected error getting URL for Archive file '" + entry.getAbsolutePath() + "'.", e);
+            }
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -346,7 +433,7 @@ public class Archive {
             toOutputStream(new ZipOutputStream(fileOutputStream));
         } finally {
             try {
-            fileOutputStream.flush();
+                fileOutputStream.flush();
             } finally {
                 fileOutputStream.close();
             }
@@ -368,17 +455,19 @@ public class Archive {
             outputFolder.mkdirs();
         }
 
-        Set<Map.Entry<String, byte[]>> entrySet = entries.entrySet();
-        for (Map.Entry<String, byte[]> entry : entrySet) {
-            byte[] fileBytes = entry.getValue();
-
-            if(fileBytes == null) {
-                fileBytes = new byte[0];
-            }
-
+        Set<Map.Entry<String, File>> entrySet = entries.entrySet();
+        for (Map.Entry<String, File> entry : entrySet) {
+            File archEntryFile = entry.getValue();
+            byte[] fileBytes;
             File entryFile = new File(outputFolder, entry.getKey());
-            entryFile.getParentFile().mkdirs();
-            FileUtils.writeFile(fileBytes, entryFile);
+
+            if (archEntryFile != null) {
+                fileBytes = FileUtils.readFile(archEntryFile);
+                entryFile.getParentFile().mkdirs();
+                FileUtils.writeFile(fileBytes, entryFile);
+            } else {
+                entryFile.mkdirs();
+            }
         }
     }
 
@@ -397,17 +486,24 @@ public class Archive {
     }
 
     private void writeEntriesToArchive(ZipOutputStream archiveStream) throws IOException {
-        byte[] manifest = entries.get(JarFile.MANIFEST_NAME);
+        File manifestFile = entries.get(JarFile.MANIFEST_NAME);
 
         // Always write the jar manifest as the first entry, if it exists...
-        if(manifest != null) {
+        if(manifestFile != null) {
+            byte[] manifest = FileUtils.readFile(manifestFile);
             writeEntry(JarFile.MANIFEST_NAME, manifest, archiveStream);
         }
 
-        Set<Map.Entry<String, byte[]>> entrySet = entries.entrySet();
-        for (Map.Entry<String, byte[]> entry : entrySet) {
+        Set<Map.Entry<String, File>> entrySet = entries.entrySet();
+        for (Map.Entry<String, File> entry : entrySet) {
             if(!entry.getKey().equals(JarFile.MANIFEST_NAME)) {
-                writeEntry(entry.getKey(), entry.getValue(), archiveStream);
+                File file = entry.getValue();
+
+                if (file != null && !file.isDirectory()) {
+                    writeEntry(entry.getKey(), FileUtils.readFile(file), archiveStream);
+                } else {
+                    writeEntry(entry.getKey(), null, archiveStream);
+                }
             }
         }
     }
@@ -437,9 +533,19 @@ public class Archive {
     }
 
     public Archive merge(Archive archive) {
-        Map<String, byte[]> entriesToMerge = archive.getEntries();
-        for (Entry<String, byte[]> entry : entriesToMerge.entrySet()) {
-            addEntry(entry.getKey(), entry.getValue());
+        Map<String, File> entriesToMerge = archive.getEntries();
+        for (Entry<String, File> entry : entriesToMerge.entrySet()) {
+            File file = entry.getValue();
+
+            if (file != null && !file.isDirectory()) {
+                try {
+                    addEntry(entry.getKey(), FileUtils.readFile(file));
+                } catch (IOException e) {
+                    throw new IllegalStateException("Unexpected error reading Archive file '" + file.getAbsolutePath() + "'.", e);
+                }
+            } else {
+                addEntry(entry.getKey(), (byte[]) null);
+            }
         }
         return this;
     }
@@ -447,5 +553,61 @@ public class Archive {
     public boolean contains(String path)
     {
         return entries.containsKey(path);
+    }
+
+    private void createTempDir() {
+        if (tmpDir == null) {
+            try {
+                File tmpFile = File.createTempFile("tmp", "tmp");
+
+                tmpFile.delete();
+                tmpDir = new File(tmpFile.getParentFile(), UUID.randomUUID().toString());
+//                DeleteOnExitHook.add(tmpDir);
+
+            } catch (IOException e) {
+                throw new SmooksException("Unable to crete temp directory for archive.", e);
+            }
+        }
+    }
+
+    private static class DeleteOnExitHook {
+
+        static {
+            Runtime.getRuntime().addShutdownHook(
+                new Thread() {
+                    public void run() {
+                        deleteDirs();
+                    }
+                }
+            );
+
+            dirsToDelete = new CopyOnWriteArrayList<String>();
+        }
+
+        private static List<String> dirsToDelete;
+
+        private static synchronized void add(File dir) {
+            if (dirsToDelete == null) {
+                throw new IllegalStateException("Shutdown in progress");
+            }
+            dirsToDelete.add(dir.getAbsolutePath());
+        }
+
+        private static synchronized void deleteDirs() {
+            if (dirsToDelete == null) {
+                throw new IllegalStateException("Shutdown in progress");
+            }
+
+            List<String> dirs = dirsToDelete;
+            dirsToDelete = null;
+
+            for (String dir : dirs) {
+                try {
+                    FileUtils.deleteDir(new File(dir));
+                } catch (Exception e) {
+                    // Ignore... keep deleting dirs...
+                }
+            }
+        }
     }
 }
