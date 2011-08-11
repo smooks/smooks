@@ -173,12 +173,6 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-flatfile</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
 		<dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi_R4_core</artifactId>
