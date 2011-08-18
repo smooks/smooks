@@ -18,24 +18,31 @@ import java.util.Properties;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
+/**
+ * Will register an OSGi {@link ServiceFactory} for Smooks which can 
+ * be used to get a {@link SmooksFactory} that knows how to load classes
+ * and resources from OSGi bundles.
+ * </p>
+ * 
+ * @author Daniel Bevenius
+ *
+ */
 public class SmooksActivator implements BundleActivator
 {
     private ServiceRegistration registerService;
 
-    public void start(BundleContext context) throws Exception
+    public void start(final BundleContext context) throws Exception
     {
-        System.out.println("Starting Smooks Bundle [" + context.getBundle().getHeaders().get("Bundle-Version") + "]");
         SmooksServiceFactory smooksOSGIFactory = new SmooksServiceFactory();
-        registerService = context.registerService(Smooks.class.getName(), smooksOSGIFactory, new Properties());
-        System.out.println("Registered : "  + Smooks.class.getName());
+        registerService = context.registerService(SmooksFactory.class.getName(), smooksOSGIFactory, new Properties());
         
     }
 
-    public void stop(BundleContext context) throws Exception
+    public void stop(final BundleContext context) throws Exception
     {
-        System.out.println("Stopping Smooks Bundle [" + context.getBundle().getHeaders().get("Bundle-Version") + "]");
         registerService.unregister();
     }
 

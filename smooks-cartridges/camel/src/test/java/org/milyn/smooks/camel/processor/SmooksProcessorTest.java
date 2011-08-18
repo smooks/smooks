@@ -36,6 +36,7 @@ import org.apache.camel.test.junit4.CamelTestSupport;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.milyn.io.StreamUtils;
 import org.w3c.dom.Document;
@@ -101,6 +102,7 @@ public class SmooksProcessorTest extends CamelTestSupport
     }
 
     @Test
+    @Ignore
     public void stopStartContext() throws Exception
     {
         ObjectInstance smooksProcessorMBean = getSmooksProcessorObjectInstance();

@@ -33,12 +33,15 @@ public class ExampleRouteBuilder extends RouteBuilder
     @Override
     public void configure() throws Exception
     {
+        SmooksDataFormat smooksDataFormat = new SmooksDataFormat("smooks-config.xml");
+        smooksDataFormat.setCamelContext(getContext());
+        smooksDataFormat.start();
         // Starting with Camel 2.5 the path can be specified as file:.
         // See https://issues.apache.org/activemq/browse/CAMEL-3063 for more
         // information.
         from("file://" + getWorkingDir() + "?fileName=input-message.edi&noop=true")
         .log("Before unmarshal with SmooksDataFormat:").log("${body}")
-        .unmarshal(new SmooksDataFormat("smooks-config.xml"))
+        .unmarshal(smooksDataFormat)
         .log("After unmarshal with SmooksDataFormat:").log("${body}")
         .to("mock:result");
     }

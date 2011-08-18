@@ -16,8 +16,8 @@
 package example.activator;
 
 import org.milyn.Smooks;
+import org.milyn.SmooksFactory;
 import org.milyn.SmooksOSGIFactory;
-import org.milyn.SmooksOSGIFactoryImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -36,8 +36,9 @@ public class MainActivator implements BundleActivator
     {
         try
         {
-	        SmooksOSGIFactory smooksOSGIFactory = new SmooksOSGIFactoryImpl();
-	        smooks = smooksOSGIFactory.create(context.getBundle());
+	        final SmooksFactory smooksOSGIFactory = new SmooksOSGIFactory(context.getBundle());
+	        final String config = (String) context.getBundle().getHeaders().get("Smooks-Config");
+	        smooks = smooksOSGIFactory.createInstance(config);
 	        performFiltering(context);
         } 
         catch (Exception e)
