@@ -38,6 +38,7 @@ import org.apache.camel.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
+import org.milyn.SmooksFactory;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Visitor;
 import org.milyn.delivery.VisitorAppender;
@@ -63,17 +64,22 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
     private Set<VisitorAppender> visitorAppenders = new HashSet<VisitorAppender>();
     private Map<String, Visitor> selectorVisitorMap = new HashMap<String, Visitor>();
     private CamelContext camelContext;
+    
+    public SmooksProcessor(final CamelContext camelContext) 
+    {
+        this.camelContext = camelContext;
+    }
 
     public SmooksProcessor(final Smooks smooks, final CamelContext camelContext)
     {
+        this(camelContext);;
         this.smooks = smooks;
-        this.camelContext = camelContext;
     }
 
     public SmooksProcessor(final String configUri, final CamelContext camelContext) throws IOException, SAXException
     {
+        this(camelContext);
         this.configUri = configUri;
-        this.camelContext = camelContext;
     }
 
     public void process(final Exchange exchange) throws Exception
@@ -204,7 +210,12 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
         if (smooks == null)
         {
             smooks = createSmooks(configUri);
+	        if (configUri != null)
+	        {
+	            smooks.addConfigurations(configUri);
+	        }
         }
+        
         smooks.getApplicationContext().setAttribute(CamelContext.class, camelContext);
         addAppenders(smooks, visitorAppenders);
         addVisitors(smooks, selectorVisitorMap);
@@ -213,10 +224,8 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
 
     private Smooks createSmooks(String configUri) throws IOException, SAXException
     {
-        if (smooks != null)
-            return smooks;
-
-        return new Smooks(configUri);
+        final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookup(SmooksFactory.class.getName());
+        return smooksFactory != null ? smooksFactory.createInstance() : new Smooks();
     }
 
     private void addAppenders(Smooks smooks, Set<VisitorAppender> appenders)

@@ -52,22 +52,22 @@ public class SmooksProcessor_BeanRouting_Test extends CamelTestSupport {
 	    final String toEndpoint = "mock:to";
 	    context.addRoutes(new RouteBuilder() {
 	        public void configure() {
-            	final Smooks smooks = new Smooks();
+	            final SmooksProcessor smooksProcessor = new SmooksProcessor(context);
             	
             	// Smooks JavaBean programmatic configuration
             	final String beanId = "coordinate";
             	final String selector = "coords/coord";
             	final Bean beanConfig = new Bean(Coordinate.class, beanId, selector);
             	beanConfig.bindTo("x", "coords/coord/@x").bindTo("y", "coords/coord/@y");
-            	smooks.addVisitor(beanConfig);
+            	smooksProcessor.addVisitor(beanConfig);
             	
             	// Smooks Camel BeanRouter programmatic configuration
         		final BeanRouter camelBeanRouter = new BeanRouter(context);
         		camelBeanRouter.setBeanId(beanId).setToEndpoint(toEndpoint)
         		.setCorrelationIdName(CORRELATION_ID).setCorrelationIdPattern("${PUUID.execContext}");
-        		smooks.addVisitor(camelBeanRouter, selector);
+        		smooksProcessor.addVisitor(camelBeanRouter, selector);
             	
-                from(fromEndpoint).process(new SmooksProcessor(smooks, context));
+                from(fromEndpoint).process(smooksProcessor);
             }
         });
 		context.start();

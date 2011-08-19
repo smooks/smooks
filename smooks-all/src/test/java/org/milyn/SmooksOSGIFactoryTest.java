@@ -14,30 +14,31 @@
  */
 package org.milyn;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 
+import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
 
 /**
+ * Unit test for {@link SmooksOSGIFactory}
  * 
  * @author Daniel Bevenius
  *
  */
-public class SmooksOSGIFactoryImpl implements SmooksOSGIFactory
+public class SmooksOSGIFactoryTest
 {
-    public Smooks create(final Bundle bundle) throws IOException, SAXException
+    @Test
+    public void createWithoutConfig() throws IOException, SAXException
     {
-        return create(bundle, (String) bundle.getHeaders().get("Smooks-Config"));
+        final Bundle bundle = mock(Bundle.class);
+        final SmooksOSGIFactory factory = new SmooksOSGIFactory(bundle);
+        final Smooks smooks = factory.createInstance();
+        assertThat(smooks.getClassLoader(), is(instanceOf(BundleClassLoaderDelegator.class)));
     }
-    
-    public Smooks create(final Bundle bundle, final String config) throws IOException, SAXException
-    {
-        final Smooks smooks = new Smooks();
-        smooks.setClassLoader(new BundleClassLoaderDelegator(bundle, getClass().getClassLoader()));
-        System.out.println("SmooksOSGIFactory [" + config + "]");
-        smooks.addConfigurations(config);
-        return smooks;
-    }
-    
 }

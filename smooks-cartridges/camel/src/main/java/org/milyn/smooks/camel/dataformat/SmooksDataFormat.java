@@ -22,11 +22,15 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.camel.CamelContext;
+import org.apache.camel.CamelContextAware;
 import org.apache.camel.Exchange;
+import org.apache.camel.Service;
 import org.apache.camel.TypeConverter;
 import org.apache.camel.processor.MarshalProcessor;
 import org.apache.camel.spi.DataFormat;
 import org.milyn.Smooks;
+import org.milyn.SmooksFactory;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.Exports;
 import org.milyn.payload.StringResult;
@@ -52,13 +56,15 @@ import org.milyn.smooks.camel.processor.SmooksProcessor;
  * @author Daniel Bevenius
  * 
  */
-public class SmooksDataFormat implements DataFormat 
+public class SmooksDataFormat implements DataFormat, CamelContextAware, Service
 {
     private Smooks smooks;
+    private CamelContext camelContext;
+    private final String smooksConfig;
     
     public SmooksDataFormat(final String smooksConfig) throws Exception
     {
-        smooks = new Smooks(smooksConfig);
+        this.smooksConfig = smooksConfig;
     }
     
     /**
@@ -114,6 +120,37 @@ public class SmooksDataFormat implements DataFormat
         else
         {
 	        return objects;
+        }
+    }
+
+    public void setCamelContext(CamelContext camelContext)
+    {
+        this.camelContext = camelContext;
+    }
+
+    public CamelContext getCamelContext()
+    {
+        return camelContext;
+    }
+
+    public void start() throws Exception
+    {
+        final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookup(SmooksFactory.class.getName());
+        if (smooksFactory != null)
+        {
+            smooks = smooksFactory.createInstance(smooksConfig);
+        }
+        else
+        {
+            smooks = new Smooks(smooksConfig);
+        }
+    }
+
+    public void stop() throws Exception
+    {
+        if (smooks != null)
+        {
+	        smooks.close();
         }
     }
 

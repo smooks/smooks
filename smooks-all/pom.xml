@@ -25,12 +25,18 @@
     <name>Milyn Smooks All</name>
 	<groupId>org.milyn</groupId>
 	<artifactId>milyn-smooks-all</artifactId>
-    <version>${milyn.smooks.core.version}</version>
 	<packaging>bundle</packaging>
 
 	<properties>
-		<objectweb.version>2.2.3</objectweb.version>
-		<antlr.version>2.7.7</antlr.version>
+		<spring.objectweb.version>2.2.3</spring.objectweb.version>
+		<spring.freemarker.version>2.3.15</spring.freemarker.version>
+		<spring.antlr.version>2.7.7</spring.antlr.version>
+		<spring.jaxen.version>1.1.1</spring.jaxen.version>
+		<spring.commons.logging.version>1.1.1</spring.commons.logging.version>
+		<spring.groovy.version>1.5.7</spring.groovy.version>
+		<spring.log4j.version>1.2.15</spring.log4j.version>
+		<commons.lang.version>2.4</commons.lang.version>
+        <opencsv.version>1.0.23</opencsv.version>
 	</properties>
 
     <dependencies>
@@ -39,141 +45,140 @@
             <groupId>org.milyn</groupId>
             <artifactId>milyn-commons</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-core</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-edisax-parser</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-calc</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-camel</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-csv</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-edi</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-fixed-length</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-json</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-misc</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-persistence</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-routing</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-rules</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-scripting</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-validation</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-yaml</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-scribe-core</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-scribe-hibernate</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-scribe-ibatis</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-scribe-jpa</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-camel</artifactId>
+            <artifactId>milyn-smooks-flatfile</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
+            <scope>provided</scope>
+        </dependency>-->
 		<dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi_R4_core</artifactId>
@@ -202,7 +207,7 @@
 			<scope>provided</scope> 
 		</dependency>
 
-        <!-- Readding core dependencies -->
+        <!-- Readding core dependencies - DO NOT SCOPE AS "provided" -->
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
@@ -241,69 +246,88 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
-			<version>1.1.1</version>
+			<version>${spring.commons.logging.version}</version>
 			<scope>provided</scope> 
 		</dependency>
 
 		<dependency>
 			<groupId>org.jaxen</groupId>
 			<artifactId>com.springsource.org.jaxen</artifactId>
-			<version>1.1.1</version>
+			<version>${spring.jaxen.version}</version>
 			<scope>provided</scope> 
 		</dependency>
 
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>com.springsource.freemarker</artifactId>
-			<version>${freemarker.version}</version>
+			<version>${spring.freemarker.version}</version>
 			<scope>provided</scope> 
 		</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
-			<version>${groovy.version}</version>
+			<version>${spring.groovy.version}</version>
 			<scope>provided</scope> 
 		</dependency>
 
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>com.springsource.antlr</artifactId>
-			<version>${antlr.version}</version>
+			<version>${spring.antlr.version}</version>
 			<scope>provided</scope> 
 		</dependency>
 
 		<dependency>
 			<groupId>org.objectweb.asm</groupId>
 			<artifactId>com.springsource.org.objectweb.asm</artifactId>
-			<version>${objectweb.version}</version>
+			<version>${spring.objectweb.version}</version>
 			<scope>provided</scope> 
 		</dependency>
 
 		<dependency>
 			<groupId>org.objectweb.asm</groupId>
 			<artifactId>com.springsource.org.objectweb.asm.tree.analysis</artifactId>
-			<version>${objectweb.version}</version>
+			<version>${spring.objectweb.version}</version>
 			<scope>provided</scope> 
 		</dependency>
 
 		<dependency>
 			<groupId>org.objectweb.asm</groupId>
 			<artifactId>com.springsource.org.objectweb.asm.tree</artifactId>
-			<version>${objectweb.version}</version>
+			<version>${spring.objectweb.version}</version>
 			<scope>provided</scope> 
 		</dependency>
 
 		<dependency>
 			<groupId>org.objectweb.asm</groupId>
 			<artifactId>com.springsource.org.objectweb.asm.util</artifactId>
-			<version>${objectweb.version}</version>
+			<version>${spring.objectweb.version}</version>
 			<scope>provided</scope> 
 		</dependency>
+
+        <dependency>
+            <groupId>org.ow2.bundles</groupId>
+            <artifactId>ow2-bundles-externals-opencsv</artifactId>
+            <version>${opencsv.version}</version>
+        </dependency>
+
+         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.1</version>
+            <scope>test</scope>
+        </dependency>
 
 	</dependencies>
 
     <build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -350,16 +374,6 @@
                     </execution>
                 </executions>
             </plugin>
-			<!--
-			<plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                        </archive>
-                    </configuration>
-            </plugin>
-			-->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -384,22 +398,24 @@
 							org.milyn.*;-split-package:=merge-first;version="${milyn.smooks.core.version}",
 							META-INF.xsd.smooks.*;-split-package:=merge-first,
 							!META-INF.services.*,
-							!META-INF.maven.*,
+							!META-INF.maven.*
 						</Export-Package>
 						<Import-Package>
 							org.osgi.framework,
 							org.jaxen.*;version="1.1.1", 
 							org.apache.commons.*, 
-							freemarker.*;version="${freemarker.version}",
-							groovy.xml;version="${groovy.version}",
-							groovy.xml.dom;version="${groovy.version}",
-							org.codehaus.groovy.*;version="${groovy.version}",
-							org.codehaus.groovy.runtime;version="${groovy.version}",
-							org.codehaus.groovy.runtime.typehandling;version="${groovy.version}",
+							freemarker.*;version="${spring.freemarker.version}",
+							groovy.xml;version="${spring.groovy.version}",
+							groovy.xml.dom;version="${spring.groovy.version}",
+							org.codehaus.groovy.*;version="${spring.groovy.version}",
+							org.codehaus.groovy.runtime;version="${spring.groovy.version}",
+							org.codehaus.groovy.runtime.typehandling;version="${spring.groovy.version}",
 							javax.swing.tree,
 							!org.apache.commons.cli.*,
 							!META-INF.services.javax.xml.parsers.*,*;resolution:=optional
 						</Import-Package>
+		                <Embed-Dependency>milyn*;scope=provided;type=!pom;inline=true</Embed-Dependency>
+                        <_exportcontents>true</_exportcontents>
 						<_failok>true</_failok>
 					</instructions>
 				</configuration>
@@ -408,7 +424,36 @@
                 <groupId>org.ops4j</groupId>
                 <artifactId>maven-pax-plugin</artifactId>
                 <version>1.4</version>
-			</plugin>
+                <configuration>
+                    <provision>
+                        <param>--log=true</param>
+                        <param>--platform=felix</param>
+                        <param>--workingDirectory=target/runner</param>
+                    </provision>
+                </configuration>
+            </plugin>
+            <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+         <artifactId>build-helper-maven-plugin</artifactId>
+         <executions>
+           <execution>
+             <id>attach-artifacts</id>
+             <phase>package</phase>
+             <goals>
+               <goal>attach-artifact</goal>
+             </goals>
+             <configuration>
+               <artifacts>
+                 <artifact>
+                   <file>target/classes/features.xml</file>
+                   <type>xml</type>
+                   <classifier>features</classifier>
+                 </artifact>
+               </artifacts>
+             </configuration>
+           </execution>
+         </executions>
+       </plugin>
         </plugins>
     </build>
 

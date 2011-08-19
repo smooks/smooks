@@ -37,7 +37,7 @@
         <milyn.scribe.ibatis.version.base>${milyn.smooks.core.version.base}</milyn.scribe.ibatis.version.base>
         <milyn.scribe.ibatis.version>${milyn.smooks.core.version}</milyn.scribe.ibatis.version>
 
-        <camel.version>2.4.0</camel.version>
+        <camel.version>2.6.0</camel.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <xerces.version>2.7.1</xerces.version>
         <xalan.version>2.7.1</xalan.version>
