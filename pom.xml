@@ -5,12 +5,12 @@
     <groupId>org.milyn</groupId>
     <artifactId>milyn</artifactId>
     <packaging>pom</packaging>
-    <version>1.4</version> <!-- base pom version - do not remove this comment -->
+    <version>1.4.1</version> <!-- base pom version - do not remove this comment -->
     <name>Milyn (Base POM)</name>
     <url>http://milyn.codehaus.org</url>
 
     <properties>
-        <milyn.smooks.core.version.base>1.4</milyn.smooks.core.version.base> <!-- ## Smooks Version ## -->
+        <milyn.smooks.core.version.base>1.4.1</milyn.smooks.core.version.base> <!-- ## Smooks Version ## -->
         <milyn.smooks.core.version>${milyn.smooks.core.version.base}</milyn.smooks.core.version> <!-- ## Smooks Version ## --> <!-- add/remove "-SNAPSHOT" here as necessary -->
 
         <milyn.commons.version.base>${milyn.smooks.core.version.base}</milyn.commons.version.base>

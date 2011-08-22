@@ -4,13 +4,14 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn</artifactId>
-        <version>1.4</version> <!-- base pom version - do not remove this comment -->
+        <version>1.4.1</version> <!-- base pom version - do not remove this comment -->
+        <relativePath>../../../pom.xml</relativePath>
     </parent>
     <name>Edifact Convertion Tool - Maven Plugin Mojo</name>
     <groupId>org.milyn</groupId>
     <artifactId>maven-ect-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.4</version> <!-- base pom version - do not remove this comment -->
+    <version>1.4.1</version> <!-- base pom version - do not remove this comment -->
 
     <dependencies>
 

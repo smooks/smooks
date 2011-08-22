@@ -7,7 +7,7 @@
     <version>1.0</version>
     
     <properties>
-    	<smooks.version>1.4</smooks.version>
+    	<smooks.version>1.4.1</smooks.version>
     	<!-- <smooks.version>1.3</smooks.version> -->
     	<jibx.version>1.2.1</jibx.version>
     </properties>
