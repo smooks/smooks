@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.SchemaFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +56,11 @@ public class EclipseFragmentXMLValidator extends XsdValidator {
     private static final Log logger = LogFactory.getLog(EclipseFragmentXMLValidator.class);
 
     public EclipseFragmentXMLValidator() throws IOException, SAXException {
+        super.setSchemaSourceResolver(new SchemaResolver());
+    }
+
+    public EclipseFragmentXMLValidator(SchemaFactory schemaFactory) throws IOException, SAXException {
+        super.setSchemaFactory(schemaFactory);
         super.setSchemaSourceResolver(new SchemaResolver());
     }
 

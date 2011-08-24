@@ -18,20 +18,35 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-        </profile>
-        <profile>
-            <!--
-            Need to exclude the UN/EDIFACT test harness tests on bamboo because
-            of VM memory restrictions there.
-            -->
-            <id>bamboo</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.8.1</version>
                         <configuration>
+                            <environmentVariables>
+                                <org.milyn.xml.XsdValidator.SchemaFactory>org.apache.xerces.jaxp.validation.XMLSchemaFactory</org.milyn.xml.XsdValidator.SchemaFactory>
+                            </environmentVariables>
+                            <forkMode>once</forkMode>
+                            <argLine>-Xms128m -Xmx512m -XX:MaxPermSize=512m</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!--
+            Need to exclude the UN/EDIFACT test harness tests where there are VM memory restrictions e.g. on Bamboo.
+            -->
+            <id>lowmem</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <forkMode>once</forkMode>
+                            <argLine>-Xms128m -Xmx512m -XX:MaxPermSize=512m</argLine>
                             <excludes>
                                 <exclude>org/milyn/edi/test/unedifact/**</exclude>
                             </excludes>
@@ -71,6 +86,11 @@
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
         </dependency>
 
     </dependencies>

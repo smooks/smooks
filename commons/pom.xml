@@ -11,6 +11,11 @@
 
 	<dependencies>
         <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
             <version>${project.version}</version>

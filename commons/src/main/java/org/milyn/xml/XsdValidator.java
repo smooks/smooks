@@ -17,11 +17,10 @@
 package org.milyn.xml;
 
 import org.milyn.assertion.AssertArgument;
+import org.milyn.util.ClassUtil;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -38,9 +37,17 @@ import java.util.Collection;
  */
 public class XsdValidator {
 
+    public static final String SCHEMA_FACTORY = XsdValidator.class.getName() + ".SchemaFactory";
+
+    private SchemaFactory installedSchemaFactory;
+
     private LSResourceResolver schemaSourceResolver;
     private ErrorHandler errorHandler;
     private Schema schema;
+
+    public void setSchemaFactory(SchemaFactory installedSchemaFactory) {
+        this.installedSchemaFactory = installedSchemaFactory;
+    }
 
     public void setSchemaSourceResolver(LSResourceResolver schemaSourceResolver) throws SAXException {
         assertSchemaNotInitialized();
@@ -106,12 +113,26 @@ public class XsdValidator {
     }
 
     private SchemaFactory newSchemaFactory() {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        try {
-            schemaFactory.setProperty("http://apache.org/xml/properties/security-manager", null);   // Need to turn this thing off, otherwise it throws stupid errors.
-        } catch (SAXException e) {
-            // Ignore...
+        if (installedSchemaFactory != null) {
+            return installedSchemaFactory;
+        } else {
+            String schemaFactoryClass = System.getProperty(SCHEMA_FACTORY);
+
+            if (schemaFactoryClass != null) {
+                try {
+                    return (SchemaFactory) ClassUtil.forName(schemaFactoryClass, getClass()).newInstance();
+                } catch (Exception e) {
+                    throw new IllegalStateException("Failed to create an instance of SchemaFactory '" + schemaFactoryClass + "'.", e);
+                }
+            } else {
+                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                try {
+                    schemaFactory.setProperty("http://apache.org/xml/properties/security-manager", null);   // Need to turn this thing off, otherwise it throws stupid errors.
+                } catch (SAXException e) {
+                    // Ignore...
+                }
+                return schemaFactory;
+            }
         }
-        return schemaFactory;
     }
 }

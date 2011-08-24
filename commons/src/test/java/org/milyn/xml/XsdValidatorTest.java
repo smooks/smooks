@@ -17,6 +17,7 @@
 package org.milyn.xml;
 
 import junit.framework.TestCase;
+import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -54,6 +55,8 @@ public class XsdValidatorTest extends TestCase {
         Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
         XsdValidator validator = new XsdValidator();
 
+        validator.setSchemaFactory(new XMLSchemaFactory());
+
         MyLSResourceResolver schemaSourceResolver = new MyLSResourceResolver();
         schemaSourceResolver.resources.put("http://www.milyn.org/xsd/test-xsd-01.xsd", new StreamSourceLSInput(new StreamSource(getClass().getResourceAsStream("/META-INF/xsd/test-xsd-01.xsd"))));
         schemaSourceResolver.resources.put("http://www.milyn.org/xsd/test-xsd-02.xsd", new StreamSourceLSInput(new StreamSource(getClass().getResourceAsStream("/META-INF/xsd/test-xsd-02.xsd"))));
@@ -64,6 +67,8 @@ public class XsdValidatorTest extends TestCase {
 
     public void test_stream_validation_via_resolver() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         XsdValidator validator = new XsdValidator();
+
+        validator.setSchemaFactory(new XMLSchemaFactory());
 
         MyLSResourceResolver schemaSourceResolver = new MyLSResourceResolver();
         schemaSourceResolver.resources.put("http://www.milyn.org/xsd/test-xsd-01.xsd", new StreamSourceLSInput(new StreamSource(getClass().getResourceAsStream("/META-INF/xsd/test-xsd-01.xsd"))));

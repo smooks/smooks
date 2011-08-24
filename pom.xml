@@ -12,14 +12,15 @@
     <groupId>org.milyn</groupId>
     <artifactId>milyn</artifactId>
     <packaging>pom</packaging>
-    <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    <version>1.5-SNAPSHOT</version>
+    <!-- base pom version - do not remove this comment -->
     <name>Milyn (Base POM)</name>
     <url>http://milyn.codehaus.org</url>
 
     <properties>
         <camel.version>2.6.0</camel.version>
         <spring.version>3.0.5.RELEASE</spring.version>
-        <xerces.version>2.7.1</xerces.version>
+        <xerces.version>2.9.1</xerces.version>
         <xalan.version>2.7.1</xalan.version>
         <xml_apis.version>1.3.02</xml_apis.version>
         <xstream.version>1.2.2</xstream.version>
@@ -33,10 +34,10 @@
         <mvel.version>2.0.17</mvel.version>
         <groovy.version>1.5.7</groovy.version>
         <jaxen.version>1.1.1</jaxen.version>
-		<javax.transaction.version>1.1</javax.transaction.version>
-		<mockejb.version>0.6-beta2</mockejb.version>
-		<mockito.version>1.8.0</mockito.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javax.transaction.version>1.1</javax.transaction.version>
+        <mockejb.version>0.6-beta2</mockejb.version>
+        <mockito.version>1.8.0</mockito.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <modules>
@@ -44,8 +45,10 @@
         <module>commons</module>
         <module>smooks-core</module>
         <module>scribe</module>
-        <module>edi</module> <!-- Default build only installs the POM... -->
-        <module>edi/edisax</module> <!-- Purposely building ECT and EJC after Smooks components... -->
+        <module>edi</module>
+        <!-- Default build only installs the POM... -->
+        <module>edi/edisax</module>
+        <!-- Purposely building ECT and EJC after Smooks components... -->
         <module>smooks-cartridges</module>
         <module>smooks-all</module>
 
@@ -93,7 +96,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+                <version>2.3.2</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
@@ -101,7 +104,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2</version>
+                <version>2.2</version>
                 <configuration>
                     <descriptor>assemblies.xml</descriptor>
                 </configuration>
@@ -109,18 +112,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-				<version>2.6</version>
+                <version>2.9</version>
                 <configuration>
+                    <environmentVariables>
+                        <org.milyn.xml.XsdValidator.SchemaFactory>org.apache.xerces.jaxp.validation.XMLSchemaFactory</org.milyn.xml.XsdValidator.SchemaFactory>
+                    </environmentVariables>
                     <excludes>
                         <exclude>**/Test*.java</exclude>
                     </excludes>
+                    <argLine>-Xms128m -Xmx256m -XX:MaxPermSize=128m</argLine>
                 </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
+                <version>2.1.2</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -168,7 +175,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
+                <version>2.7</version>
                 <configuration>
                     <overview>${basedir}/src/main/java/overview.html</overview>
                     <links>
@@ -185,7 +192,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-				<version>2.5</version>
+                <version>2.5</version>
                 <configuration>
                     <linkXref>true</linkXref>
                     <sourceEncoding>utf-8</sourceEncoding>
@@ -229,4 +236,51 @@
             <url>http://repository.codehaus.org</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>${xerces.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.9</version>
+            </dependency>
+            <dependency>
+                <groupId>jaxen</groupId>
+                <artifactId>jaxen</artifactId>
+                <version>${jaxen.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>dom4j</artifactId>
+                        <groupId>dom4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>jdom</artifactId>
+                        <groupId>jdom</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>xml-apis</artifactId>
+                        <groupId>xml-apis</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>xerces</artifactId>
+                        <groupId>xmlParserAPIs</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>xerces</artifactId>
+                        <groupId>xercesImpl</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>xom</artifactId>
+                        <groupId>xom</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

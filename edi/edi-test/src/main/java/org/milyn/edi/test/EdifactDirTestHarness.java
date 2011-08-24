@@ -15,6 +15,7 @@
 */
 package org.milyn.edi.test;
 
+import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
 import org.milyn.archive.Archive;
@@ -219,7 +220,15 @@ public class EdifactDirTestHarness implements UNEdifactInterchangeFactory {
             ClassLoader origTCCL = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(bindingModelClassLoader);
             try {
-                EclipseFragmentXMLValidator validator = new EclipseFragmentXMLValidator();
+                XMLSchemaFactory schemaFactory = new XMLSchemaFactory();
+
+                try {
+                    schemaFactory.setProperty("http://apache.org/xml/properties/security-manager", null);   // Need to turn this thing off, otherwise it throws stupid errors.
+                } catch (SAXException e) {
+                    // Ignore...
+                }
+
+                EclipseFragmentXMLValidator validator = new EclipseFragmentXMLValidator(schemaFactory);
                 validator.validate(new StringSource(xmlResult.getResult()));
             } catch (Exception e) {
                 throw new IllegalStateException("Error processing EDIFACT stream for '" + urn + "'.", e);
