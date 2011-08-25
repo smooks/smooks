@@ -17,31 +17,4 @@
         <module>ejc/maven-ejc-plugin</module>
     </modules>
 
-    <repositories>
-        <repository>
-            <id>codehaus.m2.snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>codehaus.maven.repo</id>
-            <name>Milyn Central Maven2 Repository</name>
-            <url>dav:https://dav.codehaus.org/repository/milyn/</url>
-        </repository>
-        <snapshotRepository>
-            <id>codehaus.maven.repo</id>
-            <name>Milyn Central Maven2 SNAPSHOT Repository</name>
-            <url>dav:https://dav.codehaus.org/snapshots.repository/milyn/</url>
-        </snapshotRepository>
-        <site>
-            <id>codehaus.maven.repo</id>
-            <url>dav:https://dav.codehaus.org/xfire/</url>
-        </site>
-    </distributionManagement>
-
 </project>
