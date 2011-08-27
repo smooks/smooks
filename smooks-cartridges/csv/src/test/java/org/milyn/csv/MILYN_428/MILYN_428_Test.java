@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Arrays;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -36,7 +37,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Clemens Fuchslocher
  */
-public class Test extends TestCase {
+public class MILYN_428_Test extends TestCase {
 
 	// No errors.
 	public void test01() throws IOException, SAXException {
@@ -222,19 +223,8 @@ public class Test extends TestCase {
 		}
 
 		CSVHeaderValidationException validation = (CSVHeaderValidationException) cause;
-		assertEquals(expected, validation.getExpected());
-		assertEquals(found, validation.getFound());
+		assertEquals(Arrays.asList(expected), validation.getExpected());
+		assertEquals(Arrays.asList(found), validation.getFound());
 		assertEquals(message, validation.getMessage());
 	}
-
-	private void assertEquals(final String[] expected, final String[] actual) {
-		if (expected.length != actual.length) {
-			fail("expected.length != actual.length");
-		}
-
-		for (int n = 0; n < expected.length; n++) {
-			assertEquals(expected[n], actual[n]);
-		}
-	}
-
 }

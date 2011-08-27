@@ -66,6 +66,12 @@
         <param name="attribute">indent</param>
     </resource-config>
 
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">strict</param>
+        <param name="defaultValue">true</param>
+    </resource-config>
+
     <resource-config selector="singleBinding">
         <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
         <param name="setOn">bindingType</param>

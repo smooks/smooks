@@ -15,25 +15,18 @@
  */
 package org.milyn.csv;
 
-import org.milyn.GenericReaderConfigurator;
-import org.milyn.ReaderConfigurator;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.flatfile.Binding;
-import org.milyn.flatfile.BindingType;
-import org.milyn.flatfile.FlatFileReader;
-import org.milyn.flatfile.variablefield.VariableFieldRecordParserConfigurator;
-import org.milyn.flatfile.variablefield.VariableFieldRecordParserFactory;
-
-import java.nio.charset.Charset;
 import java.util.List;
+
+import org.milyn.assertion.AssertArgument;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.flatfile.variablefield.VariableFieldRecordParserConfigurator;
 
 /**
  * CSV Record Parser configurator.
  * <p/>
- * Supports programmatic configuration of {@link CSVRecordParserFactory} and {@link CSVRecordParser}.
- *
+ * Supports programmatic configuration of {@link CSVRecordParserFactory} and
+ * {@link CSVRecordParser}.
+ * 
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class CSVRecordParserConfigurator extends VariableFieldRecordParserConfigurator {

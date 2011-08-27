@@ -16,6 +16,7 @@
 
 package org.milyn.flatfile;
 
+import org.milyn.cdr.SmooksConfigurationException;
 import org.xml.sax.InputSource;
 
 import java.io.IOException;
@@ -40,10 +41,20 @@ public interface RecordParser<T extends RecordParserFactory>  {
     void setDataSource(InputSource source);
 
     /**
+     * Initialize the parser instance.
+     * @throws IOException Error initializing the reader.
+     */
+    void initialize() throws IOException;
+
+    /**
      * Parse the next record from the message stream and produce a {@link Record} instance.
      * @return The records instance.
      * @throws IOException Error reading message stream.
      */
     Record nextRecord() throws IOException;
 
+    /**
+     * Uninitialize the parser instance.
+     */
+    void uninitialize();
 }

@@ -119,67 +119,73 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
             recordParser.setRecordParserFactory(parserFactory);
             recordParser.setDataSource(inputSource);
 
-	        // Start the document and add the root "record-set" element...
-	        contentHandler.startDocument();
-	        contentHandler.startElement(XMLConstants.NULL_NS_URI, rootElementName, StringUtils.EMPTY, EMPTY_ATTRIBS);
-	
-	        // Output each of the CVS line entries...
-	        int lineNumber = 0;
+            try {
+                recordParser.initialize();
 
-            Record record = recordParser.nextRecord();
-            while (record != null) {
-                lineNumber++; // First line is line "1"
+                // Start the document and add the root "record-set" element...
+                contentHandler.startDocument();
+                contentHandler.startElement(XMLConstants.NULL_NS_URI, rootElementName, StringUtils.EMPTY, EMPTY_ATTRIBS);
 
-                if(record != null) {
-                    List<Field> recordFields = record.getFields();
+                // Output each of the CVS line entries...
+                int lineNumber = 0;
 
-                    if(indent) {
-                        contentHandler.characters(INDENT_LF, 0, 1);
-                        contentHandler.characters(INDENTCHARS, 0, 1);
-                    }
+                Record record = recordParser.nextRecord();
+                while (record != null) {
+                    lineNumber++; // First line is line "1"
 
-                    AttributesImpl attrs = new AttributesImpl();
-                    attrs.addAttribute(XMLConstants.NULL_NS_URI, RECORD_NUMBER_ATTR, RECORD_NUMBER_ATTR, "xs:int", Integer.toString(lineNumber));
-
-                    RecordMetaData recordMetaData = record.getRecordMetaData();
-                    if(recordFields.size() < recordMetaData.getUnignoredFieldCount()) {
-                        attrs.addAttribute(XMLConstants.NULL_NS_URI, RECORD_TRUNCATED_ATTR, RECORD_TRUNCATED_ATTR, "xs:boolean", Boolean.TRUE.toString());
-                    }
-
-                    contentHandler.startElement(XMLConstants.NULL_NS_URI, record.getName(), StringUtils.EMPTY, attrs);
-                    for(Field recordField : recordFields) {
-                        String fieldName = recordField.getName();
+                    if(record != null) {
+                        List<Field> recordFields = record.getFields();
 
                         if(indent) {
                             contentHandler.characters(INDENT_LF, 0, 1);
-                            contentHandler.characters(INDENTCHARS, 0, 2);
+                            contentHandler.characters(INDENTCHARS, 0, 1);
                         }
 
-                        contentHandler.startElement(XMLConstants.NULL_NS_URI, fieldName, StringUtils.EMPTY, EMPTY_ATTRIBS);
+                        AttributesImpl attrs = new AttributesImpl();
+                        attrs.addAttribute(XMLConstants.NULL_NS_URI, RECORD_NUMBER_ATTR, RECORD_NUMBER_ATTR, "xs:int", Integer.toString(lineNumber));
 
-                        String value = recordField.getValue();
-                        contentHandler.characters(value.toCharArray(), 0, value.length());
-                        contentHandler.endElement(XMLConstants.NULL_NS_URI, fieldName, StringUtils.EMPTY);
+                        RecordMetaData recordMetaData = record.getRecordMetaData();
+                        if(recordFields.size() < recordMetaData.getUnignoredFieldCount()) {
+                            attrs.addAttribute(XMLConstants.NULL_NS_URI, RECORD_TRUNCATED_ATTR, RECORD_TRUNCATED_ATTR, "xs:boolean", Boolean.TRUE.toString());
+                        }
+
+                        contentHandler.startElement(XMLConstants.NULL_NS_URI, record.getName(), StringUtils.EMPTY, attrs);
+                        for(Field recordField : recordFields) {
+                            String fieldName = recordField.getName();
+
+                            if(indent) {
+                                contentHandler.characters(INDENT_LF, 0, 1);
+                                contentHandler.characters(INDENTCHARS, 0, 2);
+                            }
+
+                            contentHandler.startElement(XMLConstants.NULL_NS_URI, fieldName, StringUtils.EMPTY, EMPTY_ATTRIBS);
+
+                            String value = recordField.getValue();
+                            contentHandler.characters(value.toCharArray(), 0, value.length());
+                            contentHandler.endElement(XMLConstants.NULL_NS_URI, fieldName, StringUtils.EMPTY);
+                        }
+
+                        if(indent) {
+                            contentHandler.characters(INDENT_LF, 0, 1);
+                            contentHandler.characters(INDENTCHARS, 0, 1);
+                        }
+
+                        contentHandler.endElement(XMLConstants.NULL_NS_URI, record.getName(), StringUtils.EMPTY);
                     }
 
-                    if(indent) {
-                        contentHandler.characters(INDENT_LF, 0, 1);
-                        contentHandler.characters(INDENTCHARS, 0, 1);
-                    }
-
-                    contentHandler.endElement(XMLConstants.NULL_NS_URI, record.getName(), StringUtils.EMPTY);
+                    record = recordParser.nextRecord();
                 }
 
-                record = recordParser.nextRecord();
-	        }
-	
-	        if(indent) {
-	            contentHandler.characters(INDENT_LF, 0, 1);
-	        }
-	
-	        // Close out the "csv-set" root element and end the document..
-	        contentHandler.endElement(XMLConstants.NULL_NS_URI, rootElementName, StringUtils.EMPTY);
-	        contentHandler.endDocument();
+                if(indent) {
+                    contentHandler.characters(INDENT_LF, 0, 1);
+                }
+
+                // Close out the "csv-set" root element and end the document..
+                contentHandler.endElement(XMLConstants.NULL_NS_URI, rootElementName, StringUtils.EMPTY);
+                contentHandler.endDocument();
+            } finally {
+                recordParser.uninitialize();
+            }
         } finally {
         	// These properties need to be reset for every execution (e.g. when reader is pooled).
         	contentHandler = null;

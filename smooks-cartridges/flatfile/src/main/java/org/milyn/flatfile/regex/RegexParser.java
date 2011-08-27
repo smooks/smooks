@@ -16,9 +16,6 @@
 
 package org.milyn.flatfile.regex;
 
-import org.milyn.flatfile.variablefield.VariableFieldRecordParser;
-import org.xml.sax.InputSource;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -28,13 +25,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.milyn.flatfile.variablefield.VariableFieldRecordParser;
+import org.xml.sax.InputSource;
+
 /**
  * Regex record parser.
  * <p/>
- * If there are no groups defined in the regexPattern this parser will use the pattern to split the record
- * into fields.  If groups are defined, it will extract the record field data from the groups defined in
- * the pattern.
- *
+ * If there are no groups defined in the regexPattern this parser will use the
+ * pattern to split the record into fields. If groups are defined, it will
+ * extract the record field data from the groups defined in the pattern.
+ * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class RegexParser<T extends RegexParserFactory> extends VariableFieldRecordParser<T> {
@@ -46,8 +46,9 @@ public class RegexParser<T extends RegexParserFactory> extends VariableFieldReco
     public void setDataSource(InputSource source) {
         Reader reader = source.getCharacterStream();
 
-        if(reader ==  null) {
-            throw new IllegalStateException("Invalid InputSource type supplied to RegexParser.  Must contain a Reader instance.");
+        if (reader == null) {
+            throw new IllegalStateException(
+                    "Invalid InputSource type supplied to RegexParser.  Must contain a Reader instance.");
         }
 
         this.reader = new BufferedReader(reader);
@@ -63,17 +64,17 @@ public class RegexParser<T extends RegexParserFactory> extends VariableFieldReco
         readerBuffer.setLength(0);
         factory.readRecord(reader, readerBuffer, (getRecordCount() + 1));
 
-        if(readerBuffer.length() == 0) {
+        if (readerBuffer.length() == 0) {
             return null;
         }
 
-        if(groupCount > 0) {
+        if (groupCount > 0) {
             String recordString = readerBuffer.toString();
             List<String> fields = new ArrayList<String>();
             Matcher matcher = pattern.matcher(recordString);
 
-            if(matcher.matches()) {
-                for(int i = 0; i < matcher.groupCount(); i++) {
+            if (matcher.matches()) {
+                for (int i = 0; i < matcher.groupCount(); i++) {
                     String fieldValue = matcher.group(i + 1);
                     if (fieldValue != null) {
                         fields.add(fieldValue);

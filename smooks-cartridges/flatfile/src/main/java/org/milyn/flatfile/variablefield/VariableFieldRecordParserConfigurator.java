@@ -17,15 +17,12 @@
 package org.milyn.flatfile.variablefield;
 
 import org.milyn.GenericReaderConfigurator;
-import org.milyn.ReaderConfigurator;
-import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.flatfile.Binding;
 import org.milyn.flatfile.BindingType;
 import org.milyn.flatfile.FlatFileReader;
 
-import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -38,6 +35,7 @@ public abstract class VariableFieldRecordParserConfigurator extends GenericReade
     private Class<? extends VariableFieldRecordParserFactory> factoryParserClass;
     private boolean indent = false;
     private boolean strict = true;
+    private boolean fieldsInMessage = false;
     private Binding binding;
 
     public VariableFieldRecordParserConfigurator(Class<? extends VariableFieldRecordParserFactory> factoryParserClass) {
@@ -55,6 +53,11 @@ public abstract class VariableFieldRecordParserConfigurator extends GenericReade
         return this;
     }
 
+    public VariableFieldRecordParserConfigurator setFieldsInMessage(boolean fieldsInMessage) {
+        this.fieldsInMessage = fieldsInMessage;
+        return this;
+    }
+
     public VariableFieldRecordParserConfigurator setBinding(Binding binding) {
         this.binding = binding;
         return this;
@@ -64,6 +67,7 @@ public abstract class VariableFieldRecordParserConfigurator extends GenericReade
         getParameters().setProperty("parserFactory", factoryParserClass.getName());
         getParameters().setProperty("indent", Boolean.toString(indent));
         getParameters().setProperty("strict", Boolean.toString(strict));
+        getParameters().setProperty("fields-in-message", Boolean.toString(fieldsInMessage));
 
         if(binding != null) {
             getParameters().setProperty("bindBeanId", binding.getBeanId());

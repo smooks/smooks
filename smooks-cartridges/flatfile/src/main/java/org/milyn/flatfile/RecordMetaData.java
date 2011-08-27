@@ -16,15 +16,15 @@
 
 package org.milyn.flatfile;
 
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.milyn.assertion.AssertArgument;
+import org.milyn.cdr.SmooksConfigurationException;
+
 /**
  * Record metadata.
- *
+ * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class RecordMetaData {
@@ -38,6 +38,7 @@ public class RecordMetaData {
 
     /**
      * public constructor.
+     * 
      * @param name Record name.
      * @param fields Record fields metadata.
      */
@@ -47,9 +48,11 @@ public class RecordMetaData {
 
     /**
      * public constructor.
+     * 
      * @param name Record name.
      * @param fields Record fields metadata.
-     * @param wildCardRecord Wildcard record.  Accept any fields and generate the field names based on index.
+     * @param wildCardRecord Wildcard record. Accept any fields and generate the
+     *        field names based on index.
      */
     public RecordMetaData(String name, List<FieldMetaData> fields, boolean wildCardRecord) {
         AssertArgument.isNotNullAndNotEmpty(name, "name");
@@ -63,6 +66,7 @@ public class RecordMetaData {
 
     /**
      * Get the record name.
+     * 
      * @return The record name.
      */
     public String getName() {
@@ -71,6 +75,7 @@ public class RecordMetaData {
 
     /**
      * Get the record fields metadata.
+     * 
      * @return The record fields metadata.
      */
     public List<FieldMetaData> getFields() {
@@ -80,8 +85,9 @@ public class RecordMetaData {
     /**
      * Is this a wildcard record.
      * <p/>
-     * If it is, accept all fields and use the field index to generate the field name.
-     *
+     * If it is, accept all fields and use the field index to generate the field
+     * name.
+     * 
      * @return True of this is a wildcard record, otherwise false.
      */
     public boolean isWildCardRecord() {
@@ -90,6 +96,7 @@ public class RecordMetaData {
 
     /**
      * Get the number of fields in this record that are ignored.
+     * 
      * @return The number of fields in this record that are ignored.
      */
     public int getIgnoredFieldCount() {
@@ -98,6 +105,7 @@ public class RecordMetaData {
 
     /**
      * Get the number of fields in this record that are not ignored.
+     * 
      * @return The number of fields in this record that are not ignored.
      */
     public int getUnignoredFieldCount() {
@@ -105,7 +113,9 @@ public class RecordMetaData {
     }
 
     /**
-     * Get a collection of all the field names (excluding ignored fields) in this record.
+     * Get a collection of all the field names (excluding ignored fields) in
+     * this record.
+     * 
      * @return Acollection of all the field names in this record.
      */
     public List<String> getFieldNames() {
@@ -113,21 +123,21 @@ public class RecordMetaData {
     }
 
     /**
-     * Assert that the supplied field name is one of the field names associated with this
-     * record.
-     *
+     * Assert that the supplied field name is one of the field names associated
+     * with this record.
+     * 
      * @param fieldName The field name to test.
      */
     public void assertValidFieldName(String fieldName) {
-        if(!fieldNames.contains(fieldName)) {
-            throw new SmooksConfigurationException("Invalid field name '" + fieldName + "'.  Valid names: " + fieldNames + ".");
+        if (!fieldNames.contains(fieldName)) {
+            throw new SmooksConfigurationException("Invalid field name '" + fieldName + "'.  Valid names: "
+                    + fieldNames + ".");
         }
     }
 
-
     private void countIgnoredFields() {
-        for(FieldMetaData field : fields) {
-            if(field.ignore()) {
+        for (FieldMetaData field : fields) {
+            if (field.ignore()) {
                 ignoredFieldCount++;
             } else {
                 unignoredFieldCount++;

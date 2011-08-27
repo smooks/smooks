@@ -1,4 +1,4 @@
-/*
+    /*
  * Milyn - Copyright (C) 2006 - 2010
  *
  * This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ import org.milyn.function.StringFunctionExecutor;
 
 /**
  * Flat file record field metadata.
- *
+ * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class FieldMetaData {
@@ -32,13 +32,14 @@ public class FieldMetaData {
     private String name;
     private boolean ignore;
     private int ignoreCount;
+
     private StringFunctionExecutor stringFunctionExecutor;
 
     public FieldMetaData(String name) {
         AssertArgument.isNotNullAndNotEmpty(name, "name");
         this.name = name;
         ignore = name.startsWith(IGNORE_FIELD);
-        if(ignore) {
+        if (ignore) {
             ignoreCount = parseIgnoreFieldDirective(name);
         }
     }
@@ -67,8 +68,7 @@ public class FieldMetaData {
     @Override
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this);
-        builder.append("name", name)
-               .append("stringFunctionExecutor", stringFunctionExecutor);
+        builder.append("name", name).append("stringFunctionExecutor", stringFunctionExecutor);
         return builder.toString();
     }
 
@@ -83,6 +83,5 @@ public class FieldMetaData {
             toSkip = Integer.parseInt(op);
         }
         return toSkip;
-
     }
 }
