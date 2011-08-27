@@ -12,25 +12,26 @@
 
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
-*/
+ */
 package org.milyn.csv;
 
-import org.milyn.ReaderConfigurator;
-import org.milyn.GenericReaderConfigurator;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.flatfile.FlatFileReader;
-
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
+
+import org.milyn.GenericReaderConfigurator;
+import org.milyn.ReaderConfigurator;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.flatfile.FlatFileReader;
 
 /**
  * CSV Reader configurator.
  * <p/>
- * Supports programmatic {@link CSVReader} configuration on a {@link org.milyn.Smooks#setReaderConfig(org.milyn.ReaderConfigurator) Smooks} instance.
- *
+ * Supports programmatic {@link CSVReader} configuration on a
+ * {@link org.milyn.Smooks#setReaderConfig(org.milyn.ReaderConfigurator) Smooks}
+ * instance.
+ * 
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  * @deprecated Use the {@link CSVRecordParserConfigurator}.
  */
@@ -124,15 +125,16 @@ public class CSVReaderConfigurator implements ReaderConfigurator {
         configurator.getParameters().setProperty("indent", Boolean.toString(indent));
         configurator.getParameters().setProperty("strict", Boolean.toString(strict));
 
-        if(binding != null) {
+        if (binding != null) {
             configurator.getParameters().setProperty("bindBeanId", binding.getBeanId());
             configurator.getParameters().setProperty("bindBeanClass", binding.getBeanClass().getName());
             configurator.getParameters().setProperty("bindingType", binding.getBindingType().toString());
-            if(binding.getBindingType() == CSVBindingType.MAP) {
-                if(binding.getKeyField() == null) {
-                    throw new SmooksConfigurationException("CSV 'MAP' Binding must specify a 'keyField' property on the binding configuration.");
+            if (binding.getBindingType() == CSVBindingType.MAP) {
+                if (binding.getKeyField() == null) {
+                    throw new SmooksConfigurationException(
+                            "CSV 'MAP' Binding must specify a 'keyField' property on the binding configuration.");
                 }
-                configurator.getParameters().setProperty("bindMapKeyField", binding.getKeyField());                
+                configurator.getParameters().setProperty("bindMapKeyField", binding.getKeyField());
             }
         }
 

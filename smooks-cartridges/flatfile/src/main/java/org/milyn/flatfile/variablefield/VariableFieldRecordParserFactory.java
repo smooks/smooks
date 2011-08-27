@@ -16,6 +16,17 @@
 
 package org.milyn.flatfile.variablefield;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
@@ -41,27 +52,21 @@ import org.milyn.javabean.context.BeanContext;
 import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Abstract VariableFieldRecordParserFactory.
+ * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public abstract class VariableFieldRecordParserFactory implements RecordParserFactory, VisitorAppender {
 
     @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
     private String fields;
-    private RecordMetaData recordMetaData; // Initialized if there's only one record type defined
-    private Map<String, RecordMetaData> recordMetaDataMap; // Initialized if there's multiple record types defined
+    private RecordMetaData recordMetaData; // Initialized if there's only one
+                                           // record type defined
+    private Map<String, RecordMetaData> recordMetaDataMap; // Initialized if
+                                                           // there's multiple
+                                                           // record types
+                                                           // defined
 
     @ConfigParam(use = ConfigParam.Use.OPTIONAL)
     private String recordDelimiter;
@@ -85,7 +90,7 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     private String bindMapKeyField;
     private static final String RECORD_BEAN = "recordBean";
 
-    @ConfigParam(defaultVal="true")
+    @ConfigParam(defaultVal = "true")
     private boolean strict;
 
     private String overFlowFromLastRecord = "";
@@ -102,8 +107,9 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     /**
      * Is this a parser factory for a multi-record type data stream.
+     * 
      * @return True if this is a parser factory for a multi-record type data
-     * stream, otherwise false.
+     *         stream, otherwise false.
      */
     public boolean isMultiTypeRecordSet() {
         return (recordMetaData == null && recordMetaDataMap != null);
@@ -111,39 +117,44 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     /**
      * Get the record metadata for the variable field record parser.
+     * 
      * @return The record metadata.
      * @see #isMultiTypeRecordSet()
      */
     public RecordMetaData getRecordMetaData() {
-        if(isMultiTypeRecordSet()) {
-            throw new IllegalStateException("Invalid call to getRecordMetaData().  This is a multi-type record set.  Must call getRecordMetaData(String recordTypeName).");
+        if (isMultiTypeRecordSet()) {
+            throw new IllegalStateException(
+                    "Invalid call to getRecordMetaData().  This is a multi-type record set.  Must call getRecordMetaData(String recordTypeName).");
         }
         return recordMetaData;
     }
 
     /**
      * Get the record metadata for the variable field record parser.
+     * 
      * @param recordTypeName The name of the record type.
      * @return The record metadata.
      * @see #isMultiTypeRecordSet()
      */
     public RecordMetaData getRecordMetaData(String recordTypeName) {
         AssertArgument.isNotNullAndNotEmpty(recordTypeName, "recordTypeName");
-        if(!isMultiTypeRecordSet()) {
-            throw new IllegalStateException("Invalid call to getRecordMetaData(String recordTypeName).  This is not a multi-type record set.  Must call getRecordMetaData().");
+        if (!isMultiTypeRecordSet()) {
+            throw new IllegalStateException(
+                    "Invalid call to getRecordMetaData(String recordTypeName).  This is not a multi-type record set.  Must call getRecordMetaData().");
         }
         return recordMetaDataMap.get(recordTypeName);
     }
 
     /**
      * Get the record metadata for the record.
+     * 
      * @param record The record.
      * @return The record metadata.
      * @see #isMultiTypeRecordSet()
      */
     public RecordMetaData getRecordMetaData(String[] record) {
         AssertArgument.isNotNullAndNotEmpty(record, "record");
-        if(!isMultiTypeRecordSet()) {
+        if (!isMultiTypeRecordSet()) {
             return recordMetaData;
         } else {
             return recordMetaDataMap.get(record[0].trim());
@@ -152,17 +163,18 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     /**
      * Get the record metadata for the record.
+     * 
      * @param record The record.
      * @return The record metadata.
      * @see #isMultiTypeRecordSet()
      */
     public RecordMetaData getRecordMetaData(Collection<String> record) {
         AssertArgument.isNotNullAndNotEmpty(record, "record");
-        if(!isMultiTypeRecordSet()) {
+        if (!isMultiTypeRecordSet()) {
             return recordMetaData;
         } else {
             RecordMetaData vrecordMetaData = recordMetaDataMap.get(record.iterator().next().trim());
-            if(vrecordMetaData == null) {
+            if (vrecordMetaData == null) {
                 vrecordMetaData = unknownVRecordType;
             }
             return vrecordMetaData;
@@ -171,6 +183,7 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     /**
      * Get the default record element name.
+     * 
      * @return The default record element name.
      */
     public String getRecordElementName() {
@@ -179,6 +192,7 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     /**
      * Is this parser instance strict.
+     * 
      * @return True if the parser is strict, otherwise false.
      */
     public boolean strict() {
@@ -186,30 +200,34 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     }
 
     public void addVisitors(VisitorConfigMap visitorMap) {
-        if(bindBeanId != null && bindBeanClass != null) {
+        if (bindBeanId != null && bindBeanClass != null) {
             Bean bean;
 
-            if(isMultiTypeRecordSet()) {
-                throw new SmooksConfigurationException("Unsupported reader based bean binding config for a multi record type record set.  " +
-                        "Only supported for single record type record sets.  Use <jb:bean> configs for multi binding record type record sets.");
+            if (isMultiTypeRecordSet()) {
+                throw new SmooksConfigurationException(
+                        "Unsupported reader based bean binding config for a multi record type record set.  "
+                                + "Only supported for single record type record sets.  Use <jb:bean> configs for multi binding record type record sets.");
             }
 
-            if(bindingType == BindingType.LIST) {
-                Bean listBean = new Bean(ArrayList.class, bindBeanId, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR);
+            if (bindingType == BindingType.LIST) {
+                Bean listBean = new Bean(ArrayList.class, bindBeanId,
+                        SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR);
 
                 bean = listBean.newBean(bindBeanClass, recordElementName);
                 listBean.bindTo(bean);
                 addFieldBindings(bean);
 
                 listBean.addVisitors(visitorMap);
-            } else if(bindingType == BindingType.MAP) {
-                if(bindMapKeyField == null) {
-                    throw new SmooksConfigurationException("'MAP' Binding must specify a 'keyField' property on the binding configuration.");
+            } else if (bindingType == BindingType.MAP) {
+                if (bindMapKeyField == null) {
+                    throw new SmooksConfigurationException(
+                            "'MAP' Binding must specify a 'keyField' property on the binding configuration.");
                 }
 
                 recordMetaData.assertValidFieldName(bindMapKeyField);
 
-                Bean mapBean = new Bean(LinkedHashMap.class, bindBeanId, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR);
+                Bean mapBean = new Bean(LinkedHashMap.class, bindBeanId,
+                        SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR);
                 Bean recordBean = new Bean(bindBeanClass, RECORD_BEAN, recordElementName);
                 MapBindingWiringVisitor wiringVisitor = new MapBindingWiringVisitor(bindMapKeyField, bindBeanId);
 
@@ -229,13 +247,14 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     @Initialize
     public final void fixupRecordDelimiter() {
-        if(recordDelimiter == null) {
+        if (recordDelimiter == null) {
             return;
         }
 
         // Fixup the record delimiter...
-        if(recordDelimiter.startsWith("regex:")) {
-            recordDelimiterPattern = Pattern.compile(recordDelimiter.substring("regex:".length()), (Pattern.MULTILINE | Pattern.DOTALL));
+        if (recordDelimiter.startsWith("regex:")) {
+            recordDelimiterPattern = Pattern.compile(recordDelimiter.substring("regex:".length()),
+                    (Pattern.MULTILINE | Pattern.DOTALL));
         } else {
             recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\n", '\n');
             recordDelimiter = removeSpecialCharEncodeString(recordDelimiter, "\\r", '\r');
@@ -246,34 +265,38 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     @Initialize
     public final void buildRecordMetaData() {
-        if(fields == null) {
+        if (fields == null) {
             recordMetaData = new RecordMetaData(recordElementName, new ArrayList<FieldMetaData>(), true);
-        } else{
+        } else {
             String[] recordDefs = fields.split("\\|");
 
-            for(int i = 0; i < recordDefs.length; i++) {
+            for (int i = 0; i < recordDefs.length; i++) {
                 recordDefs[i] = recordDefs[i].trim();
             }
 
-            if(recordDefs.length == 1) {
+            if (recordDefs.length == 1) {
                 recordDefs[0] = recordDefs[0].trim();
-                if(SINGLE_RECORD_PATTERN.matcher(recordDefs[0]).matches()) {
+                if (SINGLE_RECORD_PATTERN.matcher(recordDefs[0]).matches()) {
                     recordMetaData = buildRecordMetaData(recordElementName, recordDefs[0].split(","));
                     return;
                 }
 
                 recordMetaData = buildMultiRecordMetaData(recordDefs[0]);
-                if(recordMetaData == null) {
-                    throw new SmooksConfigurationException("Unsupported fields definition '" + fields + "'.  Must match either the single ('" + SINGLE_RECORD_PATTERN.pattern() + "') or multi ('" + MULTI_RECORD_PATTERN.pattern() + "') record pattern.");
+                if (recordMetaData == null) {
+                    throw new SmooksConfigurationException("Unsupported fields definition '" + fields
+                            + "'.  Must match either the single ('" + SINGLE_RECORD_PATTERN.pattern()
+                            + "') or multi ('" + MULTI_RECORD_PATTERN.pattern() + "') record pattern.");
                 }
             } else {
-                for(String recordDef : recordDefs) {
+                for (String recordDef : recordDefs) {
                     recordDef = recordDef.trim();
                     RecordMetaData multiRecordMetaData = buildMultiRecordMetaData(recordDef);
-                    if(multiRecordMetaData == null) {
-                        throw new SmooksConfigurationException("Unsupported fields definition '" + recordDef + "'.  Must match the multi record pattern ('" + MULTI_RECORD_PATTERN.pattern() + "') .");
+                    if (multiRecordMetaData == null) {
+                        throw new SmooksConfigurationException("Unsupported fields definition '" + recordDef
+                                + "'.  Must match the multi record pattern ('" + MULTI_RECORD_PATTERN.pattern()
+                                + "') .");
                     }
-                    if(recordMetaDataMap == null) {
+                    if (recordMetaDataMap == null) {
                         recordMetaDataMap = new HashMap<String, RecordMetaData>();
                     }
                     recordMetaDataMap.put(multiRecordMetaData.getName(), multiRecordMetaData);
@@ -284,6 +307,7 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
 
     /**
      * Read a record from the specified reader (up to the next recordDelimiter).
+     * 
      * @param recordReader The record {@link Reader}.
      * @param recordBuffer The record buffer into which the record is read.
      * @throws IOException Error reading record.
@@ -293,23 +317,23 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
         recordBuffer.append(overFlowFromLastRecord);
 
         RecordBoundaryLocator boundaryLocator;
-        if(recordDelimiterPattern != null) {
+        if (recordDelimiterPattern != null) {
             boundaryLocator = new RegexRecordBoundaryLocator(recordBuffer, recordNumber);
         } else {
             boundaryLocator = new SimpleRecordBoundaryLocator(recordBuffer, recordNumber);
         }
 
         int c;
-        while((c = recordReader.read()) != -1) {
-            if(recordBuffer.length() == 0) {
-                if(c == '\n' || c == '\r') {
+        while ((c = recordReader.read()) != -1) {
+            if (recordBuffer.length() == 0) {
+                if (c == '\n' || c == '\r') {
                     // A leading CR or LF... ignore...
                     continue;
                 }
             }
 
-            recordBuffer.append((char)c);
-            if(boundaryLocator.atEndOfRecord()) {
+            recordBuffer.append((char) c);
+            if (boundaryLocator.atEndOfRecord()) {
                 break;
             }
         }
@@ -320,7 +344,7 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     private RecordMetaData buildMultiRecordMetaData(String recordDef) {
         Matcher matcher = MULTI_RECORD_PATTERN.matcher(recordDef);
 
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             return buildRecordMetaData(matcher.group(1), matcher.group(2).split(","));
         }
 
@@ -328,22 +352,22 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
     }
 
     private RecordMetaData buildRecordMetaData(String recordName, String[] fieldNames) {
-		// Parse input fields to extract names and lengths
+        // Parse input fields to extract names and lengths
         List<FieldMetaData> fieldsMetaData = new ArrayList<FieldMetaData>();
 
-    	for(int i = 0; i < fieldNames.length; i++) {
+        for (int i = 0; i < fieldNames.length; i++) {
             String fieldSpec = fieldNames[i].trim();
 
-            if(fieldSpec.equals("*")) {
+            if (fieldSpec.equals("*")) {
                 return new RecordMetaData(recordName, fieldsMetaData, true);
             } else {
                 FieldMetaData fieldMetaData;
-                if(fieldSpec.indexOf('?') >= 0) {
+                if (fieldSpec.indexOf('?') >= 0) {
                     String fieldName = fieldSpec.substring(0, fieldSpec.indexOf('?'));
-                    String functionDefinition = fieldSpec.substring(fieldSpec.indexOf('?')+1);
+                    String functionDefinition = fieldSpec.substring(fieldSpec.indexOf('?') + 1);
 
                     fieldMetaData = new FieldMetaData(fieldName);
-                    if(functionDefinition.length() != 0) {
+                    if (functionDefinition.length() != 0) {
                         fieldMetaData.setStringFunctionExecutor(StringFunctionExecutor.getInstance(functionDefinition));
                     }
                 } else {
@@ -351,29 +375,40 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
                 }
 
                 fieldsMetaData.add(fieldMetaData);
-                if(fieldMetaData.ignore() && fieldMetaData.getIgnoreCount() > 1 && fieldMetaData.getIgnoreCount() < Integer.MAX_VALUE) {
-                    // pad out with an FieldMetaData instance for each additionally ignored
+                if (fieldMetaData.ignore() && fieldMetaData.getIgnoreCount() > 1
+                        && fieldMetaData.getIgnoreCount() < Integer.MAX_VALUE) {
+                    // pad out with an FieldMetaData instance for each
+                    // additionally ignored
                     // field in the record...
-                    for(int ii = 0; ii < fieldMetaData.getIgnoreCount() - 1; ii++) {
+                    for (int ii = 0; ii < fieldMetaData.getIgnoreCount() - 1; ii++) {
                         fieldsMetaData.add(new FieldMetaData(FieldMetaData.IGNORE_FIELD));
                     }
                 }
+                if (fieldMetaData.useHeader() && fieldMetaData.getUseHeaderCount() > 1
+                        && fieldMetaData.getUseHeaderCount() < Integer.MAX_VALUE) {
+                    // pad out with an FieldMetaData instance for each
+                    // additionally ignored
+                    // field in the record...
+                    for (int ii = 0; ii < fieldMetaData.getUseHeaderCount() - 1; ii++) {
+                        fieldsMetaData.add(new FieldMetaData(FieldMetaData.USE_HEADER));
+                    }
+                }
             }
-    	}
+        }
 
         return new RecordMetaData(recordName, fieldsMetaData);
-	}
+    }
 
     private void addFieldBindings(Bean bean) {
-        for(FieldMetaData fieldMetaData : recordMetaData.getFields()) {
-            if(!fieldMetaData.ignore()) {
+        for (FieldMetaData fieldMetaData : recordMetaData.getFields()) {
+            if (!fieldMetaData.ignore()) {
                 bean.bindTo(fieldMetaData.getName(), recordElementName + "/" + fieldMetaData.getName());
             }
         }
     }
 
     private static String removeSpecialCharEncodeString(String string, String encodedString, char replaceChar) {
-        return string.replace(encodedString, new String(new char[] {replaceChar}));
+        return string.replace(encodedString, new String(new char[] { replaceChar }));
     }
 
     private class MapBindingWiringVisitor implements DOMVisitAfter, SAXVisitAfter, Consumer {
@@ -390,25 +425,26 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
             wireObject(executionContext);
         }
 
-        public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException,
+                IOException {
             wireObject(executionContext);
         }
 
-
-		private void wireObject(ExecutionContext executionContext) {
+        private void wireObject(ExecutionContext executionContext) {
             BeanContext beanContext = executionContext.getBeanContext();
             Map<String, Object> beanMap = beanContext.getBeanMap();
             Object key = keyExtractor.getValue(beanMap);
 
-            @SuppressWarnings("unchecked") //TODO: Optimize to use the BeanId object
-            Map<Object, Object> map =  (Map<Object, Object>) beanContext.getBean(mapBindingKey);
+            @SuppressWarnings("unchecked")
+            // TODO: Optimize to use the BeanId object
+            Map<Object, Object> map = (Map<Object, Object>) beanContext.getBean(mapBindingKey);
             Object record = beanContext.getBean(RECORD_BEAN);
 
             map.put(key, record);
         }
 
         public boolean consumes(Object object) {
-            if(keyExtractor.getExpression().indexOf(object.toString()) != -1) {
+            if (keyExtractor.getExpression().indexOf(object.toString()) != -1) {
                 return true;
             }
 
@@ -427,29 +463,29 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
             int builderLen = recordBuffer.length();
             char lastChar = recordBuffer.charAt(builderLen - 1);
 
-            if(recordDelimiter != null) {
+            if (recordDelimiter != null) {
                 int stringLen = recordDelimiter.length();
 
-                if(builderLen < stringLen) {
+                if (builderLen < stringLen) {
                     return false;
                 }
 
                 int stringIndx = 0;
-                for(int i = (builderLen - stringLen); i < builderLen; i++) {
-                    if(recordBuffer.charAt(i) != recordDelimiter.charAt(stringIndx)) {
+                for (int i = (builderLen - stringLen); i < builderLen; i++) {
+                    if (recordBuffer.charAt(i) != recordDelimiter.charAt(stringIndx)) {
                         return false;
                     }
                     stringIndx++;
                 }
 
-                if(!keepDelimiter) {
+                if (!keepDelimiter) {
                     // Strip off the delimiter from the end before returning...
                     recordBuffer.setLength(builderLen - stringLen);
                 }
 
                 return true;
-            } else if (lastChar ==  '\r' || lastChar ==  '\n'){
-                if(!keepDelimiter) {
+            } else if (lastChar == '\r' || lastChar == '\n') {
+                if (!keepDelimiter) {
                     // Strip off the delimiter from the end before returning...
                     recordBuffer.setLength(builderLen - 1);
                 }
@@ -480,17 +516,23 @@ public abstract class VariableFieldRecordParserFactory implements RecordParserFa
         boolean atEndOfRecord() {
             Matcher matcher = recordDelimiterPattern.matcher(recordBuffer);
 
-            if(matcher.find(startFindIndex)) {
-                if(recordNumber == 1 && startFindIndex == 0) {
-                    // Need to find the second instance of the pattern in the first record buffer
-                    // The second instance marks the start of the second record, which will be captured
-                    // as overflow from this record read and will be auto added to the read of the next record.
+            if (matcher.find(startFindIndex)) {
+                if (recordNumber == 1 && startFindIndex == 0) {
+                    // Need to find the second instance of the pattern in the
+                    // first record buffer
+                    // The second instance marks the start of the second record,
+                    // which will be captured
+                    // as overflow from this record read and will be auto added
+                    // to the read of the next record.
                     startFindIndex = matcher.end();
                     return false;
                 } else {
-                    // For records following the first record, we already have the start so we just need to find
-                    // the first instance of the pattern, which marks the start of the next record, which again
-                    // will be captured as overflow from this record read and will be auto added to the read of
+                    // For records following the first record, we already have
+                    // the start so we just need to find
+                    // the first instance of the pattern, which marks the start
+                    // of the next record, which again
+                    // will be captured as overflow from this record read and
+                    // will be auto added to the read of
                     // the next record.
                     endRecordIndex = matcher.start();
                     overFlow = recordBuffer.substring(endRecordIndex);

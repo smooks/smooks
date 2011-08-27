@@ -22,7 +22,7 @@ import org.milyn.flatfile.variablefield.VariableFieldRecordParserFactory;
 
 /**
  * CSV Record Parser factory.
- *
+ * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class CSVRecordParserFactory extends VariableFieldRecordParserFactory {
@@ -35,6 +35,9 @@ public class CSVRecordParserFactory extends VariableFieldRecordParserFactory {
 
     @ConfigParam(name = "skip-line-count", defaultVal = "0")
     private int skipLines;
+
+    @ConfigParam(name = "head-line-number", defaultVal = "0")
+    private int headLine;
 
     @ConfigParam(defaultVal = "false")
     private boolean validateHeader;
@@ -52,7 +55,19 @@ public class CSVRecordParserFactory extends VariableFieldRecordParserFactory {
     }
 
     public int getSkipLines() {
-        return skipLines;
+        if (skipLines < 0) {
+            return 0;
+        } else {
+            return skipLines;
+        }
+    }
+
+    public int getHeadLine() {
+        if (headLine < 1) {
+            return getSkipLines() + 1;
+        } else {
+            return headLine;
+        }
     }
 
     public boolean validateHeader() {
