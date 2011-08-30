@@ -172,7 +172,7 @@
 
     <profiles>
         <profile>
-            <id>deploy</id>
+            <id>sign</id>
             <build>
                 <plugins>
                     <plugin>
