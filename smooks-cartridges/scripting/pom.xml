@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.milyn</groupId>
 		<artifactId>smooks-cartridge-base-pom</artifactId>
-		<version>1.4.1</version> <!-- base pom version - do not remove this comment -->
+		<version>1.4.2</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Cartridge - Scripting</name>
 	<groupId>org.milyn</groupId>
