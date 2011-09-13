@@ -84,11 +84,26 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         test_nodeModel_3(StreamFilterType.DOM);
         test_nodeModel_3(StreamFilterType.SAX);
     }
+
+    public void test_nodeModel_3_with_namespace() throws IOException, SAXException {
+        test_nodeModel_3_with_namespace(StreamFilterType.DOM);
+        test_nodeModel_3_with_namespace(StreamFilterType.SAX);
+    }
+
     public void test_nodeModel_3(StreamFilterType filterType) throws IOException, SAXException {
         Smooks smooks = new Smooks("/org/milyn/templating/freemarker/test-configs-ext-07.cdrl");
 
         smooks.setFilterSettings(new FilterSettings(filterType));
         test_ftl(smooks, "<a><b javabind='javaval'><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>", "'cvalue1''cvalue2''cvalue3' javaVal=javaval");
+    }
+
+    public void test_nodeModel_3_with_namespace(StreamFilterType filterType) throws IOException, SAXException {
+        // See docs: http://freemarker.org/docs/xgui_imperative_learn.html#autoid_73
+
+        Smooks smooks = new Smooks("/org/milyn/templating/freemarker/test-configs-ext-08.cdrl");
+
+        smooks.setFilterSettings(new FilterSettings(filterType));
+        test_ftl(smooks, "<a xmlns=\"http://acme.com\"><b javabind='javaval'><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>", "'cvalue1''cvalue2''cvalue3' javaVal=javaval");
     }
 
     public void testFreeMarkerTrans_02_DOM() throws SAXException, IOException {
