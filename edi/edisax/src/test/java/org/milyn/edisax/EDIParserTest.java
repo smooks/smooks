@@ -73,6 +73,10 @@ public class EDIParserTest extends AbstractEDIParserTestCase {
 		assertEquals(1, segment.getFields().size());
 	}
 	
+	public void test_escape_character() throws IOException {
+		test("test_escape_character");
+	}
+	
 	public void test_mapping_01() throws IOException {
 		test("test01");
 	}
