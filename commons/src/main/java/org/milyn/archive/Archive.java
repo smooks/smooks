@@ -84,8 +84,8 @@ public class Archive {
     public Archive(String archiveName, ZipInputStream archiveStream) throws IOException {
         AssertArgument.isNotNullAndNotEmpty(archiveName, "archiveName");
         this.archiveName = archiveName;
-        addEntries(archiveStream);
         createTempDir();
+        addEntries(archiveStream);
     }
 
     /**
