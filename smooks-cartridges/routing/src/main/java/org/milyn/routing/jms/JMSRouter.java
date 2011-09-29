@@ -441,7 +441,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
 			msgProducer.setPriority( jmsProperties.getPriority() );
 
 			final int deliveryModeInt = "non-persistent".equals( jmsProperties.getDeliveryMode() ) ?
-					DeliveryMode.PERSISTENT : DeliveryMode.NON_PERSISTENT;
+					DeliveryMode.NON_PERSISTENT : DeliveryMode.PERSISTENT;
 			msgProducer.setDeliveryMode( deliveryModeInt );
 		}
 		catch (JMSException e)
