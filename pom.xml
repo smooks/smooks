@@ -23,7 +23,7 @@
         <xerces.version>2.9.1</xerces.version>
         <xalan.version>2.7.1</xalan.version>
         <xml_apis.version>1.3.02</xml_apis.version>
-        <xstream.version>1.2.2</xstream.version>
+        <xstream.version>1.4.1</xstream.version>
         <commons_lang.version>2.4</commons_lang.version>
         <nekohtml.version>0.9.5</nekohtml.version>
         <dtdparser.version>1.21</dtdparser.version>
