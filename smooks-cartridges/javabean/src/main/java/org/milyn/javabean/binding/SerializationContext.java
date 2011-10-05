@@ -33,9 +33,10 @@ public class SerializationContext {
     private Map<String, Object> contextObjects = new LinkedHashMap<String, Object>();
     private int currentDepth;
 
-    public SerializationContext(Object rootObject) {
+    public SerializationContext(Object rootObject, String rootObjectBeanId) {
         AssertArgument.isNotNull(rootObject, "rootObject");
         this.rootObject = rootObject;
+        addObject(rootObjectBeanId, rootObject);
     }
 
     public int getCurrentDepth() {

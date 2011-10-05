@@ -1,0 +1,57 @@
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2011
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<ord:order xmlns:ord="http://order" xmlns:ordI="http://orderItem" ord:date="2006-06-23">
+    <ord:header>
+        <ord:customer ord:number="123123" ord:name="Joe &amp; Ray"/>
+    </ord:header>
+    <ord:order-items>
+        <ordI:order-item>
+            <ordI:product>111</ordI:product>
+            <ordI:quantity>2</ordI:quantity>
+            <ordI:price>8.9</ordI:price>
+            <ordI:item-details>
+                <ordI:useby>2006-06-30</ordI:useby>
+                <ordI:stock>8</ordI:stock>
+            </ordI:item-details>
+            <ord:moneys>
+                <ord:money>
+                    <ord:cost>1000</ord:cost>
+                    <ord:currency>
+                        <ord:code>EUR</ord:code>
+                    </ord:currency>
+                </ord:money>
+            </ord:moneys>
+        </ordI:order-item>
+        <ordI:order-item>
+            <ordI:product>222</ordI:product>
+            <ordI:quantity>7</ordI:quantity>
+            <ordI:price>5.2</ordI:price>
+            <ordI:item-details>
+                <ordI:useby>2006-07-05</ordI:useby>
+                <ordI:stock>9</ordI:stock>
+            </ordI:item-details>
+            <ord:moneys>
+                <ord:money>
+                    <ord:cost>8900</ord:cost>
+                    <ord:currency>
+                        <ord:code>USD</ord:code>
+                    </ord:currency>
+                </ord:money>
+            </ord:moneys>
+        </ordI:order-item>
+    </ord:order-items>
+</ord:order>

@@ -66,7 +66,7 @@ public class XMLBinding extends AbstractBinding {
     private ModelSet beanModelSet;
     private List<XMLElementSerializationNode> graphs;
     private Set<QName> rootElementNames = new HashSet<QName>();
-    private Map<Class, XMLElementSerializationNode> serializers = new LinkedHashMap<Class, XMLElementSerializationNode>();
+    private Map<Class, RootNodeSerializer> serializers = new LinkedHashMap<Class, RootNodeSerializer>();
     private boolean omitXMLDeclaration = false;
 
     /**
@@ -168,16 +168,17 @@ public class XMLBinding extends AbstractBinding {
         AssertArgument.isNotNull(object, "object");
         assertInitialized();
 
-        XMLElementSerializationNode serializer = serializers.get(object.getClass());
-        if(serializer == null) {
-            throw new BeanSerializationException("No serializer for Java type '" + object.getClass().getName() + "'.");
+        Class<? extends Object> objectClass = object.getClass();
+        RootNodeSerializer rootNodeSerializer = serializers.get(objectClass);
+        if(rootNodeSerializer == null) {
+            throw new BeanSerializationException("No serializer for Java type '" + objectClass.getName() + "'.");
         }
-
         if(!omitXMLDeclaration) {
             outputWriter.write("<?xml version=\"1.0\"?>\n");
         }
 
-        serializer.serialize(outputWriter, new SerializationContext(object));
+        XMLElementSerializationNode serializer = rootNodeSerializer.serializer;
+        serializer.serialize(outputWriter, new SerializationContext(object, rootNodeSerializer.beanId));
         outputWriter.flush();
 
         return outputWriter;
@@ -210,14 +211,14 @@ public class XMLBinding extends AbstractBinding {
     }
 
     private void mergeBeanModelsIntoXMLGraphs() {
-        Set<Map.Entry<Class, XMLElementSerializationNode>> serializerSet = serializers.entrySet();
+        Set<Map.Entry<Class, RootNodeSerializer>> serializerSet = serializers.entrySet();
 
-        for(Map.Entry<Class, XMLElementSerializationNode> serializer : serializerSet) {
-            Bean model = beanModelSet.getModel(serializer.getKey());
+        for(Map.Entry<Class, RootNodeSerializer> rootNodeSerializer : serializerSet) {
+            Bean model = beanModelSet.getModel(rootNodeSerializer.getKey());
             if(model == null) {
-                throw new IllegalStateException("Unexpected error.  No Bean model for type '" + serializer.getKey().getName() + "'.");
+                throw new IllegalStateException("Unexpected error.  No Bean model for type '" + rootNodeSerializer.getKey().getName() + "'.");
             }
-            merge(serializer.getValue(), model);
+            merge(rootNodeSerializer.getValue().serializer, model);
         }
     }
 
@@ -274,7 +275,7 @@ public class XMLBinding extends AbstractBinding {
                 Class<?> beanClass = creator.getBeanRuntimeInfo().getPopulateType();
                 if(!Collection.class.isAssignableFrom(beanClass)) {
                     // Ignore Collections... don't allow them to be serialized.... not enough type info.
-                    serializers.put(beanClass, createNode);
+                    serializers.put(beanClass, new RootNodeSerializer(creator.getBeanId(), createNode));
                     addNamespaceAttributes(createNode);
                 }
             }
@@ -360,6 +361,16 @@ public class XMLBinding extends AbstractBinding {
                 throw new SmooksConfigurationException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
             }
             rootElementNames.add(config.getSelectorSteps()[0].getTargetElement());
+        }
+    }
+
+    private class RootNodeSerializer {
+        private String beanId;
+        private XMLElementSerializationNode serializer;
+
+        private RootNodeSerializer(String beanId, XMLElementSerializationNode serializer) {
+            this.beanId = beanId;
+            this.serializer = serializer;
         }
     }
 }

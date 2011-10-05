@@ -180,30 +180,33 @@ public class AbstractBinding {
     }
 
     private GetterGraph addToContextualGetter(GetterGraph contextualGetter, Bean bean) {
-        while(bean != null) {
-            Bean parentBean = bean.getWiredInto();
+        Bean theBean = bean;
+
+        while(theBean != null) {
+            Bean parentBean = theBean.getWiredInto();
 
             if(parentBean != null) {
                 if(parentBean.isCollection()){
-                    // Contextual selectors stop once they hit a parent Collection bean...
-                    if(parentBean.getWiredInto() != null) {
+                    // Contextual selectors stop once they hit a parent Collection theBean...
+                    Bean wiredInto = parentBean.getWiredInto();
+                    if(wiredInto != null) {
                         // Use the collection item's beanId as the context object name
                         // because collection items don't have property names...
-                        contextualGetter.setContextObjectName(bean.getBeanId());
+                        contextualGetter.setContextObjectName(theBean.getBeanId());
                     }
                     break;
                 }
 
-                WiredBinding binding = parentBean.getWiredBinding(bean);
+                WiredBinding binding = parentBean.getWiredBinding(theBean);
 
                 if(binding == null) {
-                    throw new IllegalStateException("Failed to locate a wiring of bean '" + bean + "' on bean '" + parentBean + "'.");
+                    throw new IllegalStateException("Failed to locate a wiring of theBean '" + theBean + "' on theBean '" + parentBean + "'.");
                 }
 
                 contextualGetter.add(parentBean, binding.getProperty());
             }
 
-            bean = parentBean;
+            theBean = parentBean;
         }
 
         return contextualGetter;

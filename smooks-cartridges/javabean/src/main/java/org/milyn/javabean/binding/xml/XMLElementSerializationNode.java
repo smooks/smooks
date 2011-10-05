@@ -18,6 +18,7 @@ package org.milyn.javabean.binding.xml;
 
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.javabean.binding.SerializationContext;
+import org.milyn.javabean.binding.model.get.Getter;
 import org.milyn.javabean.binding.model.get.GetterGraph;
 import org.milyn.javabean.gen.model.ClassConfig;
 import org.milyn.xml.XmlUtil;
@@ -103,13 +104,20 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
         for(XMLElementSerializationNode element : elements) {
             if(element.isCollection) {
                 NodeGetter collectionNodeGetter = element.getCollectionGetter();
-                Object collectionObject = context.getValue(collectionNodeGetter.getter);
+                Getter collectionGetter = collectionNodeGetter.getter;
+                Object collectionObject;
                 List<?> collection = null;
 
+                if (collectionGetter instanceof GetterGraph) {
+                    collectionObject = context.getValue(((GetterGraph) collectionGetter).getContextObjectName(), collectionGetter);
+                } else {
+                    collectionObject = context.getValue(collectionGetter);
+                }
+
                 if(collectionObject instanceof List) {
-                    collection = (List<?>) context.getValue(collectionNodeGetter.getter);
+                    collection = (List<?>) collectionObject;
                 } else if(collectionObject instanceof Object[]) {
-                    collection = Arrays.asList((Object[]) context.getValue(collectionNodeGetter.getter));
+                    collection = Arrays.asList((Object[]) collectionObject);
                 }
 
                 if(collection != null && !collection.isEmpty()) {

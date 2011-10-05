@@ -39,8 +39,8 @@ public abstract class XMLSerializationNode {
     protected DataEncoder encoder;
     protected String defaultVal;
     protected boolean isCollection = false;
-    private NodeGetter nodeGetter;
-    private NodeGetter collectionGetter;
+    protected NodeGetter nodeGetter;
+    protected NodeGetter collectionGetter;
 
     protected XMLSerializationNode(QName qName) {
         this.qName = qName;

@@ -66,6 +66,11 @@ public class XMLBindingTest extends TestCase {
 
     }
 
+    public void test_MILYN629() throws IOException, SAXException {
+        test_pre_created_Smooks("config6");
+        test_post_created_Smooks("config6");
+    }
+
     public void test_add_fails_after_smooks_constructed() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config1/order-binding-config.xml"));
         XMLBinding xmlBinding = new XMLBinding(smooks);
