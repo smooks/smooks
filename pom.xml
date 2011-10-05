@@ -226,7 +226,6 @@
                         <link>http://www.milyn.org/javadoc/v${project.version}/commons</link>
                         <link>http://www.milyn.org/javadoc/v${project.version}/tinak</link>
                         <link>http://www.milyn.org/javadoc/v${project.version}/smooks</link>
-                        <link>http://www.milyn.org/javadoc/v${project.version}/magger</link>
                         <link>http://www.milyn.org/javadoc/v${project.version}/edisax</link>
                         <link>http://www.w3.org/Style/CSS/SAC/doc/</link>
                     </links>
