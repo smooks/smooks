@@ -15,25 +15,18 @@
  */
 package org.milyn.csv;
 
-import org.milyn.GenericReaderConfigurator;
-import org.milyn.ReaderConfigurator;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.flatfile.Binding;
-import org.milyn.flatfile.BindingType;
-import org.milyn.flatfile.FlatFileReader;
-import org.milyn.flatfile.variablefield.VariableFieldRecordParserConfigurator;
-import org.milyn.flatfile.variablefield.VariableFieldRecordParserFactory;
-
-import java.nio.charset.Charset;
 import java.util.List;
+
+import org.milyn.assertion.AssertArgument;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.flatfile.variablefield.VariableFieldRecordParserConfigurator;
 
 /**
  * CSV Record Parser configurator.
  * <p/>
- * Supports programmatic configuration of {@link CSVRecordParserFactory} and {@link CSVRecordParser}.
- *
+ * Supports programmatic configuration of {@link CSVRecordParserFactory} and
+ * {@link CSVRecordParser}.
+ * 
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class CSVRecordParserConfigurator extends VariableFieldRecordParserConfigurator {
@@ -42,6 +35,7 @@ public class CSVRecordParserConfigurator extends VariableFieldRecordParserConfig
     private char separatorChar = ',';
     private char quoteChar = '"';
     private int skipLineCount = 0;
+    private int headLineNumber = 0;
     private String rootElementName = "csv-set";
     private String recordElementName = "csv-record";
 
@@ -69,6 +63,12 @@ public class CSVRecordParserConfigurator extends VariableFieldRecordParserConfig
         return this;
     }
 
+    public CSVRecordParserConfigurator setHeadLineNumber(int headLineNumber) {
+        AssertArgument.isNotNull(headLineNumber, "headLineNumber");
+        this.headLineNumber = headLineNumber;
+        return this;
+    }
+
     public CSVRecordParserConfigurator setRootElementName(String csvRootElementName) {
         AssertArgument.isNotNullAndNotEmpty(csvRootElementName, "rootElementName");
         this.rootElementName = csvRootElementName;
@@ -86,6 +86,7 @@ public class CSVRecordParserConfigurator extends VariableFieldRecordParserConfig
         getParameters().setProperty("separator", Character.toString(separatorChar));
         getParameters().setProperty("quote-char", Character.toString(quoteChar));
         getParameters().setProperty("skip-line-count", Integer.toString(skipLineCount));
+        getParameters().setProperty("head-line-number", Integer.toString(headLineNumber));
         getParameters().setProperty("rootElementName", rootElementName);
         getParameters().setProperty("recordElementName", recordElementName);
 

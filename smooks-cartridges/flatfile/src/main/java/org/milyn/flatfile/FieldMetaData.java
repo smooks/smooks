@@ -22,24 +22,32 @@ import org.milyn.function.StringFunctionExecutor;
 
 /**
  * Flat file record field metadata.
- *
+ * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class FieldMetaData {
 
     public static final String IGNORE_FIELD = "$ignore$";
+    public static final String USE_HEADER = "$useheader$";
 
     private String name;
     private boolean ignore;
     private int ignoreCount;
+    private boolean useHeader;
+    private int useHeaderCount;
+
     private StringFunctionExecutor stringFunctionExecutor;
 
     public FieldMetaData(String name) {
         AssertArgument.isNotNullAndNotEmpty(name, "name");
         this.name = name;
         ignore = name.startsWith(IGNORE_FIELD);
-        if(ignore) {
+        if (ignore) {
             ignoreCount = parseIgnoreFieldDirective(name);
+        }
+        useHeader = name.startsWith(USE_HEADER);
+        if (useHeader) {
+            useHeaderCount = parseUseHeaderFieldDirective(name);
         }
     }
 
@@ -55,6 +63,14 @@ public class FieldMetaData {
         return ignoreCount;
     }
 
+    public boolean useHeader() {
+        return useHeader;
+    }
+
+    public int getUseHeaderCount() {
+        return useHeaderCount;
+    }
+
     public StringFunctionExecutor getStringFunctionExecutor() {
         return stringFunctionExecutor;
     }
@@ -67,8 +83,7 @@ public class FieldMetaData {
     @Override
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this);
-        builder.append("name", name)
-               .append("stringFunctionExecutor", stringFunctionExecutor);
+        builder.append("name", name).append("stringFunctionExecutor", stringFunctionExecutor);
         return builder.toString();
     }
 
@@ -83,6 +98,18 @@ public class FieldMetaData {
             toSkip = Integer.parseInt(op);
         }
         return toSkip;
+    }
 
+    private int parseUseHeaderFieldDirective(String field) {
+        String op = field.substring(USE_HEADER.length());
+        int toUse = 0;
+        if (op.length() == 0) {
+            toUse = 1;
+        } else if ("+".equals(op)) {
+            toUse = Integer.MAX_VALUE;
+        } else {
+            toUse = Integer.parseInt(op);
+        }
+        return toUse;
     }
 }

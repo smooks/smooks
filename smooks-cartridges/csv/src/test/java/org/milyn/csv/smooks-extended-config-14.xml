@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.5.xsd">
+
+    <!--
+    Configure the CSV  to parse the message into a stream of SAX events.
+    -->
+    <csv:reader fields="$useheader$2,address,age" skipLines="0" headLine="0"/>
+
+</smooks-resource-list>
