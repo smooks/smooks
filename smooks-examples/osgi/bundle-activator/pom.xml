@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn-smooks-examples-osgi</artifactId>
-        <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.5</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Example - bundle-activator </name>
     <artifactId>milyn-smooks-example-bundle-activator</artifactId>

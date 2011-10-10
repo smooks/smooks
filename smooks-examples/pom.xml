@@ -7,13 +7,14 @@
         <groupId>org.codehaus</groupId>
         <artifactId>codehaus-parent</artifactId>
         <version>4</version>
+        <relativePath />
     </parent>
 
     <groupId>org.milyn</groupId>
     <artifactId>smooks-examples</artifactId>
     <name>Milyn Smooks Examples (Base POM)</name>
     <packaging>pom</packaging>
-    <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+    <version>1.5</version> <!-- base pom version - do not remove this comment -->
 
     <profiles>
         <profile>
@@ -51,6 +52,8 @@
                 <module>dao-router</module>
                 <module>validation-basic</module>
                 <module>edi-with-import-to-java</module>
+                <module>ejc/ejc-gen</module>
+                <module>ejc/ejc-use</module>
                 <module>yaml-to-java</module>
                 <module>dynamic-model-builder</module>
                 <module>camel</module>

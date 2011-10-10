@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn-smooks-example-file-router</artifactId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.5</version> <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Example - File Router (Splitter)</name>
     <artifactId>milyn-smooks-example-file-splitter-router</artifactId>

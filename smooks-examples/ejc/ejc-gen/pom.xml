@@ -5,7 +5,8 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>smooks-examples</artifactId>
-        <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.5</version> <!-- base pom version - do not remove this comment -->
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <name>Milyn Smooks Example - EJC - Model Gen</name>
     <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
@@ -15,7 +16,7 @@
             <plugin>
                 <groupId>org.milyn</groupId>
                 <artifactId>maven-ejc-plugin</artifactId>
-                <version>1.5-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+                <version>${project.version}</version> <!-- base pom version - do not remove this comment -->
                 <configuration>
                     <ediMappingFile>edi-model.xml</ediMappingFile>
                     <packageName>com.acme.order.model</packageName>
