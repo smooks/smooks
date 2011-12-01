@@ -36,7 +36,6 @@ public class Field {
      */
     public Field(String name, String value) {
         AssertArgument.isNotNullAndNotEmpty(name, "name");
-        AssertArgument.isNotNullAndNotEmpty(value, "value");
         this.name = name;
         this.value = value;
     }

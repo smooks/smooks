@@ -447,4 +447,17 @@ public class CSVReaderTest extends TestCase {
                 "<csv-set><csv-record number=\"1\"><firstname>Tom</firstname><lastname>Collins</lastname><address>Victoria Ave</address><age>32</age></csv-record><csv-record number=\"2\"><firstname>Fred</firstname><lastname>Cook</lastname><address>Mainstreet 12</address><age>40</age></csv-record></csv-set>",
                 result);
     }
+    
+    public void test_null_field_values() throws SmooksException, IOException, SAXException {
+        Smooks smooks = new Smooks();
+
+        smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,gender,age,country"));
+
+        StringResult result = new StringResult();
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("input-message-null-field-values.csv")), result);
+
+        assertEquals(
+                "<csv-set><csv-record number=\"1\"><firstname>Tom</firstname><lastname>Fennelly</lastname><gender>Male</gender><age>4</age><country>Ireland</country></csv-record><csv-record number=\"2\"><firstname>Mike</firstname><lastname>Fennelly</lastname><gender>Male</gender><age>2</age><country>Ireland</country></csv-record><csv-record number=\"3\"><firstname>Joel</firstname><lastname>Pearson</lastname><gender>Male</gender><age></age><country>Australia</country></csv-record></csv-set>",
+                result.getResult());
+    }
 }
