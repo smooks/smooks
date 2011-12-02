@@ -4,7 +4,7 @@
     <groupId>mveltest</groupId>
     <artifactId>mveltest</artifactId>
     <packaging>jar</packaging>
-    <version>1.5</version> <!-- base pom version - do not remove this comment -->
+    <version>1.5.1</version> <!-- base pom version - do not remove this comment -->
     <name>mveltest</name>
 
     <dependencies>
