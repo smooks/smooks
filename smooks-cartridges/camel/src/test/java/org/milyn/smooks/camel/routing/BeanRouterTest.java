@@ -56,9 +56,9 @@ public class BeanRouterTest extends CamelTestSupport
     public void visitAfter() throws Exception
     {
     	endpoint.setExpectedMessageCount(1);
+    	endpoint.expectedBodiesReceived(myBean);
     	createBeanRouter(BEAN_ID, END_POINT_URI).visitAfter(null, smooksExecutionContext);
     	endpoint.assertIsSatisfied();
-    	endpoint.expectedBodiesReceived(myBean);
     }
 
     @Test (expected = SmooksException.class)
@@ -72,7 +72,9 @@ public class BeanRouterTest extends CamelTestSupport
     public void routeUsingOnlyBeanId() throws Exception
     {
     	endpoint.setExpectedMessageCount(1);
-        final Smooks smooks = new Smooks();
+    	endpoint.expectedBodiesReceived(myBean);
+
+    	final Smooks smooks = new Smooks();
         final ExecutionContext execContext = smooks.createExecutionContext();
         
     	BeanRouter beanRouter = createBeanRouter(null, BEAN_ID, END_POINT_URI);
@@ -84,7 +86,6 @@ public class BeanRouterTest extends CamelTestSupport
                 null, BeanLifecycle.END_FRAGMENT, execContext.getBeanContext().getBeanId(BEAN_ID), myBean));
 
     	endpoint.assertIsSatisfied();
-    	endpoint.expectedBodiesReceived(myBean);
     }
 
     @Before
