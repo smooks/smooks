@@ -14,7 +14,7 @@
     <artifactId>smooks-examples</artifactId>
     <name>Milyn Smooks Examples (Base POM)</name>
     <packaging>pom</packaging>
-    <version>1.5</version> <!-- base pom version - do not remove this comment -->
+    <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 
     <profiles>
         <profile>

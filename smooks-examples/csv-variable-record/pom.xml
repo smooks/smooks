@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>org.milyn</groupId>
 		<artifactId>smooks-examples</artifactId>
-        <version>1.5</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Example - CSV-to-XML (Variable Record)</name>
 	<artifactId>milyn-smooks-example-csv-variable-record</artifactId>
