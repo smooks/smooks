@@ -174,6 +174,9 @@ public class CSVReader implements SmooksXMLReader, VisitorAppender {
 
     @ConfigParam(name = "quote-char", defaultVal = "\"")
     private char quoteChar;
+	
+	@ConfigParam(name = "escape-char", defaultVal = "\\")
+    private char escapeChar;
 
     @ConfigParam(name = "skip-line-count", defaultVal = "0")
     private int skipLines;
@@ -312,7 +315,7 @@ public class CSVReader implements SmooksXMLReader, VisitorAppender {
 	        }
 	
 	        // Create the CSV line reader...
-	        csvLineReader = new au.com.bytecode.opencsv.CSVReader(csvStreamReader, separator, quoteChar, skipLines);
+	        csvLineReader = new au.com.bytecode.opencsv.CSVReader(csvStreamReader, separator, quoteChar, escapeChar, skipLines);
 
 			if (validateHeader) {
 				validateHeader(csvLineReader);
