@@ -33,6 +33,9 @@ public class CSVRecordParserFactory extends VariableFieldRecordParserFactory {
     @ConfigParam(name = "quote-char", defaultVal = "\"")
     private char quoteChar;
 
+    @ConfigParam(name = "escape-char", defaultVal = "\\")
+    private char escapeChar;
+
     public RecordParser newRecordParser() {
         return new CSVRecordParser();
     }
@@ -43,5 +46,9 @@ public class CSVRecordParserFactory extends VariableFieldRecordParserFactory {
 
     public char getQuoteChar() {
         return quoteChar;
+    }
+
+    public char getEscapeChar() {
+        return escapeChar;
     }
 }

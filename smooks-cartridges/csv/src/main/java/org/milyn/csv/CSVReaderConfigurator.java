@@ -40,6 +40,7 @@ public class CSVReaderConfigurator implements ReaderConfigurator {
     private String csvFields;
     private char separatorChar = ',';
     private char quoteChar = '"';
+    private char escapeChar = '\\';
     private int skipLineCount = 0;
     private Charset encoding = Charset.forName("UTF-8");
     private String rootElementName = "csv-set";
@@ -63,6 +64,12 @@ public class CSVReaderConfigurator implements ReaderConfigurator {
     public CSVReaderConfigurator setQuoteChar(char quoteChar) {
         AssertArgument.isNotNull(quoteChar, "quoteChar");
         this.quoteChar = quoteChar;
+        return this;
+    }
+	
+    public CSVReaderConfigurator setEscapeChar(char escapeChar) {
+        AssertArgument.isNotNull(escapeChar, "escapeChar");
+        this.escapeChar = escapeChar;
         return this;
     }
 
@@ -118,6 +125,7 @@ public class CSVReaderConfigurator implements ReaderConfigurator {
         configurator.getParameters().setProperty("fields", csvFields);
         configurator.getParameters().setProperty("separator", Character.toString(separatorChar));
         configurator.getParameters().setProperty("quote-char", Character.toString(quoteChar));
+        configurator.getParameters().setProperty("escape-char", Character.toString(escapeChar));
         configurator.getParameters().setProperty("skip-line-count", Integer.toString(skipLineCount));
         configurator.getParameters().setProperty("encoding", encoding.name());
         configurator.getParameters().setProperty("rootElementName", rootElementName);

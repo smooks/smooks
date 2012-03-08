@@ -34,6 +34,7 @@ public class CSVRecordParserConfigurator extends VariableFieldRecordParserConfig
     private String csvFields;
     private char separatorChar = ',';
     private char quoteChar = '"';
+	private char escapeChar = '\\';
     private int skipLineCount = 0;
     private String rootElementName = "csv-set";
     private String recordElementName = "csv-record";
@@ -53,6 +54,12 @@ public class CSVRecordParserConfigurator extends VariableFieldRecordParserConfig
     public CSVRecordParserConfigurator setQuoteChar(char quoteChar) {
         AssertArgument.isNotNull(quoteChar, "quoteChar");
         this.quoteChar = quoteChar;
+        return this;
+    }
+	
+	public CSVRecordParserConfigurator setEscapeChar(char escapeChar) {
+        AssertArgument.isNotNull(escapeChar, "escapeChar");
+        this.escapeChar = escapeChar;
         return this;
     }
 
@@ -78,6 +85,7 @@ public class CSVRecordParserConfigurator extends VariableFieldRecordParserConfig
         getParameters().setProperty("fields", csvFields);
         getParameters().setProperty("separator", Character.toString(separatorChar));
         getParameters().setProperty("quote-char", Character.toString(quoteChar));
+		getParameters().setProperty("escape-char", Character.toString(escapeChar));
         getParameters().setProperty("skip-line-count", Integer.toString(skipLineCount));
         getParameters().setProperty("rootElementName", rootElementName);
         getParameters().setProperty("recordElementName", recordElementName);
