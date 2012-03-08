@@ -52,12 +52,6 @@
 	</build>
 
 	<dependencies>
-        <dependency>
-            <groupId>net.sf.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>1.8</version>
-            <scope>test</scope>
-        </dependency>
        <dependency>
            <groupId>org.apache.felix</groupId>
            <artifactId>org.osgi.core</artifactId>

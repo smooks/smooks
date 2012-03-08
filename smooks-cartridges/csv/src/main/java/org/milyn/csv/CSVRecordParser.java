@@ -46,7 +46,7 @@ public class CSVRecordParser<T extends CSVRecordParserFactory> extends VariableF
 
         // Create the CSV line reader...
         T factory = getFactory();
-        csvLineReader = new au.com.bytecode.opencsv.CSVReader(reader, factory.getSeparator(), factory.getQuoteChar());
+        csvLineReader = new au.com.bytecode.opencsv.CSVReader(reader, factory.getSeparator(), factory.getQuoteChar(), factory.getEscapeChar());
     }
 
     /**
