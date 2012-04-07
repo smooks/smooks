@@ -21,6 +21,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Before;
 import org.junit.Test;
+import org.milyn.container.MockExecutionContext;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
@@ -54,12 +55,14 @@ public class BeanRouterObserverTest extends CamelTestSupport
         beanRouter.initialize();
 
         final BeanRouterObserver beanRouterObserver = new BeanRouterObserver(beanRouter, beanId);
+        final MockExecutionContext smooksExecutionContext = new MockExecutionContext();
         final BeanContextLifecycleEvent event = mock(BeanContextLifecycleEvent.class);
         
         when(event.getBeanId()).thenReturn(new BeanId(null, 0, beanId));
         when(event.getLifecycle()).thenReturn(BeanLifecycle.END_FRAGMENT);
         when(event.getBean()).thenReturn(sampleBean);
-        
+        when(event.getExecutionContext()).thenReturn(smooksExecutionContext);
+		
         endpoint.setExpectedMessageCount(1);
         beanRouterObserver.onBeanLifecycleEvent(event);
         endpoint.assertIsSatisfied();
