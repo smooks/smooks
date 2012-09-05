@@ -1,62 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.milyn</groupId>
 		<artifactId>milyn-smooks-example-camel</artifactId>
 		<version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
 		<relativePath>../pom.xml</relativePath>
-
 	</parent>
+
     <name>Milyn Smooks Example - Smooks Camel CVS to XML</name>
 	<artifactId>milyn-smooks-example-camel-csv-to-xml</artifactId>
     <packaging>bundle</packaging>
     
-    <properties>
-        <input.dir>${basedir}/input-dir</input.dir>
-    </properties>
-	
 	<build>
-	   <plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>features.xml</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>features.xml</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+           <plugin>
+               <groupId>org.apache.camel</groupId>
+               <artifactId>camel-maven-plugin</artifactId>
+               <version>${camel.version}</version>
+           </plugin>
+
 	       <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.0.1</version>
+                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Import-Package>
-							org.apache.camel.*;version="2.6", 
-							org.springframework.*;version="1.2.0",
-							*;-nouses:=true
-						</Import-Package>
+						<Import-Package>*</Import-Package>
                         <Private-Package>example</Private-Package>
                     </instructions>
                 </configuration>
             </plugin>
-	   </plugins>
-	<resources>
-	<resource>
-        <directory>${basedir}</directory>
-        <includes>
-          <include>smooks-config.xml</include>
-        </includes>
-      </resource>
-		<resource>
-	        <directory>src/main/resources</directory>
-	        <filtering>true</filtering>
-      </resource>
-    </resources>
-	   
+
+           <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>build-helper-maven-plugin</artifactId>
+               <version>1.7</version>
+               <executions>
+                   <execution>
+                       <id>attach-artifacts</id>
+                       <phase>package</phase>
+                       <goals>
+                           <goal>attach-artifact</goal>
+                       </goals>
+                       <configuration>
+                           <artifacts>
+                               <artifact>
+                                   <file>${project.build.outputDirectory}/features.xml</file>
+                                   <type>xml</type>
+                                   <classifier>features</classifier>
+                               </artifact>
+                           </artifacts>
+                       </configuration>
+                   </execution>
+               </executions>
+           </plugin>
+       </plugins>
 	</build>
 
 	<dependencies>
-       <dependency>
-           <groupId>org.apache.felix</groupId>
-           <artifactId>org.osgi.core</artifactId>
-           <version>1.4.0</version>
-       </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-all</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-camel</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <scope>runtime</scope>
+        </dependency>
 	</dependencies>
 	
 </project>

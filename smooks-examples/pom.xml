@@ -96,8 +96,8 @@
     </profiles>
 
     <properties>
-        <camel.version>2.4.0</camel.version>
-        <spring.version>2.5.6</spring.version>
+        <camel.version>2.6.0</camel.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
     </properties>
 
     <dependencies>

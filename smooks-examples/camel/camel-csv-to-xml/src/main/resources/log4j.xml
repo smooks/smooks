@@ -68,10 +68,6 @@
         <priority value="ERROR"/>
     </category>
     
-    <category name="org.apache.camel">
-        <priority value="ERROR"/>
-    </category>
-
     <!-- ======================= -->
     <!-- Setup the Root category -->
     <!-- ======================= -->

@@ -21,11 +21,11 @@ Running:
     > mvn clean install
     > mvn camel:run
 
-Run in Karaf 2.2.x (ServiceMix 4.x)
-===================================
+Run in Karaf 2.2.x or ServiceMix 4.x
+====================================
 
-Install and configure Karaf 2.2.x (ServiceMix 4.x)
---------------------------------------------------
+Install and configure Karaf 2.2.x or ServiceMix 4.x
+---------------------------------------------------
 
 1. Install [Karaf 2.2.x](http://karaf.apache.org/index/community/download.html)
 2. Start Karaf:
@@ -33,14 +33,13 @@ Install and configure Karaf 2.2.x (ServiceMix 4.x)
     > <KARAF_HOME>/bin/karaf
     > tail -f <KARAF_HOME>/data/log/karaf.log
 
-Deploy the example
-------------------
+Deploy the example (from Karaf / ServiceMix Admin Shell)
+--------------------------------------------------------
 
-    karaf@root> features:addUrl mvn:org.milyn/milyn-smooks-example-camel/1.6/xml/features
+    karaf@root> features:addUrl mvn:org.milyn/milyn-smooks-example-camel-csv-to-xml/1.6-SNAPSHOT/xml/features
     karaf@root> features:install smooks-example-camel-cxv-to-xml
 
-Run the example
----------------
+Run the example (Command Prompt)
+--------------------------------
 
-    > cp input-message.csv <KARAF_HOME>/input-dir
-    > tail -f <KARAF_HOME>/data/log/karaf.log
+    > cp input-dir/input-message.csv <KARAF_HOME>/input-dir

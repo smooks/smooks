@@ -14,8 +14,6 @@
  */
 package example;
 
-import java.io.File;
-
 import org.apache.camel.builder.RouteBuilder;
 import org.milyn.smooks.camel.dataformat.SmooksDataFormat;
 
@@ -24,33 +22,23 @@ import org.milyn.smooks.camel.dataformat.SmooksDataFormat;
  * @author Daniel Bevenius
  * 
  */
-public class ExampleRouteBuilder extends RouteBuilder
-{
-    public ExampleRouteBuilder()
-    {
+public class ExampleRouteBuilder extends RouteBuilder {
+    public ExampleRouteBuilder() {
     }
 
     @Override
-    public void configure() throws Exception
-    {
+    public void configure() throws Exception {
         SmooksDataFormat smooksDataFormat = new SmooksDataFormat("smooks-config.xml");
         smooksDataFormat.setCamelContext(getContext());
         smooksDataFormat.start();
+
         // Starting with Camel 2.5 the path can be specified as file:.
         // See https://issues.apache.org/activemq/browse/CAMEL-3063 for more
         // information.
-        from("file://" + getWorkingDir() + "?fileName=input-message.csv&noop=true")
-        .log("Before unmarshal with SmooksDataFormat:").log("${body}")
+        from("file://input-dir?noop=true")
+        .log("Before unmarshal with SmooksDataFormat: ${body}")
         .unmarshal(smooksDataFormat)
-        .log("After unmarshal with SmooksDataFormat:").log("${body}")
+        .log("After unmarshal with SmooksDataFormat: ${body}")
         .to("mock:result");
     }
-
-    private File getWorkingDir()
-    {
-        String userDir = System.getProperty("user.dir");
-        File workingDir = new File(userDir);
-        return workingDir;
-    }
-
 }

@@ -1,47 +1,46 @@
-About This Example:
-===================
- 	This is a very simple example that illustrates the usage of SmooksComponent
+About This Example
+==================
 
-    See:
-        1. The "Main" class in src/main/java/example/Main.java.
-        2. The input message in input-message.csv.
-        3. smooks-config.xml.
+This is a very simple example that illustrates the usage of SmooksComponent
+
+See:
+
+* The input message in `input-message.xml`
+* smooks configuration in `smooks-config.xml`
 
 How to Run?
 ===========
-    Requirements:
-        1. JDK 1.5
-        2. Maven 2.x (http://maven.apache.org/download.html)
 
-    Running:
-        1. "mvn clean install"
-        2. "mvn exec:java"
+Requirements:
 
-Run in Servicemix 4.2
-=====================
+* JDK 1.5
+* Maven 2.x (http://maven.apache.org/download.html)
 
-Install and configure Servicemix 4.x
---------------------------------------
-1. Install Servicemix 4.x (http://servicemix.apache.org/servicemix-420.html)
-2. Start Servicemix:
-    ${SERVICEMIX_HOME}/bin/servicemix
-3. tail -f ${SERVICEMIX_HOME}/data/log/servicemix.log
+Running:
 
+    > mvn clean install
+    > mvn camel:run
 
-Deploy Smooks OSGi Bundle
--------------------------
-1. Deploy Smooks OSGi bundle
-    karaf@root> features:addUrl mvn:org.milyn/milyn-smooks-all/1.5-SNAPSHOT/xml/features
-    karaf@root> features:install smooks
-2. Deploy the mapping and bindings for d96a
-    karaf@root osgi:install mvn:org.milyn.edi.unedifact/d96a-binding/1.4
-    karaf@root osgi:install mvn:org.milyn.edi.unedifact/d96a-mapping/1.4
+Run in Karaf 2.2.x (ServiceMix 4.x)
+===================================
 
-3. Deploy the example
-    osgi:install -s mvn:org.milyn/milyn-smooks-example-camel-unedifact-to-xml/1.0
+Install and configure Karaf 2.2.x (ServiceMix 4.x)
+--------------------------------------------------
+
+1. Install [Karaf 2.2.x](http://karaf.apache.org/index/community/download.html)
+2. Start Karaf:
+
+    > <KARAF_HOME>/bin/karaf
+    > tail -f <KARAF_HOME>/data/log/karaf.log
+
+Deploy the example
+------------------
+
+    karaf@root> features:addUrl mvn:org.milyn/milyn-smooks-example-camel-unedifact-to-xml/1.6/xml/features
+    karaf@root> features:install milyn-smooks-example-camel-unedifact-to-xml
 
 Run the example
 ---------------
-1. cp input-message.txt input-dir
-2. check ${SERVICEMIX_HOME}/data/log/servicemix.log for the log messages
 
+    > cp input-message.csv <KARAF_HOME>/input-dir
+    > tail -f <KARAF_HOME>/data/log/karaf.log
