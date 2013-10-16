@@ -419,6 +419,8 @@ public class EDIParser implements XMLReader {
 	}
 
 	private void parse(boolean indent) throws SAXException, IOException, EDIParseException {
+        boolean ignoreUnmappedSegment = edifactModel.getEdimap().isIgnoreUnmappedSegments();
+
 		startElement(edifactModel.getEdimap().getSegments(), indent);
 
 		// Work through all the segments in the model.  Move to the first segment before starting...
@@ -427,7 +429,8 @@ public class EDIParser implements XMLReader {
 
 			// If we reach the end of the mapping model and we still have more EDI segments in the message....     		
 		    while (segmentReader.hasCurrentSegment()) {
-		        if (!EMPTY_LINE.matcher(segmentReader.getSegmentBuffer().toString()).matches()) {
+                if (!EMPTY_LINE.matcher(segmentReader.getSegmentBuffer().toString()).matches()
+                        && !ignoreUnmappedSegment) {
 		            throw new EDIParseException(edifactModel.getEdimap(), "Reached end of mapping model but there are more EDI segments in the incoming message.  Read " + segmentReader.getCurrentSegmentNumber() + " segment(s). Current EDI segment is [" + segmentReader.getSegmentBuffer() + "]");
 		        }
 		        segmentReader.moveToNextSegment();
@@ -463,6 +466,7 @@ public class EDIParser implements XMLReader {
 		int segmentMappingIndex = 0; // The current index within the supplied segment list.
 		int segmentProcessingCount = 0; // The number of times the current segment definition from the supplied segment list has been applied to message segments on the incomming EDI message.
         String[] currentSegmentFields = preLoadedSegmentFields;
+        boolean ignoreUnmappedSegment = edifactModel.getEdimap().isIgnoreUnmappedSegments(); // Used to relax parsing compared to the mapping model
 
         if(expectedSegments.size() == 0) {
 			return;
@@ -492,11 +496,22 @@ public class EDIParser implements XMLReader {
             // segment code....
             if(!currentSegmentFields[0].equals(expectedSegmentGroup.getSegcode())) {
                 Matcher matcher = expectedSegmentGroup.getSegcodePattern().matcher(segmentReader.getSegmentBuffer());
-
-                if(!matcher.matches()) {
+                if (!matcher.matches()) {
+                    if (segmentProcessingCount < minOccurs) {
+                        // check if strict segment matching is inforced
+                        if (!ignoreUnmappedSegment) {
                     // If we haven't read the minimum number of instances of the current "expected" segment, raise an error...
-                    if(segmentProcessingCount < minOccurs) {
                         throw new EDIParseException(edifactModel.getEdimap(), "Must be a minimum of " + minOccurs + " instances of segment [" + expectedSegmentGroup.getSegcode() + "].  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedSegmentGroup, segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
+                    } else {
+                            // skip unmapped current segment
+                            segmentReader.moveToNextSegment();
+                            currentSegmentFields = null;
+                            // check that there still are messages in the EDI message stream for the required segments in the model
+                            if (!segmentReader.hasCurrentSegment()) {
+                                throw new EDIParseException(edifactModel.getEdimap(), "Reached end of EDI message stream but there must be a minimum of " + minOccurs + " instances of segment [" + expectedSegmentGroup.getSegcode() + "].  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedSegmentGroup, segmentReader.getCurrentSegmentNumber(), null);
+                            }
+                            continue;
+                        }
                     } else {
                         // Otherwise, move to the next "expected" segment and start the loop again...
                         segmentMappingIndex++;
@@ -528,8 +543,8 @@ public class EDIParser implements XMLReader {
             segmentProcessingCount++;
             currentSegmentFields = null;
 
-            while(segmentProcessingCount < minOccurs && !segmentReader.hasCurrentSegment()) {
-                throw new EDIParseException(edifactModel.getEdimap(), "Reached end of EDI message stream but there must be a minimum of " + minOccurs + " instances of segment [" + expectedSegmentGroup.getSegcode() + "].  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedSegmentGroup, segmentReader.getCurrentSegmentNumber(), null );
+            if (segmentProcessingCount < minOccurs && !segmentReader.hasCurrentSegment()) {
+                throw new EDIParseException(edifactModel.getEdimap(), "Reached end of EDI message stream but there must be a minimum of " + minOccurs + " instances of segment [" + expectedSegmentGroup.getSegcode() + "].  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", expectedSegmentGroup, segmentReader.getCurrentSegmentNumber(), null);
             }
         }
 	}

@@ -31,6 +31,7 @@ public class Edimap {
     private Description description;
     private Delimiters delimiters;
     private SegmentGroup segments;
+    private Boolean ignoreUnmappedSegments;
 
     public Edimap() {    	
     }
@@ -66,7 +67,15 @@ public class Edimap {
         this.delimiters = value;
     }
 
-    public SegmentGroup getSegments() {
+    public void setIgnoreUnmappedSegments(Boolean value) {
+	this.ignoreUnmappedSegments = value;
+    }
+
+    public boolean isIgnoreUnmappedSegments() {
+	return ignoreUnmappedSegments != null && ignoreUnmappedSegments;
+    }
+
+public SegmentGroup getSegments() {
         return segments;
     }
 

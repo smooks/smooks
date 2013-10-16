@@ -70,6 +70,7 @@ public class EDIConfigDigester {
     public static final String XSD_V13 = "http://www.milyn.org/schema/edi-message-mapping-1.3.xsd";
     public static final String XSD_V14 = "http://www.milyn.org/schema/edi-message-mapping-1.4.xsd";
     public static final String XSD_V15 = "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd";
+    public static final String XSD_V16 = "http://www.milyn.org/schema/edi-message-mapping-1.6.xsd";
     private static final String NAMESPACE_SUFFIX = ":";
     
     /**
@@ -174,7 +175,7 @@ public class EDIConfigDigester {
      * @return true if ediNS is valid, false otherwise.
      */
     private static boolean assertValidXSD(String ediNS) {
-        return XSD_V10.equals(ediNS) || XSD_V11.equals(ediNS) || XSD_V12.equals(ediNS) || XSD_V13.equals(ediNS) || XSD_V14.equals(ediNS) || XSD_V15.equals(ediNS);
+        return XSD_V10.equals(ediNS) || XSD_V11.equals(ediNS) || XSD_V12.equals(ediNS) || XSD_V13.equals(ediNS) || XSD_V14.equals(ediNS) || XSD_V15.equals(ediNS) || XSD_V16.equals(ediNS);
     }
 
     /**
@@ -275,6 +276,7 @@ public class EDIConfigDigester {
         setValuesForMappingNode(node, segments, namespacePrefix, null);
         segments.setNamespace(edimap.getDescription().getNamespace());
         edimap.setSegments(segments);
+        edimap.setIgnoreUnmappedSegments(getNodeValueAsBoolean(node, "ignoreUnmappedSegments"));
 
         NodeList nodes = node.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
