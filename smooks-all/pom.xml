@@ -196,14 +196,14 @@
 		<dependency>
 			<groupId>org.jboss.shrinkwrap</groupId>
 			<artifactId>shrinkwrap-api</artifactId>
-			<version>1.0.0-alpha-11</version>
+			<version>1.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.shrinkwrap</groupId>
 			<artifactId>shrinkwrap-impl-base</artifactId>
-			<version>1.0.0-alpha-11</version>
-			<scope>provided</scope> 
+			<version>1.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 
         <!-- Readding core dependencies - DO NOT SCOPE AS "provided" -->
