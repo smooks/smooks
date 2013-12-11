@@ -18,7 +18,7 @@ package org.milyn.JIRAs.MILYN_560;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.sax.SAXElement;

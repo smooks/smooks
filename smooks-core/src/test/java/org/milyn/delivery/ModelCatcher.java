@@ -15,21 +15,21 @@
 */
 package org.milyn.delivery;
 
-import org.milyn.delivery.sax.SAXVisitAfter;
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.dom.DOMVisitAfter;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
-import org.milyn.xml.DomUtils;
+import org.milyn.delivery.dom.DOMVisitAfter;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXVisitAfter;
 import org.w3c.dom.Element;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
-*/
+ */
 public class ModelCatcher implements SAXVisitAfter, DOMVisitAfter {
 
     public static List<Element> elements = new ArrayList<Element>();

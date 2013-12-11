@@ -16,12 +16,11 @@
 
 package org.milyn.delivery.dom;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.delivery.ContentHandlerConfigMap;
-import org.milyn.delivery.dom.DOMElementVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Processing set.

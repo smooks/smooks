@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;

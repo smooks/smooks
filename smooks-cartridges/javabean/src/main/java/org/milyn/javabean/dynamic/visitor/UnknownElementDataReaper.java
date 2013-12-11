@@ -16,10 +16,10 @@
 
 package org.milyn.javabean.dynamic.visitor;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.delivery.Fragment;
 import org.milyn.delivery.dom.serialize.DefaultSerializationUnit;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.javabean.dynamic.BeanMetadata;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.w3c.dom.*;

@@ -16,7 +16,8 @@
 package org.milyn.routing.db;
 
 
-import static org.testng.AssertJUnit.assertEquals;
+import junit.framework.TestCase;
+import org.milyn.commons.util.HsqlServer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,9 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.milyn.util.HsqlServer;
-import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -118,7 +116,7 @@ public class StatementExecTest extends TestCase {
 
     public void test_bulk_insert() throws SQLException {
         Connection connection = hsqlServer.getConnection();
-        List<Map<String, Object>> orders =  new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> orders = new ArrayList<Map<String, Object>>();
         Map<String, Object> beanMap = new HashMap<String, Object>();
 
         addOrder(orders, 10, 2, 444);

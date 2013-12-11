@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.milyn.javabean.dynamic.Descriptor;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

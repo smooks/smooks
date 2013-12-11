@@ -15,8 +15,8 @@
 */
 package org.milyn.delivery.java;
 
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.xml.SmooksXMLReader;
-import org.milyn.cdr.SmooksConfigurationException;
 
 import java.util.List;
 

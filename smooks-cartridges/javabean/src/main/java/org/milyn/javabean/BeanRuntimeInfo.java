@@ -15,12 +15,15 @@
 */
 package org.milyn.javabean;
 
-import org.milyn.cdr.*;
-import org.milyn.container.*;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.util.ClassUtil;
+import org.milyn.container.ApplicationContext;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Java bean runtime info.
@@ -73,18 +76,18 @@ public class BeanRuntimeInfo {
     }
 
     public BeanRuntimeInfo(Class<?> clazz) {
-    	resolveBeanRuntimeInfo(clazz);
+        resolveBeanRuntimeInfo(clazz);
     }
 
     public BeanRuntimeInfo(String classname) {
-    	resolveBeanRuntimeInfo(classname);
+        resolveBeanRuntimeInfo(classname);
     }
 
     public static void recordBeanRuntimeInfo(String beanId, BeanRuntimeInfo beanRuntimeInfo, ApplicationContext appContext) {
         Map<String, BeanRuntimeInfo> runtimeInfoMap = getRuntimeInfoMap(appContext);
         BeanRuntimeInfo existingBeanConfig = runtimeInfoMap.get(beanId);
 
-        if(existingBeanConfig != null && !beanRuntimeInfo.equals(existingBeanConfig)) {
+        if (existingBeanConfig != null && !beanRuntimeInfo.equals(existingBeanConfig)) {
             throw new SmooksConfigurationException("Multiple configurations present with beanId='" + beanId + "', but the bean runtime infos are not equal i.e bean classes etc are different.  Use a different beanId and the 'setOnMethod' config if needed.");
         }
 
@@ -101,9 +104,9 @@ public class BeanRuntimeInfo {
         // We maintain a targetType enum because it helps us avoid performing
         // instanceof checks, which are cheap when the instance being checked is
         // an instanceof, but is expensive if it's not....
-        if(Map.class.isAssignableFrom(clazz)) {
+        if (Map.class.isAssignableFrom(clazz)) {
             this.setClassification(Classification.MAP_COLLECTION);
-        } else if(Collection.class.isAssignableFrom(clazz)) {
+        } else if (Collection.class.isAssignableFrom(clazz)) {
             this.setClassification(Classification.COLLECTION_COLLECTION);
         } else {
             this.setClassification(Classification.NON_COLLECTION);
@@ -115,9 +118,9 @@ public class BeanRuntimeInfo {
 
         BeanRuntimeInfo beanRuntimeInfo = runtimeInfoMap.get(beanId);
 
-        if(beanRuntimeInfo == null) {
-        	beanRuntimeInfo = new BeanRuntimeInfo(beanClassName);
-        	recordBeanRuntimeInfo(beanId, beanRuntimeInfo, appContext);
+        if (beanRuntimeInfo == null) {
+            beanRuntimeInfo = new BeanRuntimeInfo(beanClassName);
+            recordBeanRuntimeInfo(beanId, beanRuntimeInfo, appContext);
         }
         return beanRuntimeInfo;
     }
@@ -135,11 +138,11 @@ public class BeanRuntimeInfo {
 
         // If it's an array, we use a List and extract an array from it on the
         // visitAfter event....
-        if(beanClass.endsWith("[]")) {
+        if (beanClass.endsWith("[]")) {
             this.setClassification(BeanRuntimeInfo.Classification.ARRAY_COLLECTION);
             String arrayTypeName = beanClass.substring(0, beanClass.length() - 2);
             try {
-            	this.setArrayType(ClassUtil.forName(arrayTypeName, getClass()));
+                this.setArrayType(ClassUtil.forName(arrayTypeName, getClass()));
             } catch (ClassNotFoundException e) {
                 throw new SmooksConfigurationException("Invalid Smooks bean configuration.  Bean class " + arrayTypeName + " not on classpath.");
             }
@@ -147,13 +150,13 @@ public class BeanRuntimeInfo {
 
         } else {
 
-	        try {
-	            clazz = ClassUtil.forName(beanClass, getClass());
-	        } catch (ClassNotFoundException e) {
-	            throw new SmooksConfigurationException("Invalid Smooks bean configuration.  Bean class " + beanClass + " not on classpath.");
-	        }
+            try {
+                clazz = ClassUtil.forName(beanClass, getClass());
+            } catch (ClassNotFoundException e) {
+                throw new SmooksConfigurationException("Invalid Smooks bean configuration.  Bean class " + beanClass + " not on classpath.");
+            }
 
-	        this.setPopulateType(clazz);
+            this.setPopulateType(clazz);
             this.setClassification(clazz);
         }
     }
@@ -161,13 +164,13 @@ public class BeanRuntimeInfo {
     private void resolveBeanRuntimeInfo(Class<?> clazz) {
         // If it's an array, we use a List and extract an array from it on the
         // visitAfter event....
-        if(clazz.isArray()) {
+        if (clazz.isArray()) {
             this.setClassification(BeanRuntimeInfo.Classification.ARRAY_COLLECTION);
             this.setArrayType(clazz.getComponentType());
             this.setPopulateType(ArrayList.class);
         } else {
 
-	        this.setPopulateType(clazz);
+            this.setPopulateType(clazz);
             this.setClassification(clazz);
 
             // check for a default constructor.
@@ -181,10 +184,10 @@ public class BeanRuntimeInfo {
     }
 
     @SuppressWarnings("unchecked")
-	private static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext appContext) {
+    private static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext appContext) {
         Map<String, BeanRuntimeInfo> runtimeInfoMap = (Map<String, BeanRuntimeInfo>) appContext.getAttribute(CONTEXT_KEY);
 
-        if(runtimeInfoMap == null) {
+        if (runtimeInfoMap == null) {
             runtimeInfoMap = new HashMap<String, BeanRuntimeInfo>();
             appContext.setAttribute(CONTEXT_KEY, runtimeInfoMap);
         }
@@ -230,25 +233,25 @@ public class BeanRuntimeInfo {
     }
 
     @Override
-	public boolean equals(Object obj) {
-        if(obj == null) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(!(obj instanceof BeanRuntimeInfo)) {
+        if (!(obj instanceof BeanRuntimeInfo)) {
             return false;
         }
 
         BeanRuntimeInfo beanInfo = (BeanRuntimeInfo) obj;
-        if(beanInfo.getArrayType() != getArrayType()) {
+        if (beanInfo.getArrayType() != getArrayType()) {
             return false;
         }
-        if(beanInfo.getClassification() != getClassification()) {
+        if (beanInfo.getClassification() != getClassification()) {
             return false;
         }
-        if(beanInfo.getPopulateType() != getPopulateType()) {
+        if (beanInfo.getPopulateType() != getPopulateType()) {
             return false;
         }
 
@@ -260,7 +263,7 @@ public class BeanRuntimeInfo {
 
         stringBuilder.append("Classification: " + classification);
         stringBuilder.append(", Populate Type: : " + populateType.getName());
-        if(arrayType != null) {
+        if (arrayType != null) {
             stringBuilder.append(", Array Type: " + arrayType.getName());
         }
 

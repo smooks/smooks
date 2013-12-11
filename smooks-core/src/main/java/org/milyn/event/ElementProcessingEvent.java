@@ -15,10 +15,10 @@
 */
 package org.milyn.event;
 
-import org.w3c.dom.Element;
-import org.milyn.xml.DomUtils;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXUtil;
+import org.w3c.dom.Element;
 
 /**
  * An element processing related event.
@@ -38,9 +38,9 @@ public abstract class ElementProcessingEvent implements ExecutionEvent {
     }
 
     public int getDepth() {
-        if(element instanceof Element) {
+        if (element instanceof Element) {
             return DomUtils.getDepth((Element) element);
-        } else if(element instanceof SAXElement) {
+        } else if (element instanceof SAXElement) {
             return SAXUtil.getDepth((SAXElement) element);
         }
 

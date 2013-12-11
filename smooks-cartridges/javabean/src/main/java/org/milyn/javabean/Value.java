@@ -15,8 +15,9 @@
 */
 package org.milyn.javabean;
 
-import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.javabean.DataDecoder;
 import org.milyn.delivery.VisitorConfigMap;
 import org.milyn.javabean.ext.SelectorPropertyResolver;
 
@@ -74,106 +75,106 @@ import org.milyn.javabean.ext.SelectorPropertyResolver;
  */
 public class Value extends BindingAppender {
 
-	private String dataSelector;
+    private String dataSelector;
 
-	private String targetNamespace;
+    private String targetNamespace;
 
-	private String defaultValue;
+    private String defaultValue;
 
-	private DataDecoder decoder;
+    private DataDecoder decoder;
 
-	/**
+    /**
      * Create a Value binding configuration.
      *
-	 * @param beanId The bean id under which the value will be stored.
-	 * @param data The data selector for the data value to be bound.
-	 */
-	public Value(String beanId, String data) {
-		super(beanId);
-		AssertArgument.isNotNullAndNotEmpty(beanId, "beanId");
-		AssertArgument.isNotNullAndNotEmpty(data, "dataSelector");
+     * @param beanId The bean id under which the value will be stored.
+     * @param data   The data selector for the data value to be bound.
+     */
+    public Value(String beanId, String data) {
+        super(beanId);
+        AssertArgument.isNotNullAndNotEmpty(beanId, "beanId");
+        AssertArgument.isNotNullAndNotEmpty(data, "dataSelector");
 
-		this.dataSelector = data;
-	}
+        this.dataSelector = data;
+    }
 
-	/**
+    /**
      * Create a Value binding configuration.
      *
-	 * @param beanId The bean id under which the value will be stored.
-	 * @param data The data selector for the data value to be bound.
-	 * @param type Data type.
-	 */
-	public Value(String beanId, String data, Class<?> type) {
-		this(beanId, data);
-		AssertArgument.isNotNull(type, "type");
+     * @param beanId The bean id under which the value will be stored.
+     * @param data   The data selector for the data value to be bound.
+     * @param type   Data type.
+     */
+    public Value(String beanId, String data, Class<?> type) {
+        this(beanId, data);
+        AssertArgument.isNotNull(type, "type");
 
-		this.decoder = DataDecoder.Factory.create(type);
-	}
+        this.decoder = DataDecoder.Factory.create(type);
+    }
 
-	/**
-	 * The namespace for the data selector for the data value to be bound.
-	 *
-	 * @param targetNamespace The namespace
-	 * @return <code>this</code> Value configuration instance.
-	 */
-	public Value setTargetNamespace(String targetNamespace) {
-		this.targetNamespace = targetNamespace;
+    /**
+     * The namespace for the data selector for the data value to be bound.
+     *
+     * @param targetNamespace The namespace
+     * @return <code>this</code> Value configuration instance.
+     */
+    public Value setTargetNamespace(String targetNamespace) {
+        this.targetNamespace = targetNamespace;
 
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * The default value for if the data is null or empty
-	 *
-	 * @param targetNamespace The default value
-	 * @return <code>this</code> Value configuration instance.
-	 */
-	public Value setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
+    /**
+     * The default value for if the data is null or empty
+     *
+     * @param targetNamespace The default value
+     * @return <code>this</code> Value configuration instance.
+     */
+    public Value setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
 
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * Set the binding value data type.
-	 * @param type The data type.
-	 * 
-	 * @return <code>this</code> Value configuration instance.
-	 */
-	public Value setType(Class<?> type) {
-		this.decoder = DataDecoder.Factory.create(type);
+    /**
+     * Set the binding value data type.
+     *
+     * @param type The data type.
+     * @return <code>this</code> Value configuration instance.
+     */
+    public Value setType(Class<?> type) {
+        this.decoder = DataDecoder.Factory.create(type);
 
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * The {@link org.milyn.javabean.DataDecoder} to be used for decoding
+    /**
+     * The {@link org.milyn.commons.javabean.DataDecoder} to be used for decoding
      * the data value.
-	 *
-	 * @param targetNamespace The {@link org.milyn.javabean.DataDecoder}
-	 * @return <code>this</code> Value configuration instance.
-	 */
-	public Value setDecoder(DataDecoder dataDecoder) {
-		this.decoder = dataDecoder;
+     *
+     * @param targetNamespace The {@link org.milyn.commons.javabean.DataDecoder}
+     * @return <code>this</code> Value configuration instance.
+     */
+    public Value setDecoder(DataDecoder dataDecoder) {
+        this.decoder = dataDecoder;
 
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * Used by Smooks to retrieve the visitor configuration of this Value Configuration
-	 */
-	public void addVisitors(VisitorConfigMap visitorMap) {
+    /**
+     * Used by Smooks to retrieve the visitor configuration of this Value Configuration
+     */
+    public void addVisitors(VisitorConfigMap visitorMap) {
 
-		ValueBinder binder = new ValueBinder(getBeanId());
-		SmooksResourceConfiguration populatorConfig = new SmooksResourceConfiguration(dataSelector);
+        ValueBinder binder = new ValueBinder(getBeanId());
+        SmooksResourceConfiguration populatorConfig = new SmooksResourceConfiguration(dataSelector);
 
-		SelectorPropertyResolver.resolveSelectorTokens(populatorConfig);
+        SelectorPropertyResolver.resolveSelectorTokens(populatorConfig);
 
-		binder.setDecoder(decoder);
-		binder.setDefaultValue(defaultValue);
-		binder.setValueAttributeName(populatorConfig.getStringParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME));
+        binder.setDecoder(decoder);
+        binder.setDefaultValue(defaultValue);
+        binder.setValueAttributeName(populatorConfig.getStringParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME));
 
-		visitorMap.addVisitor(binder, populatorConfig.getSelector(), targetNamespace, true);
-	}
+        visitorMap.addVisitor(binder, populatorConfig.getSelector(), targetNamespace, true);
+    }
 
 }

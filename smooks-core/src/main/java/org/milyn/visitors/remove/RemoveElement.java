@@ -15,29 +15,23 @@
 */
 package org.milyn.visitors.remove;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.io.NullWriter;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.Filter;
 import org.milyn.delivery.dom.DOMVisitAfter;
-import org.milyn.delivery.sax.DefaultSAXElementSerializer;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.io.NullWriter;
-import org.milyn.util.FreeMarkerTemplate;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Remove Element.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAfter {
@@ -54,7 +48,7 @@ public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAft
         // Claim ownership of the writer for this fragment element...
         Writer writer = element.getWriter(this);
 
-        if(!keepChildren) {
+        if (!keepChildren) {
             // Swap in a NullWriter instance for the whole fragment...
             element.setWriter(new NullWriter(), this);
             // Stash the real writer instance on the element so we can reset it at the end...
@@ -65,7 +59,7 @@ public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAft
     }
 
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(!keepChildren) {
+        if (!keepChildren) {
             // Reset the writer...
             element.setWriter((Writer) element.getCache(this), this);
         }

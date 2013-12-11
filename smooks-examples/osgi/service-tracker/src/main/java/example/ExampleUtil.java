@@ -8,7 +8,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.payload.JavaResult;
 
 import example.model.Order;

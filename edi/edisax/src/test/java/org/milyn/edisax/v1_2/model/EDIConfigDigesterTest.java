@@ -16,13 +16,13 @@
 
 package org.milyn.edisax.v1_2.model;
 
-import static org.milyn.io.StreamUtils.readStream;
+import static org.milyn.commons.io.StreamUtils.readStream;
 import junit.framework.TestCase;
 import org.milyn.edisax.model.EDIConfigDigester;
 import org.milyn.edisax.model.internal.*;
 import org.milyn.edisax.EDIConfigurationException;
-import org.milyn.javabean.decoders.DateDecoder;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.javabean.decoders.DateDecoder;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.xml.sax.SAXException;
 
 import java.io.InputStream;

@@ -15,20 +15,20 @@
 */
 package org.milyn.delivery;
 
-import org.milyn.SmooksException;
-import org.milyn.util.CollectionsUtil;
-import org.milyn.cdr.annotation.Config;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.Config;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.util.CollectionsUtil;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
+import org.milyn.delivery.ordering.Producer;
 import org.milyn.delivery.sax.DynamicSAXElementVisitorList;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXElementVisitor;
 import org.milyn.delivery.sax.SAXText;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.delivery.ordering.Producer;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,14 +37,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.Stack;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * DOM Node Model creator.
  * <p/>
  * Adds the visited element as a node model.
- *
+ * <p/>
  * <h2>Mixing DOM and SAX</h2>
  * When used with SAX filtering, this visitor will construct a DOM Fragment of the visited
  * element.  This allows DOM utilities to be used in a Streaming environment.
@@ -139,10 +139,10 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
     private void pushCreator(DOMCreator domCreator, ExecutionContext executionContext) {
         Stack<DOMCreator> domCreatorStack = (Stack<DOMCreator>) executionContext.getAttribute(DOMCreator.class);
 
-        if(domCreatorStack == null) {
+        if (domCreatorStack == null) {
             domCreatorStack = new Stack<DOMCreator>();
             executionContext.setAttribute(DOMCreator.class, domCreatorStack);
-        } else if(!domCreatorStack.isEmpty()) {
+        } else if (!domCreatorStack.isEmpty()) {
             // We need to remove the current DOMCreator from the dynamic visitor list because
             // we want to stop nodes being added to it and instead, have them added to the new
             // DOM.  This prevents a single huge DOM being created for a huge message (being processed
@@ -159,12 +159,12 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
     public Document popCreator(ExecutionContext executionContext) {
         Stack<DOMCreator> domCreatorStack = (Stack<DOMCreator>) executionContext.getAttribute(DOMCreator.class);
 
-        if(domCreatorStack == null) {
+        if (domCreatorStack == null) {
             throw new IllegalStateException("No DOM Creator Stack available.");
         } else {
             try {
                 // Remove the current DOMCreators from the dynamic visitor list...
-                if(!domCreatorStack.isEmpty()) {
+                if (!domCreatorStack.isEmpty()) {
                     DOMCreator removedCreator = domCreatorStack.pop();
                     DynamicSAXElementVisitorList.removeDynamicVisitor(removedCreator, executionContext);
 
@@ -174,7 +174,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
                 }
             } finally {
                 // Reinstate parent DOMCreators in the dynamic visitor list...
-                if(!domCreatorStack.isEmpty()) {
+                if (!domCreatorStack.isEmpty()) {
                     DynamicSAXElementVisitorList.addDynamicVisitor(domCreatorStack.peek(), executionContext);
                 }
             }
@@ -194,7 +194,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             Element domElement = element.toDOMElement(document);
 
-            if(currentNode == document) {
+            if (currentNode == document) {
                 addNodeModel(domElement, executionContext);
             }
 
@@ -203,12 +203,12 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
         }
 
         public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
-            if(currentNode == document) {
+            if (currentNode == document) {
                 // Just ignore for now...
                 return;
             }
 
-            if(childText.getText().trim().length() == 0) {
+            if (childText.getText().trim().length() == 0) {
                 // Ignore pure whitespace...
                 return;
             }

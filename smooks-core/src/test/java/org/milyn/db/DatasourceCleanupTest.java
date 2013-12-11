@@ -17,7 +17,7 @@ package org.milyn.db;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 
@@ -48,7 +48,7 @@ public class DatasourceCleanupTest extends TestCase {
         try {
             smooks.filterSource(new StringSource("<a><b/><c/></a>"));
             fail("Expected exception...");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             // Expected
         }
 

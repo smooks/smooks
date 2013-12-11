@@ -17,10 +17,10 @@
 package org.milyn.flatfile.regex;
 
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecoder;
 import org.milyn.flatfile.RecordParser;
 import org.milyn.flatfile.variablefield.VariableFieldRecordParserFactory;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.javabean.DataDecoder;
 
 import java.util.regex.Pattern;
 
@@ -40,6 +40,7 @@ public class RegexParserFactory extends VariableFieldRecordParserFactory {
 
     /**
      * Get the Regex Pattern instance to be used for parsing.
+     *
      * @return The Regex Pattern instance to be used for parsing.
      */
     public Pattern getRegexPattern() {

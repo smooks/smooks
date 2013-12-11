@@ -15,8 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
 
 import java.io.IOException;
 
@@ -31,8 +31,9 @@ public interface SAXVisitAfter extends SAXVisitor {
      *
      * @param element          The SAX element being visited.
      * @param executionContext Execution context.
-     * @throws org.milyn.SmooksException Event processing failure.
-     * @throws java.io.IOException     Error writing event to output writer.
+     * @throws org.milyn.commons.SmooksException
+     *                             Event processing failure.
+     * @throws java.io.IOException Error writing event to output writer.
      */
     void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException;
 }

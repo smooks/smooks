@@ -15,15 +15,23 @@
 */
 package org.milyn.routing.db;
 
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.util.DollarBraceDecoder;
-import org.milyn.util.MVELTemplate;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.util.DollarBraceDecoder;
+import org.milyn.commons.xml.XmlUtil;
 import org.milyn.javabean.expression.BeanMapExpressionEvaluator;
+import org.milyn.util.MVELTemplate;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SQL Statement Executor.
@@ -185,8 +193,8 @@ public class StatementExec {
             Object value;
             try {
                 value = statementExpressionEvaluators.get(i).getValue(beanMap);
-            } catch(Throwable t) {
-                SQLException e =  new SQLException("Error evaluting expression '" + statementExpressionEvaluators.get(i).getExpression() + "' on map " + beanMap);
+            } catch (Throwable t) {
+                SQLException e = new SQLException("Error evaluting expression '" + statementExpressionEvaluators.get(i).getExpression() + "' on map " + beanMap);
                 e.initCause(t);
                 throw e;
             }

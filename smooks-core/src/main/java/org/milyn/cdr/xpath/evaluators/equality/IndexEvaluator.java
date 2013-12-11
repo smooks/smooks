@@ -15,11 +15,11 @@
 */
 package org.milyn.cdr.xpath.evaluators.equality;
 
-import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
 import org.milyn.cdr.xpath.SelectorStep;
-import org.milyn.delivery.sax.SAXElement;
+import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
-import org.milyn.xml.DomUtils;
+import org.milyn.delivery.sax.SAXElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,7 +42,7 @@ public class IndexEvaluator extends XPathExpressionEvaluator {
         this.index = index;
         elementName = selectorStep.getTargetElement().getLocalPart();
         elementNS = selectorStep.getTargetElement().getNamespaceURI();
-        if(elementNS == XMLConstants.NULL_NS_URI) {
+        if (elementNS == XMLConstants.NULL_NS_URI) {
             elementNS = null;
         }
     }
@@ -62,7 +62,7 @@ public class IndexEvaluator extends XPathExpressionEvaluator {
     public boolean evaluate(Element element, ExecutionContext executionContext) {
         Node parent = element.getParentNode();
 
-        if(parent == null) {
+        if (parent == null) {
             return (index == 0);
         }
 
@@ -70,16 +70,16 @@ public class IndexEvaluator extends XPathExpressionEvaluator {
         int count = 0;
         int siblingCount = siblings.getLength();
 
-        for(int i = 0; i < siblingCount; i++) {
+        for (int i = 0; i < siblingCount; i++) {
             Node sibling = siblings.item(i);
 
-            if(sibling.getNodeType() == Node.ELEMENT_NODE && DomUtils.getName((Element) sibling).equalsIgnoreCase(elementName)) {
-                if(elementNS == null || elementNS.equals(sibling.getNamespaceURI())) {
+            if (sibling.getNodeType() == Node.ELEMENT_NODE && DomUtils.getName((Element) sibling).equalsIgnoreCase(elementName)) {
+                if (elementNS == null || elementNS.equals(sibling.getNamespaceURI())) {
                     count++;
                 }
             }
 
-            if(sibling == element) {
+            if (sibling == element) {
                 break;
             }
         }

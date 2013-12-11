@@ -15,6 +15,16 @@
 */
 package example;
 
+import org.milyn.Smooks;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.util.HsqlServer;
+import org.milyn.container.ExecutionContext;
+import org.milyn.event.report.HtmlReportGenerator;
+import org.milyn.routing.db.StatementExec;
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -27,19 +37,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.transform.stream.StreamSource;
-
-import org.milyn.Smooks;
-import org.milyn.SmooksException;
-import org.milyn.container.ExecutionContext;
-import org.milyn.event.report.HtmlReportGenerator;
-import org.milyn.routing.db.StatementExec;
-import org.milyn.io.StreamUtils;
-import org.milyn.util.HsqlServer;
-import org.xml.sax.SAXException;
-
 /**
  * Simple example main class.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class Main {
@@ -76,10 +76,10 @@ public class Main {
     }
 
     protected void runSmooksTransform() throws IOException, SAXException, SmooksException {
-    	Locale defaultLocale = Locale.getDefault();
-    	Locale.setDefault(new Locale("en", "IE"));
-    	
-    	Smooks smooks = new Smooks("./smooks-configs/smooks-config.xml");
+        Locale defaultLocale = Locale.getDefault();
+        Locale.setDefault(new Locale("en", "IE"));
+
+        Smooks smooks = new Smooks("./smooks-configs/smooks-config.xml");
 
         try {
             ExecutionContext executionContext = smooks.createExecutionContext();
@@ -117,10 +117,10 @@ public class Main {
 
     private void printResultSet(String name, List<Map<String, Object>> resultSet) {
         System.out.println(("---- " + name + " -------------------------------------------------------------------------------------------------").substring(0, 80));
-        if(resultSet.isEmpty()) {
+        if (resultSet.isEmpty()) {
             System.out.println("(No rows)");
         } else {
-            for(int i = 0; i < resultSet.size(); i++) {
+            for (int i = 0; i < resultSet.size(); i++) {
                 Set<Map.Entry<String, Object>> row = resultSet.get(i).entrySet();
 
                 System.out.println("Row " + i + ":");

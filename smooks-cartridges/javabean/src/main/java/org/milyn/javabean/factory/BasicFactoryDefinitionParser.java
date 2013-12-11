@@ -18,7 +18,7 @@ package org.milyn.javabean.factory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.milyn.container.ExecutionContext;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

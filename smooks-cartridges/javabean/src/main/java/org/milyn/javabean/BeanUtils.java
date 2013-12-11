@@ -17,10 +17,10 @@ package org.milyn.javabean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;

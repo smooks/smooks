@@ -16,7 +16,7 @@
 
 package org.milyn.javabean.dynamic;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * Bean Registration Exception.

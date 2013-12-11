@@ -19,7 +19,10 @@ package org.milyn.delivery.dom;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.delivery.ContentHandlerConfigMapTable;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * Mock ContentDeliveryConfig for DOM. 

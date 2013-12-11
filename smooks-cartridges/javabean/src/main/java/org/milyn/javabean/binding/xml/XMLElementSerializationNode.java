@@ -21,7 +21,7 @@ import org.milyn.javabean.binding.SerializationContext;
 import org.milyn.javabean.binding.model.get.Getter;
 import org.milyn.javabean.binding.model.get.GetterGraph;
 import org.milyn.javabean.gen.model.ClassConfig;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.xml.XmlUtil;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;

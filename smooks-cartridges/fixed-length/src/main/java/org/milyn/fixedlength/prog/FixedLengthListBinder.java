@@ -17,7 +17,7 @@ package org.milyn.fixedlength.prog;
 
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.fixedlength.FixedLengthBinding;
 import org.milyn.fixedlength.FixedLengthBindingType;
 import org.milyn.fixedlength.FixedLengthReaderConfigurator;

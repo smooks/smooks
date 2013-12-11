@@ -18,10 +18,10 @@ package org.milyn.javabean;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.cdr.Parameter;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.Config;
@@ -51,7 +51,7 @@ import org.milyn.javabean.factory.FactoryDefinitionParser.FactoryDefinitionParse
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.util.CollectionsUtil;
+import org.milyn.commons.util.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import java.io.IOException;

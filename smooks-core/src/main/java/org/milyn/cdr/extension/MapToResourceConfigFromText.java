@@ -17,13 +17,13 @@ package org.milyn.cdr.extension;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import java.util.EmptyStackException;
@@ -55,8 +55,8 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
         String value = DomUtils.getAllText(element, false);
         String mapToPropertyName = mapTo;
 
-        if(mapToPropertyName == null) {
-            if(mapToSpecifier == null) {
+        if (mapToPropertyName == null) {
+            if (mapToSpecifier == null) {
                 throw new SmooksException("One of attributes 'mapTo' or 'mapToSpecifier' must be specified.");
             }
             mapToPropertyName = DomUtils.getAttributeValue(element, mapToSpecifier);
@@ -73,14 +73,14 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
         }
 
         if (value == null) {
-        	if(logger.isDebugEnabled()) {
-        		logger.debug("Not setting property '" + mapToPropertyName + "' on resource configuration.  Element '" + DomUtils.getName(element) + "' text value is null.  You may need to set a default value in the binding configuration.");
-        	}
+            if (logger.isDebugEnabled()) {
+                logger.debug("Not setting property '" + mapToPropertyName + "' on resource configuration.  Element '" + DomUtils.getName(element) + "' text value is null.  You may need to set a default value in the binding configuration.");
+            }
             return;
         } else {
-        	if(logger.isDebugEnabled()) {
-        		logger.debug("Setting property '" + mapToPropertyName + "' on resource configuration to a value of '" + value + "'.");
-        	}
+            if (logger.isDebugEnabled()) {
+                logger.debug("Setting property '" + mapToPropertyName + "' on resource configuration to a value of '" + value + "'.");
+            }
         }
 
         ResourceConfigUtil.setProperty(config, mapToPropertyName, value, element, executionContext);

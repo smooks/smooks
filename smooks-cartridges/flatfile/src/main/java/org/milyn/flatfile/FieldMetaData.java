@@ -17,8 +17,8 @@
 package org.milyn.flatfile;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.function.StringFunctionExecutor;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.function.StringFunctionExecutor;
 
 /**
  * Flat file record field metadata.

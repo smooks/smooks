@@ -17,28 +17,29 @@
 package org.milyn.container.standalone;
 
 
-import java.io.IOException;
-
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
-import org.milyn.profile.DefaultProfileSet;
+import org.milyn.commons.profile.DefaultProfileSet;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
 
 public class PreconfiguredSmooks extends Smooks {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("firefox", new String[] {"html4", "html"}), this);
+    /**
+     * Public Constructor.
+     *
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PreconfiguredSmooks() throws SAXException, IOException {
+        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6w", new String[]{"msie6", "html4", "html"}), this);
+        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6m", new String[]{"msie6", "html4", "html"}), this);
+        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6", new String[]{"html4", "html"}), this);
+        SmooksUtil.registerProfileSet(DefaultProfileSet.create("firefox", new String[]{"html4", "html"}), this);
 
         addConfigurations("/cdr/parameters.cdrl", getClass().getResourceAsStream("/cdr/parameters.cdrl"));
         addConfigurations("/cdr/test.cdrl", getClass().getResourceAsStream("/cdr/test.cdrl"));
-	}
+    }
 
 }

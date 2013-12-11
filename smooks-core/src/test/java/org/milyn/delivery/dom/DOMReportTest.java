@@ -16,19 +16,9 @@
 package org.milyn.delivery.dom;
 
 import junit.framework.TestCase;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.StringReader;
-import java.io.ByteArrayInputStream;
-
-import org.xml.sax.SAXException;
-import org.milyn.Smooks;
-import org.milyn.io.StreamUtils;
-import org.milyn.event.report.FlatReportGenerator;
-import org.milyn.container.ExecutionContext;
-
-import javax.xml.transform.stream.StreamSource;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

@@ -15,22 +15,20 @@
 */
 package example.model;
 
-import org.milyn.javabean.DataDecoder;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecoder;
 
-import java.util.regex.Pattern;
-import java.util.Vector;
 import java.util.List;
+import java.util.Vector;
+import java.util.regex.Pattern;
 
 /**
  * Decoder for the Tracking numbers.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class TrackingNumberDecoder implements DataDecoder {
-    
+
     private static Pattern lineSplitter = Pattern.compile("$", Pattern.MULTILINE);
 
     public Object decode(String historyText) throws DataDecodeException {
@@ -43,7 +41,7 @@ public class TrackingNumberDecoder implements DataDecoder {
         for (int i = 0; i < unparsedTrackingNumber.length; i++) {
             String[] tokens = unparsedTrackingNumber[i].trim().split(":");
 
-            if(tokens.length == 2) {
+            if (tokens.length == 2) {
                 TrackingNumber trackingNumber = new TrackingNumber();
 
                 trackingNumber.setShipperID(tokens[0]);

@@ -16,14 +16,14 @@
 
 package org.milyn.cdr;
 
+import org.milyn.Smooks;
+import org.milyn.SmooksUtil;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.delivery.ContentDeliveryConfig;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.milyn.delivery.ContentDeliveryConfig;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.Smooks;
-import org.milyn.SmooksUtil;
 
 /**
  * Accessor class for looking up global parameters.

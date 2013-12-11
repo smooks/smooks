@@ -15,19 +15,19 @@
 */
 package org.milyn.cdr.extension;
 
-import java.util.EmptyStackException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
+
+import java.util.EmptyStackException;
 
 /**
  * Map a property value onto the current {@link SmooksResourceConfiguration} based on an
@@ -42,7 +42,7 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
 
     private static Log logger = LogFactory.getLog(MapToResourceConfigFromAttribute.class);
 
-    @ConfigParam(use=Use.OPTIONAL)
+    @ConfigParam(use = Use.OPTIONAL)
     private String mapTo;
 
     @ConfigParam(use = ConfigParam.Use.OPTIONAL)
@@ -60,13 +60,13 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
 
         String actualMapTo = mapTo;
 
-        if(actualMapTo == null && mapToSpecifier != null) {
-        	actualMapTo = DomUtils.getAttributeValue(element, mapToSpecifier);
+        if (actualMapTo == null && mapToSpecifier != null) {
+            actualMapTo = DomUtils.getAttributeValue(element, mapToSpecifier);
         }
-        
+
         //If no mapTo is set then the attribute value becomes the mapTo value
-        if(actualMapTo == null) {
-        	actualMapTo = attribute;
+        if (actualMapTo == null) {
+            actualMapTo = attribute;
         }
 
         try {
@@ -80,14 +80,14 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
         }
 
         if (value == null) {
-        	if(logger.isDebugEnabled()) {
-        		logger.debug("Not setting property '" + actualMapTo + "' on resource configuration.  Attribute '" + attribute + "' value on element '" + DomUtils.getName(element) + "' is null.  You may need to set a default value in the binding configuration.");
-        	}
+            if (logger.isDebugEnabled()) {
+                logger.debug("Not setting property '" + actualMapTo + "' on resource configuration.  Attribute '" + attribute + "' value on element '" + DomUtils.getName(element) + "' is null.  You may need to set a default value in the binding configuration.");
+            }
             return;
         } else {
-        	if(logger.isDebugEnabled()) {
-        		logger.debug("Setting property '" + actualMapTo + "' on resource configuration to a value of '" + value + "'.");
-        	}
+            if (logger.isDebugEnabled()) {
+                logger.debug("Setting property '" + actualMapTo + "' on resource configuration to a value of '" + value + "'.");
+            }
         }
 
         ResourceConfigUtil.setProperty(config, actualMapTo, value, executionContext);

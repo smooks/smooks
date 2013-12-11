@@ -16,7 +16,7 @@
 
 package org.milyn.javabean.binding.xml;
 
-import org.milyn.javabean.DataEncoder;
+import org.milyn.commons.javabean.DataEncoder;
 import org.milyn.javabean.binding.SerializationContext;
 import org.milyn.javabean.binding.model.get.Getter;
 import org.milyn.javabean.binding.model.get.GetterGraph;
@@ -73,17 +73,17 @@ public abstract class XMLSerializationNode {
     public abstract void serialize(Writer outputStream, SerializationContext context) throws IOException;
 
     protected String getValue(SerializationContext context) {
-        if(nodeGetter != null) {
+        if (nodeGetter != null) {
             Object value = context.getValue(nodeGetter.contextObjectName, nodeGetter.getter);
 
-            if(value == null) {
+            if (value == null) {
                 value = defaultVal;
-                if(value == null) {
+                if (value == null) {
                     return null;
                 }
             }
 
-            if(encoder != null) {
+            if (encoder != null) {
                 return encoder.encode(value);
             } else {
                 return value.toString();
@@ -117,7 +117,7 @@ public abstract class XMLSerializationNode {
         String prefix = qName.getPrefix();
         String localPart = qName.getLocalPart();
 
-        if(prefix != null && !prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+        if (prefix != null && !prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
             outputStream.write(prefix);
             outputStream.write(":");
         }
@@ -125,8 +125,8 @@ public abstract class XMLSerializationNode {
     }
 
     public static <T extends XMLSerializationNode> T getNode(QName qName, Collection<T> nodeList) {
-        for(T node : nodeList) {
-            if(node.getQName().equals(qName)) {
+        for (T node : nodeList) {
+            if (node.getQName().equals(qName)) {
                 return node;
             }
         }
@@ -146,7 +146,7 @@ public abstract class XMLSerializationNode {
     }
 
     protected boolean hasData(SerializationContext context) {
-        if(nodeGetter == null || context.getValue(nodeGetter.contextObjectName, nodeGetter.getter) != null) {
+        if (nodeGetter == null || context.getValue(nodeGetter.contextObjectName, nodeGetter.getter) != null) {
             return true;
         }
         return false;

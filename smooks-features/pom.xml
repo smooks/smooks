@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>milyn</artifactId>
+        <groupId>org.milyn</groupId>
+        <version>1.6-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.milyn</groupId>
+    <artifactId>smooks-features</artifactId>
+    <name>Milyn Smooks Features</name>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>${project.build.directory}</targetPath>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <version>3.0.0.RC1</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>my-generate-kar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>features-create-kar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <featuresFile>${project.build.directory}/features.xml</featuresFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

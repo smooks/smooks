@@ -15,14 +15,14 @@
 */
 package org.milyn.delivery.lifecyclecleanup;
 
-import org.milyn.SmooksException;
+import junit.framework.TestCase;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.ExecutionLifecycleCleanable;
 import org.milyn.delivery.dom.DOMVisitBefore;
 import org.milyn.delivery.dom.Phase;
 import org.milyn.delivery.dom.VisitPhase;
 import org.w3c.dom.Element;
-import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -33,7 +33,7 @@ public class DomAssemblyBefore implements DOMVisitBefore, ExecutionLifecycleClea
     public static boolean cleaned;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(cleaned) {
+        if (cleaned) {
             TestCase.fail("Resource shouldn't be clened yet!");
         }
     }

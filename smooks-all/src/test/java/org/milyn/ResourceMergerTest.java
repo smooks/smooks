@@ -34,7 +34,7 @@ import java.util.jar.Manifest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.milyn.archive.Archive;
+import org.milyn.commons.archive.Archive;
 
 /**
  * Unit test for {@link ResourceMerger}.

@@ -15,18 +15,17 @@
 */
 package org.milyn.cdr.xpath.evaluators;
 
-import org.milyn.delivery.sax.SAXElement;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.container.ExecutionContext;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
+import org.milyn.delivery.sax.SAXElement;
 import org.w3c.dom.Element;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Predicates Evaluator.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class PredicatesEvaluator extends XPathExpressionEvaluator {
@@ -45,8 +44,8 @@ public class PredicatesEvaluator extends XPathExpressionEvaluator {
     }
 
     public boolean evaluate(SAXElement element, ExecutionContext executionContext) {
-        for(int i = 0; i < evalCount; i++) {
-            if(!evaluators.get(i).evaluate(element, executionContext)) {
+        for (int i = 0; i < evalCount; i++) {
+            if (!evaluators.get(i).evaluate(element, executionContext)) {
                 return false;
             }
         }
@@ -54,8 +53,8 @@ public class PredicatesEvaluator extends XPathExpressionEvaluator {
     }
 
     public boolean evaluate(Element element, ExecutionContext executionContext) {
-        for(int i = 0; i < evalCount; i++) {
-            if(!evaluators.get(i).evaluate(element, executionContext)) {
+        for (int i = 0; i < evalCount; i++) {
+            if (!evaluators.get(i).evaluate(element, executionContext)) {
                 return false;
             }
         }
@@ -65,9 +64,9 @@ public class PredicatesEvaluator extends XPathExpressionEvaluator {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        if(!evaluators.isEmpty()) {
-            for(XPathExpressionEvaluator evaluator : evaluators) {
-                if(builder.length() > 0) {
+        if (!evaluators.isEmpty()) {
+            for (XPathExpressionEvaluator evaluator : evaluators) {
+                if (builder.length() > 0) {
                     builder.append(" and ");
                 }
                 builder.append(evaluator);

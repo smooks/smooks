@@ -17,46 +17,52 @@
 package org.milyn.container;
 
 import org.milyn.cdr.SmooksResourceConfigurationStore;
-import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.milyn.resource.ContainerResourceLocator;
+import org.milyn.commons.profile.ProfileStore;
+import org.milyn.commons.resource.ContainerResourceLocator;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
-import org.milyn.profile.ProfileStore;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 
 import java.util.Collection;
 
 /**
  * Smooks Application context interface definition.
+ *
  * @author tfennelly
  */
 public interface ApplicationContext extends BoundAttributeStore {
 
     /**
-	 * Get the container resource locator for the context.
-	 * @return ContainerResourceLocator for the context.
-	 */
-	public abstract ContainerResourceLocator getResourceLocator();
+     * Get the container resource locator for the context.
+     *
+     * @return ContainerResourceLocator for the context.
+     */
+    public abstract ContainerResourceLocator getResourceLocator();
 
     /**
      * Set the resource locator for this Smooks application context.
+     *
      * @param resourceLocator The Resource locator.
      */
     public void setResourceLocator(ContainerResourceLocator resourceLocator);
 
     /**
-	 * Get the Store for from the container application context.
-	 * @return SmooksResourceConfigurationStore instance.
-	 */
-	public abstract SmooksResourceConfigurationStore getStore();
+     * Get the Store for from the container application context.
+     *
+     * @return SmooksResourceConfigurationStore instance.
+     */
+    public abstract SmooksResourceConfigurationStore getStore();
 
     /**
-	 * Get the ProfileStore in use within this Context.
-	 * @return The ProfileStore.
-	 */
+     * Get the ProfileStore in use within this Context.
+     *
+     * @return The ProfileStore.
+     */
     public ProfileStore getProfileStore();
 
     /**
      * Get the BeanIdStore in use within this Context
+     *
      * @return The BeanIdStore
      */
     public BeanIdStore getBeanIdStore();

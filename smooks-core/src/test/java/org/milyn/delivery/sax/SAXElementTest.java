@@ -16,7 +16,7 @@
 package org.milyn.delivery.sax;
 
 import junit.framework.TestCase;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.xml.sax.helpers.AttributesImpl;
 
 
@@ -88,7 +88,7 @@ public class SAXElementTest extends TestCase {
         try {
             saxElement1.getTextContent();
             fail("Expected SmooksException.");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("Illegal call to getTextContent().  SAXElement instance not accumulating SAXText Objects.  You must call SAXElement.accumulateText(), or annotate the Visitor implementation class with the @TextConsumer annotation.", e.getMessage());
         }
 
@@ -101,9 +101,9 @@ public class SAXElementTest extends TestCase {
         saxElement1.getText().add(new SAXText("Text2", TextType.CDATA));
         assertEquals("Text1<![CDATA[Text2]]>", saxElement1.getTextContent());
 
-            // Interleave with adding test to saxElement2...
-            saxElement2.getText().add(new SAXText("XXXXXX", TextType.TEXT));
-            saxElement2.getText().add(new SAXText("yyyyyyyy", TextType.CDATA));
+        // Interleave with adding test to saxElement2...
+        saxElement2.getText().add(new SAXText("XXXXXX", TextType.TEXT));
+        saxElement2.getText().add(new SAXText("yyyyyyyy", TextType.CDATA));
 
         saxElement1.getText().add(new SAXText("Text3", TextType.COMMENT));
         assertEquals("Text1<![CDATA[Text2]]><!--Text3-->", saxElement1.getTextContent());

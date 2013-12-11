@@ -6,7 +6,7 @@ import groovy.xml.DOMBuilder;
 
 import org.milyn.container.ExecutionContext
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.javabean.repository.BeanRepository;
 import org.milyn.javabean.context.BeanContext;
 
@@ -15,8 +15,8 @@ import org.milyn.delivery.DOMModel
 import org.milyn.delivery.dom.DOMVisitBefore
 import org.milyn.delivery.dom.DOMVisitAfter
 import org.milyn.delivery.dom.serialize.Serializer
-import org.milyn.xml.*;
-import org.milyn.io.NullWriter;
+import org.milyn.commons.xml.*;
+import org.milyn.commons.io.NullWriter;
 
 import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.delivery.sax.SAXVisitAfter;

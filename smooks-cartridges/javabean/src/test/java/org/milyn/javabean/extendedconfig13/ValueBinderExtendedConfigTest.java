@@ -28,7 +28,7 @@ import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.payload.JavaResult;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 import org.xml.sax.SAXException;
 
 public class ValueBinderExtendedConfigTest extends TestCase {

@@ -18,7 +18,7 @@ package org.milyn.javabean.binding.xml;
 
 import org.milyn.javabean.binding.SerializationContext;
 import org.milyn.javabean.binding.model.Bean;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.xml.XmlUtil;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;

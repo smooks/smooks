@@ -14,7 +14,7 @@
  */
 package org.milyn.smooks.camel.routing;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.expression.ExecutionContextExpressionEvaluator;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;

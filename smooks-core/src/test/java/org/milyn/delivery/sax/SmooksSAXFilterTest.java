@@ -16,56 +16,50 @@
 package org.milyn.delivery.sax;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.milyn.Smooks;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.container.ExecutionContext;
+import org.xml.sax.SAXException;
 
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.milyn.Smooks;
-import org.milyn.container.ExecutionContext;
-import org.milyn.io.StreamUtils;
-import org.xml.sax.SAXException;
-
 /**
  * Unit test for SmooksSAXFilter
- * 
- * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>			
  *
+ * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
-public class SmooksSAXFilterTest
-{
-	private byte[] input;
-	private ExecutionContext context;
-	private SmooksSAXFilter saxFilter;
-	
-	@Test
-	public void doFilter_verify_that_flush_is_called() throws IOException
-	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		StreamResult result = new StreamResult( baos );
-		
-		saxFilter.doFilter( new StreamSource( new ByteArrayInputStream( input ) ), result );
-		
-		OutputStream outputStream = result.getOutputStream();
-		assertTrue( outputStream instanceof ByteArrayOutputStream );
-		
-		byte[] byteArray = ((ByteArrayOutputStream)outputStream).toByteArray();
-		assertTrue ( byteArray.length > 0 );
-	}
-	
-	@Before
-	public void setup() throws IOException, SAXException
-	{
+public class SmooksSAXFilterTest {
+    private byte[] input;
+    private ExecutionContext context;
+    private SmooksSAXFilter saxFilter;
+
+    @Test
+    public void doFilter_verify_that_flush_is_called() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        StreamResult result = new StreamResult(baos);
+
+        saxFilter.doFilter(new StreamSource(new ByteArrayInputStream(input)), result);
+
+        OutputStream outputStream = result.getOutputStream();
+        assertTrue(outputStream instanceof ByteArrayOutputStream);
+
+        byte[] byteArray = ((ByteArrayOutputStream) outputStream).toByteArray();
+        assertTrue(byteArray.length > 0);
+    }
+
+    @Before
+    public void setup() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         context = smooks.createExecutionContext();
-		input = StreamUtils.readStream( getClass().getResourceAsStream( "test-01.xml") );
-		saxFilter = new SmooksSAXFilter( context );
-	}
+        input = StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml"));
+        saxFilter = new SmooksSAXFilter(context);
+    }
 
 }

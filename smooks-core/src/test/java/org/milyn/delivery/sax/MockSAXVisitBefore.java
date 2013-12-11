@@ -15,32 +15,31 @@
 */
 package org.milyn.delivery.sax;
 
+import org.milyn.commons.SmooksException;
+import org.milyn.container.ExecutionContext;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.milyn.SmooksException;
-import org.milyn.container.ExecutionContext;
-
 /**
- * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class MockSAXVisitBefore implements SAXVisitBefore {
 
-	private List<String> elements = new ArrayList<String>();
-	
-	/* (non-Javadoc)
-	 * @see org.milyn.delivery.sax.SAXVisitBefore#visitBefore(org.milyn.delivery.sax.SAXElement, org.milyn.container.ExecutionContext)
-	 */
-	public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-		elements.add(element.getName().getLocalPart());
-	}
+    private List<String> elements = new ArrayList<String>();
 
-	/**
-	 * @return the elements
-	 */
-	public List<String> getElements() {
-		return elements;
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.delivery.sax.SAXVisitBefore#visitBefore(org.milyn.delivery.sax.SAXElement, org.milyn.container.ExecutionContext)
+     */
+    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        elements.add(element.getName().getLocalPart());
+    }
+
+    /**
+     * @return the elements
+     */
+    public List<String> getElements() {
+        return elements;
+    }
 }

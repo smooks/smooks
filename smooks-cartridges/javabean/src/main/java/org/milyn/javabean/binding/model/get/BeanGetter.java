@@ -17,7 +17,7 @@
 package org.milyn.javabean.binding.model.get;
 
 import org.milyn.javabean.binding.BeanSerializationException;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -27,8 +27,8 @@ import org.milyn.javabean.dynamic.BeanMetadata;
 import org.milyn.javabean.dynamic.BeanRegistrationException;
 import org.milyn.javabean.dynamic.Model;
 import org.milyn.javabean.dynamic.serialize.BeanWriter;
-import org.milyn.util.ClassUtil;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.util.ClassUtil;
+import org.milyn.commons.xml.XmlUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;

@@ -15,19 +15,13 @@
 */
 package org.milyn.cdr.xpath;
 
-import java.util.Properties;
-
+import junit.framework.TestCase;
 import org.jaxen.saxpath.SAXPathException;
+import org.milyn.commons.xml.XmlUtil;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.container.ExecutionContext;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.xml.XmlUtil;
-import org.xml.sax.helpers.AttributesImpl;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
-
-import javax.xml.namespace.QName;
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -244,7 +238,7 @@ public class SelectorStepBuilderTest extends TestCase {
         try {
             SelectorStepBuilder.buildSteps("x/@v/@c", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
+        } catch (SAXPathException e) {
             assertEquals("Error processing XPath selector expression 'x/@v/@c'.", e.getMessage());
             assertEquals("Attribute axis steps are only supported at the end of the expression.  'attribute::v' is not at the end.", e.getCause().getMessage());
         }
@@ -289,7 +283,7 @@ public class SelectorStepBuilderTest extends TestCase {
         try {
             SelectorStepBuilder.buildSteps("chapter[title=\"Introduction\"]", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
+        } catch (SAXPathException e) {
             assertEquals("Error processing XPath selector expression 'chapter[title=\"Introduction\"]'.", e.getMessage());
             assertEquals("Unsupported XPath value token 'child::title'.", e.getCause().getMessage());
         }
@@ -299,7 +293,7 @@ public class SelectorStepBuilderTest extends TestCase {
         try {
             SelectorStepBuilder.buildSteps("para[last()]", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
+        } catch (SAXPathException e) {
             assertEquals("Error processing XPath selector expression 'para[last()]'.", e.getMessage());
             assertEquals("Unsupported XPath expr token 'last()'.", e.getCause().getMessage());
         }
@@ -309,7 +303,7 @@ public class SelectorStepBuilderTest extends TestCase {
         try {
             SelectorStepBuilder.buildSteps("a/../para[last()]", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
+        } catch (SAXPathException e) {
             assertEquals("Error processing XPath selector expression 'a/../para[last()]'.", e.getMessage());
             assertEquals("XPath step 'parent::node()' not supported.", e.getCause().getMessage());
         }
@@ -319,7 +313,7 @@ public class SelectorStepBuilderTest extends TestCase {
         try {
             SelectorStepBuilder.buildSteps("employee[@secretary and @assistant]", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
+        } catch (SAXPathException e) {
             assertEquals("Error processing XPath selector expression 'employee[@secretary and @assistant]'.", e.getMessage());
             assertEquals("Unsupported XPath expr token 'attribute::secretary'.", e.getCause().getMessage());
         }
@@ -329,7 +323,7 @@ public class SelectorStepBuilderTest extends TestCase {
         try {
             SelectorStepBuilder.buildSteps("employee[/a/b/@c='xxx']", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
+        } catch (SAXPathException e) {
             assertEquals("Error processing XPath selector expression 'employee[/a/b/@c='xxx']'.", e.getMessage());
             assertEquals("Unsupported XPath value token '/child::a/child::b/attribute::c'.", e.getCause().getMessage());
         }
@@ -422,7 +416,7 @@ public class SelectorStepBuilderTest extends TestCase {
         assertEquals("**/b/c", SelectorStepBuilder.toString(steps));
         assertTrue(steps[0].isStarStar());
     }
-                    
+
     public void test_33() throws SAXPathException {
         SelectorStep[] steps = SelectorStepBuilder.buildSteps("a/**", namespaces);
         assertEquals("a/**", SelectorStepBuilder.toString(steps));
@@ -434,7 +428,7 @@ public class SelectorStepBuilderTest extends TestCase {
             // text() XPath nodes only supported in the last step
             SelectorStepBuilder.buildSteps("a[text() = 123]/b", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
+        } catch (SAXPathException e) {
             assertEquals("Unsupported XPath selector expression 'a[text() = 123]/b'.  XPath 'text()' tokens are only supported in the last step.", e.getMessage());
         }
     }

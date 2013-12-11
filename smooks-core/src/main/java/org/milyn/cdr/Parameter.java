@@ -1,9 +1,9 @@
 package org.milyn.cdr;
 
-import java.util.List;
-
 import org.milyn.delivery.ContentDeliveryConfig;
 import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * SmooksResourceConfiguration Parameter.

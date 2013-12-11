@@ -17,7 +17,7 @@ package org.milyn.javabean.jaxb;
 
 import junit.framework.TestCase;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.javabean.binding.xml.XMLBinding;
 import org.milyn.javabean.jaxb.model.POType;
 import org.milyn.payload.StringSource;

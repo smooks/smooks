@@ -17,9 +17,9 @@ package org.milyn.delivery.sax;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.lang.LangUtil;
 import org.milyn.container.ExecutionContext;
-import org.milyn.io.StreamUtils;
-import org.milyn.lang.LangUtil;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;

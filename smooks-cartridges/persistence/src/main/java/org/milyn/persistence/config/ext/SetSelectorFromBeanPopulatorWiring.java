@@ -16,10 +16,10 @@
 
 package org.milyn.persistence.config.ext;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.cdr.ConfigSearch;
 import org.milyn.cdr.Parameter;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.extension.ExtensionContext;

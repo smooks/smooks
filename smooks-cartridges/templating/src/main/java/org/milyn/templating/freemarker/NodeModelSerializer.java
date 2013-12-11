@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.w3c.dom.Element;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.xml.XmlUtil;
 
 /**
  * Serialize a NodeModel variable to the template stream.

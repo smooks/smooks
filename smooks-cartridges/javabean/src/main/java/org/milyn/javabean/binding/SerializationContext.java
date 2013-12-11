@@ -16,7 +16,7 @@
 
 package org.milyn.javabean.binding;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.javabean.binding.model.get.Getter;
 
 import java.util.LinkedHashMap;

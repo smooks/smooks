@@ -17,7 +17,7 @@
 package org.milyn.javabean.ext;
 
 import org.milyn.cdr.ConfigSearch;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.extension.ExtensionContext;
 import org.milyn.container.ExecutionContext;

@@ -15,20 +15,19 @@
 */
 package org.milyn.ejc;
 
-import org.milyn.assertion.AssertArgument;
-import org.milyn.edisax.model.internal.Edimap;
-import org.milyn.edisax.model.EdifactModel;
+import org.apache.commons.logging.Log;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.io.FileUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.edisax.EDIConfigurationException;
+import org.milyn.edisax.model.EdifactModel;
+import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.MappingNode;
 import org.milyn.edisax.util.IllegalNameException;
-import org.milyn.io.StreamUtils;
-import org.milyn.io.FileUtils;
+import static org.milyn.ejc.EJCLogFactory.Level;
 import org.milyn.javabean.pojogen.JClass;
 import org.xml.sax.SAXException;
-import org.apache.commons.logging.Log;
-import static org.milyn.ejc.EJCLogFactory.Level;
 
-import java.io.*;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -41,11 +40,11 @@ import java.util.Set;
  * <li>{@link org.milyn.ejc.BeanWriter} - generates javaimplementation from {@link org.milyn.ejc.ClassModel}.</li>
  * <li>{@link org.milyn.ejc.BindingWriter} - generates a bindingfile from {@link org.milyn.ejc.ClassModel}.</li>
  * </ol>
- *
+ * <p/>
  * <b>Example of how to execute the EJC:</b><br/>
  * EJC -p "package.name" -d "place/classes/in/directory/"  "path/to/edi-mapping-config"
  *
- * @author bardl  
+ * @author bardl
  */
 public class EJC {
 
@@ -80,7 +79,7 @@ public class EJC {
      * root class of the generated model.
      *
      * @param addEDIMessageAnnotation True if the annotation is to
-     * be added, otherwise false.
+     *                                be added, otherwise false.
      */
     public void addEDIMessageAnnotation(boolean addEDIMessageAnnotation) {
         this.addEDIMessageAnnotation = addEDIMessageAnnotation;
@@ -89,20 +88,21 @@ public class EJC {
     /**
      * Compiles a edi-mapping-configuration and generates java implementation and
      * bindingfile.
-     *
+     * <p/>
      * The compilation is performed in the following order:
      * 1. {@link ClassModelCompiler} - parse a edi-mapping-file a creates a {@link org.milyn.ejc.ClassModel}.
      * 2. {@link org.milyn.ejc.BeanWriter} - generates javaimplementation from {@link org.milyn.ejc.ClassModel}.
      * 3. {@link org.milyn.ejc.BindingWriter} - generates a bindingfile from {@link org.milyn.ejc.ClassModel}.
+     *
      * @param mappingModel the edi-mapping-configuration.
-     * @param configName the name of the edi-mapping-config.
-     * @param beanPackage the package name of generated java classes.
-     * @param beanFolder the folder to place the generated java classes.
+     * @param configName   the name of the edi-mapping-config.
+     * @param beanPackage  the package name of generated java classes.
+     * @param beanFolder   the folder to place the generated java classes.
      * @throws EDIConfigurationException When edi-mapping-configuration is badly formatted.
-     * @throws IOException When unable to read edi-mapping-configuration.
-     * @throws SAXException When edi-mapping-configuration is badly formatted.
-     * @throws IllegalNameException when name of java-classes is illegal.
-     * @throws ClassNotFoundException when error occurs while creating bindingfile.
+     * @throws IOException               When unable to read edi-mapping-configuration.
+     * @throws SAXException              When edi-mapping-configuration is badly formatted.
+     * @throws IllegalNameException      when name of java-classes is illegal.
+     * @throws ClassNotFoundException    when error occurs while creating bindingfile.
      * @deprecated Use {@link #compile(java.io.InputStream, String, String)}.
      */
     public void compile(InputStream mappingModel, String configName, String beanPackage, String beanFolder) throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
@@ -115,19 +115,20 @@ public class EJC {
     /**
      * Compiles a edi-mapping-configuration and generates java implementation and
      * bindingfile.
-     *
+     * <p/>
      * The compilation is performed in the following order:
      * 1. {@link ClassModelCompiler} - parse a edi-mapping-file a creates a {@link org.milyn.ejc.ClassModel}.
      * 2. {@link org.milyn.ejc.BeanWriter} - generates javaimplementation from {@link org.milyn.ejc.ClassModel}.
      * 3. {@link org.milyn.ejc.BindingWriter} - generates a bindingfile from {@link org.milyn.ejc.ClassModel}.
+     *
      * @param mappingModel the edi-mapping-configuration.
-     * @param beanPackage the package name of generated java classes.
-     * @param beanFolder the folder to place the generated java classes.
+     * @param beanPackage  the package name of generated java classes.
+     * @param beanFolder   the folder to place the generated java classes.
      * @throws EDIConfigurationException When edi-mapping-configuration is badly formatted.
-     * @throws IOException When unable to read edi-mapping-configuration.
-     * @throws SAXException When edi-mapping-configuration is badly formatted.
-     * @throws IllegalNameException when name of java-classes is illegal.
-     * @throws ClassNotFoundException when error occurs while creating bindingfile.
+     * @throws IOException               When unable to read edi-mapping-configuration.
+     * @throws SAXException              When edi-mapping-configuration is badly formatted.
+     * @throws IllegalNameException      when name of java-classes is illegal.
+     * @throws ClassNotFoundException    when error occurs while creating bindingfile.
      */
     public void compile(InputStream mappingModel, String beanPackage, String beanFolder) throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
         byte[] mappingModelBytes = StreamUtils.readStream(mappingModel);
@@ -140,19 +141,20 @@ public class EJC {
     /**
      * Compiles a edi-mapping-configuration and generates java implementation and
      * bindingfile.
-     *
+     * <p/>
      * The compilation is performed in the following order:
      * 1. {@link ClassModelCompiler} - parse a edi-mapping-file a creates a {@link org.milyn.ejc.ClassModel}.
      * 2. {@link org.milyn.ejc.BeanWriter} - generates javaimplementation from {@link org.milyn.ejc.ClassModel}.
      * 3. {@link org.milyn.ejc.BindingWriter} - generates a bindingfile from {@link org.milyn.ejc.ClassModel}.
+     *
      * @param mappingModel the edi-mapping-configuration.
-     * @param beanPackage the package name of generated java classes.
-     * @param beanFolder the folder to place the generated java classes.
+     * @param beanPackage  the package name of generated java classes.
+     * @param beanFolder   the folder to place the generated java classes.
      * @throws EDIConfigurationException When edi-mapping-configuration is badly formatted.
-     * @throws IOException When unable to read edi-mapping-configuration.
-     * @throws SAXException When edi-mapping-configuration is badly formatted.
-     * @throws IllegalNameException when name of java-classes is illegal.
-     * @throws ClassNotFoundException when error occurs while creating bindingfile.
+     * @throws IOException               When unable to read edi-mapping-configuration.
+     * @throws SAXException              When edi-mapping-configuration is badly formatted.
+     * @throws IllegalNameException      when name of java-classes is illegal.
+     * @throws ClassNotFoundException    when error occurs while creating bindingfile.
      */
     public ClassModel compile(Edimap mappingModel, String beanPackage, String beanFolder) throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
         return compile(mappingModel, beanPackage, beanFolder, null);
@@ -161,19 +163,20 @@ public class EJC {
     /**
      * Compiles a edi-mapping-configuration and generates java implementation and
      * bindingfile.
-     *
+     * <p/>
      * The compilation is performed in the following order:
      * 1. {@link ClassModelCompiler} - parse a edi-mapping-file a creates a {@link org.milyn.ejc.ClassModel}.
      * 2. {@link org.milyn.ejc.BeanWriter} - generates javaimplementation from {@link org.milyn.ejc.ClassModel}.
      * 3. {@link org.milyn.ejc.BindingWriter} - generates a bindingfile from {@link org.milyn.ejc.ClassModel}.
+     *
      * @param mappingModel the edi-mapping-configuration.
-     * @param beanPackage the package name of generated java classes.
-     * @param beanFolder the folder to place the generated java classes.
+     * @param beanPackage  the package name of generated java classes.
+     * @param beanFolder   the folder to place the generated java classes.
      * @throws EDIConfigurationException When edi-mapping-configuration is badly formatted.
-     * @throws IOException When unable to read edi-mapping-configuration.
-     * @throws SAXException When edi-mapping-configuration is badly formatted.
-     * @throws IllegalNameException when name of java-classes is illegal.
-     * @throws ClassNotFoundException when error occurs while creating bindingfile.
+     * @throws IOException               When unable to read edi-mapping-configuration.
+     * @throws SAXException              When edi-mapping-configuration is badly formatted.
+     * @throws IllegalNameException      when name of java-classes is illegal.
+     * @throws ClassNotFoundException    when error occurs while creating bindingfile.
      */
     public ClassModel compile(Edimap mappingModel, String beanPackage, String beanFolder, Map<MappingNode, JClass> commonTypes) throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
         ClassModel model = compile(mappingModel, beanPackage, commonTypes);
@@ -185,7 +188,7 @@ public class EJC {
 
         // If we haven't already created the mapping model...
         File mappingFile = new File(beanFolder + bundleConfigPath);
-        if(!mappingFile.exists()) {
+        if (!mappingFile.exists()) {
             FileWriter writer = new FileWriter(mappingFile);
             try {
                 mappingModel.write(writer);
@@ -201,35 +204,37 @@ public class EJC {
     /**
      * Compiles a edi-mapping-configuration and generates java implementation and
      * bindingfile.
-     *
+     * <p/>
      * The compilation is performed in the following order:
      * 1. {@link ClassModelCompiler} - parse a edi-mapping-file a creates a {@link org.milyn.ejc.ClassModel}.
      * 2. {@link org.milyn.ejc.BeanWriter} - generates javaimplementation from {@link org.milyn.ejc.ClassModel}.
      * 3. {@link org.milyn.ejc.BindingWriter} - generates a bindingfile from {@link org.milyn.ejc.ClassModel}.
+     *
      * @param mappingModel the edi-mapping-configuration.
-     * @param beanPackage the package name of generated java classes.
+     * @param beanPackage  the package name of generated java classes.
      * @return The ClassModel.
      * @throws EDIConfigurationException When edi-mapping-configuration is badly formatted.
-     * @throws IOException When unable to read edi-mapping-configuration.
-     * @throws SAXException When edi-mapping-configuration is badly formatted.
-     * @throws IllegalNameException when name of java-classes is illegal.
-     * @throws ClassNotFoundException when error occurs while creating bindingfile.
+     * @throws IOException               When unable to read edi-mapping-configuration.
+     * @throws SAXException              When edi-mapping-configuration is badly formatted.
+     * @throws IllegalNameException      when name of java-classes is illegal.
+     * @throws ClassNotFoundException    when error occurs while creating bindingfile.
      */
     public ClassModel compile(InputStream mappingModel, String beanPackage) throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
         //Read edifact configuration
         Edimap edimap = readEDIConfig(mappingModel);
 
-        return compile(edimap, beanPackage, (Map<MappingNode, JClass>)null);
+        return compile(edimap, beanPackage, (Map<MappingNode, JClass>) null);
     }
 
     /**
      * Compiles an {@link Edimap} and generates java implementation and bindingfile.
-     *
+     * <p/>
      * The compilation is performed in the following order:
      * 1. {@link ClassModelCompiler} - parse a edi-mapping-file a creates a {@link org.milyn.ejc.ClassModel}.
      * 2. {@link org.milyn.ejc.BeanWriter} - generates javaimplementation from {@link org.milyn.ejc.ClassModel}.
      * 3. {@link org.milyn.ejc.BindingWriter} - generates a bindingfile from {@link org.milyn.ejc.ClassModel}.
-     * @param edimap The edi-mapping-configuration.
+     *
+     * @param edimap      The edi-mapping-configuration.
      * @param beanPackage the package name of generated java classes.
      * @return The ClassModel.
      * @throws IllegalNameException when name of java-classes is illegal.
@@ -257,7 +262,7 @@ public class EJC {
         } finally {
             mappingModel.close();
         }
-	}
+    }
 
     private void writeModelToFolder(ClassModel model, String beanFolder, String bindingFile) throws IOException, IllegalNameException, ClassNotFoundException {
         LOG.info("Writing java beans to " + beanFolder + "...");
@@ -279,11 +284,12 @@ public class EJC {
 
     /**
      * Returns the Edimap for a given edi-mapping inputstream.
+     *
      * @param inputStream the edi-mapping.
      * @return the Edimap.
      * @throws EDIConfigurationException When edi-mapping-configuration is badly formatted.
-     * @throws IOException When unable to read edi-mapping-configuration.
-     * @throws SAXException When edi-mapping-configuration is badly formatted.
+     * @throws IOException               When unable to read edi-mapping-configuration.
+     * @throws SAXException              When edi-mapping-configuration is badly formatted.
      */
     private Edimap readEDIConfig(InputStream inputStream) throws EDIConfigurationException, IOException, SAXException {
         EdifactModel edifactModel = new EdifactModel(inputStream);
@@ -292,22 +298,24 @@ public class EJC {
 
     /**
      * The main method parsing in-parameters and invoking the compile method.
+     *
      * @param args the arguments
-     * @throws org.milyn.edisax.EDIConfigurationException when error occurs while reading ediConfiguration.
-     * @throws IllegalNameException when xmltag in edi-configuration has a conconflict with reserved java keywords.
-     * @throws java.io.IOException when error ocurcurs when reading or writing files.
+     * @throws org.milyn.edisax.EDIConfigurationException
+     *                                  when error occurs while reading ediConfiguration.
+     * @throws IllegalNameException     when xmltag in edi-configuration has a conconflict with reserved java keywords.
+     * @throws java.io.IOException      when error ocurcurs when reading or writing files.
      * @throws org.xml.sax.SAXException when error occurs while reading ediConfiguration.
      */
     public static void main(String[] args) throws IOException, EDIConfigurationException, IllegalNameException, SAXException, ClassNotFoundException {
         EJC ejc = new EJC();
 
         // Should be an odd number of commandline args...
-        if(args.length % 2 == 0) {
+        if (args.length % 2 == 0) {
             System.out.println(writeUsageText());
             return;
         }
 
-        String configFile = args[args.length-1];
+        String configFile = args[args.length - 1];
         String beanPackage = getParameter(PARAMETER_BEAN_PACKAGE, args);
         String beanFolder = getParameter(PARAMETER_BEAN_FOLDER, args);
 
@@ -338,7 +346,7 @@ public class EJC {
         }
 
         // Set log-level depending on argument VERBOSE or QUIET.
-        ((EJCLog)LOG).setLevel(isVerbose ? Level.DEBUG : (isQuiet ? Level.ERROR : Level.INFO));
+        ((EJCLog) LOG).setLevel(isVerbose ? Level.DEBUG : (isQuiet ? Level.ERROR : Level.INFO));
 
         InputStream configInputStream = null;
         try {
@@ -354,6 +362,7 @@ public class EJC {
 
     /**
      * Returns the about-text for EJC.
+     *
      * @return the about text.
      */
     private static String writeAboutText() {
@@ -366,6 +375,7 @@ public class EJC {
 
     /**
      * Returns the usage info for EJC.
+     *
      * @return the usage info.
      */
     private static String writeUsageText() {
@@ -384,6 +394,7 @@ public class EJC {
 
     /**
      * Returns the version-text for EJC.
+     *
      * @return the version text.
      */
     private static String writeVersionText() {
@@ -392,14 +403,15 @@ public class EJC {
 
     /**
      * Returns the parameter value following a given flag.
+     *
      * @param flag the flag to search for.
      * @param args the arguments.
      * @return the value following a flag if flag exists in arguments, otherwise it returns null.
      */
     private static String getParameter(String flag, String[] args) {
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equalsIgnoreCase(flag) && i+1 < args.length) {
-                return args[i+1];
+            if (args[i].equalsIgnoreCase(flag) && i + 1 < args.length) {
+                return args[i + 1];
             }
         }
 
@@ -408,6 +420,7 @@ public class EJC {
 
     /**
      * Checks if parameter exists in arguments
+     *
      * @param flag the flag to search for.
      * @param args the argumenst to look in.
      * @return true if flag exists in argumenst, otherwise return false.

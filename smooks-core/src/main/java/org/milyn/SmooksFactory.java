@@ -14,10 +14,10 @@
  */
 package org.milyn;
 
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.xml.sax.SAXException;
 
 /**
  * A factory that creates {@link Smooks} instances.

@@ -15,15 +15,15 @@
 */
 package org.milyn.javabean.ext;
 
-import javax.xml.namespace.QName;
-
-import org.milyn.*;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.extension.ExtensionContext;
+import org.milyn.commons.SmooksException;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.dom.DOMVisitBefore;
 import org.milyn.javabean.BeanInstancePopulator;
-import org.milyn.cdr.*;
-import org.milyn.cdr.extension.*;
-import org.milyn.container.*;
-import org.milyn.delivery.dom.*;
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
+
+import javax.xml.namespace.QName;
 
 /**
  * Selector Property Resolver.
@@ -46,15 +46,15 @@ public class SelectorPropertyResolver implements DOMVisitBefore {
 
     public static void resolveSelectorTokens(SmooksResourceConfiguration populatorConfig) {
         QName valueAttributeQName = populatorConfig.getTargetAttributeQName();
-        
-        if(valueAttributeQName != null) {
-	        String valueAttributeName = valueAttributeQName.getLocalPart();
-	        String valueAttributePrefix = valueAttributeQName.getPrefix();
-	
-	        populatorConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, valueAttributeName);
-	        if(valueAttributePrefix != null && !valueAttributePrefix.trim().equals("")) {
-	        	populatorConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
-	        }
+
+        if (valueAttributeQName != null) {
+            String valueAttributeName = valueAttributeQName.getLocalPart();
+            String valueAttributePrefix = valueAttributeQName.getPrefix();
+
+            populatorConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, valueAttributeName);
+            if (valueAttributePrefix != null && !valueAttributePrefix.trim().equals("")) {
+                populatorConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
+            }
         }
     }
 

@@ -27,7 +27,7 @@ import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.registry.MappingsRegistry;
-import org.milyn.xml.hierarchy.HierarchyChangeListener;
+import org.milyn.commons.xml.hierarchy.HierarchyChangeListener;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 

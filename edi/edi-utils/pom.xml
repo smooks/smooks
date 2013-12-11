@@ -9,7 +9,7 @@
 	</parent>
 	<name>Edifact Utils</name>
 	<artifactId>milyn-smooks-ediutils</artifactId>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
 
 	<dependencies>
 

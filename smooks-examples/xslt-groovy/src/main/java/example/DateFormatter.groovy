@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.container.ExecutionContext;
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.xml.DomUtils;
+import org.milyn.commons.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node

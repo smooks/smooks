@@ -20,20 +20,20 @@ import groovy.lang.GroovyClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.control.CompilationFailedException;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Configurator;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.util.FreeMarkerTemplate;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.ContentHandlerFactory;
 import org.milyn.delivery.DomModelCreator;
 import org.milyn.delivery.Visitor;
-import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.annotation.Resource;
-import org.milyn.io.StreamUtils;
+import org.milyn.delivery.sax.SAXElement;
 import org.milyn.javabean.context.BeanContext;
-import org.milyn.util.FreeMarkerTemplate;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -45,26 +45,26 @@ import java.util.Map;
  * {@link Visitor} Factory class for the <a href="http://groovy.codehaus.org/">Groovy</a> scripting language.
  * <p/>
  * Implement DOM or SAX visitors using the Groovy scripting language.
- *
+ * <p/>
  * <h2>Usage Tips</h2>
  * <ul>
- *  <li><b>Imports</b>: Imports can be added via the "imports" element.  A number of classes are automatically imported:
- *      <ul>
- *          <li>{@link DomUtils org.milyn.xml.DomUtils}</li>
- *          <li>{@link BeanContext}</li>
- *          <li>{@link org.w3c.dom org.w3c.dom.*}</li>
- *          <li>groovy.xml.dom.DOMCategory, groovy.xml.dom.DOMUtil, groovy.xml.DOMBuilder</li>
- *      </ul>
- *  </li>
- *  <li><b>Visited Element</b>: The visited element is available to the script through the variable "element".  It is also available
- *      under a variable name equal to the element name, but only if the element name contains alpha-numeric
- *      characters only.</li>
- *  <li><b>Execute Before/After</b>: By default, the script is executed on the visitAfter event.  You can direct it to be
- *      executed on the visitBefore by setting the "executeBefore" attribute to "true".</li>
- *  <li><b>Comment/CDATA Script Wrapping</b>: If the script contains special XML characters, it can be wrapped in an XML
- *       Comment or CDATA section.  See example below.</li>
+ * <li><b>Imports</b>: Imports can be added via the "imports" element.  A number of classes are automatically imported:
+ * <ul>
+ * <li>{@link DomUtils org.milyn.xml.DomUtils}</li>
+ * <li>{@link BeanContext}</li>
+ * <li>{@link org.w3c.dom org.w3c.dom.*}</li>
+ * <li>groovy.xml.dom.DOMCategory, groovy.xml.dom.DOMUtil, groovy.xml.DOMBuilder</li>
  * </ul>
- *
+ * </li>
+ * <li><b>Visited Element</b>: The visited element is available to the script through the variable "element".  It is also available
+ * under a variable name equal to the element name, but only if the element name contains alpha-numeric
+ * characters only.</li>
+ * <li><b>Execute Before/After</b>: By default, the script is executed on the visitAfter event.  You can direct it to be
+ * executed on the visitBefore by setting the "executeBefore" attribute to "true".</li>
+ * <li><b>Comment/CDATA Script Wrapping</b>: If the script contains special XML characters, it can be wrapped in an XML
+ * Comment or CDATA section.  See example below.</li>
+ * </ul>
+ * <p/>
  * <h2>Mixing SAX and DOM Models</h2>
  * When using the SAX filter, Groovy scripts can take advantage of the {@link DomModelCreator}.  <b>This is only
  * the case when the script is applied on the visitAfter event of the targeted element</b> (i.e. executeBefore="false",
@@ -76,14 +76,14 @@ import java.util.Map;
  * <p/>
  * <b>Notes</b>:
  * <ol>
- *  <li>Only available in default mode i.e. when executeBefore equals "false".  If executeBefore is configured
- *      "true", this facility is not available and the Groovy script will only have access to the element
- *      as a {@link SAXElement}.</li>
- *  <li>The DOM fragment must be explicitly writen to the result using "<b>writeFragment</b>".  See example below.</li>
- *  <li>There is an obvious performance overhead incurred using this facility (DOM construction).  That said, it can still
- *      be used to process huge messages because of how the {@link DomModelCreator} works for SAX.</li>
+ * <li>Only available in default mode i.e. when executeBefore equals "false".  If executeBefore is configured
+ * "true", this facility is not available and the Groovy script will only have access to the element
+ * as a {@link SAXElement}.</li>
+ * <li>The DOM fragment must be explicitly writen to the result using "<b>writeFragment</b>".  See example below.</li>
+ * <li>There is an obvious performance overhead incurred using this facility (DOM construction).  That said, it can still
+ * be used to process huge messages because of how the {@link DomModelCreator} works for SAX.</li>
  * </ol>
- *
+ * <p/>
  * <h2>Example Configuration</h2>
  * Take an XML message such as:
  * <pre>
@@ -101,12 +101,12 @@ import java.util.Map;
  *     &lt;/category&gt;
  * &lt;/shopping&gt;
  * </pre>
- *
+ * <p/>
  * Using Groovy, we want to modify the "supplies" category in the shopping list, adding 2 to the
  * quantity, where the item is "Pens".  To do this, we write a simple little Groovy script and target
  * it at the &lt;category&gt; elements in the message.  The script simple iterates over the &lt;item&gt; elements
  * in the category and increments the quantity by 2, where the category type is "supplies" and the item is "Pens":
- *
+ * <p/>
  * <pre>
  * &lt;?xml version="1.0"?&gt;
  * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:g="<a href="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">http://www.milyn.org/xsd/smooks/groovy-1.1.xsd</a>"&gt;
@@ -146,7 +146,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-@Resource(type="groovy")
+@Resource(type = "groovy")
 public class GroovyContentHandlerFactory implements ContentHandlerFactory {
 
     private static Log logger = LogFactory.getLog(GroovyContentHandlerFactory.class);
@@ -161,17 +161,17 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
     }
 
     /* (non-Javadoc)
-	 * @see org.milyn.delivery.ContentHandlerFactory#create(org.milyn.cdr.SmooksResourceConfiguration)
+     * @see org.milyn.delivery.ContentHandlerFactory#create(org.milyn.cdr.SmooksResourceConfiguration)
 	 */
-	public ContentHandler create(SmooksResourceConfiguration configuration) throws SmooksConfigurationException, InstantiationException {
+    public ContentHandler create(SmooksResourceConfiguration configuration) throws SmooksConfigurationException, InstantiationException {
 
         try {
-			byte[] groovyScriptBytes = configuration.getBytes();
+            byte[] groovyScriptBytes = configuration.getBytes();
             String groovyScript = new String(groovyScriptBytes, "UTF-8");
 
-            if(groovyScriptBytes == null) {
-				throw new InstantiationException("No resource specified in either the resource path or resource 'resdata'.");
-			}
+            if (groovyScriptBytes == null) {
+                throw new InstantiationException("No resource specified in either the resource path or resource 'resdata'.");
+            }
 
             Object groovyObject;
 
@@ -179,12 +179,12 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
             try {
                 Class groovyClass = groovyClassLoader.parseClass(groovyScript);
                 groovyObject = groovyClass.newInstance();
-            } catch(CompilationFailedException e) {
+            } catch (CompilationFailedException e) {
                 logger.debug("Failed to create Visitor class instance directly from script:\n==========================\n" + groovyScript + "\n==========================\n Will try applying Visitor template to script.", e);
                 groovyObject = null;
             }
 
-            if(!(groovyObject instanceof Visitor)) {
+            if (!(groovyObject instanceof Visitor)) {
                 groovyObject = createFromTemplate(groovyScript, configuration);
             }
 
@@ -193,7 +193,7 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
 
             return groovyResource;
         } catch (Exception e) {
-			throw new SmooksConfigurationException("Error constructing class from Groovy script " + configuration.getResource(), e);
+            throw new SmooksConfigurationException("Error constructing class from Groovy script " + configuration.getResource(), e);
         }
     }
 
@@ -210,14 +210,14 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
 
         String templatedClass = classTemplate.apply(templateVars);
 
-        if(groovyScript.indexOf("writeFragment") != -1) {
+        if (groovyScript.indexOf("writeFragment") != -1) {
             configuration.setParameter("writeFragment", "true");
         }
 
         try {
             Class groovyClass = groovyClassLoader.parseClass(templatedClass);
             return groovyClass.newInstance();
-        } catch(CompilationFailedException e) {
+        } catch (CompilationFailedException e) {
             throw new SmooksConfigurationException("Failed to compile Groovy scripted Visitor class:\n==========================\n" + templatedClass + "\n==========================\n", e);
         }
     }
@@ -248,7 +248,7 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
         String elementName = configuration.getTargetElement();
 
         for (int i = 0; i < elementName.length(); i++) {
-            if(!Character.isLetterOrDigit(elementName.charAt(i))) {
+            if (!Character.isLetterOrDigit(elementName.charAt(i))) {
                 return elementName + "_Mangled";
             }
         }

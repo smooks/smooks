@@ -16,7 +16,7 @@
 
 package org.milyn.javabean.binding.model.get;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.javabean.binding.BeanSerializationException;
 import org.milyn.javabean.binding.SerializationContext;
 import org.milyn.javabean.binding.model.Bean;

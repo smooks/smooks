@@ -16,12 +16,12 @@
 
 package org.milyn.cdr;
 
+import org.milyn.delivery.ContentDeliveryConfig;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import org.milyn.delivery.ContentDeliveryConfig;
 
 
 /**

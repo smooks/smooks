@@ -15,6 +15,8 @@
 */
 package org.milyn.javabean.gen;
 
+import org.milyn.commons.io.StreamUtils;
+
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
@@ -30,11 +32,11 @@ public class ConfigGeneratortTest extends junit.framework.TestCase {
 
         generator.generate();
 
-        String expected = org.milyn.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"));
-        assertTrue("Generated config not as expected.", org.milyn.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
+        String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"));
+        assertTrue("Generated config not as expected.", StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
     }
 
     public void test_commandLine() throws ClassNotFoundException, java.io.IOException {
-        ConfigGenerator.main(new String[] {"-c", org.milyn.javabean.Order.class.getName(), "-o", "./target/binding-config-test.xml"});
+        ConfigGenerator.main(new String[]{"-c", org.milyn.javabean.Order.class.getName(), "-o", "./target/binding-config-test.xml"});
     }
 }

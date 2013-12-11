@@ -20,7 +20,7 @@ import java.io.IOException;
 import javax.xml.transform.stream.StreamSource;
 
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.javabean.extendedconfig.ExtendedOrder;
 import org.milyn.payload.JavaResult;
 import org.xml.sax.SAXException;

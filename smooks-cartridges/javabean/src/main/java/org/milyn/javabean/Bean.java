@@ -16,17 +16,18 @@
 package org.milyn.javabean;
 
 import org.milyn.Smooks;
-import org.milyn.util.ClassUtil;
-import org.milyn.delivery.VisitorConfigMap;
-import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.util.ClassUtil;
+import org.milyn.delivery.VisitorConfigMap;
 import org.milyn.javabean.ext.SelectorPropertyResolver;
 import org.milyn.javabean.factory.Factory;
 
 import java.lang.reflect.Method;
-import java.util.UUID;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Programmatic Bean Configurator.
@@ -129,12 +130,12 @@ public class Bean extends BindingAppender {
      * <p/>
      * The bean instance is created on the root/document fragment.
      *
-     * @param beanClass        The bean runtime class.
-     * @param beanId           The bean ID.
+     * @param beanClass The bean runtime class.
+     * @param beanId    The bean ID.
      */
     @SuppressWarnings("unchecked")
-	public Bean(Class<?> beanClass, String beanId) {
-		this(beanClass, beanId, (Factory)null);
+    public Bean(Class<?> beanClass, String beanId) {
+        this(beanClass, beanId, (Factory) null);
     }
 
     /**
@@ -142,35 +143,35 @@ public class Bean extends BindingAppender {
      * <p/>
      * The bean instance is created on the root/document fragment.
      *
-     * @param beanClass        The bean runtime class.
-     * @param beanId           The bean ID.
-     * @param factory		   The factory that will create the runtime object
+     * @param beanClass The bean runtime class.
+     * @param beanId    The bean ID.
+     * @param factory   The factory that will create the runtime object
      */
     public <T> Bean(Class<T> beanClass, String beanId, Factory<? extends T> factory) {
-    	this(beanClass, beanId, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, (String)null, factory);
+        this(beanClass, beanId, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, (String) null, factory);
     }
 
     /**
      * Create a Bean binding configuration.
      *
-     * @param beanClass        The bean runtime class.
-     * @param beanId           The bean ID.
-     * @param createOnElement  The element selector used to create the bean instance.
+     * @param beanClass       The bean runtime class.
+     * @param beanId          The bean ID.
+     * @param createOnElement The element selector used to create the bean instance.
      */
     public Bean(Class<?> beanClass, String beanId, String createOnElement) {
-        this(beanClass, beanId, createOnElement, (String)null);
+        this(beanClass, beanId, createOnElement, (String) null);
     }
 
     /**
      * Create a Bean binding configuration.
      *
-     * @param beanClass        The bean runtime class.
-     * @param beanId           The bean ID.
-     * @param createOnElement  The element selector used to create the bean instance.
-     * @param factory		   The factory that will create the runtime object
+     * @param beanClass       The bean runtime class.
+     * @param beanId          The bean ID.
+     * @param createOnElement The element selector used to create the bean instance.
+     * @param factory         The factory that will create the runtime object
      */
     public <T> Bean(Class<T> beanClass, String beanId, String createOnElement, Factory<? extends T> factory) {
-        this(beanClass, beanId, createOnElement, (String)null, factory);
+        this(beanClass, beanId, createOnElement, (String) null, factory);
     }
 
     /**
@@ -192,10 +193,10 @@ public class Bean extends BindingAppender {
      * @param beanId            The bean ID.
      * @param createOnElement   The element selector used to create the bean instance.
      * @param createOnElementNS The namespace for the element selector used to create the bean instance.
-     * @param factory		   	The factory that will create the runtime object
+     * @param factory           The factory that will create the runtime object
      */
     public <T> Bean(Class<T> beanClass, String beanId, String createOnElement, String createOnElementNS, Factory<? extends T> factory) {
-    	super(beanId);
+        super(beanId);
         AssertArgument.isNotNull(beanClass, "beanClass");
         AssertArgument.isNotNull(createOnElement, "createOnElement");
 
@@ -226,9 +227,9 @@ public class Bean extends BindingAppender {
      * @param beanId            The bean ID.
      * @param createOnElement   The element selector used to create the bean instance.
      * @param createOnElementNS The namespace for the element selector used to create the bean instance.
-     * @param factory		    The factory that will create the runtime object
+     * @param factory           The factory that will create the runtime object
      */
-    public static <T> Bean  newBean(Class<T> beanClass, String beanId, String createOnElement, String createOnElementNS, Factory<T> factory) {
+    public static <T> Bean newBean(Class<T> beanClass, String beanId, String createOnElement, String createOnElementNS, Factory<T> factory) {
         return new Bean(beanClass, beanId, createOnElement, createOnElementNS, factory);
     }
 
@@ -255,8 +256,8 @@ public class Bean extends BindingAppender {
      *
      * @param beanClass       The bean runtime class.
      * @param createOnElement The element selector used to create the bean instance.
+     * @param factory         The factory that will create the runtime object
      * @return <code>this</code> Bean configuration instance.
-     * @param factory		    The factory that will create the runtime object
      */
     public <T> Bean newBean(Class<T> beanClass, String createOnElement, Factory<T> factory) {
         String randomBeanId = UUID.randomUUID().toString();
@@ -287,7 +288,7 @@ public class Bean extends BindingAppender {
      * @param beanClass       The bean runtime class.
      * @param beanId          The beanId.
      * @param createOnElement The element selector used to create the bean instance.
-     * @param factory		  The factory that will create the runtime object
+     * @param factory         The factory that will create the runtime object
      * @return <code>this</code> Bean configuration instance.
      */
     public <T> Bean newBean(Class<T> beanClass, String beanId, String createOnElement, Factory<T> factory) {
@@ -299,7 +300,7 @@ public class Bean extends BindingAppender {
      * Create a binding configuration to bind the data, selected from the message by the
      * dataSelector, to the specified bindingMember (field/method).
      * <p/>
-     * Discovers the {@link org.milyn.javabean.DataDecoder} through the specified
+     * Discovers the {@link org.milyn.commons.javabean.DataDecoder} through the specified
      * bindingMember.
      *
      * @param bindingMember The name of the binding member.  This is a bean property (field)
@@ -318,7 +319,7 @@ public class Bean extends BindingAppender {
      * @param bindingMember The name of the binding member.  This is a bean property (field)
      *                      or method name.
      * @param dataSelector  The data selector for the data value to be bound.
-     * @param dataDecoder   The {@link org.milyn.javabean.DataDecoder} to be used for decoding
+     * @param dataDecoder   The {@link org.milyn.commons.javabean.DataDecoder} to be used for decoding
      *                      the data value.
      * @return <code>this</code> Bean configuration instance.
      */
@@ -446,7 +447,7 @@ public class Bean extends BindingAppender {
      * dataSelector, to the target Collection/array Bean beanclass instance.
      *
      * @param dataSelector The data selector for the data value to be bound.
-     * @param dataDecoder  The {@link org.milyn.javabean.DataDecoder} to be used for decoding
+     * @param dataDecoder  The {@link org.milyn.commons.javabean.DataDecoder} to be used for decoding
      *                     the data value.
      * @return <code>this</code> Bean configuration instance.
      */
@@ -473,6 +474,7 @@ public class Bean extends BindingAppender {
 
     /**
      * Add the visitors, associated with this Bean instance, to the visitor map.
+     *
      * @param visitorMap The visitor Map.
      */
     public void addVisitors(VisitorConfigMap visitorMap) {
@@ -480,7 +482,7 @@ public class Bean extends BindingAppender {
         // Need to protect against multiple calls.  This can happen where e.g. beans are
         // wired together in 2-way relationships, or the creating code doesn't use the
         // fluent interface and calls Smooks.addVisitor to each bean instance.
-        if(processed) {
+        if (processed) {
             return;
         }
         processed = true;
@@ -491,15 +493,15 @@ public class Bean extends BindingAppender {
         creatorConfig.setParameter("beanClass", beanClass.getName());
 
         // Recurse down the wired beans...
-        for(Bean bean : wirings) {
+        for (Bean bean : wirings) {
             bean.addVisitors(visitorMap);
         }
 
         // Add the populate bean visitors...
-        for(Binding binding : bindings) {
+        for (Binding binding : bindings) {
             SmooksResourceConfiguration populatorConfig = visitorMap.addVisitor(binding.beanInstancePopulator, binding.selector, targetNamespace, true);
             populatorConfig.setParameter("beanId", getBeanId());
-            if(binding.assertTargetIsCollection) {
+            if (binding.assertTargetIsCollection) {
                 assertBeanClassIsCollection();
             }
         }
@@ -546,7 +548,7 @@ public class Bean extends BindingAppender {
     }
 
     private void assertNotProcessed() {
-        if(processed) {
+        if (processed) {
             throw new IllegalStateException("Unexpected attempt to bindTo Bean instance after the Bean instance has been added to a Smooks instance.");
         }
     }

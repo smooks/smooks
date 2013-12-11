@@ -15,7 +15,7 @@
 */
 package org.milyn.smooks.edi.unedifact.model.r41;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 import org.milyn.smooks.edi.EDIWritable;

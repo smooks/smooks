@@ -16,12 +16,12 @@
 
 package org.milyn.cdr;
 
+import org.milyn.delivery.ContentDeliveryConfig;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
-
-import org.milyn.delivery.ContentDeliveryConfig;
 
 /**
  * {@link ParameterDecoder} used to convert a parameter String value to a

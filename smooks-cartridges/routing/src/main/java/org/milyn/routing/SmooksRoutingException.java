@@ -15,7 +15,7 @@
 */
 package org.milyn.routing;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * Smooks routing exception.

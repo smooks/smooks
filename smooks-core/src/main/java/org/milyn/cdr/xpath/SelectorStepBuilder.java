@@ -15,18 +15,21 @@
 */
 package org.milyn.cdr.xpath;
 
-import org.jaxen.expr.*;
+import org.jaxen.JaxenHandler;
+import org.jaxen.expr.Expr;
+import org.jaxen.expr.LocationPath;
+import org.jaxen.expr.Step;
+import org.jaxen.expr.XPathExpr;
+import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
 import org.jaxen.saxpath.XPathReader;
-import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.helpers.XPathReaderFactory;
-import org.jaxen.JaxenHandler;
-import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.assertion.AssertArgument;
 
 import javax.xml.namespace.QName;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -49,7 +52,7 @@ public class SelectorStepBuilder {
     /**
      * Construct a set of selector steps from the specified selector (ala XPath expresssion steps).
      * <p/>
-     * This process does not configure the namespaces on the steps.  The {@link SelectorStep#setNamespaces(SelectorStep[],java.util.Properties)}
+     * This process does not configure the namespaces on the steps.  The {@link SelectorStep#setNamespaces(SelectorStep[], java.util.Properties)}
      * method needs to be called to configure the namespaces.
      *
      * @param selectorExpression The selector expression.
@@ -57,7 +60,7 @@ public class SelectorStepBuilder {
      * @throws SAXPathException Error parsing expression.
      */
     public static SelectorStep[] buildSteps(String selectorExpression) throws SAXPathException {
-        if(selectorExpression == SmooksResourceConfiguration.SELECTOR_NONE) {
+        if (selectorExpression == SmooksResourceConfiguration.SELECTOR_NONE) {
             return SELECTOR_NONE_STEP;
         }
 
@@ -67,7 +70,7 @@ public class SelectorStepBuilder {
     /**
      * Construct a set of selector steps from the specified selector (ala XPath expresssion steps).
      * <p/>
-     * This process does not configure the namespaces on the steps.  The {@link SelectorStep#setNamespaces(SelectorStep[],java.util.Properties)}
+     * This process does not configure the namespaces on the steps.  The {@link SelectorStep#setNamespaces(SelectorStep[], java.util.Properties)}
      * method needs to be called to configure the namespaces.
      *
      * @param selectorExpression The selector expression.
@@ -84,28 +87,28 @@ public class SelectorStepBuilder {
         boolean isRooted = false;
         boolean endsStarStar = false;
 
-        if(xpathExpression.startsWith("/")) {
+        if (xpathExpression.startsWith("/")) {
             isRooted = true;
-        } else if(isEncodedToken(xpathExpression)) {
+        } else if (isEncodedToken(xpathExpression)) {
             String[] tokens = xpathExpression.split("/");
 
             selectorSteps.add(new SelectorStep(tokens[0]));
 
             StringBuilder reconstructedExpression = new StringBuilder();
-            for(int i = 1; i < tokens.length; i++) {
-                if(reconstructedExpression.length() > 0) {
+            for (int i = 1; i < tokens.length; i++) {
+                if (reconstructedExpression.length() > 0) {
                     reconstructedExpression.append('/');
                 }
                 reconstructedExpression.append(tokens[i]);
             }
             xpathExpression = reconstructedExpression.toString();
         }
-        if(xpathExpression.endsWith("//")) {
+        if (xpathExpression.endsWith("//")) {
             endsStarStar = true;
             xpathExpression = xpathExpression.substring(0, xpathExpression.length() - 2);
         }
 
-        if(xpathExpression.trim().length() > 0) {
+        if (xpathExpression.trim().length() > 0) {
             reader.setXPathHandler(handler);
             reader.parse(xpathExpression);
 
@@ -122,17 +125,17 @@ public class SelectorStepBuilder {
                 Step step = steps.get(i);
 
                 try {
-                    if(step.getAxis() == Axis.ATTRIBUTE && i < steps.size() - 1) {
+                    if (step.getAxis() == Axis.ATTRIBUTE && i < steps.size() - 1) {
                         // Attribute steps are only supported as the last step...
                         throw new SAXPathException("Attribute axis steps are only supported at the end of the expression.  '" + step.getText() + "' is not at the end.");
-                    } else if(step.getAxis() == Axis.DESCENDANT_OR_SELF) {
+                    } else if (step.getAxis() == Axis.DESCENDANT_OR_SELF) {
                         selectorSteps.add(new SelectorStep(xpathExpression, "**"));
-                    } else if(step.getAxis() != Axis.CHILD && step.getAxis() != Axis.ATTRIBUTE) {
+                    } else if (step.getAxis() != Axis.CHILD && step.getAxis() != Axis.ATTRIBUTE) {
                         throw new SAXPathException("XPath step '" + step.getText() + "' not supported.");
                     } else {
-                        if(i == steps.size() - 2) {
+                        if (i == steps.size() - 2) {
                             Step nextStep = steps.get(i + 1);
-                            if(nextStep.getAxis() == Axis.ATTRIBUTE) {
+                            if (nextStep.getAxis() == Axis.ATTRIBUTE) {
                                 selectorSteps.add(new SelectorStep(xpathExpression, step, nextStep));
                                 // We end here.  The next step is the last step and we've merged it into
                                 // the last evaluator...
@@ -152,15 +155,15 @@ public class SelectorStepBuilder {
             }
         }
 
-        if(isRooted) {
-            if(selectorSteps.isEmpty()) {
+        if (isRooted) {
+            if (selectorSteps.isEmpty()) {
                 selectorSteps.add(new SelectorStep(xpathExpression, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR));
             } else {
                 selectorSteps.get(0).setRooted(true);
             }
         }
 
-        if(endsStarStar) {
+        if (endsStarStar) {
             selectorSteps.add(new SelectorStep(xpathExpression, "**"));
         }
 
@@ -168,9 +171,9 @@ public class SelectorStepBuilder {
     }
 
     private static boolean isEncodedToken(String xpathExpression) {
-        if(xpathExpression.startsWith("#") && !xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+        if (xpathExpression.startsWith("#") && !xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
             return true;
-        } else if(xpathExpression.startsWith("$") && !xpathExpression.startsWith(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
+        } else if (xpathExpression.startsWith("$") && !xpathExpression.startsWith(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
             return true;
         }
 
@@ -181,7 +184,7 @@ public class SelectorStepBuilder {
      * Construct a set of selector steps from the specified selector (ala XPath expresssion steps).
      *
      * @param selectorExpression The selector expression.
-     * @param namespaces The namespace prefix-to-uri mappings.
+     * @param namespaces         The namespace prefix-to-uri mappings.
      * @return The set of selector steps.
      * @throws SAXPathException Error parsing expression.
      */
@@ -192,6 +195,7 @@ public class SelectorStepBuilder {
 
     /**
      * Create a print friendly representation of the set of selector steps.
+     *
      * @param steps The selector steps.
      * @return A print friendly representation of the set of selector steps.
      */
@@ -200,10 +204,10 @@ public class SelectorStepBuilder {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        for(int i = 0; i < steps.length; i++) {
-            if(steps[i].isRooted()) {
+        for (int i = 0; i < steps.length; i++) {
+            if (steps[i].isRooted()) {
                 stringBuilder.append("/");
-            } else if(i > 0) {
+            } else if (i > 0) {
                 stringBuilder.append("/");
             }
 
@@ -228,15 +232,15 @@ public class SelectorStepBuilder {
         StringBuilder xpathExpressionBuilder = new StringBuilder();
         boolean normalize = true;
 
-        for(int i = 0; i < selectorExpression.length(); i++) {
+        for (int i = 0; i < selectorExpression.length(); i++) {
             char character = selectorExpression.charAt(i);
 
-            if(character == '[') {
+            if (character == '[') {
                 normalize = false;
-            } else if(character == ']') {
+            } else if (character == ']') {
                 normalize = true;
-            } else if(character == ' ' && normalize) {
-                if(xpathExpressionBuilder.charAt(xpathExpressionBuilder.length() - 1) != '/') {
+            } else if (character == ' ' && normalize) {
+                if (xpathExpressionBuilder.charAt(xpathExpressionBuilder.length() - 1) != '/') {
                     xpathExpressionBuilder.append('/');
                 }
                 continue;
@@ -247,9 +251,10 @@ public class SelectorStepBuilder {
 
         // Handle the #document token. Just replace it with a leading slash..
         xpathExpression = xpathExpression.replace(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR);
-        if(xpathExpression.equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+        if (xpathExpression.equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
             xpathExpression = "/";
-        } if(xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR + "/")) {
+        }
+        if (xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR + "/")) {
             xpathExpression = xpathExpression.substring(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR.length());
         }
 
@@ -265,14 +270,14 @@ public class SelectorStepBuilder {
         String targetAttribute = extractTargetAttribute(selectorSteps);
         String[] contextualSelector;
 
-        if(targetAttribute != null) {
+        if (targetAttribute != null) {
             contextualSelector = new String[selectorSteps.length + 1];
             contextualSelector[contextualSelector.length - 1] = "@" + targetAttribute;
         } else {
             contextualSelector = new String[selectorSteps.length];
         }
 
-        for(int i = 0; i < selectorSteps.length; i++) {
+        for (int i = 0; i < selectorSteps.length; i++) {
             contextualSelector[i] = selectorSteps[i].getTargetElement().getLocalPart();
         }
 
@@ -286,7 +291,7 @@ public class SelectorStepBuilder {
     public static String extractTargetAttribute(SelectorStep[] selectorSteps) {
         QName targetAttribute = selectorSteps[selectorSteps.length - 1].getTargetAttribute();
 
-        if(targetAttribute == null) {
+        if (targetAttribute == null) {
             return null;
         }
 

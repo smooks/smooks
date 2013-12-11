@@ -26,7 +26,7 @@ import org.milyn.javabean.extendedconfig.ExtendedOrder;
 import org.milyn.javabean.extendedconfig13.BeanBindingExtendedConfigTest;
 import org.milyn.javabean.v14.retain_bean.RetainBeanTest;
 import org.milyn.payload.JavaResult;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;

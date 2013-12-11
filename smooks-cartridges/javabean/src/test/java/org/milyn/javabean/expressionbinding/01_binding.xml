@@ -84,7 +84,7 @@
     </resource-config>
 
     <resource-config selector="decoder:MessageDate">
-        <resource>org.milyn.javabean.decoders.DateDecoder</resource>
+        <resource>org.milyn.commons.javabean.decoders.DateDecoder</resource>
         <param name="format">HH:mm dd/MM/yyyy z</param>
     </resource-config>
 

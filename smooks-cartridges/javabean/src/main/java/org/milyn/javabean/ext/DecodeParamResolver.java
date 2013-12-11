@@ -15,15 +15,15 @@
 */
 package org.milyn.javabean.ext;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.extension.ExtensionContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
 import org.milyn.javabean.BeanUtils;
-import org.milyn.javabean.DataDecoder;
+import org.milyn.commons.javabean.DataDecoder;
 import org.milyn.javabean.decoders.PreprocessDecoder;
-import org.milyn.xml.DomUtils;
+import org.milyn.commons.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

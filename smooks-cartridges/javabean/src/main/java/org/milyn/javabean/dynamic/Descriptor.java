@@ -17,9 +17,9 @@
 package org.milyn.javabean.dynamic;
 
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksResourceConfigurationList;
 import org.milyn.cdr.XMLConfigDigester;
@@ -29,7 +29,7 @@ import org.milyn.javabean.dynamic.resolvers.AbstractResolver;
 import org.milyn.javabean.dynamic.resolvers.DefaultBindingConfigResolver;
 import org.milyn.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.milyn.javabean.dynamic.serialize.BeanWriter;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

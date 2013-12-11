@@ -16,7 +16,7 @@
 
 package org.milyn.javabean.binding;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * Bean Serialization exception.

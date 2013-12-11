@@ -16,6 +16,17 @@
 
 package org.milyn.container.standalone;
 
+import org.milyn.cdr.SmooksResourceConfigurationStore;
+import org.milyn.commons.profile.DefaultProfileSet;
+import org.milyn.commons.profile.DefaultProfileStore;
+import org.milyn.commons.profile.Profile;
+import org.milyn.commons.profile.ProfileStore;
+import org.milyn.commons.resource.ContainerResourceLocator;
+import org.milyn.commons.resource.URIResourceLocator;
+import org.milyn.container.ApplicationContext;
+import org.milyn.javabean.context.BeanIdStore;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,29 +35,21 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.milyn.cdr.SmooksResourceConfigurationStore;
-import org.milyn.container.ApplicationContext;
-import org.milyn.javabean.context.BeanIdStore;
-import org.milyn.javabean.context.StandaloneBeanContextFactory;
-import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.milyn.profile.*;
-import org.milyn.resource.ContainerResourceLocator;
-import org.milyn.resource.URIResourceLocator;
-
 /**
  * Standalone container execution context for Smooks.
  * <p/>
  * This context allows Smooks to be executed outside the likes of a
  * Servlet Container.
+ *
  * @author tfennelly
  */
 public class StandaloneApplicationContext implements ApplicationContext {
 
     private Hashtable<Object, Object> attributes = new Hashtable<Object, Object>();
-	private ContainerResourceLocator resourceLocator;
-	private SmooksResourceConfigurationStore resStore;
-	private DefaultProfileStore profileStore = new DefaultProfileStore();
-	private BeanIdStore beanIdStore = new BeanIdStore();
+    private ContainerResourceLocator resourceLocator;
+    private SmooksResourceConfigurationStore resStore;
+    private DefaultProfileStore profileStore = new DefaultProfileStore();
+    private BeanIdStore beanIdStore = new BeanIdStore();
     private List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
     private ClassLoader classLoader;
 
@@ -55,61 +58,61 @@ public class StandaloneApplicationContext implements ApplicationContext {
      */
     public StandaloneApplicationContext(boolean registerInstalledResources) {
         resourceLocator = new URIResourceLocator();
-        ((URIResourceLocator)resourceLocator).setBaseURI(URI.create(URIResourceLocator.SCHEME_CLASSPATH + ":/"));
+        ((URIResourceLocator) resourceLocator).setBaseURI(URI.create(URIResourceLocator.SCHEME_CLASSPATH + ":/"));
         resStore = new SmooksResourceConfigurationStore(this, registerInstalledResources);
         // Add the open profile...
         profileStore.addProfileSet(new DefaultProfileSet(Profile.DEFAULT_PROFILE));
     }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.container.BoundAttributeStore#setAttribute(java.lang.Object, java.lang.Object)
-	 */
-	public void setAttribute(Object key, Object value) {
-		attributes.put(key, value);
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.container.BoundAttributeStore#setAttribute(java.lang.Object, java.lang.Object)
+     */
+    public void setAttribute(Object key, Object value) {
+        attributes.put(key, value);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.container.BoundAttributeStore#getAttribute(java.lang.Object)
-	 */
-	public Object getAttribute(Object key) {
-		return attributes.get(key);
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.container.BoundAttributeStore#getAttribute(java.lang.Object)
+     */
+    public Object getAttribute(Object key) {
+        return attributes.get(key);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.container.BoundAttributeStore#removeAttribute(java.lang.Object)
-	 */
-	public void removeAttribute(Object key) {
-		attributes.remove(key);
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.container.BoundAttributeStore#removeAttribute(java.lang.Object)
+     */
+    public void removeAttribute(Object key) {
+        attributes.remove(key);
+    }
 
-	public ContainerResourceLocator getResourceLocator() {
-		return resourceLocator;
-	}
+    public ContainerResourceLocator getResourceLocator() {
+        return resourceLocator;
+    }
 
     public void setResourceLocator(ContainerResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
     }
 
-	public SmooksResourceConfigurationStore getStore() {
-		return resStore;
-	}
+    public SmooksResourceConfigurationStore getStore() {
+        return resStore;
+    }
 
     /**
-	 * Get the ProfileStore in use within the Standalone Context.
-	 * @return The ProfileStore.
-	 */
-	public ProfileStore getProfileStore() {
-		return profileStore;
-	}
+     * Get the ProfileStore in use within the Standalone Context.
+     *
+     * @return The ProfileStore.
+     */
+    public ProfileStore getProfileStore() {
+        return profileStore;
+    }
 
-	public Map<Object, Object> getAttributes()
-	{
-		return attributes;
-	}
+    public Map<Object, Object> getAttributes() {
+        return attributes;
+    }
 
-	public BeanIdStore getBeanIdStore() {
-		return beanIdStore;
-	}
+    public BeanIdStore getBeanIdStore() {
+        return beanIdStore;
+    }
 
     public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
         beanContextObservers.add(observer);

@@ -7,9 +7,9 @@
         <param name="beanClass">org.milyn.javabean.Order</param>
         <param name="create">false</param>
         <param name="bindings">
-        	<binding property="header" selector="${header}" />
-        	<binding property="orderItems" selector="${orderItemList}" />
-		</param>
+            <binding property="header" selector="${header}"/>
+            <binding property="orderItems" selector="${orderItemList}"/>
+        </param>
     </resource-config>
 
     <resource-config selector="header">
@@ -17,12 +17,12 @@
         <param name="beanClass">org.milyn.javabean.Header</param>
         <param name="create">false</param>
         <param name="bindings">
-        	<binding property="order" selector="${order}" />
+            <binding property="order" selector="${order}"/>
 
-            <binding property="date" type="OrderDateLong" selector="header date" selector-namespace="http://y" />
-            <binding property="customerNumber" type="Long" selector="header customer @number" />
-            <binding property="customerName" selector="header customer" />
-            <binding property="privatePerson" type="Boolean" selector="header privatePerson" default="true" />
+            <binding property="date" type="OrderDateLong" selector="header date" selector-namespace="http://y"/>
+            <binding property="customerNumber" type="Long" selector="header customer @number"/>
+            <binding property="customerName" selector="header customer"/>
+            <binding property="privatePerson" type="Boolean" selector="header privatePerson" default="true"/>
         </param>
     </resource-config>
 
@@ -30,9 +30,9 @@
         <resource>org.milyn.javabean.BeanPopulator</resource>
         <param name="beanId">orderItemList</param>
         <param name="beanClass">java.util.ArrayList</param>
-         <param name="create">false</param>
+        <param name="create">false</param>
         <param name="bindings">
-        	<binding selector="${orderItem}" />
+            <binding selector="${orderItem}"/>
         </param>
     </resource-config>
 
@@ -40,16 +40,16 @@
         <resource>org.milyn.javabean.BeanPopulator</resource>
         <param name="beanClass">org.milyn.javabean.OrderItem</param>
         <param name="bindings">
-        	<binding property="order" selector="${order}" />
+            <binding property="order" selector="${order}"/>
 
-            <binding property="productId" type="Long" selector="order-item product" />
-            <binding property="quantity" type="Integer" selector="order-item quantity" />
-            <binding property="price" type="Double" selector="order-item price" />
+            <binding property="productId" type="Long" selector="order-item product"/>
+            <binding property="quantity" type="Integer" selector="order-item quantity"/>
+            <binding property="price" type="Double" selector="order-item price"/>
         </param>
     </resource-config>
 
     <resource-config selector="decoder:OrderDateLong">
-        <resource>org.milyn.javabean.decoders.DateDecoder</resource>
+        <resource>org.milyn.commons.javabean.decoders.DateDecoder</resource>
         <param name="format">EEE MMM dd HH:mm:ss z yyyy</param>
         <param name="locale-language">en</param>
         <param name="locale-country">IE</param>

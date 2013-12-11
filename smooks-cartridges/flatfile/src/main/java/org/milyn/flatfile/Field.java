@@ -16,7 +16,7 @@
 
 package org.milyn.flatfile;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 /**
  * Flat file record field.

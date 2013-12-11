@@ -15,7 +15,7 @@
 */
 package org.milyn.ejc;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * EJC Execution exception.

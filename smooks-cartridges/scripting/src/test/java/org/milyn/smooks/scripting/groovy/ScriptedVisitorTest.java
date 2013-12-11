@@ -16,17 +16,16 @@
 package org.milyn.smooks.scripting.groovy;
 
 import junit.framework.TestCase;
-import org.milyn.Smooks;
-import org.milyn.SmooksException;
 import org.milyn.FilterSettings;
+import org.milyn.Smooks;
 import org.milyn.StreamFilterType;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Filter;
-import org.milyn.event.report.HtmlReportGenerator;
-import org.milyn.io.StreamUtils;
+import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
-import org.milyn.payload.JavaResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -71,8 +70,8 @@ public class ScriptedVisitorTest extends TestCase {
         try {
             smooks.filterSource(new StringSource("<a><b><c/></b></a>"), result);
             fail("Expected SmooksException.");
-        } catch(SmooksException e) {
-            assertEquals("Unable to filter InputStream for target profile [org.milyn.profile.Profile#default_profile].", e.getMessage());
+        } catch (SmooksException e) {
+            assertEquals("Unable to filter InputStream for target profile [org.milyn.commons.profile.Profile#default_profile].", e.getMessage());
         }
     }
 
@@ -83,8 +82,8 @@ public class ScriptedVisitorTest extends TestCase {
         try {
             smooks.filterSource(new StringSource("<a><b><c/></b></a>"), result);
             fail("Expected SmooksException.");
-        } catch(SmooksException e) {
-            assertEquals("Unable to filter InputStream for target profile [org.milyn.profile.Profile#default_profile].", e.getMessage());
+        } catch (SmooksException e) {
+            assertEquals("Unable to filter InputStream for target profile [org.milyn.commons.profile.Profile#default_profile].", e.getMessage());
         }
     }
 
@@ -127,18 +126,18 @@ public class ScriptedVisitorTest extends TestCase {
         smooks.filterSource(new StringSource(shoppingList), result);
         assertEquals(
                 "<shopping>\n" +
-                "    <category type=\"groceries\">\n" +
-                "        <item>Luxury Chocolate</item>\n" +
-                "        <item>Luxury Coffee</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"supplies\">\n" +
-                "        <item>Paper</item>\n" +
-                "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"present\">\n" +
-                "        \n" +
-                "    <item>Mum's Birthday</item><item when=\"Oct 15\">Monica's Birthday</item></category>\n" +
-                "</shopping>",
+                        "    <category type=\"groceries\">\n" +
+                        "        <item>Luxury Chocolate</item>\n" +
+                        "        <item>Luxury Coffee</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"supplies\">\n" +
+                        "        <item>Paper</item>\n" +
+                        "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"present\">\n" +
+                        "        \n" +
+                        "    <item>Mum's Birthday</item><item when=\"Oct 15\">Monica's Birthday</item></category>\n" +
+                        "</shopping>",
                 result.getResult());
     }
 
@@ -149,18 +148,18 @@ public class ScriptedVisitorTest extends TestCase {
         smooks.filterSource(new StringSource(shoppingList), result);
         assertEquals(
                 "<shopping>\n" +
-                "    <category type=\"groceries\">\n" +
-                "        <item>Luxury Chocolate</item>\n" +
-                "        <item>Luxury Coffee</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"supplies\">\n" +
-                "        <item>Paper</item>\n" +
-                "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"present\">\n" +
-                "        \n" +
-                "    <item>Mum's Birthday</item><item when=\"Oct 15\">Monica's Birthday</item></category>\n" +
-                "</shopping>",
+                        "    <category type=\"groceries\">\n" +
+                        "        <item>Luxury Chocolate</item>\n" +
+                        "        <item>Luxury Coffee</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"supplies\">\n" +
+                        "        <item>Paper</item>\n" +
+                        "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"present\">\n" +
+                        "        \n" +
+                        "    <item>Mum's Birthday</item><item when=\"Oct 15\">Monica's Birthday</item></category>\n" +
+                        "</shopping>",
                 result.getResult());
     }
 
@@ -194,19 +193,19 @@ public class ScriptedVisitorTest extends TestCase {
         smooks.filterSource(new StringSource(shoppingList), result);
         assertTrue(StreamUtils.compareCharStreams(
                 "<shopping>\n" +
-                "    <category type=\"groceries\">\n" +
-                "        <item>Luxury Chocolate</item>\n" +
-                "        <item>Luxury Coffee</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"supplies\">\n" +
-                "        <item>Paper</item>\n" +
-                "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"present\">\n" +
-                "        <item>Mum's Birthday</item>\n" +
-                "        <item when=\"Oct 15\">Monica's Birthday</item>\n" +
-                "    </category>\n" +
-                "</shopping>",
+                        "    <category type=\"groceries\">\n" +
+                        "        <item>Luxury Chocolate</item>\n" +
+                        "        <item>Luxury Coffee</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"supplies\">\n" +
+                        "        <item>Paper</item>\n" +
+                        "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"present\">\n" +
+                        "        <item>Mum's Birthday</item>\n" +
+                        "        <item when=\"Oct 15\">Monica's Birthday</item>\n" +
+                        "    </category>\n" +
+                        "</shopping>",
                 result.getResult()));
     }
 
@@ -217,10 +216,10 @@ public class ScriptedVisitorTest extends TestCase {
         smooks.filterSource(new StringSource(shoppingList), result);
         assertTrue(StreamUtils.compareCharStreams(
                 "<shopping>\n" +
-                "    <category type=\"groceries\"><item>Chocolate</item><item>Coffee</item></category>\n" +
-                "    <category type=\"supplies\"><item>Paper</item><item quantity=\"6\">Pens</item></category>\n" +
-                "    <category type=\"present\"><item when=\"Aug 10\">Kathryn's Birthday</item></category>\n" +
-                "</shopping>",
+                        "    <category type=\"groceries\"><item>Chocolate</item><item>Coffee</item></category>\n" +
+                        "    <category type=\"supplies\"><item>Paper</item><item quantity=\"6\">Pens</item></category>\n" +
+                        "    <category type=\"present\"><item when=\"Aug 10\">Kathryn's Birthday</item></category>\n" +
+                        "</shopping>",
                 result.getResult()));
     }
 
@@ -262,16 +261,16 @@ public class ScriptedVisitorTest extends TestCase {
 
     private static String shoppingList =
             "<shopping>\n" +
-            "    <category type=\"groceries\">\n" +
-            "        <item>Chocolate</item>\n" +
-            "        <item>Coffee</item>\n" +
-            "    </category>\n" +
-            "    <category type=\"supplies\">\n" +
-            "        <item>Paper</item>\n" +
-            "        <item quantity=\"4\">Pens</item>\n" +
-            "    </category>\n" +
-            "    <category type=\"present\">\n" +
-            "        <item when=\"Aug 10\">Kathryn's Birthday</item>\n" +
-            "    </category>\n" +
-            "</shopping>";
+                    "    <category type=\"groceries\">\n" +
+                    "        <item>Chocolate</item>\n" +
+                    "        <item>Coffee</item>\n" +
+                    "    </category>\n" +
+                    "    <category type=\"supplies\">\n" +
+                    "        <item>Paper</item>\n" +
+                    "        <item quantity=\"4\">Pens</item>\n" +
+                    "    </category>\n" +
+                    "    <category type=\"present\">\n" +
+                    "        <item when=\"Aug 10\">Kathryn's Birthday</item>\n" +
+                    "    </category>\n" +
+                    "</shopping>";
 }

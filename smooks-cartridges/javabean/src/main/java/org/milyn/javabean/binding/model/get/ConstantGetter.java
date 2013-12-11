@@ -16,7 +16,7 @@
 
 package org.milyn.javabean.binding.model.get;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 /**
  * Constant value getter.

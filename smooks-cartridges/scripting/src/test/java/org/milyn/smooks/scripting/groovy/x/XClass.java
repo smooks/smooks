@@ -21,6 +21,6 @@ package org.milyn.smooks.scripting.groovy.x;
 public class XClass {
 
     public void exec() {
-        
+
     }
 }

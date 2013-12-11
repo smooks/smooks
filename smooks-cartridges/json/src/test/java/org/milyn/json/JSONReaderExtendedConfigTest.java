@@ -29,7 +29,7 @@ import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
 import org.milyn.payload.StringResult;
 import org.milyn.container.ExecutionContext;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.xml.sax.SAXException;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.Diff;

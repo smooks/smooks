@@ -14,45 +14,41 @@
  */
 package org.milyn.container.standalone;
 
-import static org.junit.Assert.*;
-
-import java.util.Hashtable;
-
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
-import org.milyn.profile.DefaultProfileSet;
+import org.milyn.commons.profile.DefaultProfileSet;
+
+import java.util.Hashtable;
 
 /**
  * Unit test for {@link StandaloneExecutionContext}
- * 
- * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  *
+ * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
-public class StandaloneExecutionContextTest
-{
+public class StandaloneExecutionContextTest {
     private StandaloneExecutionContext context;
-	@Test
-	public void getAttributes()
-	{
+
+    @Test
+    public void getAttributes() {
         final String key = "testKey";
         final String value = "testValue";
-        context.setAttribute( key, value );
-        
+        context.setAttribute(key, value);
+
         Hashtable attributes = context.getAttributes();
-        
-        assertTrue( attributes.containsKey( key ) );
-        assertTrue( attributes.contains( value ) );
-	}
-	
-	@Before
-	public void setup()
-	{
+
+        assertTrue(attributes.containsKey(key));
+        assertTrue(attributes.contains(value));
+    }
+
+    @Before
+    public void setup() {
         Smooks smooks = new Smooks();
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[] {"profile1"}), smooks);
+        SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[]{"profile1"}), smooks);
         context = new StandaloneExecutionContext("device1", smooks.getApplicationContext(), null);
-	}
-	
+    }
+
 
 }

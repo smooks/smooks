@@ -17,23 +17,21 @@ package org.milyn.ect.formats.unedifact;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.milyn.commons.util.ClassUtil;
 import org.milyn.ect.EdiConvertionTool;
+import org.milyn.ect.EdiParseException;
+import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
 import org.milyn.edisax.interchange.EdiDirectory;
-import org.milyn.ect.EdiSpecificationReader;
-import org.milyn.ect.EdiParseException;
-import org.milyn.edisax.model.internal.Description;
-import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
-import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.model.EdifactModel;
+import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Field;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
-import org.milyn.util.ClassUtil;
+import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
+import org.milyn.edisax.util.EDIUtils;
 
-import java.io.*;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -41,7 +39,7 @@ import java.util.zip.ZipInputStream;
 
 /**
  * UN/EDIFACT Specification Reader.
- * 
+ *
  * @author bardl
  */
 public class UnEdifactSpecificationReader implements EdiSpecificationReader {
@@ -65,7 +63,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
     /**
      * Matcher to recognize and parse entries like CUSCAR_D.08A
      */
-	private Pattern entryFileName = Pattern.compile("^([A-Z]+)_([A-Z])\\.([0-9]+[A-Z])$");
+    private Pattern entryFileName = Pattern.compile("^([A-Z]+)_([A-Z])\\.([0-9]+[A-Z])$");
 
     public UnEdifactSpecificationReader(ZipInputStream specificationInStream, boolean useImport) throws IOException {
         this(specificationInStream, useImport, true);
@@ -78,7 +76,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         definitionFiles = new HashMap<String, byte[]>();
         messageFiles = new HashMap<String, byte[]>();
         readDefinitionEntries(specificationInStream, new ZipDirectoryEntry("eded.", definitionFiles), new ZipDirectoryEntry("edcd.", definitionFiles), new ZipDirectoryEntry("edsd.", definitionFiles), new ZipDirectoryEntry("edmd.", "*", messageFiles));
-        
+
         if (versions.size() != 1) {
             if (versions.size() == 0) {
                 throw new EdiParseException("Seems that we have a directory containing 0 parseable version inside: " + versions + ".\n All messages:\n\t" + messages);
@@ -114,14 +112,14 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
     }
 
     public Edimap getMappingModel(String messageName) throws IOException {
-        if(messageName.equals(definitionModel.getDescription().getName())) {
+        if (messageName.equals(definitionModel.getDescription().getName())) {
             return definitionModel;
         } else {
             return parseEdiMessage(messageName).getEdimap();
         }
     }
 
-	public Properties getInterchangeProperties() {
+    public Properties getInterchangeProperties() {
         Properties properties = new Properties();
 
         properties.setProperty(EdiSpecificationReader.INTERCHANGE_TYPE, INTERCHANGE_TYPE);
@@ -132,18 +130,18 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
     }
 
     public EdiDirectory getEdiDirectory(String... includeMessages) throws IOException {
-        if(ediDirectory == null) {
+        if (ediDirectory == null) {
             Set<String> includeMessageSet = null;
             String commonMessageName = getCommmonMessageName();
             Set<String> messages = getMessageNames();
             Edimap commonModel = null;
             List<Edimap> models = new ArrayList<Edimap>();
 
-            if(includeMessages != null && includeMessages.length > 0) {
+            if (includeMessages != null && includeMessages.length > 0) {
                 includeMessageSet = new HashSet<String>(Arrays.asList(includeMessages));
             }
 
-            for(String message : messages) {
+            for (String message : messages) {
                 if (includeMessageSet != null && !message.equals(commonMessageName)) {
                     if (!includeMessageSet.contains(message)) {
                         // Skip this message...
@@ -155,8 +153,8 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
                 EdiConvertionTool.removeDuplicateSegments(model.getSegments());
 
-                if(message.equals(commonMessageName)) {
-                    if(commonModel == null) {
+                if (message.equals(commonMessageName)) {
+                    if (commonModel == null) {
                         commonModel = model;
                     } else {
                         logger.warn("Common model message '" + commonMessageName + "' already read.");
@@ -251,9 +249,9 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
                     byte[] bytes = new byte[BUFFER];
                     int size;
-                      while ((size = folderZip.read(bytes, 0, bytes.length)) != -1) {
+                    while ((size = folderZip.read(bytes, 0, bytes.length)) != -1) {
                         baos.write(bytes, 0, size);
-                      }
+                    }
 
                     ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
                     readZipEntry(entry.getEntries(), zipInputStream, entry.getFile());
@@ -265,23 +263,23 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         }
     }
 
-    private  boolean readZipEntry(Map<String, byte[]> files, ZipInputStream folderZip, String entry) throws IOException {
+    private boolean readZipEntry(Map<String, byte[]> files, ZipInputStream folderZip, String entry) throws IOException {
 
         boolean result = false;
 
         ZipEntry fileEntry = folderZip.getNextEntry();
         while (fileEntry != null) {
             String fileName = fileEntry.getName();
-			String fName = new File(fileName.toLowerCase()).getName().replaceFirst("tr", "ed");
+            String fName = new File(fileName.toLowerCase()).getName().replaceFirst("tr", "ed");
             if (fName.startsWith(entry) || entry.equals("*")) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
                 byte[] bytes = new byte[2048];
                 int size;
-                  while ((size = folderZip.read(bytes, 0, bytes.length)) != -1) {
+                while ((size = folderZip.read(bytes, 0, bytes.length)) != -1) {
                     translatePseudoGraph(bytes);
                     baos.write(bytes, 0, size);
-                  }
+                }
 
                 File file = new File(fileName);
                 String messageName = file.getName().toUpperCase();
@@ -289,11 +287,11 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
                 result = true;
                 messages.add(messageName);
                 if (entry.equals("*")) {
-					Matcher match = entryFileName.matcher(messageName);
-					if (match.matches()) {
+                    Matcher match = entryFileName.matcher(messageName);
+                    if (match.matches()) {
                         String entryName = match.group(1);
-						files.put(entryName, baos.toByteArray());
-						versions.add((match.group(2) + match.group(3)).toLowerCase());
+                        files.put(entryName, baos.toByteArray());
+                        versions.add((match.group(2) + match.group(3)).toLowerCase());
                     }
                 } else {
                     files.put(entry, baos.toByteArray());
@@ -307,27 +305,24 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
         return result;
     }
 
-    private static void translatePseudoGraph(byte[] bytes)
-    {
-	for (int i=0, l=bytes.length; i<l; i++)
-	{
-	    switch(bytes[i])
-	    {
-		case (byte)0xC4:
-		    bytes[i] = (byte)'-';
-		    break;
+    private static void translatePseudoGraph(byte[] bytes) {
+        for (int i = 0, l = bytes.length; i < l; i++) {
+            switch (bytes[i]) {
+                case (byte) 0xC4:
+                    bytes[i] = (byte) '-';
+                    break;
 
-		case (byte)0xC1:
-		case (byte)0xBF:
-		case (byte)0xD9:
-		    bytes[i] = (byte)'+';
-		    break;
+                case (byte) 0xC1:
+                case (byte) 0xBF:
+                case (byte) 0xD9:
+                    bytes[i] = (byte) '+';
+                    break;
 
-		case (byte)0xB3:
-		    bytes[i] = (byte)'|';
-		    break;
-	    }
-	}
+                case (byte) 0xB3:
+                    bytes[i] = (byte) '|';
+                    break;
+            }
+        }
     }
 
     private static class ZipDirectoryEntry {

@@ -21,7 +21,7 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.javabean.dynamic.serialize.BeanWriter;
 import org.milyn.javabean.dynamic.serialize.DefaultNamespace;
 import org.milyn.payload.JavaResult;

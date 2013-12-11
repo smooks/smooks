@@ -15,16 +15,16 @@
 */
 package org.milyn.db;
 
-import org.milyn.SmooksException;
-import org.milyn.delivery.Fragment;
-import org.milyn.util.CollectionsUtil;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.util.CollectionsUtil;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.ExecutionLifecycleCleanable;
+import org.milyn.delivery.Fragment;
+import org.milyn.delivery.VisitLifecycleCleanable;
 import org.milyn.delivery.dom.DOMVisitBefore;
+import org.milyn.delivery.ordering.Producer;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.delivery.ExecutionLifecycleCleanable;
-import org.milyn.delivery.VisitLifecycleCleanable;
-import org.milyn.delivery.ordering.Producer;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -70,18 +70,18 @@ public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefo
         try {
             Connection connection = (Connection) executionContext.getAttribute(CONNECTION_CONTEXT_KEY_PREFIX + getName());
 
-            if(connection != null) {
-            	TransactionManager transactionManager = (TransactionManager) executionContext.getAttribute(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX  + getName());
-            	if(transactionManager == null) {
-            		throw new SmooksException("No TransactionManager is set for the datasource '" + getName() + "'");
-            	}
+            if (connection != null) {
+                TransactionManager transactionManager = (TransactionManager) executionContext.getAttribute(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX + getName());
+                if (transactionManager == null) {
+                    throw new SmooksException("No TransactionManager is set for the datasource '" + getName() + "'");
+                }
                 try {
-                    if(!isAutoCommit()) {
+                    if (!isAutoCommit()) {
                         // If there's no termination error on the context, commit, otherwise rollback...
-                        if(executionContext.getTerminationError() == null) {
-                        	transactionManager.commit();
+                        if (executionContext.getTerminationError() == null) {
+                            transactionManager.commit();
                         } else {
-                        	transactionManager.rollback();
+                            transactionManager.rollback();
                         }
                     }
                 } finally {
@@ -100,11 +100,11 @@ public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefo
     public static Connection getConnection(String dataSourceName, ExecutionContext executionContext) throws SmooksException {
         Connection connection = (Connection) executionContext.getAttribute(CONNECTION_CONTEXT_KEY_PREFIX + dataSourceName);
 
-        if(connection == null) {
+        if (connection == null) {
             AbstractDataSource datasource = (AbstractDataSource) executionContext.getAttribute(DS_CONTEXT_KEY_PREFIX + dataSourceName);
 
-            if(datasource == null) {
-                throw new SmooksException("DataSource '" + dataSourceName + "' not bound to context.  Configure an '" + AbstractDataSource.class.getName() +  "' implementation and target it at '#document'.");
+            if (datasource == null) {
+                throw new SmooksException("DataSource '" + dataSourceName + "' not bound to context.  Configure an '" + AbstractDataSource.class.getName() + "' implementation and target it at '#document'.");
             }
             try {
                 connection = datasource.getConnection();
@@ -134,7 +134,7 @@ public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefo
     public abstract boolean isAutoCommit();
 
     public TransactionManager createTransactionManager(Connection connection) {
-    	return new JdbcTransactionManager(connection, isAutoCommit());
+        return new JdbcTransactionManager(connection, isAutoCommit());
     }
 
 }

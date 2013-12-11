@@ -15,8 +15,8 @@
 */
 package org.milyn.event.types;
 
-import org.milyn.event.ExecutionEvent;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.event.ExecutionEvent;
 
 /**
  * Configuration Builder Event.

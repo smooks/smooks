@@ -16,17 +16,16 @@
 
 package org.milyn.templating.soapshipping;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import junit.framework.TestCase;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
+import org.milyn.commons.profile.DefaultProfileSet;
 import org.milyn.container.ExecutionContext;
-import org.milyn.profile.DefaultProfileSet;
 import org.milyn.templating.util.CharUtils;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class ShippingIntegTestBase extends TestCase {
 
@@ -38,15 +37,15 @@ public abstract class ShippingIntegTestBase extends TestCase {
         SmooksUtil.registerProfileSet(new DefaultProfileSet("shipping-response"), smooks);
         smooks.addConfigurations("trans-request.cdrl", getClass().getResourceAsStream("trans-request.cdrl"));
         smooks.addConfigurations("trans-response.cdrl", getClass().getResourceAsStream("trans-response.cdrl"));
-                
+
         InputStream requestStream = getClass().getResourceAsStream("../request.xml");
         ExecutionContext context = smooks.createExecutionContext("shipping-request");
         String requestResult = SmooksUtil.filterAndSerialize(context, requestStream, smooks);
-		CharUtils.assertEquals("Template test failed.", "/org/milyn/templating/soapshipping/request.xml.tran.expected", requestResult);
+        CharUtils.assertEquals("Template test failed.", "/org/milyn/templating/soapshipping/request.xml.tran.expected", requestResult);
 
         InputStream responseStream = getClass().getResourceAsStream("../response.xml");
         context = smooks.createExecutionContext("shipping-response");
         String responseResult = SmooksUtil.filterAndSerialize(context, responseStream, smooks);
-		CharUtils.assertEquals("Template test failed.", "/org/milyn/templating/soapshipping/response.xml.tran.expected", responseResult);
+        CharUtils.assertEquals("Template test failed.", "/org/milyn/templating/soapshipping/response.xml.tran.expected", responseResult);
     }
 }

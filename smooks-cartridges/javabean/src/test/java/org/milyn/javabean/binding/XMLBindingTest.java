@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.javabean.binding.config5.Person;
 import org.milyn.javabean.binding.model.ModelSet;
 import org.milyn.javabean.binding.ordermodel.Order;

@@ -15,13 +15,13 @@
 */
 package org.milyn.delivery.sax;
 
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.commons.util.ClassUtil;
 import org.milyn.delivery.ContentHandlerConfigMap;
 import org.milyn.delivery.VisitLifecycleCleanable;
 import org.milyn.delivery.sax.annotation.StreamResultWriter;
 import org.milyn.delivery.sax.annotation.TextConsumer;
-import org.milyn.util.ClassUtil;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.xpath.SelectorStep;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * SAXElement visitor Map.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class SAXElementVisitorMap {
@@ -82,25 +82,25 @@ public class SAXElementVisitorMap {
     }
 
     public void initAccumulateText() {
-    	// If any of the before/after handlers are marked as text consumers...
-        if(getAnnotatedHandler(visitBefores, TextConsumer.class, false) != null) {
+        // If any of the before/after handlers are marked as text consumers...
+        if (getAnnotatedHandler(visitBefores, TextConsumer.class, false) != null) {
             accumulateText = true;
-        	return;
-        }
-        if(getAnnotatedHandler(visitAfters, TextConsumer.class, false) != null) {
-            accumulateText = true;
-        	return;
-        }
-    	
-    	// If any of the selector steps need access to the fragment text...
-        if(visitAfters == null) {
             return;
         }
-        for(ContentHandlerConfigMap<? extends SAXVisitor> contentHandlerMap : visitAfters) {
+        if (getAnnotatedHandler(visitAfters, TextConsumer.class, false) != null) {
+            accumulateText = true;
+            return;
+        }
+
+        // If any of the selector steps need access to the fragment text...
+        if (visitAfters == null) {
+            return;
+        }
+        for (ContentHandlerConfigMap<? extends SAXVisitor> contentHandlerMap : visitAfters) {
             SmooksResourceConfiguration resourceConfig = contentHandlerMap.getResourceConfig();
             SelectorStep selectorStep = resourceConfig.getSelectorStep();
 
-            if(selectorStep.accessesText()) {
+            if (selectorStep.accessesText()) {
                 accumulateText = true;
                 break;
             }
@@ -108,35 +108,35 @@ public class SAXElementVisitorMap {
     }
 
     public void initAccumulateText(SAXElementVisitorMap srcMap) {
-    	this.accumulateText = (this.accumulateText || srcMap.accumulateText);
+        this.accumulateText = (this.accumulateText || srcMap.accumulateText);
     }
-    
+
     public void initAcquireWriterFor(SAXElementVisitorMap srcMap) {
-    	if(this.acquireWriterFor == null) {
-    		this.acquireWriterFor = srcMap.acquireWriterFor;
-    	}
+        if (this.acquireWriterFor == null) {
+            this.acquireWriterFor = srcMap.acquireWriterFor;
+        }
     }
-    
+
     public void initAcquireWriterFor() {
-    	acquireWriterFor = getAnnotatedHandler(visitBefores, StreamResultWriter.class, true);
-    	if(acquireWriterFor == null) {
-        	acquireWriterFor = getAnnotatedHandler(visitAfters, StreamResultWriter.class, true);
-    	}
+        acquireWriterFor = getAnnotatedHandler(visitBefores, StreamResultWriter.class, true);
+        if (acquireWriterFor == null) {
+            acquireWriterFor = getAnnotatedHandler(visitAfters, StreamResultWriter.class, true);
+        }
     }
 
     public SAXElementVisitorMap merge(SAXElementVisitorMap map) {
-    	if(map == null) {
-    		// No need to merge...
-    		return this;
-    	}    	
-    	
-    	SAXElementVisitorMap merge = new SAXElementVisitorMap();
-    	
+        if (map == null) {
+            // No need to merge...
+            return this;
+        }
+
+        SAXElementVisitorMap merge = new SAXElementVisitorMap();
+
         merge.visitBefores = new ArrayList<ContentHandlerConfigMap<SAXVisitBefore>>();
         merge.childVisitors = new ArrayList<ContentHandlerConfigMap<SAXVisitChildren>>();
         merge.visitAfters = new ArrayList<ContentHandlerConfigMap<SAXVisitAfter>>();
         merge.visitCleanables = new ArrayList<ContentHandlerConfigMap<VisitLifecycleCleanable>>();
-        
+
         merge.visitBefores.addAll(visitBefores);
         merge.visitBefores.addAll(map.visitBefores);
         merge.childVisitors.addAll(childVisitors);
@@ -145,26 +145,26 @@ public class SAXElementVisitorMap {
         merge.visitAfters.addAll(map.visitAfters);
         merge.visitCleanables.addAll(visitCleanables);
         merge.visitCleanables.addAll(map.visitCleanables);
-        
+
         merge.accumulateText = (accumulateText || merge.accumulateText);
 
         return merge;
     }
 
-	private <T extends SAXVisitor> T getAnnotatedHandler(List<ContentHandlerConfigMap<T>> handlerMaps, Class<? extends Annotation> annotationClass, boolean checkFields) {
-		if(handlerMaps == null) {
-			return null;
-		}
-		
-		for(ContentHandlerConfigMap<T> handlerMap : handlerMaps) {
-        	T contentHandler = handlerMap.getContentHandler();
-			if(contentHandler.getClass().isAnnotationPresent(annotationClass)) {
-        		return contentHandler;
-        	} else if(checkFields && !ClassUtil.getAnnotatedFields(contentHandler.getClass(), annotationClass).isEmpty()) {
-        		return contentHandler;
-        	}
+    private <T extends SAXVisitor> T getAnnotatedHandler(List<ContentHandlerConfigMap<T>> handlerMaps, Class<? extends Annotation> annotationClass, boolean checkFields) {
+        if (handlerMaps == null) {
+            return null;
         }
-		
-		return null;
-	}
+
+        for (ContentHandlerConfigMap<T> handlerMap : handlerMaps) {
+            T contentHandler = handlerMap.getContentHandler();
+            if (contentHandler.getClass().isAnnotationPresent(annotationClass)) {
+                return contentHandler;
+            } else if (checkFields && !ClassUtil.getAnnotatedFields(contentHandler.getClass(), annotationClass).isEmpty()) {
+                return contentHandler;
+            }
+        }
+
+        return null;
+    }
 }

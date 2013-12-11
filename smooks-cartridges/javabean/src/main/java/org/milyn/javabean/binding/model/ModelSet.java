@@ -17,24 +17,22 @@
 package org.milyn.javabean.binding.model;
 
 import org.milyn.cdr.ParameterAccessor;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksResourceConfigurationList;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.cdr.xpath.SelectorStepBuilder;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.util.DollarBraceDecoder;
 import org.milyn.container.ApplicationContext;
-import org.milyn.db.TransactionManagerType;
 import org.milyn.javabean.BeanInstanceCreator;
 import org.milyn.javabean.BeanInstancePopulator;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.util.DollarBraceDecoder;
 import org.milyn.xml.NamespaceMappings;
 
 import javax.xml.namespace.QName;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Bean binding model set.
@@ -75,8 +73,8 @@ public class ModelSet {
     }
 
     public Bean getModel(Class<?> beanType) {
-        for(Bean model : models.values()) {
-            if(model.getCreator().getBeanRuntimeInfo().getPopulateType() == beanType) {
+        for (Bean model : models.values()) {
+            if (model.getCreator().getBeanRuntimeInfo().getPopulateType() == beanType) {
                 return model;
             }
         }
@@ -92,33 +90,33 @@ public class ModelSet {
     }
 
     private void createBaseBeanMap(SmooksResourceConfigurationList userConfigList) {
-        for(int i = 0; i < userConfigList.size(); i++) {
+        for (int i = 0; i < userConfigList.size(); i++) {
             SmooksResourceConfiguration config = userConfigList.get(i);
             Object javaResource = config.getJavaResourceObject();
 
-            if(javaResource instanceof BeanInstanceCreator) {
+            if (javaResource instanceof BeanInstanceCreator) {
                 BeanInstanceCreator beanCreator = (BeanInstanceCreator) javaResource;
                 Bean bean = new Bean(beanCreator).setCloneable(true);
 
                 baseBeans.put(bean.getBeanId(), bean);
 
-                if(isBindingOnlyConfig == null) {
+                if (isBindingOnlyConfig == null) {
                     isBindingOnlyConfig = true;
                 }
-            } else if(javaResource instanceof BeanInstancePopulator) {
+            } else if (javaResource instanceof BeanInstancePopulator) {
                 BeanInstancePopulator beanPopulator = (BeanInstancePopulator) javaResource;
                 Bean bean = baseBeans.get(beanPopulator.getBeanId());
 
-                if(bean == null) {
+                if (bean == null) {
                     throw new SmooksConfigurationException("Unexpected binding configuration exception.  Unknown parent beanId '' for binding configuration.");
                 }
 
-                if(beanPopulator.isBeanWiring()) {
+                if (beanPopulator.isBeanWiring()) {
                     bean.getBindings().add(new WiredBinding(beanPopulator));
                 } else {
                     bean.getBindings().add(new DataBinding(beanPopulator));
                 }
-            } else if(isNonBindingResource(javaResource) && !isGlobalParamsConfig(config)) {
+            } else if (isNonBindingResource(javaResource) && !isGlobalParamsConfig(config)) {
                 // The user has configured something other than a bean binding config.
                 isBindingOnlyConfig = false;
             }
@@ -126,12 +124,12 @@ public class ModelSet {
     }
 
     private boolean isNonBindingResource(Object javaResource) {
-        if(javaResource instanceof DataDecoder) {
+        if (javaResource instanceof DataDecoder) {
             return false;
         }
 
         // Ignore resource that do not manipulate the event stream...
-        if(javaResource instanceof NamespaceMappings) {
+        if (javaResource instanceof NamespaceMappings) {
             return false;
         }
 
@@ -143,19 +141,19 @@ public class ModelSet {
     }
 
     private void createExpandedModels() {
-        for(Bean bean : baseBeans.values()) {
+        for (Bean bean : baseBeans.values()) {
             models.put(bean.getBeanId(), bean.clone(baseBeans, null));
         }
     }
 
     private void resolveModelSelectors(SmooksResourceConfigurationList userConfigList) {
         // Do the beans first...
-        for(Bean model : models.values()) {
+        for (Bean model : models.values()) {
             resolveModelSelectors(model);
         }
 
         // Now run over all configs.. there may be router configs etc using hashed selectors...
-        for(int i = 0; i < userConfigList.size(); i++) {
+        for (int i = 0; i < userConfigList.size(); i++) {
             expandSelector(userConfigList.get(i), false, null);
         }
     }
@@ -165,11 +163,11 @@ public class ModelSet {
 
         expandSelector(beanConfig, true, null);
 
-        for(Binding binding : model.getBindings()) {
+        for (Binding binding : model.getBindings()) {
             SmooksResourceConfiguration bindingConfig = binding.getConfig();
             expandSelector(bindingConfig, true, beanConfig);
 
-            if(binding instanceof WiredBinding) {
+            if (binding instanceof WiredBinding) {
                 resolveModelSelectors(((WiredBinding) binding).getWiredBean());
             }
         }
@@ -179,24 +177,24 @@ public class ModelSet {
         SelectorStep[] selectorSteps = resourceConfiguration.getSelectorSteps();
         QName targetElement = selectorSteps[0].getTargetElement();
 
-        if(targetElement == null) {
+        if (targetElement == null) {
             return;
         }
 
         String localPart = targetElement.getLocalPart();
-        if(localPart.equals("#") && context != null) {
+        if (localPart.equals("#") && context != null) {
             resourceConfiguration.setSelectorSteps(concat(context.getSelectorSteps(), selectorSteps));
             return;
         }
 
         List<String> dollarBraceTokens = DollarBraceDecoder.getTokens(localPart);
-        if(dollarBraceTokens.size() == 1) {
+        if (dollarBraceTokens.size() == 1) {
             String beanId = dollarBraceTokens.get(0);
             Bean bean = baseBeans.get(beanId);
 
-            if(bean != null) {
+            if (bean != null) {
                 resourceConfiguration.setSelectorSteps(concat(bean.getConfig().getSelectorSteps(), selectorSteps));
-            } else if(failOnMissingBean) {
+            } else if (failOnMissingBean) {
                 throw new SmooksConfigurationException("Invalid selector '" + SelectorStepBuilder.toString(selectorSteps) + "'.  Unknown beanId '" + beanId + "'.");
             }
 
@@ -214,7 +212,7 @@ public class ModelSet {
 
     public static void build(ApplicationContext appContext) {
         ModelSet modelSet = get(appContext);
-        if(modelSet == null) {
+        if (modelSet == null) {
             modelSet = new ModelSet(appContext.getStore().getUserDefinedResourceList());
             appContext.setAttribute(ModelSet.class, modelSet);
         }

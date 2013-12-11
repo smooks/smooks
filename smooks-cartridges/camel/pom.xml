@@ -7,12 +7,14 @@
         <artifactId>smooks-cartridge-base-pom</artifactId>
         <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     </parent>
+
     <name>Milyn Smooks Cartridge - Camel</name>
     <artifactId>milyn-smooks-camel</artifactId>
+    <packaging>bundle</packaging>
 
-	<dependencies>
+    <dependencies>
 
-		<dependency>
+        <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
@@ -25,11 +27,11 @@
             <version>${camel.version}</version>
             <scope>test</scope>
             <exclusions>
-                 <exclusion>
+                <exclusion>
                     <groupId>org.apache.camel</groupId>
                     <artifactId>camel-spring</artifactId>
-                 </exclusion>
-           </exclusions>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -39,7 +41,7 @@
             <scope>provided</scope>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
             <version>${project.version}</version>
@@ -52,28 +54,28 @@
             <scope>provided</scope>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-csv</artifactId>
             <version>${project.version}</version>
-			<scope>test</scope>
+            <scope>test</scope>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
             <version>${project.version}</version>
-			<scope>test</scope>
+            <scope>test</scope>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>1.8.1</version>
             <scope>test</scope>
         </dependency>
 
-	</dependencies>
+    </dependencies>
 
 
 </project>

@@ -15,6 +15,31 @@
 */
 package example;
 
+import com.ibatis.common.resources.Resources;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.client.SqlMapClientBuilder;
+import example.dao.CustomerDao;
+import example.dao.OrderDao;
+import example.dao.ProductDao;
+import org.milyn.Smooks;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.util.HsqlServer;
+import org.milyn.container.ExecutionContext;
+import org.milyn.event.report.HtmlReportGenerator;
+import org.milyn.persistence.util.PersistenceUtil;
+import org.milyn.routing.db.StatementExec;
+import org.milyn.scribe.adapter.ibatis.SqlMapClientRegister;
+import org.milyn.scribe.adapter.jpa.EntityManagerRegister;
+import org.milyn.scribe.register.DaoRegister;
+import org.milyn.scribe.register.MapDaoRegister;
+import org.xml.sax.SAXException;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -27,36 +52,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.xml.transform.stream.StreamSource;
-
-import org.milyn.Smooks;
-import org.milyn.SmooksException;
-import org.milyn.container.ExecutionContext;
-import org.milyn.event.report.HtmlReportGenerator;
-import org.milyn.io.StreamUtils;
-import org.milyn.persistence.util.PersistenceUtil;
-import org.milyn.routing.db.StatementExec;
-import org.milyn.scribe.adapter.ibatis.SqlMapClientRegister;
-import org.milyn.scribe.adapter.jpa.EntityManagerRegister;
-import org.milyn.scribe.register.DaoRegister;
-import org.milyn.scribe.register.MapDaoRegister;
-import org.milyn.util.HsqlServer;
-import org.xml.sax.SAXException;
-
-import com.ibatis.common.resources.Resources;
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-
-import example.dao.CustomerDao;
-import example.dao.OrderDao;
-import example.dao.ProductDao;
-
 /**
  * Simple example main class.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class Main {
@@ -67,7 +65,7 @@ public class Main {
 
     private EntityManager em;
 
-	private SqlMapClient sqlMapClient;
+    private SqlMapClient sqlMapClient;
 
     public static byte[] messageInDao = readInputMessage("dao");
 
@@ -82,13 +80,13 @@ public class Main {
 
 
         try {
-        	Main.pause("First the database needs be started. Press return to start the database...");
+            Main.pause("First the database needs be started. Press return to start the database...");
 
-        	main.startDatabase();
+            main.startDatabase();
 
-        	main.initDatabase();
+            main.initDatabase();
 
-        	main.createSqlMapInstance();
+            main.createSqlMapInstance();
 
             System.out.println();
 
@@ -154,7 +152,7 @@ public class Main {
 
     protected void runSmooksTransformWithDao() throws IOException, SAXException, SmooksException {
 
-    	Smooks smooks = new Smooks("./smooks-configs/smooks-dao-config.xml");
+        Smooks smooks = new Smooks("./smooks-configs/smooks-dao-config.xml");
 
         try {
             ExecutionContext executionContext = smooks.createExecutionContext();
@@ -163,11 +161,11 @@ public class Main {
             executionContext.setEventListener(new HtmlReportGenerator("target/report/report-dao.html"));
 
             DaoRegister<Object> register =
-                MapDaoRegister.builder()
-                    .put("product", new ProductDao(em))
-                    .put("customer", new CustomerDao(em))
-                    .put("order", new OrderDao(em))
-                    .build();
+                    MapDaoRegister.builder()
+                            .put("product", new ProductDao(em))
+                            .put("customer", new CustomerDao(em))
+                            .put("order", new OrderDao(em))
+                            .build();
 
             PersistenceUtil.setDAORegister(executionContext, register);
 
@@ -184,7 +182,7 @@ public class Main {
 
     protected void runSmooksTransformWithJpa() throws IOException, SAXException, SmooksException {
 
-    	Smooks smooks = new Smooks("./smooks-configs/smooks-jpa-config.xml");
+        Smooks smooks = new Smooks("./smooks-configs/smooks-jpa-config.xml");
 
         try {
             ExecutionContext executionContext = smooks.createExecutionContext();
@@ -208,7 +206,7 @@ public class Main {
 
     protected void runSmooksTransformWithIbatis() throws IOException, SAXException, SmooksException, SQLException {
 
-    	Smooks smooks = new Smooks("./smooks-configs/smooks-ibatis-config.xml");
+        Smooks smooks = new Smooks("./smooks-configs/smooks-ibatis-config.xml");
 
         try {
             ExecutionContext executionContext = smooks.createExecutionContext();
@@ -224,15 +222,15 @@ public class Main {
 
             sqlMapClient.commitTransaction();
         } finally {
-        	sqlMapClient.endTransaction();
+            sqlMapClient.endTransaction();
 
             smooks.close();
         }
     }
 
     public void printOrders() throws SQLException {
-    	List<Map<String, Object>> customers = getCustomers();
-    	List<Map<String, Object>> products = getProducts();
+        List<Map<String, Object>> customers = getCustomers();
+        List<Map<String, Object>> products = getProducts();
         List<Map<String, Object>> orders = getOrders();
         List<Map<String, Object>> orderItems = getOrderItems();
 
@@ -243,7 +241,7 @@ public class Main {
     }
 
     public List<Map<String, Object>> getOrders() throws SQLException {
-    	StatementExec exec1OrderItems = new StatementExec("select * from orders");
+        StatementExec exec1OrderItems = new StatementExec("select * from orders");
         List<Map<String, Object>> rows = exec1OrderItems.executeUnjoinedQuery(dbServer.getConnection());
         return rows;
     }
@@ -268,10 +266,10 @@ public class Main {
 
     private void printResultSet(String name, List<Map<String, Object>> resultSet) {
         System.out.println(("---- " + name + " -------------------------------------------------------------------------------------------------").substring(0, 80));
-        if(resultSet.isEmpty()) {
+        if (resultSet.isEmpty()) {
             System.out.println("(No rows)");
         } else {
-            for(int i = 0; i < resultSet.size(); i++) {
+            for (int i = 0; i < resultSet.size(); i++) {
                 Set<Map.Entry<String, Object>> row = resultSet.get(i).entrySet();
 
                 System.out.println("Row " + i + ":");
@@ -284,13 +282,13 @@ public class Main {
     }
 
     public void startDatabase() throws Exception {
-    	dbServer = new HsqlServer(9201);
+        dbServer = new HsqlServer(9201);
         emf = Persistence.createEntityManagerFactory("db");
         em = emf.createEntityManager();
     }
 
     public void initDatabase() throws Exception {
-    	InputStream schema = new FileInputStream("init-db.sql");
+        InputStream schema = new FileInputStream("init-db.sql");
 
         try {
             dbServer.execScript(schema);
@@ -300,20 +298,20 @@ public class Main {
     }
 
     void stopDatabase() throws Exception {
-    	try {
-			em.close();
-		} catch (Exception e) {
-		}
-    	try {
-			emf.close();
-		} catch (Exception e) {
-		}
+        try {
+            em.close();
+        } catch (Exception e) {
+        }
+        try {
+            emf.close();
+        } catch (Exception e) {
+        }
         dbServer.stop();
     }
 
     private static byte[] readInputMessage(String msg) {
         try {
-            return StreamUtils.readStream(new FileInputStream("input-message-"+ msg +".xml"));
+            return StreamUtils.readStream(new FileInputStream("input-message-" + msg + ".xml"));
         } catch (IOException e) {
             e.printStackTrace();
             return "<no-message/>".getBytes();
@@ -322,17 +320,17 @@ public class Main {
 
     private void createSqlMapInstance() {
 
-		try {
-			String resource = "ibatis/sql-map-config.xml";
-			Reader reader = Resources.getResourceAsReader(resource);
+        try {
+            String resource = "ibatis/sql-map-config.xml";
+            Reader reader = Resources.getResourceAsReader(resource);
 
-			sqlMapClient =  SqlMapClientBuilder.buildSqlMapClient(reader);
+            sqlMapClient = SqlMapClientBuilder.buildSqlMapClient(reader);
 
-		} catch (Exception e) {
-			throw new RuntimeException("Error initializing SqlMapConfig class. Cause: " + e);
-		}
+        } catch (Exception e) {
+            throw new RuntimeException("Error initializing SqlMapConfig class. Cause: " + e);
+        }
 
-	}
+    }
 
     static void pause(String message) {
         try {

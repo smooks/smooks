@@ -16,13 +16,12 @@
 package org.milyn.delivery.dom;
 
 import junit.framework.TestCase;
-
-import org.milyn.Smooks;
 import org.milyn.FilterSettings;
+import org.milyn.Smooks;
 import org.milyn.StreamFilterType;
-import org.milyn.lang.LangUtil;
-import org.milyn.payload.StringSource;
+import org.milyn.commons.lang.LangUtil;
 import org.milyn.payload.StringResult;
+import org.milyn.payload.StringSource;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>

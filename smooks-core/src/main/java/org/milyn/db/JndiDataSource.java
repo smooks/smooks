@@ -15,34 +15,26 @@
 */
 package org.milyn.db;
 
-import org.apache.commons.lang.NotImplementedException;
-import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
-import org.milyn.container.ExecutionContext;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
-import org.milyn.assertion.AssertArgument;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Savepoint;
 
 /**
  * Jndi based DataSource.
- * <p />
+ * <p/>
  * Configure the JNDI datasource, transaction manager, transaction jndi (optional), etc.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -55,13 +47,13 @@ public class JndiDataSource extends AbstractDataSource {
     @ConfigParam(name = "datasource")
     private String name;
 
-    @ConfigParam(use=Use.OPTIONAL)
+    @ConfigParam(use = Use.OPTIONAL)
     private String datasourceJndi;
 
-    @ConfigParam(use=Use.OPTIONAL)
+    @ConfigParam(use = Use.OPTIONAL)
     private String transactionJndi;
 
-    @ConfigParam(defaultVal="false")
+    @ConfigParam(defaultVal = "false")
     private boolean autoCommit;
 
     @ConfigParam(defaultVal = "true")
@@ -72,7 +64,7 @@ public class JndiDataSource extends AbstractDataSource {
 
     private DataSource datasource;
 
-    public JndiDataSource(){
+    public JndiDataSource() {
     }
 
     public JndiDataSource(String name, boolean autoCommit) {
@@ -88,44 +80,44 @@ public class JndiDataSource extends AbstractDataSource {
 
     @Initialize
     public void intitialize() {
-        if(datasourceJndi == null) {
-        	datasourceJndi = name;
+        if (datasourceJndi == null) {
+            datasourceJndi = name;
         }
 
         datasource = (DataSource) lookup(datasourceJndi);
 
-        if(transactionManagerType == TransactionManagerType.JTA) {
-        	if(transactionJndi == null || transactionJndi.length() == 0) {
-        		throw new SmooksConfigurationException("The transactionJndi attribute must be set when the JTA transaction manager is set.");
-        	}
+        if (transactionManagerType == TransactionManagerType.JTA) {
+            if (transactionJndi == null || transactionJndi.length() == 0) {
+                throw new SmooksConfigurationException("The transactionJndi attribute must be set when the JTA transaction manager is set.");
+            }
 
-        	//On JTA transaction manager then the autoCommit is always false
-        	autoCommit = false;
+            //On JTA transaction manager then the autoCommit is always false
+            autoCommit = false;
         }
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-    	return datasource.getConnection();
+        return datasource.getConnection();
     }
 
-	private Object lookup(String jndi) {
-		Context context = null;
-		try {
-			context = new InitialContext();
-		    return context.lookup(jndi);
-		} catch (NamingException e) {
-		    throw new SmooksConfigurationException("JNDI Context lookup failed for '" + jndi + "'.", e);
-		} finally {
-		    if(context != null) {
-		        try {
-		            context.close();
-		        } catch (NamingException e) {
-		            throw new SmooksConfigurationException("Error closing Naming Context after looking up DataSource JNDI '" + datasourceJndi + "'.", e);
-		        }
-		    }
-		}
-	}
+    private Object lookup(String jndi) {
+        Context context = null;
+        try {
+            context = new InitialContext();
+            return context.lookup(jndi);
+        } catch (NamingException e) {
+            throw new SmooksConfigurationException("JNDI Context lookup failed for '" + jndi + "'.", e);
+        } finally {
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException e) {
+                    throw new SmooksConfigurationException("Error closing Naming Context after looking up DataSource JNDI '" + datasourceJndi + "'.", e);
+                }
+            }
+        }
+    }
 
     @Override
     public boolean isAutoCommit() {
@@ -134,15 +126,15 @@ public class JndiDataSource extends AbstractDataSource {
 
     @Override
     public TransactionManager createTransactionManager(Connection connection) {
-    	switch(transactionManagerType) {
-	    	case JDBC:
-	    		return new JdbcTransactionManager(connection, isAutoCommit());
-	    	case JTA:
-	    		return new JtaTransactionManager(connection, (UserTransaction)lookup(transactionJndi), setAutoCommitAllowed);
-	    	case EXTERNAL:
-	    		return new ExternalTransactionManager(connection, isAutoCommit(), setAutoCommitAllowed);
-	    	default:
-	    		throw new SmooksException("The TransactionManager type '" + transactionManagerType + "' is unknown. This is probably a bug!");
-    	}
+        switch (transactionManagerType) {
+            case JDBC:
+                return new JdbcTransactionManager(connection, isAutoCommit());
+            case JTA:
+                return new JtaTransactionManager(connection, (UserTransaction) lookup(transactionJndi), setAutoCommitAllowed);
+            case EXTERNAL:
+                return new ExternalTransactionManager(connection, isAutoCommit(), setAutoCommitAllowed);
+            default:
+                throw new SmooksException("The TransactionManager type '" + transactionManagerType + "' is unknown. This is probably a bug!");
+        }
     }
 }

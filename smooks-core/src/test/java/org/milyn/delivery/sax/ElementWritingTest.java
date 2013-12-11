@@ -17,7 +17,7 @@ package org.milyn.delivery.sax;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
@@ -35,7 +35,7 @@ public class ElementWritingTest extends TestCase {
         try {
             smooks.filterSource(smooks.createExecutionContext(), new StringSource("<a/>"), null);
             fail("Expected SAXWriterAccessException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("Illegal access to the element writer for element 'a' by SAX visitor 'org.milyn.delivery.sax.SAXVisitorWriter02'.  Writer already acquired by SAX visitor 'org.milyn.delivery.sax.SAXVisitorWriter01'.  See SAXElement javadocs (http://milyn.codehaus.org/Smooks).  Change Smooks visitor resource configuration.", e.getCause().getMessage());
         }
     }
@@ -47,7 +47,7 @@ public class ElementWritingTest extends TestCase {
         StringResult stringResult = new StringResult();
 
         smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);
-        
+
         assertEquals(stringSource.getSource(), stringResult.getResult());
         assertTrue(SAXVisitBeforeVisitor.visited);
         assertTrue(SAXVisitAfterAndChildrenVisitor.visited);
@@ -68,7 +68,7 @@ public class ElementWritingTest extends TestCase {
         // nothing should get writen to the result because there are no configured
         // serialization Visitors.
         assertEquals("", stringResult.getResult());
-        
+
         assertTrue(SAXVisitBeforeVisitor.visited);
         assertTrue(SAXVisitAfterVisitor.visited);
     }

@@ -16,8 +16,8 @@
 package org.milyn.container.plugin;
 
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.ByteResult;
 import org.milyn.payload.JavaResult;
@@ -58,7 +58,8 @@ public class PayloadProcessor {
 
     /**
      * Public constructor.
-     * @param smooks The Smooks instance to be used.
+     *
+     * @param smooks     The Smooks instance to be used.
      * @param resultType The required result type.
      */
     public PayloadProcessor(final Smooks smooks, final ResultType resultType) {
@@ -90,7 +91,7 @@ public class PayloadProcessor {
      *
      * @param payload The payload to be filtered. See class level javadoc for supported data types.
      * @return The filter result. Will be "unpacked" as per the {@link ResultType} supplied in the
-     * {@link #PayloadProcessor(org.milyn.Smooks, ResultType) constructor}.
+     *         {@link #PayloadProcessor(org.milyn.Smooks, ResultType) constructor}.
      * @throws SmooksException
      */
     public final Object process(final Object payload, final ExecutionContext executionContext) throws SmooksException {

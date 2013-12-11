@@ -15,8 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
 
 import java.io.IOException;
 
@@ -34,8 +34,9 @@ public interface SAXVisitChildren extends SAXVisitor {
      * @param element          The element containing the text (parent).  The targeted element.
      * @param childText        The text.
      * @param executionContext Execution context.
-     * @throws org.milyn.SmooksException Event processing failure.
-     * @throws java.io.IOException     Error writing event to output writer.
+     * @throws org.milyn.commons.SmooksException
+     *                             Event processing failure.
+     * @throws java.io.IOException Error writing event to output writer.
      */
     void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException;
 
@@ -47,8 +48,8 @@ public interface SAXVisitChildren extends SAXVisitor {
      * @param element          The element containing the child element (parent). The targeted element.
      * @param childElement     The child element just added to the targeted element.
      * @param executionContext Execution context.
-     * @throws org.milyn.SmooksException Event processing failure.
-     * @throws java.io.IOException     Error writing event to output writer.
+     * @throws org.milyn.commons.SmooksException Event processing failure.
+     * @throws java.io.IOException       Error writing event to output writer.
      */
     void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException;
 }

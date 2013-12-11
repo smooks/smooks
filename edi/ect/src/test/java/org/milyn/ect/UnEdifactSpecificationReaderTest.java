@@ -17,16 +17,6 @@ package org.milyn.ect;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Set;
-import java.util.zip.ZipInputStream;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.jdom.Document;
@@ -38,16 +28,24 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.util.ClassUtil;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDIParser;
 import org.milyn.edisax.model.internal.Edimap;
-import org.milyn.io.StreamUtils;
-import org.milyn.util.ClassUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Set;
+import java.util.zip.ZipInputStream;
 
 /**
  * UnEdifactSpecificationReaderTest.
@@ -56,12 +54,13 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class UnEdifactSpecificationReaderTest {
 
-	private static UnEdifactSpecificationReader d08AReader_longnames;
+    private static UnEdifactSpecificationReader d08AReader_longnames;
     private static UnEdifactSpecificationReader d08AReader_shortnames;
-	private XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());;
+    private XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
+    ;
 
-	@BeforeClass
-	public static void parseD08A() throws Exception {
+    @BeforeClass
+    public static void parseD08A() throws Exception {
         InputStream inputStream = UnEdifactSpecificationReaderTest.class.getResourceAsStream("D08A.zip");
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         d08AReader_longnames = new UnEdifactSpecificationReader(zipInputStream, false, false);
@@ -69,7 +68,7 @@ public class UnEdifactSpecificationReaderTest {
         inputStream = UnEdifactSpecificationReaderTest.class.getResourceAsStream("D08A.zip");
         zipInputStream = new ZipInputStream(inputStream);
         d08AReader_shortnames = new UnEdifactSpecificationReader(zipInputStream, false, true);
-	}
+    }
 
     public void _disabled_test_D08A_Messages() throws InstantiationException, IllegalAccessException, IOException, EdiParseException {
         test("BANSTA", d08AReader_longnames);
@@ -82,7 +81,7 @@ public class UnEdifactSpecificationReaderTest {
     @Test
     public void test_getMessagesLongName() throws InstantiationException, IllegalAccessException, IOException {
         Set<String> messages = d08AReader_longnames.getMessageNames();
-        for(String message : messages) {
+        for (String message : messages) {
             Edimap model = d08AReader_longnames.getMappingModel(message);
             StringWriter writer = new StringWriter();
             model.write(writer);
@@ -92,7 +91,7 @@ public class UnEdifactSpecificationReaderTest {
     @Test
     public void test_getMessagesShortName() throws InstantiationException, IllegalAccessException, IOException {
         Set<String> messages = d08AReader_shortnames.getMessageNames();
-        for(String message : messages) {
+        for (String message : messages) {
             Edimap model = d08AReader_shortnames.getMappingModel(message);
             StringWriter writer = new StringWriter();
             model.write(writer);
@@ -199,7 +198,7 @@ public class UnEdifactSpecificationReaderTest {
         return sw.toString();
     }
 
-	private void testSegment(final String segmentCode, Document doc, boolean useShortName) throws IOException, SAXException, JDOMException {
+    private void testSegment(final String segmentCode, Document doc, boolean useShortName) throws IOException, SAXException, JDOMException {
         String expected = new String(StreamUtils.readStream(getClass().getResourceAsStream("d08a/segment/expected-" + (useShortName ? "shortname-" : "") + segmentCode.toLowerCase() + ".xml"))).trim();
         XPath lookup = XPath.newInstance("//medi:segment[@segcode='" + segmentCode + "']");
         lookup.addNamespace("medi", "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd");
@@ -208,13 +207,13 @@ public class UnEdifactSpecificationReaderTest {
 
 //        System.out.println(out.outputString(node));
 
-        XMLUnit.setIgnoreWhitespace( true );
+        XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.setIgnoreAttributeOrder(true);
-    	XMLAssert.assertXMLEqual("Failed to compare XMLs for " + segmentCode, new StringReader(expected), new StringReader(out.outputString(node)));
+        XMLAssert.assertXMLEqual("Failed to compare XMLs for " + segmentCode, new StringReader(expected), new StringReader(out.outputString(node)));
     }
 
     private void test(String messageName, EdiSpecificationReader ediSpecificationReader) throws IOException {
-    	Edimap edimap = ediSpecificationReader.getMappingModel(messageName);
+        Edimap edimap = ediSpecificationReader.getMappingModel(messageName);
 
         StringWriter stringWriter = new StringWriter();
         edimap.write(stringWriter);
@@ -231,11 +230,11 @@ public class UnEdifactSpecificationReaderTest {
 
         StringWriter result = new StringWriter();
         edimap.write(result);
-		String expected = new String(StreamUtils.readStream(getClass().getResourceAsStream("d08a/message/expected-" + messageName.toLowerCase() + ".xml"))).trim();
+        String expected = new String(StreamUtils.readStream(getClass().getResourceAsStream("d08a/message/expected-" + messageName.toLowerCase() + ".xml"))).trim();
 
 
 //        System.out.println(result);
-        XMLUnit.setIgnoreWhitespace( true );
+        XMLUnit.setIgnoreWhitespace(true);
         try {
             XMLAssert.assertXMLEqual(new StringReader(expected), new StringReader(result.toString()));
         } catch (SAXException e) {
@@ -244,9 +243,11 @@ public class UnEdifactSpecificationReaderTest {
         }
     }
 
-    /************************************************************************
+    /**
+     * *********************************************************************
      * Private class MockContentHandler                                     *
-     ************************************************************************/
+     * **********************************************************************
+     */
     private class MockContentHandler extends DefaultHandler {
 
         protected StringBuffer xmlMapping = new StringBuffer();
@@ -265,6 +266,6 @@ public class UnEdifactSpecificationReaderTest {
 
         public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
             xmlMapping.append("</").append(localName).append(">");
-		}
-	}
+        }
+    }
 }

@@ -16,16 +16,16 @@
 package org.milyn.javabean.binding.xml;
 
 import org.milyn.Smooks;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksResourceConfigurationList;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.cdr.xpath.SelectorStepBuilder;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.javabean.DataEncoder;
 import org.milyn.javabean.BeanInstanceCreator;
 import org.milyn.javabean.BeanInstancePopulator;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.javabean.DataEncoder;
 import org.milyn.javabean.binding.AbstractBinding;
 import org.milyn.javabean.binding.BeanSerializationException;
 import org.milyn.javabean.binding.SerializationContext;
@@ -47,8 +47,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * XML Binding class.
@@ -121,6 +128,7 @@ public class XMLBinding extends AbstractBinding {
 
     /**
      * Turn on/off outputting of the XML declaration when executing the {@link #toXML(Object, java.io.Writer)} method.
+     *
      * @param omitXMLDeclaration True if the order is to be omitted, otherwise false.
      * @return <code>this</code> instance.
      */
@@ -131,9 +139,10 @@ public class XMLBinding extends AbstractBinding {
 
     /**
      * Bind from the XML into the Java Object model.
+     *
      * @param inputSource The XML input.
-     * @param toType The Java type to which the XML data is to be bound.
-     * @param <T> The Java type to which the XML data is to be bound.
+     * @param toType      The Java type to which the XML data is to be bound.
+     * @param <T>         The Java type to which the XML data is to be bound.
      * @return The populated Java instance.
      */
     public <T> T fromXML(String inputSource, Class<T> toType) {
@@ -146,9 +155,10 @@ public class XMLBinding extends AbstractBinding {
 
     /**
      * Bind from the XML into the Java Object model.
+     *
      * @param inputSource The XML input.
-     * @param toType The Java type to which the XML data is to be bound.
-     * @param <T> The Java type to which the XML data is to be bound.
+     * @param toType      The Java type to which the XML data is to be bound.
+     * @param <T>         The Java type to which the XML data is to be bound.
      * @return The populated Java instance.
      */
     public <T> T fromXML(Source inputSource, Class<T> toType) throws IOException {
@@ -157,12 +167,13 @@ public class XMLBinding extends AbstractBinding {
 
     /**
      * Write the supplied Object instance to XML.
-     * @param object The Object instance.
+     *
+     * @param object       The Object instance.
      * @param outputWriter The output writer.
-     * @param <W> The Writer type.
+     * @param <W>          The Writer type.
      * @return The supplied {@link Writer} instance}.
      * @throws BeanSerializationException Error serializing the bean.
-     * @throws IOException Error writing to the supplied Writer instance.
+     * @throws IOException                Error writing to the supplied Writer instance.
      */
     public <W extends Writer> W toXML(Object object, W outputWriter) throws BeanSerializationException, IOException {
         AssertArgument.isNotNull(object, "object");
@@ -170,10 +181,10 @@ public class XMLBinding extends AbstractBinding {
 
         Class<? extends Object> objectClass = object.getClass();
         RootNodeSerializer rootNodeSerializer = serializers.get(objectClass);
-        if(rootNodeSerializer == null) {
+        if (rootNodeSerializer == null) {
             throw new BeanSerializationException("No serializer for Java type '" + objectClass.getName() + "'.");
         }
-        if(!omitXMLDeclaration) {
+        if (!omitXMLDeclaration) {
             outputWriter.write("<?xml version=\"1.0\"?>\n");
         }
 
@@ -192,7 +203,7 @@ public class XMLBinding extends AbstractBinding {
      * @param object The Object instance.
      * @return The XML as a String.
      * @throws BeanSerializationException Error serializing the bean.
-     * @throws IOException Error writing to the supplied Writer instance.
+     * @throws IOException                Error writing to the supplied Writer instance.
      */
     public String toXML(Object object) throws BeanSerializationException {
         StringWriter writer = new StringWriter();
@@ -213,9 +224,9 @@ public class XMLBinding extends AbstractBinding {
     private void mergeBeanModelsIntoXMLGraphs() {
         Set<Map.Entry<Class, RootNodeSerializer>> serializerSet = serializers.entrySet();
 
-        for(Map.Entry<Class, RootNodeSerializer> rootNodeSerializer : serializerSet) {
+        for (Map.Entry<Class, RootNodeSerializer> rootNodeSerializer : serializerSet) {
             Bean model = beanModelSet.getModel(rootNodeSerializer.getKey());
-            if(model == null) {
+            if (model == null) {
                 throw new IllegalStateException("Unexpected error.  No Bean model for type '" + rootNodeSerializer.getKey().getName() + "'.");
             }
             merge(rootNodeSerializer.getValue().serializer, model);
@@ -225,24 +236,24 @@ public class XMLBinding extends AbstractBinding {
     private void merge(XMLElementSerializationNode serializer, Bean bean) {
         boolean isCollection = bean.isCollection();
 
-        for(Binding binding : bean.getBindings()) {
+        for (Binding binding : bean.getBindings()) {
             BeanInstancePopulator populator = binding.getPopulator();
 
-            if(!isCollection && binding instanceof DataBinding) {
+            if (!isCollection && binding instanceof DataBinding) {
                 XMLSerializationNode node = serializer.findNode(populator.getConfig().getSelectorSteps());
-                if(node != null) {
+                if (node != null) {
                     node.setGetter(constructContextualGetter((DataBinding) binding));
                     DataDecoder bindingDecoder = binding.getPopulator().getDecoder(getSmooks().createExecutionContext().getDeliveryConfig());
-                    if(bindingDecoder instanceof DataEncoder) {
+                    if (bindingDecoder instanceof DataEncoder) {
                         node.setEncoder((DataEncoder) bindingDecoder);
                     }
                 }
-            } else if(binding instanceof WiredBinding) {
+            } else if (binding instanceof WiredBinding) {
                 Bean wiredBean = ((WiredBinding) binding).getWiredBean();
                 XMLElementSerializationNode node = (XMLElementSerializationNode) serializer.findNode(wiredBean.getCreator().getConfig().getSelectorSteps());
 
-                if(node != null) {
-                    if(isCollection) {
+                if (node != null) {
+                    if (isCollection) {
                         // Mark the node that creates the wiredBean as being a collection item node...
                         Bean collectionBean = wiredBean.getWiredInto();
                         GetterGraph getter = constructContextualGetter(collectionBean);
@@ -262,18 +273,18 @@ public class XMLBinding extends AbstractBinding {
     private void createRootSerializers(List<XMLElementSerializationNode> graphs) {
         Collection<Bean> beanModels = beanModelSet.getModels().values();
 
-        for(Bean model : beanModels) {
+        for (Bean model : beanModels) {
             BeanInstanceCreator creator = model.getCreator();
             SelectorStep[] selectorSteps = creator.getConfig().getSelectorSteps();
             XMLElementSerializationNode createNode = (XMLElementSerializationNode) findNode(graphs, selectorSteps);
 
             // Only create serializers for routed elements...
-            if(rootElementNames.contains(createNode.getQName())) {
+            if (rootElementNames.contains(createNode.getQName())) {
                 createNode = ((XMLElementSerializationNode) createNode.clone());
                 createNode.setParent(null);
 
                 Class<?> beanClass = creator.getBeanRuntimeInfo().getPopulateType();
-                if(!Collection.class.isAssignableFrom(beanClass)) {
+                if (!Collection.class.isAssignableFrom(beanClass)) {
                     // Ignore Collections... don't allow them to be serialized.... not enough type info.
                     serializers.put(beanClass, new RootNodeSerializer(creator.getBeanId(), createNode));
                     addNamespaceAttributes(createNode);
@@ -284,9 +295,9 @@ public class XMLBinding extends AbstractBinding {
 
     private void addNamespaceAttributes(XMLElementSerializationNode serializer) {
         Properties namespaces = NamespaceMappings.getMappings(getSmooks().getApplicationContext());
-        if(namespaces != null) {
+        if (namespaces != null) {
             Enumeration<String> namespacePrefixes = (Enumeration<String>) namespaces.propertyNames();
-            while(namespacePrefixes.hasMoreElements()) {
+            while (namespacePrefixes.hasMoreElements()) {
                 String prefix = namespacePrefixes.nextElement();
                 String namespace = namespaces.getProperty(prefix);
                 QName nsAttributeName = new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix, XMLConstants.XMLNS_ATTRIBUTE);
@@ -301,14 +312,14 @@ public class XMLBinding extends AbstractBinding {
     private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(SmooksResourceConfigurationList userConfigList) {
         List<XMLElementSerializationNode> graphRoots = new ArrayList<XMLElementSerializationNode>();
 
-        for(int i = 0; i < userConfigList.size(); i++) {
+        for (int i = 0; i < userConfigList.size(); i++) {
             SmooksResourceConfiguration config = userConfigList.get(i);
             Object javaResource = config.getJavaResourceObject();
 
-            if(javaResource instanceof BeanInstanceCreator) {
+            if (javaResource instanceof BeanInstanceCreator) {
                 assertSelectorOK(config);
                 constructNodePath(config.getSelectorSteps(), graphRoots);
-            } else if(javaResource instanceof BeanInstancePopulator) {
+            } else if (javaResource instanceof BeanInstancePopulator) {
                 assertSelectorOK(config);
                 constructNodePath(config.getSelectorSteps(), graphRoots);
             }
@@ -318,16 +329,16 @@ public class XMLBinding extends AbstractBinding {
     }
 
     private XMLSerializationNode constructNodePath(SelectorStep[] selectorSteps, List<XMLElementSerializationNode> graphRoots) {
-        if(selectorSteps == null || selectorSteps.length == 0) {
+        if (selectorSteps == null || selectorSteps.length == 0) {
             throw new IllegalStateException("Invalid binding configuration.  All <jb:bean> configuration elements must specify fully qualified selector paths (createOnElement, data, executeOnElement attributes etc.).");
         }
 
         SelectorStep rootSelectorStep = selectorSteps[0];
         XMLElementSerializationNode root = XMLElementSerializationNode.getElement(rootSelectorStep, graphRoots, true);
 
-        if(selectorSteps.length > 1) {
+        if (selectorSteps.length > 1) {
             return root.getPathNode(selectorSteps, 1, true);
-        } else if(rootSelectorStep.getTargetAttribute() != null) {
+        } else if (rootSelectorStep.getTargetAttribute() != null) {
             // It's an attribute node...
             return XMLElementSerializationNode.addAttributeNode(root, rootSelectorStep, true);
         } else {
@@ -339,11 +350,11 @@ public class XMLBinding extends AbstractBinding {
         XMLElementSerializationNode root = XMLElementSerializationNode.getElement(selectorSteps[0], graphs, false);
         XMLSerializationNode node = root;
 
-        if(selectorSteps.length > 1) {
+        if (selectorSteps.length > 1) {
             node = root.getPathNode(selectorSteps, 1, false);
         }
 
-        if(node == null) {
+        if (node == null) {
             throw new IllegalStateException("Unexpected exception.  Failed to locate the node '" + SelectorStepBuilder.toString(selectorSteps) + "'.");
         }
 
@@ -353,11 +364,11 @@ public class XMLBinding extends AbstractBinding {
     private void assertSelectorOK(SmooksResourceConfiguration config) {
         String selector = config.getSelector();
 
-        if(selector != null) {
-            if(selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR) || selector.contains(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
+        if (selector != null) {
+            if (selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR) || selector.contains(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
                 throw new SmooksConfigurationException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
             }
-            if(!selector.startsWith("/") && !selector.startsWith("${") && !selector.startsWith("#")) {
+            if (!selector.startsWith("/") && !selector.startsWith("${") && !selector.startsWith("#")) {
                 throw new SmooksConfigurationException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
             }
             rootElementNames.add(config.getSelectorSteps()[0].getTargetElement());

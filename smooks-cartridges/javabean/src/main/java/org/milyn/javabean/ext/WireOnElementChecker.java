@@ -16,8 +16,8 @@
 package org.milyn.javabean.ext;
 
 import org.apache.commons.lang.StringUtils;
-import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
 import org.w3c.dom.Element;

@@ -16,9 +16,9 @@
 
 package example;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.javabean.binding.xml.XMLBinding;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 

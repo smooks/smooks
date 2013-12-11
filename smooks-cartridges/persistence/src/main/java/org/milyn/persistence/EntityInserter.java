@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
@@ -49,7 +49,7 @@ import org.milyn.scribe.ObjectStore;
 import org.milyn.scribe.invoker.DaoInvoker;
 import org.milyn.scribe.invoker.DaoInvokerFactory;
 import org.milyn.scribe.register.DaoRegister;
-import org.milyn.util.CollectionsUtil;
+import org.milyn.commons.util.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;

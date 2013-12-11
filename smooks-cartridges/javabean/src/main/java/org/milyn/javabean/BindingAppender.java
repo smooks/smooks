@@ -15,7 +15,7 @@
  */
 package org.milyn.javabean;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.delivery.VisitorAppender;
 
 /**

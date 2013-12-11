@@ -15,8 +15,8 @@
 */
 package org.milyn.event.report.model;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DOM Execution Report.

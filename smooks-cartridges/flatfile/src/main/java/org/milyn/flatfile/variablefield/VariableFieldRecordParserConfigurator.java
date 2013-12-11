@@ -17,7 +17,7 @@
 package org.milyn.flatfile.variablefield;
 
 import org.milyn.GenericReaderConfigurator;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.flatfile.Binding;
 import org.milyn.flatfile.BindingType;

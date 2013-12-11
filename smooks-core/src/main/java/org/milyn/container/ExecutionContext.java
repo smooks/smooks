@@ -16,10 +16,10 @@
 
 package org.milyn.container;
 
+import org.milyn.commons.profile.ProfileSet;
 import org.milyn.delivery.ContentDeliveryConfig;
 import org.milyn.event.ExecutionEventListener;
 import org.milyn.javabean.context.BeanContext;
-import org.milyn.profile.ProfileSet;
 
 import java.net.URI;
 
@@ -66,7 +66,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      * Basically, the set of profiles for which this execution context is to perform
      * transformation/analysis.
      *
-     * @return The target {@link org.milyn.profile.ProfileSet}.
+     * @return The target {@link org.milyn.commons.profile.ProfileSet}.
      */
     public abstract ProfileSet getTargetProfiles();
 
@@ -76,19 +76,21 @@ public interface ExecutionContext extends BoundAttributeStore {
      *
      * @return ContentDeliveryConfig instance.
      */
-	public abstract ContentDeliveryConfig getDeliveryConfig();
+    public abstract ContentDeliveryConfig getDeliveryConfig();
 
 
     /**
      * Set the content encoding to be used when parsing content on this context.
+     *
      * @param contentEncoding Character encoding to be used when parsing content.  Null
-     * defaults to "UTF-8".
+     *                        defaults to "UTF-8".
      * @throws IllegalArgumentException Invalid encoding.
      */
     public abstract void setContentEncoding(String contentEncoding) throws IllegalArgumentException;
 
     /**
      * Get the content encoding to be used when parsing content on this context.
+     *
      * @return Character encoding to be used when parsing content.  Defaults to "UTF-8".
      */
     public abstract String getContentEncoding();
@@ -111,6 +113,7 @@ public interface ExecutionContext extends BoundAttributeStore {
 
     /**
      * Get the ExecutionEventListener for the {@link ExecutionContext}.
+     *
      * @return The listener instance.
      * @see #setEventListener(ExecutionEventListener)
      */
@@ -122,7 +125,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      *
      * @param terminationError The termination Error/Exception.
      */
-    public abstract void  setTerminationError(Throwable terminationError);
+    public abstract void setTerminationError(Throwable terminationError);
 
 
     /**
@@ -130,7 +133,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      * this ExecutionContext to terminate.
      *
      * @return The Error/Exception that caused the associated filter operation to
-     * terminate (if it did terminate), otherwise null.
+     *         terminate (if it did terminate), otherwise null.
      */
     public abstract Throwable getTerminationError();
 
@@ -138,6 +141,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      * Get a global configuration parameter associated with this execution context.
      * <p/>
      * For more fine grained control, see the {@link org.milyn.cdr.ParameterAccessor} class.
+     *
      * @param name The name of the parameter.
      * @return The parameter value, or null if the parameter is not configured.
      */
@@ -147,7 +151,8 @@ public interface ExecutionContext extends BoundAttributeStore {
      * Get a global configuration parameter associated with this execution context.
      * <p/>
      * For more fine grained control, see the {@link org.milyn.cdr.ParameterAccessor} class.
-     * @param name The name of the parameter.
+     *
+     * @param name       The name of the parameter.
      * @param defaultVal The default value to be returned if the configuration parameter is not set.
      * @return The parameter value, or "defaultVal" if the parameter is not configured.
      */
@@ -172,12 +177,14 @@ public interface ExecutionContext extends BoundAttributeStore {
 
     /**
      * Get the BeanContext in use on this context instance.
+     *
      * @return The BeanContext.
      */
     public BeanContext getBeanContext();
 
     /**
      * Set the BeanContext to be use on this context instance.
+     *
      * @param beanContext The BeanContext.
      */
     public void setBeanContext(BeanContext beanContext);

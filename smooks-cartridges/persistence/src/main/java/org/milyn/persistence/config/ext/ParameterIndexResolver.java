@@ -15,7 +15,7 @@
 */
 package org.milyn.persistence.config.ext;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.extension.ExtensionContext;
 import org.milyn.cdr.extension.ResourceConfigUtil;

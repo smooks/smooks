@@ -17,7 +17,7 @@ package org.milyn.javabean.binding;
 
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfigurationList;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.HtmlReportGenerator;

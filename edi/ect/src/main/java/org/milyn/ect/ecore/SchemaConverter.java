@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceFactoryImpl;
-import org.milyn.archive.Archive;
+import org.milyn.commons.archive.Archive;
 import org.milyn.edisax.model.internal.Edimap;
 
 public class SchemaConverter {

@@ -16,19 +16,22 @@
 package org.milyn.cdr;
 
 import junit.framework.TestCase;
+import org.milyn.cdr.annotation.AppContext;
+import org.milyn.cdr.annotation.Config;
+import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.cdr.annotation.Configurator;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.javabean.decoders.IntegerDecoder;
+import org.milyn.commons.javabean.decoders.StringDecoder;
+import org.milyn.container.ApplicationContext;
+import org.milyn.container.MockApplicationContext;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.annotation.Uninitialize;
-import org.milyn.cdr.annotation.*;
-import org.milyn.javabean.decoders.StringDecoder;
-import org.milyn.javabean.decoders.IntegerDecoder;
-import org.milyn.container.ApplicationContext;
-import org.milyn.container.MockApplicationContext;
 
 import java.nio.charset.Charset;
 
 /**
- *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class ConfiguratorTest extends TestCase {
@@ -59,7 +62,7 @@ public class ConfiguratorTest extends TestCase {
         try {
             Configurator.configure(cdu, config);
             fail(" Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertTrue(e.getMessage().startsWith("<param> 'paramC' not specified on resource configuration"));
         }
     }
@@ -95,7 +98,7 @@ public class ConfiguratorTest extends TestCase {
         try {
             Configurator.configure(cdu, config);
             fail("Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Error invoking 'setConfiguration' method on class 'org.milyn.cdr.ConfiguratorTest$MyContentDeliveryUnit4'.  This class must be public.  Alternatively, use the @Config annotation on a class field.", e.getMessage());
         }
     }
@@ -131,7 +134,7 @@ public class ConfiguratorTest extends TestCase {
         try {
             Configurator.configure(cdu, config);
             fail("Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Value 'X' for paramater 'paramA' is invalid.  Valid choices for this paramater are: [A, B, C]", e.getMessage());
         }
     }
@@ -145,7 +148,7 @@ public class ConfiguratorTest extends TestCase {
         try {
             Configurator.configure(cdu, config);
             fail("Expected SmooksConfigurationException.");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Failed to set paramater configuration value on 'org.milyn.cdr.ConfiguratorTest$MyContentDeliveryUnit7#encoding'.", e.getMessage());
             assertEquals("Unsupported character set 'XXXX'.", e.getCause().getMessage());
         }
@@ -164,7 +167,7 @@ public class ConfiguratorTest extends TestCase {
         try {
             Configurator.configure(cdu2, config);
             fail("Expected SmooksConfigurationException.");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Unable to determine the property name associated with 'org.milyn.cdr.ConfiguratorTest$MyContentDeliveryUnit9#encoding'. " +
                     "Setter methods that specify the @ConfigParam annotation must either follow the Javabean naming convention ('setX' for propert 'x'), " +
                     "or specify the propery name via the 'name' parameter on the @ConfigParam annotation.", e.getMessage());
@@ -198,7 +201,7 @@ public class ConfiguratorTest extends TestCase {
         try {
             Configurator.configure(cdu2, config);
             fail("Expected SmooksConfigurationException.");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Error invoking @Initialize method 'init' on class 'org.milyn.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());
         }
 
@@ -206,7 +209,7 @@ public class ConfiguratorTest extends TestCase {
         try {
             Configurator.uninitialise(cdu2);
             fail("Expected SmooksConfigurationException.");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Error invoking @Uninitialize method 'uninit' on class 'org.milyn.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());
         }
     }
@@ -218,7 +221,7 @@ public class ConfiguratorTest extends TestCase {
         @ConfigParam
         private String paramA;
 
-        @ConfigParam(name="param-b")
+        @ConfigParam(name = "param-b")
         private String paramB;
 
         @ConfigParam
@@ -227,13 +230,13 @@ public class ConfiguratorTest extends TestCase {
 
     private class MyContentDeliveryUnit2 implements ContentHandler {
 
-        @ConfigParam(decoder=StringDecoder.class)
+        @ConfigParam(decoder = StringDecoder.class)
         private String paramA;
 
-        @ConfigParam(name="param-b", decoder=StringDecoder.class)
+        @ConfigParam(name = "param-b", decoder = StringDecoder.class)
         private String paramB;
 
-        @ConfigParam(decoder=IntegerDecoder.class, use=ConfigParam.Use.OPTIONAL, defaultVal ="9")
+        @ConfigParam(decoder = IntegerDecoder.class, use = ConfigParam.Use.OPTIONAL, defaultVal = "9")
         private int paramC;
     }
 
@@ -275,7 +278,7 @@ public class ConfiguratorTest extends TestCase {
             return encoding;
         }
 
-        @ConfigParam        
+        @ConfigParam
         public void setEncoding(Charset encoding) {
             this.encoding = encoding;
         }

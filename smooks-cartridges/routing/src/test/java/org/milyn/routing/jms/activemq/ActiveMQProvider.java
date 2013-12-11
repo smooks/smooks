@@ -19,16 +19,27 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.util.JNDIUtil;
+import org.milyn.commons.util.JNDIUtil;
 
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSession;
+import javax.jms.Session;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicSession;
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.jms.*;
-import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.File;
-import java.lang.IllegalStateException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:dbevenius@jboss.com">Daniel Bevenius</a>
@@ -84,7 +95,7 @@ public class ActiveMQProvider {
         assertStarted();
 
         if (brokerService != null) {
-            for(MessageConsumer consumer : consumers) {
+            for (MessageConsumer consumer : consumers) {
                 try {
                     consumer.close();
                 } catch (Exception e) {
@@ -111,13 +122,13 @@ public class ActiveMQProvider {
     }
 
     private void assertNotStarted() {
-        if(brokerService != null) {
+        if (brokerService != null) {
             throw new IllegalStateException("Invalid method call after provider has been started.");
         }
     }
 
     private void assertStarted() {
-        if(brokerService == null) {
+        if (brokerService == null) {
             throw new IllegalStateException("Invalid method call before provider has been started.");
         }
     }
@@ -155,12 +166,10 @@ public class ActiveMQProvider {
 
             // Start the connection...
             queueConnection.start();
-        }
-        catch (JMSException e) {
+        } catch (JMSException e) {
             close(queueConnection, queueSession);
             throw e;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             close(queueConnection, queueSession);
             throw (JMSException) (new JMSException("Unexpected exception while creating JMS Session.").initCause(t));
         }
@@ -175,12 +184,10 @@ public class ActiveMQProvider {
 
             // Start the connection...
             topicConnection.start();
-        }
-        catch (JMSException e) {
+        } catch (JMSException e) {
             close(topicConnection, topicSession);
             throw e;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             close(topicConnection, topicSession);
             throw (JMSException) (new JMSException("Unexpected exception while creating JMS Session.").initCause(t));
         }
@@ -190,27 +197,19 @@ public class ActiveMQProvider {
         String connectionFactoryRuntime = jndiProperties.getProperty(ConnectionFactory.class.getName(), "ConnectionFactory");
         try {
             return (ConnectionFactory) JNDIUtil.lookup(connectionFactoryRuntime, jndiProperties);
-        }
-        catch (NamingException e) {
+        } catch (NamingException e) {
             throw (JMSException) (new JMSException("JNDI lookup of JMS Connection Factory [" + connectionFactoryRuntime + "] failed.").initCause(e));
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             throw (JMSException) (new JMSException("JNDI lookup of JMS Connection Factory failed.  Class [" + connectionFactoryRuntime + "] is not an instance of [" + ConnectionFactory.class.getName() + "].").initCause(e));
         }
     }
 
-    private final Destination lookupDestination(String destinationName) throws JMSException
-    {
-        try
-        {
+    private final Destination lookupDestination(String destinationName) throws JMSException {
+        try {
             return (Destination) JNDIUtil.lookup(destinationName, jndiProperties);
-        }
-        catch (NamingException e)
-        {
+        } catch (NamingException e) {
             throw (JMSException) (new JMSException("JMS Destination lookup failed.  Destination name '" + destinationName + "'.").initCause(e));
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             throw (JMSException) (new JMSException("JMS Destination lookup failed.  Class [" + destinationName + "] is not an instance of [" + Destination.class.getName() + "].").initCause(e));
         }
     }
@@ -221,8 +220,7 @@ public class ActiveMQProvider {
                 conn.stop();
                 logger.debug("Stopping JMS Connection for connected session.");
             }
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             logger.debug("Failed to stop JMS connection.", e);
             conn = null;
         }
@@ -231,11 +229,9 @@ public class ActiveMQProvider {
                 session.close();
                 logger.debug("Closing JMS Session.");
             }
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             logger.debug("Failed to close JMS session.", e);
-        }
-        finally {
+        } finally {
             session = null;
         }
         try {
@@ -243,11 +239,9 @@ public class ActiveMQProvider {
                 conn.close();
                 logger.debug("Closing JMS Connection for connected session.");
             }
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             logger.debug("Failed to close JMS connection.", e);
-        }
-        finally {
+        } finally {
             conn = null;
         }
     }

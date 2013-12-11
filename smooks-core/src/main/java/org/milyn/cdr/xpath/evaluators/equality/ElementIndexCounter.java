@@ -15,10 +15,11 @@
 */
 package org.milyn.cdr.xpath.evaluators.equality;
 
-import org.milyn.delivery.sax.*;
-import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
 import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.commons.SmooksException;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXVisitBefore;
 
 import java.io.IOException;
 
@@ -43,14 +44,14 @@ public class ElementIndexCounter implements SAXVisitBefore {
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         ElementIndex index = getElementIndex(element);
-        if(index != null) {
+        if (index != null) {
             index.i++;
         }
     }
 
     protected int getCount(SAXElement element) {
         ElementIndex index = getElementIndex(element);
-        if(index != null) {
+        if (index != null) {
             return index.i;
         }
         return 0;
@@ -60,9 +61,9 @@ public class ElementIndexCounter implements SAXVisitBefore {
         SAXElement parent = element.getParent();
         ElementIndex index;
 
-        if(parent != null) {
+        if (parent != null) {
             index = (ElementIndex) parent.getCache(this);
-            if(index == null) {
+            if (index == null) {
                 index = new ElementIndex();
                 parent.setCache(this, index);
             }

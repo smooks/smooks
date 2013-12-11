@@ -15,9 +15,9 @@
 */
 package org.milyn.delivery.condition;
 
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.expression.ExpressionEvaluator;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.expression.ExpressionEvaluationException;
+import org.milyn.expression.ExpressionEvaluator;
 
 /**
  * Invalid evaluator.

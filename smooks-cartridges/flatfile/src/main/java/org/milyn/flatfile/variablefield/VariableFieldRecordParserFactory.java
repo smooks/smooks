@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
 import org.milyn.cdr.annotation.ConfigParam;
@@ -45,7 +45,7 @@ import org.milyn.flatfile.RecordMetaData;
 import org.milyn.flatfile.RecordParserFactory;
 import org.milyn.javabean.Bean;
 import org.milyn.javabean.context.BeanContext;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.xml.XmlUtil;
 import org.w3c.dom.Element;
 
 /**

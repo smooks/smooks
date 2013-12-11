@@ -15,13 +15,13 @@
 */
 package org.milyn.cdr.extension;
 
-import org.milyn.SmooksException;
-import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.cdr.annotation.AnnotationConstants;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.AnnotationConstants;
+import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMElementVisitor;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  */
 public class NewResourceConfig implements DOMElementVisitor {
 
-	public static final String PARAMETER_TARGET_PROFILE = "targetProfile";
+    public static final String PARAMETER_TARGET_PROFILE = "targetProfile";
 
     @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
     private String resource;
@@ -49,22 +49,22 @@ public class NewResourceConfig implements DOMElementVisitor {
         config.setResource(resource);
 
         // Set the defaults...
-        if(extensionContext.getDefaultSelector() != null) {
+        if (extensionContext.getDefaultSelector() != null) {
             config.setSelector(extensionContext.getDefaultSelector());
         }
         config.setSelectorNamespaceURI(extensionContext.getDefaultNamespace());
 
         String targetProfile = DomUtils.getAttributeValue(element, PARAMETER_TARGET_PROFILE);
-        if(targetProfile == null) {
-        	targetProfile = extensionContext.getDefaultProfile();
+        if (targetProfile == null) {
+            targetProfile = extensionContext.getDefaultProfile();
         }
         config.setTargetProfile(targetProfile);
         config.setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
 
-        if(isTemplate) {
-        	extensionContext.addResourceTemplate(config);
+        if (isTemplate) {
+            extensionContext.addResourceTemplate(config);
         } else {
-        	extensionContext.addResource(config);
+            extensionContext.addResource(config);
         }
     }
 

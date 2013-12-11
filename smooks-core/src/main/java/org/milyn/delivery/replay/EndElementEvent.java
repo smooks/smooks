@@ -1,13 +1,12 @@
 package org.milyn.delivery.replay;
 
-import org.milyn.SmooksException;
-import org.xml.sax.Attributes;
+import org.milyn.commons.SmooksException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
  * End element event replay.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class EndElementEvent implements SAXEventReplay {

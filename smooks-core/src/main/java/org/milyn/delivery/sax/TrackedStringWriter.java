@@ -16,8 +16,8 @@
 package org.milyn.delivery.sax;
 
 import java.io.StringWriter;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a specialized StringWriter that tracks the writes to make sure we don't

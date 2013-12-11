@@ -23,8 +23,8 @@ import javax.persistence.NonUniqueResultException;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.StringUtils;
-import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
@@ -52,7 +52,7 @@ import org.milyn.persistence.util.PersistenceUtil;
 import org.milyn.scribe.invoker.DaoInvoker;
 import org.milyn.scribe.invoker.DaoInvokerFactory;
 import org.milyn.scribe.register.DaoRegister;
-import org.milyn.util.CollectionsUtil;
+import org.milyn.commons.util.CollectionsUtil;
 import org.w3c.dom.Element;
 
 /**

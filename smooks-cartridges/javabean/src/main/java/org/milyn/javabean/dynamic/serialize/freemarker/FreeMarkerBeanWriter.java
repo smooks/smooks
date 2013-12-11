@@ -22,12 +22,12 @@ import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;
 import org.milyn.delivery.annotation.Initialize;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.javabean.dynamic.BeanMetadata;
 import org.milyn.javabean.dynamic.BeanRegistrationException;
 import org.milyn.javabean.dynamic.Model;
 import org.milyn.javabean.dynamic.serialize.BeanWriter;
-import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.commons.util.FreeMarkerTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;

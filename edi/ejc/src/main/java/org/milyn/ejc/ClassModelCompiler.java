@@ -16,6 +16,7 @@
 package org.milyn.ejc;
 
 import org.apache.commons.logging.Log;
+import org.milyn.commons.javabean.pojogen.JType;
 import org.milyn.edisax.model.internal.Component;
 import org.milyn.edisax.model.internal.DelimiterType;
 import org.milyn.edisax.model.internal.Edimap;
@@ -30,10 +31,7 @@ import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.javabean.pojogen.JClass;
 import org.milyn.javabean.pojogen.JMethod;
 import org.milyn.javabean.pojogen.JNamedType;
-import org.milyn.javabean.pojogen.JType;
 import org.milyn.smooks.edi.EDIMessage;
-
-import java.util.*;
 
 /**
  * Compiles a {@link ClassModel} from an {@link Edimap}.
@@ -52,7 +50,7 @@ public class ClassModelCompiler {
     private boolean addEDIMessageAnnotation;
 
     public ClassModelCompiler(Map<MappingNode, JClass> commonTypes, boolean addEDIMessageAnnotation) {
-        if(commonTypes != null) {
+        if (commonTypes != null) {
             injectedCommonTypes.putAll(commonTypes);
         }
         this.addEDIMessageAnnotation = addEDIMessageAnnotation;
@@ -89,7 +87,7 @@ public class ClassModelCompiler {
 
         popNode();
 
-        if(addEDIMessageAnnotation) {
+        if (addEDIMessageAnnotation) {
             model.getRootBeanConfig().getBeanClass().getAnnotationTypes().add(new JType(EDIMessage.class));
         }
 
@@ -102,6 +100,7 @@ public class ClassModelCompiler {
 
     /**
      * Process all SegmentGroups in List and insert info into the {@link org.milyn.ejc.ClassModel}.
+     *
      * @param segmentGroups the SegmentsGroups to process.
      * @param parentBinding the JClass 'owning' the SegmentGroups.
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
@@ -115,15 +114,15 @@ public class ClassModelCompiler {
             writeMethod = parentBinding.getWriteMethod();
 
             // Add Write Method details for the property just added...
-            if(writeMethod != null) {
-                if(isCollection(childBeanConfig.getPropertyOnParent())) {
+            if (writeMethod != null) {
+                if (isCollection(childBeanConfig.getPropertyOnParent())) {
                     writeMethod.writeSegmentCollection(childBeanConfig.getPropertyOnParent(), segmentGroup);
                 } else {
                     writeMethod.writeObject(childBeanConfig.getPropertyOnParent(), parentBinding, segmentGroup);
                 }
             }
 
-            if(isCollection(childBeanConfig.getPropertyOnParent())) {
+            if (isCollection(childBeanConfig.getPropertyOnParent())) {
                 BindingConfig collectionBinding = new BindingConfig(childBeanConfig.getBeanId() + "_List", parentBinding.getCreateOnElement(), ArrayList.class, parentBinding, childBeanConfig.getPropertyOnParent());
 
                 // Wire the List binding into the parent binding and wire the child binding into the list binding...
@@ -139,16 +138,16 @@ public class ClassModelCompiler {
     }
 
     /**
-     *
      * Process the {@link org.milyn.edisax.model.internal.SegmentGroup} in List and insert info into the {@link org.milyn.ejc.ClassModel}.
+     *
      * @param segmentGroup the {@link org.milyn.edisax.model.internal.SegmentGroup} to process.
-     * @param parent the JClass 'owning' the {@link org.milyn.edisax.model.internal.SegmentGroup}.
+     * @param parent       the JClass 'owning' the {@link org.milyn.edisax.model.internal.SegmentGroup}.
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
      */
     private BindingConfig processSegmentGroup(SegmentGroup segmentGroup, BindingConfig parent) throws IllegalNameException {
         LOG.debug("Parsing SegmentGroup " + segmentGroup.getXmltag());
 
-        if(segmentGroup.getJavaName() == null) {
+        if (segmentGroup.getJavaName() == null) {
             throw new EJCException("The <segmentGroup> element can optionally omit the 'xmltag' attribute.  However, this attribute must be present for EJC to work properly.  It is omitted from one of the <segmentGroup> elements in this configuration.");
         }
 
@@ -170,6 +169,7 @@ public class ClassModelCompiler {
 
     /**
      * Process all {@link org.milyn.edisax.model.internal.Field} in List and insert info into the {@link org.milyn.ejc.ClassModel}.
+     *
      * @param fields the {@link org.milyn.edisax.model.internal.Field} to process.
      * @param parent the JClass 'owning' the {@link org.milyn.edisax.model.internal.Field}.
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
@@ -198,19 +198,19 @@ public class ClassModelCompiler {
 
         collapseSingleFieldSegmentBinding(parent);
 
-        if(parent.getWriteMethod() != null) {
+        if (parent.getWriteMethod() != null) {
             parent.getWriteMethod().addTerminatingDelimiter(DelimiterType.SEGMENT);
             parent.getWriteMethod().addFlush();
         }
     }
 
     private void collapseSingleFieldSegmentBinding(BindingConfig parent) {
-        if(parent.getValueBindings().isEmpty() && parent.getWireBindings().size() == 1) {
+        if (parent.getValueBindings().isEmpty() && parent.getWireBindings().size() == 1) {
             BindingConfig child = parent.getWireBindings().get(0);
             String parentClassName = parent.getBeanClass().getSkeletonClass().getName();
             String childClassName = child.getBeanClass().getSkeletonClass().getName();
 
-            if(parentClassName.equals(childClassName)) {
+            if (parentClassName.equals(childClassName)) {
                 // This is a segment with just one field, having the same name
                 // as the segment itself.  Need to collapse the child
                 // up into the parent...
@@ -226,8 +226,9 @@ public class ClassModelCompiler {
      * When {@link org.milyn.edisax.model.internal.ValueNode} contains no type information String-type is used as default.
      * The new {@link org.milyn.javabean.pojogen.JNamedType} is inserted into parent and the xmltag- and
      * typeParameters-value is inserted into classModel.
-     * @param valueNode the {@link org.milyn.edisax.model.internal.ValueNode} to process.
-     * @param parent the {@link org.milyn.javabean.pojogen.JClass} 'owning' the valueNode.
+     *
+     * @param valueNode     the {@link org.milyn.edisax.model.internal.ValueNode} to process.
+     * @param parent        the {@link org.milyn.javabean.pojogen.JClass} 'owning' the valueNode.
      * @param delimiterType Node delimiter type.
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
      */
@@ -246,7 +247,7 @@ public class ClassModelCompiler {
         childToParentProperty = new JNamedType(jtype, propertyName);
 
         JClass parentBeanClass = parent.getBeanClass();
-        if(!parentBeanClass.isFinalized() && !parentBeanClass.hasProperty(propertyName) && model.isClassCreator(parentBeanClass)) {
+        if (!parentBeanClass.isFinalized() && !parentBeanClass.hasProperty(propertyName) && model.isClassCreator(parentBeanClass)) {
             parentBeanClass.addBeanProperty(childToParentProperty);
             getWriteMethod(parent).writeValue(childToParentProperty, valueNode, delimiterType);
         }
@@ -258,8 +259,9 @@ public class ClassModelCompiler {
 
     /**
      * Process all {@link org.milyn.edisax.model.internal.Component} in List and insert info into the {@link org.milyn.ejc.ClassModel}.
+     *
      * @param components the {@link org.milyn.edisax.model.internal.Component} to process.
-     * @param parent the JClass 'owning' the {@link org.milyn.edisax.model.internal.Component}.
+     * @param parent     the JClass 'owning' the {@link org.milyn.edisax.model.internal.Component}.
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
      */
     private void processComponents(List<Component> components, BindingConfig parent) throws IllegalNameException {
@@ -285,8 +287,9 @@ public class ClassModelCompiler {
 
     /**
      * Process all {@link org.milyn.edisax.model.internal.SubComponent} in List and insert info into the {@link org.milyn.ejc.ClassModel}.
+     *
      * @param subComponents the {@link org.milyn.edisax.model.internal.SubComponent} to process.
-     * @param parent the JClass 'owning' the {@link org.milyn.edisax.model.internal.SubComponent}.
+     * @param parent        the JClass 'owning' the {@link org.milyn.edisax.model.internal.SubComponent}.
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
      */
     private void processSubComponents(List<SubComponent> subComponents, BindingConfig parent) throws IllegalNameException {
@@ -314,9 +317,10 @@ public class ClassModelCompiler {
      * If C occurs several times, i.e. maxOccurs > 1, then C exists in a {@link java.util.List} in parent.
      * The new {@link org.milyn.javabean.pojogen.JClass} is inserted into classModel along with xmltag-value
      * found in the {@link org.milyn.edisax.model.internal.MappingNode}.
+     *
      * @param parentBinding The parentBinding BindingConfig.
-     * @param mappingNode the {@link org.milyn.edisax.model.internal.MappingNode} to process.
-     * @param maxOccurs the number of times {@link org.milyn.edisax.model.internal.MappingNode} can occur.
+     * @param mappingNode   the {@link org.milyn.edisax.model.internal.MappingNode} to process.
+     * @param maxOccurs     the number of times {@link org.milyn.edisax.model.internal.MappingNode} can occur.
      * @param delimiterType
      * @return the created {@link org.milyn.javabean.pojogen.JClass}
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
@@ -325,15 +329,15 @@ public class ClassModelCompiler {
         JClass child = getCommonType(mappingNode);
         boolean addClassToModel = false;
 
-        if(child == null) {
+        if (child == null) {
             String packageName = parentBinding.getBeanClass().getPackageName();
             String className = EDIUtils.encodeClassName(mappingNode.getJavaName());
 
-            if(mappingNode instanceof Field) {
+            if (mappingNode instanceof Field) {
                 packageName += ".field";
-            } else if(mappingNode instanceof Component) {
+            } else if (mappingNode instanceof Component) {
                 packageName += ".component";
-            } else if(mappingNode instanceof SubComponent) {
+            } else if (mappingNode instanceof SubComponent) {
                 packageName += ".subcomponent";
             }
 
@@ -356,13 +360,13 @@ public class ClassModelCompiler {
         childBeanConfig.setMappingNode(mappingNode);
 
         JClass parentBeanClass = parentBinding.getBeanClass();
-        if(!parentBeanClass.isFinalized() && !parentBeanClass.hasProperty(propertyName) && model.isClassCreator(parentBeanClass)) {
+        if (!parentBeanClass.isFinalized() && !parentBeanClass.hasProperty(propertyName) && model.isClassCreator(parentBeanClass)) {
             parentBeanClass.addBeanProperty(childProperty);
-            if(delimiterType != null) {
+            if (delimiterType != null) {
                 getWriteMethod(parentBinding).writeObject(childProperty, delimiterType, parentBinding, mappingNode);
             }
         }
-        if(addClassToModel) {
+        if (addClassToModel) {
             model.addCreatedClass(child);
             createdClassesByNode.put(mappingNode, child);
             childBeanConfig.setWriteMethod(new WriteMethod(child, mappingNode));
@@ -378,8 +382,8 @@ public class ClassModelCompiler {
     private String getCurrentNodePath() {
         StringBuilder builder = new StringBuilder();
 
-        for(String nodePathElement : nodeStack) {
-            if(builder.length() > 0) {
+        for (String nodePathElement : nodeStack) {
+            if (builder.length() > 0) {
                 builder.append('/');
             }
             builder.append(nodePathElement);
@@ -391,21 +395,21 @@ public class ClassModelCompiler {
     private JClass getCommonType(MappingNode mappingNode) {
         String nodeTypeRef = mappingNode.getNodeTypeRef();
 
-        if(nodeTypeRef != null) {
+        if (nodeTypeRef != null) {
             int colonIndex = nodeTypeRef.indexOf(':');
 
-            if(colonIndex != -1) {
+            if (colonIndex != -1) {
                 nodeTypeRef = nodeTypeRef.substring(colonIndex + 1);
             }
 
             JClass commonType = getCommonType(mappingNode, nodeTypeRef, createdClassesByNode);
-            if(commonType == null) {
+            if (commonType == null) {
                 commonType = getCommonType(mappingNode, nodeTypeRef, injectedCommonTypes);
             }
             return commonType;
         } else {
             JClass commonType = createdClassesByNode.get(mappingNode);
-            if(commonType == null) {
+            if (commonType == null) {
                 commonType = injectedCommonTypes.get(mappingNode);
             }
             return commonType;
@@ -415,17 +419,17 @@ public class ClassModelCompiler {
     private JClass getCommonType(MappingNode mappingNode, String nodeTypeRef, Map<MappingNode, JClass> typeSet) {
         Set<Map.Entry<MappingNode, JClass>> commonTypes = typeSet.entrySet();
 
-        for(Map.Entry<MappingNode, JClass> typeEntry : commonTypes) {
+        for (Map.Entry<MappingNode, JClass> typeEntry : commonTypes) {
             MappingNode entryMappingNode = typeEntry.getKey();
             String entryNodeTypeRef = entryMappingNode.getNodeTypeRef();
 
-            if(entryMappingNode instanceof Segment) {
-                if(nodeTypeRef.equals(((Segment)entryMappingNode).getSegcode())) {
+            if (entryMappingNode instanceof Segment) {
+                if (nodeTypeRef.equals(((Segment) entryMappingNode).getSegcode())) {
                     return typeEntry.getValue();
                 }
-            } else if(entryNodeTypeRef != null && entryMappingNode.getClass() == mappingNode.getClass()) {
+            } else if (entryNodeTypeRef != null && entryMappingNode.getClass() == mappingNode.getClass()) {
                 // Must be the same node type exactly...
-                if(nodeTypeRef.equals(entryNodeTypeRef)) {
+                if (nodeTypeRef.equals(entryNodeTypeRef)) {
                     return typeEntry.getValue();
                 }
             }
@@ -433,14 +437,17 @@ public class ClassModelCompiler {
         return null;
     }
 
-    /**********************************************************************************************************
+    /**
+     * *******************************************************************************************************
      * Private Helper Methods
-     *********************************************************************************************************
-     * @param bindingConfig*/
+     * ********************************************************************************************************
+     *
+     * @param bindingConfig
+     */
 
     private WriteMethod getWriteMethod(BindingConfig bindingConfig) {
-        for(JMethod method : bindingConfig.getBeanClass().getMethods()) {
-            if(method instanceof WriteMethod) {
+        for (JMethod method : bindingConfig.getBeanClass().getMethods()) {
+            if (method instanceof WriteMethod) {
                 return (WriteMethod) method;
             }
         }
@@ -458,7 +465,7 @@ public class ClassModelCompiler {
     }
 
     private static boolean isCollection(JNamedType property) {
-        if(property != null && Collection.class.isAssignableFrom(property.getType().getType())) {
+        if (property != null && Collection.class.isAssignableFrom(property.getType().getType())) {
             return true;
         }
 

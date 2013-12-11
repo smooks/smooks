@@ -15,23 +15,23 @@
 */
 package org.milyn.payload;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Java Filtration/Transformation {@link javax.xml.transform.Source}.
- * 
+ * <p/>
  * <h3 id="eventcontrol">Controlling Event Stream Generation</h3>
  * The Java Objects used to create this source can be used to generate a stream of SAX
  * events, which can then be analysed by Smooks in the normal manner.  Generation of the
  * SAX event stream can also be turned off via the {@link #setEventStreamRequired(boolean)}
  * method, or by configuring the 'http://www.smooks.org/sax/features/generate-java-event-stream'
  * feature on the reader in the Smoooks configuration as follows:
- *
+ * <p/>
  * <pre>
  * &lt;reader&gt;
  *     &lt;features&gt;
@@ -39,7 +39,7 @@ import java.util.HashMap;
  *     &lt;/features&gt;
  * &lt;/reader&gt;
  * </pre>
- *
+ * <p/>
  * Turning off event stream generation can make sense in many situations.  In some use cases event stream
  * generation may add no value and may just reduces performance e.g. where you simply wish to apply a
  * template to the supplied Java Object(s).
@@ -47,14 +47,14 @@ import java.util.HashMap;
  * Smooks must generate at least 1 event to which configured resources can be targeted (e.g. a templating
  * resource).  When event stream generation is turned off, Smooks simply generates what we call a "Null Source"
  * document event.  In XML, it could be represented as "&lt;nullsource-document/&gt;".  So when event stream
- * generation is turned off, simply target resources at "<b>nullsource-document</b>" or "<b>#document</b>". 
+ * generation is turned off, simply target resources at "<b>nullsource-document</b>" or "<b>#document</b>".
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class JavaSource extends FilterSource {
 
     /**
-     * 
+     *
      */
     public static final String FEATURE_GENERATE_EVENT_STREAM = "http://www.smooks.org/sax/features/generate-java-event-stream";
 
@@ -64,6 +64,7 @@ public class JavaSource extends FilterSource {
 
     /**
      * Default Contructor.
+     *
      * @deprecated Use any of the other constructors.
      */
     public JavaSource() {
@@ -79,7 +80,7 @@ public class JavaSource extends FilterSource {
         AssertArgument.isNotNull(sourceObject, "sourceObject");
         sourceObjects = new ArrayList<Object>();
         sourceObjects.add(sourceObject);
-        if(sourceObject instanceof Map) {
+        if (sourceObject instanceof Map) {
             beans = (Map<String, Object>) sourceObject;
         } else {
             beans = new HashMap<String, Object>();
@@ -90,7 +91,7 @@ public class JavaSource extends FilterSource {
     /**
      * Construct a JavaSource from the supplied source object.
      *
-     * @param objectName The object name the sourceObject is known under
+     * @param objectName   The object name the sourceObject is known under
      * @param sourceObject The source object.
      */
     public JavaSource(String objectName, Object sourceObject) {
@@ -135,6 +136,7 @@ public class JavaSource extends FilterSource {
 
     /**
      * Get the source object list.
+     *
      * @return The source object list.
      */
     public List<Object> getSourceObjects() {
@@ -163,9 +165,9 @@ public class JavaSource extends FilterSource {
         StringBuilder stringBuilder = new StringBuilder(simpleName);
         int stringLength = stringBuilder.length();
 
-        for(int i = 0; i < stringLength; i++) {
+        for (int i = 0; i < stringLength; i++) {
             char charAt = stringBuilder.charAt(i);
-            if(Character.isLowerCase(charAt)) {
+            if (Character.isLowerCase(charAt)) {
                 break;
             }
             stringBuilder.setCharAt(i, Character.toLowerCase(charAt));

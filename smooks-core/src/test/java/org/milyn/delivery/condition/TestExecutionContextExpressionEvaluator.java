@@ -15,8 +15,8 @@
 */
 package org.milyn.delivery.condition;
 
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.expression.ExecutionContextExpressionEvaluator;
 import org.milyn.expression.ExpressionEvaluationException;
 import org.milyn.expression.ExpressionEvaluator;

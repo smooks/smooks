@@ -16,12 +16,9 @@
 
 package org.milyn.javabean.repository;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.milyn.assertion.AssertArgument;
 import org.milyn.javabean.context.BeanIdStore;
+
+import java.util.Map;
 
 /**
  * Bean Id List

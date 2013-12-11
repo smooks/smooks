@@ -17,26 +17,32 @@ package org.milyn.delivery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.Parameter;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Configurator;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.io.NullReader;
+import org.milyn.commons.io.NullWriter;
+import org.milyn.commons.namespace.NamespaceDeclarationStack;
+import org.milyn.commons.namespace.NamespaceDeclarationStackAware;
+import org.milyn.commons.util.ClassUtil;
 import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.sax.SAXHandler;
-import org.milyn.namespace.NamespaceDeclarationStack;
-import org.milyn.namespace.NamespaceDeclarationStackAware;
-import org.milyn.payload.JavaSource;
-import org.milyn.payload.FilterSource;
 import org.milyn.delivery.java.JavaXMLReader;
 import org.milyn.delivery.java.XStreamXMLReader;
-import org.milyn.io.NullReader;
-import org.milyn.io.NullWriter;
-import org.milyn.util.ClassUtil;
+import org.milyn.payload.FilterSource;
+import org.milyn.payload.JavaSource;
 import org.milyn.xml.NamespaceMappings;
 import org.milyn.xml.NullSourceXMLReader;
 import org.milyn.xml.SmooksXMLReader;
-import org.xml.sax.*;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -44,7 +50,6 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -54,7 +59,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -101,7 +105,7 @@ public class AbstractParser {
         getReaders(execContext).push(xmlReader);
 
         NamespaceDeclarationStack namespaceDeclarationStack = NamespaceMappings.getNamespaceDeclarationStack(execContext);
-        if(namespaceDeclarationStack == null) {
+        if (namespaceDeclarationStack == null) {
             throw new IllegalStateException("No NamespaceDeclarationStack attached to the ExecutionContext.");
         }
         namespaceDeclarationStack.pushReader(xmlReader);
@@ -110,7 +114,7 @@ public class AbstractParser {
     public static XMLReader getXMLReader(ExecutionContext execContext) {
         Stack<XMLReader> xmlReaderStack = getReaders(execContext);
 
-        if(!xmlReaderStack.isEmpty()) {
+        if (!xmlReaderStack.isEmpty()) {
             return xmlReaderStack.peek();
         } else {
             return null;
@@ -120,7 +124,7 @@ public class AbstractParser {
     public static void detachXMLReader(ExecutionContext execContext) {
         Stack<XMLReader> xmlReaderStack = getReaders(execContext);
 
-        if(!xmlReaderStack.isEmpty()) {
+        if (!xmlReaderStack.isEmpty()) {
             xmlReaderStack.pop();
             NamespaceMappings.getNamespaceDeclarationStack(execContext).popReader();
         }
@@ -129,7 +133,7 @@ public class AbstractParser {
     public static Stack<XMLReader> getReaders(ExecutionContext execContext) {
         Stack<XMLReader> readers = (Stack<XMLReader>) execContext.getAttribute(XMLReader.class);
 
-        if(readers == null) {
+        if (readers == null) {
             readers = new Stack<XMLReader>();
             setReaders(readers, execContext);
         }
@@ -163,29 +167,29 @@ public class AbstractParser {
     }
 
     protected static Reader getReader(Source source, String contentEncoding) {
-    	if(source != null) {
-	        if (source instanceof StreamSource) {
-	            StreamSource streamSource = (StreamSource) source;
-	            if (streamSource.getReader() != null) {
-	                return streamSource.getReader();
-	            } else if (streamSource.getInputStream() != null) {
-	            	return streamToReader(streamSource.getInputStream(), contentEncoding);
-				} else if (streamSource.getSystemId() != null) {
-					return systemIdToReader(streamSource.getSystemId(), contentEncoding);
-				} 
-	            
-	            throw new SmooksException("Invalid " + StreamSource.class.getName() + ".  No InputStream, Reader or SystemId instance.");
-			} else if (source.getSystemId() != null) {
-				return systemIdToReader(source.getSystemId(), contentEncoding);
-			} 
-    	}
-    	
+        if (source != null) {
+            if (source instanceof StreamSource) {
+                StreamSource streamSource = (StreamSource) source;
+                if (streamSource.getReader() != null) {
+                    return streamSource.getReader();
+                } else if (streamSource.getInputStream() != null) {
+                    return streamToReader(streamSource.getInputStream(), contentEncoding);
+                } else if (streamSource.getSystemId() != null) {
+                    return systemIdToReader(streamSource.getSystemId(), contentEncoding);
+                }
+
+                throw new SmooksException("Invalid " + StreamSource.class.getName() + ".  No InputStream, Reader or SystemId instance.");
+            } else if (source.getSystemId() != null) {
+                return systemIdToReader(source.getSystemId(), contentEncoding);
+            }
+        }
+
         return new NullReader();
     }
 
-	private static Reader systemIdToReader(String systemId, String contentEncoding) {
+    private static Reader systemIdToReader(String systemId, String contentEncoding) {
         return streamToReader(systemIdToStream(systemId), contentEncoding);
-	}
+    }
 
     private static InputStream systemIdToStream(String systemId) {
         try {
@@ -195,39 +199,38 @@ public class AbstractParser {
         }
     }
 
-	private static URL systemIdToURL(final String systemId)
-	{
-		try {
-			return new URL(systemId);
-		} catch (MalformedURLException e) {
-		    throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Must be a valid URL.", e);
-		}
-	    
-	}
+    private static URL systemIdToURL(final String systemId) {
+        try {
+            return new URL(systemId);
+        } catch (MalformedURLException e) {
+            throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Must be a valid URL.", e);
+        }
 
-	private static Reader streamToReader(InputStream inputStream, String contentEncoding) {
-		try {
-		    if (contentEncoding != null) {
-		        return new InputStreamReader(inputStream, contentEncoding);
-		    } else {
-		        return new InputStreamReader(inputStream, "UTF-8");
-		    }
-		} catch (UnsupportedEncodingException e) {
-		    throw new SmooksException("Unable to decode input stream.", e);
-		}
-	}
+    }
+
+    private static Reader streamToReader(InputStream inputStream, String contentEncoding) {
+        try {
+            if (contentEncoding != null) {
+                return new InputStreamReader(inputStream, contentEncoding);
+            } else {
+                return new InputStreamReader(inputStream, "UTF-8");
+            }
+        } catch (UnsupportedEncodingException e) {
+            throw new SmooksException("Unable to decode input stream.", e);
+        }
+    }
 
     protected InputSource createInputSource(Source source, String contentEncoding) {
         // Also attach the underlying stream to the InputSource...
-        if(source instanceof StreamSource) {
+        if (source instanceof StreamSource) {
             StreamSource streamSource = (StreamSource) source;
             InputStream inputStream;
             Reader reader;
 
             inputStream = getInputStream(streamSource);
             reader = streamSource.getReader();
-            if(reader == null) {
-                if(inputStream == null) {
+            if (reader == null) {
+                if (inputStream == null) {
                     throw new SmooksException("Invalid StreamSource.  Unable to extract an InputStream (even by systemId) or Reader instance.");
                 }
                 reader = streamToReader(inputStream, contentEncoding);
@@ -309,11 +312,11 @@ public class AbstractParser {
         }
 
         if (reader instanceof SmooksXMLReader) {
-        	if(saxDriverConfig != null) {
-        		Configurator.configure(reader, saxDriverConfig, execContext.getContext());
-        	} else {
-        		Configurator.initialise(reader);
-        	}
+            if (saxDriverConfig != null) {
+                Configurator.configure(reader, saxDriverConfig, execContext.getContext());
+            } else {
+                Configurator.initialise(reader);
+            }
         }
 
         reader.setFeature("http://xml.org/sax/features/namespaces", true);
@@ -338,7 +341,7 @@ public class AbstractParser {
     }
 
     protected void configureReader(XMLReader reader, DefaultHandler2 handler, ExecutionContext execContext, Source source) throws SAXException {
-		if (reader instanceof SmooksXMLReader) {
+        if (reader instanceof SmooksXMLReader) {
             ((SmooksXMLReader) reader).setExecutionContext(execContext);
         }
 
@@ -356,7 +359,7 @@ public class AbstractParser {
         } catch (SAXNotRecognizedException e) {
             logger.debug("XMLReader property 'http://xml.org/sax/properties/lexical-handler' not recognized by XMLReader '" + reader.getClass().getName() + "'.");
         }
-	}
+    }
 
     private void setHandlers(XMLReader reader) throws SAXException {
         if (saxDriverConfig != null) {
@@ -403,12 +406,12 @@ public class AbstractParser {
         }
         // Report namespace decls as per SAX 2.0.2 spec...
         try {
-        	// http://www.saxproject.org/apidoc/org/xml/sax/package-summary.html#package_description
+            // http://www.saxproject.org/apidoc/org/xml/sax/package-summary.html#package_description
             reader.setFeature("http://xml.org/sax/features/xmlns-uris", true);
         } catch (Throwable t) {
             // Not a SAX 2.0.2 compliant parser... Ignore
         }
-        
+
         if (saxDriverConfig != null) {
             List<Parameter> features;
 

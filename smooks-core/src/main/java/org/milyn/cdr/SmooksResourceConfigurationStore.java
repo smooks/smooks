@@ -18,64 +18,70 @@ package org.milyn.cdr;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.assertion.AssertArgument;
+import org.jaxen.saxpath.SAXPathException;
+import org.milyn.Smooks;
 import org.milyn.cdr.annotation.Configurator;
 import org.milyn.cdr.xpath.SelectorStep;
-import org.milyn.classpath.ClasspathUtils;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.classpath.ClasspathUtils;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.profile.ProfileSet;
+import org.milyn.commons.profile.ProfileStore;
+import org.milyn.commons.resource.ContainerResourceLocator;
+import org.milyn.commons.util.ClassUtil;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ApplicationContextInitializer;
-import org.milyn.container.standalone.StandaloneApplicationContext;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.ContentHandlerFactory;
 import org.milyn.delivery.JavaContentHandlerFactory;
 import org.milyn.delivery.UnsupportedContentHandlerTypeException;
 import org.milyn.delivery.annotation.Resource;
-import org.milyn.profile.ProfileSet;
-import org.milyn.profile.ProfileStore;
-import org.milyn.resource.ContainerResourceLocator;
-import org.milyn.util.ClassUtil;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.Smooks;
 import org.milyn.xml.NamespaceMappings;
 import org.xml.sax.SAXException;
-import org.jaxen.saxpath.SAXPathException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * {@link org.milyn.cdr.SmooksResourceConfiguration} context store.
  * <p/>
  * Stores the {@link org.milyn.cdr.SmooksResourceConfiguration SmooksResourceConfigurations}
- * for a given container context in the form of 
+ * for a given container context in the form of
  * {@link org.milyn.cdr.SmooksResourceConfigurationList} entries.  Also maintains
  * a "default" config list for the context.
+ *
  * @author tfennelly
  */
 public class SmooksResourceConfigurationStore {
 
     private static List<Class<ContentHandlerFactory>> handlerFactories = ClassUtil.getClasses("META-INF/content-handlers.inf", ContentHandlerFactory.class);
-    
-	/**
-	 * Logger.
-	 */
-	private static Log logger = LogFactory.getLog(SmooksResourceConfigurationStore.class);
-	/**
-	 * Table of loaded SmooksResourceConfigurationList objects.
-	 */
-	private List<SmooksResourceConfigurationList> configLists = new ArrayList<SmooksResourceConfigurationList>();
+
+    /**
+     * Logger.
+     */
+    private static Log logger = LogFactory.getLog(SmooksResourceConfigurationStore.class);
+    /**
+     * Table of loaded SmooksResourceConfigurationList objects.
+     */
+    private List<SmooksResourceConfigurationList> configLists = new ArrayList<SmooksResourceConfigurationList>();
     /**
      * A complete list of all the that have been initialized and added to this store.
      * This has been transformed into a CopyOnWriteArrayList to fix http://jira.codehaus.org/browse/MILYN-381
      */
     private List<Object> initializedObjects = new CopyOnWriteArrayList<Object>() {
         public boolean add(Object object) {
-            if(contains(object)) {
+            if (contains(object)) {
                 // Don't add the same object again...
                 return false;
             }
@@ -87,17 +93,18 @@ public class SmooksResourceConfigurationStore {
      * Default configuration list.
      */
     private SmooksResourceConfigurationList defaultList = new SmooksResourceConfigurationList("default");
-	/**
-	 * Container context in which this store lives.
-	 */
-	private ApplicationContext applicationContext;
+    /**
+     * Container context in which this store lives.
+     */
+    private ApplicationContext applicationContext;
     private static final String CDU_CREATOR = "cdu-creator";
 
     /**
-	 * Public constructor.
-	 * @param applicationContext Container context in which this store lives.
-	 */
-	public SmooksResourceConfigurationStore(ApplicationContext applicationContext) {
+     * Public constructor.
+     *
+     * @param applicationContext Container context in which this store lives.
+     */
+    public SmooksResourceConfigurationStore(ApplicationContext applicationContext) {
         this(applicationContext, true);
     }
 
@@ -110,7 +117,7 @@ public class SmooksResourceConfigurationStore {
         defaultList.setSystemConfigList(true);
 
         registerInstalledHandlerFactories();
-        if(registerInstalledResources) {
+        if (registerInstalledResources) {
             registerInstalledResources("null-dom.cdrl");
             registerInstalledResources("null-sax.cdrl");
             registerInstalledResources("installed-param-decoders.cdrl");
@@ -120,8 +127,9 @@ public class SmooksResourceConfigurationStore {
 
     /**
      * Remove the shutdown hook associated with this store instance.
+     *
      * @deprecated Smooks no longer uses shutdown hooks.  The containing application
-     * is responsible for calling {@link Smooks#close()}.
+     *             is responsible for calling {@link Smooks#close()}.
      */
     public void removeShutdownHook() {
     }
@@ -130,7 +138,7 @@ public class SmooksResourceConfigurationStore {
         for (Class<ContentHandlerFactory> handlerFactory : handlerFactories) {
             Resource resourceAnnotation = handlerFactory.getAnnotation(Resource.class);
 
-            if(resourceAnnotation != null) {
+            if (resourceAnnotation != null) {
                 addHandlerFactoryConfig(handlerFactory, resourceAnnotation.type());
             }
         }
@@ -149,18 +157,19 @@ public class SmooksResourceConfigurationStore {
 
     /**
      * Register the pre-installed CDU Creator classes.
+     *
      * @param resourceFile Installed (internal) resource config file.
      */
     private void registerInstalledResources(String resourceFile) {
         InputStream resource = ClassUtil.getResourceAsStream(resourceFile, getClass());
 
-        if(resource == null) {
+        if (resource == null) {
             throw new IllegalStateException("Failed to load " + resourceFile + ".  Expected to be in the same package as " + getClass().getName());
         }
         try {
-            SmooksResourceConfigurationList resourceList = registerResources(resourceFile, resource);            
-            for(int i = 0; i < resourceList.size(); i++) {
-            	resourceList.get(i).setDefaultResource(true);
+            SmooksResourceConfigurationList resourceList = registerResources(resourceFile, resource);
+            for (int i = 0; i < resourceList.size(); i++) {
+                resourceList.get(i).setDefaultResource(true);
             }
             resourceList.setSystemConfigList(true);
         } catch (Exception e) {
@@ -169,75 +178,77 @@ public class SmooksResourceConfigurationStore {
     }
 
     /**
-	 * Load all .cdrl files listed in the BufferedReader stream.
-	 * <p/>
-	 * Because this method uses the ContainerResourceLocator it may be possible
-	 * to load external cdrl files.  If the ContainerResourceLocator is a
-	 * ServletResourceLocator the lines in the BufferedReader param can contain
-	 * external URLs.
-	 * @param cdrlLoadList BufferedReader cdrl list - one cdrl def per line.
+     * Load all .cdrl files listed in the BufferedReader stream.
+     * <p/>
+     * Because this method uses the ContainerResourceLocator it may be possible
+     * to load external cdrl files.  If the ContainerResourceLocator is a
+     * ServletResourceLocator the lines in the BufferedReader param can contain
+     * external URLs.
+     *
+     * @param cdrlLoadList BufferedReader cdrl list - one cdrl def per line.
      * @throws java.io.IOException Error reading list buffer.
-	 */
-	public void load(BufferedReader cdrlLoadList) throws IOException {
-		String uri;
-		ContainerResourceLocator resLocator = applicationContext.getResourceLocator();
+     */
+    public void load(BufferedReader cdrlLoadList) throws IOException {
+        String uri;
+        ContainerResourceLocator resLocator = applicationContext.getResourceLocator();
 
-		while((uri = cdrlLoadList.readLine()) != null) {
-			uri = uri.trim();
-			if(uri.equals("") || uri.charAt(0) == '#') {
-				continue;
-			}
+        while ((uri = cdrlLoadList.readLine()) != null) {
+            uri = uri.trim();
+            if (uri.equals("") || uri.charAt(0) == '#') {
+                continue;
+            }
 
-			try {
-				InputStream resource = resLocator.getResource(uri);
+            try {
+                InputStream resource = resLocator.getResource(uri);
 
-				logger.info("Loading Smooks Resources from uri [" + uri + "].");
+                logger.info("Loading Smooks Resources from uri [" + uri + "].");
                 registerResources(uri, resource);
-				logger.debug("[" + uri + "] Loaded.");
-			} catch (IllegalArgumentException e) {
-				logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
-			} catch (IOException e) {
-				logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
-			} catch (SAXException e) {
-				logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
-			} catch (URISyntaxException e) {
+                logger.debug("[" + uri + "] Loaded.");
+            } catch (IllegalArgumentException e) {
+                logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
+            } catch (IOException e) {
+                logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
+            } catch (SAXException e) {
+                logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
+            } catch (URISyntaxException e) {
                 logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
             }
         }
-	}
+    }
 
     /**
      * Register the set of resources specified in the supplied XML configuration
      * stream.
-     * @param baseURI The base URI to be associated with the configuration stream.
+     *
+     * @param baseURI              The base URI to be associated with the configuration stream.
      * @param resourceConfigStream XML resource configuration stream.
      * @return The SmooksResourceConfigurationList created from the added resource configuration.
      * @throws SAXException Error parsing the resource stream.
-     * @throws IOException Error reading resource stream.
+     * @throws IOException  Error reading resource stream.
      * @see SmooksResourceConfiguration
      */
     public SmooksResourceConfigurationList registerResources(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException, URISyntaxException {
         SmooksResourceConfigurationList configList;
 
-        if(baseURI == null || baseURI.trim().equals("")) {
+        if (baseURI == null || baseURI.trim().equals("")) {
             throw new IllegalArgumentException("null or empty 'name' arg in method call.");
         }
-        if(resourceConfigStream == null) {
+        if (resourceConfigStream == null) {
             throw new IllegalArgumentException("null 'resourceConfigStream' arg in method call.");
         }
 
         configList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, applicationContext.getClassLoader());
         addSmooksResourceConfigurationList(configList);
-        
+
         return configList;
     }
 
     private void processAppContextInitializers(SmooksResourceConfigurationList configList) {
-        for(int i = 0; i < configList.size(); i++) {
+        for (int i = 0; i < configList.size(); i++) {
             SmooksResourceConfiguration resourceConfig = configList.get(i);
             Class javaClass = resourceConfig.toJavaResource();
 
-            if(javaClass != null && ApplicationContextInitializer.class.isAssignableFrom(javaClass)) {
+            if (javaClass != null && ApplicationContextInitializer.class.isAssignableFrom(javaClass)) {
                 ApplicationContextInitializer initializer;
 
                 try {
@@ -253,15 +264,15 @@ public class SmooksResourceConfigurationStore {
     }
 
     private void addProfileSets(List<ProfileSet> profileSets) {
-        if(profileSets == null) {
+        if (profileSets == null) {
             return;
         }
 
         // TODO Sort out the other app context impls such that we can get the profile store from them too
-        if(applicationContext instanceof ApplicationContext) {
+        if (applicationContext instanceof ApplicationContext) {
             ProfileStore profileStore = applicationContext.getProfileStore();
 
-            for(ProfileSet profileSet : profileSets) {
+            for (ProfileSet profileSet : profileSets) {
                 profileStore.addProfileSet(profileSet);
             }
         }
@@ -272,10 +283,11 @@ public class SmooksResourceConfigurationStore {
      * Register a {@link SmooksResourceConfiguration} on this context store.
      * <p/>
      * The config gets added to the default resource list.
+     *
      * @param resourceConfig The Content Delivery Resource definition to be registered.
      */
     public void registerResource(SmooksResourceConfiguration resourceConfig) {
-        if(resourceConfig == null) {
+        if (resourceConfig == null) {
             throw new IllegalArgumentException("null 'resourceConfig' arg in method call.");
         }
         defaultList.add(resourceConfig);
@@ -305,38 +317,40 @@ public class SmooksResourceConfigurationStore {
     }
 
     /**
-	 * Get all the SmooksResourceConfiguration entries registered on this context store
+     * Get all the SmooksResourceConfiguration entries registered on this context store
      * for the specified profile set.
-	 * @param profileSet The profile set against which to lookup.
-	 * @return All SmooksResourceConfiguration entries targeted at the specified useragent.
-	 */
-	public SmooksResourceConfiguration[] getSmooksResourceConfigurations(ProfileSet profileSet) {
-		Vector allSmooksResourceConfigurationsColl = new Vector();
-		SmooksResourceConfiguration[] allSmooksResourceConfigurations;
+     *
+     * @param profileSet The profile set against which to lookup.
+     * @return All SmooksResourceConfiguration entries targeted at the specified useragent.
+     */
+    public SmooksResourceConfiguration[] getSmooksResourceConfigurations(ProfileSet profileSet) {
+        Vector allSmooksResourceConfigurationsColl = new Vector();
+        SmooksResourceConfiguration[] allSmooksResourceConfigurations;
 
-		// Iterate through each of the loaded SmooksResourceConfigurationLists.
-		for(int i = 0; i < configLists.size(); i++) {
+        // Iterate through each of the loaded SmooksResourceConfigurationLists.
+        for (int i = 0; i < configLists.size(); i++) {
             SmooksResourceConfigurationList list = configLists.get(i);
-			SmooksResourceConfiguration[] resourceConfigs = list.getTargetConfigurations(profileSet);
+            SmooksResourceConfiguration[] resourceConfigs = list.getTargetConfigurations(profileSet);
 
-			allSmooksResourceConfigurationsColl.addAll(Arrays.asList(resourceConfigs));
-		}
+            allSmooksResourceConfigurationsColl.addAll(Arrays.asList(resourceConfigs));
+        }
 
-		allSmooksResourceConfigurations = new SmooksResourceConfiguration[allSmooksResourceConfigurationsColl.size()];
-		allSmooksResourceConfigurationsColl.toArray(allSmooksResourceConfigurations);
+        allSmooksResourceConfigurations = new SmooksResourceConfiguration[allSmooksResourceConfigurationsColl.size()];
+        allSmooksResourceConfigurationsColl.toArray(allSmooksResourceConfigurations);
 
-		return allSmooksResourceConfigurations;
-	}
+        return allSmooksResourceConfigurations;
+    }
 
     /**
-	 * Load a Java Object defined by the supplied SmooksResourceConfiguration instance.
-	 * @param resourceConfig SmooksResourceConfiguration instance.
-	 * @return An Object instance from the SmooksResourceConfiguration.
-	 */
-	public Object getObject(SmooksResourceConfiguration resourceConfig) {
-		Object object = resourceConfig.getJavaResourceObject();
+     * Load a Java Object defined by the supplied SmooksResourceConfiguration instance.
+     *
+     * @param resourceConfig SmooksResourceConfiguration instance.
+     * @return An Object instance from the SmooksResourceConfiguration.
+     */
+    public Object getObject(SmooksResourceConfiguration resourceConfig) {
+        Object object = resourceConfig.getJavaResourceObject();
 
-        if(object == null) {
+        if (object == null) {
             String className = ClasspathUtils.toClassName(resourceConfig.getResource());
 
             // Load the runtime class...
@@ -352,8 +366,8 @@ public class SmooksResourceConfigurationStore {
             // Try constructing via a SmooksResourceConfiguration constructor...
             Constructor constructor;
             try {
-                constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
-                object = constructor.newInstance(new Object[] {resourceConfig});
+                constructor = classRuntime.getConstructor(new Class[]{SmooksResourceConfiguration.class});
+                object = constructor.newInstance(new Object[]{resourceConfig});
             } catch (NoSuchMethodException e) {
                 // OK, we'll try a default constructor later...
             } catch (Exception e) {
@@ -363,7 +377,7 @@ public class SmooksResourceConfigurationStore {
             }
 
             // If we still don't have an object, try constructing via the default construtor...
-            if(object == null) {
+            if (object == null) {
                 try {
                     object = classRuntime.newInstance();
                 } catch (Exception e) {
@@ -373,7 +387,7 @@ public class SmooksResourceConfigurationStore {
                 }
             }
 
-            if(object instanceof ContentHandler || object instanceof DataDecoder) {
+            if (object instanceof ContentHandler || object instanceof DataDecoder) {
                 Configurator.configure(object, resourceConfig, applicationContext);
                 initializedObjects.add(object);
             }
@@ -381,8 +395,8 @@ public class SmooksResourceConfigurationStore {
             resourceConfig.setJavaResourceObject(object);
         }
 
-		return object;
-	}
+        return object;
+    }
 
     public List<Object> getInitializedObjects() {
         return initializedObjects;
@@ -391,11 +405,11 @@ public class SmooksResourceConfigurationStore {
     public SmooksResourceConfiguration getGlobalParams() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
 
-        for(int i = 0; i < configLists.size(); i++) {
+        for (int i = 0; i < configLists.size(); i++) {
             SmooksResourceConfigurationList list = configLists.get(i);
-            for(int ii = 0; ii < list.size(); ii++) {
+            for (int ii = 0; ii < list.size(); ii++) {
                 SmooksResourceConfiguration nextConfig = list.get(ii);
-                if(ParameterAccessor.GLOBAL_PARAMETERS.equals(nextConfig.getSelector())) {
+                if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextConfig.getSelector())) {
                     config.addParmeters(nextConfig);
                 }
             }
@@ -409,24 +423,26 @@ public class SmooksResourceConfigurationStore {
      * supplied resource type.
      * <p/>
      * Note that {@link org.milyn.delivery.ContentHandlerFactory} implementations must be  configured under a selector value of "cdu-creator".
+     *
      * @param type {@link org.milyn.delivery.ContentHandlerFactory} type e.g. "class", "xsl" etc.
      * @return {@link org.milyn.delivery.ContentHandlerFactory} for the resource.
-     * @throws org.milyn.delivery.UnsupportedContentHandlerTypeException No {@link org.milyn.delivery.ContentHandlerFactory}
-     * registered for the specified resource type.
+     * @throws org.milyn.delivery.UnsupportedContentHandlerTypeException
+     *          No {@link org.milyn.delivery.ContentHandlerFactory}
+     *          registered for the specified resource type.
      */
     public ContentHandlerFactory getContentHandlerFactory(String type) throws UnsupportedContentHandlerTypeException {
-        if(type == null) {
+        if (type == null) {
             throw new IllegalArgumentException("null 'resourceExtension' arg in method call.");
         }
 
-        for(int i = 0; i < configLists.size(); i++) {
+        for (int i = 0; i < configLists.size(); i++) {
             SmooksResourceConfigurationList list = configLists.get(i);
 
-            for(int ii = 0; ii < list.size(); ii++) {
+            for (int ii = 0; ii < list.size(); ii++) {
                 SmooksResourceConfiguration config = list.get(ii);
                 String selector = config.getSelector();
 
-                if(CDU_CREATOR.equals(selector) && type.equalsIgnoreCase(config.getStringParameter(ContentHandlerFactory.PARAM_RESTYPE))) {
+                if (CDU_CREATOR.equals(selector) && type.equalsIgnoreCase(config.getStringParameter(ContentHandlerFactory.PARAM_RESTYPE))) {
                     return (ContentHandlerFactory) getObject(config);
                 }
             }
@@ -440,10 +456,10 @@ public class SmooksResourceConfigurationStore {
      * all {@link org.milyn.delivery.ContentHandler ContentHandlers} allocated from this store instance.
      */
     public void close() {
-        if(initializedObjects != null) {
+        if (initializedObjects != null) {
             logger.debug("Uninitializing all ContentHandler instances allocated through this store.");
             // We uninitialize in reverse order...
-            for(int i = initializedObjects.size() - 1; i >= 0; i--) {
+            for (int i = initializedObjects.size() - 1; i >= 0; i--) {
                 Object object = initializedObjects.get(i);
                 try {
                     logger.debug("Uninitializing ContentHandler instance: " + object.getClass().getName());
@@ -459,8 +475,8 @@ public class SmooksResourceConfigurationStore {
     public void setNamespaces() throws SAXPathException {
         Properties namespaces = NamespaceMappings.getMappings(applicationContext);
 
-        for(SmooksResourceConfigurationList resourceConfigList : configLists) {
-            for(int i = 0; i < resourceConfigList.size(); i++) {
+        for (SmooksResourceConfigurationList resourceConfigList : configLists) {
+            for (int i = 0; i < resourceConfigList.size(); i++) {
                 SelectorStep.setNamespaces(resourceConfigList.get(i).getSelectorSteps(), namespaces);
             }
         }
@@ -469,7 +485,7 @@ public class SmooksResourceConfigurationStore {
     public List<SmooksResourceConfiguration> lookupResource(ConfigSearch configSearch) {
         List<SmooksResourceConfiguration> resultSet = new ArrayList<SmooksResourceConfiguration>();
 
-        for(SmooksResourceConfigurationList configList : configLists) {
+        for (SmooksResourceConfigurationList configList : configLists) {
             resultSet.addAll(configList.lookupResource(configSearch));
         }
 
@@ -480,8 +496,8 @@ public class SmooksResourceConfigurationStore {
     public SmooksResourceConfigurationList getUserDefinedResourceList() {
         SmooksResourceConfigurationList userDefinedResources = new SmooksResourceConfigurationList("userDefinedResources");
 
-        for(SmooksResourceConfigurationList configList : configLists) {
-            if(!configList.isSystemConfigList()) {
+        for (SmooksResourceConfigurationList configList : configLists) {
+            if (!configList.isSystemConfigList()) {
                 userDefinedResources.addAll(configList);
             }
         }

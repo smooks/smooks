@@ -15,11 +15,11 @@
 */
 package org.milyn.cdr.xpath.evaluators.equality;
 
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.container.ExecutionContext;
-import org.w3c.dom.Element;
 import org.jaxen.expr.RelationalExpr;
 import org.jaxen.saxpath.SAXPathException;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.sax.SAXElement;
+import org.w3c.dom.Element;
 
 import java.util.Properties;
 

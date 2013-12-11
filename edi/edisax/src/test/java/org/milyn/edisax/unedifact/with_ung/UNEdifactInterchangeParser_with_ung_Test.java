@@ -29,8 +29,8 @@ import org.milyn.edisax.MockContentHandlerNS;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 import org.milyn.edisax.registry.DefaultMappingsRegistry;
-import org.milyn.namespace.NamespaceAwareHandler;
-import org.milyn.namespace.NamespaceDeclarationStack;
+import org.milyn.commons.namespace.NamespaceAwareHandler;
+import org.milyn.commons.namespace.NamespaceDeclarationStack;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

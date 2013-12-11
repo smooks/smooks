@@ -15,10 +15,10 @@
 */
 package org.milyn.delivery.sax;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.delivery.sax.annotation.StreamResultWriter;
 import org.milyn.delivery.sax.annotation.TextConsumer;
-import org.milyn.SmooksException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -26,10 +26,13 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import java.io.Writer;
-import java.io.StringWriter;
 import java.io.IOException;
-import java.util.*;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Element details as described by the SAX even model API.
@@ -37,7 +40,7 @@ import java.util.*;
  * {@link org.milyn.delivery.sax.SAXVisitor} implementations will be passed
  * an instance of this class for each of the event methods of
  * {@link org.milyn.delivery.sax.SAXVisitor} implementations.
- * 
+ * <p/>
  * <h3 id="element-writing">Element Writing/Serialization</h3>
  * Each SAXElement instance has a {@link Writer writer} set on it.
  * {@link org.milyn.delivery.sax.SAXVisitor} implementations can take care of
@@ -166,13 +169,14 @@ public class SAXElement {
      * Turn on {@link SAXText text} accumulation for this {@link SAXElement}.
      * <p/>
      * For performance reasons, {@link SAXText Text} accumulation is not on by default.
+     *
      * @see TextConsumer
      */
     public void accumulateText() {
-        if(text == null) {
+        if (text == null) {
             text = new ArrayList<SAXText>() {
                 public boolean add(SAXText saxText) {
-                    if(textAccumulator != null) {
+                    if (textAccumulator != null) {
                         // Clear the accumulatedText object so as any subsequent calls to the
                         // getTextAsString method will recreate the buffer from scratch...
                         accumulatedText = null;
@@ -185,9 +189,10 @@ public class SAXElement {
 
     /**
      * Get the child {@link SAXText text} list associated with this {@link SAXElement}.
+     *
      * @return The child {@link SAXText text} list associated with this {@link SAXElement},
-     * or null if this {@link SAXElement} is not {@link #accumulateText() accumulating text}.
-     * @see #accumulateText() 
+     *         or null if this {@link SAXElement} is not {@link #accumulateText() accumulating text}.
+     * @see #accumulateText()
      * @see TextConsumer
      */
     public List<SAXText> getText() {
@@ -200,10 +205,10 @@ public class SAXElement {
      * Utility method, userd mainly for testing.
      *
      * @param text The text to be added.
-     * @see #accumulateText() 
+     * @see #accumulateText()
      * @see TextConsumer
      */
-    public void addText (String text) {
+    public void addText(String text) {
         addText(text, TextType.TEXT);
     }
 
@@ -214,11 +219,11 @@ public class SAXElement {
      *
      * @param text The text to be added.
      * @param type The text type.
-     * @see #accumulateText() 
+     * @see #accumulateText()
      * @see TextConsumer
      */
-    public void addText (String text, TextType type) {
-        if(this.text == null) {
+    public void addText(String text, TextType type) {
+        if (this.text == null) {
             accumulateText();
         }
         this.text.add(new SAXText(text, type));
@@ -234,24 +239,24 @@ public class SAXElement {
      * produce a String.
      *
      * @return The {@link SAXText} objects associated with this {@link SAXElement},
-     * as an {@link #accumulateText() accumulated} String.
+     *         as an {@link #accumulateText() accumulated} String.
      * @throws SmooksException This {@link SAXElement} instance does not have
-     * {@link #accumulateText() text accumulation} turned on.
-     * @see #accumulateText() 
+     *                         {@link #accumulateText() text accumulation} turned on.
+     * @see #accumulateText()
      * @see TextConsumer
      */
     public String getTextContent() throws SmooksException {
-        if(text == null) {
+        if (text == null) {
             throw new SmooksException("Illegal call to getTextContent().  SAXElement instance not accumulating SAXText Objects.  You must call SAXElement.accumulateText(), or annotate the Visitor implementation class with the @TextConsumer annotation.");
         }
 
-        if(textAccumulator == null) {
+        if (textAccumulator == null) {
             textAccumulator = new StringWriter();
         }
 
-        if(accumulatedText == null) {
+        if (accumulatedText == null) {
             textAccumulator.getBuffer().setLength(0);
-            for(SAXText textObj : text) {
+            for (SAXText textObj : text) {
                 try {
                     textObj.toWriter(textAccumulator, false);
                 } catch (IOException e) {
@@ -305,7 +310,7 @@ public class SAXElement {
      *
      * @param visitor The visitor being checked.
      * @return True if the {@link SAXVisitor} owns the {@link Writer} associated
-     * with this {@link SAXElement} instance, otherwise false.
+     *         with this {@link SAXElement} instance, otherwise false.
      * @see StreamResultWriter
      */
     public boolean isWriterOwner(SAXVisitor visitor) {
@@ -354,6 +359,7 @@ public class SAXElement {
 
     /**
      * Get the named attribute from this element.
+     *
      * @param attribute The attribute name.
      * @return The attribute value, or an empty string if the attribute is not specified.
      */
@@ -363,8 +369,9 @@ public class SAXElement {
 
     /**
      * Get the named attribute from this element.
+     *
      * @param namespaceURI The namespace URI of the required attribute.
-     * @param attribute The attribute name.
+     * @param attribute    The attribute name.
      * @return The attribute value, or an empty string if the attribute is not specified.
      */
     public String getAttributeNS(String namespaceURI, String attribute) {
@@ -373,8 +380,9 @@ public class SAXElement {
 
     /**
      * Get the named attribute from this element.
+     *
      * @param namespaceURI The namespace URI of the required attribute.
-     * @param attribute The attribute name.
+     * @param attribute    The attribute name.
      * @return The attribute value, or an empty string if the attribute is not specified.
      * @deprecated Use {@link #getAttributeNS(String, String)}.
      */
@@ -385,24 +393,26 @@ public class SAXElement {
 
     /**
      * Set the named attribute on this element.
+     *
      * @param attribute The attribute name.
-     * @param value The attribute value.
+     * @param value     The attribute value.
      */
     public void setAttribute(String attribute, String value) {
-        setAttributeNS(XMLConstants.NULL_NS_URI, attribute,  value);
+        setAttributeNS(XMLConstants.NULL_NS_URI, attribute, value);
     }
 
     /**
      * Set the named attribute on this element.
+     *
      * @param namespaceURI The attribute namespace URI.
-     * @param name The attribute name.
-     * @param value The attribute value.
+     * @param name         The attribute name.
+     * @param value        The attribute value.
      */
     public void setAttributeNS(String namespaceURI, String name, String value) {
         removeAttributeNS(namespaceURI, name);
 
         int prefixIndex = name.indexOf(":");
-        if(prefixIndex != -1) {
+        if (prefixIndex != -1) {
             attributes.addAttribute(namespaceURI, name.substring(prefixIndex + 1), name, "CDATA", value);
         } else {
             attributes.addAttribute(namespaceURI, name, "", "CDATA", value);
@@ -411,6 +421,7 @@ public class SAXElement {
 
     /**
      * Remove the named attribute.
+     *
      * @param name Attribute name.
      */
     public void removeAttribute(String name) {
@@ -419,18 +430,19 @@ public class SAXElement {
 
     /**
      * Remove the named attribute, having the specified namespace.
+     *
      * @param namespaceURI The attribute namespace.
-     * @param name The attribute name.
+     * @param name         The attribute name.
      */
     public void removeAttributeNS(String namespaceURI, String name) {
         int attribCount = attributes.getLength();
-        for(int i = 0; i < attribCount; i++) {
-            if(namespaceURI.equals(attributes.getURI(i))) {
+        for (int i = 0; i < attribCount; i++) {
+            if (namespaceURI.equals(attributes.getURI(i))) {
                 boolean isQName = (name.indexOf(":") != -1);
-                
-                if(isQName && name.equals(attributes.getQName(i))) {
+
+                if (isQName && name.equals(attributes.getQName(i))) {
                     attributes.removeAttribute(i);
-                } else if(!isQName && name.equals(attributes.getLocalName(i))) {
+                } else if (!isQName && name.equals(attributes.getLocalName(i))) {
                     attributes.removeAttribute(i);
                 }
             }
@@ -465,10 +477,10 @@ public class SAXElement {
      * @return The element cache Object.
      */
     public Object getCache(SAXVisitor visitor) {
-        if(visitor == l1CacheOwner) {
+        if (visitor == l1CacheOwner) {
             // This visitor owns the level 1 cache...
             return l1Cache;
-        } else if(l2Caches == null) {
+        } else if (l2Caches == null) {
             return null;
         }
 
@@ -479,17 +491,17 @@ public class SAXElement {
      * Set the <a href="#element_cache_object">element cache object</a>.
      *
      * @param visitor The SAXElement instance to which the cache object is to be associated.
-     * @param cache The element cache Object.
+     * @param cache   The element cache Object.
      */
     public void setCache(SAXVisitor visitor, Object cache) {
-        if(l1Cache == null && l1CacheOwner == null) {
+        if (l1Cache == null && l1CacheOwner == null) {
             // This visitor is going to own the level 1 cache...
             l1Cache = cache;
             l1CacheOwner = visitor;
             return;
         }
 
-        if(l2Caches == null) {
+        if (l2Caches == null) {
             l2Caches = new HashMap<SAXVisitor, Object>();
         }
         l2Caches.put(visitor, cache);
@@ -528,14 +540,15 @@ public class SAXElement {
     /**
      * Create a DOM {@link Element} instance from this {@link SAXElement}
      * instance.
+     *
      * @param document The document to use to create the DOM Element.
      * @return The DOM Element.
      */
     public Element toDOMElement(Document document) {
         Element element;
 
-        if(name.getNamespaceURI() != null) {
-            if(name.getPrefix().length() != 0) {
+        if (name.getNamespaceURI() != null) {
+            if (name.getPrefix().length() != 0) {
                 element = document.createElementNS(name.getNamespaceURI(), name.getPrefix() + ":" + name.getLocalPart());
             } else {
                 element = document.createElementNS(name.getNamespaceURI(), name.getLocalPart());
@@ -545,21 +558,21 @@ public class SAXElement {
         }
 
         int attributeCount = attributes.getLength();
-        for(int i = 0; i < attributeCount; i++) {
+        for (int i = 0; i < attributeCount; i++) {
             String namespace = attributes.getURI(i);
             String value = attributes.getValue(i);
 
-            if(namespace != null) {
+            if (namespace != null) {
                 String qName = attributes.getQName(i);
 
-                if(namespace.equals(XMLConstants.NULL_NS_URI)) {
-                    if(qName.startsWith(XMLConstants.XMLNS_ATTRIBUTE)) {
-                    	namespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
-                    } else if(qName.startsWith("xml:")) {
-                    	namespace = XMLConstants.XML_NS_URI;
+                if (namespace.equals(XMLConstants.NULL_NS_URI)) {
+                    if (qName.startsWith(XMLConstants.XMLNS_ATTRIBUTE)) {
+                        namespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+                    } else if (qName.startsWith("xml:")) {
+                        namespace = XMLConstants.XML_NS_URI;
                     }
                 }
-                
+
                 element.setAttributeNS(namespace, qName, value);
             } else {
                 String localName = attributes.getLocalName(i);

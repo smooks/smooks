@@ -10,7 +10,7 @@
     </parent>
     <name>EDI Test Utilities</name>
     <artifactId>milyn-smooks-edi-test</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <profiles>
         <profile>

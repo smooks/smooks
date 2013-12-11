@@ -15,7 +15,7 @@
 */
 package org.milyn.javabean.gen.model;
 
-import org.milyn.javabean.DataDecoder;
+import org.milyn.commons.javabean.DataDecoder;
 
 import java.lang.reflect.Field;
 

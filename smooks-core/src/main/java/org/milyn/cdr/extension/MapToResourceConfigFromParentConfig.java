@@ -15,21 +15,21 @@
 */
 package org.milyn.cdr.extension;
 
-import java.util.EmptyStackException;
-import java.util.Stack;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
+
+import java.util.EmptyStackException;
+import java.util.Stack;
 
 /**
  * Map a property value from a parent {@link org.milyn.cdr.SmooksResourceConfiguration} and onto
@@ -58,7 +58,7 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
 
     @Initialize
     public void initialize() throws SmooksConfigurationException {
-        if(parentRelIndex >= 0) {
+        if (parentRelIndex >= 0) {
             throw new SmooksConfigurationException("param 'parentRelIndex' value must be negative.  Value is '" + parentRelIndex + "'.");
         }
     }
@@ -72,8 +72,8 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
         String actualMapTo = mapTo;
 
         //If no mapTo is set then the mapFrom value becomes the mapTo value
-        if(actualMapTo == null) {
-        	actualMapTo = mapFrom;
+        if (actualMapTo == null) {
+            actualMapTo = mapFrom;
         }
 
         // Get the current Config...
@@ -90,8 +90,8 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
             throw new SmooksException("No Parent SmooksResourceConfiguration available in ExtensionContext stack at relative index '" + parentRelIndex + "'.  Unable to set SmooksResourceConfiguration property '" + actualMapTo + "' with value of '" + mapFrom + "' from parent configuration.");
         }
 
-        if(logger.isDebugEnabled()) {
-        	logger.debug("Mapping property '" + mapFrom + "' on parent resource configuration to property'" + actualMapTo + "'.");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Mapping property '" + mapFrom + "' on parent resource configuration to property'" + actualMapTo + "'.");
         }
         ResourceConfigUtil.mapProperty(parentConfig, mapFrom, currentConfig, actualMapTo, defaultValue, executionContext);
     }

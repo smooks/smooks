@@ -16,9 +16,9 @@
 package org.milyn.cdr.xpath;
 
 import junit.framework.TestCase;
-import org.milyn.Smooks;
 import org.milyn.FilterSettings;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.Smooks;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -63,9 +63,9 @@ public class SAX_XPathSelectorsTest extends TestCase {
             smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
             smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
             fail("Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
 
-            assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Selector Namespace URI: [null], Resource: [org.milyn.cdr.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.milyn.delivery.sax.SAXVisitAfter interface only.  Class 'org.milyn.cdr.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
+            assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.milyn.commons.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Selector Namespace URI: [null], Resource: [org.milyn.cdr.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.milyn.delivery.sax.SAXVisitAfter interface only.  Class 'org.milyn.cdr.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
         }
     }
 
@@ -95,8 +95,8 @@ public class SAX_XPathSelectorsTest extends TestCase {
         try {
             smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
             fail("Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
-            assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Selector Namespace URI: [null], Resource: [org.milyn.cdr.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.milyn.delivery.sax.SAXVisitAfter interface only.  Class 'org.milyn.cdr.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
+        } catch (SmooksConfigurationException e) {
+            assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.milyn.commons.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Selector Namespace URI: [null], Resource: [org.milyn.cdr.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.milyn.delivery.sax.SAXVisitAfter interface only.  Class 'org.milyn.cdr.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
         }
     }
 
@@ -149,7 +149,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
-        
+
         assertTrue(XPathVisitor.saxVisitedBeforeElementStatic != null);
         assertTrue(XPathVisitor.saxVisitedAfterElementStatic != null);
     }

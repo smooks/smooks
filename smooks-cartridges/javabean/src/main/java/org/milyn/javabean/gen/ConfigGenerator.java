@@ -15,11 +15,11 @@
 */
 package org.milyn.javabean.gen;
 
-import org.milyn.assertion.AssertArgument;
-import org.milyn.javabean.DataDecoder;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.javabean.DataDecoder;
 import org.milyn.javabean.gen.model.BindingConfig;
 import org.milyn.javabean.gen.model.ClassConfig;
-import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.commons.util.FreeMarkerTemplate;
 
 import java.io.*;
 import java.lang.reflect.Field;

@@ -19,7 +19,7 @@ import org.milyn.ReaderConfigurator;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.GenericReaderConfigurator;
 import org.milyn.cdr.Parameter;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;

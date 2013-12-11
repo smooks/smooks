@@ -17,7 +17,7 @@
 package org.milyn.delivery;
 
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 
 
 /**
@@ -37,13 +37,14 @@ public interface ContentHandlerFactory extends ContentHandler {
      */
     public static final String PARAM_RESTYPE = "restype";
 
-	/**
-	 * Create the content handler instance.
-	 * @param resourceConfig The SmooksResourceConfiguration for the {@link ContentHandler}
-     * to be created.
-	 * @return Content handler instance.
+    /**
+     * Create the content handler instance.
+     *
+     * @param resourceConfig The SmooksResourceConfiguration for the {@link ContentHandler}
+     *                       to be created.
+     * @return Content handler instance.
      * @throws SmooksConfigurationException Successfully created ContentHandler, but an error occured during configuration.
-	 * @throws InstantiationException Unable to create ContentHandler instance.
-	 */
-	public Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException;
+     * @throws InstantiationException       Unable to create ContentHandler instance.
+     */
+    public Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException;
 }

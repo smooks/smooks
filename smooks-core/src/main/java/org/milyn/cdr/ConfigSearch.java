@@ -15,9 +15,9 @@
 */
 package org.milyn.cdr;
 
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 /**
  * Configuration lookup metadata.

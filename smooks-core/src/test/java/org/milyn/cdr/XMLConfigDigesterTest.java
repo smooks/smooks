@@ -19,7 +19,7 @@ package org.milyn.cdr;
 import junit.framework.TestCase;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
-import org.milyn.profile.ProfileSet;
+import org.milyn.commons.profile.ProfileSet;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

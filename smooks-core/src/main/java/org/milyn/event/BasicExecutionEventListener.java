@@ -21,16 +21,11 @@ import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.VisitSequence;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
+import org.milyn.event.types.ElementPresentEvent;
 import org.milyn.event.types.ElementVisitEvent;
 import org.milyn.event.types.FilterLifecycleEvent;
-import org.milyn.event.types.ElementPresentEvent;
 import org.milyn.expression.MVELExpressionEvaluator;
-import org.milyn.io.StreamUtils;
-import org.milyn.util.ClassUtil;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

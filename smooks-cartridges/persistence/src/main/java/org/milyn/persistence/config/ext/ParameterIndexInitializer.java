@@ -15,7 +15,7 @@
 */
 package org.milyn.persistence.config.ext;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
 

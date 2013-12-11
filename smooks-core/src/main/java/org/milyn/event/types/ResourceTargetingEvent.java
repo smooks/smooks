@@ -16,9 +16,9 @@
 package org.milyn.event.types;
 
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.delivery.VisitSequence;
 import org.milyn.event.ElementProcessingEvent;
 import org.milyn.event.ResourceBasedEvent;
-import org.milyn.delivery.VisitSequence;
 
 import java.util.Arrays;
 

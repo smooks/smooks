@@ -16,20 +16,12 @@
 package org.milyn.delivery;
 
 
-import static org.junit.Assert.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-
-import javax.xml.transform.stream.StreamSource;
-
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.milyn.Smooks;
-import org.milyn.io.StreamUtils;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.xml.SmooksXMLReader;
 import org.xml.sax.ContentHandler;
@@ -41,6 +33,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+
 /**
  * Test for JIRA: http://jira.codehaus.org/browse/MILYN-291,
  * "Add test(s) for StreamReader functionality"
@@ -48,31 +46,27 @@ import org.xml.sax.SAXNotSupportedException;
  *
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
-public class StreamReaderTest
-{
+public class StreamReaderTest {
     private final byte[] bytes = "bytes".getBytes();
     private Smooks smooks;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         smooks = new Smooks();
-        smooks.addConfiguration(new SmooksResourceConfiguration( "org.xml.sax.driver", MockReader.class.getName()));
+        smooks.addConfiguration(new SmooksResourceConfiguration("org.xml.sax.driver", MockReader.class.getName()));
     }
 
-    @Test public void verifyByteStream()
-    {
+    @Test
+    public void verifyByteStream() {
         smooks.filterSource(new StreamSource(new ByteArrayInputStream(bytes)));
         assertTrue(Arrays.equals(bytes, MockReader.readBytes));
     }
 
-    public static class MockReader implements SmooksXMLReader
-    {
+    public static class MockReader implements SmooksXMLReader {
         private ContentHandler handler;
         private static byte[] readBytes;
 
-        public void parse(final InputSource inputSource) throws IOException, SAXException
-        {
+        public void parse(final InputSource inputSource) throws IOException, SAXException {
             final InputStream bin = inputSource.getByteStream();
 
             MockReader.readBytes = StreamUtils.readStream(bin);
@@ -80,67 +74,53 @@ public class StreamReaderTest
             handler.endDocument();
         }
 
-        public void setContentHandler(ContentHandler arg0)
-        {
+        public void setContentHandler(ContentHandler arg0) {
             this.handler = arg0;
         }
 
-        public void setExecutionContext(ExecutionContext executionContext)
-        {
+        public void setExecutionContext(ExecutionContext executionContext) {
         }
 
-        public ContentHandler getContentHandler()
-        {
+        public ContentHandler getContentHandler() {
             return null;
         }
 
-        public DTDHandler getDTDHandler()
-        {
+        public DTDHandler getDTDHandler() {
             return null;
         }
 
-        public EntityResolver getEntityResolver()
-        {
+        public EntityResolver getEntityResolver() {
             return null;
         }
 
-        public ErrorHandler getErrorHandler()
-        {
+        public ErrorHandler getErrorHandler() {
             return null;
         }
 
-        public boolean getFeature(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException
-        {
+        public boolean getFeature(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException {
             return false;
         }
 
-        public Object getProperty(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException
-        {
+        public Object getProperty(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException {
             return null;
         }
 
-        public void parse(String string) throws IOException, SAXException
-        {
+        public void parse(String string) throws IOException, SAXException {
         }
 
-        public void setDTDHandler(DTDHandler arg0)
-        {
+        public void setDTDHandler(DTDHandler arg0) {
         }
 
-        public void setEntityResolver(EntityResolver arg0)
-        {
+        public void setEntityResolver(EntityResolver arg0) {
         }
 
-        public void setErrorHandler(ErrorHandler arg0)
-        {
+        public void setErrorHandler(ErrorHandler arg0) {
         }
 
-        public void setFeature(String arg0, boolean arg1) throws SAXNotRecognizedException, SAXNotSupportedException
-        {
+        public void setFeature(String arg0, boolean arg1) throws SAXNotRecognizedException, SAXNotSupportedException {
         }
 
-        public void setProperty(String arg0, Object arg1) throws SAXNotRecognizedException, SAXNotSupportedException
-        {
+        public void setProperty(String arg0, Object arg1) throws SAXNotRecognizedException, SAXNotSupportedException {
         }
 
     }

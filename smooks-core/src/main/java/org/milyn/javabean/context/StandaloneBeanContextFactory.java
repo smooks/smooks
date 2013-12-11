@@ -1,17 +1,16 @@
 package org.milyn.javabean.context;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.repository.BeanId;
 import org.milyn.payload.FilterResult;
 import org.milyn.payload.FilterSource;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.JavaSource;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Bean Context Manager

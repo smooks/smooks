@@ -16,7 +16,6 @@
 package org.milyn.payload;
 
 import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 

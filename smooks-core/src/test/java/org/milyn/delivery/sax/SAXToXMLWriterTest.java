@@ -15,83 +15,80 @@
 */
 package org.milyn.delivery.sax;
 
-import java.io.IOException;
-
-import org.milyn.FilterSettings;
+import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.lang.LangUtil;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.annotation.StreamResultWriter;
-import org.milyn.lang.LangUtil;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
 /**
- * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class SAXToXMLWriterTest extends TestCase {
 
-	public void test_all_write_methods() {
-		Smooks smooks = new Smooks();
-		StringResult stringResult = new StringResult();
-		
-		smooks.addVisitor(new AllWrittingVisitor().setLeftWrapping("{{").setRightWrapping("}}"), "a");
-		smooks.addVisitor(new AllWrittingVisitor().setLeftWrapping("((").setRightWrapping("))"), "b");
-		smooks.filterSource(new StringSource("<a><b>sometext</b></a>"), stringResult);
-		
-		assertEquals("{{<a>((<b>sometext</b>))</a>}}", stringResult.getResult());
-	}	
+    public void test_all_write_methods() {
+        Smooks smooks = new Smooks();
+        StringResult stringResult = new StringResult();
 
-	public void test_vafter_write_method() throws IOException, SAXException {
+        smooks.addVisitor(new AllWrittingVisitor().setLeftWrapping("{{").setRightWrapping("}}"), "a");
+        smooks.addVisitor(new AllWrittingVisitor().setLeftWrapping("((").setRightWrapping("))"), "b");
+        smooks.filterSource(new StringSource("<a><b>sometext</b></a>"), stringResult);
+
+        assertEquals("{{<a>((<b>sometext</b>))</a>}}", stringResult.getResult());
+    }
+
+    public void test_vafter_write_method() throws IOException, SAXException {
         if (LangUtil.getJavaVersion() != 1.5) {
             return;
         }
 
         Smooks smooks = new Smooks(getClass().getResourceAsStream("SAXToXMLWriterTest_config.xml"));
-		StringResult stringResult = new StringResult();
-		
-		smooks.filterSource(new StringSource("<a><b>some&amp;text</b></a>"), stringResult);
-		
-		assertEquals("<a><b>{{some&#38;text}}</b></a>", stringResult.getResult());
-		assertEquals("some&#38;text", VisitAfterWrittingVisitor.elementText);
-	}	
-	
-	private class AllWrittingVisitor implements SAXElementVisitor {
+        StringResult stringResult = new StringResult();
 
-		@StreamResultWriter	
-		private SAXToXMLWriter writer;
-		private String leftWrapping;
-		private String rightWrapping;
-		
-		public AllWrittingVisitor setLeftWrapping(String leftWrapping) {
-			this.leftWrapping = leftWrapping;
-			return this;
-		}
-		
-		public AllWrittingVisitor setRightWrapping(String rightWrapping) {
-			this.rightWrapping = rightWrapping;
-			return this;
-		}
-		
-		public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-			writer.writeText(leftWrapping, element);
-			writer.writeStartElement(element);
-		}
+        smooks.filterSource(new StringSource("<a><b>some&amp;text</b></a>"), stringResult);
 
-		public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-		}
+        assertEquals("<a><b>{{some&#38;text}}</b></a>", stringResult.getResult());
+        assertEquals("some&#38;text", VisitAfterWrittingVisitor.elementText);
+    }
 
-		public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
-			writer.writeText(childText, element);
-		}		
-		
-		public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-			writer.writeEndElement(element);
-			writer.writeText(rightWrapping, element);
-		}
-	}
+    private class AllWrittingVisitor implements SAXElementVisitor {
+
+        @StreamResultWriter
+        private SAXToXMLWriter writer;
+        private String leftWrapping;
+        private String rightWrapping;
+
+        public AllWrittingVisitor setLeftWrapping(String leftWrapping) {
+            this.leftWrapping = leftWrapping;
+            return this;
+        }
+
+        public AllWrittingVisitor setRightWrapping(String rightWrapping) {
+            this.rightWrapping = rightWrapping;
+            return this;
+        }
+
+        public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+            writer.writeText(leftWrapping, element);
+            writer.writeStartElement(element);
+        }
+
+        public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
+        }
+
+        public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
+            writer.writeText(childText, element);
+        }
+
+        public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+            writer.writeEndElement(element);
+            writer.writeText(rightWrapping, element);
+        }
+    }
 }

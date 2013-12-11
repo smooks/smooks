@@ -15,19 +15,19 @@
 */
 package org.milyn.expression;
 
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.util.ClassUtil;
 
 /**
  * Abstract expression evaluator interface.
- *  
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public interface ExpressionEvaluator {
 
     /**
      * Set the condition expression for the evaluator implementation.
-     * 
+     *
      * @param expression The expression to be evaluated by the evaluator implementation.
      * @throws SmooksConfigurationException Invalid expression configuration.
      */
@@ -35,12 +35,14 @@ public interface ExpressionEvaluator {
 
     /**
      * Get the String representation of the active expression on the evaluator instance.
+     *
      * @return The active expression String representation.
      */
     public String getExpression();
 
     /**
      * Evaluate a conditional expression against the supplied object (can be a Map).
+     *
      * @param contextObject The object against which the expression is to be evaluated.
      * @return True if the expression evaluates to true, otherwise false.
      * @throws ExpressionEvaluationException Invalid expression evaluation condition (implementation specific).
@@ -49,6 +51,7 @@ public interface ExpressionEvaluator {
 
     /**
      * Evaluate an expression against the supplied Map variable, returning the eval result.
+     *
      * @param contextObject
      * @return Expression evaluation result.
      * @throws ExpressionEvaluationException Invalid expression evaluation (implementation specific).
@@ -64,7 +67,7 @@ public interface ExpressionEvaluator {
             try {
                 ExpressionEvaluator evaluator = (ExpressionEvaluator) ClassUtil.forName(className, Factory.class).newInstance();
 
-                if(!(evaluator instanceof ExecutionContextExpressionEvaluator)) {
+                if (!(evaluator instanceof ExecutionContextExpressionEvaluator)) {
                     throw new SmooksConfigurationException("Unsupported ExpressionEvaluator type '" + className + "'.  Currently only support '" + ExecutionContextExpressionEvaluator.class.getName() + "' implementations.");
                 }
                 evaluator.setExpression(conditionExpression);
@@ -80,5 +83,5 @@ public interface ExpressionEvaluator {
                 throw new SmooksConfigurationException("Failed to load ExpressionEvaluator Class '" + className + "'.", e);
             }
         }
-    }    
+    }
 }

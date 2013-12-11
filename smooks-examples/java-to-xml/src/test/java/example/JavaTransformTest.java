@@ -17,7 +17,7 @@ package example;
 
 import example.model.Order;
 import junit.framework.TestCase;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;

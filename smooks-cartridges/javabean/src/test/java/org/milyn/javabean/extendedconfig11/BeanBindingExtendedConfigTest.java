@@ -17,7 +17,7 @@ package org.milyn.javabean.extendedconfig11;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.B;
@@ -25,7 +25,7 @@ import org.milyn.javabean.Header;
 import org.milyn.javabean.OrderItem;
 import org.milyn.javabean.extendedconfig.ExtendedOrder;
 import org.milyn.payload.JavaResult;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;

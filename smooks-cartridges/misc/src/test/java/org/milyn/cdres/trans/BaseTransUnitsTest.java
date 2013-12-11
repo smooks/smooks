@@ -18,7 +18,7 @@ package org.milyn.cdres.trans;
 
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Configurator;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.xml.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -14,26 +14,26 @@
 	http://www.gnu.org/licenses/lgpl.txt
 */
 
-package org.milyn.smooks.scripting;
+package org.milyn.smooks.scripting
 
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.dom.DOMElementVisitor;
-import org.milyn.xml.DomUtils;
-import org.w3c.dom.Element;
+import org.milyn.cdr.SmooksResourceConfiguration
+import org.milyn.commons.xml.DomUtils
+import org.milyn.container.ExecutionContext
+import org.milyn.delivery.dom.DOMElementVisitor
+import org.w3c.dom.Element
 
 public class MyGroovyScript implements DOMElementVisitor {
 
-	String newName;
-	
-	public void setConfiguration(SmooksResourceConfiguration config) {
-		newName = config.getStringParameter("new-name", "zzz");
-	}
+    String newName;
 
-	public void visitBefore(Element fragment, ExecutionContext context) {
-	}
+    public void setConfiguration(SmooksResourceConfiguration config) {
+        newName = config.getStringParameter("new-name", "zzz");
+    }
 
-	public void visitAfter(Element fragment, ExecutionContext context) {
-		DomUtils.renameElement(fragment, newName, true, true);
-	}
+    public void visitBefore(Element fragment, ExecutionContext context) {
+    }
+
+    public void visitAfter(Element fragment, ExecutionContext context) {
+        DomUtils.renameElement(fragment, newName, true, true);
+    }
 }

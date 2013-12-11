@@ -15,10 +15,10 @@
 */
 package org.milyn.cdr.extension;
 
-import org.milyn.SmooksException;
-import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.cdr.annotation.AnnotationConstants;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.AnnotationConstants;
+import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMElementVisitor;
 import org.w3c.dom.Element;
@@ -42,14 +42,14 @@ public class CloneResourceConfig implements DOMElementVisitor {
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
         SmooksResourceConfiguration config = (SmooksResourceConfiguration) extensionContext.getResourceStack().peek().clone();
 
-        if(unset != null) {
-	        for(String property : unset) {
-	            ResourceConfigUtil.unsetProperty(config, property);
-	        }
+        if (unset != null) {
+            for (String property : unset) {
+                ResourceConfigUtil.unsetProperty(config, property);
+            }
         }
 
-        if(resource != null) {
-        	config.setResource(resource);
+        if (resource != null) {
+            config.setResource(resource);
         }
 
         extensionContext.addResource(config);

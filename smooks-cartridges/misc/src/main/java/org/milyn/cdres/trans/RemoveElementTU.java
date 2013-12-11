@@ -19,7 +19,7 @@ package org.milyn.cdres.trans;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMElementVisitor;
-import org.milyn.xml.DomUtils;
+import org.milyn.commons.xml.DomUtils;
 import org.w3c.dom.Element;
 
 /**

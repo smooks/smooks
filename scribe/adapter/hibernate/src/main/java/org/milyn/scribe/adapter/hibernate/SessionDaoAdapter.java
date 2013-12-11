@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.scribe.Dao;
 import org.milyn.scribe.Flushable;
 import org.milyn.scribe.Locator;

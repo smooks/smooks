@@ -1,8 +1,8 @@
 package org.milyn.edisax;
 
-import org.milyn.config.Configurable;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.javabean.DataDecoder;
+import org.milyn.commons.config.Configurable;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecoder;
 
 import java.util.List;
 import java.util.Map;

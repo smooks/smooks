@@ -15,9 +15,9 @@
 */
 package org.milyn.delivery.sax;
 
-import org.milyn.xml.HTMLEntityLookup;
-import org.milyn.xml.XmlUtil;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.xml.HTMLEntityLookup;
+import org.milyn.commons.xml.XmlUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -33,7 +33,6 @@ import java.io.Writer;
  * <i><b><u>NOTE</u></b>: References to instances of this type should not be cached.  If you
  * need to cache the character data housed in this class, you should use either the
  * {@link #getText()} or {@link #toString()} methods.</i>
- *
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
@@ -87,7 +86,7 @@ public class SAXText {
      * Get the "wrapped" text as a String.
      * <p/>
      * Wraps the underlying characters based on the text {@link #getType() type}.
-     * See {@link #getType()}. 
+     * See {@link #getType()}.
      *
      * @return The "wrapped" text String.
      */
@@ -103,6 +102,7 @@ public class SAXText {
 
     /**
      * Get the underlying character buffer.
+     *
      * @return The underlying character buffer.
      * @see #getOffset()
      * @see #getLength()
@@ -114,6 +114,7 @@ public class SAXText {
     /**
      * Get the character offset (in the {@link #getCharacters() character buffer}) of the text a
      * associated with this SAXText instance.
+     *
      * @return The character offset.
      * @see #getCharacters()
      * @see #getLength()
@@ -125,8 +126,9 @@ public class SAXText {
     /**
      * Get the character buffer length (in the {@link #getCharacters() character buffer}) of the text a
      * associated with this SAXText instance.
+     *
      * @return The character buffer length.
-     * @see #getCharacters() 
+     * @see #getCharacters()
      * @see #getOffset()
      */
     public int getLength() {
@@ -150,15 +152,15 @@ public class SAXText {
      * <p/>
      * It wraps the text based on its {@link #getType() type}.
      *
-     * @param writer The writer.
+     * @param writer             The writer.
      * @param encodeSpecialChars Encode special XML characters.
      * @throws IOException Write exception.
      */
     public void toWriter(Writer writer, boolean encodeSpecialChars) throws IOException {
-        if(writer != null) {
-            switch(type) {
+        if (writer != null) {
+            switch (type) {
                 case TEXT: {
-                    if(encodeSpecialChars) {
+                    if (encodeSpecialChars) {
                         XmlUtil.encodeTextValue(characters, offset, length, writer);
                     } else {
                         writer.write(characters, offset, length);
@@ -178,7 +180,7 @@ public class SAXText {
                     break;
                 }
                 case ENTITY: {
-                    if(encodeSpecialChars) {
+                    if (encodeSpecialChars) {
                         writer.write("&");
                         writer.write(HTMLEntityLookup.getEntityRef(characters[offset]));
                         writer.write(';');
@@ -193,6 +195,7 @@ public class SAXText {
 
     /**
      * Clone this SAXText object.
+     *
      * @return A cloned copy of this SAXText object.
      */
     protected Object clone() {

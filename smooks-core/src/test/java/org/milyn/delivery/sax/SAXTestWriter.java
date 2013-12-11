@@ -15,8 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
 
 import java.io.IOException;
 

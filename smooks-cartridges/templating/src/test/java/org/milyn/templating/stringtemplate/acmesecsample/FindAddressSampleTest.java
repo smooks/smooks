@@ -16,17 +16,16 @@
 
 package org.milyn.templating.stringtemplate.acmesecsample;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import junit.framework.TestCase;
-
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
+import org.milyn.commons.profile.DefaultProfileSet;
 import org.milyn.container.ExecutionContext;
-import org.milyn.profile.DefaultProfileSet;
 import org.milyn.templating.util.CharUtils;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class FindAddressSampleTest extends TestCase {
 
@@ -34,14 +33,14 @@ public class FindAddressSampleTest extends TestCase {
         Smooks smooks = new Smooks();
 
         // Configure Smooks...
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("acme-findAddresses-request", new String[] {"acme-request"}), smooks);
+        SmooksUtil.registerProfileSet(DefaultProfileSet.create("acme-findAddresses-request", new String[]{"acme-request"}), smooks);
         smooks.addConfigurations("acme-creds.cdrl", getClass().getResourceAsStream("acme-creds.cdrl"));
 
         // Perform the transformation...
         InputStream requestStream = getClass().getResourceAsStream("AcmeFindaddressRequest.xml");
         ExecutionContext context = smooks.createExecutionContext("acme-findAddresses-request");
         String requestResult = SmooksUtil.filterAndSerialize(context, requestStream, smooks);
-        
-		CharUtils.assertEquals("StringTemplate test failed.", "/org/milyn/templating/stringtemplate/acmesecsample/AcmeFindaddressRequest.xml.tran.expected", requestResult);
+
+        CharUtils.assertEquals("StringTemplate test failed.", "/org/milyn/templating/stringtemplate/acmesecsample/AcmeFindaddressRequest.xml.tran.expected", requestResult);
     }
 }

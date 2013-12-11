@@ -15,22 +15,30 @@
 */
 package org.milyn.cdr.xpath.evaluators;
 
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.container.ExecutionContext;
-import org.milyn.assertion.AssertArgument;
+import org.jaxen.expr.EqualityExpr;
+import org.jaxen.expr.Expr;
+import org.jaxen.expr.LogicalExpr;
+import org.jaxen.expr.NumberExpr;
+import org.jaxen.expr.RelationalExpr;
+import org.jaxen.saxpath.SAXPathException;
+import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.cdr.xpath.evaluators.equality.EqualsEvaluator;
+import org.milyn.cdr.xpath.evaluators.equality.GreaterThanEvaluator;
+import org.milyn.cdr.xpath.evaluators.equality.IndexEvaluator;
+import org.milyn.cdr.xpath.evaluators.equality.LessThanEvaluator;
+import org.milyn.cdr.xpath.evaluators.equality.NotEqualsEvaluator;
 import org.milyn.cdr.xpath.evaluators.logical.AndEvaluator;
 import org.milyn.cdr.xpath.evaluators.logical.OrEvaluator;
-import org.milyn.cdr.xpath.evaluators.equality.*;
-import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.sax.SAXElement;
 import org.w3c.dom.Element;
-import org.jaxen.expr.*;
-import org.jaxen.saxpath.SAXPathException;
 
 import java.util.Properties;
 
 /**
  * Jaxen XPath expression evaluator.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public abstract class XPathExpressionEvaluator {
@@ -61,37 +69,38 @@ public abstract class XPathExpressionEvaluator {
 
     /**
      * {@link XPathExpressionEvaluator} factory method.
-     * @param expr Jaxen XPath expression.
+     *
+     * @param expr         Jaxen XPath expression.
      * @param selectorStep Selector Step.
-     * @param namespaces Namespace set.
+     * @param namespaces   Namespace set.
      * @return The {@link XPathExpressionEvaluator} for the Jaxen expression.
      */
     public static XPathExpressionEvaluator getInstance(Expr expr, SelectorStep selectorStep, Properties namespaces) throws SAXPathException {
         AssertArgument.isNotNull(expr, "expr");
 
-        if(expr instanceof LogicalExpr) {
+        if (expr instanceof LogicalExpr) {
             LogicalExpr logicalExpr = (LogicalExpr) expr;
-            if(logicalExpr.getOperator().equalsIgnoreCase("and")) {
+            if (logicalExpr.getOperator().equalsIgnoreCase("and")) {
                 return new AndEvaluator(logicalExpr, selectorStep, namespaces);
-            } else if(logicalExpr.getOperator().equalsIgnoreCase("or")) {
+            } else if (logicalExpr.getOperator().equalsIgnoreCase("or")) {
                 return new OrEvaluator(logicalExpr, selectorStep, namespaces);
             }
-        } else if(expr instanceof EqualityExpr) {
+        } else if (expr instanceof EqualityExpr) {
             EqualityExpr equalityExpr = (EqualityExpr) expr;
-            if(equalityExpr.getOperator().equalsIgnoreCase("=")) {
+            if (equalityExpr.getOperator().equalsIgnoreCase("=")) {
                 return new EqualsEvaluator(equalityExpr, namespaces);
-            } else if(equalityExpr.getOperator().equalsIgnoreCase("!=")) {
+            } else if (equalityExpr.getOperator().equalsIgnoreCase("!=")) {
                 return new NotEqualsEvaluator(equalityExpr, namespaces);
             }
-        } else if(expr instanceof RelationalExpr) {
+        } else if (expr instanceof RelationalExpr) {
             RelationalExpr relationalExpr = (RelationalExpr) expr;
-            if(relationalExpr.getOperator().equalsIgnoreCase("<")) {
+            if (relationalExpr.getOperator().equalsIgnoreCase("<")) {
                 return new LessThanEvaluator(relationalExpr, namespaces);
-            } else if(relationalExpr.getOperator().equalsIgnoreCase(">")) {
+            } else if (relationalExpr.getOperator().equalsIgnoreCase(">")) {
                 return new GreaterThanEvaluator(relationalExpr, namespaces);
             }
-        } else if(expr instanceof NumberExpr) {
-            return new IndexEvaluator(((NumberExpr)expr).getNumber().intValue(), selectorStep);
+        } else if (expr instanceof NumberExpr) {
+            return new IndexEvaluator(((NumberExpr) expr).getNumber().intValue(), selectorStep);
         }
 
         throw new SAXPathException("Unsupported XPath expr token '" + expr.getText() + "'.");

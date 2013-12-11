@@ -15,16 +15,16 @@
 */
 package org.milyn.delivery.sax;
 
-import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
-import org.milyn.delivery.Filter;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.Filter;
 
 import java.io.IOException;
 
 /**
  * Default Serializer for SAX Filtering.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class DefaultSAXElementSerializer implements SAXElementVisitor {
@@ -49,7 +49,7 @@ public class DefaultSAXElementSerializer implements SAXElementVisitor {
 
     public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
         writeStartElement(element);
-        if(element.isWriterOwner(writerOwner)) {
+        if (element.isWriterOwner(writerOwner)) {
             text.toWriter(element.getWriter(writerOwner), rewriteEntities);
         }
     }
@@ -65,8 +65,8 @@ public class DefaultSAXElementSerializer implements SAXElementVisitor {
 
     public void writeStartElement(SAXElement element) throws IOException {
         // We set a flag in the cache so as to mark the fact that the start element has been writen
-        if(element.isWriterOwner(writerOwner)) {
-            if(!isStartWritten(element)) {
+        if (element.isWriterOwner(writerOwner)) {
+            if (!isStartWritten(element)) {
                 element.setCache(this, true);
                 writeStart(element);
             }
@@ -74,7 +74,7 @@ public class DefaultSAXElementSerializer implements SAXElementVisitor {
     }
 
     public void writeEndElement(SAXElement element) throws IOException {
-        if(element.isWriterOwner(writerOwner)) {
+        if (element.isWriterOwner(writerOwner)) {
             writeEnd(element);
         }
     }
@@ -84,7 +84,7 @@ public class DefaultSAXElementSerializer implements SAXElementVisitor {
     }
 
     protected void writeEnd(SAXElement element) throws IOException {
-        if(!isStartWritten(element)) {
+        if (!isStartWritten(element)) {
             // It's an empty element...
             SAXElementWriterUtil.writeEmptyElement(element, element.getWriter(writerOwner), rewriteEntities);
         } else {

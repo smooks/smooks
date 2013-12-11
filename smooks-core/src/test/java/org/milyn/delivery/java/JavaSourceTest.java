@@ -17,16 +17,20 @@ package org.milyn.delivery.java;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
+import org.milyn.container.ExecutionContext;
 import org.milyn.payload.JavaSource;
 import org.milyn.payload.StringResult;
-import org.milyn.container.ExecutionContext;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -63,7 +67,7 @@ public class JavaSourceTest extends TestCase {
         Map beans = new HashMap();
         beans.put("abcd", pojo);
         source = new JavaSource(beans);
-        assertEquals(pojo, source.getBeans().get("abcd"));        
+        assertEquals(pojo, source.getBeans().get("abcd"));
     }
 
     public void test_streamingOff_01() throws IOException, SAXException {
@@ -104,7 +108,7 @@ public class JavaSourceTest extends TestCase {
 
         try {
             smooks.filterSource(javaSource);
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("Invalid Smooks configuration.  Feature '" + JavaSource.FEATURE_GENERATE_EVENT_STREAM + "' is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired).", e.getCause().getMessage());
         }
     }
@@ -120,12 +124,14 @@ public class JavaSourceTest extends TestCase {
     }
 
     private static List<Object> SOURCE_1;
+
     static {
         SOURCE_1 = new ArrayList();
         SOURCE_1.add(new MyBean1());
     }
+
     private static String EXPECTED_1 = "<org.milyn.delivery.java.MyBean1><prop1>true</prop1><prop2>hello</prop2><prop3>1111</prop3><mybean2><prop5>true</prop5><prop6>hello</prop6></mybean2></org.milyn.delivery.java.MyBean1>";
 
-    private static List<Object> SOURCE_2 = Arrays.asList(new Object[] {new MyBean2(), new MyBean2()});
+    private static List<Object> SOURCE_2 = Arrays.asList(new Object[]{new MyBean2(), new MyBean2()});
     private static String EXPECTED_2 = "<org.milyn.delivery.java.MyBean2><prop5>true</prop5><prop6>hello</prop6></org.milyn.delivery.java.MyBean2><org.milyn.delivery.java.MyBean2><prop5>true</prop5><prop6>hello</prop6></org.milyn.delivery.java.MyBean2>";
 }

@@ -18,23 +18,30 @@ package org.milyn.delivery.dom;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
 import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.ResourceConfigurationNotFoundException;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.*;
+import org.milyn.delivery.ContentDeliveryConfig;
+import org.milyn.delivery.ContentHandler;
+import org.milyn.delivery.ContentHandlerConfigMap;
+import org.milyn.delivery.ContentHandlerConfigMapTable;
+import org.milyn.delivery.Filter;
+import org.milyn.delivery.Fragment;
+import org.milyn.delivery.VisitLifecycleCleanable;
+import org.milyn.delivery.VisitSequence;
 import org.milyn.delivery.dom.serialize.Serializer;
-import org.milyn.payload.JavaSource;
-import org.milyn.payload.FilterResult;
-import org.milyn.payload.FilterSource;
 import org.milyn.event.ExecutionEventListener;
 import org.milyn.event.report.AbstractReportGenerator;
 import org.milyn.event.types.DOMFilterLifecycleEvent;
 import org.milyn.event.types.ElementPresentEvent;
 import org.milyn.event.types.ElementVisitEvent;
 import org.milyn.event.types.ResourceTargetingEvent;
-import org.milyn.xml.DomUtils;
+import org.milyn.payload.FilterResult;
+import org.milyn.payload.FilterSource;
+import org.milyn.payload.JavaSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -196,7 +203,7 @@ public class SmooksDOMFilter extends Filter {
         closeSource = ParameterAccessor.getBoolParameter(Filter.CLOSE_SOURCE, true, executionContext.getDeliveryConfig());
         closeResult = ParameterAccessor.getBoolParameter(Filter.CLOSE_RESULT, true, executionContext.getDeliveryConfig());
         reverseVisitOrderOnVisitAfter = ParameterAccessor.getBoolParameter(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, true, executionContext.getDeliveryConfig());
-        if(!(executionContext.getEventListener() instanceof AbstractReportGenerator)) {
+        if (!(executionContext.getEventListener() instanceof AbstractReportGenerator)) {
             terminateOnVisitorException = ParameterAccessor.getBoolParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, true, executionContext.getDeliveryConfig());
         } else {
             terminateOnVisitorException = false;
@@ -208,7 +215,7 @@ public class SmooksDOMFilter extends Filter {
         Result result;
 
         result = FilterResult.getResult(executionContext, StreamResult.class);
-        if(result == null) {
+        if (result == null) {
             // Maybe there's a DOMResult...
             result = FilterResult.getResult(executionContext, DOMResult.class);
         }
@@ -322,7 +329,7 @@ public class SmooksDOMFilter extends Filter {
         return deliveryNode;
     }
 
-    private static String[] GLOBAL_SELECTORS = new String[] {"*", "**"};
+    private static String[] GLOBAL_SELECTORS = new String[]{"*", "**"};
 
     /**
      * Filter the supplied W3C Element.
@@ -367,12 +374,12 @@ public class SmooksDOMFilter extends Filter {
         }
 
         globalProcessingBefores = deliveryConfig.getProcessingVisitBefores().getMappings(GLOBAL_SELECTORS);
-        if(globalProcessingBefores != null && globalProcessingBefores.isEmpty()) {
-        	globalProcessingBefores = null;
+        if (globalProcessingBefores != null && globalProcessingBefores.isEmpty()) {
+            globalProcessingBefores = null;
         }
         globalProcessingAfters = deliveryConfig.getProcessingVisitAfters().getMappings(GLOBAL_SELECTORS);
-        if(globalProcessingAfters != null && globalProcessingAfters.isEmpty()) {
-        	globalProcessingAfters = null;
+        if (globalProcessingAfters != null && globalProcessingAfters.isEmpty()) {
+            globalProcessingAfters = null;
         }
 
         int transListLength;
@@ -390,15 +397,16 @@ public class SmooksDOMFilter extends Filter {
 
     /**
      * Get the global mappings from the supplied handler table.
-	 * @param assemblyVisitBefores The handler table.
-	 * @return A handler config map list containing the merged
-	 */
-	private List<ContentHandlerConfigMap<? extends ContentHandler>> getGlobalConfigs(ContentHandlerConfigMapTable<? extends ContentHandler> assemblyVisitBefores) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+     *
+     * @param assemblyVisitBefores The handler table.
+     * @return A handler config map list containing the merged
+     */
+    private List<ContentHandlerConfigMap<? extends ContentHandler>> getGlobalConfigs(ContentHandlerConfigMapTable<? extends ContentHandler> assemblyVisitBefores) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	private boolean applyAssembly(ContentHandlerConfigMapTable<DOMVisitBefore> visitBefores, ContentHandlerConfigMapTable<DOMVisitAfter> visitAfters) {
+    private boolean applyAssembly(ContentHandlerConfigMapTable<DOMVisitBefore> visitBefores, ContentHandlerConfigMapTable<DOMVisitAfter> visitAfters) {
         return !visitBefores.isEmpty() || !visitAfters.isEmpty() ||
                 (globalAssemblyBefores != null && !globalAssemblyBefores.isEmpty()) ||
                 (globalAssemblyAfters != null && !globalAssemblyAfters.isEmpty());
@@ -676,7 +684,7 @@ public class SmooksDOMFilter extends Filter {
         /**
          * Constructor.
          *
-         * @param element         Element to be processed.
+         * @param element Element to be processed.
          */
         private ElementProcessor(Element element) {
             this.element = element;
@@ -709,7 +717,7 @@ public class SmooksDOMFilter extends Filter {
                     ContentHandlerConfigMap configMap = visitBefores.get(i);
                     processMapping(executionContext, configMap, VisitSequence.BEFORE);
                 }
-            } else if(visitAfters != null) {
+            } else if (visitAfters != null) {
                 int loopLength = visitAfters.size();
                 if (reverseVisitOrderOnVisitAfter) {
                     for (int i = loopLength - 1; i >= 0; i--) {
@@ -745,7 +753,7 @@ public class SmooksDOMFilter extends Filter {
             // every time. Doing this for every element could be very
             // costly.
 
-            if(visitSequence == VisitSequence.BEFORE) {
+            if (visitSequence == VisitSequence.BEFORE) {
                 // Register the targeting event...
                 if (eventListener != null) {
                     eventListener.onEvent(new ResourceTargetingEvent(element, config, VisitSequence.BEFORE));
@@ -764,7 +772,7 @@ public class SmooksDOMFilter extends Filter {
                     String errorMsg = "Failed to apply processing unit [" + visitor.getClass().getName() + "] to [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
                     processVisitorException(element, e, configMap, VisitSequence.BEFORE, errorMsg);
                 }
-            } else if(visitSequence == VisitSequence.AFTER) {
+            } else if (visitSequence == VisitSequence.AFTER) {
                 // Register the targeting event...
                 if (eventListener != null) {
                     eventListener.onEvent(new ResourceTargetingEvent(element, config, VisitSequence.AFTER));
@@ -783,14 +791,14 @@ public class SmooksDOMFilter extends Filter {
                     String errorMsg = "Failed to apply processing unit [" + visitor.getClass().getName() + "] to [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
                     processVisitorException(element, e, configMap, VisitSequence.BEFORE, errorMsg);
                 }
-            } else if(visitSequence == VisitSequence.CLEAN) {
+            } else if (visitSequence == VisitSequence.CLEAN) {
                 // Register the targeting event...
                 if (eventListener != null) {
                     eventListener.onEvent(new ResourceTargetingEvent(element, config, VisitSequence.CLEAN));
                 }
 
                 ContentHandler contentHandler = configMap.getContentHandler();
-                if(contentHandler instanceof VisitLifecycleCleanable) {
+                if (contentHandler instanceof VisitLifecycleCleanable) {
                     VisitLifecycleCleanable visitor = (VisitLifecycleCleanable) contentHandler;
                     try {
                         if (logger.isDebugEnabled()) {
@@ -816,8 +824,8 @@ public class SmooksDOMFilter extends Filter {
 
         executionContext.setTerminationError(error);
 
-        if(terminateOnVisitorException) {
-            if(error instanceof SmooksException) {
+        if (terminateOnVisitorException) {
+            if (error instanceof SmooksException) {
                 throw (SmooksException) error;
             } else {
                 throw new SmooksException(errorMsg, error);

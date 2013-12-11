@@ -18,9 +18,9 @@ package org.milyn.templating.xslt;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.SmooksUtil;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.repository.BeanRepositoryManager;
@@ -150,7 +150,7 @@ public class XslContentHandlerFactoryTest extends TestCase {
             smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<doc/>")), null);
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Error loading Templating resource: Target Profile: [[org.milyn.profile.Profile#default_profile]], Selector: [#document], Selector Namespace URI: [null], Resource: [/org/milyn/templating/xslt/bad-stylesheet.xsl], Num Params: [0]", e.getCause().getMessage());
+            assertEquals("Error loading Templating resource: Target Profile: [[org.milyn.commons.profile.Profile#default_profile]], Selector: [#document], Selector Namespace URI: [null], Resource: [/org/milyn/templating/xslt/bad-stylesheet.xsl], Num Params: [0]", e.getCause().getMessage());
         }
     }
 }

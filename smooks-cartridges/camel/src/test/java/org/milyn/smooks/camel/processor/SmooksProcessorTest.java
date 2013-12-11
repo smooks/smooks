@@ -51,7 +51,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.milyn.delivery.Filter;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

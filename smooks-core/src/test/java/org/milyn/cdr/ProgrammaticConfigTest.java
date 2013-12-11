@@ -17,6 +17,7 @@ package org.milyn.cdr;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -40,7 +41,7 @@ public class ProgrammaticConfigTest extends TestCase {
         try {
             smooks.addVisitor(new ConfigurableVisitor());
             fail("Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Property 'stringParam' not configured on class org.milyn.cdr.ConfigurableVisitor'.", e.getMessage());
         }
     }

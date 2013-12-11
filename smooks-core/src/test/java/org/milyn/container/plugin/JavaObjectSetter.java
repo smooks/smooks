@@ -15,7 +15,7 @@
 */
 package org.milyn.container.plugin;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitBefore;
@@ -34,10 +34,10 @@ public class JavaObjectSetter implements SAXVisitBefore {
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         Result result = FilterResult.getResult(executionContext, JavaResult.class);
-        if(result != null) {
+        if (result != null) {
             Map beans = new HashMap();
-            
-            ((JavaResult)result).setResultMap(beans);
+
+            ((JavaResult) result).setResultMap(beans);
             beans.put("theBean", "Hi there!");
         }
     }

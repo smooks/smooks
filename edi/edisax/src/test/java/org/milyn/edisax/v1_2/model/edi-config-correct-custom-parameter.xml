@@ -8,7 +8,7 @@
     <medi:segments xmltag="un-edifact">
 
         <medi:segment segcode="SEG" xmltag="SEG">
-            <medi:field xmltag="aDate" type="Custom" typeParameters="org.milyn.javabean.decoders.DateDecoder;param1=value1" minLength="8" maxLength="8"/>
+            <medi:field xmltag="aDate" type="Custom" typeParameters="org.milyn.commons.javabean.decoders.DateDecoder;param1=value1" minLength="8" maxLength="8"/>
             <medi:field xmltag="fieldParent" required="true">
                 <medi:component xmltag="aBinary" required="true" minLength="0" maxLength="8"/>
                 <medi:component xmltag="componentParent" required="true">
