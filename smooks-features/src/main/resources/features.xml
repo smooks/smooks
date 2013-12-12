@@ -54,13 +54,36 @@
         <bundle>mvn:org.freemarker/freemarker/${freemarker.version}</bundle>
     </feature>
 
-    <feature name="smooks-cartridges" version="${project.version}" start-level="60" install="false">
 
+    <feature name="smooks-cartridges-all" version="${project.version}" start-level="60" install="false">
+        <feature version="${project.version}">smooks-cartridge-flatfile</feature>
+        <feature version="${project.version}">smooks-cartridge-javabean</feature>
+        <feature version="${project.version}">smooks-cartridge-csv</feature>
     </feature>
 
     <feature name="smooks-cartridge-javabean" version="${project.version}" install="false">
         <bundle>mvn:org.milyn/milyn-smooks-javabean/${project.version}</bundle>
+
+        <feature version="${project.version}">smooks-commons</feature>
+        <feature version="${project.version}">smooks-core</feature>
     </feature>
 
+    <feature name="smooks-cartridge-flatfile" version="${project.version}" install="false">
+        <bundle>mvn:org.milyn/milyn-smooks-flatfile/${project.version}</bundle>
+
+        <feature version="${project.version}">smooks-commons</feature>
+        <feature version="${project.version}">smooks-core</feature>
+    </feature>
+
+    <feature name="smooks-cartridge-csv" version="${project.version}" install="false">
+        <bundle>mvn:org.milyn/milyn-smooks-csv/${project.version}</bundle>
+
+        <feature version="${project.version}">smooks-commons</feature>
+        <feature version="${project.version}">smooks-core</feature>
+        <feature version="${project.version}">smooks-cartridge-javabean</feature>
+        <feature version="${project.version}">smooks-cartridge-flatfile</feature>
+        <!-- TODO: ow2-bundles-externals-opencsv is an OSGI wrapper - replace with osgified original -->
+        <bundle>mvn:org.ow2.bundles/ow2-bundles-externals-opencsv/${ow2.opencsv.version}</bundle>
+    </feature>
 
 </features>
