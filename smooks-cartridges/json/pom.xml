@@ -8,6 +8,7 @@
 	</parent>
     <name>Milyn Smooks Cartridge - JSON</name>
 	<artifactId>milyn-smooks-json</artifactId>
+    <packaging>bundle</packaging>
 
     <dependencies>
 		<dependency>

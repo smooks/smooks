@@ -7,7 +7,7 @@
 
     <resource-config selector="bindings">
         <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.BeanInstanceCreator</param>
+        <param name="resource">org.milyn.cartridge.javabean.BeanInstanceCreator</param>
     </resource-config>
 
     <resource-config selector="bindings">
@@ -51,7 +51,7 @@
     <resource-config selector="bindings/value">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
         <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.BeanInstancePopulator</param>
+        <param name="resource">org.milyn.cartridge.javabean.BeanInstancePopulator</param>
         <param name="unset">beanClass</param>
         <param name="unset">extendLifecycle</param>
     </resource-config>
@@ -90,11 +90,11 @@
     </resource-config>
 
     <resource-config selector="bindings/value">
-        <resource>org.milyn.javabean.ext.SelectorPropertyResolver</resource>
+        <resource>org.milyn.cartridge.javabean.ext.SelectorPropertyResolver</resource>
     </resource-config>
 
     <resource-config selector="bindings/value">
-        <resource>org.milyn.javabean.ext.DecodeParamResolver</resource>
+        <resource>org.milyn.cartridge.javabean.ext.DecodeParamResolver</resource>
     </resource-config>
 
     <!--
@@ -104,7 +104,7 @@
     <resource-config selector="bindings/wiring">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
         <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.BeanInstancePopulator</param>
+        <param name="resource">org.milyn.cartridge.javabean.BeanInstancePopulator</param>
         <param name="unset">beanClass</param>
     </resource-config>
 
@@ -143,7 +143,7 @@
     </resource-config>
 
     <resource-config selector="bindings/wiring">
-    	<resource>org.milyn.javabean.ext.WireOnElementChecker</resource>
+    	<resource>org.milyn.cartridge.javabean.ext.WireOnElementChecker</resource>
     </resource-config>
 
     <!--
@@ -153,7 +153,7 @@
     <resource-config selector="bindings/expression">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
         <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.BeanInstancePopulator</param>
+        <param name="resource">org.milyn.cartridge.javabean.BeanInstancePopulator</param>
         <param name="unset">beanClass</param>
         <param name="unset">extendLifecycle</param>
     </resource-config>
@@ -190,7 +190,7 @@
     -->
 
     <resource-config selector="bindings/*">
-        <resource>org.milyn.javabean.ext.PropertyChecker</resource>
+        <resource>org.milyn.cartridge.javabean.ext.PropertyChecker</resource>
     </resource-config>
 
 </smooks-resource-list>

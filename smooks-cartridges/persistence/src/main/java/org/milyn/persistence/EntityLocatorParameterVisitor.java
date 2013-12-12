@@ -40,7 +40,7 @@ import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
 import org.milyn.expression.MVELExpressionEvaluator;
-import org.milyn.javabean.BeanRuntimeInfo;
+import org.milyn.cartridge.javabean.BeanRuntimeInfo;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.javabean.repository.BeanId;

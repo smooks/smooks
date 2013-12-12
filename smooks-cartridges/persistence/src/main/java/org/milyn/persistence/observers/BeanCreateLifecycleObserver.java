@@ -16,8 +16,8 @@
 package org.milyn.persistence.observers;
 
 import org.milyn.container.ExecutionContext;
-import org.milyn.javabean.BeanRuntimeInfo;
-import org.milyn.javabean.BeanRuntimeInfo.Classification;
+import org.milyn.cartridge.javabean.BeanRuntimeInfo;
+import org.milyn.cartridge.javabean.BeanRuntimeInfo.Classification;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.javabean.lifecycle.BeanLifecycle;

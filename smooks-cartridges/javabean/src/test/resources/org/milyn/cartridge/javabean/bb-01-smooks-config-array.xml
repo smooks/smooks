@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+	<resource-config selector="root">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">root</param>
+        <param name="beanClass">org.milyn.cartridge.javabean.A[]</param>
+        <param name="bindings">
+        	<binding selector="${a}" />
+		</param>
+    </resource-config>
+
+    <resource-config selector="a">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">a</param>
+        <param name="beanClass">org.milyn.cartridge.javabean.A</param>
+        <param name="bindings">
+        	<binding property="bArray" selector="${bArray}" />
+		</param>
+    </resource-config>
+
+    <resource-config selector="a">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">bArray</param>
+        <param name="beanClass">org.milyn.cartridge.javabean.B[]</param>
+        <param name="bindings">
+            <binding selector="${b}" />
+        </param>
+    </resource-config>
+
+    <resource-config selector="b">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanClass">org.milyn.cartridge.javabean.B</param>
+        <param name="bindings">
+        	<binding property="a" selector="${a}" />
+        	<binding property="value" selector="b" />
+        </param>
+    </resource-config>
+
+</smooks-resource-list>

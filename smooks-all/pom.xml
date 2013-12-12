@@ -21,7 +21,8 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks All</name>
     <artifactId>milyn-smooks-all</artifactId>
@@ -182,18 +183,18 @@
             <optional>true</optional>
         </dependency>
 
-		<dependency>
-			<groupId>org.jboss.shrinkwrap</groupId>
-			<artifactId>shrinkwrap-api</artifactId>
-			<version>1.2.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.shrinkwrap</groupId>
-			<artifactId>shrinkwrap-impl-base</artifactId>
-			<version>1.2.0</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+            <version>1.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-impl-base</artifactId>
+            <version>1.2.0</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Readding core dependencies - DO NOT SCOPE AS "provided" -->
         <dependency>
@@ -303,58 +304,7 @@
     </dependencies>
 
     <build>
-        <!--<resources>-->
-            <!--<resource>-->
-                <!--<directory>src/main/resources</directory>-->
-                <!--<filtering>true</filtering>-->
-            <!--</resource>-->
-        <!--</resources>-->
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-dependency-plugin</artifactId>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>copy-dependencies</id>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-dependencies</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>src-dependencies</id>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-dependencies</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<classifier>sources</classifier>-->
-                            <!--<excludeTransitive>true</excludeTransitive>-->
-                            <!--<failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>-->
-                            <!--<outputDirectory>${project.build.directory}/sources</outputDirectory>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-            <!--<plugin>-->
-                <!--<artifactId>maven-antrun-plugin</artifactId>-->
-                <!--<version>1.6</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>package</phase>-->
-                        <!--<configuration>-->
-                            <!--<tasks>-->
-                                <!--<ant dir="./" antfile="merge-jars.xml">-->
-                                    <!--<property name="smooks.version" value="${project.version}"/>-->
-                                <!--</ant>-->
-                            <!--</tasks>-->
-                        <!--</configuration>-->
-                        <!--<goals>-->
-                            <!--<goal>run</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -369,38 +319,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <!--<configuration>-->
-                    <!--<instructions>-->
-                        <!--<Bundle-SymbolicName>org.milyn.smooks.osgi</Bundle-SymbolicName>-->
-                        <!--<Bundle-Name>Smooks OSGi - DX</Bundle-Name>-->
-                        <!--<Bundle-Version>${project.version}</Bundle-Version>-->
-                        <!--<Bundle-Activator>org.milyn.SmooksActivator</Bundle-Activator>-->
-                        <!--<Export-Package>-->
-                            <!--org.milyn.*;-split-package:=merge-first;version="${project.version}",-->
-                            <!--META-INF.xsd.smooks.*;-split-package:=merge-first,-->
-                            <!--!META-INF.services.*,-->
-                            <!--!META-INF.maven.*-->
-                        <!--</Export-Package>-->
-                        <!--<Import-Package>-->
-                            <!--org.w3c.dom.traversal,-->
-                            <!--org.osgi.framework,-->
-                            <!--org.jaxen.*;version="1.1.1",-->
-                            <!--org.apache.commons.*,-->
-                            <!--freemarker.*;version="${freemarker.version}",-->
-                            <!--groovy.xml;version="${groovy.version}",-->
-                            <!--groovy.xml.dom;version="${groovy.version}",-->
-                            <!--org.codehaus.groovy.*;version="${groovy.version}",-->
-                            <!--org.codehaus.groovy.runtime;version="${groovy.version}",-->
-                            <!--org.codehaus.groovy.runtime.typehandling;version="${groovy.version}",-->
-                            <!--javax.swing.tree,-->
-                            <!--!org.apache.commons.cli.*,-->
-                            <!--!META-INF.services.javax.xml.parsers.*,*;resolution:=optional-->
-                        <!--</Import-Package>-->
-                        <!--<Embed-Dependency>milyn*;scope=provided;type=!pom;inline=true</Embed-Dependency>-->
-                        <!--<_exportcontents>true</_exportcontents>-->
-                        <!--<_failok>true</_failok>-->
-                    <!--</instructions>-->
-                <!--</configuration>-->
             </plugin>
             <plugin>
                 <groupId>org.ops4j</groupId>

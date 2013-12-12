@@ -43,7 +43,7 @@ import org.milyn.flatfile.BindingType;
 import org.milyn.flatfile.FieldMetaData;
 import org.milyn.flatfile.RecordMetaData;
 import org.milyn.flatfile.RecordParserFactory;
-import org.milyn.javabean.Bean;
+import org.milyn.cartridge.javabean.Bean;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.commons.xml.XmlUtil;
 import org.w3c.dom.Element;

@@ -31,7 +31,7 @@ import org.milyn.container.MockApplicationContext;
 import org.milyn.container.MockExecutionContext;
 import org.milyn.delivery.Fragment;
 import org.milyn.io.AbstractOutputStreamResource;
-import org.milyn.javabean.Bean;
+import org.milyn.cartridge.javabean.Bean;
 import org.milyn.payload.StringSource;
 import org.milyn.templating.OutputTo;
 import org.milyn.templating.TemplatingConfiguration;

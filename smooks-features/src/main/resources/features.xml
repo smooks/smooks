@@ -3,39 +3,64 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
 
-    <feature name="smooks" version="${project.version}">
-        <feature>http</feature>
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr/${spring.antlr.version}_2</bundle>
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ant/1.7.0_6</bundle>
-        <bundle>mvn:org.freemarker/freemarker/${freemarker.version}</bundle>
-        <!-- Karaf comes with pax-logging and slf4j; the following logging jars should not be required -->
-        <!--<bundle>mvn:org.apache.commons/com.springsource.org.apache.commons.logging/${spring.commons.logging.version}</bundle>-->
-        <!--<bundle>mvn:org.apache.log4j/com.springsource.org.apache.log4j/${spring.log4j.version}</bundle>-->
+    <feature name="smooks-all" version="${project.version}" start-level="60" install="false">
+        <feature version="${project.version}">smooks-osgi</feature>
+
         <bundle>mvn:org.codehaus.groovy/com.springsource.org.codehaus.groovy/${groovy.version}</bundle>
-        <bundle>mvn:org.jaxen/com.springsource.org.jaxen/${jaxen.version}</bundle>
         <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm/${spring.objectweb.version}</bundle>
         <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree/${spring.objectweb.version}</bundle>
         <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree.analysis/${spring.objectweb.version}
         </bundle>
         <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.util/${spring.objectweb.version}</bundle>
-        <bundle>mvn:commons-lang/commons-lang/${commons_lang.version}</bundle>
+
         <bundle>mvn:org.ow2.bundles/ow2-bundles-externals-opencsv/${ow2.opencsv.version}</bundle>
 
-        <!-- milyn-smooks-all is the osgi dependency -->
+    </feature>
+
+    <feature name="smooks-osgi" version="${project.version}" start-level="60" install="false">
         <bundle>mvn:org.milyn/milyn-smooks-all/${project.version}</bundle>
 
-        <bundle>mvn:org.milyn/milyn-commons/${project.version}</bundle>
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.hsqldb/1.8.0.10_2</bundle>
-        <bundle>
-            mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/1.4.5_1
-        </bundle>
+        <feature version="${project.version}">smooks-commons</feature>
+        <feature version="${project.version}">smooks-core</feature>
+    </feature>
+
+    <feature name="smooks-core" version="${project.version}" start-level="60" install="false">
         <bundle>mvn:org.milyn/milyn-smooks-core/${project.version}</bundle>
+
+        <feature version="${project.version}">smooks-freemarker</feature>
+
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr/${spring.antlr.version}_2</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ant/1.7.0_6</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxen/1.1.4_2</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/1.4.5_1</bundle>
         <bundle>wrap:mvn:com.wutka/dtdparser/1.21</bundle>
         <bundle>mvn:org.mvel/mvel2/2.0.17</bundle>
-        <bundle>
-            mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javassist/3.12.1.GA_3
-        </bundle>
+
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javassist/3.12.1.GA_3</bundle>
+    </feature>
+
+    <feature name="smooks-commons" version="${project.version}" start-level="60" install="false">
+        <bundle>mvn:org.milyn/milyn-commons/${project.version}</bundle>
+
+        <feature>http</feature>
+        <feature version="${project.version}">smooks-freemarker</feature>
+
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javassist/3.12.1.GA_3</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.hsqldb/1.8.0.10_2</bundle>
+        <bundle>mvn:commons-lang/commons-lang/${commons_lang.version}</bundle>
+    </feature>
+
+    <feature name="smooks-freemarker" version="${project.version}" start-level="60" install="false">
+        <bundle>mvn:org.freemarker/freemarker/${freemarker.version}</bundle>
+    </feature>
+
+    <feature name="smooks-cartridges" version="${project.version}" start-level="60" install="false">
 
     </feature>
+
+    <feature name="smooks-cartridge-javabean" version="${project.version}" install="false">
+        <bundle>mvn:org.milyn/milyn-smooks-javabean/${project.version}</bundle>
+    </feature>
+
 
 </features>

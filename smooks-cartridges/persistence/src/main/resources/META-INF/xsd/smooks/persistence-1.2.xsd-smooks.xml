@@ -279,7 +279,7 @@
     </resource-config>
 
     <resource-config selector="locator/params/value">
-        <resource>org.milyn.javabean.ext.SelectorPropertyResolver</resource>
+        <resource>org.milyn.cartridge.javabean.ext.SelectorPropertyResolver</resource>
     </resource-config>
 
     <resource-config selector="locator/params/value">

@@ -18,7 +18,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.FileResource;
-import org.milyn.ResourceMerger;
+import org.milyn.osgi.ResourceMerger;
 import org.milyn.commons.archive.Archive;
 import org.milyn.commons.io.FileUtils;
 

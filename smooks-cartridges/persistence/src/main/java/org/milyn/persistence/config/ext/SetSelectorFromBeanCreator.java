@@ -25,7 +25,7 @@ import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.extension.ExtensionContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
-import org.milyn.javabean.BeanInstanceCreator;
+import org.milyn.cartridge.javabean.BeanInstanceCreator;
 import org.w3c.dom.Element;
 
 import java.util.List;

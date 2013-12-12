@@ -33,7 +33,7 @@ import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.commons.function.StringFunctionExecutor;
-import org.milyn.javabean.Bean;
+import org.milyn.cartridge.javabean.Bean;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.xml.SmooksXMLReader;
 import org.w3c.dom.Element;
