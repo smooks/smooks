@@ -15,15 +15,15 @@
 */
 package example;
 
-import org.milyn.delivery.dom.DOMElementVisitor;
-import org.milyn.container.ExecutionContext;
 import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.xml.DomUtils;
+import org.milyn.commons.xml.DomUtils;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.dom.DOMElementVisitor;
 import org.w3c.dom.Element;
 
 /**
  * Basic transformer that simply renames an element.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class BasicJavaTransformer implements DOMElementVisitor {

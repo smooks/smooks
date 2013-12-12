@@ -15,12 +15,12 @@
 */
 package org.milyn.cdr.xpath;
 
-import org.milyn.delivery.sax.SAXElementVisitor;
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXText;
-import org.milyn.delivery.dom.DOMElementVisitor;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
+import org.milyn.delivery.dom.DOMElementVisitor;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXElementVisitor;
+import org.milyn.delivery.sax.SAXText;
 import org.w3c.dom.Element;
 
 import java.io.IOException;

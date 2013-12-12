@@ -17,11 +17,19 @@ package org.milyn.delivery.java;
 
 import com.thoughtworks.xstream.io.xml.SaxWriter;
 import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.payload.JavaSource;
-import org.xml.sax.*;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,7 +47,7 @@ public class XStreamXMLReader implements JavaXMLReader {
     private boolean includeEnclosingDocument = true;
 
     private SaxWriter xstreamReader;
-    
+
     @Initialize
     public void intialize() {
         xstreamReader = new SaxWriter(includeEnclosingDocument);
@@ -64,7 +72,7 @@ public class XStreamXMLReader implements JavaXMLReader {
 
     public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
         // Need to ignore some features....
-        if(name.equals(JavaSource.FEATURE_GENERATE_EVENT_STREAM)) {
+        if (name.equals(JavaSource.FEATURE_GENERATE_EVENT_STREAM)) {
             return;
         }
         xstreamReader.setFeature(name, value);

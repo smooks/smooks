@@ -15,7 +15,7 @@
 */
 package org.milyn.expression;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * Expression evaluation exception.

@@ -16,7 +16,7 @@
 package org.milyn.delivery.lifecyclecleanup;
 
 import junit.framework.TestCase;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.ExecutionLifecycleCleanable;
 import org.milyn.delivery.sax.SAXElement;
@@ -32,7 +32,7 @@ public class SaxVisitAfter implements SAXVisitAfter, ExecutionLifecycleCleanable
     public static boolean cleaned;
 
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(cleaned) {
+        if (cleaned) {
             TestCase.fail("Resource shouldn't be clened yet!");
         }
     }

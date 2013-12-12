@@ -15,12 +15,11 @@
 */
 package org.milyn.db;
 
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.delivery.annotation.Initialize;
-import org.milyn.util.ClassUtil;
-import org.milyn.event.report.annotation.VisitBeforeReport;
 import org.milyn.event.report.annotation.VisitAfterReport;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.event.report.annotation.VisitBeforeReport;
 
 import java.sql.Connection;
 import java.sql.Driver;

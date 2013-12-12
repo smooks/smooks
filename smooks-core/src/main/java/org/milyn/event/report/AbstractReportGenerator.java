@@ -15,13 +15,14 @@
 */
 package org.milyn.event.report;
 
-import org.milyn.SmooksException;
-import org.milyn.payload.JavaResult;
-import org.milyn.payload.StringResult;
-import org.milyn.payload.FilterResult;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.delivery.*;
+import org.milyn.delivery.ContentDeliveryConfig;
+import org.milyn.delivery.ContentHandlerConfigMap;
+import org.milyn.delivery.Filter;
+import org.milyn.delivery.VisitSequence;
 import org.milyn.delivery.dom.DOMContentDeliveryConfig;
 import org.milyn.delivery.dom.serialize.DefaultSerializationUnit;
 import org.milyn.delivery.sax.SAXElement;
@@ -29,9 +30,19 @@ import org.milyn.event.BasicExecutionEventListener;
 import org.milyn.event.ElementProcessingEvent;
 import org.milyn.event.ExecutionEvent;
 import org.milyn.event.ResourceBasedEvent;
-import org.milyn.event.report.model.*;
-import org.milyn.event.types.*;
-import org.milyn.xml.DomUtils;
+import org.milyn.event.report.model.DOMReport;
+import org.milyn.event.report.model.MessageNode;
+import org.milyn.event.report.model.Report;
+import org.milyn.event.report.model.ReportInfoNode;
+import org.milyn.event.report.model.ResultNode;
+import org.milyn.event.types.ConfigBuilderEvent;
+import org.milyn.event.types.DOMFilterLifecycleEvent;
+import org.milyn.event.types.ElementPresentEvent;
+import org.milyn.event.types.ElementVisitEvent;
+import org.milyn.event.types.FilterLifecycleEvent;
+import org.milyn.payload.FilterResult;
+import org.milyn.payload.JavaResult;
+import org.milyn.payload.StringResult;
 import org.w3c.dom.Element;
 
 import javax.xml.transform.Result;
@@ -83,7 +94,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     public void onEvent(ExecutionEvent event) {
         AssertArgument.isNotNull(event, "event");
 
-        if(ignoreEvent(event)) {
+        if (ignoreEvent(event)) {
             // Don't capture this event...
             return;
         }
@@ -113,7 +124,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     }
 
     protected boolean ignoreEvent(ExecutionEvent event) {
-        if(!super.ignoreEvent(event)) {
+        if (!super.ignoreEvent(event)) {
             if (event instanceof ResourceBasedEvent) {
                 if (!reportConfiguration.showDefaultAppliedResources()) {
                     return ((ResourceBasedEvent) event).getResourceConfig().isDefaultResource();
@@ -136,7 +147,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
                     if (domEvent.getDOMEventType() == DOMFilterLifecycleEvent.DOMEventType.PROCESSING_STARTED) {
                         // Assembly phase is done... output assembly report just at the start of the
                         // processing phase...
-                        mapMessageNodeVists(((DOMReport)report).getAssemblies());
+                        mapMessageNodeVists(((DOMReport) report).getAssemblies());
                     } else if (domEvent.getDOMEventType() == DOMFilterLifecycleEvent.DOMEventType.SERIALIZATION_STARTED) {
                         // Processing phase is done (if it was)... output processing report just at the start of the
                         // serialization phase...
@@ -145,7 +156,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
                 } else if (event.getEventType() == FilterLifecycleEvent.EventType.STARTED) {
                     executionContext = Filter.getCurrentExecutionContext();
 
-                    if(deliveryConfig instanceof DOMContentDeliveryConfig) {
+                    if (deliveryConfig instanceof DOMContentDeliveryConfig) {
                         report = new DOMReport();
                     } else {
                         report = new Report();
@@ -162,11 +173,11 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     }
 
     private void processFinishEvent() throws IOException {
-        if(report instanceof DOMReport) {
-            if(report.getProcessings().isEmpty()) {
+        if (report instanceof DOMReport) {
+            if (report.getProcessings().isEmpty()) {
                 mapMessageNodeVists(report.getProcessings());
             } else {
-                mapMessageNodeVists(((DOMReport)report).getSerializations());
+                mapMessageNodeVists(((DOMReport) report).getSerializations());
             }
         } else {
             mapMessageNodeVists(report.getProcessings());
@@ -175,20 +186,20 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         List<ResultNode> resultNodes = new ArrayList<ResultNode>();
         Result[] results = FilterResult.getResults(executionContext);
         report.setResults(resultNodes);
-        if(results != null) {
-            for(Result result : results) {
-                if(result != null) {
-                	ResultNode resultNode = new ResultNode();
-	                resultNodes.add(resultNode);
-	                if(result instanceof JavaResult) {
-	                    resultNode.setSummary("This Smooks Filtering operation produced a JavaResult.  The following is an XML serialization of the JavaResult bean Map entries.");
-	                } else if(result instanceof StringResult) {
-	                    resultNode.setSummary("This Smooks Filtering operation produced the following StreamResult.");
-	                } else {
-	                    resultNode.setSummary("Cannot show Smooks Filtering Result.  Modify the code and use a '" + StringResult.class.getName() + "' Result in the call to the Smooks.filter() method.");
-	                }
+        if (results != null) {
+            for (Result result : results) {
+                if (result != null) {
+                    ResultNode resultNode = new ResultNode();
+                    resultNodes.add(resultNode);
+                    if (result instanceof JavaResult) {
+                        resultNode.setSummary("This Smooks Filtering operation produced a JavaResult.  The following is an XML serialization of the JavaResult bean Map entries.");
+                    } else if (result instanceof StringResult) {
+                        resultNode.setSummary("This Smooks Filtering operation produced the following StreamResult.");
+                    } else {
+                        resultNode.setSummary("Cannot show Smooks Filtering Result.  Modify the code and use a '" + StringResult.class.getName() + "' Result in the call to the Smooks.filter() method.");
+                    }
 
-                	resultNode.setDetail(result.toString());
+                    resultNode.setDetail(result.toString());
                 }
             }
         }
@@ -200,7 +211,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
             try {
                 writer.flush();
             } finally {
-                if(reportConfiguration.autoCloseWriter()) {
+                if (reportConfiguration.autoCloseWriter()) {
                     writer.close();
                 }
             }
@@ -326,10 +337,10 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         }
 
         public String getElementName() {
-            if(element instanceof SAXElement) {
-                return ((SAXElement)element).getName().getLocalPart();
+            if (element instanceof SAXElement) {
+                return ((SAXElement) element).getName().getLocalPart();
             } else {
-                return DomUtils.getName((Element)element);
+                return DomUtils.getName((Element) element);
             }
         }
 

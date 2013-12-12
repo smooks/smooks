@@ -23,8 +23,8 @@ import java.io.ByteArrayInputStream;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.xml.sax.SAXException;
-import org.milyn.io.StreamUtils;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.xml.XmlUtil;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

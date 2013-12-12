@@ -15,12 +15,15 @@
 */
 package org.milyn;
 
-import org.xml.sax.XMLReader;
-import org.milyn.delivery.AbstractParser;
-import org.milyn.ReaderConfigurator;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.delivery.AbstractParser;
+import org.xml.sax.XMLReader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Generic reader configurator.

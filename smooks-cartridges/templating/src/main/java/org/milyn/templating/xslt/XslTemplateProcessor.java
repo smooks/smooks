@@ -15,36 +15,47 @@
 */
 package org.milyn.templating.xslt;
 
-import org.milyn.event.report.annotation.VisitBeforeReport;
-import org.milyn.event.report.annotation.VisitAfterReport;
-import org.milyn.templating.AbstractTemplateProcessor;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.io.StreamUtils;
-import org.milyn.util.ClassUtil;
-import org.milyn.xml.XmlUtil;
-import org.milyn.xml.DomUtils;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.util.ClassUtil;
+import org.milyn.commons.xml.DomUtils;
+import org.milyn.commons.xml.XmlUtil;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
 import org.milyn.delivery.AbstractParser;
 import org.milyn.delivery.FilterBypass;
 import org.milyn.delivery.dom.serialize.GhostElementSerializationUnit;
 import org.milyn.delivery.ordering.Consumer;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+import org.milyn.event.report.annotation.VisitAfterReport;
+import org.milyn.event.report.annotation.VisitBeforeReport;
+import org.milyn.templating.AbstractTemplateProcessor;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -79,7 +90,7 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
      */
     @ConfigParam(defaultVal = "true")
     private boolean enableFilterBypass;
-    
+
     /**
      * Is the Smooks configuration, for which this visitor is a part, targeted at an XML message stream.
      * We know if it is by the XML reader configured (or not configured).
@@ -140,7 +151,7 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
     }
 
     public boolean consumes(Object object) {
-        if(xslString.indexOf(object.toString()) != -1) {
+        if (xslString.indexOf(object.toString()) != -1) {
             return true;
         }
 
@@ -164,7 +175,7 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
             throw new SmooksException("Error applying XSLT to node [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "]", e);
         }
 
-        if(getOutputStreamResource() != null || getAction() == Action.BIND_TO) {
+        if (getOutputStreamResource() != null || getAction() == Action.BIND_TO) {
             // For bindTo or streamTo actions, we need to serialize the content and supply is as a Text DOM node.
             // AbstractTemplateProcessor will look after the rest, by extracting the content from the
             // Text node and attaching it to the ExecutionContext...
@@ -176,7 +187,7 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
             NodeList children = ghostElement.getChildNodes();
 
             // Process the templating action, supplying the templating result...
-            if(children.getLength() == 1 && children.item(0).getNodeType() == Node.ELEMENT_NODE) {
+            if (children.getLength() == 1 && children.item(0).getNodeType() == Node.ELEMENT_NODE) {
                 processTemplateAction(element, children.item(0), executionContext);
             } else {
                 processTemplateAction(element, ghostElement, executionContext);
@@ -193,48 +204,48 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
             transformer.transform(new DOMSource(element), new DOMResult(transRes));
         }
     }
-    
-	public boolean bypass(ExecutionContext executionContext, Source source, Result result) throws SmooksException {
-		if(!enableFilterBypass) {
-			return false;
-		} 		
-		if(!isXMLTargetedConfiguration(executionContext)) {
-			return false;
-		}
-		if((source instanceof StreamSource || source instanceof DOMSource) && (result instanceof StreamResult || result instanceof DOMResult)) {
-	        try {
-				Transformer transformer = xslTemplate.newTransformer();
-				transformer.transform(source, result);
-				return true;
-			} catch (TransformerConfigurationException e) {
-				throw new SmooksException("Error applying XSLT.", e);
-			} catch (TransformerException e) {
-				throw new SmooksException("Error applying XSLT.", e);
-			}			
-		}
-				
-		return false;
-	}
 
-	private boolean isXMLTargetedConfiguration(ExecutionContext executionContext) {
-		if(isXMLTargetedConfiguration == null) {
-			synchronized (this) {				
-				if(isXMLTargetedConfiguration == null) {
-					SmooksResourceConfiguration readerConfiguration = AbstractParser.getSAXParserConfiguration(executionContext.getDeliveryConfig());
-					if(readerConfiguration != null) {
-						// We have an reader config, if the class is not configured, we assume 
-						// the expected Source to be XML...
-						isXMLTargetedConfiguration = (readerConfiguration.getResource() == null);
-					} else {
-						// If no reader config is present at all, we assume the expected Source is XML...
-						isXMLTargetedConfiguration = true;
-					}
-				}
-			}
-		}
-		
-		return isXMLTargetedConfiguration;
-	}
+    public boolean bypass(ExecutionContext executionContext, Source source, Result result) throws SmooksException {
+        if (!enableFilterBypass) {
+            return false;
+        }
+        if (!isXMLTargetedConfiguration(executionContext)) {
+            return false;
+        }
+        if ((source instanceof StreamSource || source instanceof DOMSource) && (result instanceof StreamResult || result instanceof DOMResult)) {
+            try {
+                Transformer transformer = xslTemplate.newTransformer();
+                transformer.transform(source, result);
+                return true;
+            } catch (TransformerConfigurationException e) {
+                throw new SmooksException("Error applying XSLT.", e);
+            } catch (TransformerException e) {
+                throw new SmooksException("Error applying XSLT.", e);
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isXMLTargetedConfiguration(ExecutionContext executionContext) {
+        if (isXMLTargetedConfiguration == null) {
+            synchronized (this) {
+                if (isXMLTargetedConfiguration == null) {
+                    SmooksResourceConfiguration readerConfiguration = AbstractParser.getSAXParserConfiguration(executionContext.getDeliveryConfig());
+                    if (readerConfiguration != null) {
+                        // We have an reader config, if the class is not configured, we assume
+                        // the expected Source to be XML...
+                        isXMLTargetedConfiguration = (readerConfiguration.getResource() == null);
+                    } else {
+                        // If no reader config is present at all, we assume the expected Source is XML...
+                        isXMLTargetedConfiguration = true;
+                    }
+                }
+            }
+        }
+
+        return isXMLTargetedConfiguration;
+    }
 
     private static class XslErrorListener implements ErrorListener {
         private final boolean failOnWarning;
@@ -244,7 +255,7 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
         }
 
         public void warning(TransformerException exception) throws TransformerException {
-            if(failOnWarning) {
+            if (failOnWarning) {
                 throw exception;
             } else {
                 logger.debug("XSL Warning.", exception);
@@ -264,23 +275,19 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
      * Simple ErrorHandler that only reports errors, fatals, and warnings
      * at a debug log level.
      * <p/>
-     * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
      *
+     * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
      */
-    private static class DomErrorHandler implements ErrorHandler
-    {
-        public void error(final SAXParseException exception) throws SAXException
-        {
+    private static class DomErrorHandler implements ErrorHandler {
+        public void error(final SAXParseException exception) throws SAXException {
             logger.debug("SaxParseException error was reported : ", exception);
         }
 
-        public void fatalError(final SAXParseException exception) throws SAXException
-        {
+        public void fatalError(final SAXParseException exception) throws SAXException {
             logger.debug("SaxParseException fatal error was reported : ", exception);
         }
 
-        public void warning(final SAXParseException exception) throws SAXException
-        {
+        public void warning(final SAXParseException exception) throws SAXException {
             logger.debug("SaxParseException warning error was reported : ", exception);
         }
     }

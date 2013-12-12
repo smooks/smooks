@@ -15,41 +15,40 @@
 */
 package org.milyn.delivery.sax;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class MockVisitBefore implements SAXVisitBefore, DOMVisitBefore {
 
-	private List<String> elements = new ArrayList<String>();
-	
-	/* (non-Javadoc)
-	 * @see org.milyn.delivery.sax.SAXVisitBefore#visitBefore(org.milyn.delivery.sax.SAXElement, org.milyn.container.ExecutionContext)
-	 */
-	public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-		elements.add(element.getName().getLocalPart());
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.milyn.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.milyn.container.ExecutionContext)
-	 */
-	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-		elements.add(element.getLocalName());
-	}
+    private List<String> elements = new ArrayList<String>();
 
-	/**
-	 * @return the elements
-	 */
-	public List<String> getElements() {
-		return elements;
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.delivery.sax.SAXVisitBefore#visitBefore(org.milyn.delivery.sax.SAXElement, org.milyn.container.ExecutionContext)
+     */
+    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        elements.add(element.getName().getLocalPart());
+    }
+
+    /* (non-Javadoc)
+     * @see org.milyn.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.milyn.container.ExecutionContext)
+     */
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+        elements.add(element.getLocalName());
+    }
+
+    /**
+     * @return the elements
+     */
+    public List<String> getElements() {
+        return elements;
+    }
 }

@@ -15,19 +15,19 @@
 */
 package org.milyn.visitors.set;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.Parameter;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Config;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.util.FreeMarkerTemplate;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Filter;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.sax.DefaultSAXElementSerializer;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.util.FreeMarkerTemplate;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
@@ -40,6 +40,7 @@ import java.util.Set;
 
 /**
  * Set Element Data visitor.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class SetElementData extends DefaultSAXElementSerializer implements DOMVisitAfter {
@@ -57,32 +58,32 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
 
     @Initialize
     public void init() {
-        if(elementQName != null) {
+        if (elementQName != null) {
             int nsPrefixIdx = elementQName.indexOf(":");
-            if(nsPrefixIdx != -1) {
+            if (nsPrefixIdx != -1) {
                 elementNamespacePrefix = elementQName.substring(0, nsPrefixIdx);
                 elementName = elementQName.substring(nsPrefixIdx + 1);
 
-                if(elementNamespacePrefix.equals(XMLConstants.XMLNS_ATTRIBUTE) && elementNamespace == null) {
+                if (elementNamespacePrefix.equals(XMLConstants.XMLNS_ATTRIBUTE) && elementNamespace == null) {
                     elementNamespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
                 }
             } else {
                 elementName = elementQName;
 
-                if(elementName.equals(XMLConstants.XMLNS_ATTRIBUTE) && elementNamespace == null) {
+                if (elementName.equals(XMLConstants.XMLNS_ATTRIBUTE) && elementNamespace == null) {
                     elementNamespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
                 }
             }
         }
 
         List<Parameter> attributeDataParams = resourceConfig.getParameters(ATTRIBUTE_DATA);
-        if(attributeDataParams != null && !attributeDataParams.isEmpty()) {
+        if (attributeDataParams != null && !attributeDataParams.isEmpty()) {
             extractAttributeData(attributeDataParams);
         }
     }
 
     private void extractAttributeData(List<Parameter> attributeDataParams) {
-        for(Parameter attributeDataParam : attributeDataParams) {
+        for (Parameter attributeDataParam : attributeDataParams) {
             Element attributeElement = attributeDataParam.getXml();
             String name = attributeElement.getAttribute("name");
             String namespace = attributeElement.getAttribute("namespace");
@@ -90,15 +91,15 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
             int prefixTokIdx = name.indexOf(':');
             QName qName;
 
-            if(prefixTokIdx != -1) {
+            if (prefixTokIdx != -1) {
                 String prefix = name.substring(0, prefixTokIdx);
 
-                if(prefix.equals(XMLConstants.XMLNS_ATTRIBUTE) && (namespace.equals(""))) {
+                if (prefix.equals(XMLConstants.XMLNS_ATTRIBUTE) && (namespace.equals(""))) {
                     namespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
                 }
                 qName = new QName(namespace, name.substring(prefixTokIdx + 1), prefix);
             } else {
-                if(name.equals(XMLConstants.XMLNS_ATTRIBUTE) && (namespace.equals(""))) {
+                if (name.equals(XMLConstants.XMLNS_ATTRIBUTE) && (namespace.equals(""))) {
                     namespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
                 }
                 qName = new QName(namespace, name);
@@ -108,13 +109,13 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
         }
     }
 
-    @ConfigParam (name = "name", use = ConfigParam.Use.OPTIONAL)
+    @ConfigParam(name = "name", use = ConfigParam.Use.OPTIONAL)
     public SetElementData setElementName(String elementQName) {
         this.elementQName = elementQName;
         return this;
     }
 
-    @ConfigParam (name = "namespace", use = ConfigParam.Use.OPTIONAL)
+    @ConfigParam(name = "namespace", use = ConfigParam.Use.OPTIONAL)
     public SetElementData setElementNamespace(String namespace) {
         this.elementNamespace = namespace;
         return this;
@@ -142,11 +143,11 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     private SAXElement reconstructElement(SAXElement element) {
         QName qName = element.getName();
 
-        if(elementQName != null || elementNamespace != null) {
+        if (elementQName != null || elementNamespace != null) {
             // Need to create a new QName for the element...
-            String newElementName = (elementName != null? elementName : qName.getLocalPart());
-            String newElementNamespace = (elementNamespace != null? elementNamespace : qName.getNamespaceURI());
-            String newElementNamespacePrefix = (elementNamespacePrefix != null? elementNamespacePrefix : qName.getPrefix());
+            String newElementName = (elementName != null ? elementName : qName.getLocalPart());
+            String newElementNamespace = (elementNamespace != null ? elementNamespace : qName.getNamespaceURI());
+            String newElementNamespacePrefix = (elementNamespacePrefix != null ? elementNamespacePrefix : qName.getPrefix());
 
             qName = new QName(newElementNamespace, newElementName, newElementNamespacePrefix);
         }
@@ -154,18 +155,18 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
         SAXElement newElement = new SAXElement(qName, element.getAttributes(), element.getParent());
         newElement.setWriter(element.getWriter(this), this);
 
-        if(!attributes.isEmpty()) {
+        if (!attributes.isEmpty()) {
             Map<String, Object> beans = Filter.getCurrentExecutionContext().getBeanContext().getBeanMap();
             Set<Map.Entry<QName, FreeMarkerTemplate>> attributeSet = attributes.entrySet();
 
-            for(Map.Entry<QName, FreeMarkerTemplate> attributeConfig : attributeSet) {
+            for (Map.Entry<QName, FreeMarkerTemplate> attributeConfig : attributeSet) {
                 QName attribName = attributeConfig.getKey();
                 FreeMarkerTemplate valueTemplate = attributeConfig.getValue();
                 String namespaceURI = attribName.getNamespaceURI();
 
-                if(namespaceURI != null) {
+                if (namespaceURI != null) {
                     String prefix = attribName.getPrefix();
-                    if(prefix != null && prefix.length() > 0) {
+                    if (prefix != null && prefix.length() > 0) {
                         newElement.setAttributeNS(namespaceURI, prefix + ":" + attribName.getLocalPart(), valueTemplate.apply(beans));
                     } else {
                         newElement.setAttributeNS(namespaceURI, attribName.getLocalPart(), valueTemplate.apply(beans));
@@ -180,25 +181,25 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     }
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(elementQName != null || elementNamespace != null) {
-            String newElementName = (elementQName != null? elementQName : element.getTagName());
-            String newElementNamespace = (elementNamespace != null? elementNamespace : element.getNamespaceURI());
+        if (elementQName != null || elementNamespace != null) {
+            String newElementName = (elementQName != null ? elementQName : element.getTagName());
+            String newElementNamespace = (elementNamespace != null ? elementNamespace : element.getNamespaceURI());
 
             element = DomUtils.renameElementNS(element, newElementName, newElementNamespace, true, true);
         }
 
-        if(!attributes.isEmpty()) {
+        if (!attributes.isEmpty()) {
             Map<String, Object> beans = Filter.getCurrentExecutionContext().getBeanContext().getBeanMap();
             Set<Map.Entry<QName, FreeMarkerTemplate>> attributeSet = attributes.entrySet();
 
-            for(Map.Entry<QName, FreeMarkerTemplate> attributeConfig : attributeSet) {
+            for (Map.Entry<QName, FreeMarkerTemplate> attributeConfig : attributeSet) {
                 QName attribName = attributeConfig.getKey();
                 FreeMarkerTemplate valueTemplate = attributeConfig.getValue();
                 String namespaceURI = attribName.getNamespaceURI();
 
-                if(namespaceURI != null) {
+                if (namespaceURI != null) {
                     String prefix = attribName.getPrefix();
-                    if(prefix != null && prefix.length() > 0) {
+                    if (prefix != null && prefix.length() > 0) {
                         element.setAttributeNS(namespaceURI, prefix + ":" + attribName.getLocalPart(), valueTemplate.apply(beans));
                     } else {
                         element.setAttributeNS(namespaceURI, attribName.getLocalPart(), valueTemplate.apply(beans));

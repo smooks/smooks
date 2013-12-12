@@ -15,9 +15,8 @@
 */
 package org.milyn.cdr.xpath.evaluators;
 
-import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
-import org.milyn.delivery.sax.SAXElement;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.sax.SAXElement;
 import org.w3c.dom.Element;
 
 /**

@@ -16,30 +16,26 @@
 
 package org.milyn.templating.stringtemplate;
 
-import java.util.Map;
-
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.Configurator;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.ContentHandlerFactory;
-import org.milyn.delivery.ordering.Consumer;
 import org.milyn.delivery.annotation.Resource;
-import org.milyn.delivery.dom.serialize.ContextObjectSerializationUnit;
 import org.milyn.delivery.dom.serialize.TextSerializationUnit;
+import org.milyn.delivery.ordering.Consumer;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.templating.AbstractTemplateProcessor;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.util.Map;
 
 /**
  * StringTemplate {@link org.milyn.delivery.dom.DOMElementVisitor} Creator class.
@@ -49,11 +45,11 @@ import org.w3c.dom.Node;
  * <p/>
  * This templating solution relies on the <a href="http://milyn.codehaus.org/downloads">Smooks JavaBean Cartridge</a>
  * to perform the JavaBean population that's required by <a href="http://www.stringtemplate.org/">StringTemplate</a>.
- *
+ * <p/>
  * <h2>Targeting ".st" Files for Transformation</h2>
  * <pre>
  * &lt;resource-config selector="<i>target-element</i>"&gt;
- *     &lt;!-- See {@link org.milyn.resource.URIResourceLocator} --&gt;
+ *     &lt;!-- See {@link org.milyn.commons.resource.URIResourceLocator} --&gt;
  *     &lt;resource&gt;<b>/com/acme/AcmeStringTemplate.st</b>&lt;/resource&gt;
  *
  *     &lt;!-- (Optional) The action to be applied on the template content. Should the content
@@ -87,47 +83,49 @@ import org.w3c.dom.Node;
  *
  * @author tfennelly
  */
-@Resource(type="st")
+@Resource(type = "st")
 public class StringTemplateContentHandlerFactory implements ContentHandlerFactory {
 
-	@AppContext
-	private ApplicationContext applicationContext;
+    @AppContext
+    private ApplicationContext applicationContext;
 
-	/**
-	 * Create a StringTemplate based ContentHandler.
+    /**
+     * Create a StringTemplate based ContentHandler.
+     *
      * @param resourceConfig The SmooksResourceConfiguration for the StringTemplate.
      * @return The StringTemplate {@link org.milyn.delivery.ContentHandler} instance.
-	 */
-	public synchronized ContentHandler create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
+     */
+    public synchronized ContentHandler create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
         try {
             return Configurator.configure(new StringTemplateTemplateProcessor(), resourceConfig, applicationContext);
         } catch (SmooksConfigurationException e) {
             throw e;
         } catch (Exception e) {
-			InstantiationException instanceException = new InstantiationException("StringTemplate ProcessingUnit resource [" + resourceConfig.getResource() + "] not loadable.  StringTemplate resource invalid.");
-			instanceException.initCause(e);
-			throw instanceException;
-		}
-	}
+            InstantiationException instanceException = new InstantiationException("StringTemplate ProcessingUnit resource [" + resourceConfig.getResource() + "] not loadable.  StringTemplate resource invalid.");
+            instanceException.initCause(e);
+            throw instanceException;
+        }
+    }
 
-	/**
-	 * StringTemplate template application ProcessingUnit.
-	 * @author tfennelly
-	 */
+    /**
+     * StringTemplate template application ProcessingUnit.
+     *
+     * @author tfennelly
+     */
     @VisitBeforeReport(condition = "false")
     @VisitAfterReport(summary = "Applied StringTemplate Template.", detailTemplate = "reporting/StringTemplateTemplateProcessor_After.html")
-	private static class StringTemplateTemplateProcessor extends AbstractTemplateProcessor implements Consumer {
+    private static class StringTemplateTemplateProcessor extends AbstractTemplateProcessor implements Consumer {
 
         private StringTemplate template;
 
         @Override
-		protected void loadTemplate(SmooksResourceConfiguration config) {
+        protected void loadTemplate(SmooksResourceConfiguration config) {
             String path = config.getResource();
 
-            if(path.charAt(0) == '/') {
+            if (path.charAt(0) == '/') {
                 path = path.substring(1);
             }
-            if(path.endsWith(".st")) {
+            if (path.endsWith(".st")) {
                 path = path.substring(0, path.length() - 3);
             }
 
@@ -137,7 +135,7 @@ public class StringTemplateContentHandlerFactory implements ContentHandlerFactor
         }
 
         @Override
-		protected void visit(Element element, ExecutionContext executionContext) {
+        protected void visit(Element element, ExecutionContext executionContext) {
             // First thing we do is clone the template for this transformation...
             StringTemplate thisTransTemplate = template.getInstanceOf();
             Map<String, Object> beans = executionContext.getBeanContext().getBeanMap();
@@ -155,7 +153,7 @@ public class StringTemplateContentHandlerFactory implements ContentHandlerFactor
         }
 
         public boolean consumes(Object object) {
-            if(template.getTemplate().indexOf(object.toString()) != -1) {
+            if (template.getTemplate().indexOf(object.toString()) != -1) {
                 return true;
             }
 

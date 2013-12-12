@@ -17,7 +17,7 @@
 package org.milyn.cdres.assemble;
 
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.Phase;
 import org.milyn.delivery.dom.VisitPhase;

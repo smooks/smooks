@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2011
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd">
+
+    <core:filterSettings type="DOM" />
+
+    <core:namespaces>
+        <core:namespace prefix="ord" uri="http://order"/>
+        <core:namespace prefix="ordi" uri="http://orderItem"/>
+    </core:namespaces>
+
+    <jb:bean beanId="orderItem" class="org.milyn.cartridge.javabean.binding.ordermodel.OrderItem" createOnElement="/ordi:order-item">
+        <jb:value property="productId" data="#/ordi:product" />
+        <jb:value property="quantity" data="#/ordi:quantity" />
+        <jb:value property="price" data="#/ordi:price" />
+    </jb:bean>
+
+</smooks-resource-list>

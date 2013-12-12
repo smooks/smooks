@@ -30,7 +30,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.persistence.test.dao.FullInterfaceDao;

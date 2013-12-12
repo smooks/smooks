@@ -5,38 +5,42 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>smooks-cartridge-base-pom</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks Cartridge - Fixed Length Reader</name>
     <artifactId>milyn-smooks-fixed-length</artifactId>
+    <packaging>bundle</packaging>
 
-	<description>A Smooks cartridge that can read fixed length files. The code of this cartridge was donated by Cedric Rathgeb.</description>
+    <description>A Smooks cartridge that can read fixed length files. The code of this cartridge was donated by Cedric
+        Rathgeb.
+    </description>
 
-	<developers>
-		<developer>
-			<name>Cedric Rathgeb</name>
+    <developers>
+        <developer>
+            <name>Cedric Rathgeb</name>
             <roles>
                 <role>Contribution</role>
             </roles>
-		</developer>
-	</developers>
+        </developer>
+    </developers>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-javabean</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-javabean</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-		<!-- testng -->
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>5.7</version>
-			<scope>test</scope>
-			<classifier>jdk15</classifier>
-		</dependency>
-	</dependencies>
+        <!-- testng -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.7</version>
+            <scope>test</scope>
+            <classifier>jdk15</classifier>
+        </dependency>
+    </dependencies>
 
 
 </project>

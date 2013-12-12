@@ -15,40 +15,39 @@
 */
 package org.milyn.scribe.reflection;
 
+import org.milyn.commons.assertion.AssertArgument;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.milyn.assertion.AssertArgument;
-
 /**
  * @author maurice
- *
  */
 public class FlushMethod {
 
-	final Method method;
+    final Method method;
 
-	/**
-	 *
-	 */
-	public FlushMethod(final Method method) {
-		AssertArgument.isNotNull(method, "method");
+    /**
+     *
+     */
+    public FlushMethod(final Method method) {
+        AssertArgument.isNotNull(method, "method");
 
-		this.method = method;
-	}
+        this.method = method;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.scribe.method.DAOMethod#invoke()
-	 */
-	public void invoke(final Object obj){
-		try {
-			method.invoke(obj);
-		} catch (final IllegalArgumentException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
-		} catch (final InvocationTargetException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
-		}
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.scribe.method.DAOMethod#invoke()
+     */
+    public void invoke(final Object obj) {
+        try {
+            method.invoke(obj);
+        } catch (final IllegalArgumentException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
+        } catch (final IllegalAccessException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
+        } catch (final InvocationTargetException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
+        }
+    }
 }

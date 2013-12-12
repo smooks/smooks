@@ -16,8 +16,8 @@
 package org.milyn.edisax;
 
 import junit.framework.TestCase;
-import org.milyn.io.StreamUtils;
-import org.milyn.resource.URIResourceLocator;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.resource.URIResourceLocator;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

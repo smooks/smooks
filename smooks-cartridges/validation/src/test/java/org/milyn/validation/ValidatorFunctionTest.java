@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.Test;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
 import org.milyn.rules.RuleEvalResult;

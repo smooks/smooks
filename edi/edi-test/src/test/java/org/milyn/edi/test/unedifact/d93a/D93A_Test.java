@@ -18,7 +18,7 @@ package org.milyn.edi.test.unedifact.d93a;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.milyn.edi.test.EdifactDirTestHarness;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.payload.JavaResult;
 import org.xml.sax.SAXException;
 

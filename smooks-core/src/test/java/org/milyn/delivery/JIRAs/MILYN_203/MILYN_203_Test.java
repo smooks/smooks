@@ -17,7 +17,7 @@ package org.milyn.delivery.JIRAs.MILYN_203;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.payload.StringResult;
 import org.xml.sax.SAXException;
 

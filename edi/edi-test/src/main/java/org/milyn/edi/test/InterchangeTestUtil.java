@@ -18,7 +18,7 @@ package org.milyn.edi.test;
 
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchange;
 import org.milyn.smooks.edi.unedifact.model.UNEdifactInterchangeFactory;
 import org.milyn.smooks.edi.unedifact.model.r41.UNB41;

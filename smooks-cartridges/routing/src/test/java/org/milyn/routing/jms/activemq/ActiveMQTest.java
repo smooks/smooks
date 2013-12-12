@@ -24,7 +24,7 @@ import org.milyn.FilterSettings;
 import org.milyn.templating.freemarker.FreeMarkerTemplateProcessor;
 import org.milyn.templating.TemplatingConfiguration;
 import org.milyn.templating.BindTo;
-import org.milyn.javabean.Bean;
+import org.milyn.cartridge.javabean.Bean;
 import org.milyn.payload.StringSource;
 import org.milyn.routing.jms.TestJMSMessageListener;
 import org.milyn.routing.jms.JMSRouter;

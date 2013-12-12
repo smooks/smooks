@@ -28,7 +28,7 @@ import org.milyn.edisax.interchange.InterchangeContext;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 import org.milyn.edisax.registry.DefaultMappingsRegistry;
-import org.milyn.namespace.NamespaceDeclarationStack;
+import org.milyn.commons.namespace.NamespaceDeclarationStack;
 import org.milyn.xml.SmooksXMLReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

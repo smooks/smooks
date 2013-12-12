@@ -15,8 +15,8 @@
 */
 package org.milyn.visitors.remove;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMVisitAfter;
@@ -29,6 +29,7 @@ import java.io.IOException;
 
 /**
  * Remove attribute.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
@@ -40,18 +41,18 @@ public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
     @Initialize
     public void init() {
         int prefixQualifier = qName.indexOf(':');
-        if(prefixQualifier != -1) {
+        if (prefixQualifier != -1) {
             localPart = qName.substring(prefixQualifier + 1);
 
             // Default the namespace to xmlns if undefined and the prefix is "xmlns"...
-            if(namespace == null && qName.substring(0, prefixQualifier).equals(XMLConstants.XMLNS_ATTRIBUTE)) {
+            if (namespace == null && qName.substring(0, prefixQualifier).equals(XMLConstants.XMLNS_ATTRIBUTE)) {
                 namespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
             }
         } else {
             localPart = qName;
 
             // Default the namespace to xmlns if undefined and the localPart is "xmlns"...
-            if(namespace == null && localPart.equals(XMLConstants.XMLNS_ATTRIBUTE)) {
+            if (namespace == null && localPart.equals(XMLConstants.XMLNS_ATTRIBUTE)) {
                 namespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
             }
         }
@@ -63,14 +64,14 @@ public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
         return this;
     }
 
-    @ConfigParam (use = ConfigParam.Use.OPTIONAL)
+    @ConfigParam(use = ConfigParam.Use.OPTIONAL)
     public RemoveAttribute setNamespace(String attributeNamespace) {
         this.namespace = attributeNamespace;
         return this;
     }
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(namespace != null) {
+        if (namespace != null) {
             element.removeAttributeNS(namespace, qName);
         } else {
             element.removeAttribute(qName);
@@ -78,7 +79,7 @@ public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
     }
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(namespace != null) {
+        if (namespace != null) {
             element.removeAttributeNS(namespace, localPart);
         } else {
             element.removeAttribute(localPart);

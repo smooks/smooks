@@ -24,9 +24,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksResourceConfigurationFactory;
 import org.milyn.cdr.annotation.AppContext;
@@ -50,8 +50,8 @@ import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.javabean.decoders.MVELExpressionEvaluatorDecoder;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.util.CollectionsUtil;
-import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.commons.util.CollectionsUtil;
+import org.milyn.commons.util.FreeMarkerTemplate;
 import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;

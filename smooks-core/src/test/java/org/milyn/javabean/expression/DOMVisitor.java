@@ -15,9 +15,9 @@
 */
 package org.milyn.javabean.expression;
 
-import org.milyn.delivery.dom.DOMElementVisitor;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
+import org.milyn.delivery.dom.DOMElementVisitor;
 import org.w3c.dom.Element;
 
 /**

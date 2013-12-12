@@ -22,7 +22,7 @@ import javax.xml.transform.Source;
 
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.dom.DOMVisitBefore;

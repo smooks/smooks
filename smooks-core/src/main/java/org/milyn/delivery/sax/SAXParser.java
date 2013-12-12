@@ -15,22 +15,21 @@
 */
 package org.milyn.delivery.sax;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.Charset;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-
+import org.milyn.commons.namespace.NamespaceDeclarationStack;
+import org.milyn.commons.xml.hierarchy.HierarchyChangeReader;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.AbstractParser;
 import org.milyn.delivery.ContentDeliveryConfig;
 import org.milyn.delivery.XMLReaderHierarchyChangeListener;
-import org.milyn.namespace.NamespaceDeclarationStack;
 import org.milyn.xml.NamespaceMappings;
-import org.milyn.xml.hierarchy.HierarchyChangeReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.Charset;
 
 /**
  * Smooks SAX data stream parser.
@@ -55,10 +54,10 @@ public class SAXParser extends AbstractParser {
         saxHandler = new SAXHandler(getExecContext(), writer);
 
         try {
-            if(saxReader == null) {
+            if (saxReader == null) {
                 saxReader = deliveryConfig.getXMLReader();
             }
-            if(saxReader == null) {
+            if (saxReader == null) {
                 saxReader = createXMLReader();
             }
 
@@ -69,22 +68,22 @@ public class SAXParser extends AbstractParser {
             attachXMLReader(saxReader, executionContext);
 
             configureReader(saxReader, saxHandler, executionContext, source);
-            if(executionContext != null) {
-                if(saxReader instanceof HierarchyChangeReader) {
-                    ((HierarchyChangeReader)saxReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
+            if (executionContext != null) {
+                if (saxReader instanceof HierarchyChangeReader) {
+                    ((HierarchyChangeReader) saxReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
                 }
-	            saxReader.parse(createInputSource(source, executionContext.getContentEncoding()));
+                saxReader.parse(createInputSource(source, executionContext.getContentEncoding()));
             } else {
                 saxReader.parse(createInputSource(source, Charset.defaultCharset().name()));
             }
         } finally {
             try {
-                if(executionContext != null && saxReader instanceof HierarchyChangeReader) {
-                    ((HierarchyChangeReader)saxReader).setHierarchyChangeListener(null);
+                if (executionContext != null && saxReader instanceof HierarchyChangeReader) {
+                    ((HierarchyChangeReader) saxReader).setHierarchyChangeListener(null);
                 }
             } finally {
                 try {
-                    if(saxReader != null) {
+                    if (saxReader != null) {
                         try {
                             detachXMLReader(executionContext);
                         } finally {
@@ -96,12 +95,12 @@ public class SAXParser extends AbstractParser {
                 }
             }
         }
-        
+
         return writer;
     }
 
     public void cleanup() {
-        if(saxHandler != null) {
+        if (saxHandler != null) {
             saxHandler.cleanup();
         }
     }

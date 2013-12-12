@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.EDIConfigurationException;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.InputStream;

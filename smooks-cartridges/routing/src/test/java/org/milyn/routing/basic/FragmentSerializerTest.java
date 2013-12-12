@@ -21,7 +21,7 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.sax.SAXElement;

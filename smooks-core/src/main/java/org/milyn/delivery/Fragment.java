@@ -16,9 +16,7 @@
 
 package org.milyn.delivery;
 
-import org.milyn.assertion.AssertArgument;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 

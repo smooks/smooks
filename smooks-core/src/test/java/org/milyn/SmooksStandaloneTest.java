@@ -16,30 +16,28 @@
 
 package org.milyn;
 
+import junit.framework.TestCase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.profile.DefaultProfileSet;
+import org.milyn.commons.xml.XmlUtil;
+import org.milyn.container.ExecutionContext;
+import org.milyn.container.standalone.PreconfiguredSmooks;
+import org.milyn.util.DomUtil;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.container.ExecutionContext;
-import org.milyn.container.standalone.PreconfiguredSmooks;
-import org.milyn.profile.DefaultProfileSet;
-import org.milyn.util.DomUtil;
-import org.milyn.xml.XmlUtil;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 public class SmooksStandaloneTest extends TestCase {
-	
-	Log log = LogFactory.getLog( SmooksStandaloneTest.class );
-	
+
+    Log log = LogFactory.getLog(SmooksStandaloneTest.class);
+
     public void testProcess() {
         Smooks smooks = null;
         try {
@@ -108,5 +106,5 @@ public class SmooksStandaloneTest extends TestCase {
 
         assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", writer.toString());
     }
-    
+
 }

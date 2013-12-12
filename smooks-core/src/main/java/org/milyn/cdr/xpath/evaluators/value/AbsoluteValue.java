@@ -15,14 +15,14 @@
 */
 package org.milyn.cdr.xpath.evaluators.value;
 
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.cdr.xpath.evaluators.value.Value;
-import org.w3c.dom.Element;
 import org.jaxen.expr.LiteralExpr;
 import org.jaxen.expr.NumberExpr;
+import org.milyn.delivery.sax.SAXElement;
+import org.w3c.dom.Element;
 
 /**
  * Absolute value getter.
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class AbsoluteValue extends Value {
@@ -46,7 +46,7 @@ public class AbsoluteValue extends Value {
     }
 
     public String toString() {
-        if(value instanceof String) {
+        if (value instanceof String) {
             return "'" + value + "'";
         } else {
             return value.toString();

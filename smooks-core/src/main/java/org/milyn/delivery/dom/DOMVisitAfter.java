@@ -15,10 +15,9 @@
 */
 package org.milyn.delivery.dom;
 
-import org.w3c.dom.Element;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
-import org.milyn.delivery.ContentHandler;
+import org.w3c.dom.Element;
 
 /**
  * DOM Visit after events.
@@ -31,7 +30,8 @@ public interface DOMVisitAfter extends DOMVisitor {
      *
      * @param element          The DOM element being visited.
      * @param executionContext Request relative instance.
-     * @throws org.milyn.SmooksException Element processing failure.
+     * @throws org.milyn.commons.SmooksException
+     *          Element processing failure.
      */
     void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException;
 }

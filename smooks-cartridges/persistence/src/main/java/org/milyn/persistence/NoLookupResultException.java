@@ -15,7 +15,7 @@
 */
 package org.milyn.persistence;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * @author maurice

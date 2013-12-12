@@ -15,9 +15,13 @@
 */
 package org.milyn.cdr.annotation;
 
-import org.milyn.javabean.DataDecoder;
+import org.milyn.commons.javabean.DataDecoder;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Configuration paramater field annotation.
@@ -26,16 +30,16 @@ import java.lang.annotation.*;
  * from its {@link org.milyn.cdr.SmooksResourceConfiguration} instance.  To inject the whole
  * {@link org.milyn.cdr.SmooksResourceConfiguration} instance, use the {@link @org.milyn.cdr.annotation.Config}
  * annotation.
- *
+ * <p/>
  * <h3>Usage</h3>
  * Where the paramater name is the same as the field name:
  * <pre>
- *     &#64;ConfigParam(decoder={@link org.milyn.javabean.decoders.IntegerDecoder}.class)
+ *     &#64;ConfigParam(decoder={@link org.milyn.commons.javabean.decoders.IntegerDecoder}.class)
  *     private int maxDigits;
  * </pre>
  * Where the paramater name is NOT the same as the field name:
  * <pre>
- *     &#64;ConfigParam(name="max-digits", decoder={@link org.milyn.javabean.decoders.IntegerDecoder}.class)
+ *     &#64;ConfigParam(name="max-digits", decoder={@link org.milyn.commons.javabean.decoders.IntegerDecoder}.class)
  *     private int maxDigits;
  * </pre>
  *
@@ -50,6 +54,7 @@ public @interface ConfigParam {
     /**
      * The paramater name as defined in the resource configuration.  If not defined,
      * the name defaults to the name of the field.
+     *
      * @return The paramater name.
      */
     public String name() default AnnotationConstants.NULL_STRING;
@@ -81,6 +86,7 @@ public @interface ConfigParam {
 
     /**
      * The {@link DataDecoder} class to use when decoding the paramater value.
+     *
      * @return The {@link DataDecoder} class.
      */
     public Class<? extends DataDecoder> decoder() default DataDecoder.class;

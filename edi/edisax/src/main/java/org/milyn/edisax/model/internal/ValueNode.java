@@ -16,10 +16,10 @@
 
 package org.milyn.edisax.model.internal;
 
-import org.milyn.javabean.DataDecoder;
-import org.milyn.javabean.DecodeType;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.config.Configurable;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.javabean.DecodeType;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.config.Configurable;
 
 import java.util.List;
 import java.util.Map;

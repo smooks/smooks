@@ -35,7 +35,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
-import org.milyn.util.ClassUtil;
+import org.milyn.commons.util.ClassUtil;
 
 /**
  * Extension of Xerces {@link XMLEntityManager} that implements

@@ -15,6 +15,18 @@
 */
 package org.milyn.delivery;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jaxen.saxpath.SAXPathException;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.SmooksResourceConfigurationFactory;
+import org.milyn.cdr.annotation.Configurator;
+import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.container.ApplicationContext;
+import org.milyn.delivery.annotation.VisitAfterIf;
+import org.milyn.delivery.annotation.VisitBeforeIf;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.dom.DOMVisitBefore;
 import org.milyn.delivery.dom.Phase;
@@ -22,25 +34,12 @@ import org.milyn.delivery.dom.VisitPhase;
 import org.milyn.delivery.dom.serialize.SerializationUnit;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.delivery.annotation.VisitBeforeIf;
-import org.milyn.delivery.annotation.VisitAfterIf;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksResourceConfigurationFactory;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.xpath.SelectorStep;
-import org.milyn.cdr.annotation.Configurator;
-import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.event.types.ConfigBuilderEvent;
-import org.milyn.container.ApplicationContext;
-import org.milyn.container.ExecutionContext;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.xml.NamespaceMappings;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jaxen.saxpath.SAXPathException;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Visitor Configuration Map.
@@ -61,26 +60,26 @@ public class VisitorConfigMap {
      */
     private ApplicationContext applicationContext;
     /**
-	 * Assembly Visit Befores.
-	 */
-	private ContentHandlerConfigMapTable<DOMVisitBefore> domAssemblyVisitBefores = new ContentHandlerConfigMapTable<DOMVisitBefore>();
+     * Assembly Visit Befores.
+     */
+    private ContentHandlerConfigMapTable<DOMVisitBefore> domAssemblyVisitBefores = new ContentHandlerConfigMapTable<DOMVisitBefore>();
     /**
-	 * Assembly Visit Afters.
-	 */
-	private ContentHandlerConfigMapTable<DOMVisitAfter> domAssemblyVisitAfters = new ContentHandlerConfigMapTable<DOMVisitAfter>();
+     * Assembly Visit Afters.
+     */
+    private ContentHandlerConfigMapTable<DOMVisitAfter> domAssemblyVisitAfters = new ContentHandlerConfigMapTable<DOMVisitAfter>();
     /**
-	 * Processing Visit Befores.
-	 */
-	private ContentHandlerConfigMapTable<DOMVisitBefore> domProcessingVisitBefores = new ContentHandlerConfigMapTable<DOMVisitBefore>();
+     * Processing Visit Befores.
+     */
+    private ContentHandlerConfigMapTable<DOMVisitBefore> domProcessingVisitBefores = new ContentHandlerConfigMapTable<DOMVisitBefore>();
     /**
-	 * Processing Visit Afters.
-	 */
-	private ContentHandlerConfigMapTable<DOMVisitAfter> domProcessingVisitAfters = new ContentHandlerConfigMapTable<DOMVisitAfter>();
+     * Processing Visit Afters.
+     */
+    private ContentHandlerConfigMapTable<DOMVisitAfter> domProcessingVisitAfters = new ContentHandlerConfigMapTable<DOMVisitAfter>();
     /**
-	 * Table of SerializationUnit instances keyed by selector. Each table entry
-	 * contains a single SerializationUnit instances.
-	 */
-	private ContentHandlerConfigMapTable<SerializationUnit> domSerializationVisitors = new ContentHandlerConfigMapTable<SerializationUnit>();
+     * Table of SerializationUnit instances keyed by selector. Each table entry
+     * contains a single SerializationUnit instances.
+     */
+    private ContentHandlerConfigMapTable<SerializationUnit> domSerializationVisitors = new ContentHandlerConfigMapTable<SerializationUnit>();
     /**
      * SAX Visit Befores.
      */
@@ -194,7 +193,7 @@ public class VisitorConfigMap {
 
         SmooksResourceConfiguration resourceConfig;
         if (visitor instanceof SmooksResourceConfigurationFactory) {
-            resourceConfig = ((SmooksResourceConfigurationFactory)visitor).createConfiguration();
+            resourceConfig = ((SmooksResourceConfigurationFactory) visitor).createConfiguration();
             resourceConfig.setResource(visitor.getClass().getName());
             resourceConfig.setSelector(targetSelector);
         } else {
@@ -216,7 +215,7 @@ public class VisitorConfigMap {
             throw new SmooksConfigurationException("Error configuring resource selector.", e);
         }
 
-        if(configure) {
+        if (configure) {
             // And configure/initialize the instance...
             Configurator.processFieldContextAnnotation(visitor, applicationContext);
             Configurator.processFieldConfigAnnotations(visitor, resourceConfig, false);
@@ -224,53 +223,53 @@ public class VisitorConfigMap {
             applicationContext.getStore().getInitializedObjects().add(visitor);
         }
 
-        if(isSAXVisitor(visitor) || isDOMVisitor(visitor)) {
+        if (isSAXVisitor(visitor) || isDOMVisitor(visitor)) {
             visitorCount++;
         }
 
-        if(isSAXVisitor(visitor)) {
+        if (isSAXVisitor(visitor)) {
             saxVisitorCount++;
-            if(visitor instanceof SAXVisitBefore && VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, visitor)) {
+            if (visitor instanceof SAXVisitBefore && VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, visitor)) {
                 saxVisitBefores.addMapping(elementName, resourceConfig, (SAXVisitBefore) visitor);
             }
-            if(visitor instanceof SAXVisitAfter && VisitorConfigMap.visitAfterAnnotationsOK(resourceConfig, visitor)) {
+            if (visitor instanceof SAXVisitAfter && VisitorConfigMap.visitAfterAnnotationsOK(resourceConfig, visitor)) {
                 saxVisitAfters.addMapping(elementName, resourceConfig, (SAXVisitAfter) visitor);
             }
             logExecutionEvent(resourceConfig, "Added as a SAX resource.");
         }
 
-        if(isDOMVisitor(visitor)) {
+        if (isDOMVisitor(visitor)) {
             domVisitorCount++;
 
-            if(visitor instanceof SerializationUnit) {
+            if (visitor instanceof SerializationUnit) {
                 domSerializationVisitors.addMapping(elementName, resourceConfig, (SerializationUnit) visitor);
                 logExecutionEvent(resourceConfig, "Added as a DOM " + SerializationUnit.class.getSimpleName() + " resource.");
             } else {
                 Phase phaseAnnotation = visitor.getClass().getAnnotation(Phase.class);
                 String visitPhase = resourceConfig.getStringParameter("VisitPhase", VisitPhase.PROCESSING.toString());
 
-                if(phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
+                if (phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
                     // It's an assembly unit...
-                    if(visitor instanceof DOMVisitBefore && VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, visitor)) {
+                    if (visitor instanceof DOMVisitBefore && VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, visitor)) {
                         domAssemblyVisitBefores.addMapping(elementName, resourceConfig, (DOMVisitBefore) visitor);
                     }
-                    if(visitor instanceof DOMVisitAfter && VisitorConfigMap.visitAfterAnnotationsOK(resourceConfig, visitor)) {
+                    if (visitor instanceof DOMVisitAfter && VisitorConfigMap.visitAfterAnnotationsOK(resourceConfig, visitor)) {
                         domAssemblyVisitAfters.addMapping(elementName, resourceConfig, (DOMVisitAfter) visitor);
                     }
                 } else if (visitPhase.equalsIgnoreCase(VisitPhase.ASSEMBLY.toString())) {
                     // It's an assembly unit...
-                    if(visitor instanceof DOMVisitBefore && VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, visitor)) {
+                    if (visitor instanceof DOMVisitBefore && VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, visitor)) {
                         domAssemblyVisitBefores.addMapping(elementName, resourceConfig, (DOMVisitBefore) visitor);
                     }
-                    if(visitor instanceof DOMVisitAfter && VisitorConfigMap.visitAfterAnnotationsOK(resourceConfig, visitor)) {
+                    if (visitor instanceof DOMVisitAfter && VisitorConfigMap.visitAfterAnnotationsOK(resourceConfig, visitor)) {
                         domAssemblyVisitAfters.addMapping(elementName, resourceConfig, (DOMVisitAfter) visitor);
                     }
                 } else {
                     // It's a processing unit...
-                    if(visitor instanceof DOMVisitBefore && VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, visitor)) {
+                    if (visitor instanceof DOMVisitBefore && VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, visitor)) {
                         domProcessingVisitBefores.addMapping(elementName, resourceConfig, (DOMVisitBefore) visitor);
                     }
-                    if(visitor instanceof DOMVisitAfter && VisitorConfigMap.visitAfterAnnotationsOK(resourceConfig, visitor)) {
+                    if (visitor instanceof DOMVisitAfter && VisitorConfigMap.visitAfterAnnotationsOK(resourceConfig, visitor)) {
                         domProcessingVisitAfters.addMapping(elementName, resourceConfig, (DOMVisitAfter) visitor);
                     }
                 }
@@ -279,13 +278,13 @@ public class VisitorConfigMap {
             }
         }
 
-        if(visitor instanceof VisitLifecycleCleanable) {
+        if (visitor instanceof VisitLifecycleCleanable) {
             visitCleanables.addMapping(elementName, resourceConfig, (VisitLifecycleCleanable) visitor);
         }
     }
 
     private void logExecutionEvent(SmooksResourceConfiguration resourceConfig, String message) {
-        if(configBuilderEvents != null) {
+        if (configBuilderEvents != null) {
             configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message));
         }
     }
@@ -303,7 +302,7 @@ public class VisitorConfigMap {
         Class<? extends ContentHandler> handlerClass = contentHandler.getClass();
         VisitBeforeIf visitBeforeIf = handlerClass.getAnnotation(VisitBeforeIf.class);
 
-        if(visitBeforeIf != null) {
+        if (visitBeforeIf != null) {
             MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
 
             conditionEval.setExpression(visitBeforeIf.condition());
@@ -317,7 +316,7 @@ public class VisitorConfigMap {
         Class<? extends ContentHandler> handlerClass = contentHandler.getClass();
         VisitAfterIf visitAfterIf = handlerClass.getAnnotation(VisitAfterIf.class);
 
-        if(visitAfterIf != null) {
+        if (visitAfterIf != null) {
             MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
 
             conditionEval.setExpression(visitAfterIf.condition());
@@ -328,7 +327,7 @@ public class VisitorConfigMap {
     }
 
     public void addAll(VisitorConfigMap visitorConfigMap) {
-        if(visitorConfigMap != null) {
+        if (visitorConfigMap != null) {
             domAssemblyVisitBefores.addAll(visitorConfigMap.getDomAssemblyVisitBefores());
             domAssemblyVisitAfters.addAll(visitorConfigMap.getDomAssemblyVisitAfters());
             domProcessingVisitBefores.addAll(visitorConfigMap.getDomProcessingVisitBefores());

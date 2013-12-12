@@ -20,11 +20,14 @@ import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * AntRunner test utility.
- * 
+ * <p/>
  * <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class AntRunner {
@@ -39,24 +42,24 @@ public class AntRunner {
      * current Thread's {@link Thread#getStackTrace Stack Trace}
      * to determine the calling Class.
      *
-     * @param antScript The Ant script to be executed.  Classpath resource relative
-     * to the caller Class.
+     * @param antScript  The Ant script to be executed.  Classpath resource relative
+     *                   to the caller Class.
      * @param properties Optional Ant properties.
      * @throws IOException Error reading Ant Script.
      */
     public AntRunner(String antScript, String... properties) throws IOException {
         StackTraceElement[] thisStack = Thread.currentThread().getStackTrace();
 
-        for(int i = 0; i < thisStack.length; i++) {
+        for (int i = 0; i < thisStack.length; i++) {
             StackTraceElement stackFrame = thisStack[i];
 
-            if(stackFrame.getClassName().equals(getClass().getName())) {
+            if (stackFrame.getClassName().equals(getClass().getName())) {
                 StackTraceElement callerStackFrame = thisStack[i + 1];
                 try {
                     Class callerClass = Class.forName(callerStackFrame.getClassName());
                     InputStream antScriptStream = callerClass.getResourceAsStream(antScript);
 
-                    if(antScriptStream == null) {
+                    if (antScriptStream == null) {
                         throw new RuntimeException("Unable resolve Ant Script resource '" + antScript + "' relative to caller class '" + callerClass.getName() + "'.");
                     }
 
@@ -74,7 +77,7 @@ public class AntRunner {
     /**
      * Public constructor.
      *
-     * @param antScript The Ant script to be executed.
+     * @param antScript  The Ant script to be executed.
      * @param properties Optional Ant properties.
      * @throws IOException Error reading Ant Script.
      */
@@ -84,11 +87,12 @@ public class AntRunner {
 
     /**
      * Run a target on the Ant Script.
+     *
      * @param target The target to run.
      * @return <code>this</code> class instance.
      */
     public AntRunner run(String target) {
-        if(target == null) {
+        if (target == null) {
             throw new IllegalArgumentException("null 'target' argument.");
         }
         project.executeTarget(target);
@@ -96,7 +100,7 @@ public class AntRunner {
     }
 
     private void configureProject(InputStream antScript, String[] properties) throws IOException {
-        if(antScript == null) {
+        if (antScript == null) {
             throw new IllegalArgumentException("null 'antScript' argument.");
         }
 
@@ -118,7 +122,7 @@ public class AntRunner {
                 byte[] readBuf = new byte[254];
                 int readCount = 0;
 
-                while((readCount = antScript.read(readBuf)) != -1) {
+                while ((readCount = antScript.read(readBuf)) != -1) {
                     fileOs.write(readBuf, 0, readCount);
                 }
             } finally {
@@ -128,11 +132,11 @@ public class AntRunner {
 
             ProjectHelper.configureProject(project, executeScript);
 
-            if(properties != null) {
-                for(String property : properties) {
+            if (properties != null) {
+                for (String property : properties) {
                     int eqIndex = property.indexOf('=');
 
-                    if(eqIndex == -1 || eqIndex + 1 == property.length()) {
+                    if (eqIndex == -1 || eqIndex + 1 == property.length()) {
                         throw new RuntimeException("Invalid AntRunner property '" + property + "'.  No value.");
                     }
 

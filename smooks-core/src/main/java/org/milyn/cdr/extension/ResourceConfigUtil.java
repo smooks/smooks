@@ -15,9 +15,9 @@
 */
 package org.milyn.cdr.extension;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.Parameter;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.expression.BeanMapExpressionEvaluator;
 import org.w3c.dom.Element;
@@ -30,51 +30,51 @@ import org.w3c.dom.Element;
 public abstract class ResourceConfigUtil {
 
     public static void setProperty(SmooksResourceConfiguration config, String setOn, String value, Element xml, ExecutionContext executionContext) throws SmooksException {
-        if(setOn.equals("selector")) {
+        if (setOn.equals("selector")) {
             config.setSelector(value);
-        } else if(setOn.equals("resource")) {
+        } else if (setOn.equals("resource")) {
             config.setResource(value);
-        } else if(setOn.equals("resourceType")) {
+        } else if (setOn.equals("resourceType")) {
             config.setResourceType(value);
-        } else if(setOn.equals("selector-namespace")) {
+        } else if (setOn.equals("selector-namespace")) {
             config.setSelectorNamespaceURI(value);
-        } else if(setOn.equals("defaultResource")) {
+        } else if (setOn.equals("defaultResource")) {
             config.setDefaultResource(Boolean.parseBoolean(value));
-        } else if(setOn.equals("targetProfile")) {
+        } else if (setOn.equals("targetProfile")) {
             config.setTargetProfile(value);
-        } else if(setOn.equals("condition") && value.length() > 0) {
+        } else if (setOn.equals("condition") && value.length() > 0) {
             config.setConditionEvaluator(new BeanMapExpressionEvaluator(value));
-        } else if(setOn.equals("conditionRef")) {
+        } else if (setOn.equals("conditionRef")) {
             ExtensionContext execentionContext = ExtensionContext.getExtensionContext(executionContext);
             config.setConditionEvaluator(execentionContext.getXmlConfigDigester().getConditionEvaluator(value));
         } else {
             Parameter param = config.setParameter(setOn, value);
-            if(xml != null) {
-            	param.setXML(xml);
+            if (xml != null) {
+                param.setXML(xml);
             }
         }
     }
 
     public static void setProperty(SmooksResourceConfiguration config, String setOn, String value, ExecutionContext executionContext) throws SmooksException {
-    	setProperty(config, setOn, value, null, executionContext);
+        setProperty(config, setOn, value, null, executionContext);
     }
 
     public static void unsetProperty(SmooksResourceConfiguration config, String property) {
-        if(property.equals("selector")) {
+        if (property.equals("selector")) {
             config.setSelector(null);
-        } else if(property.equals("resource")) {
+        } else if (property.equals("resource")) {
             config.setResource(null);
-        } else if(property.equals("resourceType")) {
+        } else if (property.equals("resourceType")) {
             config.setResourceType(null);
-        } else if(property.equals("selector-namespace")) {
+        } else if (property.equals("selector-namespace")) {
             config.setSelectorNamespaceURI(null);
-        } else if(property.equals("defaultResource")) {
+        } else if (property.equals("defaultResource")) {
             config.setDefaultResource(false);
-        } else if(property.equals("targetProfile")) {
+        } else if (property.equals("targetProfile")) {
             config.setTargetProfile(null);
-        } else if(property.equals("condition")) {
+        } else if (property.equals("condition")) {
             config.setConditionEvaluator(null);
-        } else if(property.equals("conditionRef")) {
+        } else if (property.equals("conditionRef")) {
             config.setConditionEvaluator(null);
         } else {
             config.removeParameter(property);
@@ -82,21 +82,21 @@ public abstract class ResourceConfigUtil {
     }
 
     public static void mapProperty(SmooksResourceConfiguration fromConfig, String fromProperty, SmooksResourceConfiguration toConfig, String toProperty, String defaultValue, ExecutionContext executionContext) throws SmooksException {
-        if(fromProperty.equals("selector")) {
+        if (fromProperty.equals("selector")) {
             setProperty(toConfig, toProperty, fromConfig.getSelector(), executionContext);
-        } else if(fromProperty.equals("resource")) {
+        } else if (fromProperty.equals("resource")) {
             setProperty(toConfig, toProperty, fromConfig.getResource(), executionContext);
-        } else if(fromProperty.equals("resourceType")) {
+        } else if (fromProperty.equals("resourceType")) {
             setProperty(toConfig, toProperty, fromConfig.getResourceType(), executionContext);
-        } else if(fromProperty.equals("selector-namespace")) {
+        } else if (fromProperty.equals("selector-namespace")) {
             setProperty(toConfig, toProperty, fromConfig.getSelectorNamespaceURI(), executionContext);
-        } else if(fromProperty.equals("defaultResource")) {
+        } else if (fromProperty.equals("defaultResource")) {
             setProperty(toConfig, toProperty, Boolean.toString(fromConfig.isDefaultResource()), executionContext);
-        } else if(fromProperty.equals("targetProfile")) {
+        } else if (fromProperty.equals("targetProfile")) {
             setProperty(toConfig, toProperty, fromConfig.getTargetProfile(), executionContext);
-        } else if(fromProperty.equals("condition")) {
+        } else if (fromProperty.equals("condition")) {
             toConfig.setConditionEvaluator(fromConfig.getConditionEvaluator());
-        } else if(fromProperty.equals("conditionRef")) {
+        } else if (fromProperty.equals("conditionRef")) {
             toConfig.setConditionEvaluator(fromConfig.getConditionEvaluator());
         } else {
             setProperty(toConfig, toProperty, fromConfig.getStringParameter(fromProperty, defaultValue), executionContext);

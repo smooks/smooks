@@ -17,29 +17,27 @@ package org.milyn.templating;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
-import org.milyn.delivery.Fragment;
-import org.milyn.delivery.sax.SAXUtil;
-import org.milyn.util.CollectionsUtil;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AppContext;
-import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.Config;
+import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.util.CollectionsUtil;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.Fragment;
+import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.delivery.dom.serialize.ContextObjectSerializationUnit;
 import org.milyn.delivery.dom.serialize.TextSerializationUnit;
-import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.ordering.Producer;
 import org.milyn.io.AbstractOutputStreamResource;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanRepositoryManager;
-import org.milyn.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,6 +56,7 @@ import java.util.Set;
  * processing the template action against the templating result (replace, addto, insertbefore and insertafter).
  * <p/>
  * See implementations.
+ *
  * @author tfennelly
  */
 public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Producer {
@@ -105,26 +104,26 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
 
     @Initialize
     public void initialize() {
-        if(templatingConfiguration != null) {
+        if (templatingConfiguration != null) {
             SmooksResourceConfiguration config = new SmooksResourceConfiguration();
 
             config.setResource(templatingConfiguration.getTemplate());
 
             Usage resultUsage = templatingConfiguration.getUsage();
-            if(resultUsage == Inline.ADDTO) {
+            if (resultUsage == Inline.ADDTO) {
                 action = Action.ADDTO;
-            } else if(resultUsage == Inline.REPLACE) {
+            } else if (resultUsage == Inline.REPLACE) {
                 action = Action.REPLACE;
-            } else if(resultUsage == Inline.INSERT_BEFORE) {
+            } else if (resultUsage == Inline.INSERT_BEFORE) {
                 action = Action.INSERT_BEFORE;
-            } else if(resultUsage == Inline.INSERT_AFTER) {
+            } else if (resultUsage == Inline.INSERT_AFTER) {
                 action = Action.INSERT_AFTER;
-            } else if(resultUsage instanceof BindTo) {
+            } else if (resultUsage instanceof BindTo) {
                 action = Action.BIND_TO;
-                bindId = ((BindTo)resultUsage).getBeanId();
+                bindId = ((BindTo) resultUsage).getBeanId();
                 bindBeanId = applicationContext.getBeanIdStore().register(bindId);
-            } else if(resultUsage instanceof OutputTo) {
-                outputStreamResource = ((OutputTo)resultUsage).getOutputStreamResource();
+            } else if (resultUsage instanceof OutputTo) {
+                outputStreamResource = ((OutputTo) resultUsage).getOutputStreamResource();
             }
 
             try {
@@ -132,8 +131,8 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
             } catch (Exception e) {
                 throw new SmooksConfigurationException("Error loading Templating resource: " + config, e);
             }
-        } else if(smooksConfig != null) {
-            if(smooksConfig.getResource() == null) {
+        } else if (smooksConfig != null) {
+            if (smooksConfig.getResource() == null) {
                 throw new SmooksConfigurationException("Templating resource undefined in resource configuration: " + smooksConfig);
             }
 
@@ -143,16 +142,16 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
                 throw new SmooksConfigurationException("Error loading Templating resource: " + smooksConfig, e);
             }
             String visitBefore = smooksConfig.getStringParameter("visitBefore");
-            if(visitBefore != null) {
-                if(!legactVisitBeforeParamWarn) {
+            if (visitBefore != null) {
+                if (!legactVisitBeforeParamWarn) {
                     logger.warn("Templating <param> 'visitBefore' deprecated.  Use 'applyTemplateBefore'.");
                     legactVisitBeforeParamWarn = true;
                 }
                 this.applyTemplateBefore = visitBefore.equalsIgnoreCase("true");
             }
 
-            if(action == Action.BIND_TO) {
-                if(bindId == null) {
+            if (action == Action.BIND_TO) {
+                if (bindId == null) {
                     throw new SmooksConfigurationException("'bindto' templating action configurations must also specify a 'bindId' configuration for the Id under which the result is bound to the ExecutionContext");
                 } else {
                     bindBeanId = applicationContext.getBeanIdStore().register(bindId);
@@ -175,7 +174,7 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
     }
 
     public Set<String> getProducts() {
-        if(outputStreamResource != null) {
+        if (outputStreamResource != null) {
             return CollectionsUtil.toSet(outputStreamResource);
         } else {
             return CollectionsUtil.toSet();
@@ -199,61 +198,61 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
     }
 
     protected void processTemplateAction(Element element, Node templatingResult, ExecutionContext executionContext) {
-		// REPLACE needs to be handled explicitly...
-		if(getOutputStreamResource() == null && action == Action.REPLACE) {
+        // REPLACE needs to be handled explicitly...
+        if (getOutputStreamResource() == null && action == Action.REPLACE) {
             DomUtils.replaceNode(templatingResult, element);
         } else {
-    		_processTemplateAction(element, templatingResult, action, executionContext);
+            _processTemplateAction(element, templatingResult, action, executionContext);
         }
-	}
+    }
 
-	protected void processTemplateAction(Element element, NodeList templatingResultNodeList, ExecutionContext executionContext) {
-		// If we're at the root element
-		if(element.getParentNode() instanceof Document) {
-			int count = templatingResultNodeList.getLength();
+    protected void processTemplateAction(Element element, NodeList templatingResultNodeList, ExecutionContext executionContext) {
+        // If we're at the root element
+        if (element.getParentNode() instanceof Document) {
+            int count = templatingResultNodeList.getLength();
 
-			// Iterate over the NodeList and filter the action using the
-			// first element node we encounter as the transformation result...
-			for(int i = 0; i < count; i++) {
-				Node node = templatingResultNodeList.item(0);
-				if(node.getNodeType() == Node.ELEMENT_NODE) {
-					processTemplateAction(element, node, executionContext);
-					break;
-				}
-			}
-		} else if(action == Action.REPLACE) {
-			// When we're not at the root element, REPLACE needs to be handled explicitly
-			// by performing a series of insert-befores, followed by a remove of the
-			// target element...
-			processTemplateAction(element, templatingResultNodeList, Action.INSERT_BEFORE, executionContext);
-			element.getParentNode().removeChild(element);
+            // Iterate over the NodeList and filter the action using the
+            // first element node we encounter as the transformation result...
+            for (int i = 0; i < count; i++) {
+                Node node = templatingResultNodeList.item(0);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    processTemplateAction(element, node, executionContext);
+                    break;
+                }
+            }
+        } else if (action == Action.REPLACE) {
+            // When we're not at the root element, REPLACE needs to be handled explicitly
+            // by performing a series of insert-befores, followed by a remove of the
+            // target element...
+            processTemplateAction(element, templatingResultNodeList, Action.INSERT_BEFORE, executionContext);
+            element.getParentNode().removeChild(element);
         } else {
-			processTemplateAction(element, templatingResultNodeList, action, executionContext);
+            processTemplateAction(element, templatingResultNodeList, action, executionContext);
         }
-	}
+    }
 
-	private void processTemplateAction(Element element, NodeList templatingResultNodeList, Action action, ExecutionContext executionContext) {
-		int count = templatingResultNodeList.getLength();
+    private void processTemplateAction(Element element, NodeList templatingResultNodeList, Action action, ExecutionContext executionContext) {
+        int count = templatingResultNodeList.getLength();
 
-		// Iterate over the NodeList and filter each Node against the action.
-		for(int i = 0; i < count; i++) {
-			// We iterate over the list in this way because the nodes are auto removed from the
-			// the list as they are added/inserted elsewhere.
-			_processTemplateAction(element, templatingResultNodeList.item(0), action, executionContext);
-		}
-	}
+        // Iterate over the NodeList and filter each Node against the action.
+        for (int i = 0; i < count; i++) {
+            // We iterate over the list in this way because the nodes are auto removed from the
+            // the list as they are added/inserted elsewhere.
+            _processTemplateAction(element, templatingResultNodeList.item(0), action, executionContext);
+        }
+    }
 
-	private void _processTemplateAction(Element element, Node node, Action action, ExecutionContext executionContext) {
+    private void _processTemplateAction(Element element, Node node, Action action, ExecutionContext executionContext) {
         Node parent = element.getParentNode();
 
         // Can't insert before or after the root element...
-        if(parent instanceof Document && (action == Action.INSERT_BEFORE || action == Action.INSERT_AFTER)) {
+        if (parent instanceof Document && (action == Action.INSERT_BEFORE || action == Action.INSERT_AFTER)) {
             logger.debug("Insert before/after root element not allowed.  Consider using the replace action!!");
             return;
         }
 
         String outputStreamResourceName = getOutputStreamResource();
-        if(outputStreamResourceName != null) {
+        if (outputStreamResourceName != null) {
             Writer writer = AbstractOutputStreamResource.getOutputWriter(outputStreamResourceName, executionContext);
             String text = extractTextContent(node, executionContext);
             try {
@@ -262,37 +261,37 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
                 throw new SmooksException("Failed to write to output stream resource '" + outputStreamResourceName + "'.", e);
             }
         } else {
-            if(action == Action.ADDTO) {
+            if (action == Action.ADDTO) {
                 element.appendChild(node);
-            } else if(action == Action.INSERT_BEFORE) {
+            } else if (action == Action.INSERT_BEFORE) {
                 DomUtils.insertBefore(node, element);
-            } else if(action == Action.INSERT_AFTER) {
+            } else if (action == Action.INSERT_AFTER) {
                 Node nextSibling = element.getNextSibling();
 
-                if(nextSibling == null) {
+                if (nextSibling == null) {
                     // "element" is the last child of "parent" so just add to "parent".
                     parent.appendChild(node);
                 } else {
                     // insert before the "nextSibling" - Node doesn't have an "insertAfter" operation!
                     DomUtils.insertBefore(node, nextSibling);
                 }
-            } else if(action == Action.BIND_TO) {
-            	String text = extractTextContent(node, executionContext);
+            } else if (action == Action.BIND_TO) {
+                String text = extractTextContent(node, executionContext);
 
-            	executionContext.getBeanContext().addBean(bindBeanId, text, new Fragment(element));
-            } else if(action == Action.REPLACE) {
+                executionContext.getBeanContext().addBean(bindBeanId, text, new Fragment(element));
+            } else if (action == Action.REPLACE) {
                 // Don't perform any "replace" actions here!
             }
         }
     }
 
     private String extractTextContent(Node node, ExecutionContext executionContext) {
-        if(node.getNodeType() == Node.TEXT_NODE) {
+        if (node.getNodeType() == Node.TEXT_NODE) {
             return node.getTextContent();
-        } else if(node.getNodeType() == Node.ELEMENT_NODE && ContextObjectSerializationUnit.isContextObjectElement((Element) node)) {
+        } else if (node.getNodeType() == Node.ELEMENT_NODE && ContextObjectSerializationUnit.isContextObjectElement((Element) node)) {
             String contextKey = ContextObjectSerializationUnit.getContextKey((Element) node);
             return (String) executionContext.getAttribute(contextKey);
-        } else if(node.getNodeType() == Node.ELEMENT_NODE && TextSerializationUnit.isTextElement((Element) node)) {
+        } else if (node.getNodeType() == Node.ELEMENT_NODE && TextSerializationUnit.isTextElement((Element) node)) {
             return TextSerializationUnit.getText((Element) node);
         } else {
             throw new SmooksException("Unsupported 'bindTo' or toOutStream templating action.  The bind data must be attached to a DOM Text node, or already bound to a <context-object> element.");
@@ -300,13 +299,13 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
     }
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(applyTemplateBefore) {
+        if (applyTemplateBefore) {
             visit(element, executionContext);
         }
     }
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(!applyTemplateBefore) {
+        if (!applyTemplateBefore) {
             visit(element, executionContext);
         }
     }
@@ -315,13 +314,13 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
 
     public static class ActionDecoder implements DataDecoder {
         public Object decode(String data) throws DataDecodeException {
-            if("addto".equals(data)) {
+            if ("addto".equals(data)) {
                 return Action.ADDTO;
-            } else if("insertbefore".equals(data)) {
+            } else if ("insertbefore".equals(data)) {
                 return Action.INSERT_BEFORE;
-            } else if("insertafter".equals(data)) {
+            } else if ("insertafter".equals(data)) {
                 return Action.INSERT_AFTER;
-            } else if("bindto".equals(data)) {
+            } else if ("bindto".equals(data)) {
                 return Action.BIND_TO;
             } else {
                 return Action.REPLACE;
@@ -329,10 +328,10 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
         }
     }
 
-	/**
-	 * @return the bindBeanId
-	 */
-	public BeanId getBindBeanId() {
-		return bindBeanId;
-	}
+    /**
+     * @return the bindBeanId
+     */
+    public BeanId getBindBeanId() {
+        return bindBeanId;
+    }
 }

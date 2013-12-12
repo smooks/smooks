@@ -15,8 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
-import org.milyn.xml.HTMLEntityLookup;
-import org.milyn.xml.XmlUtil;
+import org.milyn.commons.xml.HTMLEntityLookup;
+import org.milyn.commons.xml.XmlUtil;
 import org.xml.sax.Attributes;
 
 import javax.xml.XMLConstants;
@@ -26,32 +26,32 @@ import java.io.Writer;
 
 /**
  * {@link SAXElement} XML writing/serialization utility class.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class SAXElementWriterUtil {
 
     public static void writeEmptyElement(SAXElement element, Writer writer, boolean encodeSpecialChars) throws IOException {
-        if(writer != null) {
+        if (writer != null) {
             writeUnclosedElement(element, writer, encodeSpecialChars);
             writer.write(" />");
         }
     }
 
     public static void writeStartElement(SAXElement element, Writer writer, boolean encodeSpecialChars) throws IOException {
-        if(writer != null) {
+        if (writer != null) {
             writeUnclosedElement(element, writer, encodeSpecialChars);
             writer.write(">");
         }
     }
 
     public static void writeEndElement(SAXElement element, Writer writer) throws IOException {
-        if(writer != null) {
+        if (writer != null) {
             QName name = element.getName();
             String prefix = name.getPrefix();
 
             writer.write("</");
-            if(prefix != null && !prefix.equals(XMLConstants.NULL_NS_URI)) {
+            if (prefix != null && !prefix.equals(XMLConstants.NULL_NS_URI)) {
                 writer.write(prefix);
                 writer.write(':');
             }
@@ -61,7 +61,7 @@ public class SAXElementWriterUtil {
     }
 
     public static void writeText(String text, TextType textType, Writer writer) throws IOException {
-        if(writer != null) {
+        if (writer != null) {
             switch (textType) {
                 case TEXT:
                     writer.write(text);
@@ -86,7 +86,7 @@ public class SAXElementWriterUtil {
     }
 
     public static void writeText(SAXText text, Writer writer) throws IOException {
-        if(writer != null) {
+        if (writer != null) {
             switch (text.getType()) {
                 case TEXT:
                     writer.write(text.getCharacters(), text.getOffset(), text.getLength());
@@ -115,7 +115,7 @@ public class SAXElementWriterUtil {
         String prefix = name.getPrefix();
 
         writer.write('<');
-        if(prefix != null && !prefix.equals(XMLConstants.NULL_NS_URI)) {
+        if (prefix != null && !prefix.equals(XMLConstants.NULL_NS_URI)) {
             writer.write(prefix);
             writer.write(':');
         }
@@ -124,25 +124,25 @@ public class SAXElementWriterUtil {
     }
 
     private static void writeAttributes(Attributes attributes, Writer writer, boolean encodeSpecialChars) throws IOException {
-        if(attributes != null) {
+        if (attributes != null) {
             int attribCount = attributes.getLength();
 
-            for(int i = 0; i < attribCount; i++) {
+            for (int i = 0; i < attribCount; i++) {
                 String attQName = attributes.getQName(i);
                 String attValue = attributes.getValue(i);
 
                 writer.write(' ');
-                if(attQName != null && attQName.length() > 0) {
+                if (attQName != null && attQName.length() > 0) {
                     writer.write(attQName);
                 } else {
                     writer.write(attributes.getLocalName(i));
                 }
-                if(encodeSpecialChars) {
+                if (encodeSpecialChars) {
                     writer.write("=\"");
                     XmlUtil.encodeAttributeValue(attValue.toCharArray(), 0, attValue.length(), writer);
                     writer.write('\"');
                 } else {
-                    if(attValue.indexOf('"') != -1) {
+                    if (attValue.indexOf('"') != -1) {
                         writer.write("=\'");
                         writer.write(attValue);
                         writer.write('\'');

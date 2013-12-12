@@ -15,7 +15,7 @@
 */
 package org.milyn.csv;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 /**
  * CSV Binding configuration.

@@ -15,12 +15,12 @@
 */
 package org.milyn.delivery;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.namespace.NamespaceDeclarationStack;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.replay.EndElementEvent;
 import org.milyn.delivery.replay.SAXEventReplay;
 import org.milyn.delivery.replay.StartElementEvent;
-import org.milyn.namespace.NamespaceDeclarationStack;
 import org.milyn.xml.NamespaceMappings;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -29,7 +29,7 @@ import org.xml.sax.ext.DefaultHandler2;
 
 /**
  * Abstract SAX Content Handler.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public abstract class SmooksContentHandler extends DefaultHandler2 implements SAXEventReplay {
@@ -49,15 +49,15 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
         this.parentContentHandler = parentContentHandler;
         attachHandler();
 
-        if(parentContentHandler != null) {
+        if (parentContentHandler != null) {
             parentContentHandler.nestedContentHandler = this;
         }
     }
 
     public NamespaceDeclarationStack getNamespaceDeclarationStack() {
-        if(namespaceDeclarationStack == null) {
+        if (namespaceDeclarationStack == null) {
             namespaceDeclarationStack = NamespaceMappings.getNamespaceDeclarationStack(executionContext);
-            if(namespaceDeclarationStack == null) {
+            if (namespaceDeclarationStack == null) {
                 throw new IllegalStateException("NamespaceDeclarationStack instance not set on ExecutionContext.");
             }
         }
@@ -79,7 +79,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
         depth++;
         startElement(startEvent);
 
-        if(nestedContentHandler != null) {
+        if (nestedContentHandler != null) {
             // Replay the start element event from the parent handler onto the nested handler...
             replay(nestedContentHandler);
         }
@@ -96,7 +96,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
             endElement(endEvent);
             depth--;
         } finally {
-            if(!endReplayed && depth == 0 && parentContentHandler != null) {
+            if (!endReplayed && depth == 0 && parentContentHandler != null) {
                 endReplayed = true;
                 // Replay the last sax event from this handler onto the parent handler ...
                 replay(parentContentHandler);
@@ -114,7 +114,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
     public abstract void endElement(EndElementEvent endEvent) throws SAXException;
 
     public void replay(org.xml.sax.ContentHandler handler) throws SmooksException {
-        if(lastEvent != null) {
+        if (lastEvent != null) {
             lastEvent.replay(handler);
         }
     }

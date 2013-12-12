@@ -16,12 +16,11 @@
 package org.milyn.xml;
 
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.delivery.ContentHandlerConfigMap;
 import org.milyn.container.ExecutionContext;
 
-import java.util.List;
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
 
 /**
  * DOCTYPE utility class.

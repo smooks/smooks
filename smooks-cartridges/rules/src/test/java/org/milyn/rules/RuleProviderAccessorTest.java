@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.rules.regex.RegexRuleEvalResult;
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.MockApplicationContext;

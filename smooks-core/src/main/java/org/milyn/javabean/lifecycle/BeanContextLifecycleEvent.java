@@ -20,8 +20,6 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Fragment;
 import org.milyn.javabean.repository.BeanId;
 
-import javax.xml.namespace.QName;
-
 /**
  * An event when a lifecycle event has happend to a bean.
  *

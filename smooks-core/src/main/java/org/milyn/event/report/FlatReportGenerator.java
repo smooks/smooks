@@ -15,15 +15,10 @@
 */
 package org.milyn.event.report;
 
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.delivery.VisitSequence;
-import org.milyn.event.types.*;
-import org.milyn.event.ExecutionEvent;
 import org.milyn.event.report.model.Report;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 
 /**
  * Flat Execution Report generating {@link org.milyn.event.ExecutionEventListener}.

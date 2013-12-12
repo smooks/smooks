@@ -17,15 +17,21 @@ package org.milyn.delivery.dom;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.milyn.cdr.ParameterAccessor;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.Filter;
 import org.milyn.delivery.SmooksContentHandler;
 import org.milyn.delivery.replay.EndElementEvent;
 import org.milyn.delivery.replay.StartElementEvent;
 import org.milyn.dtd.DTDStore;
 import org.milyn.xml.DocType;
-import org.milyn.cdr.ParameterAccessor;
-import org.milyn.delivery.Filter;
-import org.w3c.dom.*;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Comment;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;

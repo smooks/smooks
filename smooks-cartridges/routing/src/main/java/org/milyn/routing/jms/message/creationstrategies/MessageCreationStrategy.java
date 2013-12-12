@@ -17,7 +17,7 @@ package org.milyn.routing.jms.message.creationstrategies;
 import javax.jms.Message;
 import javax.jms.Session;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 
 /**

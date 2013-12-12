@@ -15,12 +15,12 @@
 */
 package org.milyn.cdr.xpath.evaluators.logical;
 
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.container.ExecutionContext;
-import org.milyn.cdr.xpath.SelectorStep;
-import org.w3c.dom.Element;
 import org.jaxen.expr.LogicalExpr;
 import org.jaxen.saxpath.SAXPathException;
+import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.sax.SAXElement;
+import org.w3c.dom.Element;
 
 import java.util.Properties;
 

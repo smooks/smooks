@@ -15,8 +15,8 @@
 */
 package org.milyn.cdr.xsd11.conditiontests;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitBefore;

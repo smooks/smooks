@@ -17,7 +17,7 @@ package org.milyn.delivery.dom;
 
 import org.w3c.dom.Element;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

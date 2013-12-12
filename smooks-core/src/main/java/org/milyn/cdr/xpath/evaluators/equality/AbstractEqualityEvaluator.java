@@ -15,16 +15,16 @@
 */
 package org.milyn.cdr.xpath.evaluators.equality;
 
+import org.jaxen.expr.BinaryExpr;
+import org.jaxen.expr.Expr;
+import org.jaxen.expr.NumberExpr;
+import org.jaxen.saxpath.SAXPathException;
 import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
 import org.milyn.cdr.xpath.evaluators.value.Value;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.javabean.decoders.StringDecoder;
-import org.milyn.javabean.decoders.DoubleDecoder;
-import org.jaxen.expr.NumberExpr;
-import org.jaxen.expr.Expr;
-import org.jaxen.expr.BinaryExpr;
-import org.jaxen.saxpath.SAXPathException;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.javabean.decoders.DoubleDecoder;
+import org.milyn.commons.javabean.decoders.StringDecoder;
 
 import java.util.Properties;
 
@@ -48,7 +48,7 @@ public abstract class AbstractEqualityEvaluator extends XPathExpressionEvaluator
         Expr lhsExpr = expr.getLHS();
         Expr rhsExpr = expr.getRHS();
 
-        if(lhsExpr instanceof NumberExpr || rhsExpr instanceof NumberExpr) {
+        if (lhsExpr instanceof NumberExpr || rhsExpr instanceof NumberExpr) {
             lhs = Value.getValue(lhsExpr, NUMBER_DECODER, namespaces);
             rhs = Value.getValue(rhsExpr, NUMBER_DECODER, namespaces);
         } else {
@@ -67,18 +67,18 @@ public abstract class AbstractEqualityEvaluator extends XPathExpressionEvaluator
     }
 
     public String toString() {
-        return "(" + lhs + " " + op + " " +  rhs + ")";
+        return "(" + lhs + " " + op + " " + rhs + ")";
     }
 
     private static class XPathNumberDecoder extends DoubleDecoder {
         public Object decode(String data) throws DataDecodeException {
-            if(data.length() == 0) {
+            if (data.length() == 0) {
                 // This will force the equals op to fail...
                 return FailEquals.INSTANCE;
             } else {
                 try {
                     return super.decode(data);
-                } catch(DataDecodeException e) {
+                } catch (DataDecodeException e) {
                     // This will force the equals op to fail...
                     return FailEquals.INSTANCE;
                 }

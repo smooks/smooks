@@ -5,25 +5,28 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>smooks-cartridge-base-pom</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <!-- base pom version - do not remove this comment -->
     </parent>
+
     <name>Milyn Smooks Cartridge - Calculation</name>
     <artifactId>milyn-smooks-calc</artifactId>
+    <packaging>bundle</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-javabean</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-javabean</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-		<!-- testng -->
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>5.7</version>
-			<scope>test</scope>
-			<classifier>jdk15</classifier>
-		</dependency>
-	</dependencies>
+        <!-- testng -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.7</version>
+            <scope>test</scope>
+            <classifier>jdk15</classifier>
+        </dependency>
+    </dependencies>
 </project>

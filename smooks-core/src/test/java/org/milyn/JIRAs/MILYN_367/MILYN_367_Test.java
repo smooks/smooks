@@ -15,19 +15,13 @@
 */
 package org.milyn.JIRAs.MILYN_367;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-
-import javax.xml.transform.stream.StreamSource;
-
+import junit.framework.TestCase;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
 import org.milyn.StreamFilterType;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.dom.DOMVisitBefore;
@@ -37,7 +31,11 @@ import org.milyn.payload.StringResult;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 
 
 /**
@@ -45,138 +43,138 @@ import junit.framework.TestCase;
  */
 public class MILYN_367_Test extends TestCase {
 
-	public void test_SAX_01() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
-		
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "#document");
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "#document/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
-		
-		assertOK("expected_01.xml", result);        
-	}
+    public void test_SAX_01() throws SAXException, IOException {
+        Smooks smooks = new Smooks();
+        StringResult result = new StringResult();
 
-	public void test_SAX_02() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
-		
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "customer");
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "customer/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
-		
-		assertOK("expected_02.xml", result);        
-	}
+        smooks.addVisitor(new DefaultSAXElementSerializer(), "#document");
+        smooks.addVisitor(new DefaultSAXElementSerializer(), "#document/**");
+        smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
 
-	public void test_SAX_03() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
-		
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "items");
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "items/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
-		
-		assertOK("expected_03.xml", result);        
-	}
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
 
-	public void test_DOM_01() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
-		
-		smooks.addVisitor(new DefaultSerializationUnit(), "#document");
-		smooks.addVisitor(new DefaultSerializationUnit(), "#document/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
-		
-		assertOK("expected_01.xml", result);        
-	}
+        assertOK("expected_01.xml", result);
+    }
 
-	public void test_DOM_02() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
-		
-		smooks.addVisitor(new DefaultSerializationUnit(), "customer");
-		smooks.addVisitor(new DefaultSerializationUnit(), "customer/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
-		
-		assertOK("expected_02.xml", result);        
-	}
+    public void test_SAX_02() throws SAXException, IOException {
+        Smooks smooks = new Smooks();
+        StringResult result = new StringResult();
 
-	public void test_DOM_03() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
-		
-		smooks.addVisitor(new DefaultSerializationUnit(), "items");
-		smooks.addVisitor(new DefaultSerializationUnit(), "items/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
-		
-		assertOK("expected_03.xml", result);        
-	}
+        smooks.addVisitor(new DefaultSAXElementSerializer(), "customer");
+        smooks.addVisitor(new DefaultSAXElementSerializer(), "customer/**");
+        smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
 
-	public void test_DOM_04() throws SAXException, IOException {
-		Smooks smooks = new Smooks();		
-		DOMVBefore customerVisitor = new DOMVBefore();
-		DOMVBefore itemsVisitor = new DOMVBefore();
-		
-		smooks.addVisitor(customerVisitor, "customer");
-		smooks.addVisitor(customerVisitor, "customer/**");
-		smooks.addVisitor(itemsVisitor, "items");
-		smooks.addVisitor(itemsVisitor, "items/**");
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
-		
-		assertEquals("customer-user-fname-x-lname-", customerVisitor.stringBuilder.toString());
-		assertEquals("items-item-units-name-price-item-units-name-price-", itemsVisitor.stringBuilder.toString());
-	}
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
 
-	public void test_DOM_05() throws SAXException, IOException {
-		Smooks smooks = new Smooks();		
-		DOMVAfter customerVisitor = new DOMVAfter();
-		DOMVAfter itemsVisitor = new DOMVAfter();
-		
-		smooks.addVisitor(customerVisitor, "customer");
-		smooks.addVisitor(customerVisitor, "customer/**");
-		smooks.addVisitor(itemsVisitor, "items");
-		smooks.addVisitor(itemsVisitor, "items/**");
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
-		
-		assertEquals("user-x-fname-lname-customer-", customerVisitor.stringBuilder.toString());
-		assertEquals("units-name-price-item-units-name-price-item-items-", itemsVisitor.stringBuilder.toString());
-	}
+        assertOK("expected_02.xml", result);
+    }
 
-	private void assertOK(String resName, StringResult result) throws SAXException, IOException {
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLAssert.assertXMLEqual(getRes(resName), new StringReader(result.getResult()));
-	}	
-	
-	private Reader getRes(String name) {
-		return new InputStreamReader(getClass().getResourceAsStream(name));
-	}
-	
-	private class DOMVBefore implements DOMVisitBefore {
-		
-		private StringBuilder stringBuilder = new StringBuilder();
-		
-		public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-			stringBuilder.append(element.getLocalName() + "-");		
-		}		
-	}
-	
-	private class DOMVAfter implements DOMVisitAfter {
-		
-		private StringBuilder stringBuilder = new StringBuilder();
-		
-		public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-			stringBuilder.append(element.getLocalName() + "-");		
-		}		
-	}
+    public void test_SAX_03() throws SAXException, IOException {
+        Smooks smooks = new Smooks();
+        StringResult result = new StringResult();
+
+        smooks.addVisitor(new DefaultSAXElementSerializer(), "items");
+        smooks.addVisitor(new DefaultSAXElementSerializer(), "items/**");
+        smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+
+        assertOK("expected_03.xml", result);
+    }
+
+    public void test_DOM_01() throws SAXException, IOException {
+        Smooks smooks = new Smooks();
+        StringResult result = new StringResult();
+
+        smooks.addVisitor(new DefaultSerializationUnit(), "#document");
+        smooks.addVisitor(new DefaultSerializationUnit(), "#document/**");
+        smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+
+        assertOK("expected_01.xml", result);
+    }
+
+    public void test_DOM_02() throws SAXException, IOException {
+        Smooks smooks = new Smooks();
+        StringResult result = new StringResult();
+
+        smooks.addVisitor(new DefaultSerializationUnit(), "customer");
+        smooks.addVisitor(new DefaultSerializationUnit(), "customer/**");
+        smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+
+        assertOK("expected_02.xml", result);
+    }
+
+    public void test_DOM_03() throws SAXException, IOException {
+        Smooks smooks = new Smooks();
+        StringResult result = new StringResult();
+
+        smooks.addVisitor(new DefaultSerializationUnit(), "items");
+        smooks.addVisitor(new DefaultSerializationUnit(), "items/**");
+        smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+
+        assertOK("expected_03.xml", result);
+    }
+
+    public void test_DOM_04() throws SAXException, IOException {
+        Smooks smooks = new Smooks();
+        DOMVBefore customerVisitor = new DOMVBefore();
+        DOMVBefore itemsVisitor = new DOMVBefore();
+
+        smooks.addVisitor(customerVisitor, "customer");
+        smooks.addVisitor(customerVisitor, "customer/**");
+        smooks.addVisitor(itemsVisitor, "items");
+        smooks.addVisitor(itemsVisitor, "items/**");
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+        assertEquals("customer-user-fname-x-lname-", customerVisitor.stringBuilder.toString());
+        assertEquals("items-item-units-name-price-item-units-name-price-", itemsVisitor.stringBuilder.toString());
+    }
+
+    public void test_DOM_05() throws SAXException, IOException {
+        Smooks smooks = new Smooks();
+        DOMVAfter customerVisitor = new DOMVAfter();
+        DOMVAfter itemsVisitor = new DOMVAfter();
+
+        smooks.addVisitor(customerVisitor, "customer");
+        smooks.addVisitor(customerVisitor, "customer/**");
+        smooks.addVisitor(itemsVisitor, "items");
+        smooks.addVisitor(itemsVisitor, "items/**");
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+        assertEquals("user-x-fname-lname-customer-", customerVisitor.stringBuilder.toString());
+        assertEquals("units-name-price-item-units-name-price-item-items-", itemsVisitor.stringBuilder.toString());
+    }
+
+    private void assertOK(String resName, StringResult result) throws SAXException, IOException {
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLAssert.assertXMLEqual(getRes(resName), new StringReader(result.getResult()));
+    }
+
+    private Reader getRes(String name) {
+        return new InputStreamReader(getClass().getResourceAsStream(name));
+    }
+
+    private class DOMVBefore implements DOMVisitBefore {
+
+        private StringBuilder stringBuilder = new StringBuilder();
+
+        public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+            stringBuilder.append(element.getLocalName() + "-");
+        }
+    }
+
+    private class DOMVAfter implements DOMVisitAfter {
+
+        private StringBuilder stringBuilder = new StringBuilder();
+
+        public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+            stringBuilder.append(element.getLocalName() + "-");
+        }
+    }
 }

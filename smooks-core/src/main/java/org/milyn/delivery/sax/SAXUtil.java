@@ -15,7 +15,7 @@
 */
 package org.milyn.delivery.sax;
 
-import org.milyn.xml.DomUtils;
+import org.milyn.commons.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
@@ -30,8 +30,9 @@ public abstract class SAXUtil {
 
     /**
      * Get the value of the named attribute.
+     *
      * @param attributeName The attribute name.
-     * @param attributes The attribute list.
+     * @param attributes    The attribute list.
      * @return The attribute value, or an empty string if not available (as with DOM).
      */
     public static String getAttribute(String attributeName, Attributes attributes) {
@@ -40,17 +41,18 @@ public abstract class SAXUtil {
 
     /**
      * Get the value of the named attribute.
+     *
      * @param attributeName The attribute name.
-     * @param attributes The attribute list.
-     * @param defaultVal The default value, if the attribute is not set.
+     * @param attributes    The attribute list.
+     * @param defaultVal    The default value, if the attribute is not set.
      * @return The attribute value, or an empty string if not available (as with DOM).
      */
     public static String getAttribute(String attributeName, Attributes attributes, String defaultVal) {
         int attribCount = attributes.getLength();
 
-        for(int i = 0; i < attribCount; i++) {
+        for (int i = 0; i < attribCount; i++) {
             String attribName = attributes.getLocalName(i);
-            if(attribName.equalsIgnoreCase(attributeName)) {
+            if (attribName.equalsIgnoreCase(attributeName)) {
                 return attributes.getValue(i);
             }
         }
@@ -60,19 +62,20 @@ public abstract class SAXUtil {
 
     /**
      * Get the value of the named attribute.
+     *
      * @param attributeNamespace The attribute namespace.
-     * @param attributeName The attribute name.
-     * @param attributes The attribute list.
-     * @param defaultVal The default value, if the attribute is not set.
+     * @param attributeName      The attribute name.
+     * @param attributes         The attribute list.
+     * @param defaultVal         The default value, if the attribute is not set.
      * @return The attribute value, or an empty string if not available (as with DOM).
      */
     public static String getAttribute(String attributeNamespace, String attributeName, Attributes attributes, String defaultVal) {
         int attribCount = attributes.getLength();
 
-        for(int i = 0; i < attribCount; i++) {
+        for (int i = 0; i < attribCount; i++) {
             String attribName = attributes.getLocalName(i);
-            if(attribName.equalsIgnoreCase(attributeName)) {
-                if(attributes.getURI(i).equals(attributeNamespace)) {
+            if (attribName.equalsIgnoreCase(attributeName)) {
+                if (attributes.getURI(i).equals(attributeNamespace)) {
                     return attributes.getValue(i);
                 }
             }
@@ -90,7 +93,7 @@ public abstract class SAXUtil {
     }
 
     private static void addXPathElement(SAXElement element, StringBuilder builder) {
-        if(builder.length() > 0) {
+        if (builder.length() > 0) {
             builder.insert(0, "/");
             builder.insert(0, element.getName().getLocalPart());
         } else {
@@ -98,7 +101,7 @@ public abstract class SAXUtil {
         }
 
         SAXElement parent = element.getParent();
-        if(parent != null) {
+        if (parent != null) {
             addXPathElement(parent, builder);
         }
     }
@@ -107,7 +110,7 @@ public abstract class SAXUtil {
         int depth = 0;
 
         SAXElement parent = element.getParent();
-        while(parent != null) {
+        while (parent != null) {
             depth++;
             parent = parent.getParent();
         }
@@ -155,11 +158,12 @@ public abstract class SAXUtil {
 
     /**
      * Create a {@link QName} instance for the supplied DOM {@link org.w3c.dom.Element}.
+     *
      * @param element The element.
      * @return Element QName.
      */
     public static QName toQName(Element element) {
-        if(element == null) {
+        if (element == null) {
             return null;
         }
 

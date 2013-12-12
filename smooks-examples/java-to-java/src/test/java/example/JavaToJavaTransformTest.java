@@ -18,7 +18,7 @@ package example;
 import example.srcmodel.Order;
 import example.trgmodel.LineOrder;
 import junit.framework.TestCase;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;

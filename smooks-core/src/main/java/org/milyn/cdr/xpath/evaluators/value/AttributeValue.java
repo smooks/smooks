@@ -15,18 +15,15 @@
 */
 package org.milyn.cdr.xpath.evaluators.value;
 
+import org.milyn.commons.javabean.DataDecoder;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.cdr.xpath.evaluators.value.Value;
-import org.milyn.xml.DomUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Attr;
-
-import javax.xml.namespace.QName;
 
 /**
  * Element text value getter.
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class AttributeValue extends Value {
@@ -44,7 +41,7 @@ public class AttributeValue extends Value {
 
     public Object getValue(SAXElement element) {
         String attribValue;
-        if(namespaceURI != null) {
+        if (namespaceURI != null) {
             attribValue = element.getAttributeNS(namespaceURI, localPart);
         } else {
             attribValue = element.getAttribute(localPart);
@@ -55,21 +52,21 @@ public class AttributeValue extends Value {
     public Object getValue(Element element) {
         String attribValue = EMPTY_STRING;
 
-        if(namespaceURI != null) {
+        if (namespaceURI != null) {
             attribValue = element.getAttributeNS(namespaceURI, localPart);
         } else {
             NamedNodeMap attributes = element.getAttributes();
             int numAttributes = attributes.getLength();
 
-            for(int i = 0; i < numAttributes; i++) {
+            for (int i = 0; i < numAttributes; i++) {
                 Attr attr = (Attr) attributes.item(i);
                 String attrName = attr.getLocalName();
 
-                if(attrName == null) {
+                if (attrName == null) {
                     attrName = attr.getName();
                 }
 
-                if(attrName.equals(localPart)) {
+                if (attrName.equals(localPart)) {
                     attribValue = attr.getValue();
                     break;
                 }
@@ -80,7 +77,7 @@ public class AttributeValue extends Value {
     }
 
     public String toString() {
-        if(namespaceURI != null) {
+        if (namespaceURI != null) {
             return "@{" + namespaceURI + "}" + localPart;
         } else {
             return "@" + localPart;

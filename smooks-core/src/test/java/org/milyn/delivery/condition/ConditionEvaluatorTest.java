@@ -17,10 +17,10 @@ package org.milyn.delivery.condition;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.expression.ExpressionEvaluator;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.SAXAndDOMVisitor;
+import org.milyn.expression.ExpressionEvaluator;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -36,7 +36,7 @@ public class ConditionEvaluatorTest extends TestCase {
         try {
             ExpressionEvaluator.Factory.createInstance(InvalidEvaluator.class.getName(), "blah");
             fail("Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Unsupported ExpressionEvaluator type 'org.milyn.delivery.condition.InvalidEvaluator'.  Currently only support 'org.milyn.expression.ExecutionContextExpressionEvaluator' implementations.", e.getMessage());
         }
 

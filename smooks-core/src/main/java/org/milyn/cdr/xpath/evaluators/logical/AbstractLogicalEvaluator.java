@@ -15,10 +15,10 @@
 */
 package org.milyn.cdr.xpath.evaluators.logical;
 
-import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
-import org.milyn.cdr.xpath.SelectorStep;
 import org.jaxen.expr.LogicalExpr;
 import org.jaxen.saxpath.SAXPathException;
+import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
 
 import java.util.Properties;
 

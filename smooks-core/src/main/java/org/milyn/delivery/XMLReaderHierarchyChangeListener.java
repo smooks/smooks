@@ -16,13 +16,13 @@
 
 package org.milyn.delivery;
 
+import org.milyn.commons.xml.hierarchy.HierarchyChangeListener;
 import org.milyn.container.ExecutionContext;
-import org.milyn.xml.hierarchy.HierarchyChangeListener;
 import org.xml.sax.XMLReader;
 
 /**
  * ExecutionContext aware XMLReader change listener.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class XMLReaderHierarchyChangeListener implements HierarchyChangeListener {

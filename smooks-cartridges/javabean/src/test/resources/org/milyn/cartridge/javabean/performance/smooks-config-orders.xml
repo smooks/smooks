@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+	
+	<resource-config selector="global-parameters">
+        <param name="stream.filter.type">SAX</param>
+    </resource-config>
+	    
+    <resource-config selector="person">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">customer</param>
+        <param name="beanClass">org.milyn.cartridge.javabean.performance.model.Customer</param>
+        <param name="bindings">
+        	<binding property="person" selector="${person}" />
+        	<binding property="addresses" selector="${addresses}" />
+        	<binding property="orders" selector="${orders}" />
+        </param>
+    </resource-config>
+
+    <resource-config selector="person">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">person</param>
+        <param name="beanClass">org.milyn.cartridge.javabean.performance.model.Person</param>
+        <param name="bindings">
+        	<binding property="surname" type="String" selector="person surname" />
+        	<binding property="firstname" type="String" selector="person firstname" />
+        	<binding property="gender" type="String" selector="person gender" />
+        	<binding property="phonenumber" type="String" selector="person phonenumber" />
+		</param>
+    </resource-config>
+    
+    <resource-config selector="person">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">addresses</param>
+        <param name="beanClass">java.util.ArrayList</param>
+        <param name="bindings">
+        	<binding selector="${address}" />
+        </param>
+    </resource-config>
+    
+    <resource-config selector="address">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">address</param>
+        <param name="beanClass">org.milyn.cartridge.javabean.performance.model.Address</param>
+        <param name="bindings">
+        	<binding property="type" type="String" selector="address @type" />
+        	<binding property="street" type="String" selector="address street" />
+        	<binding property="housenumber" type="String" selector="address housenumber" />
+        	<binding property="zipcode" type="String" selector="address zipcode" />
+        	<binding property="city" type="String" selector="address city" />
+		</param>
+    </resource-config>
+        
+    <resource-config selector="orders">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">orders</param>
+        <param name="beanClass">java.util.ArrayList</param>
+        <param name="bindings">
+        	<binding selector="${order}" />
+        </param>
+    </resource-config>
+    
+    <resource-config selector="orders order">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">order</param>
+        <param name="beanClass">org.milyn.cartridge.javabean.performance.model.Order</param>
+        <param name="bindings">
+        	<binding property="article" selector="${article}" />
+        	 
+        	<binding property="number" type="String" selector="orders order @number" />
+        	<binding property="size" type="Integer" selector="orders order size" />
+        	<binding property="price" type="Double" selector="orders order totalprice" />
+		</param>
+    </resource-config>   
+    
+    <resource-config selector="orders order article">
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
+        <param name="beanId">article</param>
+        <param name="beanClass">org.milyn.cartridge.javabean.performance.model.Article</param>
+        <param name="bindings">
+        	<binding property="id" type="String" selector="orders order article @id" />
+        	<binding property="name" type="String" selector="orders order article name" />
+        	<binding property="price" type="Double" selector="orders order article price" />
+		</param>
+    </resource-config>  
+    
+</smooks-resource-list>

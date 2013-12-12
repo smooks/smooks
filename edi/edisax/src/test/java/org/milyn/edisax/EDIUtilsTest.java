@@ -1,23 +1,22 @@
 package org.milyn.edisax;
 
 import junit.framework.TestCase;
-
-import java.io.IOException;
-
+import org.milyn.commons.util.CollectionsUtil;
 import org.milyn.edisax.model.internal.DelimiterType;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.util.IllegalNameException;
-import org.milyn.util.CollectionsUtil;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
 
 /**
  * @author bardl
  */
 public class EDIUtilsTest extends TestCase {
 
-	public void test_with_escape() throws IOException, SAXException {
+    public void test_with_escape() throws IOException, SAXException {
         String[] test = EDIUtils.split("first?::second??:third", ":", "?");
         String[] expected = new String[]{"first:", "second??", "third"};
         assertTrue("Result is [" + output(test) + "] should be [" + output(expected) + "] ", equal(test, expected));
@@ -54,8 +53,8 @@ public class EDIUtilsTest extends TestCase {
 
     }
 
-	public void test_without_escape() {
-        String[] result = EDIUtils.split(null, "*", null);        
+    public void test_without_escape() {
+        String[] result = EDIUtils.split(null, "*", null);
         assertTrue("Result is [" + output(result) + "] should be [null] ", result == null);
 
         result = EDIUtils.split("", null, null);
@@ -99,7 +98,7 @@ public class EDIUtilsTest extends TestCase {
         assertTrue("Result is [" + output(result) + "] should be [" + output(expected) + "] ", equal(result, expected));
 
 
-	}
+    }
 
     public void test_concatAndTruncate() {
         Delimiters delims = UNEdifactInterchangeParser.defaultUNEdifactDelimiters;
@@ -145,7 +144,7 @@ public class EDIUtilsTest extends TestCase {
         for (int i = 0; i < value.length; i++) {
             str = value[i];
             result += "\"" + str + "\"";
-            if (i != value.length -1) {
+            if (i != value.length - 1) {
                 result += ", ";
             }
         }

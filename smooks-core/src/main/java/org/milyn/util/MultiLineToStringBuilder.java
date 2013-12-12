@@ -1,19 +1,19 @@
 package org.milyn.util;
 
+import org.apache.commons.lang.StringUtils;
+import org.milyn.container.ExecutionContext;
+import org.milyn.payload.FilterResult;
+import org.milyn.payload.FilterSource;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.Map.Entry;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang.StringUtils;
-import org.milyn.container.ExecutionContext;
-import org.milyn.payload.FilterResult;
-import org.milyn.payload.FilterSource;
 
 /**
  * Static utility class for generating JSON like multi line Strings

@@ -16,9 +16,9 @@
 package org.milyn.event.report;
 
 import freemarker.template.utility.HtmlEscape;
+import org.milyn.commons.util.FreeMarkerTemplate;
 import org.milyn.event.report.model.DOMReport;
 import org.milyn.event.report.model.Report;
-import org.milyn.util.FreeMarkerTemplate;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -42,7 +42,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
         super(new ReportConfiguration(createOutputWriter(outputFile)));
 
         File file = new File(outputFile);
-        if(file.getParentFile() != null) {
+        if (file.getParentFile() != null) {
             getReportConfiguration().setTempOutDir(file.getParentFile());
         }
     }
@@ -61,7 +61,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
         System.out.println("****************************************************************************************");
         System.out.println();
 
-        if(report instanceof DOMReport) {
+        if (report instanceof DOMReport) {
             template = new FreeMarkerTemplate("html/template-dom.html", HtmlReportGenerator.class);
         } else {
             template = new FreeMarkerTemplate("html/template-sax.html", HtmlReportGenerator.class);
@@ -77,7 +77,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
 
     private static Writer createOutputWriter(String outputFile) throws IOException {
         File file = new File(outputFile);
-        if(file.getParentFile() != null) {
+        if (file.getParentFile() != null) {
             file.getParentFile().mkdirs();
         }
 

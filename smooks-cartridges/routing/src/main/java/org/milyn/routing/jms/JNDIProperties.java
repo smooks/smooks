@@ -15,18 +15,16 @@
 */
 package org.milyn.routing.jms;
 
-import org.milyn.util.JNDIUtil;
-import org.milyn.resource.URIResourceLocator;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.resource.URIResourceLocator;
+import org.milyn.commons.util.JNDIUtil;
 
 import javax.naming.Context;
-import java.util.Properties;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Properties;
 
 
-public class JNDIProperties
-{
+public class JNDIProperties {
     private String contextFactory;
 
     private String providerUrl;
@@ -34,40 +32,34 @@ public class JNDIProperties
     private String namingFactoryUrlPkgs;
 
     private Properties defaultProperties = JNDIUtil.getDefaultProperties();
-    
+
     private String propertiesFile;
 
     private Properties properties;
 
-    public String getContextFactory()
-	{
-		return contextFactory;
-	}
+    public String getContextFactory() {
+        return contextFactory;
+    }
 
-	public void setContextFactory( String contextFactory )
-	{
-		this.contextFactory = contextFactory;
-	}
+    public void setContextFactory(String contextFactory) {
+        this.contextFactory = contextFactory;
+    }
 
-	public String getProviderUrl()
-	{
-		return providerUrl;
-	}
+    public String getProviderUrl() {
+        return providerUrl;
+    }
 
-	public void setProviderUrl( String providerUrl )
-	{
-		this.providerUrl = providerUrl;
-	}
+    public void setProviderUrl(String providerUrl) {
+        this.providerUrl = providerUrl;
+    }
 
-	public String getNamingFactoryUrlPkgs()
-	{
-		return namingFactoryUrlPkgs;
-	}
+    public String getNamingFactoryUrlPkgs() {
+        return namingFactoryUrlPkgs;
+    }
 
-	public void setNamingFactoryUrlPkgs( String namingFactoryUrl )
-	{
-		this.namingFactoryUrlPkgs = namingFactoryUrl;
-	}
+    public void setNamingFactoryUrlPkgs(String namingFactoryUrl) {
+        this.namingFactoryUrlPkgs = namingFactoryUrl;
+    }
 
     public void setProperties(Properties properties) {
         this.properties = properties;
@@ -78,11 +70,11 @@ public class JNDIProperties
     }
 
     public Properties toProperties() throws SmooksConfigurationException {
-        if(properties == null) {
+        if (properties == null) {
             properties = new Properties();
         }
 
-        if(propertiesFile != null) {
+        if (propertiesFile != null) {
             try {
                 URIResourceLocator locator = new URIResourceLocator();
                 properties.load(locator.getResource(propertiesFile));
@@ -91,20 +83,20 @@ public class JNDIProperties
             }
         }
 
-        if(contextFactory != null) {
+        if (contextFactory != null) {
             properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
         }
-        if(providerUrl != null) {
+        if (providerUrl != null) {
             properties.setProperty(Context.PROVIDER_URL, providerUrl);
         }
-        if(namingFactoryUrlPkgs != null) {
+        if (namingFactoryUrlPkgs != null) {
             properties.setProperty(Context.URL_PKG_PREFIXES, namingFactoryUrlPkgs);
         }
 
         // We only use the default properties if none of the JNDI properties have been
         // configured.  Intentionally not merging configured properties with
         // default properties!!!
-        if(!properties.isEmpty()) {
+        if (!properties.isEmpty()) {
             return properties;
         } else {
             return defaultProperties;

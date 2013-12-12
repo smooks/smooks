@@ -15,7 +15,10 @@
  */
 package org.milyn.ejc;
 
-import org.milyn.config.Configurable;
+import org.milyn.commons.config.Configurable;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.javabean.DataEncoder;
+import org.milyn.commons.javabean.pojogen.JType;
 import org.milyn.edisax.model.internal.Component;
 import org.milyn.edisax.model.internal.ContainerNode;
 import org.milyn.edisax.model.internal.DelimiterType;
@@ -26,23 +29,19 @@ import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
 import org.milyn.edisax.model.internal.ValueNode;
 import org.milyn.edisax.util.EDIUtils;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.javabean.DataEncoder;
 import org.milyn.javabean.decoders.DABigDecimalDecoder;
 import org.milyn.javabean.pojogen.JClass;
 import org.milyn.javabean.pojogen.JMethod;
 import org.milyn.javabean.pojogen.JNamedType;
-import org.milyn.javabean.pojogen.JType;
 import org.milyn.smooks.edi.EDIWritable;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.*;
 
 /**
  * EDIWritable bean serialization class.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 class WriteMethod extends JMethod {
@@ -62,9 +61,9 @@ class WriteMethod extends JMethod {
         jClass.getMethods().add(this);
         this.jClass = jClass;
         this.mappingNode = mappingNode;
-        this.trunacate = (mappingNode instanceof ContainerNode && ((ContainerNode)mappingNode).isTruncatable());
+        this.trunacate = (mappingNode instanceof ContainerNode && ((ContainerNode) mappingNode).isTruncatable());
 
-        if(trunacate) {
+        if (trunacate) {
             jClass.getRawImports().add(new JType(StringWriter.class));
             jClass.getRawImports().add(new JType(List.class));
             jClass.getRawImports().add(new JType(ArrayList.class));
@@ -80,14 +79,14 @@ class WriteMethod extends JMethod {
 
     public void writeObject(JNamedType property, BindingConfig bindingConfig, MappingNode mappingNode) {
         appendToBody("\n        if(" + property.getName() + " != null) {");
-        if(mappingNode instanceof Segment) {
-            if(!((Segment) mappingNode).getFields().isEmpty() && (bindingConfig.getParent() == null || bodyLength() > 0)) {
-                appendToBody("\n            nodeWriter.write(\"" + ((Segment)mappingNode).getSegcode() + "\");");
+        if (mappingNode instanceof Segment) {
+            if (!((Segment) mappingNode).getFields().isEmpty() && (bindingConfig.getParent() == null || bodyLength() > 0)) {
+                appendToBody("\n            nodeWriter.write(\"" + ((Segment) mappingNode).getSegcode() + "\");");
                 appendToBody("\n            nodeWriter.write(delimiters.getField());");
             }
         }
         appendToBody("\n            " + property.getName() + ".write(nodeWriter, delimiters);");
-        if(trunacate) {
+        if (trunacate) {
             appendToBody("\n            nodeTokens.add(nodeWriter.toString());");
             appendToBody("\n            ((StringWriter)nodeWriter).getBuffer().setLength(0);");
         }
@@ -103,7 +102,7 @@ class WriteMethod extends JMethod {
         appendToBody("\n        if(" + property.getName() + " != null) {");
 
         DataDecoder dataDecoder = modelNode.getDecoder();
-        if(dataDecoder instanceof DataEncoder) {
+        if (dataDecoder instanceof DataEncoder) {
             String encoderName = property.getName() + "Encoder";
             Class<? extends DataDecoder> decoderClass = dataDecoder.getClass();
 
@@ -115,16 +114,16 @@ class WriteMethod extends JMethod {
             defaultConstructor.appendToBody("\n        " + encoderName + " = new " + decoderClass.getSimpleName() + "();");
 
             // Configure the encoder in the constructor (if needed)....
-            if(dataDecoder instanceof Configurable) {
+            if (dataDecoder instanceof Configurable) {
                 Properties configuration = ((Configurable) dataDecoder).getConfiguration();
 
-                if(configuration != null) {
+                if (configuration != null) {
                     Set<Map.Entry<Object, Object>> encoderConfig = configuration.entrySet();
                     String encoderPropertiesName = encoderName + "Properties";
 
                     jClass.getRawImports().add(new JType(Properties.class));
                     defaultConstructor.appendToBody("\n        Properties " + encoderPropertiesName + " = new Properties();");
-                    for(Map.Entry<Object, Object> entry : encoderConfig) {
+                    for (Map.Entry<Object, Object> entry : encoderConfig) {
                         defaultConstructor.appendToBody("\n        " + encoderPropertiesName + ".setProperty(\"" + entry.getKey() + "\", \"" + entry.getValue() + "\");");
                     }
                     defaultConstructor.appendToBody("\n        " + encoderName + ".setConfiguration(" + encoderPropertiesName + ");");
@@ -132,7 +131,7 @@ class WriteMethod extends JMethod {
             }
 
             // Add the encoder encode instruction to te write method...
-            if (decoderClass == DABigDecimalDecoder.class){
+            if (decoderClass == DABigDecimalDecoder.class) {
                 appendToBody("\n            nodeWriter.write(delimiters.escape(" + encoderName + ".encode(" + property.getName() + ", delimiters)));");
             } else {
                 appendToBody("\n            nodeWriter.write(delimiters.escape(" + encoderName + ".encode(" + property.getName() + ")));");
@@ -141,7 +140,7 @@ class WriteMethod extends JMethod {
             appendToBody("\n            nodeWriter.write(delimiters.escape(" + property.getName() + ".toString()));");
         }
 
-        if(trunacate) {
+        if (trunacate) {
             appendToBody("\n            nodeTokens.add(nodeWriter.toString());");
             appendToBody("\n            ((StringWriter)nodeWriter).getBuffer().setLength(0);");
         }
@@ -153,10 +152,10 @@ class WriteMethod extends JMethod {
         appendToBody("\n        if(" + property.getName() + " != null && !" + property.getName() + ".isEmpty()) {");
         appendToBody("\n            for(" + property.getType().getGenericType().getSimpleName() + " " + property.getName() + "Inst : " + property.getName() + ") {");
 
-        if(segmentGroup instanceof Segment && !((Segment) segmentGroup).getFields().isEmpty()) {
+        if (segmentGroup instanceof Segment && !((Segment) segmentGroup).getFields().isEmpty()) {
             appendToBody("\n                nodeWriter.write(\"" + segmentGroup.getSegcode() + "\");");
             appendToBody("\n                nodeWriter.write(delimiters.getField());");
-            if(trunacate) {
+            if (trunacate) {
                 appendToBody("\n                nodeTokens.add(nodeWriter.toString());");
                 appendToBody("\n                ((StringWriter)nodeWriter).getBuffer().setLength(0);");
             }
@@ -171,7 +170,7 @@ class WriteMethod extends JMethod {
     public String getBody() {
         StringBuilder builder = new StringBuilder();
 
-        if(trunacate) {
+        if (trunacate) {
             builder.append("\n        Writer nodeWriter = new StringWriter();\n");
             builder.append("\n        List<String> nodeTokens = new ArrayList<String>();\n");
         } else {
@@ -180,21 +179,21 @@ class WriteMethod extends JMethod {
 
         builder.append(super.getBody());
 
-        if(trunacate) {
+        if (trunacate) {
             builder.append("\n        nodeTokens.add(nodeWriter.toString());");
-            if(mappingNode instanceof Segment) {
+            if (mappingNode instanceof Segment) {
                 builder.append("\n        writer.write(EDIUtils.concatAndTruncate(nodeTokens, DelimiterType.FIELD, delimiters));");
-            } else if(mappingNode instanceof Field) {
+            } else if (mappingNode instanceof Field) {
                 builder.append("\n        writer.write(EDIUtils.concatAndTruncate(nodeTokens, DelimiterType.COMPONENT, delimiters));");
-            } else if(mappingNode instanceof Component) {
+            } else if (mappingNode instanceof Component) {
                 builder.append("\n        writer.write(EDIUtils.concatAndTruncate(nodeTokens, DelimiterType.SUBCOMPONENT, delimiters));");
             }
         }
 
-        if(terminatingDelimiter != null) {
+        if (terminatingDelimiter != null) {
             writeDelimiter(terminatingDelimiter, "writer", builder);
         }
-        if(appendFlush) {
+        if (appendFlush) {
             builder.append("\n        writer.flush();");
         }
 
@@ -206,7 +205,7 @@ class WriteMethod extends JMethod {
     }
 
     private void writeDelimiter(DelimiterType delimiterType, String writerVariableName, StringBuilder builder) {
-        if(bodyLength() == 0) {
+        if (bodyLength() == 0) {
             return;
         }
 

@@ -15,9 +15,9 @@
 */
 package org.milyn.javabean.decoders;
 
-import org.milyn.javabean.DataDecoder;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.javabean.DecodeType;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.javabean.DecodeType;
 import org.milyn.expression.MVELExpressionEvaluator;
 
 /**

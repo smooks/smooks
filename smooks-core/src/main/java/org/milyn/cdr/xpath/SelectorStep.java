@@ -15,31 +15,29 @@
 */
 package org.milyn.cdr.xpath;
 
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.xpath.evaluators.PassThruEvaluator;
-import org.milyn.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
-import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
-import org.milyn.cdr.xpath.evaluators.PredicatesEvaluator;
-import org.milyn.cdr.xpath.evaluators.logical.AbstractLogicalEvaluator;
-import org.milyn.cdr.xpath.evaluators.value.TextValue;
-import org.milyn.cdr.xpath.evaluators.equality.AbstractEqualityEvaluator;
-import org.milyn.cdr.xpath.evaluators.equality.IndexEvaluator;
-import org.milyn.xml.DomUtils;
-import org.w3c.dom.Element;
-import org.jaxen.expr.Step;
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
 import org.jaxen.expr.NameStep;
+import org.jaxen.expr.Step;
 import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.xpath.evaluators.PassThruEvaluator;
+import org.milyn.cdr.xpath.evaluators.PredicatesEvaluator;
+import org.milyn.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
+import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
+import org.milyn.cdr.xpath.evaluators.equality.AbstractEqualityEvaluator;
+import org.milyn.cdr.xpath.evaluators.logical.AbstractLogicalEvaluator;
+import org.milyn.cdr.xpath.evaluators.value.TextValue;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.xml.DomUtils;
+import org.milyn.delivery.sax.SAXElement;
+import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
 import javax.xml.XMLConstants;
-import java.util.Properties;
+import javax.xml.namespace.QName;
 import java.util.List;
-
-import javassist.NotFoundException;
-import javassist.CannotCompileException;
+import java.util.Properties;
 
 /**
  * XPath Expression Evaluator.
@@ -64,8 +62,9 @@ public class SelectorStep {
 
     /**
      * Public constructor.
+     *
      * @param xpathExpression The XPath expression of which the {@link Step} is a
-     * part.
+     *                        part.
      * @throws SAXPathException Error constructing the selector step.
      */
     public SelectorStep(String xpathExpression) throws SAXPathException {
@@ -77,9 +76,10 @@ public class SelectorStep {
 
     /**
      * Public constructor.
+     *
      * @param xpathExpression The XPath expression of which the {@link Step} is a
-     * part.
-     * @param step The XPath {@link Step}.
+     *                        part.
+     * @param step            The XPath {@link Step}.
      * @throws SAXPathException Error constructing the selector step.
      */
     public SelectorStep(String xpathExpression, Step step) throws SAXPathException {
@@ -92,23 +92,22 @@ public class SelectorStep {
     }
 
     /**
-     *
      * Public constructor.
      * <p/>
      * Allows asssociation of an attribute step.  XPath expressions can have the
      * form "xxx/@abc", where the attribute "abc" is on the element "xxx".
      *
      * @param xpathExpression The XPath expression of which the {@link Step} is a
-     * part.
-     * @param step The XPath {@link Step}.
-     * @param attributeStep The Attribute Step.
+     *                        part.
+     * @param step            The XPath {@link Step}.
+     * @param attributeStep   The Attribute Step.
      * @throws SAXPathException Error constructing the selector step.
      */
     public SelectorStep(String xpathExpression, Step step, Step attributeStep) throws SAXPathException {
         this(xpathExpression, step);
         AssertArgument.isNotNull(attributeStep, "attributeStep");
 
-        if(attributeStep.getAxis() != Axis.ATTRIBUTE) {
+        if (attributeStep.getAxis() != Axis.ATTRIBUTE) {
             throw new IllegalArgumentException("Unexpected 'attributeStep' arg '" + attributeStep.getText() + "'.  Must be an ATTRIBUTE Axis step.");
         }
 
@@ -118,8 +117,9 @@ public class SelectorStep {
 
     /**
      * Public constructor.
-     * @param xpathExpression The XPath expression of which the {@link Step} is a
-     * part.
+     *
+     * @param xpathExpression   The XPath expression of which the {@link Step} is a
+     *                          part.
      * @param targetElementName The target element name associated with this selector step.
      */
     public SelectorStep(String xpathExpression, String targetElementName) {
@@ -133,9 +133,10 @@ public class SelectorStep {
 
     /**
      * Public constructor.
-     * @param xpathExpression The XPath expression of which the {@link Step} is a
-     * part.
-     * @param targetElementName The target element name associated with this selector step.
+     *
+     * @param xpathExpression     The XPath expression of which the {@link Step} is a
+     *                            part.
+     * @param targetElementName   The target element name associated with this selector step.
      * @param targetAttributeName The target attribute name associated with this selector step.
      */
     public SelectorStep(String xpathExpression, String targetElementName, String targetAttributeName) {
@@ -191,7 +192,8 @@ public class SelectorStep {
     }
 
     /**
-     * Get the XPath selector expression of which this SelectorStep instance is a part. 
+     * Get the XPath selector expression of which this SelectorStep instance is a part.
+     *
      * @return The XPath selector expression of which this SelectorStep instance is a part.
      */
     public String getXPathExpression() {
@@ -218,7 +220,7 @@ public class SelectorStep {
         isRooted = rooted;
 
         // Can't be rooted and **...
-        if(isStarStar) {
+        if (isStarStar) {
             isRooted = false;
         }
     }
@@ -233,11 +235,11 @@ public class SelectorStep {
 
     public void buildPredicatesEvaluator(Properties namespaces) throws SAXPathException, NotFoundException, CannotCompileException, IllegalAccessException, InstantiationException {
         AssertArgument.isNotNull(namespaces, "namespaces");
-        if(predicatesEvaluator != null) {
+        if (predicatesEvaluator != null) {
             return;
         }
 
-        if(step != null) {
+        if (step != null) {
             PredicatesEvaluatorBuilder builder = new PredicatesEvaluatorBuilder(step, attributeStep, this, namespaces);
             try {
                 predicatesEvaluator = builder.build();
@@ -247,7 +249,7 @@ public class SelectorStep {
 
             // And update the QNames again now that we have the namespaces...
             targetElement = toQName(step, builder);
-            if(attributeStep != null) {
+            if (attributeStep != null) {
                 targetAttribute = toQName(attributeStep, builder);
             }
         } else {
@@ -258,11 +260,11 @@ public class SelectorStep {
     public boolean isTargetedAtElement(SAXElement element) {
         QName qname = element.getName();
 
-        if(isStar || isStarStar) {
+        if (isStar || isStarStar) {
             return true;
         }
 
-        if(!qname.getLocalPart().equalsIgnoreCase(targetElement.getLocalPart())) {
+        if (!qname.getLocalPart().equalsIgnoreCase(targetElement.getLocalPart())) {
             return false;
         } else if (!isTargetedAtNamespace(qname.getNamespaceURI())) {
             return false;
@@ -273,12 +275,12 @@ public class SelectorStep {
 
     public boolean isTargetedAtElement(Element element) {
         String elementName = DomUtils.getName(element);
-        
-        if(isStar || isStarStar) {
+
+        if (isStar || isStarStar) {
             return true;
         }
 
-        if(!elementName.equalsIgnoreCase(targetElement.getLocalPart())) {
+        if (!elementName.equalsIgnoreCase(targetElement.getLocalPart())) {
             return false;
         } else if (!isTargetedAtNamespace(element.getNamespaceURI())) {
             return false;
@@ -299,10 +301,10 @@ public class SelectorStep {
         String targetNS = targetElement.getNamespaceURI();
 
         // If the target NS is null, we match, no matter what the specified namespace...
-        if(targetNS == null || targetNS == XMLConstants.NULL_NS_URI) {
+        if (targetNS == null || targetNS == XMLConstants.NULL_NS_URI) {
             return true;
         }
-        
+
         return targetNS.equals(namespace);
     }
 
@@ -316,11 +318,11 @@ public class SelectorStep {
     public boolean accessesText() {
         XPathExpressionEvaluator evaluator = getPredicatesEvaluator();
 
-        if(evaluator == null) {
+        if (evaluator == null) {
             return false;
         }
 
-        if(accessesText(evaluator)) {
+        if (accessesText(evaluator)) {
             return true;
         }
 
@@ -329,26 +331,27 @@ public class SelectorStep {
 
     /**
      * Does the supplied {@link XPathExpressionEvaluator} access the element text content.
+     *
      * @return True if the supplied {@link XPathExpressionEvaluator} accesses the element text content,
-     * otherwise false.
+     *         otherwise false.
      */
     private boolean accessesText(XPathExpressionEvaluator evaluator) {
-        if(evaluator instanceof AbstractEqualityEvaluator) {
-            if(((AbstractEqualityEvaluator)evaluator).getLhs() instanceof TextValue) {
+        if (evaluator instanceof AbstractEqualityEvaluator) {
+            if (((AbstractEqualityEvaluator) evaluator).getLhs() instanceof TextValue) {
                 return true;
-            } else if(((AbstractEqualityEvaluator)evaluator).getRhs() instanceof TextValue) {
-                return true;
-            }
-        } else if(evaluator instanceof AbstractLogicalEvaluator) {
-            if(accessesText(((AbstractLogicalEvaluator)evaluator).getLhs())) {
-                return true;
-            } else if(accessesText(((AbstractLogicalEvaluator)evaluator).getRhs())) {
+            } else if (((AbstractEqualityEvaluator) evaluator).getRhs() instanceof TextValue) {
                 return true;
             }
-        } else if(evaluator instanceof PredicatesEvaluator) {
+        } else if (evaluator instanceof AbstractLogicalEvaluator) {
+            if (accessesText(((AbstractLogicalEvaluator) evaluator).getLhs())) {
+                return true;
+            } else if (accessesText(((AbstractLogicalEvaluator) evaluator).getRhs())) {
+                return true;
+            }
+        } else if (evaluator instanceof PredicatesEvaluator) {
             List<XPathExpressionEvaluator> evaluators = ((PredicatesEvaluator) evaluator).getEvaluators();
-            for(XPathExpressionEvaluator pEvaluator : evaluators) {
-                if(accessesText(pEvaluator)) {
+            for (XPathExpressionEvaluator pEvaluator : evaluators) {
+                if (accessesText(pEvaluator)) {
                     return true;
                 }
             }
@@ -362,16 +365,16 @@ public class SelectorStep {
     }
 
     private <T extends XPathExpressionEvaluator> void getEvaluators(XPathExpressionEvaluator evaluator, Class<T> evaluatorClass, List<XPathExpressionEvaluator> evaluators) {
-        if(evaluator.getClass() == evaluatorClass) {
+        if (evaluator.getClass() == evaluatorClass) {
             evaluators.add(evaluator);
         }
 
-        if(evaluator instanceof AbstractLogicalEvaluator) {
-            getEvaluators(((AbstractLogicalEvaluator)evaluator).getLhs(), evaluatorClass, evaluators);
-            getEvaluators(((AbstractLogicalEvaluator)evaluator).getRhs(), evaluatorClass, evaluators);
-        } else if(evaluator instanceof PredicatesEvaluator) {
+        if (evaluator instanceof AbstractLogicalEvaluator) {
+            getEvaluators(((AbstractLogicalEvaluator) evaluator).getLhs(), evaluatorClass, evaluators);
+            getEvaluators(((AbstractLogicalEvaluator) evaluator).getRhs(), evaluatorClass, evaluators);
+        } else if (evaluator instanceof PredicatesEvaluator) {
             List<XPathExpressionEvaluator> subEvaluators = ((PredicatesEvaluator) evaluator).getEvaluators();
-            for(XPathExpressionEvaluator pEvaluator : subEvaluators) {
+            for (XPathExpressionEvaluator pEvaluator : subEvaluators) {
                 getEvaluators(pEvaluator, evaluatorClass, evaluators);
             }
         }
@@ -381,8 +384,8 @@ public class SelectorStep {
         String nsPrefix = ((NameStep) step).getPrefix();
         String localPart = ((NameStep) step).getLocalName();
 
-        if(nsPrefix != null && !nsPrefix.trim().equals("")) {
-            if(evaluatorCompiler != null) {
+        if (nsPrefix != null && !nsPrefix.trim().equals("")) {
+            if (evaluatorCompiler != null) {
                 return new QName(evaluatorCompiler.getNamespace(nsPrefix), localPart, nsPrefix);
             } else {
                 // Will need to update the namespace later... when we have the
@@ -398,12 +401,12 @@ public class SelectorStep {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(getTargetElement());
-        if(targetAttribute != null) {
+        if (targetAttribute != null) {
             stringBuilder.append("{@" + targetAttribute + "}");
         }
 
         XPathExpressionEvaluator evaluator = getPredicatesEvaluator();
-        if(evaluator != null) {
+        if (evaluator != null) {
             stringBuilder.append(evaluator);
         }
 
@@ -412,16 +415,18 @@ public class SelectorStep {
 
     /**
      * Set the namespaces on the specified set of selector steps.
-     * @param steps The selector steps.
+     *
+     * @param steps      The selector steps.
      * @param namespaces The set of selector steps to be updated.
      * @return The set of selector steps (as passed in the 'steps' argument).
-     * @throws org.jaxen.saxpath.SAXPathException Error setting namespaces
+     * @throws org.jaxen.saxpath.SAXPathException
+     *          Error setting namespaces
      */
     public static SelectorStep[] setNamespaces(SelectorStep[] steps, Properties namespaces) throws SAXPathException {
         AssertArgument.isNotNull(steps, "steps");
         AssertArgument.isNotNull(namespaces, "namespaces");
 
-        for(int i = 0; i < steps.length; i++) {
+        for (int i = 0; i < steps.length; i++) {
             SelectorStep step = steps[i];
             try {
                 step.buildPredicatesEvaluator(namespaces);
@@ -432,7 +437,7 @@ public class SelectorStep {
             }
 
             //
-            if(i < steps.length - 1 && step.accessesText()) {
+            if (i < steps.length - 1 && step.accessesText()) {
                 throw new SAXPathException("Unsupported XPath selector expression '" + step.getXPathExpression() + "'.  XPath 'text()' tokens are only supported in the last step.");
             }
         }
@@ -442,6 +447,7 @@ public class SelectorStep {
 
     /**
      * Is this selector step a hashed attribute selector step.
+     *
      * @return True if the selector step is a hashed attribute selector, otherwise false.
      */
     public boolean isHashedAttribute() {

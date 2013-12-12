@@ -15,25 +15,25 @@
 */
 package org.milyn.ejc;
 
+import org.milyn.commons.io.FileUtils;
+import org.milyn.commons.resource.URIResourceLocator;
+import org.milyn.commons.util.CollectionsUtil;
+import org.milyn.commons.util.FreeMarkerTemplate;
 import org.milyn.ect.EdiSpecificationReader;
-import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Description;
+import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.util.IllegalNameException;
-import org.milyn.io.FileUtils;
 import org.milyn.javabean.pojogen.JClass;
-import org.milyn.resource.URIResourceLocator;
-import org.milyn.util.CollectionsUtil;
-import org.milyn.util.FreeMarkerTemplate;
 import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
 
 /**
  * {@link EJC} Executor.
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class EJCExecutor {
@@ -50,7 +50,7 @@ public class EJCExecutor {
         assertMandatoryProperty(destDir, "destDir");
         assertMandatoryProperty(packageName, "packageName");
 
-        if(destDir.exists() && !destDir.isDirectory()) {
+        if (destDir.exists() && !destDir.isDirectory()) {
             throw new EJCException("Specified EJC destination directory '" + destDir.getAbsoluteFile() + "' exists, but is not a directory.");
         }
 
@@ -63,7 +63,7 @@ public class EJCExecutor {
         String commonsPackageName = packageName + ".common";
         ClassModel definitionsClassModel = null;
 
-        if(definitionsModel != null) {
+        if (definitionsModel != null) {
             EJC ejc = new EJC();
             definitionsClassModel = ejc.compile(definitionsModel.getEdimap(), commonsPackageName, destDir.getAbsolutePath());
 
@@ -75,26 +75,26 @@ public class EJCExecutor {
         List<MessageDefinition> messageSetDefinitions = new ArrayList<MessageDefinition>();
         Set<Map.Entry<String, EdifactModel>> modelSet = mappingModels.entrySet();
         StringBuilder rootClassesListFileBuilder = new StringBuilder();
-        for(Map.Entry<String, EdifactModel> model : modelSet) {
+        for (Map.Entry<String, EdifactModel> model : modelSet) {
             Description description = model.getValue().getDescription();
 
-            if(description.equals(EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION_LOOKUP_NAME)) {
+            if (description.equals(EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION_LOOKUP_NAME)) {
                 // Already done (above).  Skip it...
                 continue;
             }
 
-            if(messages == null || messages.contains(description.getName())) {
+            if (messages == null || messages.contains(description.getName())) {
                 EJC ejc = new EJC();
 
                 ejc.include(commonsPackageName);
                 ejc.addEDIMessageAnnotation(true);
-                if(definitionsClassModel != null) {
+                if (definitionsClassModel != null) {
                     String messagePackageName = packageName + "." + description.getName();
                     ClassModel classModel = ejc.compile(model.getValue().getEdimap(), messagePackageName, destDir.getAbsolutePath(), definitionsClassModel.getClassesByNode());
 
                     // If this is an interchange, get rid of the edi mapping model config and the
                     // Factory class for the message folder...
-                    if(interchangeProperties != null) {
+                    if (interchangeProperties != null) {
                         MessageDefinition messageDef = new MessageDefinition(description.getName(), "/" + messagePackageName.replace('.', '/') + "/" + EJC.BINDINGCONFIG_XML);
                         messageSetDefinitions.add(messageDef);
 
@@ -113,7 +113,7 @@ public class EJCExecutor {
         // Write the list of class names into the jar file as a list file.  Can be used for testing etc...
         FileUtils.writeFile(rootClassesListFileBuilder.toString().getBytes("UTF-8"), new File(destDir, packageName.replace('.', '/') + "/ejc-classes.lst"));
 
-        if(interchangeProperties != null && !messageSetDefinitions.isEmpty()) {
+        if (interchangeProperties != null && !messageSetDefinitions.isEmpty()) {
             applyTemplate("message-bindingconfig.xml", messageBindingTemplate, interchangeProperties, messageSetDefinitions);
             applyTemplate("interchange-bindingconfig.xml", interchangeBindingTemplate, interchangeProperties, messageSetDefinitions);
             generateFactoryClass(interchangeProperties);
@@ -174,7 +174,7 @@ public class EJCExecutor {
     }
 
     public void setMessages(String messages) {
-        if(messages != null) {
+        if (messages != null) {
             this.messages = CollectionsUtil.toSet(messages.split(","));
         }
     }
@@ -192,7 +192,7 @@ public class EJCExecutor {
     }
 
     private void assertMandatoryProperty(Object obj, String name) {
-        if(obj == null) {
+        if (obj == null) {
             throw new EJCException("Mandatory EJC property '" + name + "' + not specified.");
         }
     }

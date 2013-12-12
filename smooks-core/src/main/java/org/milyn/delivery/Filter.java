@@ -17,23 +17,27 @@ package org.milyn.delivery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
 import org.milyn.Smooks;
-import org.milyn.payload.FilterSource;
-import org.milyn.payload.FilterResult;
 import org.milyn.cdr.ParameterAccessor;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.io.NullReader;
+import org.milyn.commons.io.NullWriter;
+import org.milyn.commons.thread.StackedThreadLocal;
 import org.milyn.container.ExecutionContext;
-import org.milyn.io.NullReader;
-import org.milyn.io.NullWriter;
-import org.milyn.thread.StackedThreadLocal;
+import org.milyn.payload.FilterResult;
+import org.milyn.payload.FilterSource;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.util.EmptyStackException;
-import java.util.Stack;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 /**
  * Content filter.
@@ -102,7 +106,8 @@ public abstract class Filter {
 
     /**
      * Set the default stream filter type on the supplied Smooks instance.
-     * @param smooks The Smooks instance.
+     *
+     * @param smooks     The Smooks instance.
      * @param filterType The filter type.
      */
     public static void setFilterType(Smooks smooks, org.milyn.StreamFilterType filterType) {
@@ -111,7 +116,8 @@ public abstract class Filter {
 
     /**
      * Set the default stream filter type on the supplied Smooks instance.
-     * @param smooks The Smooks instance.
+     *
+     * @param smooks     The Smooks instance.
      * @param filterType The filter type.
      * @deprecated Use {@link #setFilterType(org.milyn.Smooks, org.milyn.StreamFilterType)}.
      */
@@ -126,7 +132,7 @@ public abstract class Filter {
      */
     public static Filter getFilter() {
         Filter filter = Filter.filterThreadLocal.get();
-        if(filter == null) {
+        if (filter == null) {
             throw new IllegalStateException("Call to getFilter() before the filter is set for the Thread.  This method can only be called within the context of a Smooks execution, which sets the filter.");
         }
         return filter;
@@ -174,18 +180,18 @@ public abstract class Filter {
     }
 
     protected Reader getReader(Source source, ExecutionContext executionContext) {
-        if(source instanceof StreamSource) {
+        if (source instanceof StreamSource) {
             StreamSource streamSource = (StreamSource) source;
-            if(streamSource.getReader() != null) {
+            if (streamSource.getReader() != null) {
                 return streamSource.getReader();
-            } else if(streamSource.getInputStream() != null) {
+            } else if (streamSource.getInputStream() != null) {
                 try {
-                    if(executionContext instanceof ExecutionContext) {
+                    if (executionContext instanceof ExecutionContext) {
                         return new InputStreamReader(streamSource.getInputStream(), executionContext.getContentEncoding());
                     } else {
                         return new InputStreamReader(streamSource.getInputStream(), "UTF-8");
                     }
-                } catch(UnsupportedEncodingException e) {
+                } catch (UnsupportedEncodingException e) {
                     throw new SmooksException("Unable to decode input stream.", e);
                 }
             } else {
@@ -197,21 +203,21 @@ public abstract class Filter {
     }
 
     protected Writer getWriter(Result result, ExecutionContext executionContext) {
-        if(!(result instanceof StreamResult)) {
+        if (!(result instanceof StreamResult)) {
             return new NullWriter();
         }
 
         StreamResult streamResult = (StreamResult) result;
-        if(streamResult.getWriter() != null) {
+        if (streamResult.getWriter() != null) {
             return streamResult.getWriter();
-        } else if(streamResult.getOutputStream() != null) {
+        } else if (streamResult.getOutputStream() != null) {
             try {
-                if(executionContext instanceof ExecutionContext) {
+                if (executionContext instanceof ExecutionContext) {
                     return new OutputStreamWriter(streamResult.getOutputStream(), executionContext.getContentEncoding());
                 } else {
                     return new OutputStreamWriter(streamResult.getOutputStream(), "UTF-8");
                 }
-            } catch(UnsupportedEncodingException e) {
+            } catch (UnsupportedEncodingException e) {
                 throw new SmooksException("Unable to encode output stream.", e);
             }
         } else {
@@ -223,11 +229,11 @@ public abstract class Filter {
         if (source instanceof StreamSource) {
             StreamSource streamSource = (StreamSource) source;
             try {
-                if(streamSource.getReader() != null) {
+                if (streamSource.getReader() != null) {
                     streamSource.getReader().close();
-                } else if(streamSource.getInputStream() != null) {
+                } else if (streamSource.getInputStream() != null) {
                     InputStream inputStream = streamSource.getInputStream();
-                    if(inputStream != System.in) {
+                    if (inputStream != System.in) {
                         inputStream.close();
                     }
                 }
@@ -255,7 +261,7 @@ public abstract class Filter {
                         stream.flush();
                     } finally {
                         // Close the stream as long as it's not sysout or syserr...
-                        if(stream != System.out && stream != System.err) {
+                        if (stream != System.out && stream != System.err) {
                             stream.close();
                         }
                     }

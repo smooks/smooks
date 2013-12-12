@@ -19,15 +19,15 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.util.zip.ZipInputStream;
 
-import org.milyn.archive.Archive;
-import org.milyn.archive.ArchiveClassLoader;
+import org.milyn.commons.archive.Archive;
+import org.milyn.commons.archive.ArchiveClassLoader;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.ejc.BeanWriter;
 import org.milyn.ejc.BindingWriter;
 import org.milyn.ejc.ClassModel;
 import org.milyn.ejc.EJC;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.test.ant.AntRunner;
 import org.xml.sax.SAXException;
 

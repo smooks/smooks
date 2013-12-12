@@ -17,16 +17,15 @@ package example;
 
 import com.acme.order.model.*;
 import com.acme.order.model.field.Name;
+import org.milyn.commons.io.FileUtils;
+import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.List;
-
-import org.xml.sax.SAXException;
-import org.milyn.io.FileUtils;
 
 /**
  * Simple example of how to use an EJC generated Factory class.

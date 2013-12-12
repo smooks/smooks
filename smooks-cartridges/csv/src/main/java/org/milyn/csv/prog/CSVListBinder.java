@@ -21,7 +21,7 @@ import org.milyn.csv.CSVRecordParserConfigurator;
 import org.milyn.flatfile.Binding;
 import org.milyn.flatfile.BindingType;
 import org.milyn.payload.JavaResult;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 import javax.xml.transform.stream.StreamSource;
 import java.util.List;

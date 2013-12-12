@@ -15,17 +15,18 @@
 */
 package org.milyn.cdr.xpath.evaluators;
 
-import org.jaxen.expr.*;
-import org.jaxen.saxpath.SAXPathException;
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
+import org.jaxen.expr.NameStep;
+import org.jaxen.expr.Predicate;
+import org.jaxen.expr.Step;
 import org.jaxen.saxpath.Axis;
-import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
+import org.jaxen.saxpath.SAXPathException;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.xml.Namespace;
 
 import java.util.List;
 import java.util.Properties;
-
-import javassist.*;
 
 /**
  * {@link PredicatesEvaluator} builder.

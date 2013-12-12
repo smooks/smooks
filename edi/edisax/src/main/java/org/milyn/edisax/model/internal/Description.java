@@ -16,7 +16,7 @@
 
 package org.milyn.edisax.model.internal;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 public class Description {
 

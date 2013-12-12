@@ -17,9 +17,9 @@
 package org.milyn.delivery.dom.serialize;
 
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.xml.XmlUtil;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Filter;
-import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -36,6 +36,7 @@ import java.io.Writer;
  * Default SerializationUnit implementation.
  * <p/>
  * Default SerialisationUnit where none defined.
+ *
  * @author tfennelly
  */
 public class DefaultSerializationUnit implements SerializationUnit {
@@ -65,51 +66,52 @@ public class DefaultSerializationUnit implements SerializationUnit {
     }
 
     /* (non-Javadoc)
-	 * @see org.milyn.serialize.SerializationUnit#writeElementStart(org.w3c.dom.Element, java.io.Writer)
+     * @see org.milyn.serialize.SerializationUnit#writeElementStart(org.w3c.dom.Element, java.io.Writer)
 	 */
-	public void writeElementStart(Element element, Writer writer) throws IOException {
-		writer.write((int)'<');
+    public void writeElementStart(Element element, Writer writer) throws IOException {
+        writer.write((int) '<');
         writer.write(element.getTagName());
         writeAttributes(element.getAttributes(), writer);
-        if(closeEmptyElements && !element.hasChildNodes()) {
+        if (closeEmptyElements && !element.hasChildNodes()) {
             // Do nothing.  We'll close it "short-hand" in writeElementEnd below...
         } else {
-            writer.write((int)'>');
+            writer.write((int) '>');
         }
     }
 
-	/**
-	 * Write the element attributes.
-	 * @param attributes The element attibutes.
-	 * @param writer The writer to be written to.
-	 * @throws IOException Exception writing output.
-	 */
-	protected void writeAttributes(NamedNodeMap attributes, Writer writer) throws IOException {
-		int attribCount = attributes.getLength();
-		
-		for(int i = 0; i < attribCount; i++) {
-			Attr attribute = (Attr)attributes.item(i);
-			String attribValue = attribute.getValue();
-			int enclosingChar = (int)'"';
+    /**
+     * Write the element attributes.
+     *
+     * @param attributes The element attibutes.
+     * @param writer     The writer to be written to.
+     * @throws IOException Exception writing output.
+     */
+    protected void writeAttributes(NamedNodeMap attributes, Writer writer) throws IOException {
+        int attribCount = attributes.getLength();
 
-            writer.write((int)' ');
+        for (int i = 0; i < attribCount; i++) {
+            Attr attribute = (Attr) attributes.item(i);
+            String attribValue = attribute.getValue();
+            int enclosingChar = (int) '"';
+
+            writer.write((int) ' ');
             writer.write(attribute.getName());
-            writer.write((int)'=');
+            writer.write((int) '=');
 
-            if(rewriteEntities) {
+            if (rewriteEntities) {
                 writer.write('\"');
                 XmlUtil.encodeAttributeValue(attribValue.toCharArray(), 0, attribValue.length(), writer);
                 writer.write('\"');
             } else {
-                if(attribValue.indexOf((int)'"') != -1) {
-                    enclosingChar = (int)'\'';
+                if (attribValue.indexOf((int) '"') != -1) {
+                    enclosingChar = (int) '\'';
                 }
                 writer.write(enclosingChar);
                 writer.write(attribValue);
                 writer.write(enclosingChar);
             }
         }
-	}
+    }
 
     /* (non-Javadoc)
      * @see org.milyn.serialize.SerializationUnit#writeElementEnd(org.w3c.dom.Element, java.io.Writer)
@@ -118,24 +120,24 @@ public class DefaultSerializationUnit implements SerializationUnit {
         writeElementEnd(element, writer, null);
     }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.serialize.SerializationUnit#writeElementEnd(org.w3c.dom.Element, java.io.Writer)
-	 */
-	public void writeElementEnd(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        if(closeEmptyElements && !element.hasChildNodes()) {
+    /* (non-Javadoc)
+     * @see org.milyn.serialize.SerializationUnit#writeElementEnd(org.w3c.dom.Element, java.io.Writer)
+     */
+    public void writeElementEnd(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
+        if (closeEmptyElements && !element.hasChildNodes()) {
             writer.write("/>");
         } else {
             writer.write("</");
             writer.write(element.getTagName());
-            writer.write((int)'>');
+            writer.write((int) '>');
         }
     }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.serialize.SerializationUnit#writeElementText(org.w3c.dom.Text, java.io.Writer)
-	 */
-	public void writeElementText(Text text, Writer writer, ExecutionContext executionContext) throws IOException {
-        if(rewriteEntities) {
+    /* (non-Javadoc)
+     * @see org.milyn.serialize.SerializationUnit#writeElementText(org.w3c.dom.Text, java.io.Writer)
+     */
+    public void writeElementText(Text text, Writer writer, ExecutionContext executionContext) throws IOException {
+        if (rewriteEntities) {
             String textString = text.getData();
             XmlUtil.encodeTextValue(textString.toCharArray(), 0, textString.length(), writer);
         } else {
@@ -143,44 +145,44 @@ public class DefaultSerializationUnit implements SerializationUnit {
         }
     }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.serialize.SerializationUnit#writeElementComment(org.w3c.dom.Comment, java.io.Writer)
-	 */
-	public void writeElementComment(Comment comment, Writer writer, ExecutionContext executionContext) throws IOException {
-		writer.write("<!--");
-		writer.write(comment.getData());
-		writer.write("-->");
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.serialize.SerializationUnit#writeElementComment(org.w3c.dom.Comment, java.io.Writer)
+     */
+    public void writeElementComment(Comment comment, Writer writer, ExecutionContext executionContext) throws IOException {
+        writer.write("<!--");
+        writer.write(comment.getData());
+        writer.write("-->");
+    }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.serialize.SerializationUnit#writeElementEntityRef(org.w3c.dom.EntityReference, java.io.Writer)
-	 */
-	public void writeElementEntityRef(EntityReference entityRef, Writer writer, ExecutionContext executionContext) throws IOException {
-		writer.write('&');
-		writer.write(entityRef.getNodeName());
-		writer.write(';');
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.serialize.SerializationUnit#writeElementEntityRef(org.w3c.dom.EntityReference, java.io.Writer)
+     */
+    public void writeElementEntityRef(EntityReference entityRef, Writer writer, ExecutionContext executionContext) throws IOException {
+        writer.write('&');
+        writer.write(entityRef.getNodeName());
+        writer.write(';');
+    }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.serialize.SerializationUnit#writeElementCDATA(org.w3c.dom.CDATASection, java.io.Writer)
-	 */
-	public void writeElementCDATA(CDATASection cdata, Writer writer, ExecutionContext executionContext) throws IOException {
-		writer.write("<![CDATA[");
-		writer.write(cdata.getData());
-		writer.write("]]>");
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.serialize.SerializationUnit#writeElementCDATA(org.w3c.dom.CDATASection, java.io.Writer)
+     */
+    public void writeElementCDATA(CDATASection cdata, Writer writer, ExecutionContext executionContext) throws IOException {
+        writer.write("<![CDATA[");
+        writer.write(cdata.getData());
+        writer.write("]]>");
+    }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.serialize.SerializationUnit#writeElementNode(org.w3c.dom.Node, java.io.Writer)
-	 */
-	public void writeElementNode(Node node, Writer writer, ExecutionContext executionContext) throws IOException {
-		throw new IOException("writeElementNode not implemented yet. Node: " + node.getNodeValue() + ", node: [" + node + "]");
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.serialize.SerializationUnit#writeElementNode(org.w3c.dom.Node, java.io.Writer)
+     */
+    public void writeElementNode(Node node, Writer writer, ExecutionContext executionContext) throws IOException {
+        throw new IOException("writeElementNode not implemented yet. Node: " + node.getNodeValue() + ", node: [" + node + "]");
+    }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.serialize.SerializationUnit#writeChildElements()
-	 */
-	public boolean writeChildElements() {
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see org.milyn.serialize.SerializationUnit#writeChildElements()
+     */
+    public boolean writeChildElements() {
+        return true;
+    }
 }

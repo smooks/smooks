@@ -15,39 +15,35 @@
 */
 package org.milyn.routing.db;
 
+import junit.framework.TestCase;
+import org.hsqldb.jdbcDriver;
+import org.milyn.Smooks;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.util.HsqlServer;
+import org.milyn.container.ExecutionContext;
+import org.milyn.db.DirectDataSource;
+import org.milyn.javabean.context.BeanContext;
+import org.milyn.javabean.context.BeanIdStore;
+import org.milyn.javabean.repository.BeanId;
+import org.milyn.payload.StringSource;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.milyn.Smooks;
-import org.milyn.SmooksException;
-import org.milyn.db.DirectDataSource;
-import org.milyn.container.ExecutionContext;
-import org.milyn.javabean.context.BeanContext;
-import org.milyn.javabean.context.BeanIdStore;
-import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanIdRegister;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.javabean.repository.BeanRepositoryManager;
-import org.milyn.payload.StringSource;
-import org.milyn.util.HsqlServer;
-import org.xml.sax.SAXException;
-import org.hsqldb.jdbcDriver;
-import junit.framework.TestCase;
-
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SQLExecutorTest extends TestCase
-{
+public class SQLExecutorTest extends TestCase {
     private HsqlServer hsqlServer;
 
-	public void setUp() throws Exception {
+    public void setUp() throws Exception {
         hsqlServer = new HsqlServer(9992);
         hsqlServer.execScript(getClass().getResourceAsStream("test.script"));
     }
 
-	public void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         hsqlServer.stop();
     }
 
@@ -62,7 +58,7 @@ public class SQLExecutorTest extends TestCase
 
     public void test_appContextTimeExtendedConfig() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config.xml"));
-    	test_appContextTime(smooks);
+        test_appContextTime(smooks);
         try {
             test_appContextTime(smooks);
         } finally {
@@ -76,34 +72,34 @@ public class SQLExecutorTest extends TestCase
         try {
             // Now programmaticly configure...
             DirectDataSource datasource = new DirectDataSource()
-                              .setDriver(jdbcDriver.class)
-                              .setName("OrdersDS")
-                              .setUrl("jdbc:hsqldb:hsql://localhost:9992/milyn-hsql-9992")
-                              .setUsername("sa")
-                              .setPassword("")
-                              .setAutoCommit(true);
+                    .setDriver(jdbcDriver.class)
+                    .setName("OrdersDS")
+                    .setUrl("jdbc:hsqldb:hsql://localhost:9992/milyn-hsql-9992")
+                    .setUsername("sa")
+                    .setPassword("")
+                    .setAutoCommit(true);
             SQLExecutor orderSelector = new SQLExecutor()
-                              .setDatasource(datasource)
-                              .setStatement("select * from ORDERS")
-                              .setResultSetName("orders1")
-                              .setExecuteBefore(true);
+                    .setDatasource(datasource)
+                    .setStatement("select * from ORDERS")
+                    .setResultSetName("orders1")
+                    .setExecuteBefore(true);
 
             smooks.addVisitor(datasource);
             smooks.addVisitor(orderSelector);
 
             smooks.addVisitor(new ResultsetRowSelector()
-                              .setSelector(orderSelector)
-                              .setBeanId("myOrder")
-                              .setWhereClause("row.ORDERNUMBER == 2")
-                              .setFailedSelectError("Order with ORDERNUMBER=2 not found in Database"));
+                    .setSelector(orderSelector)
+                    .setBeanId("myOrder")
+                    .setWhereClause("row.ORDERNUMBER == 2")
+                    .setFailedSelectError("Order with ORDERNUMBER=2 not found in Database"));
 
             smooks.addVisitor(new SQLExecutor()
-                              .setDatasource(datasource)
-                              .setStatement("select * from ORDERS")
-                              .setResultSetName("orders2")
-                              .setResultSetScope(ResultSetScope.APPLICATION)
-                              .setResultSetTTL(2000L)
-                              .setExecuteBefore(true));
+                    .setDatasource(datasource)
+                    .setStatement("select * from ORDERS")
+                    .setResultSetName("orders2")
+                    .setResultSetScope(ResultSetScope.APPLICATION)
+                    .setResultSetTTL(2000L)
+                    .setExecuteBefore(true));
 
             test_appContextTime(smooks);
         } finally {
@@ -112,7 +108,7 @@ public class SQLExecutorTest extends TestCase
     }
 
     @SuppressWarnings("unchecked")
-	private void test_appContextTime(Smooks smooks) throws IOException, SAXException, InterruptedException {
+    private void test_appContextTime(Smooks smooks) throws IOException, SAXException, InterruptedException {
         ExecutionContext execContext = smooks.createExecutionContext();
         BeanContext beanContext = execContext.getBeanContext();
 
@@ -146,7 +142,7 @@ public class SQLExecutorTest extends TestCase
     }
 
     @SuppressWarnings("unchecked")
-	public void test_ResultsetRowSelector_01() throws IOException, SAXException, InterruptedException {
+    public void test_ResultsetRowSelector_01() throws IOException, SAXException, InterruptedException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
 
         try {
@@ -164,7 +160,7 @@ public class SQLExecutorTest extends TestCase
 
 
     @SuppressWarnings("unchecked")
-	public void test_ResultsetRowSelector_02() throws IOException, SAXException, InterruptedException {
+    public void test_ResultsetRowSelector_02() throws IOException, SAXException, InterruptedException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-failed-select-01.xml"));
 
         try {
@@ -186,7 +182,7 @@ public class SQLExecutorTest extends TestCase
         try {
             ExecutionContext execContext = smooks.createExecutionContext();
             BeanContext beanContext = execContext.getBeanContext();
-            BeanIdStore beanIdStore =  execContext.getContext().getBeanIdStore();
+            BeanIdStore beanIdStore = execContext.getContext().getBeanIdStore();
 
             BeanId requiredOrderNumId = beanIdStore.register("requiredOrderNum");
 
@@ -194,7 +190,7 @@ public class SQLExecutorTest extends TestCase
             try {
                 smooks.filterSource(execContext, new StringSource("<doc/>"), null);
                 fail("Expected DataSelectionException");
-            } catch(SmooksException e) {
+            } catch (SmooksException e) {
                 assertEquals("Order with ORDERNUMBER=9999 not found in Database", e.getCause().getMessage());
             }
         } finally {

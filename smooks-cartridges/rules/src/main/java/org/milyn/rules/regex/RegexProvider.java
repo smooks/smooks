@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.milyn.SmooksException;
-import org.milyn.resource.URIResourceLocator;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.resource.URIResourceLocator;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.container.ExecutionContext;
 import org.milyn.rules.RuleEvalResult;
 import org.milyn.rules.regex.RegexRuleEvalResult;

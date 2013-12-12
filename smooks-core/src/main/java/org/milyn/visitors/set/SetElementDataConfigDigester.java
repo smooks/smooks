@@ -15,16 +15,17 @@
 */
 package org.milyn.visitors.set;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.Parameter;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.extension.ExtensionContext;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.w3c.dom.Element;
 
 /**
  * Digester for the {@link SetElementData}.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class SetElementDataConfigDigester implements DOMVisitAfter {

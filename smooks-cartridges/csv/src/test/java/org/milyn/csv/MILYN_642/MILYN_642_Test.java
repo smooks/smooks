@@ -26,9 +26,9 @@ import junit.framework.TestCase;
 
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.SmooksUtil;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.flatfile.Binding;
 import org.milyn.flatfile.BindingType;

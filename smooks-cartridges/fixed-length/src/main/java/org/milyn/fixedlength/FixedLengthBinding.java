@@ -15,7 +15,7 @@
 */
 package org.milyn.fixedlength;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 /**
  * Fixed Lenght Binding configuration.

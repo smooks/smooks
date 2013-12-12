@@ -15,7 +15,7 @@
 */
 package org.milyn.templating;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 
 /**
  * OutputTo template usage.

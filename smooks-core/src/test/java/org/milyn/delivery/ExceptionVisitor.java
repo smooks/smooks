@@ -15,12 +15,12 @@
 */
 package org.milyn.delivery;
 
-import org.milyn.delivery.sax.SAXElementVisitor;
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXText;
-import org.milyn.delivery.dom.DOMElementVisitor;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
+import org.milyn.delivery.dom.DOMElementVisitor;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXElementVisitor;
+import org.milyn.delivery.sax.SAXText;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class ExceptionVisitor implements SAXElementVisitor, DOMElementVisitor {
     public static SmooksException afterException;
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(beforeException != null) {
+        if (beforeException != null) {
             throw beforeException;
         }
     }
@@ -46,19 +46,19 @@ public class ExceptionVisitor implements SAXElementVisitor, DOMElementVisitor {
     }
 
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(afterException != null) {
+        if (afterException != null) {
             throw afterException;
         }
     }
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(beforeException != null) {
+        if (beforeException != null) {
             throw beforeException;
         }
     }
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(afterException != null) {
+        if (afterException != null) {
             throw afterException;
         }
     }

@@ -15,36 +15,34 @@
 */
 package org.milyn.persistence;
 
-import org.milyn.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecodeException;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
- *
  */
 public enum ParameterListType {
 
-	NAMED,
-	POSITIONAL;
+    NAMED,
+    POSITIONAL;
 
-	public static final String NAMED_STR = "NAMED";
-	public static final String POSITIONAL_STR = "POSITIONAL";
+    public static final String NAMED_STR = "NAMED";
+    public static final String POSITIONAL_STR = "POSITIONAL";
 
-	/**
-	 * A Data decoder for this Enum
-	 *
-	 * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
-	 *
-	 */
-	public static class DataDecoder implements org.milyn.javabean.DataDecoder {
+    /**
+     * A Data decoder for this Enum
+     *
+     * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
+     */
+    public static class DataDecoder implements org.milyn.commons.javabean.DataDecoder {
 
-		/* (non-Javadoc)
-		 * @see org.milyn.javabean.DataDecoder#decode(java.lang.String)
-		 */
-		public Object decode(final String data) throws DataDecodeException {
-			final String value = data.toUpperCase();
+        /* (non-Javadoc)
+         * @see org.milyn.commons.javabean.DataDecoder#decode(java.lang.String)
+         */
+        public Object decode(final String data) throws DataDecodeException {
+            final String value = data.toUpperCase();
 
-			return valueOf(value);
-		}
+            return valueOf(value);
+        }
 
-	}
+    }
 }

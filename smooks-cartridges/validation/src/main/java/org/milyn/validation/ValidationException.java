@@ -15,7 +15,7 @@
 
 package org.milyn.validation;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * Exception that carries information about a validation failure.

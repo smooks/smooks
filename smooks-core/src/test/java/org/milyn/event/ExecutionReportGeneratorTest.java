@@ -16,14 +16,13 @@
 package org.milyn.event;
 
 import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.FlatReportGenerator;
 import org.milyn.event.report.ReportConfiguration;
-import org.milyn.container.ExecutionContext;
-import org.milyn.io.StreamUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -35,8 +34,8 @@ import java.io.StringWriter;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class ExecutionReportGeneratorTest extends TestCase {
-	
-	Log log = LogFactory.getLog(ExecutionReportGeneratorTest.class);
+
+    Log log = LogFactory.getLog(ExecutionReportGeneratorTest.class);
 
     public void test_basic_dom() throws IOException, SAXException {
         Smooks smooks = new Smooks(); // Nothing targeted

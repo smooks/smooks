@@ -16,6 +16,9 @@
 
 package org.milyn.container;
 
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.resource.ContainerResourceLocator;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,51 +27,48 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Hashtable;
 
-import org.milyn.io.StreamUtils;
-import org.milyn.resource.ContainerResourceLocator;
-
 
 public class MockContainerResourceLocator implements ContainerResourceLocator {
 
-	public static final File TEST_STANDALONE_CTX_BASE = new File("src/test/standalone-ctx");
-	private Hashtable streams = new Hashtable();
-	
-	public void setResource(String nameOrUri, InputStream stream) {
-		try {
-			byte[] streamData = StreamUtils.readStream(stream);
-			streams.put(nameOrUri, streamData);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-		}
-	}
-	
-	public InputStream getResource(String configName, String defaultUri) throws IllegalArgumentException, IOException {
-		return getResource(defaultUri);
-	}
-	
-	public InputStream getResource(String uri) throws IllegalArgumentException, IOException {
-		String relUri = uri;
-		
-        if(uri.charAt(0) == '\\' || uri.charAt(0) == '/') {
-        	relUri = uri.substring(1);
-        }
-		// Try loading the resource from the standalone test context
-    	File resFile = new File(TEST_STANDALONE_CTX_BASE, relUri);
-    	if(resFile.exists() && !resFile.isDirectory()) {
-    		return new FileInputStream(resFile);
-    	}
-		
-		// Check has it been set in this mock instance.
-		byte[] resBytes = (byte[])streams.get(uri);
-		if(resBytes == null) {
-			throw new IllegalStateException("Resource [" + uri + "] not set in MockContainerResourceLocator OR loadable from the test standalone context.  Use MockContainerResourceLocator.setResource()");
-		}
-		
-		return new ByteArrayInputStream(resBytes);
-	}
+    public static final File TEST_STANDALONE_CTX_BASE = new File("src/test/standalone-ctx");
+    private Hashtable streams = new Hashtable();
 
-	public URI getBaseURI() {
-		return URI.create("./");
-	}
+    public void setResource(String nameOrUri, InputStream stream) {
+        try {
+            byte[] streamData = StreamUtils.readStream(stream);
+            streams.put(nameOrUri, streamData);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public InputStream getResource(String configName, String defaultUri) throws IllegalArgumentException, IOException {
+        return getResource(defaultUri);
+    }
+
+    public InputStream getResource(String uri) throws IllegalArgumentException, IOException {
+        String relUri = uri;
+
+        if (uri.charAt(0) == '\\' || uri.charAt(0) == '/') {
+            relUri = uri.substring(1);
+        }
+        // Try loading the resource from the standalone test context
+        File resFile = new File(TEST_STANDALONE_CTX_BASE, relUri);
+        if (resFile.exists() && !resFile.isDirectory()) {
+            return new FileInputStream(resFile);
+        }
+
+        // Check has it been set in this mock instance.
+        byte[] resBytes = (byte[]) streams.get(uri);
+        if (resBytes == null) {
+            throw new IllegalStateException("Resource [" + uri + "] not set in MockContainerResourceLocator OR loadable from the test standalone context.  Use MockContainerResourceLocator.setResource()");
+        }
+
+        return new ByteArrayInputStream(resBytes);
+    }
+
+    public URI getBaseURI() {
+        return URI.create("./");
+    }
 }

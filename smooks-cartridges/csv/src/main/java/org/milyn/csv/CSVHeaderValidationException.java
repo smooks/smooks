@@ -16,7 +16,7 @@
 package org.milyn.csv;
 
 import org.apache.commons.lang.StringUtils;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 import java.util.ArrayList;
 import java.util.List;

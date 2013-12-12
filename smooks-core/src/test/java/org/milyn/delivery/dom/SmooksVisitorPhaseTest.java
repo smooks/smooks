@@ -16,21 +16,20 @@
 package org.milyn.delivery.dom;
 
 import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
-import org.milyn.io.StreamUtils;
-import org.milyn.delivery.ContentHandlerConfigMap;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.ContentHandlerConfigMap;
 import org.milyn.event.BasicExecutionEventListener;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.CharArrayWriter;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
+import java.io.CharArrayWriter;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,8 +38,8 @@ import java.util.List;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class SmooksVisitorPhaseTest extends TestCase {
-	
-	Log log = LogFactory.getLog( SmooksVisitorPhaseTest.class );
+
+    Log log = LogFactory.getLog(SmooksVisitorPhaseTest.class);
 
     public void test_phase_selection() throws IOException, SAXException {
         Smooks smooks = new Smooks();

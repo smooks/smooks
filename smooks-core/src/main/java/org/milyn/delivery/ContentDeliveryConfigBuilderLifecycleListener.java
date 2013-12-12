@@ -16,7 +16,7 @@
 
 package org.milyn.delivery;
 
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 
 /**
  * Lifecycle listener for events fired during building of the {@link ContentDeliveryConfig}
@@ -28,6 +28,7 @@ public interface ContentDeliveryConfigBuilderLifecycleListener {
 
     /**
      * Event handler.
+     *
      * @param event The event.
      * @throws SmooksConfigurationException Smooks configuration exception.
      */

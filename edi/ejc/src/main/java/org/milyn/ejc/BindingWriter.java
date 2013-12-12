@@ -15,8 +15,8 @@
 */
 package org.milyn.ejc;
 
-import org.milyn.assertion.AssertArgument;
-import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.util.FreeMarkerTemplate;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

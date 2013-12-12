@@ -16,26 +16,27 @@
 
 package org.milyn.cdr;
 
-import java.util.List;
-import java.util.Vector;
-import java.util.ArrayList;
-import java.net.URI;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.profile.ProfileSet;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.profile.ProfileSet;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * {@link org.milyn.cdr.SmooksResourceConfiguration} list.
+ *
  * @author tfennelly
  */
 public class SmooksResourceConfigurationList {
 
-	/**
-	 * Logger.
-	 */
-	private static Log logger = LogFactory.getLog(SmooksResourceConfigurationList.class);
+    /**
+     * Logger.
+     */
+    private static Log logger = LogFactory.getLog(SmooksResourceConfigurationList.class);
     /**
      * List name.
      */
@@ -59,25 +60,27 @@ public class SmooksResourceConfigurationList {
 
     /**
      * Public constructor.
+     *
      * @param name The name of this instance.
      */
     public SmooksResourceConfigurationList(String name) {
-        if(name == null || (name = name.trim()).equals("")) {
+        if (name == null || (name = name.trim()).equals("")) {
             throw new IllegalArgumentException("null or empty 'name' arg in constructor call.");
         }
         this.name = name;
         logger.debug("Smooks ResourceConfiguration List [" + name + "] created.");
     }
-    
+
     /**
      * Add a {@link SmooksResourceConfiguration} instance to this list.
+     *
      * @param config {@link SmooksResourceConfiguration} instance to add.
      */
     public void add(SmooksResourceConfiguration config) {
         AssertArgument.isNotNull(config, "config");
         String[] selectors = config.getSelector().split(",");
 
-        for(String selector : selectors) {
+        for (String selector : selectors) {
             SmooksResourceConfiguration clone = (SmooksResourceConfiguration) config.clone();
 
             clone.setSelector(selector.trim());
@@ -90,6 +93,7 @@ public class SmooksResourceConfigurationList {
     /**
      * Add all the {@link SmooksResourceConfiguration} instances in the specified
      * {@link SmooksResourceConfigurationList} to this list.
+     *
      * @param configList {@link SmooksResourceConfigurationList} instance to add.
      */
     public void addAll(SmooksResourceConfigurationList configList) {
@@ -98,6 +102,7 @@ public class SmooksResourceConfigurationList {
 
     /**
      * Add a {@link ProfileSet} instance to this list.
+     *
      * @param profileSet {@link ProfileSet} instance to add.
      */
     public void add(ProfileSet profileSet) {
@@ -108,6 +113,7 @@ public class SmooksResourceConfigurationList {
 
     /**
      * Get the name of this list instance.
+     *
      * @return List name.
      */
     public String getName() {
@@ -116,6 +122,7 @@ public class SmooksResourceConfigurationList {
 
     /**
      * Is this configuration list instance one of the system installed config lists.
+     *
      * @return True if this configuration list instance one of the system installed config lists, otherwise false.
      */
     public boolean isSystemConfigList() {
@@ -124,6 +131,7 @@ public class SmooksResourceConfigurationList {
 
     /**
      * Set whether or not this configuration list instance is one of the system installed config lists.
+     *
      * @param systemConfigList True if this configuration list instance one of the system installed config lists, otherwise false.
      */
     public void setSystemConfigList(boolean systemConfigList) {
@@ -132,6 +140,7 @@ public class SmooksResourceConfigurationList {
 
     /**
      * Is this list instance empty.
+     *
      * @return True if this list instance is empty, otherwise false.
      */
     public boolean isEmpty() {
@@ -140,6 +149,7 @@ public class SmooksResourceConfigurationList {
 
     /**
      * Get the size of this list.
+     *
      * @return The size of te list i.e. number of entries.
      */
     public int size() {
@@ -148,6 +158,7 @@ public class SmooksResourceConfigurationList {
 
     /**
      * Get the {@link SmooksResourceConfiguration} instance at the specified index.
+     *
      * @param index Resource index.
      * @return The {@link SmooksResourceConfiguration} instance at the specified index.
      * @throws ArrayIndexOutOfBoundsException The specified index is out of bounds.
@@ -155,41 +166,43 @@ public class SmooksResourceConfigurationList {
     public SmooksResourceConfiguration get(int index) throws ArrayIndexOutOfBoundsException {
         return list.get(index);
     }
-    
+
     /**
-     * Get all SmooksResourceConfiguration entries targeted at the specified profile set. 
+     * Get all SmooksResourceConfiguration entries targeted at the specified profile set.
+     *
      * @param profileSet The profile set to searh against.
      * @return All SmooksResourceConfiguration entries targeted at the specified profile set.
      */
     public SmooksResourceConfiguration[] getTargetConfigurations(ProfileSet profileSet) {
         Vector<SmooksResourceConfiguration> matchingSmooksResourceConfigurationsColl = new Vector<SmooksResourceConfiguration>();
         SmooksResourceConfiguration[] matchingSmooksResourceConfigurations;
-        
+
         // Iterate over the SmooksResourceConfigurations defined on this list.
-        for(int i = 0; i < size(); i++) {
+        for (int i = 0; i < size(); i++) {
             SmooksResourceConfiguration resourceConfig = get(i);
             ProfileTargetingExpression[] profileTargetingExpressions = resourceConfig.getProfileTargetingExpressions();
-            
-            for(int expIndex = 0; expIndex < profileTargetingExpressions.length; expIndex++) {
+
+            for (int expIndex = 0; expIndex < profileTargetingExpressions.length; expIndex++) {
                 ProfileTargetingExpression expression = profileTargetingExpressions[expIndex];
 
-                if(expression.isMatch(profileSet)) {
+                if (expression.isMatch(profileSet)) {
                     matchingSmooksResourceConfigurationsColl.addElement(resourceConfig);
                     break;
                 } else {
-            		logger.debug("Resource [" + resourceConfig + "] not targeted at profile [" + profileSet.getBaseProfile() + "].  Sub Profiles: [" + profileSet + "]");
+                    logger.debug("Resource [" + resourceConfig + "] not targeted at profile [" + profileSet.getBaseProfile() + "].  Sub Profiles: [" + profileSet + "]");
                 }
             }
         }
 
         matchingSmooksResourceConfigurations = new SmooksResourceConfiguration[matchingSmooksResourceConfigurationsColl.size()];
         matchingSmooksResourceConfigurationsColl.toArray(matchingSmooksResourceConfigurations);
-        
+
         return matchingSmooksResourceConfigurations;
     }
 
     /**
      * Get the list of profiles configured on this resource configuration list.
+     *
      * @return List of profiles.
      */
     public List<ProfileSet> getProfiles() {
@@ -199,36 +212,36 @@ public class SmooksResourceConfigurationList {
     protected boolean addSourceResourceURI(URI resource) {
         AssertArgument.isNotNull(resource, "resource");
 
-        if(loadedResources.contains(resource)) {
+        if (loadedResources.contains(resource)) {
             URI lastLoaded = loadedResources.get(loadedResources.size() - 1);
 
             logger.info("Not adding resource config import '" + resource + "'.  This resource is already loaded on this list.");
 
             return false;
         }
-        
+
         loadedResources.add(resource);
         return true;
     }
 
-	/**
-	 * Lookup a resource configuration from this config list.
-	 * <p/>
-	 * Note that this is resource config order-dependent.  It will not locate configs that
-	 * have not yet been loaded.
-	 *
-	 * @param searchCriteria The resource lookup criteria.
-	 * @return List of matches resources, or an empty List if no matches are found.
-	 */
-	public List<SmooksResourceConfiguration> lookupResource(ConfigSearch searchCriteria) {
-		List<SmooksResourceConfiguration> results = new ArrayList<SmooksResourceConfiguration>();
-		
-		for(SmooksResourceConfiguration config : list) {
-			if(searchCriteria.matches(config)) {
-				results.add(config);
-			}
-		}
-		
-		return results;
-	}
+    /**
+     * Lookup a resource configuration from this config list.
+     * <p/>
+     * Note that this is resource config order-dependent.  It will not locate configs that
+     * have not yet been loaded.
+     *
+     * @param searchCriteria The resource lookup criteria.
+     * @return List of matches resources, or an empty List if no matches are found.
+     */
+    public List<SmooksResourceConfiguration> lookupResource(ConfigSearch searchCriteria) {
+        List<SmooksResourceConfiguration> results = new ArrayList<SmooksResourceConfiguration>();
+
+        for (SmooksResourceConfiguration config : list) {
+            if (searchCriteria.matches(config)) {
+                results.add(config);
+            }
+        }
+
+        return results;
+    }
 }

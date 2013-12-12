@@ -9,7 +9,7 @@
     </parent>
     <name>Edifact Java Compiler</name>
 	<artifactId>milyn-smooks-ejc</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 	    
 	<dependencies>
         <dependency>

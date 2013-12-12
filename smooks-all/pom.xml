@@ -15,28 +15,18 @@
   ~  http://www.gnu.org/licenses/lgpl.txt
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <!-- base pom version - do not remove this comment -->
     </parent>
     <name>Milyn Smooks All</name>
-	<artifactId>milyn-smooks-all</artifactId>
-	<packaging>bundle</packaging>
-
-	<properties>
-		<spring.objectweb.version>2.2.3</spring.objectweb.version>
-		<spring.freemarker.version>2.3.15</spring.freemarker.version>
-		<spring.antlr.version>2.7.7</spring.antlr.version>
-		<spring.jaxen.version>1.1.1</spring.jaxen.version>
-		<spring.commons.logging.version>1.1.1</spring.commons.logging.version>
-		<spring.groovy.version>1.5.7</spring.groovy.version>
-		<spring.log4j.version>1.2.15</spring.log4j.version>
-		<commons.lang.version>2.4</commons.lang.version>
-        <opencsv.version>1.0.23</opencsv.version>
-	</properties>
+    <artifactId>milyn-smooks-all</artifactId>
+    <packaging>bundle</packaging>
 
     <dependencies>
 
@@ -178,7 +168,7 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi_R4_core</artifactId>
             <version>1.0</version>
@@ -193,18 +183,18 @@
             <optional>true</optional>
         </dependency>
 
-		<dependency>
-			<groupId>org.jboss.shrinkwrap</groupId>
-			<artifactId>shrinkwrap-api</artifactId>
-			<version>1.2.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.shrinkwrap</groupId>
-			<artifactId>shrinkwrap-impl-base</artifactId>
-			<version>1.2.0</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+            <version>1.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-impl-base</artifactId>
+            <version>1.2.0</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Readding core dependencies - DO NOT SCOPE AS "provided" -->
         <dependency>
@@ -218,78 +208,78 @@
             <version>${mvel.version}</version>
         </dependency>
         <dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-			<version>${freemarker.version}</version>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
         </dependency>
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
         </dependency>
 
-		<!-- Bundles -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
-			<version>${spring.commons.logging.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <!-- Bundles -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+            <version>${spring.commons.logging.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jaxen</groupId>
-			<artifactId>com.springsource.org.jaxen</artifactId>
-			<version>${spring.jaxen.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <dependency>
+            <groupId>org.jaxen</groupId>
+            <artifactId>com.springsource.org.jaxen</artifactId>
+            <version>${jaxen.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>com.springsource.freemarker</artifactId>
-			<version>${spring.freemarker.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
-			<version>${spring.groovy.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>com.springsource.org.codehaus.groovy</artifactId>
+            <version>${groovy.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>com.springsource.antlr</artifactId>
-			<version>${spring.antlr.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>com.springsource.antlr</artifactId>
+            <version>${spring.antlr.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.objectweb.asm</groupId>
-			<artifactId>com.springsource.org.objectweb.asm</artifactId>
-			<version>${spring.objectweb.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <dependency>
+            <groupId>org.objectweb.asm</groupId>
+            <artifactId>com.springsource.org.objectweb.asm</artifactId>
+            <version>${spring.objectweb.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.objectweb.asm</groupId>
-			<artifactId>com.springsource.org.objectweb.asm.tree.analysis</artifactId>
-			<version>${spring.objectweb.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <dependency>
+            <groupId>org.objectweb.asm</groupId>
+            <artifactId>com.springsource.org.objectweb.asm.tree.analysis</artifactId>
+            <version>${spring.objectweb.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.objectweb.asm</groupId>
-			<artifactId>com.springsource.org.objectweb.asm.tree</artifactId>
-			<version>${spring.objectweb.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <dependency>
+            <groupId>org.objectweb.asm</groupId>
+            <artifactId>com.springsource.org.objectweb.asm.tree</artifactId>
+            <version>${spring.objectweb.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.objectweb.asm</groupId>
-			<artifactId>com.springsource.org.objectweb.asm.util</artifactId>
-			<version>${spring.objectweb.version}</version>
-			<scope>provided</scope> 
-		</dependency>
+        <dependency>
+            <groupId>org.objectweb.asm</groupId>
+            <artifactId>com.springsource.org.objectweb.asm.util</artifactId>
+            <version>${spring.objectweb.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.ant</groupId>
@@ -301,7 +291,7 @@
         <dependency>
             <groupId>org.ow2.bundles</groupId>
             <artifactId>ow2-bundles-externals-opencsv</artifactId>
-            <version>${opencsv.version}</version>
+            <version>${ow2.opencsv.version}</version>
         </dependency>
 
         <dependency>
@@ -311,108 +301,26 @@
             <scope>test</scope>
         </dependency>
 
-	</dependencies>
+    </dependencies>
 
     <build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>src-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>sources</classifier>
-                            <excludeTransitive>true</excludeTransitive>
-                            <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
-                            <outputDirectory>${project.build.directory}/sources</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <ant dir="./" antfile="merge-jars.xml">
-                                    <property name="smooks.version" value="${project.version}" />
-                                </ant>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>1.4.0</version>
+                <version>2.4.0</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>bundle-manifest</id>
                         <phase>process-classes</phase>
-                        <goals>   
+                        <goals>
                             <goal>manifest</goal>
-                        </goals>  
+                        </goals>
                     </execution>
                 </executions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>org.milyn.smooks.osgi</Bundle-SymbolicName>
-						<Bundle-Name>Smooks OSGi</Bundle-Name>
-						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Activator>org.milyn.SmooksActivator</Bundle-Activator>
-						<Export-Package>
-							org.milyn.*;-split-package:=merge-first;version="${project.version}",
-							META-INF.xsd.smooks.*;-split-package:=merge-first,
-							!META-INF.services.*,
-							!META-INF.maven.*
-						</Export-Package>
-						<Import-Package>
-							org.osgi.framework,
-							org.jaxen.*;version="1.1.1", 
-							org.apache.commons.*, 
-							freemarker.*;version="${spring.freemarker.version}",
-							groovy.xml;version="${spring.groovy.version}",
-							groovy.xml.dom;version="${spring.groovy.version}",
-							org.codehaus.groovy.*;version="${spring.groovy.version}",
-							org.codehaus.groovy.runtime;version="${spring.groovy.version}",
-							org.codehaus.groovy.runtime.typehandling;version="${spring.groovy.version}",
-							javax.swing.tree,
-							!org.apache.commons.cli.*,
-							!META-INF.services.javax.xml.parsers.*,*;resolution:=optional
-						</Import-Package>
-		                <Embed-Dependency>milyn*;scope=provided;type=!pom;inline=true</Embed-Dependency>
-                        <_exportcontents>true</_exportcontents>
-						<_failok>true</_failok>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
+            </plugin>
+            <plugin>
                 <groupId>org.ops4j</groupId>
                 <artifactId>maven-pax-plugin</artifactId>
                 <version>1.4</version>
@@ -425,42 +333,43 @@
                 </configuration>
             </plugin>
             <plugin>
-         <groupId>org.codehaus.mojo</groupId>
-         <artifactId>build-helper-maven-plugin</artifactId>
-         <executions>
-           <execution>
-             <id>attach-artifacts</id>
-             <phase>package</phase>
-             <goals>
-               <goal>attach-artifact</goal>
-             </goals>
-             <configuration>
-               <artifacts>
-                 <artifact>
-                   <file>target/classes/features.xml</file>
-                   <type>xml</type>
-                   <classifier>features</classifier>
-                 </artifact>
-               </artifacts>
-             </configuration>
-           </execution>
-         </executions>
-       </plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>target/classes/features.xml</file>
+                                    <type>xml</type>
+                                    <classifier>features</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <repositories>
-		<repository>
-			<id>com.springsource.repository.bundles.release</id>
-			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
-			<url>http://repository.springsource.com/maven/bundles/release</url>
-		</repository>
+        <repository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
 
-		<repository>
-			<id>com.springsource.repository.bundles.external</id>
-			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
-			<url>http://repository.springsource.com/maven/bundles/external</url>
-		</repository>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
     </repositories>
 
 </project>

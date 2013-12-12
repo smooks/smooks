@@ -17,6 +17,9 @@
 package org.milyn;
 
 import junit.framework.TestCase;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.profile.DefaultProfileSet;
+import org.milyn.commons.resource.URIResourceLocator;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.JavaContentHandlerFactory;
 import org.milyn.delivery.dom.DOMVisitAfter;
@@ -26,8 +29,6 @@ import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
-import org.milyn.profile.DefaultProfileSet;
-import org.milyn.resource.URIResourceLocator;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -36,7 +37,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
  * @author tfennelly
  */
 public class SmooksTest extends TestCase {
@@ -46,7 +46,7 @@ public class SmooksTest extends TestCase {
      */
     protected void setUp() throws Exception {
         Smooks smooks = new Smooks();
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[] {"profile1"}), smooks);
+        SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[]{"profile1"}), smooks);
     }
 
     public void test_setClassPath() throws IOException, SAXException {
@@ -101,13 +101,14 @@ public class SmooksTest extends TestCase {
         Smooks smooks = new Smooks("classpath:/org/milyn/test_setClassLoader_01.xml");
 
         // Check that the base URI was properly resolved
-        URIResourceLocator resourceLocator = (URIResourceLocator)smooks.getApplicationContext().getResourceLocator();
-		assertEquals("classpath:/org/milyn/", resourceLocator.getBaseURI().toString());
-		assertEquals("classpath:/org/milyn/somethingelse.xml", resourceLocator.getBaseURI().resolve("somethingelse.xml").toString());
+        URIResourceLocator resourceLocator = (URIResourceLocator) smooks.getApplicationContext().getResourceLocator();
+        assertEquals("classpath:/org/milyn/", resourceLocator.getBaseURI().toString());
+        assertEquals("classpath:/org/milyn/somethingelse.xml", resourceLocator.getBaseURI().resolve("somethingelse.xml").toString());
     }
-    
+
     private class TestDOMVisitorBefore implements DOMVisitBefore {
         private int callCount = 0;
+
         public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
             callCount++;
         }
@@ -115,6 +116,7 @@ public class SmooksTest extends TestCase {
 
     private class TestDOMVisitorAfter implements DOMVisitAfter {
         private int callCount = 0;
+
         public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
             callCount++;
         }
@@ -122,6 +124,7 @@ public class SmooksTest extends TestCase {
 
     private class TestSAXVisitorBefore implements SAXVisitBefore {
         private int callCount = 0;
+
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             callCount++;
         }
@@ -129,6 +132,7 @@ public class SmooksTest extends TestCase {
 
     private class TestSAXVisitorAfter implements SAXVisitAfter {
         private int callCount = 0;
+
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             callCount++;
         }

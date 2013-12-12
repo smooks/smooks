@@ -36,9 +36,9 @@ import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
 import org.milyn.container.ExecutionContext;
@@ -54,7 +54,7 @@ import org.milyn.routing.jms.message.creationstrategies.MessageCreationStrategy;
 import org.milyn.routing.jms.message.creationstrategies.StrategyFactory;
 import org.milyn.routing.jms.message.creationstrategies.TextMessageCreationStrategy;
 import org.milyn.util.FreeMarkerUtils;
-import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.commons.util.FreeMarkerTemplate;
 import org.w3c.dom.Element;
 
 /**

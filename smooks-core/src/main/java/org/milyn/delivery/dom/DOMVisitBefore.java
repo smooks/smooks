@@ -15,23 +15,23 @@
 */
 package org.milyn.delivery.dom;
 
-import org.w3c.dom.Element;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
-import org.milyn.delivery.ContentHandler;
+import org.w3c.dom.Element;
 
 /**
  * DOM Visit before events.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface DOMVisitBefore  extends DOMVisitor {
+public interface DOMVisitBefore extends DOMVisitor {
     /**
      * Visit the supplied element <b>before</b> visiting its child elements.
      *
      * @param element          The DOM element being visited.
      * @param executionContext Request relative instance.
-     * @throws org.milyn.SmooksException Element processing failure.
+     * @throws org.milyn.commons.SmooksException
+     *          Element processing failure.
      */
     void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException;
 }

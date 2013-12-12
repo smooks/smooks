@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.milyn.GenericReaderConfigurator;
 import org.milyn.ReaderConfigurator;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.flatfile.FlatFileReader;
 

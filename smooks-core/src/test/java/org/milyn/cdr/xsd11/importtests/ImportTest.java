@@ -17,7 +17,7 @@ package org.milyn.cdr.xsd11.importtests;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.delivery.dom.serialize.SimpleDOMVisitor;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
@@ -37,7 +37,7 @@ public class ImportTest extends TestCase {
         try {
             testConfig("10_import_11.xml");
             fail("Expected SmooksConfigurationException.");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Unsupported import of a v1.1 configuration from inside a v1.0 configuration.  Path to configuration: '/[root-config]/[11Config.xml]'.", e.getMessage());
         }
     }

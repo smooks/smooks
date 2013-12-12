@@ -26,7 +26,7 @@ import java.util.zip.ZipOutputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.emf.ecore.EPackage;
-import org.milyn.archive.Archive;
+import org.milyn.commons.archive.Archive;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 
 public class XSDExportTest extends TestCase {

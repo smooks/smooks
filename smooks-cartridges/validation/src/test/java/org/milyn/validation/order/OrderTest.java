@@ -17,7 +17,7 @@ package org.milyn.validation.order;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.validation.ValidationResult;
 import org.milyn.validation.OnFailResult;
 import org.xml.sax.SAXException;

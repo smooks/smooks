@@ -1,7 +1,7 @@
 package org.milyn.delivery.nested;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitBefore;
@@ -19,7 +19,7 @@ public class OrderItemVisitor implements SAXVisitBefore {
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         Object bean = executionContext.getBeanContext().getBean(beanId);
 
-        if(bean != null) {
+        if (bean != null) {
             executionContext.getBeanContext().addBean(beanId, bean + "-" + beanId);
         } else {
             executionContext.getBeanContext().addBean(beanId, beanId);

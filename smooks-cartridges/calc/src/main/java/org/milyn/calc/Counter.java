@@ -17,7 +17,7 @@ package org.milyn.calc;
 import java.io.IOException;
 import java.util.Set;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
@@ -37,7 +37,7 @@ import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.util.CollectionsUtil;
+import org.milyn.commons.util.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;

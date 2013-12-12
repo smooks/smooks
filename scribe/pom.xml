@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>milyn</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-	<packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>milyn</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <!-- base pom version - do not remove this comment -->
+    </parent>
+    <packaging>pom</packaging>
     <name>Milyn Scribe</name>
-	<artifactId>milyn-scribe</artifactId>
+    <artifactId>milyn-scribe</artifactId>
 
     <modules>
-    	<module>core</module>
-    	<module>adapter</module>
+        <module>core</module>
+        <module>adapter</module>
     </modules>
 
     <dependencies>
@@ -30,39 +32,39 @@
         </dependency>
     </dependencies>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.milyn</groupId>
-				<artifactId>milyn-scribe-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.milyn</groupId>
+                <artifactId>milyn-scribe-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.milyn</groupId>
-				<artifactId>milyn-commons</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.milyn</groupId>
+                <artifactId>milyn-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-		</dependencies>
-	</dependencyManagement>
+        </dependencies>
+    </dependencyManagement>
 
-	<profiles>
-		<profile>
-			<id>test-unit</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
+    <profiles>
+        <profile>
+            <id>test-unit</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
             </activation>
-			<properties>
-				<testGroups>unit</testGroups>
-			</properties>
-		</profile>
-		<profile>
-			<id>test-integration</id>
-			<properties>
-				<testGroups>unit,integration</testGroups>
-			</properties>
-		</profile>
-	</profiles>
+            <properties>
+                <testGroups>unit</testGroups>
+            </properties>
+        </profile>
+        <profile>
+            <id>test-integration</id>
+            <properties>
+                <testGroups>unit,integration</testGroups>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

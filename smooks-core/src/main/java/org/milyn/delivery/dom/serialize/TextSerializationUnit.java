@@ -15,17 +15,14 @@
 */
 package org.milyn.delivery.dom.serialize;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.xml.DomUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXElementVisitor;
-import org.milyn.delivery.sax.SAXText;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.xml.DomUtils;
 import org.milyn.xml.Namespace;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -33,7 +30,7 @@ import java.io.Writer;
 /**
  * Write a &lt;text&gt; element.
  * <p/>
- * Basically just drops the &lt;text&gt; tags. 
+ * Basically just drops the &lt;text&gt; tags.
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
@@ -56,7 +53,7 @@ public class TextSerializationUnit extends DefaultSerializationUnit implements S
     }
 
     public static boolean isTextElement(Element element) {
-        if(DomUtils.getName(element).equals("text") && Namespace.SMOOKS_URI.equals(element.getNamespaceURI())) {
+        if (DomUtils.getName(element).equals("text") && Namespace.SMOOKS_URI.equals(element.getNamespaceURI())) {
             return true;
         }
 

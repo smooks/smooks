@@ -16,12 +16,12 @@
 package org.milyn.delivery.lifecyclecleanup;
 
 import junit.framework.TestCase;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.ExecutionLifecycleCleanable;
 import org.milyn.delivery.ExecutionLifecycleInitializable;
-import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXVisitBefore;
 
 import java.io.IOException;
 
@@ -34,10 +34,10 @@ public class SaxVisitBefore implements SAXVisitBefore, ExecutionLifecycleInitial
     public static boolean cleaned;
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(!initialized) {
+        if (!initialized) {
             TestCase.fail("Resource should be initialized!");
         }
-        if(cleaned) {
+        if (cleaned) {
             TestCase.fail("Resource shouldn't be cleaned yet!");
         }
     }

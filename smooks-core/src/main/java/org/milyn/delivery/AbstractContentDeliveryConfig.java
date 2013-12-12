@@ -17,8 +17,8 @@ package org.milyn.delivery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.ParameterAccessor;
+import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.dtd.DTDStore;
@@ -26,8 +26,16 @@ import org.milyn.event.types.ConfigBuilderEvent;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**

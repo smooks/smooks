@@ -1,11 +1,11 @@
 package org.milyn.delivery;
 
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.delivery.dom.Phase;
 import org.milyn.delivery.dom.VisitPhase;
-import org.milyn.container.ExecutionContext;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.w3c.dom.Element;
 
 /**

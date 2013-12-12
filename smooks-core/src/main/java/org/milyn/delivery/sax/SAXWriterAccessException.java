@@ -1,7 +1,7 @@
 
 package org.milyn.delivery.sax;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 
 /**
  * {@link SAXElement} element writer access excecption.

@@ -25,11 +25,9 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Test;
 import org.milyn.Smooks;
-import org.milyn.javabean.Value;
+import org.milyn.cartridge.javabean.Value;
 import org.milyn.payload.Exports;
 import org.milyn.payload.JavaResult;
-import org.milyn.payload.StringResult;
-import org.milyn.payload.StringSource;
 
 /**
  * 

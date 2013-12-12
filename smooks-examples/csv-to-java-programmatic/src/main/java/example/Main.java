@@ -16,13 +16,13 @@
 package example;
 
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.csv.CSVRecordParserConfigurator;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.flatfile.Binding;
 import org.milyn.flatfile.BindingType;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;

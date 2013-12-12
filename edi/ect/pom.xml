@@ -9,7 +9,7 @@
 	</parent>
 	<name>Edifact Conversion Tool</name>
 	<artifactId>milyn-smooks-ect</artifactId>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
 
 	<dependencies>
 

@@ -15,11 +15,11 @@
 */
 package org.milyn.delivery;
 
+import org.milyn.commons.SmooksException;
+import org.milyn.container.ExecutionContext;
+
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-
-import org.milyn.SmooksException;
-import org.milyn.container.ExecutionContext;
 
 /**
  * Filter bypass interface.
@@ -27,22 +27,22 @@ import org.milyn.container.ExecutionContext;
  * In some cases, the Smooks fragment filtering process (SAX/DOM) can be bypassed
  * if there is just a single visitor resource applied to the <i>#document</i>
  * fragment.  This interface allows a visitor to mark itself as such a visitor.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public interface FilterBypass {
 
-	/**
-	 * Bypass the Smooks Filter process.
-	 * <p/>
-	 * If the Filter bypass was not applied, the normal Smooks Fragment Filtering
-	 * process will be proceed.
-	 * 
-	 * @param executionContext Smooks execution context.
-	 * @param source Filter Source.
-	 * @param result Filter Result.
-	 * @return True of the bypass was applied, otherwise false.
-	 * @throws SmooksException An error occurred while apply the bypass transform.
-	 */
-	boolean bypass(ExecutionContext executionContext, Source source, Result result) throws SmooksException;
+    /**
+     * Bypass the Smooks Filter process.
+     * <p/>
+     * If the Filter bypass was not applied, the normal Smooks Fragment Filtering
+     * process will be proceed.
+     *
+     * @param executionContext Smooks execution context.
+     * @param source           Filter Source.
+     * @param result           Filter Result.
+     * @return True of the bypass was applied, otherwise false.
+     * @throws SmooksException An error occurred while apply the bypass transform.
+     */
+    boolean bypass(ExecutionContext executionContext, Source source, Result result) throws SmooksException;
 }

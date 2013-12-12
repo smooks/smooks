@@ -22,8 +22,8 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.Session;
 
-import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.repository.BeanRepositoryManager;
 

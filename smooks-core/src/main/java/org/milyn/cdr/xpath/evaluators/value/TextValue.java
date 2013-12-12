@@ -15,13 +15,13 @@
 */
 package org.milyn.cdr.xpath.evaluators.value;
 
+import org.milyn.commons.javabean.DataDecoder;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.cdr.xpath.evaluators.value.Value;
 import org.w3c.dom.Element;
 
 /**
  * Element text value getter.
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class TextValue extends Value {

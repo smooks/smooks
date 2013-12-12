@@ -23,7 +23,7 @@
 
     <resource-config selector="writer">
         <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.dynamic.ext.BeanWriterFactory</param>
+        <param name="resource">org.milyn.cartridge.javabean.dynamic.ext.BeanWriterFactory</param>
     </resource-config>
 
     <resource-config selector="writer">
@@ -47,7 +47,7 @@
     </resource-config>
 
     <resource-config selector="writer">
-        <resource>org.milyn.javabean.dynamic.ext.BeanClassLookup</resource>
+        <resource>org.milyn.cartridge.javabean.dynamic.ext.BeanClassLookup</resource>
     </resource-config>
 
 </smooks-resource-list>

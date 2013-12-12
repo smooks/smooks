@@ -16,12 +16,12 @@
 package org.milyn.delivery.JIRAs.MILYN_294;
 
 import junit.framework.TestCase;
-import org.milyn.Smooks;
 import org.milyn.FilterSettings;
-import org.milyn.SmooksException;
-import org.milyn.payload.StringSource;
+import org.milyn.Smooks;
+import org.milyn.commons.SmooksException;
 import org.milyn.delivery.dom.ProcessorVisitor1;
 import org.milyn.delivery.sax.SAXVisitor01;
+import org.milyn.payload.StringSource;
 
 /**
  * http://jira.codehaus.org/browse/MILYN-294

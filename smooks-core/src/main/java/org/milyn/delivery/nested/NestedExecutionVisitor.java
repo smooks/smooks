@@ -16,9 +16,11 @@
 package org.milyn.delivery.nested;
 
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.namespace.NamespaceDeclarationStack;
+import org.milyn.commons.util.CollectionsUtil;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.AbstractParser;
@@ -36,8 +38,6 @@ import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.namespace.NamespaceDeclarationStack;
-import org.milyn.util.CollectionsUtil;
 import org.milyn.xml.NamespaceMappings;
 import org.xml.sax.XMLReader;
 
@@ -78,14 +78,14 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
 
     @Initialize
     public void preRegBeanIds() {
-        for(String preRegBeanId : mapBeans) {
+        for (String preRegBeanId : mapBeans) {
             mapBeanIds.add(applicationContext.getBeanIdStore().register(preRegBeanId));
         }
     }
 
     @Uninitialize
     public void closeSmooksInstance() {
-        if(smooksInstance != null) {
+        if (smooksInstance != null) {
             smooksInstance.close();
         }
     }
@@ -106,7 +106,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
 
         SmooksContentHandler parentContentHandler = SmooksContentHandler.getHandler(executionContext);
 
-        if(parentContentHandler.getNestedContentHandler() != null) {
+        if (parentContentHandler.getNestedContentHandler() != null) {
             throw new SmooksException("Illegal use of more than one nested content handler fired on the same element.");
         }
 
@@ -132,9 +132,9 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
 
     private Smooks getSmooksInstance() {
         // Lazily create the Smooks instance...
-        if(smooksInstance == null) {
+        if (smooksInstance == null) {
             synchronized (this) {
-                if(smooksInstance == null) {
+                if (smooksInstance == null) {
                     try {
                         smooksInstance = new Smooks(smooksConfig);
                     } catch (Exception e) {
@@ -151,11 +151,11 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
             ExecutionContext nestedExecutionContext = (ExecutionContext) executionContext.getAttribute(NestedExecutionVisitor.class);
 
             try {
-                if(nestedExecutionContext != null) {
+                if (nestedExecutionContext != null) {
                     BeanContext parentBeanContext = executionContext.getBeanContext();
                     BeanContext nestedBeanContext = nestedExecutionContext.getBeanContext();
 
-                    for(BeanId beanId : mapBeanIds) {
+                    for (BeanId beanId : mapBeanIds) {
                         Object bean = nestedBeanContext.getBean(beanId.getName());
 
                         // Add the bean from the nested context onto the parent context and then remove

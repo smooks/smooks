@@ -15,12 +15,12 @@
 */
 package org.milyn.db;
 
-import org.milyn.delivery.sax.SAXVisitAfter;
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.ordering.Consumer;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
+import org.milyn.delivery.ordering.Consumer;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXVisitAfter;
 
 import java.io.IOException;
 
@@ -29,10 +29,10 @@ import java.io.IOException;
  */
 public class DSConnectionUser implements SAXVisitAfter, Consumer {
 
-	@ConfigParam(defaultVal = MockDatasource.MOCK_DS_NAME)
-	private String datasource;
+    @ConfigParam(defaultVal = MockDatasource.MOCK_DS_NAME)
+    private String datasource;
 
-	public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         AbstractDataSource.getConnection(datasource, executionContext);
     }
 

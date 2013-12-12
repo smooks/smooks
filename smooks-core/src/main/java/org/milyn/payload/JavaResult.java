@@ -16,14 +16,16 @@
 package org.milyn.payload;
 
 import com.thoughtworks.xstream.XStream;
-
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.javabean.context.StandaloneBeanContext;
-import org.milyn.payload.FilterResult;
 
 import javax.xml.transform.Result;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Java filtration/transformation result.
@@ -35,7 +37,7 @@ import java.util.*;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class JavaResult extends FilterResult implements ResultExtractor<JavaResult> {
-    
+
     private Map<String, Object> resultMap;
 
     /**
@@ -44,23 +46,23 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
     public JavaResult() {
         this(false);
     }
-    
+
     /**
      * Public default constructor.
      */
     public JavaResult(boolean preserveOrder) {
-    	if(preserveOrder) {
-    		resultMap = new LinkedHashMap<String, Object>();
-    	} else {
-    		resultMap = new HashMap<String, Object>();
-    	}
+        if (preserveOrder) {
+            resultMap = new LinkedHashMap<String, Object>();
+        } else {
+            resultMap = new HashMap<String, Object>();
+        }
     }
-    
+
     /**
      * Public constructor.
      * <p/>
      * See {@link #setResultMap(java.util.Map)}.
-     * 
+     *
      * @param resultMap Result Map. This is the map onto which Java "result" objects will be set.
      */
     public JavaResult(Map<String, Object> resultMap) {
@@ -70,6 +72,7 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
 
     /**
      * Get the named bean from the Java Result Map.
+     *
      * @param name the name of the bean.
      * @return The bean Object, or null if the bean is not in the bean Result Map.
      * @see #getResultMap()
@@ -81,16 +84,17 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
     /**
      * Get the first instance of the specified bean type
      * from this JavaResult instance.
-     * 
+     *
      * @param beanType The bean runtime class type.
      * @return The bean instance, otherwise null.
      */
-	public <T> T getBean(Class<T> beanType) {
-		return StandaloneBeanContext.getBean(beanType, resultMap);
-	}
+    public <T> T getBean(Class<T> beanType) {
+        return StandaloneBeanContext.getBean(beanType, resultMap);
+    }
 
     /**
      * Get the Java result map.
+     *
      * @return The Java result map.
      * @see #getBean(String)
      */
@@ -100,6 +104,7 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
 
     /**
      * Set the Java result map.
+     *
      * @param resultMap The Java result map.
      */
     public void setResultMap(Map<String, Object> resultMap) {
@@ -109,14 +114,15 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
     /**
      * XML Serialized form of the bean Map associate with the
      * result instance.
+     *
      * @return XML Serialized form of the bean Map associate with the
-     * result instance.
+     *         result instance.
      */
     public String toString() {
         StringWriter stringBuilder = new StringWriter();
         XStream xstream = new XStream();
 
-        if(resultMap != null && !resultMap.isEmpty()) {
+        if (resultMap != null && !resultMap.isEmpty()) {
             Set<Map.Entry<String, Object>> entries = resultMap.entrySet();
 
             for (Map.Entry<String, Object> entry : entries) {
@@ -128,15 +134,14 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
         return stringBuilder.toString();
     }
 
-    public Object extractFromResult(JavaResult result, Export export)
-    {
+    public Object extractFromResult(JavaResult result, Export export) {
         Set<String> extractSet = export.getExtractSet();
 
         if (extractSet == null) {
             return extractBeans(result, result.getResultMap().keySet());
         }
 
-        if(extractSet.size() == 1) {
+        if (extractSet.size() == 1) {
             return result.getBean(extractSet.iterator().next());
         } else {
             return extractBeans(result, extractSet);
@@ -146,9 +151,9 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
     private Object extractBeans(JavaResult result, Collection<String> extractSet) {
         Map<String, Object> extractedObjects = new ResultMap<String, Object>();
 
-        for(String extract : extractSet) {
+        for (String extract : extractSet) {
             Object bean = result.getBean(extract);
-            if(bean != null) {
+            if (bean != null) {
                 extractedObjects.put(extract, bean);
             }
         }
@@ -156,6 +161,6 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
         return extractedObjects;
     }
 
-    public static class ResultMap<K,V> extends HashMap<K,V> {        
+    public static class ResultMap<K, V> extends HashMap<K, V> {
     }
 }

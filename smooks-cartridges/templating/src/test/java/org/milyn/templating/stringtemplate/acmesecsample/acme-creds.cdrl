@@ -11,7 +11,7 @@
 		WS-Security block.
 	========================================================================== -->
 	<resource-config selector="acmeCreds" selector-namespace="http://schemas.acme.com/security/">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
         <!-- create and bind the Credentials bean instance on encountering the acmecreds element. -->
 		<param name="beanId">credentials</param>
         <param name="VisitPhase">ASSEMBLY</param>

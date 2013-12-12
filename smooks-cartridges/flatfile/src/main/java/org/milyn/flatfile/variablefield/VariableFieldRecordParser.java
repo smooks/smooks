@@ -27,7 +27,7 @@ import org.milyn.flatfile.FieldMetaData;
 import org.milyn.flatfile.Record;
 import org.milyn.flatfile.RecordMetaData;
 import org.milyn.flatfile.RecordParser;
-import org.milyn.function.StringFunctionExecutor;
+import org.milyn.commons.function.StringFunctionExecutor;
 
 /**
  * Abstract variable field record parser.

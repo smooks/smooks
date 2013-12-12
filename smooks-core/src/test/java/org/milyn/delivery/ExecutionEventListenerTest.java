@@ -17,7 +17,7 @@ package org.milyn.delivery;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.io.NullWriter;
+import org.milyn.commons.io.NullWriter;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.BasicExecutionEventListener;
 import org.milyn.event.types.FilterLifecycleEvent;

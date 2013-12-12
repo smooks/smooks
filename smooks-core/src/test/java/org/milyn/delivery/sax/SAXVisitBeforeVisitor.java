@@ -15,8 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 
 import java.io.IOException;
@@ -37,11 +37,11 @@ public class SAXVisitBeforeVisitor implements SAXVisitBefore {
         staticInjectedParam = injectedParam;
     }
 
-	/**
-	 * @param injectedParam the injectedParam to set
-	 */
-	public SAXVisitBeforeVisitor setInjectedParam(String injectedParam) {
-		this.injectedParam = injectedParam;
-		return this;
-	}
+    /**
+     * @param injectedParam the injectedParam to set
+     */
+    public SAXVisitBeforeVisitor setInjectedParam(String injectedParam) {
+        this.injectedParam = injectedParam;
+        return this;
+    }
 }

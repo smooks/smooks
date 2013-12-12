@@ -1,9 +1,9 @@
 package org.milyn.db;
 
+import org.milyn.commons.assertion.AssertArgument;
+
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import org.milyn.assertion.AssertArgument;
 
 public class ExternalTransactionManager implements TransactionManager {
 

@@ -7,7 +7,7 @@
     </resource-config>
 
     <resource-config selector="org.milyn.general.OrderItem">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
         <param name="beanId">orderItem</param>
         <param name="beanClass">java.util.HashMap</param>
         <param name="bindings">

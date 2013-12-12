@@ -15,46 +15,43 @@
 */
 package org.milyn.routing.db;
 
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.delivery.Fragment;
-import org.milyn.delivery.sax.SAXUtil;
-import org.milyn.util.CollectionsUtil;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.SmooksResourceConfigurationFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.SmooksResourceConfigurationFactory;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecoder;
+import org.milyn.commons.util.CollectionsUtil;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.db.AbstractDataSource;
+import org.milyn.delivery.Fragment;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.annotation.VisitAfterIf;
 import org.milyn.delivery.annotation.VisitBeforeIf;
 import org.milyn.delivery.dom.DOMElementVisitor;
+import org.milyn.delivery.ordering.Consumer;
+import org.milyn.delivery.ordering.Producer;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.delivery.ordering.Producer;
-import org.milyn.delivery.ordering.Consumer;
-import org.milyn.delivery.VisitorAppender;
-import org.milyn.delivery.VisitorConfigMap;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanIdRegister;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * SQLExecutor Visitor.
@@ -63,8 +60,8 @@ import java.util.*;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-@VisitBeforeIf(	condition = "parameters.containsKey('executeBefore') && parameters.executeBefore.value == 'true'")
-@VisitAfterIf(	condition = "!parameters.containsKey('executeBefore') || parameters.executeBefore.value != 'true'")
+@VisitBeforeIf(condition = "parameters.containsKey('executeBefore') && parameters.executeBefore.value == 'true'")
+@VisitAfterIf(condition = "!parameters.containsKey('executeBefore') || parameters.executeBefore.value != 'true'")
 @VisitBeforeReport(summary = "Execute statement '${resource.parameters.statement}' on Datasource '${resource.parameters.datasource}'.", detailTemplate = "reporting/SQLExecutor.html")
 @VisitAfterReport(summary = "Execute statement '${resource.parameters.statement}' on Datasource '${resource.parameters.datasource}'.", detailTemplate = "reporting/SQLExecutor.html")
 public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisitBefore, SAXVisitAfter, DOMElementVisitor, Producer, Consumer {
@@ -140,18 +137,18 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
     @Initialize
     public void intitialize() throws SmooksConfigurationException {
         statementExec = new StatementExec(statement);
-        if(statementExec.getStatementType() == StatementType.QUERY && resultSetName == null) {
+        if (statementExec.getStatementType() == StatementType.QUERY && resultSetName == null) {
             throw new SmooksConfigurationException("Sorry, query statements must be accompanied by a 'resultSetName' property, under whose value the query results are bound.");
         }
 
-        if(resultSetName != null) {
-	        resultSetBeanId = appContext.getBeanIdStore().register(resultSetName);
+        if (resultSetName != null) {
+            resultSetBeanId = appContext.getBeanIdStore().register(resultSetName);
         }
         rsAppContextKey = datasource + ":" + statement;
     }
 
     public Set<? extends Object> getProducts() {
-        if(statementExec.getStatementType() == StatementType.QUERY) {
+        if (statementExec.getStatementType() == StatementType.QUERY) {
             return CollectionsUtil.toSet(resultSetName);
         }
 
@@ -159,7 +156,7 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
     }
 
     public boolean consumes(Object object) {
-        if(statement.indexOf(object.toString()) != -1) {
+        if (statement.indexOf(object.toString()) != -1) {
             return true;
         }
 
@@ -167,33 +164,32 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
     }
 
     public void visitBefore(SAXElement saxElement, ExecutionContext executionContext) throws SmooksException, IOException {
-            executeSQL(executionContext, new Fragment(saxElement));
-        }
+        executeSQL(executionContext, new Fragment(saxElement));
+    }
 
     public void visitAfter(SAXElement saxElement, ExecutionContext executionContext) throws SmooksException, IOException {
-            executeSQL(executionContext, new Fragment(saxElement));
-        }
+        executeSQL(executionContext, new Fragment(saxElement));
+    }
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-            executeSQL(executionContext, new Fragment(element));
-        }
+        executeSQL(executionContext, new Fragment(element));
+    }
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-            executeSQL(executionContext, new Fragment(element));
-        }
+        executeSQL(executionContext, new Fragment(element));
+    }
 
 
-
-	private void executeSQL(ExecutionContext executionContext, Fragment source) throws SmooksException {
+    private void executeSQL(ExecutionContext executionContext, Fragment source) throws SmooksException {
         Connection connection = AbstractDataSource.getConnection(datasource, executionContext);
         BeanContext beanContext = executionContext.getBeanContext();
 
         Map<String, Object> beanMap = beanContext.getBeanMap();
 
         try {
-            if(!statementExec.isJoin()) {
-                if(statementExec.getStatementType() == StatementType.QUERY) {
-                    if(resultSetScope == ResultSetScope.EXECUTION) {
+            if (!statementExec.isJoin()) {
+                if (statementExec.getStatementType() == StatementType.QUERY) {
+                    if (resultSetScope == ResultSetScope.EXECUTION) {
                         beanContext.addBean(resultSetBeanId, statementExec.executeUnjoinedQuery(connection), source);
                     } else {
                         List<Map<String, Object>> resultMap;
@@ -201,9 +197,9 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
                         ApplicationContext appContext = executionContext.getContext();
                         ResultSetContextObject rsContextObj = ResultSetContextObject.getInstance(rsAppContextKey, appContext);
 
-                        if(rsContextObj.hasExpired()) {
+                        if (rsContextObj.hasExpired()) {
                             synchronized (rsContextObj) {
-                                if(rsContextObj.hasExpired()) {
+                                if (rsContextObj.hasExpired()) {
                                     rsContextObj.resultSet = statementExec.executeUnjoinedQuery(connection);
                                     rsContextObj.expiresAt = System.currentTimeMillis() + resultSetTTL;
                                 }
@@ -216,21 +212,21 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
                     statementExec.executeUnjoinedUpdate(connection);
                 }
             } else {
-                if(statementExec.getStatementType() == StatementType.QUERY) {
+                if (statementExec.getStatementType() == StatementType.QUERY) {
                     List<Map<String, Object>> resultMap = new ArrayList<Map<String, Object>>();
                     statementExec.executeJoinedQuery(connection, beanMap, resultMap);
                     beanContext.addBean(resultSetBeanId, resultMap, source);
                 } else {
-                    if(resultSetBeanId == null) {
+                    if (resultSetBeanId == null) {
                         statementExec.executeJoinedUpdate(connection, beanMap);
                     } else {
                         Object resultSetObj = beanContext.getBean(resultSetBeanId);
-                        if(resultSetObj != null) {
+                        if (resultSetObj != null) {
                             try {
-                            	@SuppressWarnings("unchecked")
+                                @SuppressWarnings("unchecked")
                                 List<Map<String, Object>> resultSet = (List<Map<String, Object>>) resultSetObj;
                                 statementExec.executeJoinedStatement(connection, resultSet);
-                            } catch(ClassCastException e) {
+                            } catch (ClassCastException e) {
                                 throw new SmooksException("Cannot execute joined statement '" + statementExec.getStatement() + "' on ResultSet '" + resultSetName + "'.  Must be of type 'List<Map<String, Object>>'.  Is of type '" + resultSetObj.getClass().getName() + "'.");
                             }
                         } else {
@@ -266,7 +262,7 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
         private long expiresAt = 0L;
 
         private boolean hasExpired() {
-            if(expiresAt <= System.currentTimeMillis()) {
+            if (expiresAt <= System.currentTimeMillis()) {
                 return true;
             }
             return false;
@@ -275,10 +271,10 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
         private static ResultSetContextObject getInstance(String rsAppContextKey, ApplicationContext appContext) {
             ResultSetContextObject rsContextObj = (ResultSetContextObject) appContext.getAttribute(rsAppContextKey);
 
-            if(rsContextObj == null) {
+            if (rsContextObj == null) {
                 synchronized (appContext) {
                     rsContextObj = (ResultSetContextObject) appContext.getAttribute(rsAppContextKey);
-                    if(rsContextObj == null) {
+                    if (rsContextObj == null) {
                         rsContextObj = new ResultSetContextObject();
                         appContext.setAttribute(rsAppContextKey, rsContextObj);
                     }

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>milyn</artifactId>
-		<version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>milyn</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <!-- base pom version - do not remove this comment -->
+    </parent>
     <name>Milyn Test Resources</name>
-	<artifactId>testres</artifactId>
+    <artifactId>testres</artifactId>
 
     <dependencies>
         <dependency>
@@ -25,15 +27,15 @@
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.1</version>
         </dependency>
         <dependency>
-          <groupId>org.apache.ant</groupId>
-          <artifactId>ant</artifactId>
-          <version>${ant.version}</version>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>${ant.version}</version>
         </dependency>
         <dependency>
             <groupId>mockobjects</groupId>
@@ -57,7 +59,6 @@
         </dependency>
 
     </dependencies>
-
 
 
 </project>

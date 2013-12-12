@@ -16,48 +16,50 @@
 
 package org.milyn.util;
 
+import junit.framework.TestCase;
+import org.milyn.commons.xml.XmlUtil;
+import org.w3c.dom.Document;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
-
-import org.milyn.xml.XmlUtil;
-import org.w3c.dom.Document;
 
 public abstract class DomUtil {
 
 
-	/**
-	 * Parse a stream directly, handling all exceptions by failing the testcase.
-	 * @param stream Stream to be parsed.
-	 * @return W3C DOM.
-	 */
-	public static Document parse(String xmlString) {
-		return DomUtil.parse(new ByteArrayInputStream(xmlString.getBytes()));
-	}
-	
-	/**
-	 * Parse a stream directly, handling all exceptions by failing the testcase.
-	 * @param stream Stream to be parsed.
-	 * @return W3C DOM.
-	 */
-	public static Document parse(InputStream stream) {
-		try {
-			return XmlUtil.parseStream(stream, XmlUtil.VALIDATION_TYPE.NONE, true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			TestCase.fail("Failed to parse Document stream: " + e.getMessage());
-		}
-		return null;
-	}
-	
-	/**
-	 * Parse the specified classpath resource, handling all exceptions by failing the testcase.
-	 * @param classpathLoc Classpath resource to be parsed.
-	 * @param relativeClass Class instance used to get the resource stream.
-	 * @return W3C DOM.
-	 */
-	public static Document parse(String classpathLoc, Class relativeClass) {
-		return DomUtil.parse(relativeClass.getResourceAsStream(classpathLoc));
-	}
+    /**
+     * Parse a stream directly, handling all exceptions by failing the testcase.
+     *
+     * @param stream Stream to be parsed.
+     * @return W3C DOM.
+     */
+    public static Document parse(String xmlString) {
+        return DomUtil.parse(new ByteArrayInputStream(xmlString.getBytes()));
+    }
+
+    /**
+     * Parse a stream directly, handling all exceptions by failing the testcase.
+     *
+     * @param stream Stream to be parsed.
+     * @return W3C DOM.
+     */
+    public static Document parse(InputStream stream) {
+        try {
+            return XmlUtil.parseStream(stream, XmlUtil.VALIDATION_TYPE.NONE, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TestCase.fail("Failed to parse Document stream: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Parse the specified classpath resource, handling all exceptions by failing the testcase.
+     *
+     * @param classpathLoc  Classpath resource to be parsed.
+     * @param relativeClass Class instance used to get the resource stream.
+     * @return W3C DOM.
+     */
+    public static Document parse(String classpathLoc, Class relativeClass) {
+        return DomUtil.parse(relativeClass.getResourceAsStream(classpathLoc));
+    }
 }

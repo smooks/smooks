@@ -16,11 +16,11 @@
 
 package org.milyn.flatfile.variablefield;
 
-import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.flatfile.FieldMetaData;
 import org.milyn.flatfile.RecordMetaData;
-import org.milyn.function.StringFunctionExecutor;
+import org.milyn.commons.function.StringFunctionExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;

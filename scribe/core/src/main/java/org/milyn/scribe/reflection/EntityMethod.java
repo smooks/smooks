@@ -15,75 +15,74 @@
 */
 package org.milyn.scribe.reflection;
 
+import org.milyn.commons.assertion.AssertArgument;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.milyn.assertion.AssertArgument;
-
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
- *
  */
 public class EntityMethod {
 
-	private final Method method;
+    private final Method method;
 
-	private final boolean returnsEntity;
+    private final boolean returnsEntity;
 
-	/**
-	 *
-	 */
-	public EntityMethod(final Method method, final boolean returnsEntity) {
-		AssertArgument.isNotNull(method, "method");
+    /**
+     *
+     */
+    public EntityMethod(final Method method, final boolean returnsEntity) {
+        AssertArgument.isNotNull(method, "method");
 
-		this.method = method;
-		this.returnsEntity = returnsEntity;
-	}
+        this.method = method;
+        this.returnsEntity = returnsEntity;
+    }
 
 
-	/* (non-Javadoc)
-	 * @see org.milyn.scribe.method.DAOMethod#invoke()
-	 */
-	public Object invoke(final Object obj, final Object entity){
-		try {
+    /* (non-Javadoc)
+     * @see org.milyn.scribe.method.DAOMethod#invoke()
+     */
+    public Object invoke(final Object obj, final Object entity) {
+        try {
 
-			Object result = method.invoke(obj, entity);
+            Object result = method.invoke(obj, entity);
 
-			if(returnsEntity) {
-				return result;
-			} else {
-				return null;
-			}
+            if (returnsEntity) {
+                return result;
+            } else {
+                return null;
+            }
 
-		} catch (final IllegalArgumentException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
-		} catch (final InvocationTargetException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
-		}
-	}
+        } catch (final IllegalArgumentException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
+        } catch (final IllegalAccessException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
+        } catch (final InvocationTargetException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "].", e);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.milyn.scribe.method.DAOMethod#invoke()
-	 */
-	public Object invoke(final Object obj, final String id, final Object entity){
-		try {
+    /* (non-Javadoc)
+     * @see org.milyn.scribe.method.DAOMethod#invoke()
+     */
+    public Object invoke(final Object obj, final String id, final Object entity) {
+        try {
 
-			Object result = method.invoke(obj, id, entity);
+            Object result = method.invoke(obj, id, entity);
 
-			if(returnsEntity) {
-				return result;
-			} else {
-				return null;
-			}
+            if (returnsEntity) {
+                return result;
+            } else {
+                return null;
+            }
 
-		} catch (final IllegalArgumentException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "] and using the id '"+ id +"'.", e);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "] and using the id '"+ id +"'.", e);
-		} catch (final InvocationTargetException e) {
-			throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "] and using the id '"+ id +"'.", e);
-		}
-	}
+        } catch (final IllegalArgumentException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "] and using the id '" + id + "'.", e);
+        } catch (final IllegalAccessException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "] and using the id '" + id + "'.", e);
+        } catch (final InvocationTargetException e) {
+            throw new RuntimeException("The method [" + method + "] of the class [" + method.getDeclaringClass().getName() + "] threw an exception, while invoking it with the object [" + obj + "] and using the id '" + id + "'.", e);
+        }
+    }
 }

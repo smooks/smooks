@@ -18,8 +18,8 @@ package org.milyn.rules;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.container.ApplicationContext;
 
 /**

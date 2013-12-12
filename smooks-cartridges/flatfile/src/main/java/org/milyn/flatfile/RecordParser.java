@@ -16,7 +16,7 @@
 
 package org.milyn.flatfile;
 
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.xml.sax.InputSource;
 
 import java.io.IOException;

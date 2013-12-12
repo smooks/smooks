@@ -1,7 +1,6 @@
 package org.milyn.delivery.replay;
 
-import org.milyn.SmooksException;
-import org.xml.sax.SAXException;
+import org.milyn.commons.SmooksException;
 
 /**
  * SAX event replay interface.

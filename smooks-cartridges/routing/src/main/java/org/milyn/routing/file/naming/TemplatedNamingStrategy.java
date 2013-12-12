@@ -16,7 +16,7 @@
 package org.milyn.routing.file.naming;
 
 import freemarker.template.TemplateException;
-import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.commons.util.FreeMarkerTemplate;
 
 /**
  * TemplatedNamingStrategy uses FreeMarker to generate a file name from

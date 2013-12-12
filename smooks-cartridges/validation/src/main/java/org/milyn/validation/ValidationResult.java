@@ -18,7 +18,7 @@ package org.milyn.validation;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.container.ExecutionContext;
 import org.milyn.rules.RuleEvalResult;
 import org.milyn.payload.FilterResult;

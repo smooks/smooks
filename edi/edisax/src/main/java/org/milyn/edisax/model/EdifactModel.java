@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDIParseException;
 import org.milyn.edisax.model.internal.Component;
@@ -38,8 +38,8 @@ import org.milyn.edisax.model.internal.Field;
 import org.milyn.edisax.model.internal.Import;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
-import org.milyn.io.StreamUtils;
-import org.milyn.resource.URIResourceLocator;
+import org.milyn.commons.io.StreamUtils;
+import org.milyn.commons.resource.URIResourceLocator;
 import org.xml.sax.SAXException;
 
 /**                                          

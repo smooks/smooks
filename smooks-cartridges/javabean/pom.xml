@@ -5,12 +5,13 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>smooks-cartridge-base-pom</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <!-- base pom version - do not remove this comment -->
     </parent>
+
     <name>Milyn Smooks Cartridge - Javabean</name>
     <artifactId>milyn-smooks-javabean</artifactId>
-
-
+    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>
@@ -19,6 +20,14 @@
             <version>2.2</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>15.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

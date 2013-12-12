@@ -7,7 +7,7 @@
 
   <!-- The javabean cartridge actions -->
   <resource-config selector="person">
-    <resource>org.milyn.javabean.BeanPopulator</resource>
+    <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
     <param name="beanId">person</param>
     <param name="beanClass">
       com.smies.smooks.persistence.test.model.Person
@@ -22,7 +22,7 @@
   </resource-config>
 
   <resource-config selector="person address">
-    <resource>org.milyn.javabean.BeanPopulator</resource>
+    <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
     <param name="beanId">address</param>
     <param name="beanClass">
       com.smies.smooks.persistence.test.model.Address

@@ -15,11 +15,15 @@
 */
 package org.milyn.delivery.dom;
 
-import org.milyn.delivery.*;
-import org.milyn.delivery.ordering.Sorter;
-import org.milyn.delivery.dom.serialize.SerializationUnit;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.delivery.AbstractContentDeliveryConfig;
+import org.milyn.delivery.ContentHandlerConfigMapTable;
+import org.milyn.delivery.Filter;
+import org.milyn.delivery.FilterBypass;
+import org.milyn.delivery.VisitLifecycleCleanable;
+import org.milyn.delivery.dom.serialize.SerializationUnit;
+import org.milyn.delivery.ordering.Sorter;
 
 /**
  * DOM specific {@link org.milyn.delivery.ContentDeliveryConfig} implementation.

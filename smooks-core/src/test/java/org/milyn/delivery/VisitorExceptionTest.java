@@ -17,7 +17,7 @@ package org.milyn.delivery;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -61,11 +61,11 @@ public class VisitorExceptionTest extends TestCase {
     private void test_exception(String config, boolean expectException) throws IOException, SAXException {
         Smooks smooks = new Smooks("/org/milyn/delivery/" + config);
 
-        if(expectException) {
+        if (expectException) {
             try {
                 smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<doc/>")), null);
                 fail("Expected SmooksException");
-            } catch(SmooksException e) {
+            } catch (SmooksException e) {
                 assertEquals("Terminate Exception", e.getCause().getMessage());
             }
         } else {

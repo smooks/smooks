@@ -29,7 +29,7 @@ import javax.xml.transform.stream.StreamSource;
 import junit.framework.TestCase;
 
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.csv.CSVHeaderValidationException;
 import org.xml.sax.SAXException;
 

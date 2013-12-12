@@ -15,17 +15,14 @@
  */
 package org.milyn.visitors.ctrl;
 
-import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitAfter;
-import org.milyn.delivery.sax.SAXVisitBefore;
 import org.w3c.dom.Element;
 
-import javax.xml.XMLConstants;
 import java.io.IOException;
 
 /**

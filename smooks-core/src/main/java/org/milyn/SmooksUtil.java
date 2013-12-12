@@ -17,12 +17,13 @@ package org.milyn;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.profile.ProfileSet;
+import org.milyn.commons.profile.ProfileStore;
+import org.milyn.commons.profile.UnknownProfileMemberException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.profile.ProfileSet;
-import org.milyn.profile.ProfileStore;
-import org.milyn.profile.UnknownProfileMemberException;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -81,7 +82,7 @@ public abstract class SmooksUtil {
      * Utility method to filter the content in the specified {@link InputStream} for the specified {@link org.milyn.container.ExecutionContext}.
      * <p/>
      * Useful for testing purposes.  In a real scenario, use
-     * {@link Smooks#filter(org.milyn.container.ExecutionContext,javax.xml.transform.Source,javax.xml.transform.Result)}.
+     * {@link Smooks#filter(org.milyn.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result)}.
      * <p/>
      * The content of the returned String is totally dependent on the configured
      * {@link org.milyn.delivery.dom.DOMElementVisitor} and {@link org.milyn.delivery.dom.serialize.SerializationUnit}

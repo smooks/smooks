@@ -17,14 +17,14 @@ package org.milyn.cdr.xsd11.extensiontests;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.delivery.ContentDeliveryConfig;
-import org.milyn.container.ExecutionContext;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.xml.XmlUtil;
+import org.milyn.commons.xml.XsdDOMValidator;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.ContentDeliveryConfig;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
-import org.milyn.xml.XmlUtil;
-import org.milyn.xml.XsdDOMValidator;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

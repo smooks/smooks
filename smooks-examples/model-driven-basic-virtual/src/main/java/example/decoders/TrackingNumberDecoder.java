@@ -15,8 +15,8 @@
 */
 package example.decoders;
 
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.javabean.DataDecoder;
+import org.milyn.commons.javabean.DataDecodeException;
+import org.milyn.commons.javabean.DataDecoder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +42,7 @@ public class TrackingNumberDecoder implements DataDecoder {
         for (int i = 0; i < unparsedTrackingNumber.length; i++) {
             String[] tokens = unparsedTrackingNumber[i].trim().split(":");
 
-            if(tokens.length == 2) {
+            if (tokens.length == 2) {
                 Map<String, String> trackingNumber = new HashMap<String, String>();
 
                 trackingNumber.put("shipperID", tokens[0]);

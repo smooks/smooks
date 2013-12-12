@@ -18,7 +18,7 @@ package org.milyn.scribe.adapter.hibernate;
 import java.util.Map;
 
 import org.hibernate.Session;
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
 import org.milyn.scribe.register.AbstractDaoAdapterRegister;
 import org.milyn.scribe.register.AbstractDaoRegister;
 

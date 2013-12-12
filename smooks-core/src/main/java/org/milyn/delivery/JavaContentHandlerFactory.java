@@ -17,11 +17,11 @@
 package org.milyn.delivery;
 
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.annotation.Configurator;
 import org.milyn.cdr.annotation.AppContext;
-import org.milyn.classpath.ClasspathUtils;
-import org.milyn.util.ClassUtil;
+import org.milyn.cdr.annotation.Configurator;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.classpath.ClasspathUtils;
+import org.milyn.commons.util.ClassUtil;
 import org.milyn.container.ApplicationContext;
 
 import java.lang.reflect.Constructor;
@@ -32,6 +32,7 @@ import java.lang.reflect.InvocationTargetException;
  * <p/>
  * Java-based ContentHandler implementations should contain a public
  * constructor that takes a SmooksResourceConfiguration instance as a parameter.
+ *
  * @author tfennelly
  */
 public class JavaContentHandlerFactory implements ContentHandlerFactory {
@@ -40,32 +41,33 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
     private ApplicationContext appContext;
 
     /**
-	 * Create a Java based ContentHandler instance.
+     * Create a Java based ContentHandler instance.
+     *
      * @param resourceConfig The SmooksResourceConfiguration for the Java {@link ContentHandler}
-     * to be created.
+     *                       to be created.
      * @return Java {@link ContentHandler} instance.
-	 */
-	public synchronized Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
+     */
+    public synchronized Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
         Object javaResource = resourceConfig.getJavaResourceObject();
 
-        if(javaResource != null) {
+        if (javaResource != null) {
             return javaResource;
         }
 
-		Object contentHandler = null;
+        Object contentHandler = null;
         Exception exception = null;
         String className = null;
-		
-		try {
+
+        try {
             className = ClasspathUtils.toClassName(resourceConfig.getResource());
-			Class classRuntime = ClassUtil.forName(className, getClass());
-			Constructor constructor;
-			try {
-				constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
-				contentHandler = constructor.newInstance(new Object[] {resourceConfig});
-			} catch (NoSuchMethodException e) {
-				contentHandler = classRuntime.newInstance();
-			}
+            Class classRuntime = ClassUtil.forName(className, getClass());
+            Constructor constructor;
+            try {
+                constructor = classRuntime.getConstructor(new Class[]{SmooksResourceConfiguration.class});
+                contentHandler = constructor.newInstance(new Object[]{resourceConfig});
+            } catch (NoSuchMethodException e) {
+                contentHandler = classRuntime.newInstance();
+            }
             Configurator.configure(contentHandler, resourceConfig, appContext);
         } catch (InstantiationException e) {
             exception = e;
@@ -77,7 +79,7 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
             exception = e;
         } finally {
             // One of the above exception.
-            if(exception != null) {
+            if (exception != null) {
                 IllegalStateException state = new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause...");
                 state.initCause(exception);
                 throw state;
@@ -86,6 +88,6 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
 
         resourceConfig.setJavaResourceObject(contentHandler);
 
-		return contentHandler;
-	}
+        return contentHandler;
+    }
 }

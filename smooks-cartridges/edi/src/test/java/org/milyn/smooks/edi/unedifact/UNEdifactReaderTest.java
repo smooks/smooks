@@ -33,7 +33,7 @@ import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.util.EDIUtils;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
 import org.milyn.smooks.edi.unedifact.model.r41.UNEdifactInterchange41;

@@ -15,28 +15,28 @@
 */
 package org.milyn.delivery.sax;
 
-import java.io.IOException;
-
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.annotation.StreamResultWriter;
 import org.milyn.delivery.sax.annotation.TextConsumer;
 
+import java.io.IOException;
+
 @TextConsumer
 public class VisitAfterWrittingVisitor implements SAXVisitAfter {
 
-	@StreamResultWriter	
-	private SAXToXMLWriter writer;
-	
-	public static String elementText = null;
-	
-	public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-		writer.writeStartElement(element);
-		writer.writeText("{{", element);
-		writer.writeText(element);
-		writer.writeText("}}", element);
-		writer.writeEndElement(element);
-		
-		elementText = element.getTextContent();
-	}
+    @StreamResultWriter
+    private SAXToXMLWriter writer;
+
+    public static String elementText = null;
+
+    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        writer.writeStartElement(element);
+        writer.writeText("{{", element);
+        writer.writeText(element);
+        writer.writeText("}}", element);
+        writer.writeEndElement(element);
+
+        elementText = element.getTextContent();
+    }
 }

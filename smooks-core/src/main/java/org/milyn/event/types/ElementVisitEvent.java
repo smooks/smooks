@@ -15,13 +15,11 @@
 */
 package org.milyn.event.types;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
+import org.milyn.commons.util.FreeMarkerTemplate;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.ContentHandlerConfigMap;
@@ -32,18 +30,12 @@ import org.milyn.event.ResourceBasedEvent;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
 import org.milyn.expression.MVELExpressionEvaluator;
-import org.milyn.util.CollectionsUtil;
 import org.milyn.util.MultiLineToStringBuilder;
-import org.milyn.util.FreeMarkerTemplate;
 
-import java.io.StringWriter;
 import java.io.PrintWriter;
-import java.util.Collection;
+import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-import java.util.Map.Entry;
 
 /**
  * Element Visit Event.

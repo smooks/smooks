@@ -16,19 +16,19 @@
 
 package org.milyn.container;
 
+import org.milyn.cdr.SmooksResourceConfigurationStore;
+import org.milyn.javabean.context.BeanIdStore;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
+import org.milyn.commons.profile.DefaultProfileStore;
+import org.milyn.commons.profile.ProfileStore;
+import org.milyn.commons.resource.ContainerResourceLocator;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-
-import org.milyn.cdr.SmooksResourceConfigurationStore;
-import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.milyn.resource.ContainerResourceLocator;
-import org.milyn.javabean.context.BeanIdStore;
-import org.milyn.profile.ProfileStore;
-import org.milyn.profile.DefaultProfileStore;
 
 /**
  *

@@ -15,7 +15,7 @@
 */
 package org.milyn.delivery;
 
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.delivery.sax.SAXElement;
@@ -31,7 +31,7 @@ import java.io.IOException;
 public class SAXAndDOMVisitor implements DOMElementVisitor, SAXElementVisitor {
 
     public static boolean visited = false;
-    
+
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         visited = true;
     }

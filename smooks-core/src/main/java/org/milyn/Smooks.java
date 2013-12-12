@@ -18,40 +18,44 @@ package org.milyn;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.assertion.AssertArgument;
+import org.jaxen.saxpath.SAXPathException;
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.classpath.CascadingClassLoaderSet;
-import org.milyn.javabean.context.BeanContext;
-import org.milyn.javabean.context.preinstalled.Time;
-import org.milyn.javabean.context.preinstalled.UniqueID;
-import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.milyn.xml.NamespaceMappings;
+import org.milyn.commons.SmooksException;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
+import org.milyn.commons.classpath.CascadingClassLoaderSet;
+import org.milyn.commons.net.URIUtil;
+import org.milyn.commons.profile.Profile;
+import org.milyn.commons.profile.ProfileSet;
+import org.milyn.commons.profile.UnknownProfileMemberException;
+import org.milyn.commons.resource.URIResourceLocator;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.standalone.StandaloneApplicationContext;
 import org.milyn.container.standalone.StandaloneExecutionContext;
-import org.milyn.delivery.*;
+import org.milyn.delivery.ContentDeliveryConfig;
+import org.milyn.delivery.Filter;
+import org.milyn.delivery.FilterBypass;
+import org.milyn.delivery.Visitor;
+import org.milyn.delivery.VisitorAppender;
+import org.milyn.delivery.VisitorConfigMap;
 import org.milyn.event.ExecutionEventListener;
 import org.milyn.event.types.FilterLifecycleEvent;
-import org.milyn.net.URIUtil;
+import org.milyn.javabean.context.BeanContext;
+import org.milyn.javabean.context.preinstalled.Time;
+import org.milyn.javabean.context.preinstalled.UniqueID;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.payload.Exports;
 import org.milyn.payload.FilterResult;
 import org.milyn.payload.FilterSource;
 import org.milyn.payload.JavaResult;
-import org.milyn.profile.Profile;
-import org.milyn.profile.ProfileSet;
-import org.milyn.profile.UnknownProfileMemberException;
-import org.milyn.resource.URIResourceLocator;
+import org.milyn.xml.NamespaceMappings;
 import org.xml.sax.SAXException;
-import org.jaxen.saxpath.SAXPathException;
-
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -112,7 +116,7 @@ public class Smooks {
      * Public Default Constructor.
      * <p/>
      * Resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
+     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
      */
     public Smooks() {
         context = new StandaloneApplicationContext(true);
@@ -123,7 +127,7 @@ public class Smooks {
      * Public Default Constructor.
      * <p/>
      * Resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
+     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
      */
     public Smooks(StandaloneApplicationContext context) {
         this.context = context;
@@ -134,10 +138,10 @@ public class Smooks {
      * Public constructor.
      * <p/>
      * Adds the set of {@link SmooksResourceConfiguration resources} via the {@link #addConfigurations(String)} method,
-     * which resolves the resourceURI parameter using a {@link org.milyn.resource.URIResourceLocator}.
+     * which resolves the resourceURI parameter using a {@link org.milyn.commons.resource.URIResourceLocator}.
      * <p/>
      * Additional resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
+     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
      *
      * @param resourceURI XML resource configuration stream URI.
      * @throws IOException  Error reading resource stream.
@@ -147,7 +151,7 @@ public class Smooks {
     public Smooks(String resourceURI) throws IOException, SAXException {
         this();
         URIResourceLocator resourceLocator = new URIResourceLocator();
-        
+
         resourceLocator.setBaseURI(URIResourceLocator.extractBaseURI(resourceURI));
         context.setResourceLocator(resourceLocator);
         addConfigurations(resourceURI);
@@ -174,6 +178,7 @@ public class Smooks {
 
     /**
      * Get the ClassLoader associated with this Smooks instance.
+     *
      * @return The ClassLoader instance.
      */
     public ClassLoader getClassLoader() {
@@ -182,24 +187,27 @@ public class Smooks {
 
     /**
      * Set the ClassLoader associated with this Smooks instance.
+     *
      * @param classLoader The ClassLoader instance.
      */
-    public void setClassLoader(ClassLoader classLoader) {        
+    public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
         context.setClassLoader(classLoader);
     }
 
     /**
      * Set the filter settings for this Smooks instance.
+     *
      * @param filterSettings The filter settings to be used.
      */
     public void setFilterSettings(FilterSettings filterSettings) {
         AssertArgument.isNotNull(filterSettings, "filterSettings");
         filterSettings.applySettings(this);
     }
-    
+
     /**
      * Set the Exports for this Smooks instance.
+     *
      * @param exports The exports that will be created by this Smooks instance.
      */
     public Smooks setExports(Exports exports) {
@@ -210,18 +218,20 @@ public class Smooks {
 
     /**
      * Set the configuration for the reader to be used on this Smooks instance.
+     *
      * @param readerConfigurator {@link ReaderConfigurator} instance.
      */
     public void setReaderConfig(ReaderConfigurator readerConfigurator) {
         List<SmooksResourceConfiguration> configList = readerConfigurator.toConfig();
 
-        for(SmooksResourceConfiguration config : configList) {
+        for (SmooksResourceConfiguration config : configList) {
             addConfiguration(config);
         }
     }
 
     /**
      * Set the namespace prefix-to-uri mappings to be used on this Smooks instance.
+     *
      * @param namespaces The namespace prefix-to-uri mappings.
      */
     public void setNamespaces(Properties namespaces) {
@@ -244,7 +254,7 @@ public class Smooks {
     /**
      * Add a visitor instance to <code>this</code> Smooks instance.
      *
-     * @param visitor The visitor implementation.
+     * @param visitor        The visitor implementation.
      * @param targetSelector The message fragment target selector.
      */
     public SmooksResourceConfiguration addVisitor(Visitor visitor, String targetSelector) {
@@ -254,8 +264,8 @@ public class Smooks {
     /**
      * Add a visitor instance to <code>this</code> Smooks instance.
      *
-     * @param visitor The visitor implementation.
-     * @param targetSelector The message fragment target selector.
+     * @param visitor          The visitor implementation.
+     * @param targetSelector   The message fragment target selector.
      * @param targetSelectorNS The message fragment target selector namespace.
      */
     public SmooksResourceConfiguration addVisitor(Visitor visitor, String targetSelector, String targetSelectorNS) {
@@ -290,13 +300,13 @@ public class Smooks {
     /**
      * Add a set of resource configurations to this Smooks instance.
      * <p/>
-     * Uses the {@link org.milyn.resource.URIResourceLocator} class to load the resource.
+     * Uses the {@link org.milyn.commons.resource.URIResourceLocator} class to load the resource.
      * <p/>
      * These configurations do not overwrite previously added configurations.
      * They are added to the list of configurations on this Smooks instance.
      *
      * @param resourceURI The URI string for the resource configuration list. See
-     *                    {@link org.milyn.resource.URIResourceLocator}.
+     *                    {@link org.milyn.commons.resource.URIResourceLocator}.
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
      */
@@ -326,8 +336,8 @@ public class Smooks {
      * The base URI is required for resolving resource imports.  Just specify
      * the location of the resource file.
      *
-     * @param baseURI The base URI string for the resource configuration list. See
-     *                    {@link org.milyn.resource.URIResourceLocator}.
+     * @param baseURI              The base URI string for the resource configuration list. See
+     *                             {@link org.milyn.commons.resource.URIResourceLocator}.
      * @param resourceConfigStream The resource configuration stream.
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
@@ -347,7 +357,7 @@ public class Smooks {
      * Add a set of resource configurations to this Smooks instance.
      * <p/>
      * Calls {@link #addConfigurations(String, java.io.InputStream)} with a baseURI of "./",
-     * which is the default base URI on all {@link org.milyn.resource.URIResourceLocator}
+     * which is the default base URI on all {@link org.milyn.commons.resource.URIResourceLocator}
      * instances.
      *
      * @param resourceConfigStream The resource configuration stream.
@@ -364,7 +374,7 @@ public class Smooks {
      * The created context is profile agnostic and should be used where profile based targeting is not in use.
      * <p/>
      * The context returned from this method is used in subsequent calls to
-     * {@link #filterSource(org.milyn.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)} 
+     * {@link #filterSource(org.milyn.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}
      * It allows access to the execution context instance
      * before and after calls on this method.  This means the caller has an opportunity to set and get data
      * {@link org.milyn.container.BoundAttributeStore bound} to the execution context (before and after the calls), providing the
@@ -395,7 +405,7 @@ public class Smooks {
      * @throws UnknownProfileMemberException Unknown target profile.
      */
     public ExecutionContext createExecutionContext(String targetProfile) throws UnknownProfileMemberException {
-        if(classLoader != null) {
+        if (classLoader != null) {
             ClassLoader originalTCCL = Thread.currentThread().getContextClassLoader();
             CascadingClassLoaderSet newTCCL = new CascadingClassLoaderSet();
 
@@ -404,7 +414,7 @@ public class Smooks {
 
             Thread.currentThread().setContextClassLoader(newTCCL);
             try {
-                if(isConfigurable) {
+                if (isConfigurable) {
                     initializeResourceConfigurations();
                 }
                 return new StandaloneExecutionContext(targetProfile, context, visitorConfigMap);
@@ -412,7 +422,7 @@ public class Smooks {
                 Thread.currentThread().setContextClassLoader(originalTCCL);
             }
         } else {
-            if(isConfigurable) {
+            if (isConfigurable) {
                 initializeResourceConfigurations();
             }
             return new StandaloneExecutionContext(targetProfile, context, visitorConfigMap);
@@ -420,7 +430,7 @@ public class Smooks {
     }
 
     private synchronized void initializeResourceConfigurations() {
-        if(!isConfigurable) {
+        if (!isConfigurable) {
             return;
         }
         isConfigurable = false;
@@ -437,7 +447,7 @@ public class Smooks {
      * <p/>
      * Not producing a {@link Result}.
      *
-     * @param source           The content Source.
+     * @param source The content Source.
      * @throws SmooksException Failed to filter.
      */
     public void filterSource(Source source) throws SmooksException {
@@ -448,8 +458,8 @@ public class Smooks {
      * Filter the content in the supplied {@link Source} instance, outputing data
      * to the supplied {@link Result} instances.
      *
-     * @param source           The filter Source.
-     * @param results          The filter Results.
+     * @param source  The filter Source.
+     * @param results The filter Results.
      * @throws SmooksException Failed to filter.
      */
     public void filterSource(Source source, Result... results) throws SmooksException {
@@ -470,7 +480,7 @@ public class Smooks {
         AssertArgument.isNotNull(source, "source");
         AssertArgument.isNotNull(executionContext, "executionContext");
 
-        if(classLoader != null) {
+        if (classLoader != null) {
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(classLoader);
             try {
@@ -489,23 +499,23 @@ public class Smooks {
         try {
             Filter.setCurrentExecutionContext(executionContext);
             try {
-                if(eventListener != null) {
+                if (eventListener != null) {
                     eventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.STARTED));
                 }
 
                 ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();
-				
-                if(results != null && results.length == 1 && results[0] != null) {
-	                FilterBypass filterBypass = deliveryConfig.getFilterBypass();                
-	                if(filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
-	                	// We're done... a filter bypass was applied...
-                        if(logger.isDebugEnabled()) {
+
+                if (results != null && results.length == 1 && results[0] != null) {
+                    FilterBypass filterBypass = deliveryConfig.getFilterBypass();
+                    if (filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
+                        // We're done... a filter bypass was applied...
+                        if (logger.isDebugEnabled()) {
                             logger.debug("FilterBypass '" + filterBypass.getClass().getName() + "' applied.");
                         }
-	                	return;
-	                }
+                        return;
+                    }
                 }
-                
+
                 Filter messageFilter = deliveryConfig.newFilter(executionContext);
                 Filter.setFilter(messageFilter);
                 try {
@@ -517,19 +527,19 @@ public class Smooks {
                     BeanContext beanContext = executionContext.getBeanContext();
                     beanContext.addBean(Time.BEAN_ID, new Time());
                     beanContext.addBean(UniqueID.BEAN_ID, new UniqueID());
-                    for(BeanContextLifecycleObserver observer : context.getBeanContextLifecycleObservers()) {
+                    for (BeanContextLifecycleObserver observer : context.getBeanContextLifecycleObservers()) {
                         beanContext.addObserver(observer);
                     }
 
                     try {
                         deliveryConfig.executeHandlerInit(executionContext);
-                    	messageFilter.doFilter();
+                        messageFilter.doFilter();
                     } finally {
                         try {
                             // We want to make sure that all the beans from the BeanContext are available in the
                             // JavaResult, if one is supplied by the user...
                             JavaResult javaResult = (JavaResult) FilterResult.getResult(executionContext, JavaResult.class);
-                            if(javaResult != null) {
+                            if (javaResult != null) {
                                 javaResult.getResultMap().putAll(executionContext.getBeanContext().getBeanMap());
                             }
 
@@ -540,7 +550,7 @@ public class Smooks {
                             deliveryConfig.executeHandlerCleanup(executionContext);
                         }
                     }
-                } catch(SmooksException e) {
+                } catch (SmooksException e) {
                     executionContext.setTerminationError(e);
                     throw e;
                 } catch (Throwable t) {
@@ -554,7 +564,7 @@ public class Smooks {
                 Filter.removeCurrentExecutionContext();
             }
         } finally {
-            if(eventListener != null) {
+            if (eventListener != null) {
                 eventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.FINISHED));
             }
         }
@@ -584,7 +594,7 @@ public class Smooks {
      * Assert that the instance is configurable, throwing an exception if it is not.
      */
     private void assertIsConfigurable() {
-        if(!isConfigurable) {
+        if (!isConfigurable) {
             throw new UnsupportedOperationException("Unsupported call to Smooks instance configuration method after Smooks instance has created an ExecutionContext.");
         }
     }

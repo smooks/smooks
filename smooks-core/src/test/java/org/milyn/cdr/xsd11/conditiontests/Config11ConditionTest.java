@@ -17,7 +17,7 @@ package org.milyn.cdr.xsd11.conditiontests;
 
 import junit.framework.TestCase;
 import org.milyn.Smooks;
-import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 
@@ -74,7 +74,7 @@ public class Config11ConditionTest extends TestCase {
         try {
             testConfig("config05.xml", "n/a");
             fail("Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Unknown condition idRef 'config3'.", e.getMessage());
         }
     }
@@ -86,7 +86,7 @@ public class Config11ConditionTest extends TestCase {
         try {
             testConfig("config07.xml", "n/a");
             fail("Expected SmooksConfigurationException");
-        } catch(SmooksConfigurationException e) {
+        } catch (SmooksConfigurationException e) {
             assertEquals("Duplicate condition ID 'config3'.", e.getMessage());
         }
     }

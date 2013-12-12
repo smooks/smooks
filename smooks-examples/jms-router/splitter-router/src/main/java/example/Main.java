@@ -16,10 +16,10 @@
 package example;
 
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.container.ExecutionContext;
-import org.milyn.io.StreamUtils;
+import org.milyn.commons.io.StreamUtils;
 import org.milyn.payload.ByteSource;
 import org.xml.sax.SAXException;
 

@@ -15,16 +15,14 @@
 */
 package org.milyn.delivery.dom.serialize;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
+import org.milyn.commons.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXElementVisitor;
 import org.milyn.delivery.sax.SAXText;
-import org.milyn.xml.DomUtils;
 import org.milyn.xml.Namespace;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -49,6 +47,7 @@ public class GhostElementSerializationUnit extends DefaultSerializationUnit impl
 
     /**
      * Utility method for creating a &lt;ghost-element/&gt; element.
+     *
      * @param ownerDocument The owner document.
      * @return The &lt;ghost-element/&gt; element.
      */

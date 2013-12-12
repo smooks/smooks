@@ -15,18 +15,18 @@
 */
 package org.milyn.event.report;
 
-import org.milyn.assertion.AssertArgument;
+import org.milyn.commons.assertion.AssertArgument;
+import org.milyn.commons.cdr.SmooksConfigurationException;
 import org.milyn.event.ExecutionEvent;
 import org.milyn.event.types.ConfigBuilderEvent;
 import org.milyn.event.types.ElementVisitEvent;
-import org.milyn.cdr.SmooksConfigurationException;
 
 import java.io.File;
 import java.io.Writer;
 
 /**
  * Report generation configuration.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class ReportConfiguration {
@@ -43,7 +43,7 @@ public class ReportConfiguration {
     public ReportConfiguration(Writer outputWriter) {
         AssertArgument.isNotNull(outputWriter, "outputWriter");
         this.outputWriter = outputWriter;
-        filterEvents = new Class[] {ConfigBuilderEvent.class, ElementVisitEvent.class};
+        filterEvents = new Class[]{ConfigBuilderEvent.class, ElementVisitEvent.class};
     }
 
     public void setOutputWriter(Writer outputWriter) {
@@ -103,7 +103,7 @@ public class ReportConfiguration {
     }
 
     public File getTempOutDir() {
-        if(tempOutDir == null) {
+        if (tempOutDir == null) {
             throw new SmooksConfigurationException("Temp OutDir not set.");
         }
         return tempOutDir;
