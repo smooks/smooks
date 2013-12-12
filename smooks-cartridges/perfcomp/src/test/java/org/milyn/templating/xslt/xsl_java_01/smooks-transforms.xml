@@ -6,23 +6,23 @@
 	<!--
 		The order-item java transforms...
 	-->
-    <smooks-resource selector="order-item" path="org.milyn.javabean.BeanPopulator">
+    <smooks-resource selector="order-item" path="org.milyn.cartridge.javabean.BeanPopulator">
         <param name="beanId">order-item</param>
         <param name="beanClass">org.milyn.templating.xslt.OrderItem</param>
     </smooks-resource>
-    <smooks-resource selector="order-item price" path="org.milyn.javabean.BeanPopulator">
+    <smooks-resource selector="order-item price" path="org.milyn.cartridge.javabean.BeanPopulator">
         <param name="beanId">order-item</param>
         <param name="setterName">setPrice</param>
     </smooks-resource>
-    <smooks-resource selector="order-item quantity" path="org.milyn.javabean.BeanPopulator">
+    <smooks-resource selector="order-item quantity" path="org.milyn.cartridge.javabean.BeanPopulator">
         <param name="beanId">order-item</param>
         <param name="setterName">setQuantity</param>
     </smooks-resource>
-    <smooks-resource selector="order-item product-id" path="org.milyn.javabean.BeanPopulator">
+    <smooks-resource selector="order-item product-id" path="org.milyn.cartridge.javabean.BeanPopulator">
         <param name="beanId">order-item</param>
         <param name="setterName">setProduct</param>
     </smooks-resource>
-    <smooks-resource selector="order-item title" path="org.milyn.javabean.BeanPopulator">
+    <smooks-resource selector="order-item title" path="org.milyn.cartridge.javabean.BeanPopulator">
         <param name="beanId">order-item</param>
         <param name="setterName">setTitle</param>
     </smooks-resource>

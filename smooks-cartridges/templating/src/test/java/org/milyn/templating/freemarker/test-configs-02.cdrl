@@ -7,7 +7,7 @@
     </resource-config>
 
     <resource-config selector="c">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
         <param name="beanId">myBeanData</param>
         <param name="beanClass">org.milyn.templating.MyBean</param>
         <param name="bindings">

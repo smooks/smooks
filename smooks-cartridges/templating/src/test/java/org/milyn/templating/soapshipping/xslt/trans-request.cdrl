@@ -20,7 +20,7 @@
         Configure the TrackingNumber bean creation and population...
     -->
     <resource-config selector="trackingNumber">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
         <!-- create and bind the bean instance -->
         <param name="beanId">trackingNumber</param>
         <param name="beanClass">org.milyn.templating.soapshipping.TrackingNumber</param>

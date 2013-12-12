@@ -92,7 +92,7 @@ import java.util.List;
  *     &lt;-- Create the Order bean instance when we encounter the "order" element
  *            and call it "order"... --&gt;
  *     &lt;resource-config selector="order"&gt;
- *         &lt;resource&gt;org.milyn.javabean.BeanPopulator&lt;/resource&gt;
+ *         &lt;resource&gt;org.milyn.cartridge.javabean.BeanPopulator&lt;/resource&gt;
  *         &lt;param name="beanId"&gt;<b><u>order</u></b>&lt;/param&gt;
  *         &lt;param name="beanClass"&gt;<b>org.milyn.javabean.Order</b>&lt;/param&gt;
  *         &lt;param name="bindings"&gt;
@@ -104,7 +104,7 @@ import java.util.List;
  *     &lt;-- Create a List for the OrderItem instances when we encounter the "order" element.
  *            Call it "orderItems" and set it on the "order" bean... --&gt;
  *     &lt;resource-config selector="order"&gt;
- *         &lt;resource&gt;org.milyn.javabean.BeanPopulator&lt;/resource&gt;
+ *         &lt;resource&gt;org.milyn.cartridge.javabean.BeanPopulator&lt;/resource&gt;
  *         &lt;param name="beanId"&gt;<b><u>orderItems</u></b>&lt;/param&gt;
  *         &lt;param name="beanClass"&gt;<b>{@link ArrayList java.util.ArrayList}</b>&lt;/param&gt;
  *         &lt;param name="bindings"&gt;
@@ -115,7 +115,7 @@ import java.util.List;
  *     &lt;-- Create the Header bean instance when we encounter the "header" element.
  *            Call it "header" --&gt;
  *     &lt;resource-config selector="header"&gt;
- *         &lt;resource&gt;org.milyn.javabean.BeanPopulator&lt;/resource&gt;
+ *         &lt;resource&gt;org.milyn.cartridge.javabean.BeanPopulator&lt;/resource&gt;
  *         &lt;param name="beanId"&gt;<b><u>header</u></b>&lt;/param&gt;
  *         &lt;param name="beanClass"&gt;<b>org.milyn.javabean.Header</b>&lt;/param&gt;
  *         &lt;param name="bindings"&gt;
@@ -129,7 +129,7 @@ import java.util.List;
  *     &lt;-- Create OrderItem instances when we encounter the "order-item" element.
  *            Set them on the "orderItems" bean (List)... --&gt;
  *     &lt;resource-config selector="order-item"&gt;
- *         &lt;resource&gt;org.milyn.javabean.BeanPopulator&lt;/resource&gt;
+ *         &lt;resource&gt;org.milyn.cartridge.javabean.BeanPopulator&lt;/resource&gt;
  *         &lt;param name="beanClass"&gt;<b>org.milyn.javabean.OrderItem</b>&lt;/param&gt;
  *         &lt;param name="bindings"&gt;
  *             &lt;-- OrderItem bindings... --&gt;

@@ -13,7 +13,7 @@
         Configure the History bean creation and population...
     -->
     <resource-config selector="history">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <resource>org.milyn.cartridge.javabean.BeanPopulator</resource>
         <!-- create and bind the bean instance -->
         <param name="beanId">history</param>
         <param name="beanClass">org.milyn.templating.soapshipping.History</param>
