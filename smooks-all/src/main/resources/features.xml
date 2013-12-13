@@ -3,7 +3,7 @@
 
   <feature name="smooks" version="${project.version}">
     <bundle>mvn:org.antlr/com.springsource.antlr/${spring.antlr.version}</bundle>
-    <bundle>mvn:org.freemarker/com.springsource.freemarker/${spring.freemarker.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.freemarker/2.3.20_1</bundle>
     <!-- Karaf comes with pax-logging and slf4j; the following logging jars should not be required -->
     <!--<bundle>mvn:org.apache.commons/com.springsource.org.apache.commons.logging/${spring.commons.logging.version}</bundle>-->
     <!--<bundle>mvn:org.apache.log4j/com.springsource.org.apache.log4j/${spring.log4j.version}</bundle>-->
