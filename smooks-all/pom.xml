@@ -404,7 +404,8 @@
 							org.codehaus.groovy.runtime.typehandling;version="${spring.groovy.version}",
 							javax.swing.tree,
 							!org.apache.commons.cli.*,
-							!META-INF.services.javax.xml.parsers.*,*;resolution:=optional
+							!META-INF.services.javax.xml.parsers.*,
+                            *;resolution:=optional
 						</Import-Package>
 		                <Embed-Dependency>milyn*;scope=provided;type=!pom;inline=true</Embed-Dependency>
                         <_exportcontents>true</_exportcontents>

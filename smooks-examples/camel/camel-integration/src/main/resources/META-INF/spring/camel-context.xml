@@ -3,32 +3,32 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring 
        http://camel.apache.org/schema/spring/camel-spring.xsd">
 
   <camelContext xmlns="http://camel.apache.org/schema/spring">
     <route>
       <from uri="direct:input"/>
-      <to uri="smooks://file:./smooks-config.xml"/>
+      <to uri="smooks://smooks-config.xml"/>
     </route>
     
     <route>
       <from uri="direct:ireland"/>
-      <process ref="ieLogger"></process>
+      <process ref="ieLogger"/>
     </route>
     <route>
       <from uri="direct:greatbritain"/>
-      <process ref="gbLogger"></process>
+      <process ref="gbLogger"/>
     </route>
   </camelContext>
   
   <bean id="ieLogger" class="example.LogProcessor">
-  	<constructor-arg><value>ie</value></constructor-arg>
+  	<constructor-arg value="ie"/>
   </bean>
   
   <bean id="gbLogger" class="example.LogProcessor">
-  	<constructor-arg><value>gb</value></constructor-arg>
+  	<constructor-arg value="gb"/>
   </bean>
 
 </beans>

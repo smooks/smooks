@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="smooks-examples-camel"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
+    <repository>mvn:org.milyn/milyn-smooks-all/${project.version}/xml/features</repository>
+    <repository>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</repository>
+
+    <feature name='smooks-example-camel-unedifact-to-xml' version='${project.version}'>
+        <feature version="${camel.version}">camel-spring</feature>
+        <feature version="${project.version}">smooks</feature>
+        <bundle>wrap:mvn:org.milyn.edi.unedifact/d96a-binding/1.4</bundle>
+        <!-- Make EDI mapping file an OSGI Fragment, which adds it to main Smooks bundle's classpath -->
+        <bundle>wrap:mvn:org.milyn.edi.unedifact/d96a-mapping/1.4$Fragment-Host=org.milyn.smooks.osgi</bundle>
+        <bundle>mvn:${project.groupId}/${project.artifactId}/${project.version}</bundle>
+    </feature>
+</features>

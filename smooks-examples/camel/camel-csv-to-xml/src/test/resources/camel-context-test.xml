@@ -4,7 +4,7 @@
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
 	<bean id="smooks" class="org.milyn.smooks.camel.dataformat.SmooksDataFormat">
-	  	<constructor-arg><value>smooks-config.xml</value></constructor-arg>
+	  	<constructor-arg value="smooks-config.xml"/>
 	</bean>
 	
 	<bean id="exampleRouteBuilder" class="example.ExampleRouteBuilder"/>
