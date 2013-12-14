@@ -95,6 +95,11 @@
                         <xs:element ref="segmentGroup"/>
                         <xs:element ref="segment"/>
                     </xs:choice>
+                    <xs:attribute name="ignoreUnmappedSegments" type="xs:boolean" use="optional" default="false">
+                        <xs:annotation>
+                            <xs:documentation>Option to ignore EDI segments undefined in mapping model.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -110,11 +115,6 @@
         <xs:attribute name="xmltag" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation>The name of the xmltag when creating xml-event.</xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="ignoreUnmappedSegments" type="xs:boolean" use="optional" default="false">
-            <xs:annotation>
-                <xs:documentation>Option to ignore EDI segments undefined in mapping model.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="nodeTypeRef" type="xs:string" use="optional">
