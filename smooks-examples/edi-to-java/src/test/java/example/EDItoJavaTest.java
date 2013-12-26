@@ -15,30 +15,37 @@
 */
 package example;
 
-import junit.framework.*;
-import org.xml.sax.*;
+import com.thoughtworks.xstream.XStream;
+import org.junit.Assert;
+import org.junit.Test;
+import static org.milyn.io.StreamUtils.compareCharStreams;
+import static org.milyn.io.StreamUtils.readStreamAsString;
+import org.milyn.payload.JavaResult;
+import org.xml.sax.SAXException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class EDItoJavaTest extends TestCase {
+public class EDItoJavaTest {
 
+    @Test
     public void test() throws IOException, SAXException {
-        String expected = org.milyn.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
+        String expected = readStreamAsString(getClass().getResourceAsStream("expected.xml"));
         Main smooksMain = new Main();
 
-        org.milyn.payload.JavaResult result = smooksMain.runSmooksTransform();
+        JavaResult result = smooksMain.runSmooksTransform();
 
-        com.thoughtworks.xstream.XStream xstream = new com.thoughtworks.xstream.XStream();
+        XStream xstream = new XStream();
         String actual = xstream.toXML(result.getBean("order"));
 
         actual = actual.replaceFirst("<date>.*</date>", "<date/>");
 
-        boolean matchesExpected = org.milyn.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(actual));
-        if(!matchesExpected) {
-            assertEquals("Actual does not match expected.", expected, actual);
+        boolean matchesExpected = compareCharStreams(new StringReader(expected), new StringReader(actual));
+        if (!matchesExpected) {
+            Assert.assertEquals("Actual does not match expected.", expected, actual);
         }
     }
 }

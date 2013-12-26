@@ -5,10 +5,13 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn-smooks-example-jms-router</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <name>Milyn Smooks Example - JMS Router (Provider)</name>
+
+    <name>Milyn :: Smooks Example :: JMS Router (Provider)</name>
     <artifactId>milyn-smooks-example-jms-router-provider</artifactId>
+    <packaging>bundle</packaging>
 
     <build>
         <plugins>

@@ -15,34 +15,34 @@
 */
 package org.milyn.scribe.adapter.jpa;
 
-import static junit.framework.Assert.*;
-
-import javax.persistence.EntityManager;
-
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertSame;
 import org.milyn.scribe.adapter.jpa.test.util.BaseTestCase;
 import org.mockito.Mock;
 import org.testng.annotations.Test;
+
+import javax.persistence.EntityManager;
+
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
- *
  */
 public class EntityManagerRegisterTest extends BaseTestCase {
 
-	@Mock
-	EntityManager entityManager;
+    @Mock
+    EntityManager entityManager;
 
-	@Test( groups = "unit" )
-	public void test_getDao() {
+    @Test(groups = "unit")
+    public void test_getDao() {
 
-		EntityManagerRegister register = new EntityManagerRegister(entityManager);
+        EntityManagerRegister register = new EntityManagerRegister(entityManager);
 
-		EntityManagerDaoAdapter entityManagerDaoAdapter = register.getDefaultDao();
+        EntityManagerDaoAdapter entityManagerDaoAdapter = register.getDefaultDao();
 
-		assertNotNull(entityManagerDaoAdapter);
+        assertNotNull(entityManagerDaoAdapter);
 
-		assertSame(entityManager, entityManagerDaoAdapter.getEntityManager());
+        assertSame(entityManager, entityManagerDaoAdapter.getEntityManager());
 
-	}
+    }
 
 
 }

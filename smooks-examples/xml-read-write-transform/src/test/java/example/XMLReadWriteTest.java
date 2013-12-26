@@ -16,27 +16,26 @@
 
 package example;
 
-import junit.framework.TestCase;
 import example.model.Order;
-import example.model.OrderItem;
-
-import java.io.IOException;
-import java.io.StringWriter;
-
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.milyn.javabean.binding.xml.XMLBinding;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class XMLReadWriteTest extends TestCase {
+public class XMLReadWriteTest {
 
     /**
      * Read using v1 binding config and write back out using v2 binding config... i.e. transform from v1 to v2...
      */
+    @Test
     public void test() throws IOException, SAXException {
         XMLBinding xmlV1Binding = new XMLBinding().add("v1-binding-config.xml");
         XMLBinding xmlV2Binding = new XMLBinding().add("v2-binding-config.xml");

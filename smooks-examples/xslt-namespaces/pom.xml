@@ -4,26 +4,24 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-examples</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <artifactId>smooks-examples-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
-    <name>Milyn Smooks Example - XSLT-namespaces</name>
+
+    <name>Milyn :: Smooks Example :: XSLT-namespaces</name>
     <artifactId>milyn-smooks-example-xslt-namespaces</artifactId>
+    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
-
-
 
 </project>

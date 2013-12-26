@@ -1,49 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>milyn</artifactId>
-		<version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-    <name>Milyn Commons</name>
-	<artifactId>milyn-commons</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../smooks-parent/pom.xml</relativePath>
+    </parent>
 
-	<dependencies>
+    <name>Milyn :: Commons</name>
+    <artifactId>milyn-commons</artifactId>
+    <packaging>bundle</packaging>
+
+    <dependencies>
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-			<version>${freemarker.version}</version>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
         <dependency>
-          <groupId>javassist</groupId>
-          <artifactId>javassist</artifactId>
-          <version>${javassist.version}</version>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
         </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.7</version>
-            <scope>provided</scope>
         </dependency>
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+    </dependencies>
 
 </project>

@@ -1,41 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>smooks-examples</artifactId>
-		<version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-        <relativePath>../../pom.xml</relativePath>
-	</parent>
-    <name>Milyn Smooks Example - EJC - Model Use</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-examples-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+
+    <name>Milyn :: Smooks Example :: EJC - Model Use</name>
     <artifactId>milyn-smooks-example-ejc-model-use</artifactId>
+    <packaging>bundle</packaging>
 
     <dependencies>
-
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-edi</artifactId>
-            <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ejc</artifactId>
-            <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

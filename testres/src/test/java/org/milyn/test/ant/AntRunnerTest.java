@@ -16,16 +16,17 @@
 
 package org.milyn.test.ant;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.IOException;
 
 /**
  * <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class AntRunnerTest extends TestCase {
+public class AntRunnerTest {
 
-    public void test() throws IOException {
+    @Test
+    public void testAntRunner() throws IOException {
         AntRunner antRunner = new AntRunner("ant-script.xml", "xvar=Tom");
 
         antRunner.run("xtarg").run("ytarg");

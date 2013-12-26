@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../smooks-parent/pom.xml</relativePath>
     </parent>
-    <name>EDI Test Utilities</name>
+
+    <name>Milyn :: EDI :: Test Utilities</name>
     <artifactId>milyn-smooks-edi-test</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <profiles>
         <profile>
@@ -25,7 +26,9 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <environmentVariables>
-                                <org.milyn.xml.XsdValidator.SchemaFactory>org.apache.xerces.jaxp.validation.XMLSchemaFactory</org.milyn.xml.XsdValidator.SchemaFactory>
+                                <org.milyn.xml.XsdValidator.SchemaFactory>
+                                    org.apache.xerces.jaxp.validation.XMLSchemaFactory
+                                </org.milyn.xml.XsdValidator.SchemaFactory>
                             </environmentVariables>
                             <forkMode>once</forkMode>
                             <argLine>-Xms128m -Xmx512m -XX:MaxPermSize=512m</argLine>
@@ -58,41 +61,30 @@
     </profiles>
 
     <dependencies>
-
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ejc</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.milyn</groupId>
-                    <artifactId>testres</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-routing</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.milyn</groupId>
-                    <artifactId>testres</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
-            <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

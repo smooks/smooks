@@ -33,6 +33,7 @@
         <jb:value property="tax" decoder="BigDecimal" data="#/tax" />
         <jb:value property="date" decoder="Date" data="#/date">
             <jb:decodeParam name="format">EEE MMM dd HH:mm:ss z yyyy</jb:decodeParam>
+            <jb:decodeParam name="locale">en_IE</jb:decodeParam>
         </jb:value>
     </jb:bean>
 

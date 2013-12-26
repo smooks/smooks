@@ -15,213 +15,213 @@
 */
 package org.milyn.scribe.adapter.hibernate;
 
-import static junit.framework.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static junit.framework.Assert.assertSame;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.milyn.scribe.adapter.hibernate.test.util.BaseTestCase;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.milyn.scribe.adapter.hibernate.SessionDaoAdapter;
-import org.milyn.scribe.adapter.hibernate.test.util.BaseTestCase;
-import org.mockito.Mock;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
- *
  */
 public class SessionDaoAdapterTest extends BaseTestCase {
 
-	@Mock
-	private Session session;
+    @Mock
+    private Session session;
 
-	@Mock
-	private Query query;
+    @Mock
+    private Query query;
 
-	private SessionDaoAdapter adapter;
+    private SessionDaoAdapter adapter;
 
-	@Test( groups = "unit" )
-	public void test_persist() {
+    @Test(groups = "unit")
+    public void test_persist() {
 
-		// EXECUTE
+        // EXECUTE
 
-		Object toPersist = new Object();
+        Object toPersist = new Object();
 
-		// VERIFY
+        // VERIFY
 
-		adapter.insert(toPersist);
+        adapter.insert(toPersist);
 
-		verify(session).save(same(toPersist));
+        verify(session).save(same(toPersist));
 
-	}
+    }
 
-	@Test( groups = "unit" )
-	public void test_merge() {
+    @Test(groups = "unit")
+    public void test_merge() {
 
-		// EXECUTE
+        // EXECUTE
 
-		Object toMerge = new Object();
+        Object toMerge = new Object();
 
-		Object merged = adapter.update(toMerge);
+        Object merged = adapter.update(toMerge);
 
-		// VERIFY
+        // VERIFY
 
-		verify(session).update(same(toMerge));
+        verify(session).update(same(toMerge));
 
-		assertSame(toMerge, merged);
+        assertSame(toMerge, merged);
 
-	}
+    }
 
-	@Test( groups = "unit" )
-	public void test_flush() {
+    @Test(groups = "unit")
+    public void test_flush() {
 
-		// EXECUTE
+        // EXECUTE
 
-		adapter.flush();
+        adapter.flush();
 
-		// VERIFY
+        // VERIFY
 
-		verify(session).flush();
+        verify(session).flush();
 
-	}
+    }
 
-	@Test( groups = "unit" )
-	public void test_lookupByQuery_map_parameters() {
+    @Test(groups = "unit")
+    public void test_lookupByQuery_map_parameters() {
 
-		// STUB
+        // STUB
 
-		List<?> listResult = Collections.emptyList();
+        List<?> listResult = Collections.emptyList();
 
-		when(session.createQuery(anyString())).thenReturn(query);
-		when(query.list()).thenReturn(listResult);
+        when(session.createQuery(anyString())).thenReturn(query);
+        when(query.list()).thenReturn(listResult);
 
-		// EXECUTE
+        // EXECUTE
 
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("key1", "value1");
-		params.put("key2", "value2");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("key1", "value1");
+        params.put("key2", "value2");
 
-		Object result = adapter.lookupByQuery("query", params);
+        Object result = adapter.lookupByQuery("query", params);
 
-		// VERIFY
+        // VERIFY
 
-		assertSame(listResult, result);
+        assertSame(listResult, result);
 
-		verify(session).createQuery(eq("query"));
+        verify(session).createQuery(eq("query"));
 
-		verify(query).setParameter(eq("key1"), eq("value1"));
-		verify(query).setParameter(eq("key2"), eq("value2"));
-		verify(query).list();
+        verify(query).setParameter(eq("key1"), eq("value1"));
+        verify(query).setParameter(eq("key2"), eq("value2"));
+        verify(query).list();
 
-	}
+    }
 
-	@Test( groups = "unit" )
-	public void test_lookupByQuery_array_parameters() {
+    @Test(groups = "unit")
+    public void test_lookupByQuery_array_parameters() {
 
-		// STUB
+        // STUB
 
-		List<?> listResult = Collections.emptyList();
+        List<?> listResult = Collections.emptyList();
 
-		when(session.createQuery(anyString())).thenReturn(query);
-		when(query.list()).thenReturn(listResult);
+        when(session.createQuery(anyString())).thenReturn(query);
+        when(query.list()).thenReturn(listResult);
 
-		// EXECUTE
+        // EXECUTE
 
-		Object[] params = new Object[2];
-		params[0] = "value1";
-		params[1] = "value2";
+        Object[] params = new Object[2];
+        params[0] = "value1";
+        params[1] = "value2";
 
-		Object result = adapter.lookupByQuery("query", params);
+        Object result = adapter.lookupByQuery("query", params);
 
-		// VERIFY
+        // VERIFY
 
-		assertSame(listResult, result);
+        assertSame(listResult, result);
 
-		verify(session).createQuery(eq("query"));
+        verify(session).createQuery(eq("query"));
 
-		verify(query).setParameter(eq(1), eq("value1"));
-		verify(query).setParameter(eq(2), eq("value2"));
-		verify(query).list();
+        verify(query).setParameter(eq(1), eq("value1"));
+        verify(query).setParameter(eq(2), eq("value2"));
+        verify(query).list();
 
-	}
+    }
 
-	@Test( groups = "unit" )
-	public void test_lookup_map_parameters() {
+    @Test(groups = "unit")
+    public void test_lookup_map_parameters() {
 
-		// STUB
+        // STUB
 
-		List<?> listResult = Collections.emptyList();
+        List<?> listResult = Collections.emptyList();
 
-		when(session.getNamedQuery(anyString())).thenReturn(query);
-		when(query.list()).thenReturn(listResult);
+        when(session.getNamedQuery(anyString())).thenReturn(query);
+        when(query.list()).thenReturn(listResult);
 
-		// EXECUTE
+        // EXECUTE
 
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("key1", "value1");
-		params.put("key2", "value2");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("key1", "value1");
+        params.put("key2", "value2");
 
-		Object result = adapter.lookup("name", params);
+        Object result = adapter.lookup("name", params);
 
-		// VERIFY
+        // VERIFY
 
-		assertSame(listResult, result);
+        assertSame(listResult, result);
 
-		verify(session).getNamedQuery(eq("name"));
+        verify(session).getNamedQuery(eq("name"));
 
-		verify(query).setParameter(eq("key1"), eq("value1"));
-		verify(query).setParameter(eq("key2"), eq("value2"));
-		verify(query).list();
+        verify(query).setParameter(eq("key1"), eq("value1"));
+        verify(query).setParameter(eq("key2"), eq("value2"));
+        verify(query).list();
 
-	}
+    }
 
-	@Test( groups = "unit" )
-	public void test_lookup_array_parameters() {
+    @Test(groups = "unit")
+    public void test_lookup_array_parameters() {
 
-		// STUB
+        // STUB
 
-		List<?> listResult = Collections.emptyList();
+        List<?> listResult = Collections.emptyList();
 
-		when(session.getNamedQuery(anyString())).thenReturn(query);
-		when(query.list()).thenReturn(listResult);
+        when(session.getNamedQuery(anyString())).thenReturn(query);
+        when(query.list()).thenReturn(listResult);
 
-		// EXECUTE
+        // EXECUTE
 
-		Object[] params = new Object[2];
-		params[0] = "value1";
-		params[1] = "value2";
+        Object[] params = new Object[2];
+        params[0] = "value1";
+        params[1] = "value2";
 
-		Object result = adapter.lookup("name", params);
+        Object result = adapter.lookup("name", params);
 
-		// VERIFY
+        // VERIFY
 
-		assertSame(listResult, result);
+        assertSame(listResult, result);
 
-		verify(session).getNamedQuery(eq("name"));
+        verify(session).getNamedQuery(eq("name"));
 
-		verify(query).setParameter(eq(1), eq("value1"));
-		verify(query).setParameter(eq(2), eq("value2"));
-		verify(query).list();
+        verify(query).setParameter(eq(1), eq("value1"));
+        verify(query).setParameter(eq(2), eq("value2"));
+        verify(query).list();
 
-	}
+    }
 
 
-	/* (non-Javadoc)
-	 * @see org.milyn.scribe.test.util.BaseTestCase#beforeMethod()
-	 */
-	@BeforeMethod(alwaysRun = true)
-	@Override
-	public void beforeMethod() {
-		super.beforeMethod();
+    /* (non-Javadoc)
+     * @see org.milyn.scribe.test.util.BaseTestCase#beforeMethod()
+     */
+    @BeforeMethod(alwaysRun = true)
+    @Override
+    public void beforeMethod() {
+        super.beforeMethod();
 
-		adapter = new SessionDaoAdapter(session);
-	}
+        adapter = new SessionDaoAdapter(session);
+    }
 
 
 }
