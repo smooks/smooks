@@ -43,9 +43,6 @@ public class Main {
 
     protected JavaResult runSmooksTransform(ExecutionContext executionContext) throws IOException, SAXException, SmooksException {
     	try {
-            Locale defaultLocale = Locale.getDefault();
-            Locale.setDefault(new Locale("en", "IE"));
-
             org.milyn.payload.JavaResult javaResult = new org.milyn.payload.JavaResult();
 
             // Configure the execution context to generate a report...
@@ -53,8 +50,6 @@ public class Main {
 
             // Filter the input message to the outputWriter, using the execution context...
             smooks.filterSource(executionContext, new StreamSource(new ByteArrayInputStream(messageIn)), javaResult);
-
-            Locale.setDefault(defaultLocale);
 
             return javaResult;
         } finally {
