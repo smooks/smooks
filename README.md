@@ -1,6 +1,9 @@
 # Smooks Framework
 
-[Smooks][1] Framework.
+This is the git source code repository for the Smooks Project.
+
+* [Home Page][1].
+* [Bamboo Build Status][3]
 
 To build:
 
@@ -14,4 +17,4 @@ If you'd like to contribute some code/fixes to Smooks, [please see the following
 
 [1]: http://www.smooks.org
 [2]: http://www.smooks.org/mediawiki/index.php?title=Code_Contribution_Guide
-
+[3]: https://bamboo-ci.codehaus.org/browse/MILYN
