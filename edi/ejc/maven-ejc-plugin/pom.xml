@@ -3,16 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn-edi</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-		<relativePath>../../pom.xml</relativePath>
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../../smooks-parent/pom.xml</relativePath>
     </parent>
-    <name>Edifact Java Compiler - Maven Plugin Mojo</name>
+    <name>Milyn :: EDI :: Edifact Java Compiler :: Maven Plugin Mojo</name>
     <artifactId>maven-ejc-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
     <dependencies>
-
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -28,23 +27,12 @@
             <artifactId>maven-plugin-anno</artifactId>
             <version>1.3.2</version>
         </dependency>
-
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ejc</artifactId>
             <version>${project.version}</version>
         </dependency>
-
     </dependencies>
-
-	<pluginRepositories>
-        <pluginRepository>
-            <id>jfrog-plugins</id>
-            <name>jfrog-plugins-dist</name>
-            <url>http://repo.jfrog.org/artifactory/plugins-releases</url>
-        </pluginRepository>
-    </pluginRepositories>
-
 
     <build>
         <plugins>

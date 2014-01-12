@@ -1,76 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>	
-	<parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-		<relativePath>../../pom.xml</relativePath>
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../smooks-parent/pom.xml</relativePath>
     </parent>
-    <name>Edifact Java Compiler</name>
-	<artifactId>milyn-smooks-ejc</artifactId>
-    <packaging>jar</packaging>
-	    
-	<dependencies>
+    <name>Milyn :: EDI :: Edifact Java Compiler</name>
+    <artifactId>milyn-smooks-ejc</artifactId>
+    <packaging>bundle</packaging>
+
+    <dependencies>
         <dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-javabean</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-javabean</artifactId>
+        </dependency>
 
         <dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-edi</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-edi</artifactId>
+        </dependency>
 
         <dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-ect</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-ect</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-edisax-parser</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
-          <groupId>org.apache.ant</groupId>
-          <artifactId>ant</artifactId>
-          <version>${ant.version}</version>
-          <scope>provided</scope>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
     </dependencies>
 
     <profiles>
-    <profile>
-      <id>default-tools.jar</id>
-      <activation>
-        <property>
-          <name>java.vendor</name>
-          <value>Sun Microsystems Inc.</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.sun</groupId>
-          <artifactId>tools</artifactId>
-          <version>1.4.2</version>
-          <scope>system</scope>
-          <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
+        <profile>
+            <id>default-tools.jar</id>
+            <activation>
+                <property>
+                    <name>java.vendor</name>
+                    <value>Sun Microsystems Inc.</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools</artifactId>
+                    <version>1.4.2</version>
+                    <scope>system</scope>
+                    <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

@@ -15,56 +15,48 @@
  */
 package example;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.milyn.io.StreamUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 /**
  * Simple example main class.
- * 
+ *
  * @author Daniel Bevenius
- * 
  */
-public class Main
-{
-    public static void main(String... args) throws Exception
-    {
+public class Main {
+    public static void main(String... args) throws Exception {
         printStartMessage();
         CamelContext camelContext = configureAndStartCamel(getDSLType(args));
         camelContext.stop();
         printEndMessage();
     }
 
-    private static String getDSLType(String... args)
-    {
+    private static String getDSLType(String... args) {
         if (args.length > 0)
             return args[0];
         else
             return "JavaDSL";
     }
 
-    private static String readInputMessage()
-    {
-        try
-        {
+    private static String readInputMessage() {
+        try {
             byte[] bytes = StreamUtils.readStream(new FileInputStream("input-message.xml"));
             return new String(bytes);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             return "<no-message/>";
         }
     }
 
-    private static void printStartMessage()
-    {
+    private static void printStartMessage() {
         String payload = readInputMessage();
         System.out.println("\n\n==============Message In==============");
         System.out.println(payload);
@@ -72,29 +64,23 @@ public class Main
         pause("The example xml can be seen above.  Press 'enter' have this");
     }
 
-    private static void pause(String message)
-    {
-        try
-        {
+    private static void pause(String message) {
+        try {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             System.out.print("> " + message);
             in.readLine();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         System.out.println("\n");
     }
 
-    private static CamelContext configureAndStartCamel(String type) throws Exception
-    {
+    private static CamelContext configureAndStartCamel(String type) throws Exception {
         CamelContext camelContext;
-        if ("SpringDSL".equals(type))
-        {
+        if ("SpringDSL".equals(type)) {
             ApplicationContext springContext = new ClassPathXmlApplicationContext("camel-context-test.xml");
             camelContext = (CamelContext) springContext.getBean("camelContext");
-        } else
-        {
+        } else {
             camelContext = new DefaultCamelContext();
             camelContext.addComponent("jms", camelContext.getComponent("mock"));
             camelContext.addRoutes(new ExampleRouteBuilder());
@@ -105,8 +91,7 @@ public class Main
         return camelContext;
     }
 
-    private static void printEndMessage()
-    {
+    private static void printEndMessage() {
         System.out.println("\n\n");
         pause("And that's it!  Press 'enter' to finish...");
     }

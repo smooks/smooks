@@ -28,7 +28,12 @@ import org.milyn.smooks.edi.unedifact.model.r41.types.MessageIdentifier;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.List;
 
 /**
@@ -42,7 +47,7 @@ public class InterchangeTestUtil {
     private static MessageBuilder commaDecimalSepUNAMessageBuilder = new MessageBuilder("org.milyn", UNEdifactInterchangeParser.defaultUNEdifactDelimiters.getField(), UNEdifactInterchangeParser.defaultUNEdifactDelimiters);
 
     static {
-        Delimiters delimiters = ((Delimiters)UNEdifactInterchangeParser.defaultUNEdifactDelimiters.clone()).setDecimalSeparator(",");
+        Delimiters delimiters = ((Delimiters) UNEdifactInterchangeParser.defaultUNEdifactDelimiters.clone()).setDecimalSeparator(",");
         commaDecimalSepUNAMessageBuilder = new MessageBuilder("org.milyn", delimiters.getField(), delimiters);
     }
 
@@ -50,8 +55,8 @@ public class InterchangeTestUtil {
         // Deserialize the a UN/EDIFACT interchange stream to Java...
         InputStream ediStream = InterchangeTestUtil.class.getResourceAsStream(messageInFile);
 
-        if(ediStream == null) {
-            throw new IOException("EDI input file '" + messageInFile + "' not on classpath."); 
+        if (ediStream == null) {
+            throw new IOException("EDI input file '" + messageInFile + "' not on classpath.");
         }
 
         UNEdifactInterchange interchange = factory.fromUNEdifact(ediStream);
@@ -60,7 +65,7 @@ public class InterchangeTestUtil {
         StringWriter writer = new StringWriter();
         factory.toUNEdifact(interchange, writer);
 
-        if(dumpResult) {
+        if (dumpResult) {
             System.out.println(writer.toString());
         }
 
@@ -98,7 +103,7 @@ public class InterchangeTestUtil {
 
         assertEquals(messageV1, messageV2);
 
-        if(dump) {
+        if (dump) {
             System.out.println(messageV1);
         }
     }
@@ -121,7 +126,7 @@ public class InterchangeTestUtil {
         unb.getSyntaxIdentifier().setCodedCharacterEncoding("UNOW"); // UNOW is UTF-8.... as encoded above
         messages.clear();
 
-        for(Class<?> messageType : messageTypes) {
+        for (Class<?> messageType : messageTypes) {
             UNEdifactMessage41 message41 = messageBuilder.buildMessage(UNEdifactMessage41.class);
             Object messageInstance = messageBuilder.buildMessage(messageType);
 
@@ -148,7 +153,7 @@ public class InterchangeTestUtil {
     public static void test_loads(UNEdifactInterchangeFactory factory, boolean dump, String ejcClassListFile, int numMessages) throws IOException, ClassNotFoundException {
         InputStream stream = InterchangeTestUtil.class.getResourceAsStream(ejcClassListFile);
 
-        if(stream == null) {
+        if (stream == null) {
             throw new IllegalStateException("Unable to load EJC list file '" + ejcClassListFile + "' from classpath.");
         }
 
@@ -158,12 +163,12 @@ public class InterchangeTestUtil {
             int i = 1;
 
             long start = System.currentTimeMillis();
-            while(ejcClassName != null) {
+            while (ejcClassName != null) {
                 //System.out.println(i + ": " + ejcClassName);
                 test_Interchange(factory, dump, Class.forName(ejcClassName));
                 ejcClassName = reader.readLine();
 
-                if(i == numMessages) {
+                if (i == numMessages) {
                     break;
                 }
 

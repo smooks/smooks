@@ -15,21 +15,20 @@
 */
 package example;
 
-import junit.framework.TestCase;
-
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.xml.sax.SAXException;
+import org.junit.Test;
 import org.milyn.io.StreamUtils;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class EDItoXMLTest extends TestCase {
+public class EDItoXMLTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
         String result = Main.runSmooksTransform();

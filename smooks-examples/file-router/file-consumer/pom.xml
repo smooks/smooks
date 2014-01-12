@@ -5,9 +5,19 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn-smooks-example-file-router</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <name>Milyn Smooks Example - File Router (Consumer)</name>
+
+    <name>Milyn :: Smooks Example :: File Router (Consumer)</name>
     <artifactId>milyn-smooks-example-file-consumer</artifactId>
+    <packaging>bundle</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-commons</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
