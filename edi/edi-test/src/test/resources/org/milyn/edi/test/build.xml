@@ -2,6 +2,7 @@
 <project name="Compile EDI Mapping Model">
 
     <property name="ejc.dir" value="./target/ejc" />
+    <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 
     <target name="delete">
 
@@ -17,7 +18,7 @@
         <mkdir dir="${ejc.dir}/classes" />
 
 
-        <javac srcdir="${ejc.dir}/src" destdir="${ejc.dir}/classes">
+        <javac srcdir="${ejc.dir}/src" destdir="${ejc.dir}/classes" source="1.5" debug="on" nowarn="on" target="1.5">
 
         </javac>
         <jar destfile="${ejc.dir}/ejc.jar">
