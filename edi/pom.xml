@@ -19,9 +19,8 @@
         <module>ect/maven-ect-plugin</module>
         <module>ejc</module>
         <module>ejc/maven-ejc-plugin</module>
-        <!-- TODO: fix comented modules and enable -->
-        <!--<module>edi-test</module>-->
-        <!--<module>edi-utils</module>-->
+        <module>edi-test</module>
+        <module>edi-utils</module>
     </modules>
 
 </project>

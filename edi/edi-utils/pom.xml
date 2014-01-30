@@ -23,12 +23,14 @@
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
+            <version>${xerces.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.milyn.edi.unedifact</groupId>
             <artifactId>d99a-mapping</artifactId>
-            <version>${project.version}</version>
+            <version>1.4</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
@@ -36,11 +38,14 @@
         <dependency>
             <groupId>org.milyn.edi.unedifact</groupId>
             <artifactId>d96b-mapping</artifactId>
-            <version>${project.version}</version>
+            <version>1.4</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
