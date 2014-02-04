@@ -15,6 +15,10 @@
 */
 package org.milyn.smooks.camel.processor;
 
+import org.apache.camel.EndpointInject;
+import org.apache.camel.Exchange;
+import org.apache.camel.Produce;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
@@ -29,17 +33,19 @@ import org.milyn.payload.StringResult;
  */
 public class SmooksProcessor_File_In_StringResult_Test extends CamelTestSupport {
 
+    @EndpointInject(uri = "mock:a")
+    private MockEndpoint mock;
+
+    @Produce(uri = "direct:start")
+    private ProducerTemplate producer;
+
 	@Test
     public void test() throws Exception {
         deleteDirectory("target/smooks");
-        template.sendBody("file://target/smooks", "<blah />");
-        
-        MockEndpoint mock = getMockEndpoint("mock:a");
         mock.expectedMessageCount(1);
-
+        producer.sendBody("<blah />");
         assertMockEndpointsSatisfied();
-
-        assertEquals("<blah />", mock.getExchanges().get(0).getIn().getBody(String.class));
+        assertEquals("<blah />", mock.assertExchangeReceived(0).getIn().getBody(String.class));
     }
 
 	/* (non-Javadoc)
@@ -50,7 +56,7 @@ public class SmooksProcessor_File_In_StringResult_Test extends CamelTestSupport 
 	    
         return new RouteBuilder() {
             public void configure() {
-                from("file://target/smooks").
+                from("direct:start").
                 process(new SmooksProcessor(new Smooks().setExports(new Exports(StringResult.class)), context)).
         		to("mock:a");
             }

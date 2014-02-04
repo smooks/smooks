@@ -23,6 +23,8 @@ import java.io.StringReader;
 
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
+import org.apache.camel.Produce;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
@@ -31,6 +33,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.milyn.delivery.Filter;
+import org.milyn.io.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -45,6 +48,9 @@ public class SmooksComponentTest extends CamelTestSupport
 {
     @EndpointInject(uri = "mock:result")
     private MockEndpoint result;
+
+    @Produce(uri = "direct:start")
+    private ProducerTemplate producer;
 
     @BeforeClass
     public static void setup()
@@ -62,11 +68,8 @@ public class SmooksComponentTest extends CamelTestSupport
     @Test
     public void unmarshalEDI() throws Exception
     {
-        result.expectedMessageCount(1);
-        assertMockEndpointsSatisfied();
-
+        producer.sendBody(StreamUtils.readStreamAsString(getClass().getResourceAsStream("/data/order.edi")));
         Exchange exchange = result.assertExchangeReceived(0);
-
         assertIsInstanceOf(Document.class, exchange.getIn().getBody());
         assertXMLEqual(getExpectedOrderXml(), getBodyAsString(exchange));
     }
@@ -87,7 +90,7 @@ public class SmooksComponentTest extends CamelTestSupport
         {
             public void configure() throws Exception
             {
-                from("file://src/test/resources/data?noop=true")
+                from("direct:start")
                 .to("smooks://edi-to-xml-smooks-config.xml")
                 .convertBodyTo(Node.class).to("mock:result");
             }
