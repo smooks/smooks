@@ -22,6 +22,7 @@ import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.annotation.StreamResultWriter;
+import org.milyn.lang.LangUtil;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
@@ -46,7 +47,11 @@ public class SAXToXMLWriterTest extends TestCase {
 	}	
 
 	public void test_vafter_write_method() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("SAXToXMLWriterTest_config.xml"));
+        if (LangUtil.getJavaVersion() != 1.5) {
+            return;
+        }
+
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("SAXToXMLWriterTest_config.xml"));
 		StringResult stringResult = new StringResult();
 		
 		smooks.filterSource(new StringSource("<a><b>some&amp;text</b></a>"), stringResult);

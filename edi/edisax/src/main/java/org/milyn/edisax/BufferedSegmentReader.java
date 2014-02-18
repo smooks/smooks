@@ -344,10 +344,12 @@ public class BufferedSegmentReader {
 	            	}
 
                     // Do not separate segment if escape character occurs.
-                    if (segLen - 1 - i - escapeLen > -1 && escape != null) {
-                        String escapeString = segmentBuffer.substring(segLen - 1 - i - escapeLen, segLen - 1 - i);
-                        if (escape.equals(escapeString)) {
-                            segmentBuffer = segmentBuffer.delete(segLen - 1 - i - escapeLen, segLen - 1 - i);
+	            	int escapeIndex = segLen - 1 - i - escapeLen;
+                    if (escapeIndex > -1 && escape != null) {
+                        String escapeString = segmentBuffer.substring(escapeIndex, escapeIndex + escapeLen);
+                        String precedingEscapeString = escapeIndex - escapeLen > -1 ? segmentBuffer.substring(escapeIndex - escapeLen, escapeIndex) : "";
+                        if (escape.equals(escapeString) && !escape.equals(precedingEscapeString)) {
+                            segmentBuffer = segmentBuffer.delete(escapeIndex, escapeIndex + escapeLen);
                             reachedSegEnd = false;
                             break;
                         }
