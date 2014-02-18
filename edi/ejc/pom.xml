@@ -4,7 +4,7 @@
 	<parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn</artifactId>
-        <version>1.5.1</version> <!-- base pom version - do not remove this comment -->
+        <version>1.5.2</version> <!-- base pom version - do not remove this comment -->
 		<relativePath>../../pom.xml</relativePath>
     </parent>
     <name>Edifact Java Compiler</name>
