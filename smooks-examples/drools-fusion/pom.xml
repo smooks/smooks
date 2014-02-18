@@ -40,12 +40,12 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-csv</artifactId>
-            <version>1.5.1</version> <!-- base pom version - do not remove this comment -->
+            <version>1.5.2</version> <!-- base pom version - do not remove this comment -->
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>1.5.1</version> <!-- base pom version - do not remove this comment -->
+            <version>1.5.2</version> <!-- base pom version - do not remove this comment -->
         </dependency>
     </dependencies>
 
