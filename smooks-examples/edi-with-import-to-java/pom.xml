@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.milyn</groupId>
 		<artifactId>smooks-examples</artifactId>
-		<version>1.5.1</version> <!-- base pom version - do not remove this comment -->
+		<version>1.5.2</version> <!-- base pom version - do not remove this comment -->
 	</parent>
     <name>Milyn Smooks Example - EDI-with-import-to-Java</name>
 	<artifactId>milyn-smooks-example-edi-with-import-to-java</artifactId>
