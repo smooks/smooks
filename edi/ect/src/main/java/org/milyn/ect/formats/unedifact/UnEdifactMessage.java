@@ -46,7 +46,7 @@ public class UnEdifactMessage {
      * Group1 = id
      * Group2 = documentation
      */
-    private static final String MESSAGE_DEFINITION_START = "^(\\d{4} *| *)[- \\*\\+\\|X]*(([A-Z]{3}),|[S|s]egment [G|g]roup \\d*:)+(.*)";
+    private static final String MESSAGE_DEFINITION_START = "^(\\d{4,5} *| *)[- \\*\\+\\|X]*(([A-Z]{3}),|[S|s]egment [G|g]roup \\d*:)+(.*)";
 
     /**
      * Marks the end of the Message Definition section.
@@ -77,7 +77,7 @@ public class UnEdifactMessage {
      * Group4 = isMandatory
      * Group5 = max occurance
      */                  
-    private static String SEGMENT_REGULAR = "(\\d{4})*[-\\+\\* XS]*(\\w{3}) *(.*) +(M|C|m|c) *(\\d+)[ \\|]*";
+    private static String SEGMENT_REGULAR = "(\\d{4,5})*[-\\+\\* XS]*(\\w{3}) *(.*) +(M|C|m|c) *(\\d+)[ \\|]*";
 
     /**
      * Extracts information from Regular segment definition.
@@ -85,7 +85,7 @@ public class UnEdifactMessage {
      * Group2 = segcode
      * Group3 = description
      */
-    private static String SEGMENT_REGULAR_START = "(\\d{4})*[-\\+\\* XS]*(\\w{3}) *(.*) *\\|";
+    private static String SEGMENT_REGULAR_START = "(\\d{4,5})*[-\\+\\* XS]*(\\w{3}) *(.*) *\\|";
 
     /**
      * Extracts information from Regular segment definition.
@@ -103,7 +103,7 @@ public class UnEdifactMessage {
      * Group4 = isMandatory
      * Group5 = max occurance 
      */
-    private static String SEGMENT_GROUP_START = "(\\d{4})*[-\\+\\* XS]*-* *([S|s]egment [G|g]roup \\d*) *-* +(C|M|c|m) *(\\d*)[ \\-\\+\\|]*";
+    private static String SEGMENT_GROUP_START = "(\\d{4,5})*[-\\+\\* XS]*-* *([S|s]egment [G|g]roup \\d*) *-* +(C|M|c|m) *(\\d*)[ \\-\\+\\|]*";
 
     /**
      * Matches and extracts information from segment at end of segment group.
@@ -114,7 +114,7 @@ public class UnEdifactMessage {
      * Group5 = max occurance
      * Group6 = nrOfClosedGroups
      */
-    private static String SEGMENT_GROUP_END = "(\\d{4})*[-\\+\\* XS]*(\\w{3}) *([\\w /-]*) +(C|M|c|m) *(\\d*) *-+([ |\\+]*)";
+    private static String SEGMENT_GROUP_END = "(\\d{4,5})*[-\\+\\* XS]*(\\w{3}) *([\\w /-]*) +(C|M|c|m) *(\\d*) *-+([ |\\+]*)";
 
     /**
      * Annex - notes after message structure.
