@@ -27,31 +27,37 @@ import java.text.NumberFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
 
 /**
  * {@link BigDecimal} Decoder, which is EDI delimiters aware for parsing decimal.
- *
+ * 
  * @author <a href="mailto:sinfomicien@gmail.com">sinfomicien@gmail.com</a>
+ * @author <a href="mailto:michael@krueske.net">michael@krueske.net</a> (patched to ensure that always a {@link BigDecimal} value is decoded)
  */
 @DecodeType(BigDecimal.class)
 public class DABigDecimalDecoder extends BigDecimalDecoder {
 
     public Object decode(String data) throws DataDecodeException {
         DecimalFormat decimalFormat = getDecimalFormat();
+        setDecimalPointFormat(decimalFormat, getContextDelimiters());
         
+        final Number number;
         try {
-            setDecimalPointFormat(decimalFormat, getContextDelimiters());
-
-            Number number = decimalFormat.parse(data.trim());
-            if (number instanceof BigDecimal) {
-                return number;
-            } else if (number instanceof BigInteger) {
-                return new BigDecimal((BigInteger) number);
-            }
-
-            return new BigDecimal(number.doubleValue());
-        } catch (ParseException e) {
-            throw new DataDecodeException("Failed to decode BigDecimal value '" + data + "' using NumberFormat instance " + decimalFormat + ".", e);
+            number = decimalFormat.parse(data.trim());
+        } catch (final ParseException e) {
+            throw new DataDecodeException("Failed to decode BigDecimal value '" + data
+                    + "' using NumberFormat instance " + decimalFormat + ".", e);
+        }
+        
+        if (number instanceof BigDecimal) {
+            return (BigDecimal) number;
+        } else if (number instanceof BigInteger) {
+            return new BigDecimal((BigInteger) number);
+        } else {
+            throw new IllegalStateException(
+                    MessageFormat.format("DABigDecimalDecoder should parse java.math.BigDecimal values, " +
+                            "but did parse a {0} value ({1}).", number.getClass(), number));
         }
     }
 
@@ -87,6 +93,7 @@ public class DABigDecimalDecoder extends BigDecimalDecoder {
             dfs.setDecimalSeparator(interchangeDelimiters.getDecimalSeparator().charAt(0));
         }
         decimalFormat.setDecimalFormatSymbols(dfs);
+        decimalFormat.setParseBigDecimal(true);
     }
 
     protected Delimiters getContextDelimiters() {

@@ -31,22 +31,22 @@ public class DABigDecimalDecoderTest extends TestCase {
 
     public void test_decode_decimal_point_dot() {
         DABigDecimalDecoder decoder = new DotDABigDecimalDecoder();
-        assertEquals(new BigDecimal(1.1), decoder.decode("1.1"));
+        assertEquals(BigDecimal.valueOf(11, 1), decoder.decode("1.1"));
     }
 
     public void test_decode_decimal_point_comma() {
         DABigDecimalDecoder decoder = new CommaDABigDecimalDecoder();
-        assertEquals(new BigDecimal(1.1), decoder.decode("1,1"));
+        assertEquals(BigDecimal.valueOf(11, 1), decoder.decode("1,1"));
     }
 
     public void test_encode_decimal_point_dot() {
         DABigDecimalDecoder decoder = new DABigDecimalDecoder();
-        assertEquals("1.1", decoder.encode(new BigDecimal(1.1), DOT_DEC_DELIMITERS));
+        assertEquals("1.1", decoder.encode(BigDecimal.valueOf(11, 1), DOT_DEC_DELIMITERS));
     }
 
     public void test_encode_decimal_point_comma() {
         DABigDecimalDecoder decoder = new DABigDecimalDecoder();
-        assertEquals("1,1", decoder.encode(new BigDecimal(1.1), COMMA_DEC_DELIMITERS));
+        assertEquals("1,1", decoder.encode(BigDecimal.valueOf(11, 1), COMMA_DEC_DELIMITERS));
     }
 
     class DotDABigDecimalDecoder extends DABigDecimalDecoder {
