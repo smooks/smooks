@@ -50,15 +50,7 @@ public class DABigDecimalDecoder extends BigDecimalDecoder {
                     + "' using NumberFormat instance " + decimalFormat + ".", e);
         }
         
-        if (number instanceof BigDecimal) {
-            return (BigDecimal) number;
-        } else if (number instanceof BigInteger) {
-            return new BigDecimal((BigInteger) number);
-        } else {
-            throw new IllegalStateException(
-                    MessageFormat.format("DABigDecimalDecoder should parse java.math.BigDecimal values, " +
-                            "but did parse a {0} value ({1}).", number.getClass(), number));
-        }
+        return (BigDecimal) number;
     }
 
     public String encode(Object object) throws DataDecodeException {
