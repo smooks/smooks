@@ -146,6 +146,7 @@ public class SAXHandlerTest {
 		private final QName qname;
 
         public IsSaxElement(final QName qname) {
+            if (qname == null) throw new IllegalArgumentException("qname must not be null.");
             this.qname = qname;
         }
 
@@ -163,6 +164,7 @@ public class SAXHandlerTest {
 		private final QName qname;
 
         public IsSaxFragment(final QName qname) {
+            if (qname == null) throw new IllegalArgumentException("qname must not be null.");
             this.qname = qname;
         }
 
