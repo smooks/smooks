@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import java.util.Properties;
 
 import javax.xml.namespace.QName;
@@ -152,7 +151,7 @@ public class SAXHandlerTest {
 
         @Override
         public boolean matchesSafely(SAXElement element) {
-            return Objects.equals(element.getName(), qname);
+            return qname.equals(element.getName());
         }
 
         public void describeTo(Description description) {
@@ -169,7 +168,7 @@ public class SAXHandlerTest {
 
         @Override
         public boolean matchesSafely(Fragment element) {
-            return Objects.equals(element.getSAXElement().getName(), qname);
+            return qname.equals(element.getSAXElement().getName());
         }
 
         public void describeTo(Description description) {
