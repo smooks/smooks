@@ -65,7 +65,7 @@ public class SAXHandler extends SmooksContentHandler {
     private ExecutionEventListener eventListener;
     private DynamicSAXElementVisitorList dynamicVisitorList;
     private StringBuilder cdataNodeBuilder = new StringBuilder();
-    
+
     static {
         // Configure the default handler mapping...
         SmooksResourceConfiguration resource = new SmooksResourceConfiguration("*", DefaultSAXElementSerializer.class.getName());
@@ -242,7 +242,12 @@ public class SAXHandler extends SmooksContentHandler {
 
                 for(int i = 0; i < mappingCount; i++) {
                     mapping = visitCleanables.get(i);
-                    mapping.getContentHandler().executeVisitLifecycleCleanup(new Fragment(currentProcessor.element), execContext);
+                    final boolean targetedAtElement
+                            = mapping.getResourceConfig().isTargetedAtElement(currentProcessor.element, execContext);
+
+                    if (targetedAtElement) {
+                        mapping.getContentHandler().executeVisitLifecycleCleanup(new Fragment(currentProcessor.element), execContext);
+                    }
                 }
             }
         }
