@@ -3,9 +3,13 @@
 This is the git source code repository for the Smooks Project.
 
 * [Home Page][1].
-* [Bamboo Build Status][3]
 
-To build:
+## Build Status
+
+[![Build Status](https://travis-ci.org/smooks/smooks.svg?branch=master)](https://travis-ci.org/smooks/smooks)
+[Bamboo Build Status][3]
+
+## Build Instructions
 
 1.  git clone git://github.com/smooks/smooks.git
 2.  cd smooks
