@@ -20,7 +20,7 @@ Note you will need both maven (version 3+) and git installed on your local machi
 
 ## Docker Build
 
-You can also build from the [docker](docker.io) image:
+You can also build from the [docker](https://www.docker.io) image:
 
 1. [Install docker](https://www.docker.io/gettingstarted/).
 2. Run `sudo docker build -t smooks github.com/smooks/smooks`.  This will create a docker image named "smooks" that contains the correct build environment and a cloned copy of this git repo.
