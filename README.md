@@ -10,7 +10,7 @@ This is the git source code repository for the Smooks Project.
 
 [Bamboo Builds][3]
 
-## Build Locally
+## Local Build
 
 1.  `git clone git://github.com/smooks/smooks.git`
 2.  `cd smooks`
@@ -18,7 +18,7 @@ This is the git source code repository for the Smooks Project.
 
 Note you will need both maven (version 3+) and git installed on your local machine. 
 
-## Build through Docker
+## Docker Build
 
 You can also build from the [docker](docker.io) image:
 
