@@ -77,5 +77,17 @@ rules, among them verifying the signatures of the artifacts. Again if something 
 If all goes well you should now be able to use the “Release” button, which was previously shaded, and this will make the
 artifacts available first on the local nexus which will later sync to maven central.
 
-	    
+### Tag the release
+
+    git tag -s vx.x.x <commit_SHA_of_the_prepare_release> -m "Tagging vx.x.x”
+
+Optionally verify the tag:
+
+    git tag -v vx.x.x
+
+Push the tag:
+
+    git push upstream vx.x.x
+
+
 
