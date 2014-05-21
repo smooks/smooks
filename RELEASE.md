@@ -68,13 +68,13 @@ Now you are ready to run the maven deploy goal:
 
     mvn clean deploy -Pdeploy-release -Dgpg.passphrase=key-password
 
-This should build and upload and complete successfully. Things will be uploaded to nexus.
-Log into nexus with you user account and then take a look at the “Staging Repository”. The staging repository is where
-you can inspect what was uploaded and make sure that everything looks peachy.
-If it does not you can drop the repository and fix the issue and deploy again.
-Once you think everything is in order you need to “Close” the repository. Closing will run a number of verification
+This should build and upload and complete successfully. Things will be uploaded to the [Codehaus Nexus maven Repository](https://nexus.codehaus.org) ([see HAUSEMATE docs for more details](http://docs.codehaus.org/display/HAUSMATES/Codehaus+Maven+Repository+Usage+Guide)).
+
+You log into the Codehaus Nexus repo using your [Xircles](http://xircles.codehaus.org/) userid and password.  From there, take a look at the “Staging Repository”. The staging repository is where you can inspect what was uploaded and make sure that everything looks peachy.
+If it doesn't, you can drop the repository and fix the issue and deploy again. Once you think everything is in order you need to “Close” the repository. Closing will run a number of verification
 rules, among them verifying the signatures of the artifacts. Again if something fails you must fix and the drop and deploy again.
-If all goes well you should now be able to use the “Release” button, which was previously shaded, and this will make the
+
+If all goes well you should now be able to use the “Release” button, which was previously shaded.  This will make the
 artifacts available first on the local nexus which will later sync to maven central.
 
 ### Tag the release
