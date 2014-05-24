@@ -66,7 +66,7 @@ When you are done you should commit and tag.
 ### Run the deploy goal/target
 Now you are ready to run the maven deploy goal:
 
-    mvn clean deploy -Pdeploy-release -Dgpg.passphrase=key-password
+    mvn clean deploy -Pdeploy -Dgpg.passphrase=key-password
 
 This should build and upload and complete successfully. Things will be uploaded to the [Codehaus Nexus maven Repository](https://nexus.codehaus.org) ([see HAUSEMATE docs for more details](http://docs.codehaus.org/display/HAUSMATES/Codehaus+Maven+Repository+Usage+Guide)).
 

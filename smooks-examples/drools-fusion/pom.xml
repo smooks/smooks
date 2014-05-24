@@ -22,10 +22,22 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.milyn</groupId>
+                    <artifactId>milyn-smooks-javabean</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.milyn</groupId>
+                    <artifactId>milyn-smooks-javabean</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- External dependencies -->
