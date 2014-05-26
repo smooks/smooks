@@ -61,7 +61,7 @@ Simple run:
 We use Docker to build and deploy artifacts.  The main benefits of this are that it:
 
 1. Guarantees a consistent, repeatable build environment.
-1. Means we can run easily deploy from an IaaS instance (AWS/Rackspace/etc) instance.
+1. Means we can easily build and deploy from an IaaS instance (AWS/Rackspace/etc) instance.
 
 Assuming you have Docker installed on the local host system, we install the `smooks` image:
 
@@ -77,9 +77,9 @@ sudo docker run -i -v $HOME/.gnupg:/.gnupg smooks ./deploy.sh -u <codehaus-usern
 
 You might notice the `-v $HOME/.gnupg:/.gnupg` parameter in the docker run command.  That is mounting the host system's `~/.gnupg` directory into the docker container as the root account's `~/.gnupg` directory so the GPG plugin can sign the artifacts using the GPG key generated above.
 
-If you are running the deploy from an IaaS instance (AWS/Rackspace/etc), you might want to export/import your GPG from your local machine to the IaaS instance.  This is easy.
+If you are running the deploy from an IaaS instance (AWS/Rackspace/etc), you can generate and publish a new GPG key on the IaaS instance.  Alternatively, you might want to export/import your GPG from your local machine to the IaaS instance.  This is easy.
 
-First we need to export the key from the local machine.  We start by listing the keys as follows:
+We start by listing the keys on the local machine as follows:
 
 ```
 $ gpg --list-keys
