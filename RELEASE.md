@@ -58,15 +58,55 @@ Simple run:
 ```
 
 #### Deploy artifacts from a Docker container
-We use Docker to build and deploy artifacts, guaranteeing a consistent build environment.  
+We use Docker to build and deploy artifacts.  The main benefits of this are that it:
+
+1. Guarantees a consistent, repeatable build environment.
+1. Means we can run easily deploy from an IaaS instance (AWS/Rackspace/etc) instance.
 
 Assuming you have Docker installed on the local host system, we install the `smooks` image:
 
 ```
-docker build -t smooks github.com/smooks/smooks
+sudo docker build -t smooks github.com/smooks/smooks
 ```
 
-One catch of running the build in a Docker container is that we need to make the GPG key available to the build running in the Docker container.  So, we need to mount the host system's `~/.gnupg` directory into the docker container as the root account's `~/.gnupg` directory by adding `-v $HOME/.gnupg:/.gnupg` to the docker commands.
+Once the image is built we can kick off the `deploy.sh` script:
+
+```
+sudo docker run -i -v $HOME/.gnupg:/.gnupg smooks ./deploy.sh -u <codehaus-username> -p <codehaus-password> -g <passphrase-of-gpg-key>
+```
+
+You might notice the `-v $HOME/.gnupg:/.gnupg` parameter in the docker run command.  That is mounting the host system's `~/.gnupg` directory into the docker container as the root account's `~/.gnupg` directory so the GPG plugin can sign the artifacts using the GPG key generated above.
+
+If you are running the deploy from an IaaS instance (AWS/Rackspace/etc), you might want to export/import your GPG from your local machine to the IaaS instance.  This is easy.
+
+First we need to export the key from the local machine.  We start by listing the keys as follows:
+
+```
+$ gpg --list-keys
+<HOME>/.gnupg/pubring.gpg
+-----------------------------------
+pub   2048R/234A1231 2014-05-24 [expires: 2018-05-24]
+uid                  TOM FENNELLY <tom.fennelly@gmail.com>
+sub   2048R/ABC12345 2014-05-24 [expires: 2018-05-24]
+```
+
+Then, we export the public and secret keys and copy them to the IaaS instance:
+
+```
+$ gpg --output pubkey.gpg --armor --export 234A1231
+$ gpg --output secretkey.gpg --armor --export-secret-key 234A1231
+$ scp pubkey.gpg secretkey.gpg root@<iaas-host-ip>:~/
+```
+
+And finally, on the IaaS host instance, we import the keys we just copied to it:
+
+```
+$ gpg --import pubkey.gpg
+$ gpg --allow-secret-key-import --import secretkey.gpg
+
+```
+
+Of course you can check the import by running `gpg --list-keys` on the IaaS host instance.  Now your docker IaaS host instance has your GPG keys installed and you can execute the docker run command to deploy the artifacts to the Codehaus maven repo.
 
 #### Deploy artifacts from a non-Linux type OS (Windows etc)
 

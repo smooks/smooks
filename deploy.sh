@@ -15,7 +15,7 @@ do
     esac
 done
 
-export CH_UN=$USERNM
-export CH_PW=$PASSWD
+export CH_UN="$USERNM"
+export CH_PW="$PASSWD"
 
-mvn clean deploy -Pdeploy -Dgpg.passphrase=$GPGPPH -Dmaven.test.skip=true --settings settings_codehaus.xml
+mvn clean deploy -Pdeploy -Dgpg.passphrase="$GPGPPH" -Dmaven.test.skip=true --settings ./settings_codehaus.xml
