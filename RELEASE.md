@@ -49,6 +49,8 @@ When you are done you should commit and tag.
 
 There are 2 ways of doing this, depending on the OS you are running on.  In either case, this should build and upload all artifacts to the [Codehaus Nexus maven Repository](https://nexus.codehaus.org) ([see HAUSEMATE docs for more details](http://docs.codehaus.org/display/HAUSMATES/Codehaus+Maven+Repository+Usage+Guide)), from which we can test and hopefully release the artifacts.
 
+___Note: The Codehaus Nexus repo often runs into disk space issues, causing the deploys to fail with a 500 error.  See [Jira HAUS-2339](https://jira.codehaus.org/browse/HAUS-2339)___.
+
 
 #### Deploy artifacts from a Linux type OS (including Mac OSX)
 Simple run:
