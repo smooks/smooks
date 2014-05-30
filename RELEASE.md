@@ -141,8 +141,7 @@ You log into the Codehaus Nexus repo using your [Xircles](http://xircles.codehau
 If it doesn't, you can drop the repository and fix the issue and deploy again. Once you think everything is in order you need to “Close” the repository. Closing will run a number of verification
 rules, among them verifying the signatures of the artifacts. Again if something fails you must fix and the drop and deploy again.
 
-If all goes well you should now be able to use the “Release” button, which was previously shaded.  This will make the
-artifacts available first on the local nexus which will later sync to maven central.
+At this point, the artifacts are not available from the Codehaus Staging repository, which means people will be able to test these artifacts.  If all goes well (no bugs etc), you should now be able to release the artifacts using the “Release” button.  This will make the artifacts available first on the local nexus which will later sync to maven central.
 
 ### Tag the release
 
