@@ -15,23 +15,29 @@
  */
 package org.milyn.edi.test.unedifact.d93a;
 
-import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
 import org.junit.Test;
 import org.milyn.edi.test.EdifactDirTestHarness;
-import org.milyn.io.StreamUtils;
-import org.milyn.payload.JavaResult;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class D93A_Test {
 
-    private static EdifactDirTestHarness d03bHarness = new EdifactDirTestHarness(new File("src/test/resources/d93a.zip"), "DESADV" , "INVOIC" ,"ORDERS");
+    private static EdifactDirTestHarness d03bHarness;
+
+    @Before
+    public void setUp() throws Exception {
+
+        ClassLoader loader = Thread.currentThread().getContextClassLoader() == null ? Thread.currentThread().getContextClassLoader() : D93A_Test.class.getClassLoader();
+        URL unedifactZip = loader.getResource("d93a.zip");
+        d03bHarness = new EdifactDirTestHarness(new File(unedifactZip.toURI()), "DESADV", "INVOIC", "ORDERS");
+    }
 
     @Test
     public void test_DESADV_java() throws IOException {

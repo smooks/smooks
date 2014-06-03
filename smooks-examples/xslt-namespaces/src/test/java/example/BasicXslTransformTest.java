@@ -15,20 +15,22 @@
 */
 package example;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
 import junit.framework.TestCase;
-
+import org.junit.Ignore;
 import org.milyn.io.StreamUtils;
 import org.xml.sax.SAXException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * @author <a href="daniel.bevenius@redpill.se">Daniel Bevenius</a>
  */
+@Ignore
 public class BasicXslTransformTest extends TestCase {
 
-    public void test() throws IOException, SAXException {
+    public void test() throws IOException, SAXException, URISyntaxException {
         byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream("expected.xml"));
         String result = Main.runSmooksTransform();
 

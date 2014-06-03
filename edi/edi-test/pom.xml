@@ -87,6 +87,13 @@
             <artifactId>testres</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt.core.compiler</groupId>
+            <artifactId>ecj</artifactId>
+            <version>3.7</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>xerces</groupId>

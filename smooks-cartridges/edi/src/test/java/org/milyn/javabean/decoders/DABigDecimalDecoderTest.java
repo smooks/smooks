@@ -44,9 +44,19 @@ public class DABigDecimalDecoderTest extends TestCase {
         assertEquals("1.1", decoder.encode(new BigDecimal(1.1), DOT_DEC_DELIMITERS));
     }
 
+    public void test_encode_decimal_point_dot_without_unnecesarly_zeros() {
+        DABigDecimalDecoder decoder = new DABigDecimalDecoder();
+        assertEquals("1", decoder.encode(new BigDecimal(1.000), DOT_DEC_DELIMITERS));
+    }
+
     public void test_encode_decimal_point_comma() {
         DABigDecimalDecoder decoder = new DABigDecimalDecoder();
         assertEquals("1,1", decoder.encode(new BigDecimal(1.1), COMMA_DEC_DELIMITERS));
+    }
+
+    public void test_encode_decimal_point_comma_without_unnecesarly_zeros() {
+        DABigDecimalDecoder decoder = new DABigDecimalDecoder();
+        assertEquals("1", decoder.encode(new BigDecimal(1.000), COMMA_DEC_DELIMITERS));
     }
 
     class DotDABigDecimalDecoder extends DABigDecimalDecoder {

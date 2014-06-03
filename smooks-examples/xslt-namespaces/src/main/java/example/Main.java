@@ -25,6 +25,8 @@ import org.xml.sax.SAXException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * Simple example main class.
@@ -32,12 +34,15 @@ import java.io.*;
  */
 public class Main {
 
+    private static ClassLoader loader = Thread.currentThread().getContextClassLoader() == null ? Thread.currentThread().getContextClassLoader() : Main.class.getClassLoader();
+
     private static byte[] messageIn = readInputMessage();
 
-    protected static String runSmooksTransform() throws IOException, SAXException, SmooksException {
+    protected static String runSmooksTransform() throws IOException, SAXException, SmooksException, URISyntaxException {
 
         // Instantiate Smooks with the config...
-        Smooks smooks = new Smooks("smooks-config.xml");
+        URL smooksConfig = loader.getResource("smooks-config.xml");
+        Smooks smooks = new Smooks(smooksConfig.toURI().toString());
 
         try {
              // Create an exec context - no profiles....
@@ -56,7 +61,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws IOException, SAXException, SmooksException {
+    public static void main(String[] args) throws IOException, SAXException, SmooksException, URISyntaxException {
         System.out.println("\n\n==============Message In==============");
         System.out.println(new String(messageIn));
         System.out.println("======================================\n");
@@ -70,7 +75,7 @@ public class Main {
 
     private static byte[] readInputMessage() {
         try {
-            return StreamUtils.readStream(new FileInputStream("input-message.xml"));
+            return StreamUtils.readStream(loader.getResourceAsStream("input-message.xml"));
         } catch (IOException e) {
             e.printStackTrace();
             return "<no-message/>".getBytes();

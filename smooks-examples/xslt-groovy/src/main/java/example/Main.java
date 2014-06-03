@@ -18,6 +18,8 @@ package example;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Locale;
 
 import javax.xml.transform.TransformerFactory;
@@ -40,15 +42,18 @@ import org.xml.sax.SAXException;
  */
 public class Main {
 
+    private static ClassLoader loader = Thread.currentThread().getContextClassLoader() == null ? Thread.currentThread().getContextClassLoader() : Main.class.getClassLoader();
+
     private static byte[] messageIn = readInputMessage();
 
-    protected static String runSmooksTransform() throws IOException, SAXException, SmooksException {
+    protected static String runSmooksTransform() throws IOException, SAXException, SmooksException, URISyntaxException {
     	
     	Locale defaultLocale = Locale.getDefault();
     	Locale.setDefault(new Locale("en", "IE"));
     	
         // Instantiate Smooks with the config...
-        Smooks smooks = new Smooks("smooks-config.xml");
+        URL smooksConfig = loader.getResource("smooks-config.xml");
+        Smooks smooks = new Smooks(smooksConfig.toURI().toString());
 
         try {
              // Create an exec context - no profiles....
@@ -70,7 +75,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws IOException, SAXException, SmooksException {
+    public static void main(String[] args) throws IOException, SAXException, SmooksException, URISyntaxException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
         System.out.println("\n\n==============Message In==============");
@@ -89,7 +94,7 @@ public class Main {
 
     private static byte[] readInputMessage() {
         try {
-            return StreamUtils.readStream(new FileInputStream("input-message.xml"));
+            return StreamUtils.readStream(loader.getResourceAsStream("input-message.xml"));
         } catch (IOException e) {
             e.printStackTrace();
             return "<no-message/>".getBytes();

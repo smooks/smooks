@@ -111,7 +111,10 @@ public class AntRunner {
             project.addBuildListener(antLogger);
             project.setBaseDir(new File("./"));
 
-            File executeScript = new File("./target/ant-exec.xml");
+            File target = new File("./target");
+            target.mkdirs();
+
+            File executeScript = new File(target, "ant-exec.xml");
             FileOutputStream fileOs = new FileOutputStream(executeScript);
 
             try {

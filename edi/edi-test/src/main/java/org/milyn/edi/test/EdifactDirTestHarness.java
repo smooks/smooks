@@ -48,6 +48,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URISyntaxException;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -258,11 +259,12 @@ public class EdifactDirTestHarness implements UNEdifactInterchangeFactory {
         }
     }
 
-    private Archive buildBindingModel(String urn, String[] messages) throws IOException, SAXException, IllegalNameException, ClassNotFoundException {
+    private Archive buildBindingModel(String urn, String[] messages) throws IOException, SAXException, IllegalNameException, ClassNotFoundException, URISyntaxException {
         ClassLoader origTCCL = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(mappingModelClassLoader);
         try {
-            AntRunner antRunner = new AntRunner("build.xml");
+
+            AntRunner antRunner = new AntRunner(origTCCL.getResource("org/milyn/edi/test/build.xml").openStream());
             EJCExecutor ejc = new EJCExecutor();
             File destDir = new File("target/ejc/src");
 

@@ -16,22 +16,22 @@
 package example;
 
 import junit.framework.TestCase;
-
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.xml.sax.SAXException;
+import org.junit.Ignore;
 import org.milyn.io.StreamUtils;
-import org.milyn.xml.XmlUtil;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@Ignore
 public class GroovyXsltTest extends TestCase {
 
-    public void test() throws IOException, SAXException {
+    public void test() throws IOException, SAXException, URISyntaxException {
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
         String result = Main.runSmooksTransform();
 
