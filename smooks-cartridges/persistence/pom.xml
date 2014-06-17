@@ -1,88 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>smooks-cartridge-base-pom</artifactId>
-		<version>1.5</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-    <name>Milyn Smooks Cartridge - Persistence</name>
-	<artifactId>milyn-smooks-persistence</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../smooks-parent/pom.xml</relativePath>
+    </parent>
 
-	<dependencies>
+    <name>Milyn :: Smooks Cartridge :: Persistence</name>
+    <artifactId>milyn-smooks-persistence</artifactId>
+    <packaging>bundle</packaging>
 
-		<!-- Scribe Libs -->
+    <dependencies>
+        <!-- Scribe Libs -->
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-scribe-core</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-scribe-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        <!-- Smooks Libs -->
 
-		<!-- Smooks Libs -->
-
-		<dependency>
+        <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
-		<!-- ORM Libs -->
+        <!-- ORM Libs -->
 
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>3.3.2.GA</version>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.ibatis</groupId>
-			<artifactId>ibatis-sqlmap</artifactId>
-			<version>2.3.0</version>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.ibatis</groupId>
+            <artifactId>ibatis-sqlmap</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>5.14.6</version>
-            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
         </dependency>
 
     </dependencies>
 
 
-
-	<profiles>
-		<profile>
-			<id>test-unit</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
+    <profiles>
+        <profile>
+            <id>test-unit</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
             </activation>
-			<properties>
-				<testGroups>unit</testGroups>
-			</properties>
-		</profile>
-		<profile>
-			<id>test-integration</id>
-			<properties>
-				<testGroups>unit,integration</testGroups>
-			</properties>
-		</profile>
-	</profiles>
+            <properties>
+                <testGroups>unit</testGroups>
+            </properties>
+        </profile>
+        <profile>
+            <id>test-integration</id>
+            <properties>
+                <testGroups>unit,integration</testGroups>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

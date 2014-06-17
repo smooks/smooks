@@ -4,20 +4,33 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-cartridge-base-pom</artifactId>
-        <version>1.5</version> <!-- base pom version - do not remove this comment -->
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../smooks-parent/pom.xml</relativePath>
     </parent>
-    <name>Milyn Smooks Cartridge - Javabean</name>
+
     <artifactId>milyn-smooks-javabean</artifactId>
-
-
+    <packaging>bundle</packaging>
+    <name>Milyn :: Smooks Cartridge :: Javabean</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.2</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
         </dependency>
     </dependencies>
 

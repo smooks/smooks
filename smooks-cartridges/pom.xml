@@ -4,11 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn</artifactId>
-        <version>1.5</version> <!-- base pom version - do not remove this comment -->
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../smooks-parent/pom.xml</relativePath>
     </parent>
-    <name>Milyn Smooks Cartridges (Base POM)</name>
-    <artifactId>smooks-cartridge-base-pom</artifactId>
+
+    <name>Milyn :: Smooks Cartridges :: Aggregator</name>
+    <artifactId>smooks-cartridge-aggregator</artifactId>
     <packaging>pom</packaging>
 
     <modules>
@@ -21,32 +23,23 @@
         <module>scripting</module>
         <module>templating</module>
         <module>routing</module>
-		<module>calc</module>
-		<module>persistence</module>
-		<module>rules</module>
-		<module>validation</module>
-		<module>fixed-length</module>
-		<module>yaml</module>
-		<module>camel</module>
+        <module>calc</module>
+        <module>persistence</module>
+        <module>rules</module>
+        <module>validation</module>
+        <module>fixed-length</module>
+        <module>yaml</module>
+        <module>camel</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>testres</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-core</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>dtdparser</groupId>
-                    <artifactId>dtdparser</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 

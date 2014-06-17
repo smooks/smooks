@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>smooks-examples</artifactId>
-		<version>1.5</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-    <name>Milyn Smooks Example - Java-Basic</name>
-	<artifactId>milyn-smooks-example-java-basic</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-examples-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
 
-    <!--
-    TODO: Find out why the build of this fails if this dependency is not included.
-          It's already in the parent POM, so shouldn't be needed!!
-    -->
+    <name>Milyn :: Smooks Example :: Java-Basic</name>
+    <artifactId>milyn-smooks-example-java-basic</artifactId>
+    <packaging>bundle</packaging>
+
+
     <dependencies>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-core</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>dtdparser</groupId>
-                    <artifactId>dtdparser</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
-
-
 
 </project>

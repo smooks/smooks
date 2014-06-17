@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>milyn-scribe-adapter</artifactId>
-        <version>1.5</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-    <name>Milyn Scribe Hibernate adapter</name>
-	<artifactId>milyn-scribe-hibernate</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>scribe-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../scribe-parent/pom.xml</relativePath>
+    </parent>
+    <name>Milyn :: Scribe :: Hibernate adapter</name>
+    <artifactId>milyn-scribe-hibernate</artifactId>
+    <packaging>bundle</packaging>
 
-	<dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-scribe-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>3.3.2.GA</version>
-		</dependency>
-
-	</dependencies>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

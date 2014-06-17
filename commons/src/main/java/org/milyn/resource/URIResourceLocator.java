@@ -20,13 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URISyntaxException;
+import java.net.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.milyn.io.StreamUtils;
 import org.milyn.resource.ContainerResourceLocator;
 import org.milyn.util.ClassUtil;
 
@@ -131,11 +129,30 @@ public class URIResourceLocator implements ContainerResourceLocator {
             errorBuilder.append("\tClasspath: " + path + "\n");
             stream = ClassUtil.getResourceAsStream(path, getClass());
         } else {
+            boolean isHttp = ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme));
             url = uri.resolvedURI.toURL();
             URLConnection connection = url.openConnection();
-
             errorBuilder.append("\tURL: " + url + "\n");
+
+            if (isHttp) {
+                ((HttpURLConnection)connection).setInstanceFollowRedirects(false);
+            }
+
             stream = connection.getInputStream();
+
+            if (isHttp) {
+                int responseCode = ((HttpURLConnection)connection).getResponseCode();
+                if (responseCode < 200 || responseCode >= 300) {
+                    if (stream != null) {
+                        try {
+                            stream.close();
+                            stream = null;
+                        } catch (IOException e) {
+                            logger.error("Error closing stream for failed resource read.", e);
+                        }
+                    }
+                }
+            }
         }
 
         if (stream == null) {

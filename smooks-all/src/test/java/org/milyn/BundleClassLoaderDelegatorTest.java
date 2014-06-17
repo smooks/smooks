@@ -39,7 +39,7 @@ public class BundleClassLoaderDelegatorTest
     public void getResourceFromBundle() throws Exception
     {
         final JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "bundle.jar");
-        jar.addResource(folder.newFile("test.properties"));
+        jar.addAsResource(folder.newFile("test.properties"));
         
         BundleClassLoaderDelegator bcl = new BundleClassLoaderDelegator(new MockBundle(jar), getClass().getClassLoader());
         

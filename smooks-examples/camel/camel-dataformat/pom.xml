@@ -1,62 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>milyn-smooks-example-camel</artifactId>
-		<version>1.5</version> <!-- base pom version - do not remove this comment -->
-        <relativePath>../pom.xml</relativePath>
-	</parent>
-    <name>Milyn Smooks Example - Smooks Camel Dataformat</name>
-	<artifactId>milyn-smooks-example-camel-dataformat</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-examples-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+
+    <name>Milyn :: Smooks Example :: Smooks Camel Dataformat</name>
+    <artifactId>milyn-smooks-example-camel-dataformat</artifactId>
     <packaging>bundle</packaging>
-    
+
     <properties>
         <input.dir>${basedir}/input-dir</input.dir>
     </properties>
-	
-	<build>
-	   <plugins>
-	       <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.0.1</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Import-Package>
-							org.apache.camel.*;version="2.6", 
-							org.springframework.*;version="1.2.0",
-							*;-nouses:=true
-						</Import-Package>
-                        <Private-Package>example</Private-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-	   </plugins>
-	<resources>
-	<resource>
-        <directory>${basedir}</directory>
-        <includes>
-          <include>smooks-config.xml</include>
-          <include>edi-to-xml-order-mapping.xml</include>
-        </includes>
-      </resource>
-		<resource>
-	        <directory>src/main/resources</directory>
-	        <filtering>true</filtering>
-      </resource>
-    </resources>
-	   
-	</build>
 
-	<dependencies>
-       <dependency>
-           <groupId>org.apache.felix</groupId>
-           <artifactId>org.osgi.core</artifactId>
-           <version>1.4.0</version>
-       </dependency>
-	</dependencies>
-	
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>smooks-config.xml</include>
+                    <include>edi-to-xml-order-mapping.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-camel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

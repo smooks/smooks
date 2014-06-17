@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
 import org.milyn.StreamFilterType;
+import org.milyn.lang.LangUtil;
 import org.milyn.payload.StringSource;
 import org.milyn.payload.StringResult;
 
@@ -29,6 +30,10 @@ import org.milyn.payload.StringResult;
 public class MILYN_247_Test extends TestCase {
 
     public void test_MILYN_247_01() {
+        if (LangUtil.getJavaVersion() != 1.5) {
+            return;
+        }
+
         Smooks smooks = new Smooks();
 
         smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.DOM).setRewriteEntities(true));
@@ -39,6 +44,10 @@ public class MILYN_247_Test extends TestCase {
     }
 
     public void test_MILYN_247_02() {
+        if (LangUtil.getJavaVersion() != 1.5) {
+            return;
+        }
+
         Smooks smooks = new Smooks();
 
         smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.DOM).setRewriteEntities(false));
@@ -49,6 +58,10 @@ public class MILYN_247_Test extends TestCase {
     }
 
     public void test_MILYN_247_03() {
+        if (LangUtil.getJavaVersion() != 1.5) {
+            return;
+        }
+
         Smooks smooks = new Smooks();
 
         smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.SAX).setRewriteEntities(true));
@@ -59,6 +72,10 @@ public class MILYN_247_Test extends TestCase {
     }
 
     public void test_MILYN_247_04() {
+        if (LangUtil.getJavaVersion() != 1.5) {
+            return;
+        }
+
         Smooks smooks = new Smooks();
 
         smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.SAX).setRewriteEntities(false));

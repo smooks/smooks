@@ -46,6 +46,7 @@ public class BeanRouterTest extends CamelTestSupport
 {
 	private static final String END_POINT_URI = "mock://beanRouterUnitTest";
 	private static final String BEAN_ID = "testBeanId";
+	private static final String HEADER_ID = "testHeaderId";
 	
 	private StandaloneExecutionContext smooksExecutionContext;
 	private MockEndpoint endpoint;
@@ -56,9 +57,9 @@ public class BeanRouterTest extends CamelTestSupport
     public void visitAfter() throws Exception
     {
     	endpoint.setExpectedMessageCount(1);
+    	endpoint.expectedBodiesReceived(myBean);
     	createBeanRouter(BEAN_ID, END_POINT_URI).visitAfter(null, smooksExecutionContext);
     	endpoint.assertIsSatisfied();
-    	endpoint.expectedBodiesReceived(myBean);
     }
 
     @Test (expected = SmooksException.class)
@@ -72,7 +73,9 @@ public class BeanRouterTest extends CamelTestSupport
     public void routeUsingOnlyBeanId() throws Exception
     {
     	endpoint.setExpectedMessageCount(1);
-        final Smooks smooks = new Smooks();
+    	endpoint.expectedBodiesReceived(myBean);
+
+    	final Smooks smooks = new Smooks();
         final ExecutionContext execContext = smooks.createExecutionContext();
         
     	BeanRouter beanRouter = createBeanRouter(null, BEAN_ID, END_POINT_URI);
@@ -84,9 +87,29 @@ public class BeanRouterTest extends CamelTestSupport
                 null, BeanLifecycle.END_FRAGMENT, execContext.getBeanContext().getBeanId(BEAN_ID), myBean));
 
     	endpoint.assertIsSatisfied();
-    	endpoint.expectedBodiesReceived(myBean);
     }
 
+    @Test
+    public void routeBeanWithHeaders() throws Exception
+    {
+    	endpoint.setExpectedMessageCount(1);
+    	endpoint.expectedHeaderReceived(HEADER_ID, myBean);
+
+    	final Smooks smooks = new Smooks();
+        final ExecutionContext execContext = smooks.createExecutionContext();
+        
+    	BeanRouter beanRouter = createBeanRouter(null, BEAN_ID, END_POINT_URI);
+    	beanRouter.executeExecutionLifecycleInitialize(execContext);
+        execContext.getBeanContext().addBean(BEAN_ID, myBean);
+        execContext.getBeanContext().addBean(HEADER_ID, myBean);
+
+        // Force an END event
+        execContext.getBeanContext().notifyObservers(new BeanContextLifecycleEvent(execContext,
+                null, BeanLifecycle.END_FRAGMENT, execContext.getBeanContext().getBeanId(BEAN_ID), myBean));
+
+    	endpoint.assertIsSatisfied();
+    }
+    
     @Before
 	public void setupSmooksExeceutionContext() throws Exception
 	{

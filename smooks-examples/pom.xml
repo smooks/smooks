@@ -4,22 +4,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.codehaus</groupId>
-        <artifactId>codehaus-parent</artifactId>
-        <version>4</version>
-        <relativePath />
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../smooks-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>org.milyn</groupId>
     <artifactId>smooks-examples</artifactId>
-    <name>Milyn Smooks Examples (Base POM)</name>
+    <name>Milyn :: Smooks Examples :: Aggregator</name>
     <packaging>pom</packaging>
-    <version>1.5</version> <!-- base pom version - do not remove this comment -->
 
     <profiles>
         <profile>
             <id>all</id>
             <modules>
+                <module>parent</module>
                 <module>xslt-basic</module>
                 <module>xslt-groovy</module>
                 <module>xslt-namespaces</module>
@@ -73,128 +73,6 @@
                 -->
             </modules>
         </profile>
-        <profile>
-            <id>sign</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
-
-    <properties>
-        <camel.version>2.4.0</camel.version>
-        <spring.version>2.5.6</spring.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-core</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>dtdparser</groupId>
-                    <artifactId>dtdparser</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptor>src/main/assembly/dep.xml</descriptor>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1.1</version>
-                <configuration>
-                    <executable>java</executable>
-                    <mainClass>example.Main</mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <excludeTransitive>true</excludeTransitive>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/java</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-        </testResources>
-    </build>
 
 </project>

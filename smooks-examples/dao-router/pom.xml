@@ -1,84 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>smooks-examples</artifactId>
-		<version>1.5</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-    <name>Milyn Smooks Example - DAO Router</name>
-	<artifactId>milyn-smooks-example-dao-router</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-examples-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
+
+    <name>Milyn :: Smooks Example :: DAO Router</name>
+    <artifactId>milyn-smooks-example-dao-router</artifactId>
+    <packaging>bundle</packaging>
 
     <dependencies>
-
-    	<dependency>
-    		<groupId>org.milyn</groupId>
-    		<artifactId>milyn-scribe-jpa</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
-
-    	<dependency>
-    		<groupId>org.milyn</groupId>
-    		<artifactId>milyn-scribe-ibatis</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
-
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-scribe-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-scribe-ibatis</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-persistence</artifactId>
-            <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-routing</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-            	<exclusion>
-            		<groupId>com.mockrunner</groupId>
-            		<artifactId>mockrunner-jdk1.5-j2ee1.3</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.mockejb</groupId>
-            		<artifactId>mockejb</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>jboss</groupId>
-            		<artifactId>jboss-j2ee</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>jboss</groupId>
-            		<artifactId>jbossall-client</artifactId>
-            	</exclusion>
-            </exclusions>
         </dependency>
-
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.7</version>
         </dependency>
-
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.3.2.GA</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-			<version>1.1</version>
-		</dependency>
-
-	</dependencies>
-
-
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -1,152 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>smooks-examples</artifactId>
-		<version>1.5</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-    <name>Milyn Smooks Example - Smooks OSGi Root</name>
-	<artifactId>milyn-smooks-examples-osgi</artifactId>
-	<packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.milyn</groupId>
+        <artifactId>smooks-examples-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
 
-	<modules>
-		<module>blueprint</module>
-		<module>bundle-activator</module>
-		<module>service-tracker</module>
-		<module>peaberry</module>
-	</modules>
+    <name>Milyn :: Smooks Example :: Smooks OSGi Root</name>
+    <artifactId>milyn-smooks-examples-osgi</artifactId>
+    <packaging>pom</packaging>
 
-	<properties>
-        <objectweb.version>2.2.3</objectweb.version>
-    </properties>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi_R4_core</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi_R4_compendium</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-all</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-		<dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-            <scope>provided</scope>
-        </dependency>
-
-		<!-- Bundles -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>com.springsource.org.apache.commons.lang</artifactId>
-            <version>2.4.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jaxen</groupId>
-            <artifactId>com.springsource.org.jaxen</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>com.springsource.freemarker</artifactId>
-            <version>2.3.15</version>
-            <scope>provided</scope> 
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>com.springsource.org.codehaus.groovy</artifactId>
-            <version>1.5.7</version>
-            <scope>provided</scope> 
-        </dependency>
-
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>com.springsource.antlr</artifactId>
-            <version>2.7.7</version>
-            <scope>provided</scope> 
-        </dependency>
-
-        <dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm</artifactId>
-            <version>${objectweb.version}</version>
-            <scope>provided</scope> 
-        </dependency>
-
-		<dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm.tree.analysis</artifactId>
-            <version>${objectweb.version}</version>
-            <scope>provided</scope> 
-        </dependency>
-
-        <dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm.tree</artifactId>
-            <version>${objectweb.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm.util</artifactId>
-            <version>${objectweb.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-                <groupId>org.ops4j</groupId>
-                <artifactId>maven-pax-plugin</artifactId>
-                <version>1.4</version>
-            </plugin>
-		</plugins>
-	</build>
-
-	<repositories>
-
-		<repository>
-            <id>com.springsource.repository.bundles.release</id>
-            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
-            <url>http://repository.springsource.com/maven/bundles/release</url>
-        </repository>
-
-        <repository>
-            <id>com.springsource.repository.bundles.external</id>
-            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
-            <url>http://repository.springsource.com/maven/bundles/external</url>
-        </repository>
-
-	</repositories>
+    <modules>
+        <module>bundle-activator</module>
+        <module>service-tracker</module>
+        <module>peaberry</module>
+    </modules>
 
 </project>

@@ -1,0 +1,16 @@
+<settings>
+    <servers>
+        <server>
+            <id>codehaus-nexus-snapshots</id>
+            <!-- This is your codehaus login i.e. same as for Xircles -->
+            <username>${env.CH_UN}</username>
+            <password>${env.CH_PW}</password>
+        </server>
+        <server>
+            <id>codehaus-nexus-staging</id>
+            <!-- This is your codehaus login i.e. same as for Xircles -->
+            <username>${env.CH_UN}</username>
+            <password>${env.CH_PW}</password>
+        </server>
+    </servers>
+</settings>

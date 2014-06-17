@@ -5,28 +5,35 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn-smooks-example-file-router</artifactId>
-        <version>1.5</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <name>Milyn Smooks Example - File Router (Splitter)</name>
+
+    <name>Milyn :: Smooks Example :: File Router (Splitter)</name>
     <artifactId>milyn-smooks-example-file-splitter-router</artifactId>
+    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${project.version}</version>
         </dependency>
-		<dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-templating</artifactId>
-			<version>${project.version}</version>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-templating</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-routing</artifactId>
-			<version>${project.version}</version>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-routing</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

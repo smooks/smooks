@@ -1,0 +1,13 @@
+language: java
+
+jdk:
+  - openjdk6
+  - openjdk7
+  - oraclejdk7
+
+notifications:
+  email:
+    recipients:
+      - dev@milyn.codehaus.org
+    on_success: [change]
+    on_failure: [always]

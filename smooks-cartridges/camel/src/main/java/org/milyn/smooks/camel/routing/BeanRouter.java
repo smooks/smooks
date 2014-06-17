@@ -165,7 +165,7 @@ public class BeanRouter implements SAXVisitAfter, Consumer, ExecutionLifecycleIn
                 };
                 producerTemplate.send(toEndpoint, processor);
             }else {
-                producerTemplate.sendBody(toEndpoint, bean);
+                producerTemplate.sendBodyAndHeaders(toEndpoint, bean, execContext.getBeanContext().getBeanMap());
             }
         }  catch (final Exception e) {
             throw new SmooksException("Exception routing beanId '" + beanId + "' to endpoint '" + toEndpoint + "'.", e);

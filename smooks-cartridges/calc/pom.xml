@@ -4,26 +4,24 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-cartridge-base-pom</artifactId>
-        <version>1.5</version> <!-- base pom version - do not remove this comment -->
+        <artifactId>smooks-parent</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../../smooks-parent/pom.xml</relativePath>
     </parent>
-    <name>Milyn Smooks Cartridge - Calculation</name>
+
+    <name>Milyn :: Smooks Cartridge :: Calculation</name>
     <artifactId>milyn-smooks-calc</artifactId>
+    <packaging>bundle</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-javabean</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.milyn</groupId>
+            <artifactId>milyn-smooks-javabean</artifactId>
+        </dependency>
 
-		<!-- testng -->
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>5.7</version>
-			<scope>test</scope>
-			<classifier>jdk15</classifier>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -5,9 +5,12 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>milyn-smooks-example-jms-router</artifactId>
-        <version>1.5</version> <!-- base pom version - do not remove this comment -->
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <name>Milyn Smooks Example - JMS Consumer</name>
+
+    <name>Milyn :: Smooks Example :: JMS Consumer</name>
     <artifactId>milyn-smooks-example-jms-consumer</artifactId>
+    <packaging>bundle</packaging>
 
 </project>

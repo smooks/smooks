@@ -16,12 +16,11 @@
 package example;
 
 import org.milyn.io.StreamUtils;
-import org.milyn.util.DollarBraceDecoder;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Simple file consumer.
@@ -45,9 +44,9 @@ public class Main {
         while (true) {
             File[] files = fileDir.listFiles(filter);
 
-            if(files.length > 0) {
+            if (files.length > 0) {
                 for (File file : files) {
-                    if(file.getName().endsWith(".xml")) {
+                    if (file.getName().endsWith(".xml")) {
                         System.out.println("Consuming File: " + file.getName());
                         System.out.println(new String(StreamUtils.readFile(file)));
                         System.out.println("\n");

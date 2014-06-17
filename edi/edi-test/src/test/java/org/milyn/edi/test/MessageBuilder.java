@@ -56,7 +56,7 @@ public class MessageBuilder {
 
     private <T> T buildObject(Class<T> objectType, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
-        if(objectType == Delimiters.class) {
+        if (objectType == Delimiters.class) {
             return objectType.cast(delimiters);
         }
 
@@ -67,22 +67,22 @@ public class MessageBuilder {
         // 2. If a primitive Number... it's an int
         //
 
-        if(String.class.isAssignableFrom(objectType)) {
+        if (String.class.isAssignableFrom(objectType)) {
             // Return the object name as the
             // string value... with a delimiter in it to test
             // escaping of delims...
             return objectType.cast(name + delimiterForEscaping + name);
-        } else if(Number.class.isAssignableFrom(objectType)) {
+        } else if (Number.class.isAssignableFrom(objectType)) {
             return objectType.getConstructor(String.class).newInstance("1.1");
-        } else if(int.class.isAssignableFrom(objectType)) {
+        } else if (int.class.isAssignableFrom(objectType)) {
             return (T) new Integer(1);
-        } else if(objectType == Object.class) {
+        } else if (objectType == Object.class) {
             // don't construct raw Object types... leave them and just return null...
             return null;
         }
 
         // Make sure the object is within the package packageScope...
-        if(!objectType.getPackage().getName().startsWith(packageScope)) {
+        if (!objectType.getPackage().getName().startsWith(packageScope)) {
             throw new InstantiationException("Cannot create instance of type '" + objectType.getName() + "'.  Not inside the scope of package '" + packageScope + "'");
         }
 
@@ -90,15 +90,15 @@ public class MessageBuilder {
 
         // populate all the fields...
         Method[] methods = objectType.getMethods();
-        for(Method method : methods) {
-            if(method.getName().startsWith("set") && method.getParameterTypes().length == 1) {
+        for (Method method : methods) {
+            if (method.getName().startsWith("set") && method.getParameterTypes().length == 1) {
                 Class<?> propertyType = method.getParameterTypes()[0];
                 Object propertyInstance = null;
 
-                if(List.class.isAssignableFrom(propertyType)) {
+                if (List.class.isAssignableFrom(propertyType)) {
                     Type genericType = method.getGenericParameterTypes()[0];
 
-                    if(genericType instanceof ParameterizedType) {
+                    if (genericType instanceof ParameterizedType) {
                         List list = new ArrayList();
                         ParameterizedType genericTypeClass = (ParameterizedType) genericType;
 
@@ -109,7 +109,7 @@ public class MessageBuilder {
                     propertyInstance = buildObject(propertyType, method.getName().substring(3));
                 }
 
-                if(propertyInstance != null) {
+                if (propertyInstance != null) {
                     method.invoke(messageInstance, propertyInstance);
                 }
             }
