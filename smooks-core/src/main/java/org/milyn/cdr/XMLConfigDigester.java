@@ -581,7 +581,7 @@ public final class XMLConfigDigester {
             assertExtendedConfigOK(configNamespace, resourcePath);
 
             // Construct the Smooks instance for processing this config namespace...
-            smooks = new Smooks(new StandaloneApplicationContext(false));
+            smooks = new Smooks(StandaloneApplicationContext.createNewInstance(false));
             setExtentionDigestOn();
             try {
                 SmooksResourceConfigurationStore configStore = smooks.getApplicationContext().getStore();
