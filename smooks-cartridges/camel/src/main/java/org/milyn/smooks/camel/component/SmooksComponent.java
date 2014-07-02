@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.component.ResourceBasedComponent;
+import org.apache.camel.impl.DefaultComponent;
 import org.milyn.smooks.camel.processor.SmooksProcessor;
 
 /**
@@ -34,7 +35,7 @@ import org.milyn.smooks.camel.processor.SmooksProcessor;
  * @author Daniel Bevenius
  * 
  */
-public class SmooksComponent extends ResourceBasedComponent
+public class SmooksComponent extends DefaultComponent
 {
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception
     {
