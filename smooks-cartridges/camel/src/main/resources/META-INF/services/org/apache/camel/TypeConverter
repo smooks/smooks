@@ -1,1 +1,3 @@
-org.milyn.smooks.camel.converters
+org.milyn.smooks.camel.converters.EDITypeConverter 
+org.milyn.smooks.camel.converters.ResultConverter
+org.milyn.smooks.camel.converters.SourceConverter
