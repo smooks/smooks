@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.camel.CamelContext;
@@ -149,6 +150,12 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
     {
         Object payload = exchange.getIn().getBody();
 
+        
+        if(payload instanceof SAXSource) 
+        {
+        	return new StreamSource((Reader)((SAXSource)payload).getXMLReader());
+        }
+        
         if(payload instanceof Source) 
         {
             return (Source) payload;
