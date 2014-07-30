@@ -26,6 +26,7 @@ import org.milyn.SmooksFactory;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.Exports;
 import org.milyn.payload.StringResult;
+import org.milyn.payload.JavaSource;
 import org.milyn.smooks.camel.component.SmooksComponent;
 import org.milyn.smooks.camel.processor.SmooksProcessor;
 
@@ -78,7 +79,7 @@ public class SmooksDataFormat implements DataFormat, CamelContextAware, Service 
     public void marshal(final Exchange exchange, final Object fromBody, final OutputStream toStream) throws Exception {
         final ExecutionContext execContext = smooks.createExecutionContext();
         final TypeConverter typeConverter = exchange.getContext().getTypeConverter();
-        final Source source = typeConverter.mandatoryConvertTo(Source.class, exchange, fromBody);
+        final JavaSource source = typeConverter.mandatoryConvertTo(JavaSource.class, exchange, fromBody); 
         final StringResult stringResult = new StringResult();
         smooks.filterSource(execContext, source, stringResult);
 
