@@ -31,6 +31,7 @@ import org.apache.camel.Message;
 import org.apache.camel.spi.TypeConverterRegistry;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
+import org.milyn.payload.JavaSource;
 import org.w3c.dom.Node;
 
 /**
@@ -127,6 +128,11 @@ public class ResultConverter
         return null;
     }
 
+    @Converter
+    public static JavaSource toJavaSource(Object value){
+        return new JavaSource(value);
+    } 
+
     @FallbackConverter
     public static <T> T convertTo(Class<T> type, Exchange exchange, Object value, TypeConverterRegistry registry) {
         if(value instanceof JavaResult.ResultMap) {
@@ -135,7 +141,7 @@ public class ResultConverter
                     return type.cast(mapValue);
                 }
             }
-        }
+        } 
 
         return null;
     }

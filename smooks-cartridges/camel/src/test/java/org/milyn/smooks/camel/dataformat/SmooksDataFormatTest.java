@@ -92,6 +92,7 @@ public class SmooksDataFormatTest extends CamelTestSupport
         final Customer customer = new Customer();
         customer.setFirstName("John");
         customer.setLastName("Cocktolstol");
+        customer.setGender(Gender.Male);
         customer.setAge(35);
         customer.setCountry("USA");
         
@@ -104,7 +105,7 @@ public class SmooksDataFormatTest extends CamelTestSupport
     
     @Test
     public void unmarshalMarshalThroughCamel() throws Exception
-    {
+    {  
         context.addRoutes(new RouteBuilder() {
             @Override
             public void configure() throws Exception
