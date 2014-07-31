@@ -31,7 +31,6 @@ import org.apache.camel.Message;
 import org.apache.camel.spi.TypeConverterRegistry;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
-import org.milyn.payload.JavaSource;
 import org.w3c.dom.Node;
 
 /**
@@ -68,13 +67,15 @@ public class ResultConverter
         }
     }
 
-    @Converter
+    @SuppressWarnings("rawtypes")
+	@Converter
     public static Integer toInteger(JavaResult.ResultMap result)
     {
         return (Integer) getSingleObjectFromJavaResult(result);
     }
 
-    @Converter
+    @SuppressWarnings("rawtypes")
+	@Converter
     public static Double toDouble(JavaResult.ResultMap result)
     {
         return (Double) getSingleObjectFromJavaResult(result);
@@ -86,14 +87,15 @@ public class ResultConverter
         return result.getResult();
     }
 
+    
     @SuppressWarnings("rawtypes")
-    @Converter
-    public static Map toMap(JavaResult.ResultMap resultBeans, Exchange exchange)
+	public static Map toMap(JavaResult.ResultMap resultBeans, Exchange exchange)
     {
         Message outMessage = exchange.getOut();
         outMessage.setBody(resultBeans);
 
-        Set<Entry<String, Object>> entrySet = resultBeans.entrySet();
+        @SuppressWarnings("unchecked")
+		Set<Entry<String, Object>> entrySet = resultBeans.entrySet();
         for (Entry<String, Object> entry : entrySet)
         {
             outMessage.setBody(entry.getValue(), entry.getValue().getClass());
@@ -101,12 +103,13 @@ public class ResultConverter
         return resultBeans;
     }
 
-    private static Object getResultsFromJavaResult(JavaResult.ResultMap resultMap, String resultKey)
+    @SuppressWarnings("rawtypes")
+	private static Object getResultsFromJavaResult(JavaResult.ResultMap resultMap, String resultKey)
     {
         return resultMap.get(resultKey);
     }
 
-    private static Object getSingleObjectFromJavaResult(JavaResult.ResultMap resultMap)
+    private static Object getSingleObjectFromJavaResult(@SuppressWarnings("rawtypes") JavaResult.ResultMap resultMap)
     {
         if (resultMap.size() == 1)
         {
@@ -128,12 +131,8 @@ public class ResultConverter
         return null;
     }
 
-    @Converter
-    public static JavaSource toJavaSource(Object value){
-        return new JavaSource(value);
-    } 
-
-    @FallbackConverter
+    @SuppressWarnings("rawtypes")
+	@FallbackConverter
     public static <T> T convertTo(Class<T> type, Exchange exchange, Object value, TypeConverterRegistry registry) {
         if(value instanceof JavaResult.ResultMap) {
             for(Object mapValue : ((Map) value).values()) {

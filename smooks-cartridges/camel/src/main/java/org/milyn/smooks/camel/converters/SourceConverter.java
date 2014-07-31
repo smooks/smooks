@@ -14,12 +14,13 @@
  */
 package org.milyn.smooks.camel.converters;
 
+import java.io.File;
 import java.io.InputStream;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.camel.Converter;
+import org.apache.camel.component.file.GenericFile;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.JavaSource;
 import org.milyn.payload.JavaSourceWithoutEventStream;
@@ -59,6 +60,11 @@ public class SourceConverter
     public static JavaSource toJavaSource(JavaResult result)
     {
         return new JavaSource(result.getResultMap().values());
+    }
+    
+    @Converter
+    public static Source toStreamSource(GenericFile<File> genericFile){
+    	return new StreamSource((File)genericFile.getBody());
     }
 
 }

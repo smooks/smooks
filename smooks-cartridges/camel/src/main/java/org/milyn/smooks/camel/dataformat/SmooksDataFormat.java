@@ -31,7 +31,6 @@ import org.milyn.smooks.camel.component.SmooksComponent;
 import org.milyn.smooks.camel.processor.SmooksProcessor;
 
 import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.io.OutputStream;
