@@ -36,6 +36,7 @@
         <spring.commons.logging.version>1.1.1</spring.commons.logging.version>
         <spring.groovy.version>1.5.7</spring.groovy.version>
         <spring.log4j.version>1.2.15</spring.log4j.version>
+        <ow2.opencsv.version>1.0.36</ow2.opencsv.version>
     </properties>
 
     <dependencies>
