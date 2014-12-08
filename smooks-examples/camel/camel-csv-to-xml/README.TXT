@@ -31,11 +31,11 @@ Install and configure Servicemix 4.x
 Deploy Smooks OSGi Bundle
 -------------------------
 1. Deploy Smooks OSGi bundle
-    karaf@root> features:addUrl  file:///path/to/smooks/smooks-all/target/test-classes/features.xml
+    karaf@root> features:addUrl  file:///path/to/smooks/smooks-all/target/classes/features.xml
     karaf@root> features:install smooks
 
 2. Deploy the example
-    osgi:install -s mvn:org.milyn/milyn-smooks-example-camel-csv-to-xml/1.0
+    osgi:install -s mvn:org.milyn/milyn-smooks-example-camel-csv-to-xml/1.6-SNAPSHOT
 
 Run the example
 ---------------
