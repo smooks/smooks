@@ -156,4 +156,6 @@ Push the tag:
 
     git push upstream vx.x.x
 
+### Prepare for next development iteration
+
 Once tagging is complete, update the versions in the project POM files for the next release (if necessary). The instructions for doing this (using the **versions** plugin) are outlined above in sections titled "**Update the project version number**".
