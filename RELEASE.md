@@ -31,8 +31,6 @@ In the example above we are using the _pub_ identifer.
 We need to update the project version number using the **versions** Maven plugin. To do this, `cd` into the `smooks-parent` directory and execute the following command.
 
     mvn versions:set -DnewVersion=newVersionGoesHere
-    cd smooks-examples
-    mvn versions:set -DnewVersion=newVersionGoesHere
 
 If all looks good then you can remove the backup files using:
 
