@@ -40,7 +40,7 @@ And if you are not happy you can revert using:
 
     mvn versions:revert
 
-Note you may need to execute the above command multiple time, from the root of the project and from the `smooks-parent` directory.
+Note you may need to execute the above `commit` or `revert` commands multiple time, from the root of the project and from the `smooks-parent` directory. They don't seem to work the same as the `set` command.
 
 When you are done you should commit and tag.
 
@@ -155,3 +155,5 @@ Optionally verify the tag:
 Push the tag:
 
     git push upstream vx.x.x
+
+Once tagging is complete, update the versions in the project POM files for the next release (if necessary). The instructions for doing this (using the **versions** plugin) are outlined above in sections titled "**Update the project version number**".
