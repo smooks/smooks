@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.milyn</groupId>
         <artifactId>smooks-parent</artifactId>
-	<version>1.6</version>
+	<version>1.7-SNAPSHOT</version>
         <relativePath>smooks-parent/pom.xml</relativePath>
     </parent>
 
