@@ -1,46 +1,26 @@
-/*
-	Milyn - Copyright (C) 2006 - 2010
-
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License (version 2.1) as published by the Free Software
-	Foundation.
-
-	This library is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-	See the GNU Lesser General Public License for more details:
-	http://www.gnu.org/licenses/lgpl.txt
-*/
 package org.milyn.smooks.scripting.groovy;
 
-
 import junit.framework.TestCase;
+import org.milyn.FilterSettings;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
-import org.milyn.FilterSettings;
 import org.milyn.StreamFilterType;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Filter;
-import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.io.StreamUtils;
+import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
-import org.milyn.payload.JavaResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.util.Map;
 
-import static groovy.util.GroovyTestCase.assertEquals;
-
-
 /**
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * Created by marek on 4/30/14.
  */
-public class ScriptedVisitorTest extends TestCase {
+public class ScriptedVisitorLongTagTest extends TestCase {
 
     public void setUp() {
         System.setProperty(Filter.STREAM_FILTER_TYPE, "DOM");
@@ -113,7 +93,7 @@ public class ScriptedVisitorTest extends TestCase {
         StringResult result = new StringResult();
 
         smooks.filterSource(new StringSource("<a><b><c/></b></a>"), result);
-        assertEquals("<a><b><c><car make=\"Holden\" name=\"HSV Maloo\" year=\"2006\"><country>Australia</country><record type=\"speed\">Production Pickup Truck with speed of 271kph</record></car><car make=\"Peel\" name=\"P50\" year=\"1962\"><country>Isle of Man</country><record type=\"size\">Smallest Street-Legal Car at 99cm wide and 59 kg in weight</record></car><car make=\"Bugatti\" name=\"Royale\" year=\"1931\"><country>France</country><record type=\"price\">Most Valuable Car at $15 million</record></car></c></b></a>", result.getResult());
+        assertEquals("<a><b><c><Helicopter make=\"Holden\" name=\"HSV Maloo\" year=\"2006\"><country>Australia</country><record type=\"speed\">Production Pickup Truck with speed of 271kph</record></Helicopter><Helicopter make=\"Peel\" name=\"P50\" year=\"1962\"><country>Isle of Man</country><record type=\"size\">Smallest Street-Legal Helicopter at 99cm wide and 59 kg in weight</record></Helicopter><Helicopter make=\"Bugatti\" name=\"Royale\" year=\"1931\"><country>France</country><record type=\"price\">Most Valuable Helicopter at $15 million</record></Helicopter></c></b></a>", result.getResult());
     }
 
     public void test_templated_ext_04() throws IOException, SAXException {
@@ -121,7 +101,7 @@ public class ScriptedVisitorTest extends TestCase {
         StringResult result = new StringResult();
 
         smooks.filterSource(new StringSource("<a><b><c/></b></a>"), result);
-        assertEquals("<a><b><c><car make=\"Holden\" name=\"HSV Maloo\" year=\"2006\"><country>Australia</country><record type=\"speed\">Production Pickup Truck with speed of 271kph</record></car><car make=\"Peel\" name=\"P50\" year=\"1962\"><country>Isle of Man</country><record type=\"size\">Smallest Street-Legal Car at 99cm wide and 59 kg in weight</record></car><car make=\"Bugatti\" name=\"Royale\" year=\"1931\"><country>France</country><record type=\"price\">Most Valuable Car at $15 million</record></car></c></b></a>", result.getResult());
+        assertEquals("<a><b><c><Helicopter make=\"Holden\" name=\"HSV Maloo\" year=\"2006\"><country>Australia</country><record type=\"speed\">Production Pickup Truck with speed of 271kph</record></Helicopter><Helicopter make=\"Peel\" name=\"P50\" year=\"1962\"><country>Isle of Man</country><record type=\"size\">Smallest Street-Legal Helicopter at 99cm wide and 59 kg in weight</record></Helicopter><Helicopter make=\"Bugatti\" name=\"Royale\" year=\"1931\"><country>France</country><record type=\"price\">Most Valuable Helicopter at $15 million</record></Helicopter></c></b></a>", result.getResult());
     }
 
     public void test_templated_05() throws IOException, SAXException {
@@ -131,18 +111,18 @@ public class ScriptedVisitorTest extends TestCase {
         smooks.filterSource(new StringSource(shoppingList), result);
         assertEquals(
                 "<shopping>\n" +
-                "    <category type=\"groceries\">\n" +
-                "        <item>Luxury Car</item>\n" +
-                "        <item>Luxury Coffee</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"supplies\">\n" +
-                "        <item>Paper</item>\n" +
-                "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"present\">\n" +
-                "        \n" +
-                "    <item>Mum's Birthday</item><item when=\"Oct 15\">Monica's Birthday</item></category>\n" +
-                "</shopping>",
+                        "    <category type=\"groceries\">\n" +
+                        "        <item>Luxury Helicopter</item>\n" +
+                        "        <item>Luxury Coffee</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"supplies\">\n" +
+                        "        <item>Paper</item>\n" +
+                        "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"present\">\n" +
+                        "        \n" +
+                        "    <item>Mum's Birthday</item><item when=\"Oct 15\">Monica's Birthday</item></category>\n" +
+                        "</shopping>",
                 result.getResult());
     }
 
@@ -153,18 +133,18 @@ public class ScriptedVisitorTest extends TestCase {
         smooks.filterSource(new StringSource(shoppingList), result);
         assertEquals(
                 "<shopping>\n" +
-                "    <category type=\"groceries\">\n" +
-                "        <item>Luxury Car</item>\n" +
-                "        <item>Luxury Coffee</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"supplies\">\n" +
-                "        <item>Paper</item>\n" +
-                "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"present\">\n" +
-                "        \n" +
-                "    <item>Mum's Birthday</item><item when=\"Oct 15\">Monica's Birthday</item></category>\n" +
-                "</shopping>",
+                        "    <category type=\"groceries\">\n" +
+                        "        <item>Luxury Helicopter</item>\n" +
+                        "        <item>Luxury Coffee</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"supplies\">\n" +
+                        "        <item>Paper</item>\n" +
+                        "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"present\">\n" +
+                        "        \n" +
+                        "    <item>Mum's Birthday</item><item when=\"Oct 15\">Monica's Birthday</item></category>\n" +
+                        "</shopping>",
                 result.getResult());
     }
 
@@ -200,20 +180,21 @@ public class ScriptedVisitorTest extends TestCase {
         String resultS = result.getResult();
         assertTrue(StreamUtils.compareCharStreams(
                 "<shopping>\n" +
-                "    <category type=\"groceries\">\n" +
-                "        <item>Luxury Car</item>\n" +
-                "        <item>Luxury Coffee</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"supplies\">\n" +
-                "        <item>Paper</item>\n" +
-                "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
-                "    </category>\n" +
-                "    <category type=\"present\">\n" +
-                "        <item>Mum's Birthday</item>\n" +
-                "        <item when=\"Oct 15\">Monica's Birthday</item>\n" +
-                "    </category>\n" +
-                "</shopping>",
-                result.getResult()));
+                        "    <category type=\"groceries\">\n" +
+                        "        <item>Luxury Helicopter</item>\n" +
+                        "        <item>Luxury Coffee</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"supplies\">\n" +
+                        "        <item>Paper</item>\n" +
+                        "        <item quantity=\"6\" when=\"Urgent\">Pens</item>\n" +
+                        "    </category>\n" +
+                        "    <category type=\"present\">\n" +
+                        "        <item>Mum's Birthday</item>\n" +
+                        "        <item when=\"Oct 15\">Monica's Birthday</item>\n" +
+                        "    </category>\n" +
+                        "</shopping>",
+                result.getResult()
+        ));
     }
 
     public void test_templated_ext_10() throws IOException, SAXException {
@@ -223,10 +204,10 @@ public class ScriptedVisitorTest extends TestCase {
         smooks.filterSource(new StringSource(shoppingList), result);
         assertTrue(StreamUtils.compareCharStreams(
                 "<shopping>\n" +
-                "    <category type=\"groceries\"><item>Car</item><item>Coffee</item></category>\n" +
-                "    <category type=\"supplies\"><item>Paper</item><item quantity=\"6\">Pens</item></category>\n" +
-                "    <category type=\"present\"><item when=\"Aug 10\">Kathryn's Birthday</item></category>\n" +
-                "</shopping>",
+                        "    <category type=\"groceries\"><item>Helicopter</item><item>Coffee</item></category>\n" +
+                        "    <category type=\"supplies\"><item>Paper</item><item quantity=\"6\">Pens</item></category>\n" +
+                        "    <category type=\"present\"><item when=\"Aug 10\">Kathryn's Birthday</item></category>\n" +
+                        "</shopping>",
                 result.getResult()));
     }
 
@@ -268,16 +249,16 @@ public class ScriptedVisitorTest extends TestCase {
 
     private static String shoppingList =
             "<shopping>\n" +
-            "    <category type=\"groceries\">\n" +
-            "        <item>Car</item>\n" +
-            "        <item>Coffee</item>\n" +
-            "    </category>\n" +
-            "    <category type=\"supplies\">\n" +
-            "        <item>Paper</item>\n" +
-            "        <item quantity=\"4\">Pens</item>\n" +
-            "    </category>\n" +
-            "    <category type=\"present\">\n" +
-            "        <item when=\"Aug 10\">Kathryn's Birthday</item>\n" +
-            "    </category>\n" +
-            "</shopping>";
+                    "    <category type=\"groceries\">\n" +
+                    "        <item>Helicopter</item>\n" +
+                    "        <item>Coffee</item>\n" +
+                    "    </category>\n" +
+                    "    <category type=\"supplies\">\n" +
+                    "        <item>Paper</item>\n" +
+                    "        <item quantity=\"4\">Pens</item>\n" +
+                    "    </category>\n" +
+                    "    <category type=\"present\">\n" +
+                    "        <item when=\"Aug 10\">Kathryn's Birthday</item>\n" +
+                    "    </category>\n" +
+                    "</shopping>";
 }
