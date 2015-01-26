@@ -1,6 +1,6 @@
 package org.milyn.smooks.scripting.groovy;
 
-import groovy.xml.dom.DOMUtil;
+import groovy.xml.XmlUtil;
 import groovy.xml.dom.DOMCategory;
 import groovy.xml.DOMBuilder;
 
