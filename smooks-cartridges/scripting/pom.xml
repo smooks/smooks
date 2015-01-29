@@ -22,6 +22,11 @@
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
