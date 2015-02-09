@@ -32,7 +32,7 @@
 		<spring.antlr.version>2.7.7</spring.antlr.version>
 		<spring.jaxen.version>1.1.1</spring.jaxen.version>
 		<spring.commons.logging.version>1.1.1</spring.commons.logging.version>
-		<spring.groovy.version>1.5.7</spring.groovy.version>
+		<spring.groovy.version>2.2.2</spring.groovy.version>
 		<spring.log4j.version>1.2.15</spring.log4j.version>
 		<commons.lang.version>2.4</commons.lang.version>
         <opencsv.version>1.0.23</opencsv.version>
@@ -250,13 +250,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
-			<version>${spring.groovy.version}</version>
-			<scope>provided</scope> 
-		</dependency>
-
-		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>com.springsource.antlr</artifactId>
 			<version>${spring.antlr.version}</version>
@@ -400,7 +393,9 @@
 							groovy.xml;version="${spring.groovy.version}",
 							groovy.xml.dom;version="${spring.groovy.version}",
 							org.codehaus.groovy.*;version="${spring.groovy.version}",
-							org.codehaus.groovy.runtime;version="${spring.groovy.version}",
+                            org.codehaus.groovy.reflection;version="${spring.groovy.version}",
+                            org.codehaus.groovy.runtime;version="${spring.groovy.version}",
+                            org.codehaus.groovy.runtime.callsite;version="${spring.groovy.version}",
 							org.codehaus.groovy.runtime.typehandling;version="${spring.groovy.version}",
 							javax.swing.tree,
 							!org.apache.commons.cli.*,

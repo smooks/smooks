@@ -7,7 +7,10 @@
     <!-- Karaf comes with pax-logging and slf4j; the following logging jars should not be required -->
     <!--<bundle>mvn:org.apache.commons/com.springsource.org.apache.commons.logging/${spring.commons.logging.version}</bundle>-->
     <!--<bundle>mvn:org.apache.log4j/com.springsource.org.apache.log4j/${spring.log4j.version}</bundle>-->
-    <bundle>mvn:org.codehaus.groovy/com.springsource.org.codehaus.groovy/${spring.groovy.version}</bundle>
+
+    <!-- For upgrading groovy version need to comment this line.
+    Anyway, seems to me it's no longer needed since groovy implements OSGI standard already. -->
+    <!--<bundle>mvn:org.codehaus.groovy/com.springsource.org.codehaus.groovy/${spring.groovy.version}</bundle>-->
     <bundle>mvn:org.jaxen/com.springsource.org.jaxen/${spring.jaxen.version}</bundle>
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm/${spring.objectweb.version}</bundle>
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree/${spring.objectweb.version}</bundle>
