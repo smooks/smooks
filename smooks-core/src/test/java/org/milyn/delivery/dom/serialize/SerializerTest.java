@@ -30,21 +30,17 @@ import org.milyn.util.CharUtils;
 import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Document;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author tfennelly
  */
-public class SerializerTest extends TestCase {
+public class SerializerTest {
 	Log log = LogFactory.getLog( SerializerTest.class );
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-	}
-
+	@Test
 	public void testSerailize() {
 		MockExecutionContext executionContext = new MockExecutionContext();
 

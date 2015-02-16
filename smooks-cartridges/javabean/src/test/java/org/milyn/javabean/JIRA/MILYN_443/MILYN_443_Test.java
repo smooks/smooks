@@ -28,23 +28,27 @@ import org.milyn.javabean.Bean;
 import org.milyn.payload.JavaResult;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * http://jira.codehaus.org/browse/MILYN-443
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_443_Test extends TestCase {
+public class MILYN_443_Test {
 
+    @Test
 	public void test_SAX() throws IOException, SAXException {
 		test(FilterSettings.DEFAULT_SAX);
 	}
-	
+
+    @Test	
     public void test_DOM() throws IOException, SAXException {
 		test(FilterSettings.DEFAULT_DOM);
     }
-    
+   
+    @Test 
     public void test_programmatic() {
 		Smooks smooks = new Smooks();
 		

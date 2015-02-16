@@ -16,14 +16,16 @@
 
 package org.milyn.edisax.model.internal;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DelimitersTest extends TestCase {
+public class DelimitersTest {
 
+    @Test
     public void test_escape() {
         Delimiters delimiters = UNEdifactInterchangeParser.defaultUNEdifactDelimiters;
 

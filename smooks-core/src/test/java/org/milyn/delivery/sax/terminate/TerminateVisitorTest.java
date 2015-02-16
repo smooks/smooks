@@ -22,23 +22,23 @@ import javax.xml.transform.stream.StreamSource;
 import org.milyn.Smooks;
 import org.milyn.delivery.sax.SAXVisitBeforeVisitor;
 import org.xml.sax.SAXException;
+import org.junit.Before;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class TerminateVisitorTest extends TestCase {
+public class TerminateVisitorTest {
 	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		SAXVisitBeforeVisitor.visited = false;
 	}
 
+	@Test
 	public void test_terminate_prog_after() {
 		Smooks smooks = new Smooks();
 		
@@ -49,6 +49,7 @@ public class TerminateVisitorTest extends TestCase {
 		assertTrue(SAXVisitBeforeVisitor.visited);
 	}
 
+	@Test
 	public void test_terminate_prog_before() {
 		Smooks smooks = new Smooks();
 		
@@ -59,6 +60,7 @@ public class TerminateVisitorTest extends TestCase {
 		assertFalse(SAXVisitBeforeVisitor.visited);
 	}
 
+	@Test
 	public void test_terminate_xml_after() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
 		
@@ -66,6 +68,7 @@ public class TerminateVisitorTest extends TestCase {
 		assertTrue(SAXVisitBeforeVisitor.visited);
 	}
 
+	@Test
 	public void test_terminate_xml_before() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-02.xml"));
 		

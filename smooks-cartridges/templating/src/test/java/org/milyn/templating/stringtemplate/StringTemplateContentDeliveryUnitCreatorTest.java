@@ -16,6 +16,8 @@
 
 package org.milyn.templating.stringtemplate;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,20 +25,20 @@ import java.io.StringReader;
 
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
 import org.milyn.container.ExecutionContext;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.xml.sax.SAXException;
 
 /**
  *
  * @author tfennelly
  */
-public class StringTemplateContentDeliveryUnitCreatorTest extends TestCase {
-
+public class StringTemplateContentDeliveryUnitCreatorTest {
+	
+	@Test
     public void testStringTemplateTrans_01() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs.cdrl"));
 
@@ -53,6 +55,7 @@ public class StringTemplateContentDeliveryUnitCreatorTest extends TestCase {
         assertEquals(expected, result);
     }
 
+    @Test
     public void test_st_bind() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-02.cdrl"));
         StringReader input;

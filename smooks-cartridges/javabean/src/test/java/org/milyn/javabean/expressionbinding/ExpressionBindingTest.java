@@ -21,7 +21,8 @@ import java.util.Map;
 
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,38 +35,11 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ExpressionBindingTest extends TestCase {
+public class ExpressionBindingTest {
 
 	private final Log logger = LogFactory.getLog(ExpressionBindingTest.class);
 
-    public void test() throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("01_binding.xml"));
-
-        JavaResult result = new JavaResult();
-
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("01_message.xml")), result);
-
-        Message message1 = (Message) result.getBean("message1");
-        assertEquals(946143900000L, message1.getDate().getTime());
-        assertEquals(977766300000L, message1.getDatePlus1Year().getTime());
-
-        assertDateValue(result, "message2");
-        assertDateValue(result, "message3");
-        assertDateValue(result, "message4");
-
-        Map<?, ?> message2 = (Map<?, ?>) result.getBean("message2");
-        Date messageDate = (Date) message2.get("datePlus1Year");
-        logger.debug("Date plus 1 year: " + messageDate);
-        assertEquals(977766300000L, messageDate.getTime());
-
-        assertTrue(message2 == message1.getMessage2());
-
-        Map<?, ?> message5 = (Map<?, ?>) result.getBean("message5");
-
-        assertEquals(10, message5.get("number"));
-        assertEquals(15, message5.get("numberAddition"));
-    }
-
+    @Test
     public void test_data_variable() throws Exception {
     	Smooks smooks = new Smooks(getClass().getResourceAsStream("02_binding.xml"));
 

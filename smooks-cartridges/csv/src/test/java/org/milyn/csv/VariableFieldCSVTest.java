@@ -16,7 +16,8 @@
 
 package org.milyn.csv;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
@@ -30,8 +31,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class VariableFieldCSVTest extends TestCase {
+public class VariableFieldCSVTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-14.xml"));
         StringResult result = new StringResult();

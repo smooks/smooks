@@ -15,7 +15,9 @@
 */
 package org.milyn.templating.xslt;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.StreamFilterType;
 import org.milyn.FilterSettings;
@@ -29,16 +31,19 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class RouteToOutputStreamResourceTest extends TestCase {
+public class RouteToOutputStreamResourceTest {
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         MockOutStreamResource.outputStream = new ByteArrayOutputStream();
     }
 
+    @Test
     public void test_dom_1() throws IOException, SAXException {
         test_1(StreamFilterType.DOM);
     }
 
+    @Test
     public void test_dom_2() throws IOException, SAXException {
         test_2(StreamFilterType.DOM);
     }

@@ -15,7 +15,9 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -24,8 +26,9 @@ import java.util.List;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class CSVtoJavaTest extends TestCase {
+public class CSVtoJavaTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         List result = Main.runSmooksTransform();
 

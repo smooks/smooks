@@ -16,7 +16,8 @@
 
 package org.milyn.javabean.binding;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
@@ -33,28 +34,33 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class XMLBindingTest extends TestCase {
+public class XMLBindingTest {
 
+    @Test
     public void test_no_namespaces() throws IOException, SAXException {
         test_pre_created_Smooks("config1");
         test_post_created_Smooks("config1");
     }
 
+    @Test
     public void test_with_namespaces_01() throws IOException, SAXException {
         test_pre_created_Smooks("config2");
         test_post_created_Smooks("config2");
     }
 
+    @Test
     public void test_with_namespaces_02() throws IOException, SAXException {
         test_pre_created_Smooks("config3");
         test_post_created_Smooks("config3");
     }
 
+    @Test
     public void test_with_namespaces_03() throws IOException, SAXException {
         test_pre_created_Smooks("config4");
         test_post_created_Smooks("config4");
     }
 
+    @Test
     public void test_Person_binding() throws IOException, SAXException {
         XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream("config5/person-binding-config.xml"));
         xmlBinding.intiailize();
@@ -66,11 +72,13 @@ public class XMLBindingTest extends TestCase {
 
     }
 
+    @Test
     public void test_MILYN629() throws IOException, SAXException {
         test_pre_created_Smooks("config6");
         test_post_created_Smooks("config6");
     }
 
+    @Test
     public void test_add_fails_after_smooks_constructed() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config1/order-binding-config.xml"));
         XMLBinding xmlBinding = new XMLBinding(smooks);

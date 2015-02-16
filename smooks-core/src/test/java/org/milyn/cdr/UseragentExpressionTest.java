@@ -18,10 +18,12 @@ package org.milyn.cdr;
 
 import org.milyn.profile.DefaultProfileSet;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class UseragentExpressionTest extends TestCase {
+public class UseragentExpressionTest {
 
+	@Test
     public void testUseragentExpression() {
         DefaultProfileSet profileSet1 = new DefaultProfileSet("device1");
         DefaultProfileSet profileSet2 = new DefaultProfileSet("device2");

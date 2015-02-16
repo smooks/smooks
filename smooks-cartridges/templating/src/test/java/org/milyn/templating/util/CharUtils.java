@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 /**
  * Character utilities.
@@ -57,14 +57,14 @@ public abstract class CharUtils {
 	public static void assertEquals(String failMessage, String expectedFileClasspath, String actual) {
 		InputStream expectedStream = CharUtils.class.getResourceAsStream(expectedFileClasspath);
 		
-		TestCase.assertNotNull("Test setup error!!!  Failed to locate file [" + expectedFileClasspath + "] on classpath.");
+		assertNotNull("Test setup error!!!  Failed to locate file [" + expectedFileClasspath + "] on classpath.");
 		boolean equalsExpected = CharUtils.compareCharStreams(expectedStream, new ByteArrayInputStream(actual.getBytes()));
 		if(!equalsExpected) {
 			System.out.println(failMessage + " - See expected: " + expectedFileClasspath);
 			System.out.println("============== Actual ==================");
 			System.out.println(actual);
 			System.out.println("====================================================================================");
-			TestCase.assertTrue(failMessage + " - See expected: " + expectedFileClasspath, equalsExpected);
+			assertTrue(failMessage + " - See expected: " + expectedFileClasspath, equalsExpected);
 		}
 	}
 	

@@ -67,6 +67,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	AnnotatedDaoRuntimeInfo minimumDaoRuntimeInfo = runtimeInfoFactory.create(MinimumAnnotatedDao.class);
 
+	@Test
 	public void test_insert_with_entity_return() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -84,6 +85,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		assertSame(expectedResult, result);
 	}
 
+	@Test
 	public void test_insert_with_null_return() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -99,6 +101,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		assertNull(result);
 	}
 
+	@Test
 	public void test_insert_with_named_method() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -114,6 +117,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		verify(fullDao).insertItDiff(same(toPersist));
 	}
 
+	@Test
 	public void test_insert_noEntityReturned() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(daoNoEntityReturned, daoNoEntityReturnedRuntimeInfo);
@@ -141,6 +145,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_update_with_entity_return() {
 
 
@@ -160,6 +165,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_update_with_null_return() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -175,6 +181,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		assertNull(result);
 	}
 
+	@Test
 	public void test_update_with_named_method() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -202,6 +209,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_update_noEntityReturned() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(daoNoEntityReturned, daoNoEntityReturnedRuntimeInfo);
@@ -217,6 +225,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		assertNull(result);
 	}
 
+	@Test
 	public void test_delete_with_entity_return() {
 
 
@@ -236,6 +245,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_delete_with_null_return() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -251,6 +261,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		assertNull(result);
 	}
 
+	@Test
 	public void test_delete_with_named_method() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -278,6 +289,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_delete_noEntityReturned() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(daoNoEntityReturned, daoNoEntityReturnedRuntimeInfo);
@@ -293,6 +305,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		assertNull(result);
 	}
 
+	@Test
 	public void test_flush() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -312,6 +325,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_lookup() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -325,6 +339,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_lookup_with_method_name() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -334,6 +349,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		verify(fullDao).findBy(eq("param"));
 	}
 
+	@Test
 	public void test_lookup_with_name_param() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -347,6 +363,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		verify(fullDao).findByName(eq("janssen"), eq("henk"));
 	}
 
+	@Test
 	public void test_lookup_with_positional_param() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -366,6 +383,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_lookupByQuery_map_params() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);
@@ -378,6 +396,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_lookupByQuery_array_params() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(fullDao, fullDaoRuntimeInfo);

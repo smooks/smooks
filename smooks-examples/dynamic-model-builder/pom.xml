@@ -22,14 +22,6 @@
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-csv</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

@@ -15,10 +15,11 @@
 */
 package org.milyn.routing.jms.activemq;
 
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
-import org.junit.Test;
-import org.junit.Assert;
+import static org.testng.AssertJUnit.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.Test;
+
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
 import org.milyn.templating.freemarker.FreeMarkerTemplateProcessor;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
+@Test ( groups = "unit" )
 public class ActiveMQTest {
 
     private static ActiveMQProvider mqProvider;
@@ -107,7 +109,7 @@ public class ActiveMQTest {
             // wait to make sure all messages get delivered...
             Thread.sleep(500);
 
-            Assert.assertEquals(3, listener.getMessages().size());
+            assertEquals(3, listener.getMessages().size());
         } finally {
             smooks.close();
         }

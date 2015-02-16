@@ -22,7 +22,8 @@ import java.util.Map;
 
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
@@ -39,8 +40,9 @@ import org.xml.sax.SAXException;
 /**
  * @author Ken Hill
  */
-public class MILYN_642_Test extends TestCase {
+public class MILYN_642_Test {
 	// Default escape char
+    @Test
     public void test_01() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("MILYN_642/test-01-config.xml"));
 
@@ -53,6 +55,7 @@ public class MILYN_642_Test extends TestCase {
     }
 
 	// Custom escape char, xml config
+    @Test
     public void test_02() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("MILYN_642/test-02-config.xml"));
 
@@ -65,6 +68,7 @@ public class MILYN_642_Test extends TestCase {
     }
 	
 	// Custom escape, programmatic config
+    @Test
     public void test_03() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 		

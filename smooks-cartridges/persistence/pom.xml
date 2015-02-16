@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
+        <artifactId>testres</artifactId>
 	<version>1.7-SNAPSHOT</version>
-        <relativePath>../../smooks-parent/pom.xml</relativePath>
+        <relativePath>../../testres/pom.xml</relativePath>
     </parent>
 
     <name>Milyn :: Smooks Cartridge :: Persistence</name>
@@ -47,16 +47,6 @@
         <dependency>
             <groupId>org.apache.ibatis</groupId>
             <artifactId>ibatis-sqlmap</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
         </dependency>
 
     </dependencies>

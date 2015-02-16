@@ -49,6 +49,7 @@ public class EntityInserterTest extends BaseTestCase {
 	private Dao<String> dao;
 
 
+	@Test
 	public void test_entity_insert_no_selector() throws Exception {
 		Smooks smooks = new Smooks(getResourceAsStream("entity-inserter-no-selector.xml"));
 

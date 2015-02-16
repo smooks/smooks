@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.lifecyclecleanup;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.ExecutionLifecycleCleanable;
@@ -35,10 +36,10 @@ public class SaxVisitBefore implements SAXVisitBefore, ExecutionLifecycleInitial
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(!initialized) {
-            TestCase.fail("Resource should be initialized!");
+            fail("Resource should be initialized!");
         }
         if(cleaned) {
-            TestCase.fail("Resource shouldn't be cleaned yet!");
+            fail("Resource shouldn't be cleaned yet!");
         }
     }
 

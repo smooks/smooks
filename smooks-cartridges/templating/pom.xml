@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
+        <artifactId>testres</artifactId>
 	<version>1.7-SNAPSHOT</version>
-        <relativePath>../../smooks-parent/pom.xml</relativePath>
+        <relativePath>../../testres/pom.xml</relativePath>
     </parent>
 
     <name>Milyn :: Smooks Cartridge :: Templating</name>
@@ -22,7 +22,11 @@
             <artifactId>stringtemplate</artifactId>
         </dependency>
         <dependency>
-            <groupId>antlr</groupId>
+            <groupId>org.antlr</groupId>
+            <artifactId>ST4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
             <artifactId>antlr</artifactId>
         </dependency>
         <dependency>
@@ -36,16 +40,7 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-misc</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
         </dependency>
     </dependencies>
 

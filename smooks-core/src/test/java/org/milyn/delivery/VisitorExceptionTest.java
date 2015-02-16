@@ -15,43 +15,53 @@
 */
 package org.milyn.delivery;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.IOException;
 import java.io.StringReader;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class VisitorExceptionTest extends TestCase {
+public class VisitorExceptionTest {
 
-    protected void setUp() throws Exception {
+	@Before
+    public void setUp() throws Exception {
         ExceptionVisitor.beforeException = null;
         ExceptionVisitor.afterException = null;
     }
 
+	@Test
     public void test_terminate_before() throws IOException, SAXException {
         ExceptionVisitor.beforeException = new SmooksException("Terminate Exception");
         test_exception("exception-config.xml", true);
         test_exception("exception-config-sax.xml", true);
     }
 
+	@Test
     public void test_terminate_after() throws IOException, SAXException {
         ExceptionVisitor.afterException = new SmooksException("Terminate Exception");
         test_exception("exception-config.xml", true);
         test_exception("exception-config-sax.xml", true);
     }
 
+	@Test
     public void test_no_terminate_before() throws IOException, SAXException {
         ExceptionVisitor.beforeException = new SmooksException("Terminate Exception");
         test_exception("no-exception-config.xml", false);
         test_exception("no-exception-config-sax.xml", false);
     }
 
+	@Test
     public void test_no_terminate_after() throws IOException, SAXException {
         ExceptionVisitor.afterException = new SmooksException("Terminate Exception");
         test_exception("no-exception-config.xml", false);

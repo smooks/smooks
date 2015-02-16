@@ -120,7 +120,7 @@ public class SmooksDataFormat implements DataFormat, CamelContextAware, Service 
     }
 
     public void start() throws Exception {
-        final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookup(SmooksFactory.class.getName());
+        final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookupByName(SmooksFactory.class.getName());
         if (smooksFactory != null) {
             smooks = smooksFactory.createInstance(smooksConfig);
         } else {

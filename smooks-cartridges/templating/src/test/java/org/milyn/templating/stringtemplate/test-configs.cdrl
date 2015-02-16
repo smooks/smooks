@@ -1,17 +1,12 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
 
     <resource-config selector="c">
         <resource>/org/milyn/templating/stringtemplate/test-template.st</resource>
     </resource-config>
 
-    <resource-config selector="c">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
-        <param name="beanId">myBeanData</param>
-        <param name="beanClass">org.milyn.templating.MyBean</param>
-        <param name="bindings">
-            <binding property="x" selector="c @x" />
-        </param>
-    </resource-config>
+    <jb:bean beanId="myBeanData" class="org.milyn.templating.MyBean" createOnElement="c">
+       <jb:value property="x" data="c/@x" />
+    </jb:bean>
 
 </smooks-resource-list>

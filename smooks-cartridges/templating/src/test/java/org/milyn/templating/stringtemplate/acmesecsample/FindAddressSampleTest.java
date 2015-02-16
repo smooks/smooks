@@ -19,17 +19,20 @@ package org.milyn.templating.stringtemplate.acmesecsample;
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import javax.xml.transform.stream.StreamSource;
 
+import org.junit.Test;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
 import org.milyn.container.ExecutionContext;
+import org.milyn.payload.StringResult;
 import org.milyn.profile.DefaultProfileSet;
 import org.milyn.templating.util.CharUtils;
 import org.xml.sax.SAXException;
 
-public class FindAddressSampleTest extends TestCase {
+public class FindAddressSampleTest {
 
+    @Test
     public void testTransform() throws SAXException, IOException {
         Smooks smooks = new Smooks();
 
@@ -41,7 +44,6 @@ public class FindAddressSampleTest extends TestCase {
         InputStream requestStream = getClass().getResourceAsStream("AcmeFindaddressRequest.xml");
         ExecutionContext context = smooks.createExecutionContext("acme-findAddresses-request");
         String requestResult = SmooksUtil.filterAndSerialize(context, requestStream, smooks);
-        
-		CharUtils.assertEquals("StringTemplate test failed.", "/org/milyn/templating/stringtemplate/acmesecsample/AcmeFindaddressRequest.xml.tran.expected", requestResult);
+	CharUtils.assertEquals("StringTemplate test failed.", "/org/milyn/templating/stringtemplate/acmesecsample/AcmeFindaddressRequest.xml.tran.expected", requestResult);
     }
 }

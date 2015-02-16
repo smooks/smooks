@@ -22,13 +22,14 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Filter;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class FilterSettingsTest extends TestCase {
-
+public class FilterSettingsTest {
+	@Test
 	public void test_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("filterSettings-01.xml"));		
 		ExecutionContext execContext = smooks.createExecutionContext();
@@ -42,6 +43,7 @@ public class FilterSettingsTest extends TestCase {
 		assertEquals(null, ParameterAccessor.getStringParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, execContext.getDeliveryConfig()));
 	}
 
+	@Test
 	public void test_02() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("filterSettings-02.xml"));		
 		ExecutionContext execContext = smooks.createExecutionContext();

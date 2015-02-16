@@ -16,13 +16,15 @@
 
 package org.milyn.function;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class LowerCaseFunctionTest extends TestCase {
+public class LowerCaseFunctionTest {
 
+	@Test
     public void test_execute() {
         LowerCaseFunction function = new LowerCaseFunction();
 

@@ -345,7 +345,7 @@ public abstract class DomUtils {
 	 * @return List copy.
 	 */
 	public static List copyNodeList(NodeList nodeList) {
-		Vector copy = new Vector();
+		Vector<Node> copy = new Vector<Node>();
 		
 		if(nodeList != null) {
 			int nodeCount = nodeList.getLength();
@@ -1027,7 +1027,7 @@ public abstract class DomUtils {
 		AssertArgument.isNotEmpty(namespaceURI, "namespaceURI");
 
 		int count = nodeList.getLength();
-		Vector elements = new Vector();
+		Vector<Element> elements = new Vector<Element>();
 		
 		for(int i = 0; i < count; i++) {
 			Node node = nodeList.item(i);

@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -26,8 +27,9 @@ import java.util.Map;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JavabeanTest extends TestCase {
+public class JavabeanTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         Map order = Main.runSmooks();
 

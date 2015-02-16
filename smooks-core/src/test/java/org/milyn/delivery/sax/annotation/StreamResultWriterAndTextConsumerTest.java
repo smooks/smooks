@@ -26,14 +26,16 @@ import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class StreamResultWriterAndTextConsumerTest extends TestCase {
+public class StreamResultWriterAndTextConsumerTest {
 
+	@Test
 	public void test() {
 		Smooks smooks = new Smooks();
 		StringResult stringResult = new StringResult();

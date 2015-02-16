@@ -16,14 +16,16 @@
 
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author tfennelly
  */
-public class SmooksResourceConfigurationListTest extends TestCase {
+public class SmooksResourceConfigurationListTest {
 
+	@Test
     public void testConstructor() {
         testBadArgs(null);
         testBadArgs(" ");
@@ -41,6 +43,7 @@ public class SmooksResourceConfigurationListTest extends TestCase {
         }
     }
     
+    @Test
     public void testAdd() {
         SmooksResourceConfigurationList list = new SmooksResourceConfigurationList("list-name");
         

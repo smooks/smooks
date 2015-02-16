@@ -17,14 +17,16 @@ package org.milyn.resource;
 
 import java.net.URI;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN_374_Test extends TestCase {
+public class MILYN_374_Test {
 
+	@Test
 	public void test_nobase() {
 		URIResourceLocator locator = new URIResourceLocator();
 		
@@ -33,6 +35,7 @@ public class MILYN_374_Test extends TestCase {
 		assertEquals("lesson_05/_json_configs/smooks-config-reader-only.xml", uri.toString());
 	}
 
+	@Test
 	public void test_base_01() {
 		URIResourceLocator locator = new URIResourceLocator();
 		
@@ -42,6 +45,7 @@ public class MILYN_374_Test extends TestCase {
 		assertEquals("lesson_05/_json_configs/smooks-config-reader-only.xml", uri.toString());
 	}
 
+	@Test
 	public void test_base_02() {
 		URIResourceLocator locator = new URIResourceLocator();
 		

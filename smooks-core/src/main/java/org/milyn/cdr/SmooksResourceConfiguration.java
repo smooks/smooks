@@ -1630,7 +1630,7 @@ public class SmooksResourceConfiguration {
         if (targetProfile != null && !targetProfile.equals(Profile.DEFAULT_PROFILE)) {
             builder.append(" target-profile=\"" + targetProfile + "\"");
         }
-        builder.append("\">\n");
+        builder.append(">\n");
 
         if (resource != null) {
             String resourceStartEl;

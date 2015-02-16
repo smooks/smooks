@@ -15,15 +15,17 @@
  */
 package org.milyn.javabean.factory;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.milyn.container.MockExecutionContext;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class BasicFactoryDefinitionParserTest extends TestCase {
+public class BasicFactoryDefinitionParserTest {
 
+        @Test
 	public void test_create_StaticMethodFactory() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -37,6 +39,7 @@ public class BasicFactoryDefinitionParserTest extends TestCase {
 
 	}
 
+        @Test
 	public void test_create_FactoryInstanceFactory() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -50,7 +53,7 @@ public class BasicFactoryDefinitionParserTest extends TestCase {
 
 	}
 
-
+        @Test
 	public void test_caching() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -64,6 +67,7 @@ public class BasicFactoryDefinitionParserTest extends TestCase {
 
 	}
 
+        @Test
 	public void test_invalid_definition() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -83,6 +87,7 @@ public class BasicFactoryDefinitionParserTest extends TestCase {
 		assertTrue(exception.getMessage().contains("garbage"));
 	}
 
+        @Test
 	public void test_null_factory() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -102,6 +107,7 @@ public class BasicFactoryDefinitionParserTest extends TestCase {
 		}
 	}
 
+        @Test
 	public void test_invalid_class() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -122,6 +128,7 @@ public class BasicFactoryDefinitionParserTest extends TestCase {
 		assertTrue(ExceptionUtils.indexOfThrowable(exception, ClassNotFoundException.class) >= 0);
 	}
 
+        @Test
 	public void test_invalid_method() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -141,6 +148,7 @@ public class BasicFactoryDefinitionParserTest extends TestCase {
 		assertTrue(ExceptionUtils.indexOfThrowable(exception, NoSuchMethodException.class) >= 0);
 	}
 
+        @Test
 	public void test_not_static_method() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();

@@ -18,7 +18,8 @@ package org.milyn.javabean;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.javabean.decoders.BigDecimalDecoder;
 
@@ -27,10 +28,11 @@ import org.milyn.javabean.decoders.BigDecimalDecoder;
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>				
  *
  */
-public class DataDecoderTest extends TestCase
-{
+public class DataDecoderTest {
+	
 	private String fileName = "META-INF/classes.inf";
 	
+	@Test
 	public void test_factory() throws MalformedURLException
 	{
 		DataDecoder decoder = DataDecoder.Factory.create( BigDecimal.class);

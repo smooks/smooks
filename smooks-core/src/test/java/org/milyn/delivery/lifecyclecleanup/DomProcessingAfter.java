@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.lifecyclecleanup;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.ExecutionLifecycleCleanable;
@@ -34,7 +35,7 @@ public class DomProcessingAfter implements DOMVisitAfter, ExecutionLifecycleClea
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
-            TestCase.fail("Resource shouldn't be clened yet!");
+            fail("Resource shouldn't be cleaned yet!");
         }
     }
 

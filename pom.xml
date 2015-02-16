@@ -10,7 +10,6 @@
         <relativePath>smooks-parent/pom.xml</relativePath>
     </parent>
 
-    <groupId>org.milyn</groupId>
     <artifactId>milyn-aggregator</artifactId>
     <packaging>pom</packaging>
     <name>Milyn :: Main Aggregator</name>
@@ -30,58 +29,6 @@
         <module>smooks-all</module>
         <module>smooks-examples</module>
     </modules>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <environmentVariables>
-                        <org.milyn.xml.XsdValidator.SchemaFactory>org.apache.xerces.jaxp.validation.XMLSchemaFactory
-                        </org.milyn.xml.XsdValidator.SchemaFactory>
-                    </environmentVariables>
-                    <excludes>
-                        <exclude>**/Test*.java</exclude>
-                    </excludes>
-                    <argLine>-Xms128m -Xmx256m -XX:MaxPermSize=128m</argLine>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <overview>${basedir}/src/main/java/overview.html</overview>
-                    <links>
-                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-                        <link>http://www.milyn.org/javadoc/v${project.version}/commons</link>
-                        <link>http://www.milyn.org/javadoc/v${project.version}/tinak</link>
-                        <link>http://www.milyn.org/javadoc/v${project.version}/smooks</link>
-                        <link>http://www.milyn.org/javadoc/v${project.version}/edisax</link>
-                        <link>http://www.w3.org/Style/CSS/SAC/doc/</link>
-                    </links>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <linkXref>true</linkXref>
-                    <sourceEncoding>utf-8</sourceEncoding>
-                    <format>html</format>
-                    <targetJdk>1.5</targetJdk>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <scm>
         <connection>scm:git:git@github.com:smooks/smooks.git</connection>

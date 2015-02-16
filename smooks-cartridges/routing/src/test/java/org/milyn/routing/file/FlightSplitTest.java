@@ -15,7 +15,9 @@
 */
 package org.milyn.routing.file;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.xml.sax.SAXException;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -29,13 +31,15 @@ import java.io.InputStreamReader;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class FlightSplitTest extends TestCase {
+public class FlightSplitTest {
 
+    @Before
     protected void setUp() throws Exception {
         new File("target/flights/BA-1234.xml").delete();
         new File("target/flights/BA-5678.xml").delete();
     }
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("flight-split.xml"));
 

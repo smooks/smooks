@@ -66,7 +66,7 @@ public class XalanJavabeanExtension {
     /**
      * Static cache of preparsed expressions.
      */
-    private static Hashtable expressionCache = new Hashtable();
+    private static Hashtable<String,Object> expressionCache = new Hashtable<String,Object>();
 
     /**
      * Support OGNL based bean value injection via an XSLT extension element.

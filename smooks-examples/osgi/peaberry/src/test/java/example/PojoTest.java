@@ -15,12 +15,12 @@
 */
 package example;
 
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import org.junit.Test;
 import org.milyn.Smooks;
 import org.xml.sax.SAXException;
 

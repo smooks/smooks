@@ -38,7 +38,6 @@ import org.milyn.io.AbstractOutputStreamResource;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

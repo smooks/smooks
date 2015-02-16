@@ -19,17 +19,22 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for the Calendar and Date decoders.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DateDecoderTest extends TestCase {
+public class DateDecoderTest {
     
     private Locale defaultLocale;
 
+    @Test
     public void test_DateDecoder_01() {
         DateDecoder decoder = new DateDecoder();
         Properties config = new Properties();
@@ -45,6 +50,7 @@ public class DateDecoderTest extends TestCase {
         assertNotSame(date_a, date_b);
     }
 
+    @Test
     public void test_DateDecoder_02() {
         DateDecoder decoder = new DateDecoder();
         Properties config = new Properties();
@@ -59,12 +65,14 @@ public class DateDecoderTest extends TestCase {
         assertNotSame(date_a, date_b);
     }
 
+    @Before
     public void setUp() {
         defaultLocale = Locale.getDefault();
 		Locale.setDefault( new Locale("de", "DE") );
 	}
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         Locale.setDefault(defaultLocale);
     }
 }

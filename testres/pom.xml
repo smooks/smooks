@@ -10,41 +10,95 @@
     </parent>
     <name>Milyn :: Test Resources</name>
     <artifactId>testres</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>antrunner</module>
+    </modules>
 
     <dependencies>
         <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mockobjects</groupId>
             <artifactId>mockobjects-jdk1.4</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mockobjects</groupId>
             <artifactId>mockobjects-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mockobjects</groupId>
             <artifactId>mockobjects-j1.4-j2ee1.3</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.mockejb</groupId>
+            <artifactId>mockejb</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+           <groupId>org.apache.camel</groupId>
+           <artifactId>camel-test</artifactId>
+           <version>${camel.version}</version>
+           <scope>test</scope>
+           <exclusions>
+              <exclusion>
+                 <groupId>org.apache.camel</groupId>
+                 <artifactId>camel-spring</artifactId>
+              </exclusion>
+              <exclusion>
+                 <groupId>org.hamcrest</groupId>
+                 <artifactId>hamcrest-all</artifactId>
+              </exclusion>
+            </exclusions>
+         </dependency>
+         <dependency>
+            <groupId>org.milyn.edi.unedifact</groupId>
+            <artifactId>d99a-mapping</artifactId>
+            <version>1.4</version>
+            <type>jar</type>
+            <scope>test</scope>
+         </dependency>
+
+        <dependency>
+            <groupId>org.milyn.edi.unedifact</groupId>
+            <artifactId>d96b-mapping</artifactId>
+            <version>1.4</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+     </dependencies>
 
 </project>

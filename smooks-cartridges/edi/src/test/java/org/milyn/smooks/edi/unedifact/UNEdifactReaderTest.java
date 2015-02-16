@@ -42,18 +42,21 @@ import org.xml.sax.SAXException;
 
 import com.thoughtworks.xstream.XStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class UNEdifactReaderTest extends TestCase {
+public class UNEdifactReaderTest {
 
+        @Test
 	public void test_DOM() throws IOException, SAXException {
 		test(FilterSettings.DEFAULT_DOM);
 	}
 
+        @Test
 	public void test_SAX() throws IOException, SAXException {
 		test(FilterSettings.DEFAULT_SAX);
 	}
@@ -68,10 +71,12 @@ public class UNEdifactReaderTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));		
 	}
 
+    @Test
     public void test_with_empty_nodes_ignored_DOM() throws IOException, SAXException {
         test_with_empty_nodes_ignored(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void test_with_empty_nodes_ignored_SAX() throws IOException, SAXException {
         test_with_empty_nodes_ignored(FilterSettings.DEFAULT_SAX);
     }
@@ -89,10 +94,12 @@ public class UNEdifactReaderTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01-with-empty-nodes-ignored.xml")), new StringReader(result.toString()));
     }
 
+    @Test
     public void test_with_empty_nodes_not_ignored_DOM() throws IOException, SAXException {
         test_with_empty_nodes_not_ignored(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void test_with_empty_nodes_not_ignored_SAX() throws IOException, SAXException {
         test_with_empty_nodes_not_ignored(FilterSettings.DEFAULT_SAX);
     }
@@ -110,6 +117,7 @@ public class UNEdifactReaderTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01-with-empty-nodes-not-ignored.xml")), new StringReader(result.toString()));
     }
 
+        @Test
 	public void test_zipped() throws IOException, SAXException, EDIConfigurationException {
 		createZip();
 		
@@ -121,7 +129,8 @@ public class UNEdifactReaderTest extends TestCase {
 		XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));		
 	}
-	
+
+        @Test	
 	public void test_java_binding_simple_messages() throws IOException, SAXException {
 		Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-jb-01.xml");
 		JavaResult jResult = new JavaResult();		
@@ -139,7 +148,8 @@ public class UNEdifactReaderTest extends TestCase {
 		XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-02.xml")), new StringReader(new XStream().toXML(messages)));		
 	}
-	
+
+        @Test	
 	public void test_java_binding_interchange_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-jb-02.xml");
 		JavaResult jResult = new JavaResult();		
@@ -157,6 +167,7 @@ public class UNEdifactReaderTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-03.xml")), new StringReader(new XStream().toXML(interchange)));		
 	}
 
+    @Test
     public void test_java_binding_interchange_02() throws IOException, SAXException {
         Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-jb-02.xml");
         JavaResult jResult = new JavaResult();

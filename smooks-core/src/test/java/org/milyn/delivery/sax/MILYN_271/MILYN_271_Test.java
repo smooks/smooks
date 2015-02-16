@@ -17,24 +17,25 @@ package org.milyn.delivery.sax.MILYN_271;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
-import org.milyn.delivery.sax.MockSAXVisitBefore;
 import org.milyn.delivery.sax.MockVisitBefore;
-
-import junit.framework.TestCase;
 
 /**
  * http://jira.codehaus.org/browse/MILYN-271
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_271_Test extends TestCase {
+public class MILYN_271_Test {
 	
+	@Test
 	public void test_01_DOM() {
 		test_01(FilterSettings.DEFAULT_DOM);
 	}
 	
+	@Test
 	public void test_01_SAX() {
 		test_01(FilterSettings.DEFAULT_SAX);
 	}
@@ -51,10 +52,12 @@ public class MILYN_271_Test extends TestCase {
 		assertEquals("[product, quantity, price]", visitor.getElements().toString());
 	}
 		
+	@Test
 	public void test_02_DOM() {
 		test_02(FilterSettings.DEFAULT_DOM);
 	}
 	
+	@Test
 	public void test_02_SAX() {
 		test_02(FilterSettings.DEFAULT_SAX);
 	}

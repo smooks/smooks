@@ -12,12 +12,14 @@ import org.milyn.container.MockExecutionContext;
 import org.milyn.payload.FilterResult;
 import org.milyn.payload.JavaResult;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class MultiLineToStringBuilderTest extends TestCase {
+public class MultiLineToStringBuilderTest {
 
 	private static final String NL = System.getProperty("line.separator");
 
+	@Test
 	public void test() {
 
 		ExecutionContext context = new MockExecutionContext();

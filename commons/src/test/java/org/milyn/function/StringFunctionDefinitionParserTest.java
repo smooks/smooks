@@ -16,7 +16,8 @@
 
 package org.milyn.function;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import static org.milyn.function.StringFunctionDefinitionParser.*;
 
 import java.util.List;
@@ -24,8 +25,9 @@ import java.util.List;
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class StringFunctionDefinitionParserTest extends TestCase {
+public class StringFunctionDefinitionParserTest {
 
+	@Test
     public void test_parse() {
 
         assertSame(TRIM_FUNCTION, parse(TRIM_DEFINITION).get(0));
@@ -47,6 +49,7 @@ public class StringFunctionDefinitionParserTest extends TestCase {
 
     }
 
+	@Test
     public void test_unknown_function() {
         try {
             parse("fewfewfwe");

@@ -19,7 +19,6 @@ import org.milyn.rules.RuleProvider;
 import org.milyn.rules.RuleEvalResult;
 import org.milyn.container.ExecutionContext;
 import org.milyn.SmooksException;
-import org.milyn.javabean.repository.BeanRepository;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.expression.ExpressionEvaluator;

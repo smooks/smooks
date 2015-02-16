@@ -16,7 +16,8 @@
 
 package org.milyn.smooks.edi;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -41,27 +42,34 @@ import java.util.Hashtable;
  * Tests for SmooksEDIParser.
  * @author tfennelly
  */
-public class SmooksEDIParserTest extends TestCase {
+public class SmooksEDIParserTest {
 
 	private static final String TEST_XML_MAPPING_XML_URI = "classpath:/org/milyn/smooks/edi/edi-to-xml-mapping.xml";
 
+    @Test
     public void test_cyclic_dependency() throws IOException, SAXException {
 		String mapping = new String(StreamUtils.readStream(getClass().getResourceAsStream("cyclicDependencyTest/edi-to-xml-mapping.xml")));
 		test_cyclic_dependency(mapping);
 	}
+
+    @Test
     public void test_import_resource() throws IOException, SAXException {
 		String mapping = new String(StreamUtils.readStream(getClass().getResourceAsStream("definitionTest/edi-to-xml-mapping.xml")));
 		test_import(mapping);
 	}
+
+    @Test
     public void test_inlined() throws IOException, SAXException {
 		String mapping = new String(StreamUtils.readStream(getClass().getResourceAsStream("edi-to-xml-mapping.xml")));
 		test(mapping);
 	}
 
+        @Test
 	public void test_uri_based() throws IOException, SAXException {
 		test(TEST_XML_MAPPING_XML_URI);
 	}
 
+        @Test
 	public void test_invalid_config() throws IOException, SAXException {
 		// Mandatory "mapping-model" config param not specified...
 		try {
@@ -88,6 +96,7 @@ public class SmooksEDIParserTest extends TestCase {
 		}
 	}
 
+        @Test
 	public void test_caching() throws IOException, SAXException {
 		byte[] input = StreamUtils.readStream(getClass().getResourceAsStream("edi-input.txt"));
 		Smooks smooks = new Smooks();

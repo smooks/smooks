@@ -17,7 +17,7 @@ package example;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
@@ -29,8 +29,7 @@ import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.HtmlReportGenerator;
-import org.milyn.io.StreamUtils;
-import org.milyn.javabean.repository.BeanRepositoryManager;
+import org.milyn.io.FileUtils;
 import org.milyn.payload.StringResult;
 import org.milyn.xml.XmlUtil;
 import org.xml.sax.SAXException;
@@ -98,7 +97,7 @@ public class Main {
 
     private static byte[] readInputMessage() {
         try {
-            return StreamUtils.readStream(new FileInputStream("input-message.yaml"));
+            return FileUtils.readFile(new File("input-message.yaml"));
         } catch (IOException e) {
             e.printStackTrace();
             return "<no-message/>".getBytes();

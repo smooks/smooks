@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
+        <artifactId>testres</artifactId>
 	<version>1.7-SNAPSHOT</version>
-        <relativePath>../../smooks-parent/pom.xml</relativePath>
+        <relativePath>../../testres/pom.xml</relativePath>
     </parent>
 
     <name>Milyn :: Smooks Cartridge :: Routing</name>
@@ -32,7 +32,6 @@
         <dependency>
             <groupId>com.mockrunner</groupId>
             <artifactId>mockrunner-jdk1.5-j2ee1.3</artifactId>
-            <version>0.4</version>
             <scope>test</scope>
             <!-- Mockrunner appears to have a screwed up POM. Excluding these un resolveable dependencies. -->
             <exclusions>
@@ -57,71 +56,66 @@
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
-            <version>2.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-j2ee</artifactId>
-            <version>4.2.0.GA</version>
-            <scope>test</scope>
+            <groupId>javax.ejb</groupId>
+            <artifactId>ejb-api</artifactId>
         </dependency>
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.7</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
         </dependency>
 
         <!-- ActiveMQ for testing... -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>5.2.0</version>
+            <artifactId>activemq-broker</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
-            <version>10.4.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mx4j</groupId>
             <artifactId>mx4j</artifactId>
-            <version>3.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mx4j</groupId>
             <artifactId>mx4j-tools</artifactId>
-            <version>3.0.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
-            <version>20030805.205232</version>
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <scope>test</scope>
+       	</dependency>
+       	<!--
+        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
         </dependency>
     </dependencies>
 

@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.javabean.DataDecodeException;
 
 import java.util.Properties;
@@ -23,8 +24,9 @@ import java.util.Properties;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MappingDecoderTest extends TestCase {
+public class MappingDecoderTest {
 
+	@Test
     public void test() {
         MappingDecoder decoder = new MappingDecoder();
         Properties config = new Properties();

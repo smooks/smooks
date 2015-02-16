@@ -22,10 +22,12 @@ import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class BaseTransUnitsTest extends TestCase {
+public class BaseTransUnitsTest {
 
+        @Test
 	public void test_RenameAttributeTU() {
 		Document doc = parseCPResource("testpage1.html");
 		SmooksResourceConfiguration resourceConfiguration = new SmooksResourceConfiguration("body", "device", "xxx");
@@ -45,6 +47,7 @@ public class BaseTransUnitsTest extends TestCase {
 		assertEquals("Overwrite failed.", "value1", body.getAttribute("attrib2"));
 	}
 
+        @Test
 	public void test_RemoveAttributeTU() {
 		Document doc = parseCPResource("testpage1.html");
 		SmooksResourceConfiguration resourceConfiguration = new SmooksResourceConfiguration("body", "device", "xxx");
@@ -59,6 +62,7 @@ public class BaseTransUnitsTest extends TestCase {
 		assertFalse("Failed to remove target attribute.", body.hasAttribute("attrib1"));
 	}
 
+        @Test
 	public void test_RenameElementTU() {
 		Document doc = parseCPResource("testpage1.html");
 		SmooksResourceConfiguration resourceConfiguration = new SmooksResourceConfiguration("body", "device", "xxx");
@@ -73,6 +77,7 @@ public class BaseTransUnitsTest extends TestCase {
 		assertNotNull("Failed to rename target element.", XmlUtil.getNode(doc, "/html/head"));
 	}
 
+        @Test
 	public void test_RenameElementTU_root_element() {
 		Document doc = parseCPResource("testpage1.html");
 		SmooksResourceConfiguration resourceConfiguration = new SmooksResourceConfiguration("body", "device", "xxx");
@@ -87,6 +92,7 @@ public class BaseTransUnitsTest extends TestCase {
 		assertNotNull("Failed to rename target element.", XmlUtil.getNode(doc, "/html/head"));
 	}
 
+        @Test
 	public void test_RemoveElementTU() {
 		Document doc = parseCPResource("testpage1.html");
 		SmooksResourceConfiguration resourceConfiguration = new SmooksResourceConfiguration("body", "device", "xxx");
@@ -99,6 +105,7 @@ public class BaseTransUnitsTest extends TestCase {
 		assertNull("Failed to remove target element.", XmlUtil.getNode(doc, "/html/body"));
 	}
 
+        @Test
 	public void test_RemoveElementTU_root_element() {
 		Document doc = parseCPResource("testpage1.html");
 		SmooksResourceConfiguration resourceConfiguration = new SmooksResourceConfiguration("html", "xxx");
@@ -115,7 +122,8 @@ public class BaseTransUnitsTest extends TestCase {
 		tu.visitAfter(doc.getDocumentElement(), null);
 		assertEquals("Remove root element but shouldn't have.", body, doc.getDocumentElement());
 	}
-	
+
+        @Test	
 	public void test_SetAttributeTU() {
 		Document doc = parseCPResource("testpage1.html");
 		SmooksResourceConfiguration resourceConfiguration = new SmooksResourceConfiguration("body", "device", "xxx");
@@ -140,7 +148,7 @@ public class BaseTransUnitsTest extends TestCase {
 			return XmlUtil.parseStream(getClass().getResourceAsStream(classpath), XmlUtil.VALIDATION_TYPE.NONE, true);
 		} catch (Exception e) {
 			e.printStackTrace();
-			TestCase.fail(e.getMessage());
+			fail(e.getMessage());
 		}
 		return null;
 	}

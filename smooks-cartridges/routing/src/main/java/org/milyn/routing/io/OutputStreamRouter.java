@@ -35,7 +35,6 @@ import org.milyn.delivery.ordering.Consumer;
 import org.milyn.io.AbstractOutputStreamResource;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.w3c.dom.Element;
 
 /**

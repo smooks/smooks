@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.autodecode;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.javabean.OrderItem;
 import org.milyn.payload.JavaResult;
@@ -27,8 +28,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class AutoDecodeTest extends TestCase {
+public class AutoDecodeTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
         JavaResult jres = new JavaResult();
@@ -43,6 +45,6 @@ public class AutoDecodeTest extends TestCase {
 
         assertEquals(222, orderItem.getProductId());
         assertEquals(7, (int)orderItem.getQuantity());
-        assertEquals(5.2, orderItem.getPrice());
+        assertEquals(5.2, orderItem.getPrice(), 0d);
     }
 }

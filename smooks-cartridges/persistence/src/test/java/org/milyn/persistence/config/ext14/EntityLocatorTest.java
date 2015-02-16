@@ -53,6 +53,7 @@ public class EntityLocatorTest extends BaseTestCase {
 	@Mock
 	private FullInterfaceDao<Object> dao;
 
+	@Test
 	public void test_entity_locate_no_selector() throws Exception {
 		String searchResult = "Test";
         List<String> searchResultList = new ArrayList<String>();

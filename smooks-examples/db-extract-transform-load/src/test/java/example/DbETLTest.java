@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.xml.sax.SAXException;
 
@@ -27,8 +28,9 @@ import java.util.Map;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DbETLTest extends TestCase {
+public class DbETLTest {
 
+	@Test
     public void test() throws Exception {
 
         Main main = new Main();

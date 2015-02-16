@@ -29,18 +29,21 @@ import org.milyn.payload.JavaResult;
 import org.milyn.util.ClassUtil;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class RetainBeanTest extends TestCase {
+public class RetainBeanTest {
 
+    @Test
     public void test_01_DOM() throws IOException, SAXException {
     	test_01(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void test_01_SAX() throws IOException, SAXException {
     	test_01(FilterSettings.DEFAULT_SAX);
     }
@@ -65,10 +68,12 @@ public class RetainBeanTest extends TestCase {
         assertNull(result.getBean("orderItem"));
     }
 
+    @Test
     public void test_02_DOM() throws IOException, SAXException {
     	test_02(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void test_02_SAX() throws IOException, SAXException {
     	test_02(FilterSettings.DEFAULT_SAX);
     }

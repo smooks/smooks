@@ -32,24 +32,27 @@ import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
 import org.w3c.dom.Element;
+import org.junit.Before;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class FilterBypassTest extends TestCase {
+public class FilterBypassTest {
 
 	private SimpleVisitor simpleVisitor;
 	private FilterSettings filterSettings;
 	
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		simpleVisitor = null;
 		filterSettings = null;
 	}
 
+	@Test
 	public void test_dom_bypass_only() {
 		filterSettings = FilterSettings.DEFAULT_DOM;
 		test("#document", true);
@@ -58,6 +61,7 @@ public class FilterBypassTest extends TestCase {
 		test("x", false);
 	}
 	
+	@Test
 	public void test_dom_bypass_with_visitor() {
 		simpleVisitor = new SimpleVisitor();
 
@@ -68,6 +72,7 @@ public class FilterBypassTest extends TestCase {
 		test("x", false);		
 	}
 
+	@Test
 	public void test_sax_bypass_only() {
 		filterSettings = FilterSettings.DEFAULT_SAX;
 		test("#document", true);
@@ -76,6 +81,7 @@ public class FilterBypassTest extends TestCase {
 		test("x", false);
 	}
 	
+	@Test
 	public void test_sax_bypass_with_visitor() {
 		simpleVisitor = new SimpleVisitor();
 

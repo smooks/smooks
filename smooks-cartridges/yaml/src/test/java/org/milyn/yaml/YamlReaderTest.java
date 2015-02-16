@@ -21,7 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,44 +41,52 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="mailto:maurice@zeijen.net">maurice@zeijen.net</a>
  */
-public class YamlReaderTest extends TestCase {
+public class YamlReaderTest {
 
 	private static final Log logger = LogFactory.getLog(YamlReaderTest.class);
 
+        @Test
 	public void test_yaml_types() throws Exception {
 
         testBasic("yaml_types");
 	}
 
+        @Test
 	public void test_yaml_map() throws Exception {
 
         testBasic("yaml_map");
 	}
 
+        @Test
 	public void test_yaml_array() throws Exception {
 
         testBasic("yaml_array");
 	}
 
+        @Test
 	public void test_yaml_map_array() throws Exception {
 
         testBasic("yaml_map_array");
 	}
 
+        @Test
 	public void test_yaml_array_map() throws Exception {
 
         testBasic("yaml_array_map");
 	}
 
+        @Test
 	public void test_yaml_map_array_map() throws Exception {
         testBasic("yaml_map_array_map");
 	}
 
 
+    @Test
     public void test_yaml_multi_documents() throws Exception {
     	testBasic("yaml_multi_documents");
     }
 
+    @Test
     public void test_simple_smooks_config() throws Exception {
     	testCoreConfigFile("simple_smooks_config");
 
@@ -89,6 +98,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("simple_smooks_config", smooks);
     }
 
+    @Test
     public void test_key_replacement() throws Exception {
     	testCoreConfigFile("key_replacement");
 
@@ -106,6 +116,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("key_replacement", smooks);
     }
 
+    @Test
     public void test_several_replacements() throws Exception {
     	testCoreConfigFile("several_replacements");
 
@@ -122,6 +133,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("several_replacements", smooks);
     }
 
+    @Test
     public void test_configured_different_node_names() throws Exception {
     	testCoreConfigFile("configured_different_node_names");
 
@@ -137,7 +149,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("configured_different_node_names", smooks);
     }
 
-
+    @Test
     public void test_indent() throws Exception {
     	testCoreConfigFile("indent");
     	testExtendedConfigFile("indent");
@@ -149,6 +161,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("indent", smooks);
     }
 
+    @Test
     public void test_alias_with_refer() throws Exception {
     	testCoreConfigFile("alias_with_refer");
     	testExtendedConfigFile("alias_with_refer");
@@ -159,6 +172,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("alias_with_refer", smooks);
     }
 
+    @Test
     public void test_alias_with_refer_different_attribute_names() throws Exception {
     	testCoreConfigFile("alias_with_refer_different_attribute_names");
     	testExtendedConfigFile("alias_with_refer_different_attribute_names");
@@ -171,6 +185,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("alias_with_refer_different_attribute_names", smooks);
     }
 
+    @Test
     public void test_alias_with_resolve() throws Exception {
     	testCoreConfigFile("alias_with_resolve");
     	testExtendedConfigFile("alias_with_resolve");
@@ -181,6 +196,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("alias_with_resolve", smooks);
     }
 
+    @Test
     public void test_alias_with_resolve_without_anchor() throws Exception {
     	try {
 	        // Programmatic config....
@@ -191,14 +207,14 @@ public class YamlReaderTest extends TestCase {
 
     		Throwable cause = e.getCause();
 
-    		assertEquals("A non existing anchor with the name 'id1' is referenced by the alias of the element 'keyWithAlias'. The anchor must be declared before it can be referenced by an alias.", cause.getMessage());
+    		assertArrayEquals("A non existing anchor with the name 'id1' is referenced by the alias of the element 'keyWithAlias'. The anchor must be declared before it can be referenced by an alias.".toCharArray(), cause.getMessage().toCharArray());
 
     		return;
 		}
     	fail("Expected exception was not thrown!");
     }
 
-
+    @Test
     public void test_alias_with_resolve_with_anchor_after_alias() throws Exception {
     	try {
 	        // Programmatic config....
@@ -209,13 +225,14 @@ public class YamlReaderTest extends TestCase {
 
     		Throwable cause = e.getCause();
 
-    		assertEquals("A non existing anchor with the name 'id1' is referenced by the alias of the element 'keyWithAlias'. The anchor must be declared before it can be referenced by an alias.", cause.getMessage());
+    		assertArrayEquals("A non existing anchor with the name 'id1' is referenced by the alias of the element 'keyWithAlias'. The anchor must be declared before it can be referenced by an alias.".toCharArray(), cause.getMessage().toCharArray());
 
     		return;
 		}
     	fail("Expected exception was not thrown!");
     }
 
+    @Test
     public void test_alias_with_resolve_with_anchor_as_parent() throws Exception {
     	try {
 	        // Programmatic config....
@@ -226,13 +243,14 @@ public class YamlReaderTest extends TestCase {
 
     		Throwable cause = e.getCause();
 
-    		assertEquals("The alias to anchor 'id1' is declared within the element structure in which on of the parent elements declares the anchor. This is not allowed because it leads to infinite loops.", cause.getMessage());
+    		assertArrayEquals("The alias to anchor 'id1' is declared within the element structure in which on of the parent elements declares the anchor. This is not allowed because it leads to infinite loops.".toCharArray(), cause.getMessage().toCharArray());
 
     		return;
 		}
     	fail("Expected exception was not thrown!");
     }
 
+    @Test
     public void test_alias_with_refer_resolve() throws Exception {
     	testCoreConfigFile("alias_with_refer_resolve");
     	testExtendedConfigFile("alias_with_refer_resolve");
@@ -243,6 +261,7 @@ public class YamlReaderTest extends TestCase {
         testProgrammaticConfig("alias_with_refer_resolve", smooks);
     }
 
+    @Test
     public void test_alias_with_refer_resolve_different_attribute_names() throws Exception {
     	testCoreConfigFile("alias_with_refer_resolve_different_attribute_names");
     	testExtendedConfigFile("alias_with_refer_resolve_different_attribute_names");

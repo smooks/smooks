@@ -24,7 +24,8 @@ import org.milyn.delivery.dom.Phase;
 import org.milyn.delivery.dom.VisitPhase;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.w3c.dom.Element;
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -36,13 +37,13 @@ public class DomProcessingVisitCleanable implements DOMVisitBefore, DOMVisitAfte
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
-            TestCase.fail("Resource shouldn't be cleaned yet!");
+            fail("Resource shouldn't be cleaned yet!");
         }
     }
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
-            TestCase.fail("Resource shouldn't be cleaned yet!");
+            fail("Resource shouldn't be cleaned yet!");
         }
     }
 

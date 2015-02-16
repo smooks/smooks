@@ -37,14 +37,16 @@ import org.milyn.payload.StringResult;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN_367_Test extends TestCase {
+public class MILYN_367_Test {
 
+	@Test
 	public void test_SAX_01() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
@@ -58,6 +60,7 @@ public class MILYN_367_Test extends TestCase {
 		assertOK("expected_01.xml", result);        
 	}
 
+	@Test
 	public void test_SAX_02() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
@@ -71,6 +74,7 @@ public class MILYN_367_Test extends TestCase {
 		assertOK("expected_02.xml", result);        
 	}
 
+	@Test
 	public void test_SAX_03() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
@@ -84,6 +88,7 @@ public class MILYN_367_Test extends TestCase {
 		assertOK("expected_03.xml", result);        
 	}
 
+	@Test
 	public void test_DOM_01() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
@@ -97,6 +102,7 @@ public class MILYN_367_Test extends TestCase {
 		assertOK("expected_01.xml", result);        
 	}
 
+	@Test
 	public void test_DOM_02() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
@@ -110,6 +116,7 @@ public class MILYN_367_Test extends TestCase {
 		assertOK("expected_02.xml", result);        
 	}
 
+	@Test
 	public void test_DOM_03() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
@@ -123,6 +130,7 @@ public class MILYN_367_Test extends TestCase {
 		assertOK("expected_03.xml", result);        
 	}
 
+	@Test
 	public void test_DOM_04() throws SAXException, IOException {
 		Smooks smooks = new Smooks();		
 		DOMVBefore customerVisitor = new DOMVBefore();
@@ -138,6 +146,7 @@ public class MILYN_367_Test extends TestCase {
 		assertEquals("items-item-units-name-price-item-units-name-price-", itemsVisitor.stringBuilder.toString());
 	}
 
+	@Test
 	public void test_DOM_05() throws SAXException, IOException {
 		Smooks smooks = new Smooks();		
 		DOMVAfter customerVisitor = new DOMVAfter();

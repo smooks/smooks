@@ -270,7 +270,7 @@ public class EJC {
         model.setBindingFilePath(bindingFile);
 
         LOG.info("-----------------------------------------------------------------------");
-        LOG.info(" Compiltation complete.");
+        LOG.info(" Compilatation complete.");
         LOG.info("-----------------------------------------------------------------------");
         LOG.info(" Files are located in folder ");
         LOG.info(" " + beanFolder);

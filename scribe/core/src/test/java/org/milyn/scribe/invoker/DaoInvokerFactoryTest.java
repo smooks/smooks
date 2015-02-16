@@ -15,7 +15,7 @@
 */
 package org.milyn.scribe.invoker;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 

@@ -15,7 +15,8 @@
 */
 package org.milyn.validation.order;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.validation.ValidationResult;
@@ -29,8 +30,9 @@ import java.util.List;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class OrderTest extends TestCase {
+public class OrderTest {
 
+    @Test
     public void test_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
         ValidationResult result = new ValidationResult();
@@ -55,6 +57,7 @@ public class OrderTest extends TestCase {
         }
     }
 
+    @Test
     public void test_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
         ValidationResult result = new ValidationResult();
@@ -70,6 +73,7 @@ public class OrderTest extends TestCase {
         }
     }
 
+    @Test
     public void test_03() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
         ValidationResult result = new ValidationResult();

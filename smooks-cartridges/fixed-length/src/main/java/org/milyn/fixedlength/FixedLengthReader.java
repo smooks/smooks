@@ -35,8 +35,6 @@ import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.function.StringFunctionExecutor;
 import org.milyn.javabean.Bean;
 import org.milyn.javabean.context.BeanContext;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.xml.SmooksXMLReader;
 import org.w3c.dom.Element;
 import org.xml.sax.ContentHandler;

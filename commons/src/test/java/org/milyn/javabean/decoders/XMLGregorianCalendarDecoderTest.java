@@ -1,8 +1,13 @@
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
@@ -10,10 +15,11 @@ import java.util.Properties;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class XMLGregorianCalendarDecoderTest extends TestCase {
+public class XMLGregorianCalendarDecoderTest {
 
     private Locale defaultLocale;
 
+    @Test
     public void test_DateDecoder_01() {
         XMLGregorianCalendarDecoder decoder = new XMLGregorianCalendarDecoder();
         Properties config = new Properties();
@@ -29,6 +35,7 @@ public class XMLGregorianCalendarDecoderTest extends TestCase {
         assertNotSame(date_a, date_b);
     }
 
+    @Test
     public void test_DateDecoder_02() {
         XMLGregorianCalendarDecoder decoder = new XMLGregorianCalendarDecoder();
         Properties config = new Properties();
@@ -43,12 +50,14 @@ public class XMLGregorianCalendarDecoderTest extends TestCase {
         assertNotSame(date_a, date_b);
     }
 
+    @Before
     public void setUp() {
         defaultLocale = Locale.getDefault();
 		Locale.setDefault( new Locale("de", "DE") );
 	}
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         Locale.setDefault(defaultLocale);
     }
 }

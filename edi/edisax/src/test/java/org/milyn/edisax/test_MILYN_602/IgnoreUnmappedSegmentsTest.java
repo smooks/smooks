@@ -18,8 +18,10 @@ package org.milyn.edisax.test_MILYN_602;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
+import org.junit.After;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -32,43 +34,47 @@ import org.xml.sax.SAXException;
 
 import org.milyn.edisax.EDIParseException;
 
-import static junit.framework.Assert.fail;
-
 /**
  *
  *
  */
-public class IgnoreUnmappedSegmentsTest extends TestCase {
+public class IgnoreUnmappedSegmentsTest {
 
     private EdifactModel msg1;
     private MockContentHandler handler;
 
+    @Before
     public void setUp() throws IOException, SAXException {
         msg1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("edi-to-xml-mapping.xml"));
         handler = new MockContentHandler();
     }
 
+    @After
     public void tearDown() {
         msg1 = null;
         handler = null;
     }
 
     // test cases to verify that the "ignoreUnmappedSegment" attribute is available
+    @Test
     public void testIgnoreUnmappedSegmentsAttributeTrue() throws IOException, SAXException {
-        Assert.assertEquals("Attribute should be true", true, msg1.getEdimap().isIgnoreUnmappedSegments());
+        assertEquals("Attribute should be true", true, msg1.getEdimap().isIgnoreUnmappedSegments());
     }
 
+    @Test
     public void testIgnoreUnmappedSegmentsAttributeFalse() throws IOException, SAXException {
         msg1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("ignoreUnmappedSegments_false_mapping.xml"));
-        Assert.assertFalse("Attribute should be false", msg1.getEdimap().isIgnoreUnmappedSegments());
+        assertFalse("Attribute should be false", msg1.getEdimap().isIgnoreUnmappedSegments());
     }
 
+    @Test
     public void testIgnoreUnmappedSegmentsAttributeDefault() throws IOException, SAXException {
         msg1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("ignoreUnmappedSegments_default_value_mapping.xml"));
-        Assert.assertFalse("Attribute should be false", msg1.getEdimap().isIgnoreUnmappedSegments());
+        assertFalse("Attribute should be false", msg1.getEdimap().isIgnoreUnmappedSegments());
     }
 
     // verify that a mapping model of only optional segments can ignore everything - basically anything goes
+    @Test
     public void testIgnoreAllUnmapped() throws IOException, SAXException, EDIConfigurationException {
         msg1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("ignoreUnmappedSegments_all_optional.xml"));
         parseEdiMessage("IgnoreAllUnmapped.txt");
@@ -78,24 +84,28 @@ public class IgnoreUnmappedSegmentsTest extends TestCase {
     }
 
     // verify that can ignore unmapped in the beginning
+    @Test
     public void testIgnoreUnmappedAtStart() throws IOException, SAXException, EDIConfigurationException {
         parseEdiMessage("IgnoreUnmappedAtStart.txt");
         verifyParsedEdiMessage();
     }
 
     // verify that can ignore unmapped in the middle
+    @Test
     public void testIgnoreUnmappedInTheMiddle() throws IOException, SAXException, EDIConfigurationException {
         parseEdiMessage("IgnoreUnmappedInTheMiddle.txt");
         verifyParsedEdiMessage();
     }
 
     // verify that can ignore unmapped at the end
+    @Test
     public void testIgnoreUnmappedAtEnd() throws IOException, SAXException, EDIConfigurationException {
         parseEdiMessage("IgnoreUnmappedAtEnd.txt");
         verifyParsedEdiMessage();
     }
 
     // verify that a message with no unmapped is valid
+    @Test
     public void testNoUnmapped() throws IOException, SAXException, EDIConfigurationException {
         parseEdiMessage("NoUnmapped.txt");
         verifyParsedEdiMessage();
@@ -123,9 +133,10 @@ public class IgnoreUnmappedSegmentsTest extends TestCase {
             // ignore verifing that the exception content is correct
         }
     }
-    //-----------------------------------------------------------
 
+    //-----------------------------------------------------------
     // verify that if file only contains unmapped an exception is thrown
+    @Test
     public void testNoMapped() throws IOException, SAXException, EDIConfigurationException {
         try {
             parseEdiMessage("NoMapped.txt");
@@ -136,6 +147,7 @@ public class IgnoreUnmappedSegmentsTest extends TestCase {
     }
 
     // verify that if file contains mapped and unmapped segments but missing some mapped segments an exception is thrown
+    @Test
     public void testMissingRequired() throws IOException, SAXException, EDIConfigurationException {
         try {
             parseEdiMessage("MissingRequired.txt");

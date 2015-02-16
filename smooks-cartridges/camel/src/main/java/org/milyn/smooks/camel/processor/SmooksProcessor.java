@@ -242,7 +242,7 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
 
     private Smooks createSmooks(String configUri) throws IOException, SAXException
     {
-        final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookup(SmooksFactory.class.getName());
+        final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookupByName(SmooksFactory.class.getName());
         return smooksFactory != null ? smooksFactory.createInstance() : new Smooks();
     }
 

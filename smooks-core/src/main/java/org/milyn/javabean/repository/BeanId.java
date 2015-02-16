@@ -27,10 +27,10 @@ import org.milyn.javabean.context.BeanIdStore;
  * The BeanId represents the id of a bean. It is used to set  and
  * retrieve instance of the bean from the BeanRepository.
  * <p />
- * The String representation of the BeanId is registered with a {@link BeanIdRegister}
- * and there by coupled to that {@link BeanIdRegister}. The BeanId holds the original
+ * The String representation of the BeanId is registered with a {@link BeanIdStore}
+ * and there by coupled to that {@link BeanIdStore}. The BeanId holds the original
  * {@link String} beanId,also called beanIdName. It also holds the index of
- * the place it has within the {@link BeanIdRegister}.
+ * the place it has within the {@link BeanIdStore}.
  *
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
@@ -79,7 +79,7 @@ public class BeanId {
 
 	/**
 	 * Returns the index of the place
-	 * it holds in the {@link BeanIdRegister}.
+	 * it holds in the {@link BeanIdStore}.
 	 *
 	 * @return the index
 	 */
@@ -94,17 +94,6 @@ public class BeanId {
 	 */
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * Returns the BeanIdList with which
-	 * it is registered.
-	 *
-	 * @return the beanIdList
-	 */
-	@Deprecated
-	public BeanIdRegister getBeanIdList() {
-		return new BeanIdRegister(beanIdStore);
 	}
 
 	/* (non-Javadoc)

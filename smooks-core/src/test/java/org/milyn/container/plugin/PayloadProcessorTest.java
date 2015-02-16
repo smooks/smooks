@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
-import static org.hamcrest.text.StringContains.containsString;
+import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.milyn.Smooks;
@@ -104,10 +104,8 @@ public class PayloadProcessorTest {
         assertThat(map, hasKey("PUUID"));
         assertThat(map, hasEntry("theBean", (Object) "Hi there!"));
 
-        assertThat(map.toString(), allOf(
-                containsString("theBean=Hi there!"),
-                containsString("PTIME=<noop>"),
-                containsString("PUUID=<noop>")));
+        assertThat(map.toString(), allOf( 
+                stringContainsInOrder(Arrays.asList("PTIME=<noop>", "theBean=Hi there!", "PUUID=<noop>"))));
     }
 
     @Test

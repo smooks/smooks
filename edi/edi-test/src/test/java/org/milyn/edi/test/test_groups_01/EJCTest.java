@@ -15,7 +15,8 @@
  */
 package org.milyn.edi.test.test_groups_01;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edi.test.EJCTestUtil;
 import org.milyn.edisax.util.IllegalNameException;
@@ -23,8 +24,9 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-public class EJCTest extends TestCase {
+public class EJCTest {
 
+    @Test
     public void testModel() throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
         EJCTestUtil.testModel("edi-to-xml-mapping.xml", "edi-input.txt", "OuterFactory", true);
     }

@@ -34,7 +34,7 @@ public class History {
     public void setTrackingNumbers(String historyText) {
         // break the history up line by line - 1 tracking-number per line
         String[] unparsedTrackingNumber = lineSplitter.split(historyText);
-        Vector tnList = new Vector(unparsedTrackingNumber.length);
+        Vector<TrackingNumber> tnList = new Vector<TrackingNumber>(unparsedTrackingNumber.length);
         
         // iterate over and parse the tracking-number lines
         for (int i = 0; i < unparsedTrackingNumber.length; i++) {

@@ -15,7 +15,12 @@
 
 package org.milyn.db;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
@@ -23,10 +28,12 @@ import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.payload.StringSource;
 import org.mockejb.jndi.MockContextFactory;
 import org.mockito.Mock;
+
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import org.mockito.MockitoAnnotations;
 
 import javax.naming.InitialContext;
@@ -34,6 +41,7 @@ import javax.sql.DataSource;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 import javax.xml.transform.Source;
+
 import java.sql.Connection;
 
 /**
@@ -41,7 +49,7 @@ import java.sql.Connection;
  *
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class JndiDataSourceTest extends TestCase {
+public class JndiDataSourceTest {
 
     public Source source;
 
@@ -57,6 +65,7 @@ public class JndiDataSourceTest extends TestCase {
     private static boolean REPORT = false;
 
 
+    @Test
     public void test_jndi_autoCommit() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(false);
@@ -71,6 +80,7 @@ public class JndiDataSourceTest extends TestCase {
         verify(connection, never()).rollback();
     }
 
+    @Test
     public void test_jndi() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(true);
@@ -86,6 +96,7 @@ public class JndiDataSourceTest extends TestCase {
     }
 
 
+    @Test
     public void test_jndi_exception() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(false);
@@ -100,6 +111,7 @@ public class JndiDataSourceTest extends TestCase {
         verify(connection, never()).commit();
     }
 
+    @Test
     public void test_jta_new_transaction() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(true);
@@ -119,6 +131,7 @@ public class JndiDataSourceTest extends TestCase {
 
     }
 
+    @Test
     public void test_jta_existing_transaction() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(false);
@@ -138,6 +151,7 @@ public class JndiDataSourceTest extends TestCase {
 
     }
 
+    @Test
     public void test_jta_exception() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(false);
@@ -158,6 +172,7 @@ public class JndiDataSourceTest extends TestCase {
 
     }
 
+    @Test
     public void test_jta_existing_transaction_exception() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(false);
@@ -178,6 +193,7 @@ public class JndiDataSourceTest extends TestCase {
 
     }
 
+    @Test
     public void test_jta_set_autocommit_not_allowed() throws Exception {
         when(transaction.getStatus()).thenReturn(Status.STATUS_ACTIVE);
 
@@ -190,6 +206,7 @@ public class JndiDataSourceTest extends TestCase {
         verify(connection, never()).getAutoCommit();
     }
 
+    @Test
     public void test_jta_missing_transaction() {
 
         try {
@@ -202,6 +219,7 @@ public class JndiDataSourceTest extends TestCase {
         fail("Exception was not thrown to indicate that the transactionJndi wasn't set.");
     }
 
+    @Test
     public void test_external() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(true);
@@ -216,6 +234,7 @@ public class JndiDataSourceTest extends TestCase {
         verify(connection, never()).rollback();
     }
 
+    @Test
     public void test_external_autocommit() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(false);
@@ -230,6 +249,7 @@ public class JndiDataSourceTest extends TestCase {
         verify(connection, never()).rollback();
     }
 
+    @Test
     public void test_external_set_autocommit_not_allowed() throws Exception {
 
         executeSmooks("external_set_autocommit_not_allowed", "test_external_set_autocommit_not_allowed", true);
@@ -243,6 +263,7 @@ public class JndiDataSourceTest extends TestCase {
         verify(connection, never()).rollback();
     }
 
+    @Test
     public void test_external_exception() throws Exception {
 
         when(connection.getAutoCommit()).thenReturn(false);
@@ -278,8 +299,8 @@ public class JndiDataSourceTest extends TestCase {
         return;
     }
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         MockContextFactory.setAsInitial();
 
@@ -293,8 +314,8 @@ public class JndiDataSourceTest extends TestCase {
 
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         MockContextFactory.revertSetAsInitial();
     }
 }

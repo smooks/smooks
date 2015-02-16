@@ -20,24 +20,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
+        <artifactId>testres</artifactId>
 	    <version>1.7-SNAPSHOT</version>
-        <relativePath>../smooks-parent/pom.xml</relativePath>
+        <relativePath>../testres/pom.xml</relativePath>
     </parent>
 
     <name>Milyn :: Smooks :: All</name>
     <artifactId>milyn-smooks-all</artifactId>
     <packaging>bundle</packaging>
-
-    <properties>
-        <spring.objectweb.version>2.2.3</spring.objectweb.version>
-        <spring.antlr.version>2.7.7</spring.antlr.version>
-        <spring.jaxen.version>1.1.1</spring.jaxen.version>
-        <spring.commons.logging.version>1.1.1</spring.commons.logging.version>
-        <spring.groovy.version>1.5.7</spring.groovy.version>
-        <spring.log4j.version>1.2.15</spring.log4j.version>
-        <ow2.opencsv.version>1.0.36</ow2.opencsv.version>
-    </properties>
 
     <dependencies>
 
@@ -116,6 +106,12 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-scribe-core</artifactId>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.testng</groupId>
+                  <artifactId>testng</artifactId>
+               </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
@@ -136,14 +132,12 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi_R4_core</artifactId>
-            <version>1.0</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi_R4_compendium</artifactId>
-            <version>1.0</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -151,13 +145,11 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>
-            <version>1.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-impl-base</artifactId>
-            <version>1.2.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -179,14 +171,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-            <version>${spring.commons.logging.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jaxen</groupId>
             <artifactId>com.springsource.org.jaxen</artifactId>
-            <version>${spring.jaxen.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -198,42 +188,36 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>com.springsource.org.codehaus.groovy</artifactId>
-            <version>${spring.groovy.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>com.springsource.antlr</artifactId>
-            <version>${spring.antlr.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.objectweb.asm</groupId>
             <artifactId>com.springsource.org.objectweb.asm</artifactId>
-            <version>${spring.objectweb.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.objectweb.asm</groupId>
             <artifactId>com.springsource.org.objectweb.asm.tree.analysis</artifactId>
-            <version>${spring.objectweb.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.objectweb.asm</groupId>
             <artifactId>com.springsource.org.objectweb.asm.tree</artifactId>
-            <version>${spring.objectweb.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.objectweb.asm</groupId>
             <artifactId>com.springsource.org.objectweb.asm.util</artifactId>
-            <version>${spring.objectweb.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -245,16 +229,6 @@
         <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
         </dependency>
 
         <dependency>
@@ -302,7 +276,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -310,11 +283,11 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <ant dir="${project.basedir}" antfile="merge-jars.xml">
                                     <property name="smooks.version" value="${project.version}"/>
                                 </ant>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -346,13 +319,15 @@
                         </Export-Package>
                         <Import-Package>
                             org.osgi.framework,
-                            org.jaxen.*;version="1.1.1",
+                            org.jaxen.*;version="${spring.jaxen.version}",
                             org.apache.commons.*,
                             freemarker.*;version="${freemarker.version}",
                             groovy.xml;version="${spring.groovy.version}",
                             groovy.xml.dom;version="${spring.groovy.version}",
                             org.codehaus.groovy.*;version="${spring.groovy.version}",
+                            org.codehaus.groovy.reflection;version="${spring.groovy.version}",
                             org.codehaus.groovy.runtime;version="${spring.groovy.version}",
+                            org.codehaus.groovy.runtime.callsite;version="${spring.groovy.version}",
                             org.codehaus.groovy.runtime.typehandling;version="${spring.groovy.version}",
                             javax.swing.tree,
                             !org.apache.commons.cli.*,
@@ -367,7 +342,6 @@
             <plugin>
                 <groupId>org.ops4j</groupId>
                 <artifactId>maven-pax-plugin</artifactId>
-                <version>1.4</version>
                 <configuration>
                     <provision>
                         <param>--log=true</param>
@@ -379,7 +353,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.8</version>
                 <executions>
                     <execution>
                         <id>attach-artifacts</id>

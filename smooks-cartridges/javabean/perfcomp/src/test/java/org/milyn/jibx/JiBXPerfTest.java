@@ -15,7 +15,8 @@
 */
 package org.milyn.jibx;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.jibx.runtime.BindingDirectory;
 import org.jibx.runtime.IBindingFactory;
@@ -27,8 +28,9 @@ import org.milyn.TestConstants;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JiBXPerfTest extends TestCase {
+public class JiBXPerfTest {
 
+    @Test
     public void test() throws JiBXException {
     	IBindingFactory bfact = BindingDirectory.getFactory(Order.class);
         IUnmarshallingContext uctx = bfact.createUnmarshallingContext();

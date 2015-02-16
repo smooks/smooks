@@ -17,7 +17,6 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
@@ -30,10 +29,6 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ejc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
 

@@ -15,7 +15,8 @@
 */
 package org.milyn.cdr.xsd11.importtests;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.delivery.dom.serialize.SimpleDOMVisitor;
@@ -27,12 +28,14 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ImportTest extends TestCase {
+public class ImportTest {
 
+	@Test
     public void test_11_imports_10() throws IOException, SAXException {
         testConfig("11_import_10.xml");
     }
 
+	@Test
     public void test_10_imports_11() throws IOException, SAXException {
         try {
             testConfig("10_import_11.xml");
@@ -42,6 +45,7 @@ public class ImportTest extends TestCase {
         }
     }
 
+	@Test
     public void test_paramaterized_import() throws IOException, SAXException {
         SimpleDOMVisitor.visited = false;
         testConfig("paramaterized_import_main.xml");

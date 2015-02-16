@@ -8,29 +8,36 @@
         <relativePath>../../../smooks-parent/pom.xml</relativePath>
     </parent>
     <name>Milyn :: EDI :: Edifact Java Compiler :: Maven Plugin Mojo</name>
-    <artifactId>maven-ejc-plugin</artifactId>
+    <artifactId>ejc-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>2.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-project</artifactId>
-            <version>2.0</version>
         </dependency>
+
         <dependency>
-            <groupId>org.jfrog.maven.annomojo</groupId>
-            <artifactId>maven-plugin-anno</artifactId>
-            <version>1.3.1</version>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.4</version>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-ejc</artifactId>
-            <version>${project.version}</version>
+            <exclusions>
+            	<exclusion>
+                   <groupId>org.milyn</groupId>            	   
+              	   <artifactId>milyn-smooks-javabean</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -39,15 +46,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>2.6</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jfrog.maven.annomojo</groupId>
-                        <artifactId>maven-plugin-tools-anno</artifactId>
-                        <version>1.4.1</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                </dependencies>
+                <configuration>
+          	   <goalPrefix>ejc</goalPrefix>
+          	   <outputDirectory>target/classes/META-INF/maven</outputDirectory>
+        	</configuration>
+                <executions>
+                   <execution>
+            	      <id>generate</id>
+            	      <phase>generate-sources</phase>
+          	   </execution>
+          	   <execution>
+            	      <id>generated-helpmojo</id>
+            	      <goals>
+              		 <goal>helpmojo</goal>
+            	      </goals>
+          	   </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

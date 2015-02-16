@@ -15,7 +15,8 @@
 */
 package org.milyn.templating.bugfixes.MILYN_285;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.payload.StringResult;
 import org.xml.sax.SAXException;
@@ -27,8 +28,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN285Test extends TestCase {
+public class MILYN285Test {
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
         StringResult result = new StringResult();

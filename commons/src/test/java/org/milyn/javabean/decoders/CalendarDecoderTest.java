@@ -15,7 +15,11 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -29,8 +33,9 @@ import java.util.TimeZone;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  * @author <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a>
  */
-public class CalendarDecoderTest extends TestCase {
+public class CalendarDecoderTest {
 
+	@Test
 	public void test_CalendarDecoder() {
         Properties config = new Properties();
 	    config.setProperty(CalendarDecoder.FORMAT, "EEE MMM dd HH:mm:ss z yyyy");
@@ -47,6 +52,7 @@ public class CalendarDecoderTest extends TestCase {
 	    assertNotSame(cal_a, cal_b);
 	}
 
+	@Test
 	public void test_CalendarDecoder_with_swedish_local() throws ParseException {
 		final String dateFormat = "EEE MMM dd HH:mm:ss z yyyy";
 		final String dateString = "ti mar 04 15:25:07 CET 2008";
@@ -71,6 +77,7 @@ public class CalendarDecoderTest extends TestCase {
     private TimeZone defaultTimeZone;
     private String defaultEncoding;
 
+    @Before
     public void setUp() {
         defaultEncoding = System.getProperty("file.encoding");
         System.setProperty("file.encoding", "UTF-8");
@@ -82,7 +89,8 @@ public class CalendarDecoderTest extends TestCase {
         TimeZone.setDefault(TimeZone.getTimeZone("ECT"));
 	}
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         // Reset the defaults...
         System.setProperty("file.encoding",defaultEncoding);
         Locale.setDefault(defaultLocale);

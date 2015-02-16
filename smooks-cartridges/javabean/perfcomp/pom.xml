@@ -2,42 +2,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+       <groupId>org.milyn</groupId>
+       <artifactId>testres</artifactId>
+       <version>1.7-SNAPSHOT</version>
+       <relativePath>../../../testres/pom.xml</relativePath>
+    </parent>
+
     <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-javabean-perfcomp</artifactId>
-    <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
     
-    <properties>
-    	<smooks.version>1.4</smooks.version>
-    	<!-- <smooks.version>1.3</smooks.version> -->
-    	<jibx.version>1.2.1</jibx.version>
-    </properties>
-
     <dependencies>
 
         <dependency>
             <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
-            <version>${smooks.version}</version>
-            <scope>test</scope>
+            <artifactId>milyn-smooks-javabean</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-javabean</artifactId>
-            <version>${smooks.version}</version>
+            <groupId>org.jibx</groupId>
+            <artifactId>jibx-extras</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.jibx</groupId>
-			<artifactId>jibx-extras</artifactId>
-			<version>${jibx.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jibx</groupId>
-			<artifactId>jibx-run</artifactId>
-			<version>${jibx.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.jibx</groupId>
+            <artifactId>jibx-run</artifactId>
+        </dependency>
 
     </dependencies>
 
@@ -46,37 +36,31 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
             </plugin>
-			<plugin>
-				<groupId>org.jibx</groupId>
-				<artifactId>maven-jibx-plugin</artifactId>
-				<version>1.2.1</version>
-				<configuration>
-					<directory>src/test/java/org/milyn/jibx</directory>
-					<includes>
-						<includes>binding.xml</includes>
-					</includes>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>bind</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.jibx</groupId>
+                <artifactId>jibx-maven-plugin</artifactId>
+                <configuration>
+                    <directory>src/test/java/org/milyn/jibx</directory>
+                    <includes>
+                        <includes>binding.xml</includes>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>bind</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <testResources>
             <testResource>
                 <directory>src/test/java</directory>
                 <excludes>
                     <exclude>**/*.java</exclude>
-
                 </excludes>
             </testResource>
             <testResource>
@@ -84,35 +68,5 @@
             </testResource>
         </testResources>
     </build>
-
-    <repositories>
-
-		<repository>
-			<id>jibx.sf.net</id>
-			<name>JiBX repository</name>
-			<url>http://jibx.sf.net/maven2</url>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-
-    </repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>jibx.sf.net</id>
-			<name>JiBX repository</name>
-			<url>http://jibx.sf.net/maven2</url>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 </project>

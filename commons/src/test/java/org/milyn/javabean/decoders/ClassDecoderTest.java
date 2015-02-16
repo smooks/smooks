@@ -15,13 +15,15 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class ClassDecoderTest extends TestCase {
+public class ClassDecoderTest {
 
+	@Test
     public void test() {
         ClassDecoder decoder = new ClassDecoder();
         assertEquals(String.class, decoder.decode(String.class.getName()));

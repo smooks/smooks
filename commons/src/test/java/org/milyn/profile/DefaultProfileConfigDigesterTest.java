@@ -24,21 +24,16 @@ import org.milyn.profile.ProfileSet;
 import org.milyn.profile.UnknownProfileMemberException;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author tfennelly
  */
-public class DefaultProfileConfigDigesterTest extends TestCase {
+public class DefaultProfileConfigDigesterTest {
 
-	/**
-	 * @param arg0
-	 */
-	public DefaultProfileConfigDigesterTest(String arg0) {
-		super(arg0);
-	}
-
+	@Test
 	public void testParse_exception_null_stream() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 
@@ -52,6 +47,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_fail_no_name() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -67,6 +63,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_fail_no_list() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -82,6 +79,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_fail_no_attribs() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -97,6 +95,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_fail_empty_list() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -112,6 +111,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_fail_empty_name() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -127,6 +127,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_fail_bad_list() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -142,6 +143,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_fail_no_profile() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -157,6 +159,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_success_all_list_seperators() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -170,6 +173,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_success_two_profiles() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -200,6 +204,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_success_one_profile() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -223,6 +228,7 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_success_many_profiles() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
@@ -252,14 +258,15 @@ public class DefaultProfileConfigDigesterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testParse_success_many_profiles_nested() {
 		DefaultProfileConfigDigester digester = new DefaultProfileConfigDigester();
 		InputStream stream = getClass().getResourceAsStream(
 				"profiles_success_many_profiles_nested.xml");
-		ProfileStore store = null;
 
 		try {
-			store = digester.parse(stream);
+			ProfileStore store = digester.parse(stream);
+			assertNotNull(store);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Unexpected Exception: " + e.getMessage());

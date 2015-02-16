@@ -16,7 +16,11 @@
 
 package org.milyn;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.JavaContentHandlerFactory;
 import org.milyn.delivery.dom.DOMVisitAfter;
@@ -39,16 +43,15 @@ import java.util.Set;
  *
  * @author tfennelly
  */
-public class SmooksTest extends TestCase {
+public class SmooksTest {
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
+	@Before
+    public void setUp() throws Exception {
         Smooks smooks = new Smooks();
         SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[] {"profile1"}), smooks);
     }
 
+	@Test
     public void test_setClassPath() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_setClassLoader_01.xml"));
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -68,6 +71,7 @@ public class SmooksTest extends TestCase {
         assertTrue(contextClassLoader == Thread.currentThread().getContextClassLoader());
     }
 
+	@Test
     public void test_addVisitor_DOM_01() {
         Smooks smooks = new Smooks();
         TestDOMVisitorBefore visitor1 = new TestDOMVisitorBefore();
@@ -82,6 +86,7 @@ public class SmooksTest extends TestCase {
         assertEquals(1, visitor2.callCount);
     }
 
+	@Test
     public void test_addVisitor_SAX_01() {
         Smooks smooks = new Smooks();
         TestSAXVisitorBefore visitor1 = new TestSAXVisitorBefore();
@@ -97,6 +102,7 @@ public class SmooksTest extends TestCase {
     }
 
 
+	@Test
     public void test_setResourceLocator() throws IOException, SAXException {
         Smooks smooks = new Smooks("classpath:/org/milyn/test_setClassLoader_01.xml");
 

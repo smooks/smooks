@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.pojogen;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.StringWriter;
 import java.io.IOException;
@@ -31,8 +32,9 @@ import org.milyn.profile.Profile;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class PojoGenTest extends TestCase {
+public class PojoGenTest {
 
+	@Test
     public void test_01() throws IOException {
         JClass aClass = new JClass("com.acme", "AClass");
         JClass bClass = new JClass("com.acme", "BClass");
@@ -62,15 +64,14 @@ public class PojoGenTest extends TestCase {
 
         aClass.writeClass(aWriter);
         String aS = aWriter.toString();
-//        System.out.println(aS);
         assertEquals(StreamUtils.trimLines(AClass_Expected), StreamUtils.trimLines(aS));
 
         bClass.writeClass(bWriter);
         String bS = bWriter.toString();
-//        System.out.println(bS);
         assertEquals(StreamUtils.trimLines(BClass_Expected), StreamUtils.trimLines(bS));
     }
 
+	@Test
     public void test_duplicateProperty() {
         JClass aClass = new JClass("com.acme", "AClass");
 

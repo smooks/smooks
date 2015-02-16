@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd" default-target-profile="shipping-response">
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd" default-target-profile="shipping-response">
 
 	<!--
 		Use a XSL template to perform the transformation.
@@ -12,15 +12,8 @@
     <!--
         Configure the History bean creation and population...
     -->
-    <resource-config selector="history">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
-        <!-- create and bind the bean instance -->
-        <param name="beanId">history</param>
-        <param name="beanClass">org.milyn.templating.soapshipping.History</param>
-
-        <param name="bindings">
-            <binding property="trackingNumbers" selector="history" />
-        </param>
-    </resource-config>
+    <jb:bean beanId="history" class="org.milyn.templating.soapshipping.History" createOnElement="history">
+        <jb:value property="trackingNumbers" data="history" />
+    </jb:bean>
 
 </smooks-resource-list>

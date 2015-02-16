@@ -14,12 +14,14 @@ import org.milyn.container.MockApplicationContext;
 import org.milyn.container.MockExecutionContext;
 import org.milyn.javabean.repository.BeanId;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class MultiThreadedBeanIdStoreTest extends TestCase  {
+public class MultiThreadedBeanIdStoreTest  {
 
 	private static final Log log = LogFactory.getLog(MultiThreadedBeanIdStoreTest.class);
 
+	@Test
 	public void test_multi_threaded() throws InterruptedException {
 
 		final int parties = 50;

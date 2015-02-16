@@ -16,7 +16,8 @@
 
 package org.milyn.smooks.scripting.groovy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.io.StreamUtils;
@@ -30,13 +31,15 @@ import java.io.IOException;
 /**
  * @author tfennelly
  */
-public class GroovyContentHandlerFactoryTest extends TestCase {
+public class GroovyContentHandlerFactoryTest {
 
+        @Test
 	public void test_goodscript_by_URI() throws InstantiationException, IllegalArgumentException, IOException, SAXException {
 		test_goodscript_by_URI("classpath:/org/milyn/smooks/scripting/groovy/MyGroovyScript.groovy");
 		test_goodscript_by_URI("/org/milyn/smooks/scripting/groovy/MyGroovyScript.groovy");
 	}
 
+        @Test
 	public void test_goodscript_by_Inlining() throws InstantiationException, IllegalArgumentException, IOException, SAXException {
 		String script = new String(StreamUtils.readStream(getClass().getResourceAsStream("MyGroovyScript.groovy")));
 		SmooksResourceConfiguration config = new SmooksResourceConfiguration("x", null);

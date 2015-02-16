@@ -48,8 +48,6 @@ import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.persistence.observers.BeanCreateLifecycleObserver;
 import org.milyn.persistence.parameter.NamedParameterIndex;
 import org.milyn.persistence.parameter.Parameter;

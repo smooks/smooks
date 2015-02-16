@@ -22,7 +22,8 @@ import java.util.Map;
 
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
@@ -31,8 +32,9 @@ import org.milyn.payload.JavaResult;
 import org.milyn.util.ClassUtil;
 import org.xml.sax.SAXException;
 
-public class ValueBinderExtendedConfigTest extends TestCase {
+public class ValueBinderExtendedConfigTest {
 
+        @Test
 	public void test_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_value_01.xml"));
 		JavaResult result = new JavaResult();
@@ -50,6 +52,7 @@ public class ValueBinderExtendedConfigTest extends TestCase {
 		assertNull(result.getBean("product"));
 	}
 
+        @Test
 	public void test_01_other() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_value_01.xml"));
 

@@ -25,11 +25,15 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 /**
  * @author tfennelly
  */
 public class EDIParserTest extends AbstractEDIParserTestCase {
 
+        @Test
 	public void test_validation() throws IOException, SAXException {
 		// Valid doc...
         try {
@@ -48,7 +52,8 @@ public class EDIParserTest extends AbstractEDIParserTestCase {
             fail("Expected SAXException");
         }
     }
-	
+
+        @Test	
 	public void test_parseMappingModel() throws IOException, SAXException, EDIConfigurationException {
 		EdifactModel map = EDIParser.parseMappingModel(getClass().getResourceAsStream("edi-mapping_01.xml"));
 		
@@ -72,83 +77,103 @@ public class EDIParserTest extends AbstractEDIParserTestCase {
         assertEquals(0, segment.getSegments().size());
 		assertEquals(1, segment.getFields().size());
 	}
-	
+
+        @Test	
 	public void test_escape_character() throws IOException {
 		test("test_escape_character");
 	}
-	
+
+        @Test	
 	public void test_mapping_01() throws IOException {
 		test("test01");
 	}
-	
+       
+        @Test	
 	public void test_mapping_02() throws IOException {
 		test("test02");
 	}
-	
+
+        @Test	
 	public void test_mapping_03() throws IOException {
 		test("test03");
 	}
-	
+
+        @Test	
 	public void test_mapping_04() throws IOException {
 		test("test04");
 	}
-	
+
+        @Test	
 	public void test_mapping_05() throws IOException {
 		test("test05");
 	}
-	
+
+        @Test	
 	public void test_mapping_06() throws IOException {
 		test("test06");
 	}
-	
+   
+        @Test	
 	public void test_mapping_07() throws IOException {
 		test("test07");
 	}
-	
+
+        @Test	
 	public void test_mapping_08() throws IOException {
 		test("test08");
 	}
-	
+
+        @Test	
 	public void test_mapping_09() throws IOException {
 		test("test09");
 	}
-	
+
+        @Test	
 	public void test_mapping_10() throws IOException {
 		test("test10");
 	}
-	
+
+        @Test	
 	public void test_mapping_11() throws IOException {
 		test("test11");
 	}
-	
+
+        @Test	
 	public void test_mapping_12() throws IOException {
 		test("test12");
 	}
-	
+
+        @Test	
 	public void test_mapping_13() throws IOException {
 		test("test13");
 	}
-	
+
+        @Test	
 	public void test_mapping_14() throws IOException {
 		test("test14");
 	}
-	
+
+        @Test	
 	public void test_mapping_15() throws IOException {
 		test("test15");
 	}
-	
+
+        @Test	
 	public void test_mapping_16() throws IOException {
 		test("test16");
 	}
-	
+
+        @Test	
 	public void test_mapping_17() throws IOException {
 		test("test17");
 	}
-	
+
+        @Test	
 	public void test_mapping_18() throws IOException {
 		test("test18");
 	}
 
+    @Test
     public void test_MILYN_108() throws IOException {
         test("test-MILYN-108-01"); // Tests Segment Truncation
         test("test-MILYN-108-02"); // Tests Segment Truncation
@@ -166,6 +191,7 @@ public class EDIParserTest extends AbstractEDIParserTestCase {
         test("test-MILYN-108-11"); // Tests Field and Component Truncation
     }
 
+    @Test
     public void testCorrectEdiParseException() throws IOException, EDIParseException {
         /**
          * Test correct EDIParseException when reaching end of Edimap-model but more data exists in inputfile.

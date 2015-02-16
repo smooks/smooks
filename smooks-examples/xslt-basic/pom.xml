@@ -18,10 +18,6 @@
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-templating</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

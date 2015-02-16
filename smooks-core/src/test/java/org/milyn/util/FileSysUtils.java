@@ -19,7 +19,8 @@ package org.milyn.util;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * File System utility methods.
@@ -36,12 +37,12 @@ public abstract class FileSysUtils {
 		
 		try {
 			if(!localDir.getCanonicalPath().endsWith("ant")) {
-//				TestCase.fail("Working directory should be '<project.root>\\ant' folder.  Set Working Directory if running test from inside IDE.");
+//				fail("Working directory should be '<project.root>\\ant' folder.  Set Working Directory if running test from inside IDE.");
 			}
 			return localDir.getCanonicalFile().getParentFile();
 		} catch (IOException e) {
 			e.printStackTrace();
-			TestCase.fail(e.getMessage());
+			fail(e.getMessage());
 		}
 		
 		return null;

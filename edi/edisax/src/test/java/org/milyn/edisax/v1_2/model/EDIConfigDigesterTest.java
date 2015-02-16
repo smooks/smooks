@@ -17,7 +17,8 @@
 package org.milyn.edisax.v1_2.model;
 
 import static org.milyn.io.StreamUtils.readStream;
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.edisax.model.EDIConfigDigester;
 import org.milyn.edisax.model.internal.*;
 import org.milyn.edisax.EDIConfigurationException;
@@ -36,7 +37,7 @@ import java.util.List;
  *
  * @author bardl
  */
-public class EDIConfigDigesterTest extends TestCase {
+public class EDIConfigDigesterTest { 
 
     /**
      * This testcase tests that parent MappingNode is connected to the correct MappingNode.
@@ -44,6 +45,7 @@ public class EDIConfigDigesterTest extends TestCase {
      * @throws java.io.IOException is thrown when unable to read edi-config in testcase.
      * @throws org.xml.sax.SAXException is thrown when error occurs during config-digestion.
      */
+    @Test
     public void testParentMappingNodes() throws IOException, EDIConfigurationException, SAXException {
         InputStream input = new ByteArrayInputStream(readStream(getClass().getResourceAsStream("edi-config-all-new-elements.xml")));
         Edimap edimap = EDIConfigDigester.digestConfig(input);
@@ -77,6 +79,7 @@ public class EDIConfigDigesterTest extends TestCase {
      * @throws java.io.IOException is thrown when unable to read edi-config in testcase.
      * @throws org.xml.sax.SAXException is thrown when error occurs during config-digestion.
      */
+    @Test
     public void testReadValueNodes() throws IOException, EDIConfigurationException, SAXException {
         InputStream input = new ByteArrayInputStream(readStream(getClass().getResourceAsStream("edi-config-all-new-elements.xml")));
         Edimap edimap = EDIConfigDigester.digestConfig(input);
@@ -124,6 +127,7 @@ public class EDIConfigDigesterTest extends TestCase {
      * @throws java.io.IOException is thrown when unable to read edi-config in testcase.
      * @throws org.xml.sax.SAXException is thrown when error occurs during config-digestion.
      */
+    @Test
     public void testReadSegmentDescription() throws IOException, EDIConfigurationException, SAXException {
         InputStream input = new ByteArrayInputStream(readStream(getClass().getResourceAsStream("edi-config-all-new-elements.xml")));
         Edimap edimap = EDIConfigDigester.digestConfig(input);
@@ -133,6 +137,7 @@ public class EDIConfigDigesterTest extends TestCase {
         assertEquals("Description in segment [" + segment.getDescription() + "] doesn't match expected value [" + expected + "].", segment.getDescription(), expected);
     }
 
+    @Test
     public void testCorrectParametersNoCustomType() throws IOException, SAXException, EDIConfigurationException {
         InputStream input = new ByteArrayInputStream(readStream(getClass().getResourceAsStream("edi-config-correct-no-custom-parameter.xml")));
 
@@ -161,6 +166,7 @@ public class EDIConfigDigesterTest extends TestCase {
 
     }
 
+    @Test
     public void testIncorrectParametersNoCustomType() throws IOException, SAXException {
         InputStream input = new ByteArrayInputStream(readStream(getClass().getResourceAsStream("edi-config-incorrect-no-custom-parameter.xml")));
         
@@ -173,6 +179,7 @@ public class EDIConfigDigesterTest extends TestCase {
         }
     }
 
+    @Test
     public void testIncorrectParametersNoCustomType_ClassName() throws IOException, SAXException {
         InputStream input = new ByteArrayInputStream(readStream(getClass().getResourceAsStream("edi-config-incorrect-no-custom-parameter2.xml")));
 
@@ -185,6 +192,7 @@ public class EDIConfigDigesterTest extends TestCase {
         }
     }
 
+    @Test
     public void testCorrectParametersCustomType() throws IOException, SAXException, EDIConfigurationException {
         InputStream input = new ByteArrayInputStream(readStream(getClass().getResourceAsStream("edi-config-correct-custom-parameter.xml")));
 
@@ -209,6 +217,7 @@ public class EDIConfigDigesterTest extends TestCase {
 
     }
 
+    @Test
     public void testIncorrectParametersCustomType_NoClassName() throws IOException, SAXException, EDIConfigurationException {
         InputStream input = new ByteArrayInputStream(readStream(getClass().getResourceAsStream("edi-config-incorrect-custom-parameter.xml")));
 

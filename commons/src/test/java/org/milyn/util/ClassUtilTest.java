@@ -59,7 +59,7 @@ public class ClassUtilTest extends TestCase
 	public void setUp() throws MalformedURLException
 	{
 		File testClassesDir = new File( testClassesDirName );
-		URLClassLoader urlc = new URLClassLoader( new URL[] { jarFile.toURL(), testClassesDir.toURL() } );
+		URLClassLoader urlc = new URLClassLoader( new URL[] { jarFile.toURI().toURL(), testClassesDir.toURI().toURL() } );
 		Thread.currentThread().setContextClassLoader( urlc );
 	}
 

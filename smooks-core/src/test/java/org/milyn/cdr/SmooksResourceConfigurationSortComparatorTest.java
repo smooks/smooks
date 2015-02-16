@@ -1,17 +1,23 @@
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.profile.DefaultProfileSet;
 
-public class SmooksResourceConfigurationSortComparatorTest extends TestCase {
+public class SmooksResourceConfigurationSortComparatorTest {
 
     private DefaultProfileSet profileSet;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         profileSet = new DefaultProfileSet("uaCommonName");
         profileSet.addProfiles(new String[] {"profile1", "profile2", "profile3"});
 	}
 
+    @Test
 	public void test_getSpecificity_selector() {
 		//  100 -> Explicit selector (non-xmldef, non-wildcard)
 		//    0 -> Null namespace
@@ -39,6 +45,7 @@ public class SmooksResourceConfigurationSortComparatorTest extends TestCase {
 		assertSpecificityOK(125.0, "table tr td", null, "*");
 	}
 
+    @Test
 	public void test_getSpecificity_namespace() {
 		//  100 -> Explicit selector (non-xmldef, non-wildcard)
 		//   10 -> Namespace specified.
@@ -46,6 +53,7 @@ public class SmooksResourceConfigurationSortComparatorTest extends TestCase {
 		assertSpecificityOK(115.0, "selector", "http://namespace", "*");
 	}
 
+    @Test
 	public void test_getSpecificity_useragent() {
 		//  100 -> Explicit selector (non-xmldef, non-wildcard)
 		//    0 -> Null namespace
@@ -115,6 +123,7 @@ public class SmooksResourceConfigurationSortComparatorTest extends TestCase {
 		assertSpecificityOK(102.0, "selector", null, "not:X AND not:Y");
 	}
 
+    @Test
 	public void test_getSpecificity_all() {
 		//  100 -> Explicit selector (non-xmldef, non-wildcard)
 		//   10 -> Namespace specified.
@@ -122,6 +131,7 @@ public class SmooksResourceConfigurationSortComparatorTest extends TestCase {
 		assertSpecificityOK(210.0, "selector", "http://namespace", "uaCommonName");
 	}
 	
+    @Test
 	public void test_compare() {
 		SmooksResourceConfigurationSortComparator sortComparator = new SmooksResourceConfigurationSortComparator(profileSet);
 		SmooksResourceConfiguration config1;

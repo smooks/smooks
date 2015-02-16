@@ -4,9 +4,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>drools</artifactId>
-        <groupId>org.drools</groupId>
-        <version>5.1.1</version>
+        <groupId>org.milyn</groupId>
+        <artifactId>testres</artifactId>
+        <version>1.7-SNAPSHOT</version>
+        <relativePath>../../testres/pom.xml</relativePath>
     </parent>
 
     <!--
@@ -16,6 +17,10 @@
     <artifactId>drools-examples-fusion</artifactId>
     <packaging>jar</packaging>
     <name>Drools :: Examples Fusion</name>
+
+    <properties>
+        <project.mainClass>org.drools.benchmark.waltz.WaltzBenchmark</project.mainClass>
+    </properties>
 
     <dependencies>
         <!-- Internal dependencies -->
@@ -52,18 +57,13 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-csv</artifactId>
-	    <version>1.7-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
         </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-	    <version>1.7-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
         </dependency>
     </dependencies>
 
-    <properties>
-        <project.mainClass>org.drools.benchmark.waltz.WaltzBenchmark</project.mainClass>
-    </properties>
     <build>
         <resources>
             <resource>
@@ -98,33 +98,5 @@
 
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Maven Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>codehaus-snapshots</id>
-            <name>Codehaus Snapshots</name>
-            <url>http://nexus.codehaus.org/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
 </project>

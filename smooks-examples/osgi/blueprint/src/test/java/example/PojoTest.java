@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import example.model.Order;
 import example.model.OrderItem;
 
@@ -24,8 +25,9 @@ import java.io.IOException;
 import org.milyn.Smooks;
 import org.xml.sax.SAXException;
 
-public class PojoTest extends TestCase {
+public class PojoTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks("smooks-config.xml");
         Pojo pojo = new Pojo(smooks, "input-message.xml");

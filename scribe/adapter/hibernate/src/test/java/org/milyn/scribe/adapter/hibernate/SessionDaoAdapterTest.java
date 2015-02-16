@@ -15,7 +15,7 @@
 */
 package org.milyn.scribe.adapter.hibernate;
 
-import static junit.framework.Assert.assertSame;
+import static org.junit.Assert.assertSame;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.milyn.scribe.adapter.hibernate.test.util.BaseTestCase;

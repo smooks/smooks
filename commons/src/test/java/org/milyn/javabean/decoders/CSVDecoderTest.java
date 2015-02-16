@@ -15,15 +15,17 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class CSVDecoderTest extends TestCase {
+public class CSVDecoderTest {
 
+	@Test
     public void test() {
         CSVDecoder decoder = new CSVDecoder();
         String[] values;

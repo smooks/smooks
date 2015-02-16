@@ -25,7 +25,6 @@ import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Configurator;
 import org.milyn.container.MockExecutionContext;
 import org.milyn.javabean.context.BeanContext;
-import org.milyn.javabean.repository.BeanRepository;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;

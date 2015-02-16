@@ -15,7 +15,9 @@
 */
 package org.milyn.classpath;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,19 +31,21 @@ import org.apache.log4j.Logger;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ScannerTest extends TestCase {
+public class ScannerTest {
 	private Logger log = Logger.getLogger( ScannerTest.class );
 	
 	private URLClassLoader classLoader;
-	
+
+        @Before	
 	public void setUp() throws MalformedURLException
 	{
 		File targetDir = new File ( "target" );
         File classesDir = new File( targetDir, "classes" );
         File testClassesDir = new File( targetDir, "test-classes" );
-        classLoader = new URLClassLoader(new URL[] { classesDir.toURL(), testClassesDir.toURL() });
+        classLoader = new URLClassLoader(new URL[] { classesDir.toURI().toURL(), testClassesDir.toURI().toURL() });
 	}
 
+    @Test
     public void test_instanceof_has_include() throws IOException {
     	
         InstanceOfFilter filter = new InstanceOfFilter(Filter.class, null, new String[] {"org/milyn"});
@@ -60,6 +64,7 @@ public class ScannerTest extends TestCase {
         assertTrue(classes.contains(Filter.class));
     }
 
+    @Test
     public void test_annotated_has_include() throws IOException {
         IsAnnotationPresentFilter filter = new IsAnnotationPresentFilter(TestAnnotation.class, null, new String[] {"org/milyn"});
         Scanner scanner = new Scanner(filter);
@@ -75,6 +80,7 @@ public class ScannerTest extends TestCase {
         assertTrue(classes.contains(AnnotatedClass1.class));
     }
 
+    @Test
     public void test_instanceof_no_include() throws IOException {
         InstanceOfFilter filter = new InstanceOfFilter(Filter.class);
         Scanner scanner = new Scanner(filter);
