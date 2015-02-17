@@ -15,7 +15,7 @@
 */
 package example;
 
-import org.milyn.io.StreamUtils;
+import org.milyn.io.FileUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -48,7 +48,7 @@ public class Main {
                 for (File file : files) {
                     if (file.getName().endsWith(".xml")) {
                         System.out.println("Consuming File: " + file.getName());
-                        System.out.println(new String(StreamUtils.readFile(file)));
+                        System.out.println(new String(FileUtils.readFile(file)));
                         System.out.println("\n");
                         file.delete();
                     }

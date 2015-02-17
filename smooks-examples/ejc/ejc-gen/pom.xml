@@ -13,19 +13,25 @@
     <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
     <packaging>bundle</packaging>
 
+    <dependencies>
+       <dependency>
+          <groupId>org.milyn</groupId>
+          <artifactId>milyn-smooks-ejc</artifactId>
+       </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.milyn</groupId>
-                <artifactId>maven-ejc-plugin</artifactId>
+                <artifactId>ejc-maven-plugin</artifactId>
                 <version>${project.version}</version>
-                <!-- base pom version - do not remove this comment -->
                 <configuration>
-                    <ediMappingFile>edi-model.xml</ediMappingFile>
                     <packageName>com.acme.order.model</packageName>
                 </configuration>
                 <executions>
                     <execution>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -34,12 +40,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-ejc</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

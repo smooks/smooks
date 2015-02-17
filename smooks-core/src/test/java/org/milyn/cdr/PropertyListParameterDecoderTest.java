@@ -2,11 +2,13 @@ package org.milyn.cdr;
 
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.cdr.annotation.Configurator;
 
-public class PropertyListParameterDecoderTest extends TestCase {
+public class PropertyListParameterDecoderTest {
 
+	@Test
 	public void test_decodeValue() {
 		SmooksResourceConfiguration config = new SmooksResourceConfiguration("x", "x");
 		PropertyListParameterDecoder propDecoder = (PropertyListParameterDecoder) Configurator.configure(new PropertyListParameterDecoder(), config);

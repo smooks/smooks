@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.JIRAs.MILYN_203;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.io.StreamUtils;
 import org.milyn.payload.StringResult;
@@ -29,12 +30,14 @@ import java.io.StringReader;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN_203_Test extends TestCase {
+public class MILYN_203_Test {
 
+	@Test
     public void test_DOM() throws IOException, SAXException {
         test_CDATA("dom.xml");
     }
 
+	@Test
     public void test_SAX() throws IOException, SAXException {
         test_CDATA("sax.xml");
     }

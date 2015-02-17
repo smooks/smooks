@@ -17,7 +17,10 @@
 package org.milyn.templating.xslt;
 
 import junit.framework.ComparisonFailure;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.standalone.StandaloneExecutionContext;
@@ -43,7 +46,7 @@ import java.util.List;
  *
  * @author tfennelly
  */
-public class PerformanceComparisonTest extends TestCase {
+public class PerformanceComparisonTest {
 
     private Templates xslTemplate;
     private Smooks smooksTransformer_xsltonly;
@@ -66,8 +69,8 @@ public class PerformanceComparisonTest extends TestCase {
     // the message is so flat.  The XSLT is very simple.  It's very hard to optimize it more.
     private static final String SMOOKS_TRANSFORM_XSL_JAVA_CONFIG = "xsl_java_01";
 
-
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         // Initialise the transformers...
         System.setProperty(XslContentHandlerFactory.ORG_MILYN_TEMPLATING_XSLT_SYNCHRONIZED, Boolean.toString(isSynchronized));
         initialiseXsltTransformer();
@@ -83,23 +86,27 @@ public class PerformanceComparisonTest extends TestCase {
         isSynchronized = false;
     }
 
+    @Test
     public void test_comparePerformance_multithreaded_XSLT_DOM() throws TransformerException, IOException, InterruptedException, SAXException {
         runStandaloneXslt = true;
         run_comparePerformance_multithreaded("XSLT Standalone (DOM Result)");
     }
 
+    @Test
     public void test_comparePerformance_multithreaded_SmooksXSLT_unserialized() throws TransformerException, IOException, InterruptedException, SAXException {
         runSmooksXslt_nojava = true;
         run_comparePerformance_multithreaded("Smooks XSLT - Result Unserialized (" + SMOOKS_TRANSFORM_XSL_JAVA_CONFIG + ")");
     }
 
+    @Test
     public void test_comparePerformance_multithreaded_XSLT_Streamed() throws TransformerException, IOException, InterruptedException, SAXException {
         runStandaloneXslt = true;
         streamXslt = true;
         run_comparePerformance_multithreaded("XSLT Standalone (Streamed Result)");
     }
 
-    public void xtest_comparePerformance_multithreaded_SmooksXSLT_serialized() throws TransformerException, IOException, InterruptedException, SAXException {
+    @Test
+    public void test_comparePerformance_multithreaded_SmooksXSLT_serialized() throws TransformerException, IOException, InterruptedException, SAXException {
         runSmooksXslt_nojava = true;
         serializeSmooksRes = true;
         run_comparePerformance_multithreaded("Smooks XSLT - Result Serialized (" + SMOOKS_TRANSFORM_XSL_JAVA_CONFIG + ")");
@@ -221,7 +228,7 @@ public class PerformanceComparisonTest extends TestCase {
                 performancePack = PerformancePack.runComparisons(packageName, xslTemplate, smooksTransformer_xsltonly, smooksTransformer_xsltjava);
             } catch (Throwable t) {
                 t.printStackTrace();
-                TestCase.fail(t.getMessage());
+                fail(t.getMessage());
             } finally {
                 finished = true;
             }
@@ -363,12 +370,12 @@ public class PerformanceComparisonTest extends TestCase {
             DOMResult result = new DOMResult();
 
             if(serializeSmooksRes) {
-                smooksTransformer.filter(new StreamSource(new ByteArrayInputStream(messageBytesIn)),
-                                         result, (StandaloneExecutionContext) executionContext);
+                smooksTransformer.filterSource((StandaloneExecutionContext) executionContext, new StreamSource(new ByteArrayInputStream(messageBytesIn)),
+                                         result);
                 message = (Document) result.getNode();
             } else {
-                smooksTransformer.filter(new StreamSource(new ByteArrayInputStream(messageBytesIn)),
-                                         null, (StandaloneExecutionContext) executionContext);
+                smooksTransformer.filterSource((StandaloneExecutionContext) executionContext, new StreamSource(new ByteArrayInputStream(messageBytesIn)),
+                                         null);
             }
 
             processCount++;

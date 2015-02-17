@@ -15,7 +15,8 @@
 */
 package org.milyn.event;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,10 +35,11 @@ import java.io.StringWriter;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ExecutionReportGeneratorTest extends TestCase {
+public class ExecutionReportGeneratorTest {
 	
 	Log log = LogFactory.getLog(ExecutionReportGeneratorTest.class);
 
+	@Test
     public void test_basic_dom() throws IOException, SAXException {
         Smooks smooks = new Smooks(); // Nothing targeted
         ExecutionContext execContext;
@@ -49,6 +51,7 @@ public class ExecutionReportGeneratorTest extends TestCase {
         //assertTrue("Report output not as expected.", CharUtils.compareStrings(expected, actual));
     }
 
+	@Test
     public void test_basic_sax() throws IOException, SAXException {
         Smooks smooks = new Smooks(); // Nothing targeted
         ExecutionContext execContext;

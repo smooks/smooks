@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
+        <artifactId>testres</artifactId>
 	<version>1.7-SNAPSHOT</version>
-        <relativePath>../../smooks-parent/pom.xml</relativePath>
+        <relativePath>../../testres/pom.xml</relativePath>
     </parent>
 
     <name>Milyn :: Smooks Cartridge :: Rules</name>
@@ -21,10 +21,6 @@
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-smooks-javabean</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
 

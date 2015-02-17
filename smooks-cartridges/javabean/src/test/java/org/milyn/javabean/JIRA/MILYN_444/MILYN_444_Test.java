@@ -15,7 +15,8 @@
  */
 package org.milyn.javabean.JIRA.MILYN_444;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.context.BeanContext;
@@ -29,8 +30,9 @@ import java.io.IOException;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_444_Test extends TestCase {
+public class MILYN_444_Test {
 
+        @Test
 	public void test() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
 		JavaResult jResult = new JavaResult();
@@ -40,6 +42,6 @@ public class MILYN_444_Test extends TestCase {
         X x = jResult.getBean(X.class);
         assertEquals("456", x.getVal1()); // default will be overridden by value in the message
         assertEquals(987, x.getVal2()); // default will be applied
-        assertEquals(99.65d, x.getVal3()); // default will be applied
+        assertEquals(99.65d, (double)x.getVal3(), 0d); // default will be applied
 	}
 }

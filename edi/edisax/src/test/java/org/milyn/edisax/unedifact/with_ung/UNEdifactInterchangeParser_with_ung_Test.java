@@ -34,14 +34,16 @@ import org.milyn.namespace.NamespaceDeclarationStack;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
+public class UNEdifactInterchangeParser_with_ung_Test {
 
+        @Test
 	public void test_with_groupref() throws IOException, SAXException, EDIConfigurationException {
 		EdifactModel model1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG1-model.xml"));
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
@@ -72,6 +74,7 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(handler.xmlMapping.toString()));
 	}
 
+        @Test
 	public void test_without_groupref() throws IOException, SAXException, EDIConfigurationException {
 		EdifactModel model1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG1-model.xml"));
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
@@ -94,6 +97,7 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
 		}
 	}
 
+        @Test
 	public void test_full_group_header() throws IOException, SAXException, EDIConfigurationException {
 		EdifactModel model1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG1-model.xml"));
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
@@ -114,6 +118,7 @@ public class UNEdifactInterchangeParser_with_ung_Test extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-02.xml")), new StringReader(handler.xmlMapping.toString()));
 	}
 
+        @Test
 	public void test_with_unknown_ucd_segment() throws IOException, SAXException, EDIConfigurationException {
 		EdifactModel model1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG1-model.xml"));
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));

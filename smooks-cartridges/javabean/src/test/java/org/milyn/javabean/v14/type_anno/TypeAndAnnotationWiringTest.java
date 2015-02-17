@@ -25,22 +25,26 @@ import org.milyn.javabean.extendedconfig.ExtendedOrder;
 import org.milyn.payload.JavaResult;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class TypeAndAnnotationWiringTest extends TestCase {
+public class TypeAndAnnotationWiringTest {
 
+        @Test
 	public void test_by_type() throws IOException, SAXException {
 		test("test_bean_01.xml");
 	}
 
+        @Test
 	public void test_by_anno() throws IOException, SAXException {
 		test("test_bean_02.xml");
 	}
 
+        @Test
 	public void test_bad_vonfig() throws IOException, SAXException {
 		try {
 			test("test_bean_03.xml");

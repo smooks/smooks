@@ -15,7 +15,8 @@
 */
 package org.milyn.cdr.xsd11.conditiontests;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.payload.StringSource;
@@ -26,11 +27,12 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class Config11ConditionTest extends TestCase {
+public class Config11ConditionTest {
 
     /**
      * Normal conditions defined on the resource
      */
+	@Test
     public void test_01() throws IOException, SAXException {
         testConfig("config01.xml", "[config1, config3]");
     }
@@ -38,6 +40,7 @@ public class Config11ConditionTest extends TestCase {
     /**
      * One of the conditions defined globally and referenced from one of the resources
      */
+	@Test
     public void test_02() throws IOException, SAXException {
         testConfig("config02.xml", "[config1, config3]");
     }
@@ -45,6 +48,7 @@ public class Config11ConditionTest extends TestCase {
     /**
      * Application of a default condition ref
      */
+	@Test
     public void test_03() throws IOException, SAXException {
         testConfig("config03.1.xml", "[config1, config3]"); // No default defined
         testConfig("config03.2.xml", "[config1]"); // Has a default defined
@@ -54,6 +58,7 @@ public class Config11ConditionTest extends TestCase {
      * config04.xml with an imported config04.1.xml config which inherits
      * conditions from config04.xml
      */
+	@Test
     public void test_04() throws IOException, SAXException {
         testConfig("config04.xml", "[config1, config3]");
     }
@@ -63,6 +68,7 @@ public class Config11ConditionTest extends TestCase {
      * conditions from config06.xml and config06.2.xml redefining the same conditions locally.
      * So... this is basically a scoping test on the conditions...
      */
+	@Test
     public void test_06() throws IOException, SAXException {
         testConfig("config06.xml", "[config1, config3, 2nd_config1, 2nd_config2]");
     }
@@ -70,6 +76,7 @@ public class Config11ConditionTest extends TestCase {
     /**
      * Undefined condition ref
      */
+	@Test
     public void test_05() throws IOException, SAXException {
         try {
             testConfig("config05.xml", "n/a");
@@ -82,6 +89,7 @@ public class Config11ConditionTest extends TestCase {
     /**
      * Duplicate condition ids
      */
+	@Test
     public void test_07() throws IOException, SAXException {
         try {
             testConfig("config07.xml", "n/a");

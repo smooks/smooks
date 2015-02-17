@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.xml.sax.*;
 
 import java.io.*;
@@ -23,8 +24,9 @@ import java.io.*;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class EDItoJavaTest extends TestCase {
+public class EDItoJavaTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         String expected = org.milyn.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
         Main smooksMain = new Main();

@@ -23,7 +23,8 @@ import java.io.InputStream;
 import com.mockobjects.servlet.MockServletConfig;
 import com.mockobjects.servlet.MockServletContext;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test that the getResource method tries to load based on the rules in the
@@ -34,11 +35,7 @@ import junit.framework.TestCase;
  * 
  * @author tfennelly
  */
-public class ServletResourceLocatorTest extends TestCase {
-
-	public ServletResourceLocatorTest(String arg0) {
-		super(arg0);
-	}
+public class ServletResourceLocatorTest {
 
 	private MockServletConfig getServletConfig() {
 		MockServletConfig config = new MockServletConfig();
@@ -46,6 +43,7 @@ public class ServletResourceLocatorTest extends TestCase {
 		return config;
 	}
 
+	@Test
 	public void testConstructor() {
 		try {
 			new ServletResourceLocator(null, null);
@@ -55,6 +53,7 @@ public class ServletResourceLocatorTest extends TestCase {
 		new ServletResourceLocator(getServletConfig(), null);
 	}
 
+	@Test
 	public void testGetResource_exceptions() {
 		MockServletConfig config = getServletConfig();
 		ServletResourceLocator servletLocator = new ServletResourceLocator(
@@ -100,6 +99,7 @@ public class ServletResourceLocatorTest extends TestCase {
 	 * Test that getResource loads based on the servlet config param -
 	 * <init-param>
 	 */
+	@Test
 	public void testGetResource_initparam() {
 		MockServletConfig config = getServletConfig();
 		MyMockServletContext context = ((MyMockServletContext) config
@@ -125,6 +125,7 @@ public class ServletResourceLocatorTest extends TestCase {
 	 * Test that getResource loads based on the servlet context param -
 	 * <context-param>
 	 */
+	@Test
 	public void testGetResource_contextparam() {
 		MockServletConfig config = getServletConfig();
 		MyMockServletContext context = ((MyMockServletContext) config
@@ -149,6 +150,7 @@ public class ServletResourceLocatorTest extends TestCase {
 	/**
 	 * Test that getResource loads based on the supplied default param
 	 */
+	@Test
 	public void testGetResource_defaultparam() {
 		MockServletConfig config = getServletConfig();
 		MyMockServletContext context = ((MyMockServletContext) config
@@ -175,6 +177,7 @@ public class ServletResourceLocatorTest extends TestCase {
 	 * Test that getResource loads from the external resource locator by making
 	 * the resource stream load from the context fail.
 	 */
+	@Test
 	public void testGetResource_fromURLResourceLocator() {
 		MockServletConfig config = getServletConfig();
 		MyMockServletContext context = ((MyMockServletContext) config

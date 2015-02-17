@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
+        <artifactId>testres</artifactId>
 	<version>1.7-SNAPSHOT</version>
-        <relativePath>../smooks-parent/pom.xml</relativePath>
+        <relativePath>../testres/pom.xml</relativePath>
     </parent>
 
     <name>Milyn :: Smooks Core</name>
@@ -14,10 +14,6 @@
     <packaging>bundle</packaging>
 
     <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.milyn</groupId>
             <artifactId>milyn-commons</artifactId>
@@ -41,26 +37,6 @@
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>jta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockejb</groupId>
-            <artifactId>mockejb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>

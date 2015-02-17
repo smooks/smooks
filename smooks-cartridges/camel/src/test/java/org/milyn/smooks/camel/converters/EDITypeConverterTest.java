@@ -16,7 +16,8 @@
 
 package org.milyn.smooks.camel.converters;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.apache.camel.TypeConverter;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.milyn.edisax.model.internal.Delimiters;
@@ -30,8 +31,9 @@ import java.io.Writer;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class EDITypeConverterTest extends TestCase {
+public class EDITypeConverterTest {
 
+    @Test
     public void testToUNEDIFACTString_interchange() throws Exception {
         DefaultCamelContext camelContext = new DefaultCamelContext();
         TypeConverter typeConverter = camelContext.getTypeConverter();
@@ -44,6 +46,7 @@ public class EDITypeConverterTest extends TestCase {
 
     }
 
+    @Test
     public void testToUNEDIFACTString_message() throws Exception {
         DefaultCamelContext camelContext = new DefaultCamelContext();
         TypeConverter typeConverter = camelContext.getTypeConverter();

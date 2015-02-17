@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.io.StreamUtils;
 import org.xml.sax.SAXException;
 
@@ -25,8 +26,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class GroovyExampleTest extends TestCase {
+public class GroovyExampleTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream("expected.xml"));
         String result = Main.runSmooksTransform();

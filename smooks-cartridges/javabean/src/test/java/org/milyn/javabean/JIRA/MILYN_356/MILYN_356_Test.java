@@ -24,15 +24,16 @@ import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_356_Test extends TestCase {
+public class MILYN_356_Test {
 
+        @Test
 	public void test_decoder_defined() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config_01.xml"));
 		JavaResult javaResult = new JavaResult();
@@ -40,12 +41,13 @@ public class MILYN_356_Test extends TestCase {
 		smooks.filterSource(new StringSource("<price>123'456,00</price>"), javaResult);
 		
 		OrderItem orderItem = (OrderItem) javaResult.getBean("orderItem");		
-		assertEquals(123456.00D, orderItem.getPrice());
+		assertEquals(123456.00D, orderItem.getPrice(),0D);
 
 		BigDecimal baseBigD = (BigDecimal) javaResult.getBean("price");
 		assertEquals(new BigDecimal("123456.00"), baseBigD);
 	}
 
+        @Test
 	public void test_decoder_undefined() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config_02.xml"));
 		JavaResult javaResult = new JavaResult();
@@ -53,7 +55,7 @@ public class MILYN_356_Test extends TestCase {
 		smooks.filterSource(new StringSource("<price>123'456,00</price>"), javaResult);
 		
 		OrderItem orderItem = (OrderItem) javaResult.getBean("orderItem");		
-		assertEquals(123456.00D, orderItem.getPrice());
+		assertEquals(123456.00D, orderItem.getPrice(), 0D);
 	}
 
 }

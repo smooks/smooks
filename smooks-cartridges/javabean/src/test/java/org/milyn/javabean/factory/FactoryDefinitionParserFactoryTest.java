@@ -16,15 +16,17 @@
 
 package org.milyn.javabean.factory;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.container.MockApplicationContext;
 
 /**
  * 
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class FactoryDefinitionParserFactoryTest extends TestCase{
+public class FactoryDefinitionParserFactoryTest {
 
+    @Test
     public void test_get_instance_default() {
         FactoryDefinitionParser parser = FactoryDefinitionParser.FactoryDefinitionParserFactory.getInstance(new MockApplicationContext());
 
@@ -32,6 +34,7 @@ public class FactoryDefinitionParserFactoryTest extends TestCase{
         assertEquals(BasicFactoryDefinitionParser.class, parser.getClass());
     }
 
+    @Test
     public void test_get_instance_default_alias() {
         FactoryDefinitionParser parser = FactoryDefinitionParser.FactoryDefinitionParserFactory.getInstance(FactoryDefinitionParser.FactoryDefinitionParserFactory.DEFAULT_ALIAS, new MockApplicationContext());
 
@@ -39,6 +42,7 @@ public class FactoryDefinitionParserFactoryTest extends TestCase{
         assertEquals(BasicFactoryDefinitionParser.class, parser.getClass());
     }
 
+    @Test
     public void test_get_instance_mvel_alias() {
         FactoryDefinitionParser parser = FactoryDefinitionParser.FactoryDefinitionParserFactory.getInstance("mvel", new MockApplicationContext());
 
@@ -46,6 +50,7 @@ public class FactoryDefinitionParserFactoryTest extends TestCase{
         assertEquals(MVELFactoryDefinitionParser.class, parser.getClass());
     }
 
+    @Test
     public void test_get_instance_mvel_by_classname() {
         FactoryDefinitionParser parser = FactoryDefinitionParser.FactoryDefinitionParserFactory.getInstance(MVELFactoryDefinitionParser.class.getName(), new MockApplicationContext());
 

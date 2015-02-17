@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.jaxb;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.io.StreamUtils;
 import org.milyn.javabean.binding.xml.XMLBinding;
@@ -29,8 +30,9 @@ import java.io.StringWriter;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class POTypeTest extends TestCase {
+public class POTypeTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         XMLBinding xmlBinding =
                 new XMLBinding().add(getClass().getResourceAsStream("POType-binding.xml")).intiailize();

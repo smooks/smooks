@@ -37,14 +37,16 @@ import org.milyn.io.StreamUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class UNEdifactInterchangeParser_no_ung_Test extends TestCase {
+public class UNEdifactInterchangeParser_no_ung_Test {
 
+        @Test
 	public void test_unzipped() throws IOException, SAXException, EDIConfigurationException {
 		EdifactModel model1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG1-model.xml"));
 		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
@@ -55,6 +57,7 @@ public class UNEdifactInterchangeParser_no_ung_Test extends TestCase {
 		testExchanges(parser);
 	}
 
+        @Test
 	public void test_zipped() throws IOException, SAXException, EDIConfigurationException {
 		createZip();
 		UNEdifactInterchangeParser parser = new UNEdifactInterchangeParser();

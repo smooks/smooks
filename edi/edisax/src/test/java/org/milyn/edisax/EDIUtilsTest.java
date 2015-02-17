@@ -1,6 +1,7 @@
 package org.milyn.edisax;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
@@ -15,8 +16,9 @@ import org.xml.sax.SAXException;
 /**
  * @author bardl
  */
-public class EDIUtilsTest extends TestCase {
+public class EDIUtilsTest {
 
+        @Test
 	public void test_with_escape() throws IOException, SAXException {
         String[] test = EDIUtils.split("first?::second??:third", ":", "?");
         String[] expected = new String[]{"first:", "second??", "third"};
@@ -54,6 +56,7 @@ public class EDIUtilsTest extends TestCase {
 
     }
 
+        @Test
 	public void test_without_escape() {
         String[] result = EDIUtils.split(null, "*", null);        
         assertTrue("Result is [" + output(result) + "] should be [null] ", result == null);
@@ -101,6 +104,7 @@ public class EDIUtilsTest extends TestCase {
 
 	}
 
+    @Test
     public void test_concatAndTruncate() {
         Delimiters delims = UNEdifactInterchangeParser.defaultUNEdifactDelimiters;
 
@@ -113,6 +117,7 @@ public class EDIUtilsTest extends TestCase {
         assertEquals("ab+:+", EDIUtils.concatAndTruncate(CollectionsUtil.toList("a", "b", "+:+"), DelimiterType.COMPONENT, delims));
     }
 
+    @Test
     public void testEncodeClassName() throws IllegalNameException {
         assertEquals("Address", EDIUtils.encodeClassName("ADDRESS"));
         assertEquals("CustomerAddress", EDIUtils.encodeClassName("CUSTOMER_ADDRESS"));
@@ -122,6 +127,7 @@ public class EDIUtilsTest extends TestCase {
         assertEquals("_1CustomerAddressPOBox", EDIUtils.encodeClassName("1CustomerAddressP.O.Box"));
     }
 
+    @Test
     public void testEncodeAttribute() throws IllegalNameException {
         assertEquals("address", EDIUtils.encodeAttributeName("ADDRESS"));
         assertEquals("addRESS", EDIUtils.encodeAttributeName("addRESS"));

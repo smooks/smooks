@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.condition;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.expression.ExpressionEvaluator;
 import org.milyn.cdr.SmooksConfigurationException;
@@ -30,8 +31,9 @@ import java.io.StringReader;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ConditionEvaluatorTest extends TestCase {
+public class ConditionEvaluatorTest {
 
+	@Test
     public void test_Factory() {
         try {
             ExpressionEvaluator.Factory.createInstance(InvalidEvaluator.class.getName(), "blah");
@@ -44,6 +46,7 @@ public class ConditionEvaluatorTest extends TestCase {
         assertNotNull(evaluator.condition);
     }
 
+	@Test
     public void test_DOM() throws IOException, SAXException {
         Smooks smooks;
         ExecutionContext execContext;
@@ -63,6 +66,7 @@ public class ConditionEvaluatorTest extends TestCase {
         assertFalse(SAXAndDOMVisitor.visited);
     }
 
+	@Test
     public void test_SAX() throws IOException, SAXException {
         Smooks smooks;
         ExecutionContext execContext;

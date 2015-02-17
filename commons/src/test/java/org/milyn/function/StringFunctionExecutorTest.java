@@ -18,13 +18,15 @@ package org.milyn.function;
 
 import static org.milyn.function.StringFunctionDefinitionParser.*;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class StringFunctionExecutorTest extends TestCase {
+public class StringFunctionExecutorTest {
 
+	@Test
     public void test_execute() {
 
         String def = TRIM_DEFINITION;
@@ -37,6 +39,7 @@ public class StringFunctionExecutorTest extends TestCase {
 
     }
 
+	@Test
     public void test_caching() {
 
         String def1 = LOWER_CASE_DEFINITION;

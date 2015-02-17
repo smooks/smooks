@@ -16,7 +16,8 @@
 
 package org.milyn.edisax.v1_2.imports;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.EDIConfigurationException;
@@ -32,10 +33,11 @@ import java.net.URI;
  * Validates that the EdifactModel's logic works as expected.
  * @author bardl
  */
-public class EdifactModelTest extends TestCase {
+public class EdifactModelTest {
 	
 	private String packageName = "/" + EdifactModelTest.class.getPackage().getName().replace('.', '/');
 
+    @Test
     public void testImport_truncatableSegmentsExists() throws IOException, EDIConfigurationException, SAXException {
         InputStream input = new ByteArrayInputStream(StreamUtils.readStream(getClass().getResourceAsStream("edi-config-truncatableSegmentsExists.xml")));
         EdifactModel ediModel = new EdifactModel(input);
@@ -43,6 +45,7 @@ public class EdifactModelTest extends TestCase {
         assertTrue("The truncatable attribute should have value [true] in Segment.", ((Segment)ediModel.getEdimap().getSegments().getSegments().get(0).getSegments().get(0)).isTruncatable());
     }
 
+    @Test
     public void testImport_truncatableSegmentsExists_relative() throws IOException, EDIConfigurationException, SAXException {
         InputStream input = new ByteArrayInputStream(StreamUtils.readStream(getClass().getResourceAsStream("edi-config-truncatableSegmentsExists-relativepath.xml")));
         EdifactModel ediModel = new EdifactModel(URI.create(packageName + "/" + "edi-config-truncatableSegmentsExists-relativepath.xml"), URI.create(packageName), input);
@@ -50,6 +53,7 @@ public class EdifactModelTest extends TestCase {
         assertTrue("The truncatable attribute should have value [true] in Segment.", ((Segment)ediModel.getEdimap().getSegments().getSegments().get(0).getSegments().get(0)).isTruncatable());
     }
 
+    @Test
     public void testImport_truncatableSegmentsNotExists() throws IOException, EDIConfigurationException, SAXException {
         InputStream input = new ByteArrayInputStream(StreamUtils.readStream(getClass().getResourceAsStream("edi-config-truncatableSegmentsNotExists.xml")));
         EdifactModel ediModel = new EdifactModel(input);

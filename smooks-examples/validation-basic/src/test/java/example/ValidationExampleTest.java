@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,8 +28,9 @@ import org.milyn.validation.OnFailResult;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class ValidationExampleTest extends TestCase {
+public class ValidationExampleTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         ValidationResult results = Main.runSmooks(Main.readInputMessage());
         List<OnFailResult> errors = results.getErrors();

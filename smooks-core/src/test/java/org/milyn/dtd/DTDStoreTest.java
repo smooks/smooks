@@ -23,29 +23,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.profile.DefaultProfileSet;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author tfennelly
  */
-public class DTDStoreTest extends TestCase {
+public class DTDStoreTest {
 	
 	Log log = LogFactory.getLog(DTDStore.class);
 
-	/**
-	 * @param arg0
-	 */
-	public DTDStoreTest(String arg0) {
-		super(arg0);
-	}
-	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-	}
-	
+	@Test
 	public void testGetEmptyAnyMixedEtcElements() {
         DefaultProfileSet profileSet = new DefaultProfileSet("device3");
 
@@ -63,6 +52,7 @@ public class DTDStoreTest extends TestCase {
 		assertTrue(Arrays.equals(new String[] {}, elements));
 	}
 
+	@Test
 	public void testChildElements() {
         DefaultProfileSet profileSet = new DefaultProfileSet("device3");
 
@@ -80,6 +70,7 @@ public class DTDStoreTest extends TestCase {
 		assertEquals(null, dtdContainer.getChildElements("xxxx"));
 	}
 
+	@Test
 	public void testElementAttributes() {
         DefaultProfileSet profileSet = new DefaultProfileSet("device3");
 
@@ -123,6 +114,7 @@ public class DTDStoreTest extends TestCase {
 		log.debug(Arrays.asList(dtdContainer.getEmptyElements()));
 	}
 	
+	@Test
 	public void testPrint() {
 		print("xhtml1-transitional.dtd");
 		print("html32.xml.dtd");

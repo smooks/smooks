@@ -15,7 +15,8 @@
 */
 package org.milyn.xstream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.Order;
 import org.milyn.OrderItem;
@@ -27,8 +28,9 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class XStreamPerfTest extends TestCase {
+public class XStreamPerfTest {
 
+    @Test
     public void test() {
         XStream xstream = new XStream(new StaxDriver());
 

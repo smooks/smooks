@@ -15,7 +15,8 @@
 */
 package org.milyn.routing.basic;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
@@ -32,14 +33,18 @@ import java.io.StringReader;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class FragmentSerializerNSConfigTest extends TestCase {
+public class FragmentSerializerNSConfigTest {
 
+    @Test
     public void test_children_only_SAX() throws IOException, SAXException {
     	test_children_only(FilterSettings.DEFAULT_SAX);
     }
+
+    @Test
     public void test_children_only_DOM() throws IOException, SAXException {
     	test_children_only(FilterSettings.DEFAULT_DOM);
     }
+
     private void test_children_only(FilterSettings filterSettings) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01-ext.xml"));
         StreamSource source = new StreamSource(getClass().getResourceAsStream("input-message-01.xml"));
@@ -52,12 +57,16 @@ public class FragmentSerializerNSConfigTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("children-only.xml")), new StringReader(result.getBean("soapBody").toString().trim()));
     }
 
+    @Test
     public void test_all_SAX() throws IOException, SAXException {
     	test_all(FilterSettings.DEFAULT_SAX);
     }
+  
+    @Test
     public void test_all_DOM() throws IOException, SAXException {
     	test_all(FilterSettings.DEFAULT_DOM);
     }
+
     private void test_all(FilterSettings filterSettings) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-02-ext.xml"));
         StreamSource source = new StreamSource(getClass().getResourceAsStream("input-message-01.xml"));

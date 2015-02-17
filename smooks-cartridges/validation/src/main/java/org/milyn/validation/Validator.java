@@ -23,7 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.resource.URIResourceLocator;
-import org.milyn.javabean.repository.BeanRepository;
 import org.milyn.util.FreeMarkerTemplate;
 import org.milyn.xml.DomUtils;
 import org.milyn.event.report.annotation.VisitBeforeReport;

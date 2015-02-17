@@ -18,10 +18,12 @@ package org.milyn.resource;
 
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ClasspathResourceLocatorTest extends TestCase {
+public class ClasspathResourceLocatorTest {
 
+	@Test
 	public void test_getResource() {
 		ClasspathResourceLocator cpResLocator = new ClasspathResourceLocator();
 

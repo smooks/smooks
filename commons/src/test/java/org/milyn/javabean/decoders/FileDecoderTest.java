@@ -15,15 +15,17 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class FileDecoderTest extends TestCase {
+public class FileDecoderTest {
 
+	@Test
     public void test() {
         FileDecoder decoder = new FileDecoder();
         assertEquals(new File("/a.txt"), decoder.decode("/a.txt"));

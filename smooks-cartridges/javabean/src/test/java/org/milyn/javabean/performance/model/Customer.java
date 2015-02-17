@@ -14,9 +14,9 @@ public class Customer {
 	
 	public Person person;
 	
-	public List addresses = new ArrayList();
+	public List<Address> addresses = new ArrayList<Address>();
 	
-	public List orders = new ArrayList();
+	public List<Order> orders = new ArrayList<Order>();
 
 	/**
 	 * @return the person
@@ -42,7 +42,7 @@ public class Customer {
 	/**
 	 * @param addresses the addresses to set
 	 */
-	public void setAddresses(List addresses) {
+	public void setAddresses(List<Address> addresses) {
 		this.addresses = addresses;
 	}
 
@@ -56,7 +56,7 @@ public class Customer {
 	/**
 	 * @param orders the orders to set
 	 */
-	public void setOrders(List orders) {
+	public void setOrders(List<Order> orders) {
 		this.orders = orders;
 	}
 	

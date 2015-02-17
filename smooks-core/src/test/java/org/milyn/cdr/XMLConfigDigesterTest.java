@@ -16,7 +16,8 @@
 
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.profile.ProfileSet;
@@ -28,11 +29,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Unit tests forthe ArciveDef class.
+ * Unit tests for the ArciveDef class.
  * @author tfennelly
  */
-public class XMLConfigDigesterTest extends TestCase {
+public class XMLConfigDigesterTest {
 
+	@Test
 	public void test_digestConfig_v10() throws SAXException, IOException, URISyntaxException {
 		// Valid doc
         SmooksResourceConfigurationList resList = XMLConfigDigester.digestConfig(getClass().getResourceAsStream("testconfig1.cdrl"), "test");
@@ -40,6 +42,7 @@ public class XMLConfigDigesterTest extends TestCase {
         assertResourceConfigOK(resList);
 	}
 
+	@Test
     public void test_digestConfig_v20() throws SAXException, IOException, URISyntaxException {
         // Valid doc
         SmooksResourceConfigurationList resList = XMLConfigDigester.digestConfig(getClass().getResourceAsStream("testconfig2.cdrl"), "test");
@@ -60,6 +63,7 @@ public class XMLConfigDigesterTest extends TestCase {
         assertTrue(!profiles.get(1).isMember("profile1")); // not expanded
     }
 
+	@Test
     public void test_profile_expansion() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -67,6 +71,7 @@ public class XMLConfigDigesterTest extends TestCase {
         assertProfilesOK(smooks);
     }
 
+	@Test
     public void test_import_filesys() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("src/test/java/org/milyn/cdr/testconfig3.cdrl");
         Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getStore().getSmooksResourceConfigurationLists();
@@ -79,6 +84,7 @@ public class XMLConfigDigesterTest extends TestCase {
         assertResourceConfigOK(list);
     }
 
+	@Test
     public void test_import_classpath() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("/org/milyn/cdr/testconfig3.cdrl");
         Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getStore().getSmooksResourceConfigurationLists();

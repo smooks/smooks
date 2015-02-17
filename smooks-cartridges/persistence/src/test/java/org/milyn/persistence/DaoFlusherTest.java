@@ -50,6 +50,7 @@ public class DaoFlusherTest extends BaseTestCase {
     @Mock
     private FullInterfaceMappedDao<Object> mappedDao;
 
+    @Test
     public void test_dao_flush() throws Exception {
         Smooks smooks = new Smooks(getResourceAsStream("doa-flusher-01.xml"));
 
@@ -68,6 +69,7 @@ public class DaoFlusherTest extends BaseTestCase {
         }
     }
 
+    @Test
     public void test_dao_flush_with_named_dao() throws Exception {
 
         Smooks smooks = new Smooks(getResourceAsStream("doa-flusher-02.xml"));
@@ -91,6 +93,7 @@ public class DaoFlusherTest extends BaseTestCase {
     }
 
 
+    @Test
     public void test_dao_flush_with_flushBefore() throws Exception {
         Smooks smooks = new Smooks(getResourceAsStream("doa-flusher-03.xml"));
 

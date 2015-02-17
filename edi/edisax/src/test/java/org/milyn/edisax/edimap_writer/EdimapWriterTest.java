@@ -1,6 +1,7 @@
 package org.milyn.edisax.edimap_writer;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.edisax.model.EDIConfigDigester;
@@ -15,8 +16,9 @@ import java.io.StringWriter;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class EdimapWriterTest extends TestCase {
+public class EdimapWriterTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         test("edimap-01.xml");
     }

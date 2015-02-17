@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.javabean.DataDecoder;
 
@@ -29,8 +30,9 @@ import java.util.Date;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class InstalledDecodersTest extends TestCase {
+public class InstalledDecodersTest {
 
+	@Test
     public void test() {
         assertTrue(DataDecoder.Factory.create(String.class) instanceof StringDecoder);
         assertTrue(DataDecoder.Factory.create(Integer.class) instanceof IntegerDecoder);
@@ -51,12 +53,14 @@ public class InstalledDecodersTest extends TestCase {
         assertNull(DataDecoder.Factory.create(getClass()));
     }
 
+	@Test
     public void test_CSVDecoder() {
         String[] csvArray = (String[]) new CSVDecoder().decode("a,b,c");
         assertEquals(3, csvArray.length);
         assertTrue(Arrays.equals(new String[] {"a", "b", "c"}, csvArray));
     }
 
+	@Test
     public void test_CharsetDecoder() {
         // valid charset
         new CharsetDecoder().decode("UTF-8");

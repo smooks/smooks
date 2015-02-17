@@ -15,7 +15,11 @@
 */
 package org.milyn.delivery.lifecyclecleanup;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
@@ -25,9 +29,10 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ExecutionLifecycleTest extends TestCase {
+public class ExecutionLifecycleTest {
 
-    protected void setUp() throws Exception {
+	@Before
+    public void setUp() throws Exception {
         DomAssemblyBefore.cleaned = false;
         DomAssemblyAfter.cleaned = false;
         DomAssemblyAfterWithException.cleaned = false;
@@ -41,6 +46,7 @@ public class ExecutionLifecycleTest extends TestCase {
         SaxVisitCleanable.cleaned = false;
     }
 
+	@Test
     public void test_dom_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("dom-config-01.xml"));
 
@@ -53,6 +59,7 @@ public class ExecutionLifecycleTest extends TestCase {
         assertTrue(DomProcessingAfter.cleaned);
     }
 
+	@Test
     public void test_dom_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("dom-config-02.xml"));
 
@@ -60,6 +67,7 @@ public class ExecutionLifecycleTest extends TestCase {
         assertTrue(DomProcessingVisitCleanable.cleaned);
     }
 
+	@Test
     public void test_SAX_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("sax-config-01.xml"));
 
@@ -69,6 +77,7 @@ public class ExecutionLifecycleTest extends TestCase {
         assertTrue(SaxVisitAfter.cleaned);
     }
 
+	@Test
     public void test_SAX_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("sax-config-02.xml"));
 

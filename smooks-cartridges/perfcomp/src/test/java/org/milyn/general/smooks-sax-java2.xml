@@ -1,19 +1,14 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
 
     <resource-config selector="global-parameters">
         <param name="stream.filter.type">SAX</param>
-        <param name="maintain.element.stack">false</param>
+        <param name="maintain.element.stack">true</param>
     </resource-config>
 
-    <resource-config selector="org.milyn.general.OrderItem">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
-        <param name="beanId">orderItem</param>
-        <param name="beanClass">java.util.HashMap</param>
-        <param name="bindings">
-            <binding property="position" selector="position" />
-            <binding property="quantity" selector="quantity" />
-		</param>
-    </resource-config>
+    <jb:bean beanId="orderItem" class="java.util.HashMap" createOnElement="org.milyn.general.OrderItem">
+        <jb:value property="position" data="org.milyn.general.OrderItem/position"/>
+        <jb:value property="quantity" data="org.milyn.general.OrderItem/quantity"/>
+    </jb:bean>
 
 </smooks-resource-list>

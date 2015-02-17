@@ -16,7 +16,8 @@
 
 package org.milyn.edisax;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.apache.commons.lang.StringUtils;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.xml.sax.InputSource;
@@ -28,9 +29,10 @@ import java.util.Arrays;
 /**
  * @author tfennelly
  */
-public class BufferedSegmentReaderTest extends TestCase {
+public class BufferedSegmentReaderTest {
 
-	public void test() throws IOException {
+    @Test	
+    public void test() throws IOException {
 		test("111111111ff22222222222ff333333333ff4444444444f4444444fff5555555555", "ff", "|",
 			new String[] {"111111111", "22222222222", "333333333", "4444444444f4444444", "f5555555555"});
 
@@ -42,6 +44,7 @@ public class BufferedSegmentReaderTest extends TestCase {
 				new String[] {"111111111", "22222222222", "333333333", "4444444444f4444444", "f5555555555"});
 	}
 
+    @Test
     public void test_ignore_cr_lf() throws IOException {
         String fieldDelimiter = "*";
         String segmentDelimiter = "'!$";
@@ -74,6 +77,7 @@ public class BufferedSegmentReaderTest extends TestCase {
         
     }
 
+    @Test
     public void test_not_ignore_cr_lf() throws IOException {
         String fieldDelimiter = "*";
         String segmentDelimiter = "'";

@@ -4,63 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
+        <artifactId>testres</artifactId>
 	<version>1.7-SNAPSHOT</version>
-        <relativePath>../../smooks-parent/pom.xml</relativePath>
+        <relativePath>../../testres/pom.xml</relativePath>
     </parent>
 
     <name>Milyn :: EDI :: Test Utilities</name>
     <artifactId>milyn-smooks-edi-test</artifactId>
     <packaging>bundle</packaging>
-
-    <profiles>
-        <profile>
-            <id>all-tests</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.16</version>
-                        <configuration>
-                            <environmentVariables>
-                                <org.milyn.xml.XsdValidator.SchemaFactory>
-                                    org.apache.xerces.jaxp.validation.XMLSchemaFactory
-                                </org.milyn.xml.XsdValidator.SchemaFactory>
-                            </environmentVariables>
-                            <forkMode>once</forkMode>
-                            <argLine>-Xms128m -Xmx512m -XX:MaxPermSize=512m</argLine>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <!--
-            Need to exclude the UN/EDIFACT test harness tests where there are VM memory restrictions e.g. on Bamboo.
-            -->
-            <id>lowmem</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.16</version>
-                        <configuration>
-                            <forkMode>once</forkMode>
-                            <argLine>-Xms128m -Xmx512m -XX:MaxPermSize=512m</argLine>
-                            <excludes>
-                                <exclude>org/milyn/edi/test/unedifact/**</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>
@@ -72,16 +23,9 @@
             <artifactId>milyn-smooks-routing</artifactId>
         </dependency>
         <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
+            <artifactId>antrunner</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>

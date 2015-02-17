@@ -16,7 +16,8 @@
 
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.util.DomUtil;
 import org.milyn.xml.XmlUtil;
@@ -29,8 +30,9 @@ import org.xml.sax.helpers.AttributesImpl;
 import java.util.Arrays;
 import java.util.List;
 
-public class SmooksResourceConfigurationTest extends TestCase {
+public class SmooksResourceConfigurationTest {
 
+	@Test
 	public void test_getParameter() {
 		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
 
@@ -50,6 +52,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
 		assertEquals(yParams, allParams.get(1));
 	}
 
+	@Test
 	public void test_getBoolParameter() {
 		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
 		resourceConfig.setParameter("x", "true");
@@ -58,6 +61,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
 		assertFalse("Expected y to be false", resourceConfig.getBoolParameter("y", false));
 	}
 
+	@Test
 	public void test_getStringParameter() {
 		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
 		resourceConfig.setParameter("x", "xxxx");
@@ -66,6 +70,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
 		assertEquals("Expected y to be yyyy", "yyyy", resourceConfig.getStringParameter("y", "yyyy"));
 	}
     
+	@Test
     public void test_isTargetedAtElement_DOM() {
         Document doc = DomUtil.parse("<a><b><c><d><e/></d></c></b></a>");
         Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
@@ -85,6 +90,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc7.isTargetedAtElement(e, null));
     }
 
+	@Test
     public void test_isTargetedAtElement_DOM_with_Attribute() {
         Document doc = DomUtil.parse("<a><b><c><d><e/></d></c></b></a>");
         Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
@@ -107,6 +113,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc10.isTargetedAtElement(e, null));
     }
 
+	@Test
     public void test_isTargetedAtElement_DOM_wildcards() {
         Document doc = DomUtil.parse("<a><b><c><d><e/></d></c></b></a>");
         Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
@@ -165,6 +172,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc23.isTargetedAtElement(e, null));
     }
 
+	@Test
     public void test_isTargetedAtElement_DOM_rooted() {
         Document doc = DomUtil.parse("<a><b><c><a><d><e/></d></a></c></b></a>");
         Element e = (Element) XmlUtil.getNode(doc, "a/b/c/a/d/e");
@@ -189,6 +197,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc5.isTargetedAtElement(e, null));
     }
 
+	@Test
     public void test_isTargetedAtElement_SAX() {
         SAXElement e = buildE();
 
@@ -205,6 +214,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc5.isTargetedAtElement(e, null));
     }
 
+	@Test
     public void test_isTargetedAtElement_SAX_wildcards() {
         SAXElement e = buildE();
 
@@ -266,12 +276,14 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc23.isTargetedAtElement(e, null));
     }
 
+	@Test
     public void test_attributeSelector() {        
         // Test that the attribute part of the selector doesn't get lowercased...
         SmooksResourceConfiguration resource = new SmooksResourceConfiguration("a/b/@myAttribute");
         assertEquals("a/b{@myAttribute}", SelectorStepBuilder.toString(resource.getSelectorSteps()));
     }
 
+	@Test
     public void test_isTargetedAtElement_SAX_rooted() {
         SAXElement e = buildE_rooted();
 
@@ -288,6 +300,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc5.isTargetedAtElement(e, null));
     }
 
+	@Test
     public void test_isTargetedAtElement_SAX_with_Attribute() {
         SAXElement e = buildE_rooted();
 
@@ -312,6 +325,7 @@ public class SmooksResourceConfigurationTest extends TestCase {
         assertTrue(!rc10.isTargetedAtElement(e, null));
     }
 
+	@Test
     public void test_hashedSelector() {
         SmooksResourceConfiguration resource = new SmooksResourceConfiguration("#/@b");
 

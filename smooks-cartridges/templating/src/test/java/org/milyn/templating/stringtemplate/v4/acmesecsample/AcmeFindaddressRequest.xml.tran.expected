@@ -1,0 +1,37 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:m0="http://schemas.acme.com/addressfinder/" xmlns:m1="http://schemas.acme.com/addressmanager/" xmlns:wsa="http://www.w3.org/2005/03/addressing" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					
+  <SOAP-ENV:Header>
+    <wsa:MessageID>9ccdc110-b5e1-11da-bb6e-e2761a0ce10a</wsa:MessageID>
+    <wsa:Action>urn:x-acme:servicetype:Address:findAddresses</wsa:Action>
+  <wsse:Security xmlns:wsse="http://schemas.xmlsoap.org/ws/2002/04/secext">
+    <wsse:UsernameToken>
+        <wsse:Username>johnnym</wsse:Username>
+        <wsse:Password>guessagain</wsse:Password>
+    </wsse:UsernameToken>
+</wsse:Security></SOAP-ENV:Header>
+
+  <SOAP-ENV:Body>
+    <m:findAddresses SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:m="v2">
+      
+      <addresses SOAP-ENC:arrayType="m0:Address[1]" xsi:type="SOAP-ENC:Array">
+        <m0:item0 xsi:type="m0:Address">
+          <houseNumber>380</houseNumber>
+          <street>New York St.</street>
+          <city>Redlands</city>
+          <state_prov>CA</state_prov>
+          <zone>92373</zone>
+          <country>US</country>
+        </m0:item0>
+        <m0:item1 xsi:type="m0:Address">
+          <street>1000 Main St.</street>
+          <country>US</country>
+        </m0:item1>
+      </addresses>
+      <addressManagerOptions xsi:type="m1:AddressManagerOptions">
+        <dataSource xsi:type="xsd:string">GDT.Address.US</dataSource>
+      </addressManagerOptions>
+      <token xsi:type="xsd:string">MyToken</token>
+    </m:findAddresses>
+  </SOAP-ENV:Body>
+
+</SOAP-ENV:Envelope>

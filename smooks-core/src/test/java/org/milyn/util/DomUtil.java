@@ -19,7 +19,8 @@ package org.milyn.util;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.xml.XmlUtil;
 import org.w3c.dom.Document;
@@ -46,7 +47,7 @@ public abstract class DomUtil {
 			return XmlUtil.parseStream(stream, XmlUtil.VALIDATION_TYPE.NONE, true);
 		} catch (Exception e) {
 			e.printStackTrace();
-			TestCase.fail("Failed to parse Document stream: " + e.getMessage());
+			fail("Failed to parse Document stream: " + e.getMessage());
 		}
 		return null;
 	}

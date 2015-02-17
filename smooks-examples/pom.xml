@@ -5,12 +5,11 @@
 
     <parent>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
+        <artifactId>testres</artifactId>
 	<version>1.7-SNAPSHOT</version>
-        <relativePath>../smooks-parent/pom.xml</relativePath>
+        <relativePath>../testres/pom.xml</relativePath>
     </parent>
 
-    <groupId>org.milyn</groupId>
     <artifactId>smooks-examples</artifactId>
     <name>Milyn :: Smooks Examples :: Aggregator</name>
     <packaging>pom</packaging>

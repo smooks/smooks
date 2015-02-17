@@ -30,17 +30,19 @@ import org.milyn.payload.StringResult;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Contributed by Clemens Fuchslocher.
  *  
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_427_Test extends TestCase {
+public class MILYN_427_Test {
 
 	private static Logger logger = Logger.getLogger(MILYN_427_Test.class);
 
+        @Test
 	public void test() throws IOException, SAXException {
 		Smooks smooks = null;
 

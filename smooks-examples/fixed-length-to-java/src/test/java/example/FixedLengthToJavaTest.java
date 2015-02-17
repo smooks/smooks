@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -24,9 +25,10 @@ import java.util.List;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class FixedLengthToJavaTest extends TestCase {
+public class FixedLengthToJavaTest {
 
 
+	@Test
 	public void test() throws IOException, SAXException {
         List<Customer> result = Main.runSmooksTransform();
 

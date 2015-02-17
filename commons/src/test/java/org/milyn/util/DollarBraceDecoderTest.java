@@ -15,13 +15,15 @@
 */
 package org.milyn.util;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DollarBraceDecoderTest  extends TestCase {
+public class DollarBraceDecoderTest {
 
+	@Test
     public void test_getTokens() {
         assertEquals("[]", DollarBraceDecoder.getTokens("aaaaaa").toString());
         assertEquals("[x]", DollarBraceDecoder.getTokens("aaa${x}aaa").toString());
@@ -33,6 +35,7 @@ public class DollarBraceDecoderTest  extends TestCase {
         assertEquals("[orderDetail.orderNum, accounts[0].USERID[2], orderDetail.date]", DollarBraceDecoder.getTokens( "INSERT INTO ORDERS VALUES(${orderDetail.orderNum}, ${accounts[0].USERID[2]}, ${orderDetail.date})").toString());
     }
 
+	@Test
     public void test_replaceTokens() {
         assertEquals("aaaaaa", DollarBraceDecoder.replaceTokens("aaaaaa", "?"));
         assertEquals("aaa?aaa", DollarBraceDecoder.replaceTokens("aaa${x}aaa", "?"));

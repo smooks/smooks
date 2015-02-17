@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.JIRAs.MILYN_294;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
 import org.milyn.SmooksException;
@@ -28,12 +29,13 @@ import org.milyn.delivery.sax.SAXVisitor01;
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN_294_Test extends TestCase {
+public class MILYN_294_Test {
 
+	@Test
     public void test_setting_sax() {
         Smooks smooks = new Smooks();
 
-        // Set the Smooks instnace to use the SAX filter...
+        // Set the Smooks instance to use the SAX filter...
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 
         // Add a DOM-only visitor
@@ -47,10 +49,11 @@ public class MILYN_294_Test extends TestCase {
         }
     }
 
+	@Test
     public void test_setting_dom() {
         Smooks smooks = new Smooks();
 
-        // Set the Smooks instnace to use the DOM filter...
+        // Set the Smooks instance to use the DOM filter...
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
 
         // Add a SAX-only visitor

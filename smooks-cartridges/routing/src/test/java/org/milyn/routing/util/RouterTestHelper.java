@@ -2,7 +2,6 @@ package org.milyn.routing.util;
 
 import org.milyn.container.MockExecutionContext;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.routing.jms.TestBean;
 
 public final class RouterTestHelper

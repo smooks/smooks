@@ -3,12 +3,16 @@ package org.milyn.expression;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
-public class MVELExpressionEvaluatorTest extends TestCase {
+import static org.junit.Assert.*;
+
+public class MVELExpressionEvaluatorTest {
 
 	MVELExpressionEvaluator evaluator;
 
+	@Test
 	public void test_getValue() {
 
 		Object expected = new Object();
@@ -22,6 +26,7 @@ public class MVELExpressionEvaluatorTest extends TestCase {
 		assertSame("Expected object is not same as the result", expected, result);
 	}
 
+	@Test
 	public void test_eval() {
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -41,6 +46,7 @@ public class MVELExpressionEvaluatorTest extends TestCase {
 		assertFalse("Expected false", result);
 	}
 
+	@Test
 	public void test_vars_isdef() {
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -58,6 +64,7 @@ public class MVELExpressionEvaluatorTest extends TestCase {
 
 	}
 
+	@Test
 	public void test_vars_resolvable() {
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -75,6 +82,7 @@ public class MVELExpressionEvaluatorTest extends TestCase {
 
 	}
 
+	@Test
 	public void test_vars_unresolvable() {
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -91,6 +99,7 @@ public class MVELExpressionEvaluatorTest extends TestCase {
 		assertFalse("Expected false", result);
 	}
 
+	@Test
 	public void test_vars_get() {
 		Object var = new Object();
 
@@ -115,8 +124,8 @@ public class MVELExpressionEvaluatorTest extends TestCase {
 
 	}
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		evaluator = new MVELExpressionEvaluator();
 	}
 

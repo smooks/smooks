@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.dom.serialize;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
 import org.milyn.cdr.ParameterAccessor;
@@ -28,8 +29,9 @@ import java.io.ByteArrayInputStream;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ContextObjectSerializationUnitTest extends TestCase {
+public class ContextObjectSerializationUnitTest {
 
+	@Test
     public void test() {
         Smooks smooks = new Smooks();
         ExecutionContext context;

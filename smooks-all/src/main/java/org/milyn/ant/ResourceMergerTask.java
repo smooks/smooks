@@ -27,6 +27,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.FileResource;
+import org.apache.tools.ant.types.Resource;
 import org.milyn.ResourceMerger;
 import org.milyn.archive.Archive;
 import org.milyn.io.FileUtils;
@@ -120,7 +121,7 @@ public class ResourceMergerTask extends Task
     private List<File> getJarsFromFileSet()
     {
         final List<File> jars = new ArrayList<File>();
-        final Iterator<FileResource> iterator = fileSet.iterator();
+        final Iterator<Resource> iterator = fileSet.iterator();
         while(iterator.hasNext())
         {
             jars.add(((FileResource) iterator.next()).getFile());

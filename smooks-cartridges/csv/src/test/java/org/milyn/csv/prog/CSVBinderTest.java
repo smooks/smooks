@@ -1,6 +1,7 @@
 package org.milyn.csv.prog;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.csv.Person;
 
@@ -11,8 +12,9 @@ import java.io.InputStream;
 /**
  * @author
  */
-public class CSVBinderTest extends TestCase {
+public class CSVBinderTest {
 
+    @Test
     public void test_CSVListBinder() {
         InputStream csvStream = getClass().getResourceAsStream("../input-message-01.csv");
 
@@ -23,6 +25,7 @@ public class CSVBinderTest extends TestCase {
         assertEquals("[(Tom, Fennelly, Ireland, Male, 4), (Mike, Fennelly, Ireland, Male, 2)]", people.toString());
     }
 
+    @Test
     public void test_CSVMapBinder() {
         InputStream csvStream = getClass().getResourceAsStream("../input-message-01.csv");
 

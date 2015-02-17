@@ -15,9 +15,10 @@
 
 package org.milyn.routing.file;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,9 +27,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -52,6 +50,7 @@ import org.xml.sax.SAXException;
  * 
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
+@Test ( groups = "unit" )
 public class FileOutputStreamResourceTest 
 {
 	private String resourceName = "testResourceName";
@@ -64,7 +63,7 @@ public class FileOutputStreamResourceTest
     private File file2 = new File("target/config-01-test/2/2.xml");
     private File file3 = new File("target/config-01-test/3/3.xml");
 	
-	@Before
+    @BeforeClass
     public void setUp() throws Exception {
         config = createConfig( resourceName, fileNamePattern, destinationDirectory, listFileName);
         Configurator.configure( resource, config, new MockApplicationContext() );
@@ -184,7 +183,7 @@ public class FileOutputStreamResourceTest
         return new String(FileUtils.readFile(file));
     }
 
-    @After
+    @AfterClass
     public void tearDown() throws Exception {
         deleteFiles();
     }

@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.JIRA.MILYN_238;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.delivery.sax.TrackedStringWriter;
 
 import java.io.IOException;
@@ -24,8 +25,9 @@ import java.io.IOException;
  * http://jira.codehaus.org/browse/MILYN-238
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN238Test extends TestCase {
+public class MILYN238Test {
 
+    @Test
     public void test() throws IOException {
         char[] text = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         TrackedStringWriter writer = new TrackedStringWriter();

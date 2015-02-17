@@ -8,11 +8,15 @@ import org.milyn.javabean.performance.model.Order;
 import org.milyn.javabean.performance.model.Person;
 
 import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.BeansWrapperBuilder;
+import freemarker.template.Configuration;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
 public class CustomerGenerator implements TemplateSequenceModel {
+
+                BeansWrapperBuilder builder = new BeansWrapperBuilder(Configuration.VERSION_2_3_21);
 
 		private final int size;
 		
@@ -76,7 +80,7 @@ public class CustomerGenerator implements TemplateSequenceModel {
 			
 			c.orders.add(order);
 			
-			return BeansWrapper.getDefaultInstance().wrap(c);
+			return builder.build().wrap(c);
 		}
 
 		/* (non-Javadoc)

@@ -55,6 +55,7 @@ public class EntityLocatorTest extends BaseTestCase {
 	private FullInterfaceDao<Object> dao;
 
 	@SuppressWarnings("unchecked")
+	@Test
 	public void test_entity_locate() throws Exception {
 		Object result = new Object();
 
@@ -92,6 +93,7 @@ public class EntityLocatorTest extends BaseTestCase {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Test
 	public void test_entity_locate_query_no_result() throws Exception {
 		Collection<?> result = Collections.emptyList();
 
@@ -122,6 +124,7 @@ public class EntityLocatorTest extends BaseTestCase {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Test
 	public void test_entity_locate_no_result_but_expected() throws Exception {
 		Collection<?> result = Collections.emptyList();
 
@@ -150,6 +153,7 @@ public class EntityLocatorTest extends BaseTestCase {
         Assert.fail("NoLookupResultException was not thrown.");
 	}
 
+	@Test
 	public void test_entity_locate_query_positional_parameter() throws Exception {
 		Collection<?> result = Collections.emptyList();
 
@@ -175,6 +179,7 @@ public class EntityLocatorTest extends BaseTestCase {
         verify(dao).lookupByQuery(eq("from SomeThing where arg1=:1 and arg2=:2"), eq("value-1"), eq("value-2"));
 	}
 
+	@Test
 	public void test_entity_locate_positional_parameter() throws Exception {
 		Collection<?> result = Collections.emptyList();
 

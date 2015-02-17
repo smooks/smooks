@@ -15,7 +15,8 @@
 */
 package org.milyn.javassist;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -32,10 +33,11 @@ import javassist.*;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class JavassistTest extends TestCase {
+public class JavassistTest {
 
     private static final int INVOKE_COUNT = 1000000;
 
+    @Test
     public void test_reflective() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
         Method setPropMethod = TestPOJO.class.getMethod("setProp", String.class);
         TestPOJO objInst = new TestPOJO();
@@ -54,6 +56,7 @@ public class JavassistTest extends TestCase {
         System.out.println("Reflective Time: " + (System.currentTimeMillis() - start));
     }
 
+    @Test
     public void test_javassist() throws NotFoundException, CannotCompileException, IllegalAccessException, InstantiationException, InterruptedException {
         JavassistSetter setter = buildSetterClass();
         TestPOJO objInst = new TestPOJO();
@@ -72,6 +75,7 @@ public class JavassistTest extends TestCase {
         System.out.println("Javasist Time: " + (System.currentTimeMillis() - start));
     }
 
+    @Test
     public void test_mvel() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
 
     	Serializable compiled = MVEL.compileExpression("testPOJO.setProp('hi')");

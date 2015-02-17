@@ -15,13 +15,15 @@
  */
 package org.milyn.javabean.factory;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.MockExecutionContext;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class PerfTest extends TestCase {
+public class PerfTest {
 
 	private static boolean DISABLED = true;
 
@@ -29,6 +31,7 @@ public class PerfTest extends TestCase {
 
 	private static final int INVOKE_COUNT = 1000000;
 
+    @Test
     public void test_parse_basic() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
     	if(DISABLED) return;
 
@@ -43,6 +46,7 @@ public class PerfTest extends TestCase {
         System.out.println("Basic Parser Time: " + (System.currentTimeMillis() - start));
     }
 
+    @Test
     public void test_invoke_static_basic() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
     	if(DISABLED) return;
 
@@ -60,6 +64,7 @@ public class PerfTest extends TestCase {
         System.out.println("Basic Invoke Static factory Time: " + (System.currentTimeMillis() - start));
     }
 
+    @Test
     public void test_invoke_instance_basic() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
     	if(DISABLED) return;
 
@@ -78,6 +83,7 @@ public class PerfTest extends TestCase {
     }
 
 
+        @Test
 	public void test_parse_MVEL() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
 		if(DISABLED) return;
 
@@ -92,6 +98,7 @@ public class PerfTest extends TestCase {
         System.out.println("MVEL Parser Time: " + (System.currentTimeMillis() - start));
     }
 
+        @Test
 	public void test_invoke_static_MVEL() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
 		if(DISABLED) return;
 
@@ -110,6 +117,7 @@ public class PerfTest extends TestCase {
         System.out.println("MVEL Invoke static factory Time: " + (System.currentTimeMillis() - start));
     }
 
+        @Test
 	public void test_invoke_instance_MVEL() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
 		if(DISABLED) return;
 

@@ -55,6 +55,7 @@ public class EntityUpdaterTest extends BaseTestCase {
 	@Mock
 	private MappingDao<String> mappedDao;
 
+	@Test
 	public void test_entity_update() throws Exception {
 		String toUpdate1 = new String("toUpdate1");
 
@@ -78,6 +79,7 @@ public class EntityUpdaterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_update_with_named_dao() throws Exception {
 		String toUpdate1 = new String("toUpdate1");
 
@@ -104,6 +106,7 @@ public class EntityUpdaterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_update_to_other_beanId() throws Exception {
 		String toUpdate1 = new String("toUpdate1");
 
@@ -131,6 +134,7 @@ public class EntityUpdaterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_update_with_mapped_dao() throws Exception {
 		String toUpdate1 = new String("toUpdate1");
 
@@ -154,6 +158,7 @@ public class EntityUpdaterTest extends BaseTestCase {
         }
     }
 
+	@Test
 	public void test_entity_update_with_updateBefore() throws Exception {
 		String toUpdate1 = new String("toUpdate1");
 
@@ -177,7 +182,7 @@ public class EntityUpdaterTest extends BaseTestCase {
         }
 	}
 
-
+	@Test
 	public void test_entity_update_producer_consumer() throws Exception {
 
 		Smooks smooks = new Smooks(getResourceAsStream("entity-updater-06.xml"));

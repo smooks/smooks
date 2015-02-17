@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 
@@ -37,16 +38,16 @@ public class SAXVisitor03 implements SAXElementVisitor {
     }
 
     public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
-        TestCase.assertEquals(SAXVisitor03.element, element);
+        assertEquals(SAXVisitor03.element, element);
         childText.add(text.getText());
     }
 
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-        TestCase.assertEquals(SAXVisitor03.element, element);
+        assertEquals(SAXVisitor03.element, element);
         children.add(childElement);
     }
 
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        TestCase.assertEquals(SAXVisitor03.element, element);
+        assertEquals(SAXVisitor03.element, element);
     }
 }

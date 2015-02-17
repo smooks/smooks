@@ -18,8 +18,8 @@ package org.milyn.edisax.v1_5.namespaces;
 import java.io.IOException;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDIParser;
 import org.milyn.edisax.model.EdifactModel;
@@ -34,10 +34,11 @@ import org.xml.sax.SAXException;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class NamespacesTest extends TestCase {
+public class NamespacesTest {
 
 	private static final String NS = "http://smooks.org/edi/un/test.xsd";
 
+        @Test
 	public void test() throws IOException, SAXException,
 			EDIConfigurationException {
 		EdifactModel msg1 = EDIParser.parseMappingModel(getClass()

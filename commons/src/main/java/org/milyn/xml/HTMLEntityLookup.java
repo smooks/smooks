@@ -33,12 +33,12 @@ public abstract class HTMLEntityLookup {
 	/**
 	 * Table providing the entity reference to character-code mappings.
 	 */
-	private static Hashtable m_nameMap = new Hashtable();
+	private static Hashtable<String,Character>  m_nameMap = new Hashtable<String, Character>();
 
 	/**
 	 * Table providing the character-code to entity reference mappings.
 	 */
-	private static Hashtable m_codeMap = new Hashtable();
+	private static Hashtable<Character,String>  m_codeMap = new Hashtable<Character,String>();
 
 	/**
 	 * Load the entities.

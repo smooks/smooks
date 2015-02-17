@@ -15,8 +15,8 @@
 */
 package org.milyn.delivery;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.milyn.container.ExecutionContext;
@@ -33,8 +33,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class AbstractParserTest extends TestCase {
+public class AbstractParserTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-AbstractParserTest.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -53,7 +54,8 @@ public class AbstractParserTest extends TestCase {
         assertNotNull(reader.entityResolver);
         assertNotNull(reader.errorHandler);
     }
-    
+   
+    @Test 
     public void test_readerPool_Pooled() {
     	Smooks smooks = new Smooks();
     	
@@ -66,7 +68,8 @@ public class AbstractParserTest extends TestCase {
     	smooks.filterSource(new StringSource("<x/>"));    	
     	assertEquals(3, PooledSAXParser.numSetHandlerCalls);
     }
-    
+   
+    @Test 
     public void test_readerPool_Unpooled() {
     	Smooks smooks = new Smooks();
     	
@@ -97,10 +100,10 @@ public class AbstractParserTest extends TestCase {
 				lastParserInstance = this;
 			}
 			if(this != lastParserInstance) {
-				Assert.fail("Should only be 1 parser instanse (pooled).");
+				fail("Should only be 1 parser instanse (pooled).");
 			}
 			if(handler == lastHandlerInstance) {
-				Assert.fail("Shouldn't be just 1 handler instanse (pooled or unpooled).");
+				fail("Shouldn't be just 1 handler instanse (pooled or unpooled).");
 			}
 			numSetHandlerCalls++;
 			lastParserInstance = this;
@@ -117,10 +120,10 @@ public class AbstractParserTest extends TestCase {
     	
 		public void setContentHandler(ContentHandler handler) {
 			if(this == lastParserInstance) {
-				Assert.fail("Shouldn't be just 1 parser instanse (unpooled).");
+				fail("Shouldn't be just 1 parser instanse (unpooled).");
 			}
 			if(handler == lastHandlerInstance) {
-				Assert.fail("Shouldn't be just 1 handler instanse (pooled or unpooled).");
+				fail("Shouldn't be just 1 handler instanse (pooled or unpooled).");
 			}
 			numSetHandlerCalls++;
 			lastParserInstance = this;

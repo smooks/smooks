@@ -34,10 +34,11 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class NamespaceDeclarationStackTest extends TestCase {
+public class NamespaceDeclarationStackTest {
 
 	public static final class MockContentHandler extends DefaultHandler {
 	
@@ -57,6 +58,7 @@ public class NamespaceDeclarationStackTest extends TestCase {
 		
 	}
 	
+	@Test
 	public void testSimpleMaping() throws Exception {
 		MockContentHandler handler = new MockContentHandler();
         NamespaceDeclarationStack nds = new NamespaceDeclarationStack();
@@ -66,6 +68,7 @@ public class NamespaceDeclarationStackTest extends TestCase {
 		assertEquals("[start:a:nsa, end:a]", handler.history.toString());
 	}
 	
+	@Test
 	public void testSimpleMaping2() throws Exception {
 		MockContentHandler handler = new MockContentHandler();
         NamespaceDeclarationStack nds = new NamespaceDeclarationStack();
@@ -77,6 +80,7 @@ public class NamespaceDeclarationStackTest extends TestCase {
 		assertEquals("[start:a:nsa, end:a]", handler.history.toString());
 	}
 	
+	@Test
 	public void testTwoNamespacesMapping() throws Exception {
 		MockContentHandler handler = new MockContentHandler();
         NamespaceDeclarationStack nds = new NamespaceDeclarationStack();
@@ -88,6 +92,7 @@ public class NamespaceDeclarationStackTest extends TestCase {
 		assertEquals("[start:a:nsa, start:b:nsb, end:b, end:a]", handler.history.toString());
 	}
 	
+	@Test
 	public void testNamespacesWithAttributes() throws Exception {
 		AttributesImpl attrs = new AttributesImpl();
 		attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "b", "xmlns:b", "CDATA", "nsb");

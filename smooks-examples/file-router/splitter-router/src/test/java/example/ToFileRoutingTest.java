@@ -15,7 +15,12 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.StreamFilterType;
 import org.milyn.FilterSettings;
@@ -23,6 +28,7 @@ import org.milyn.container.ExecutionContext;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.FileInputStream;
@@ -30,7 +36,7 @@ import java.io.FileInputStream;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ToFileRoutingTest extends TestCase {
+public class ToFileRoutingTest {
 
     private File targetDir = new File("target/orders");
     private File file1 = new File(targetDir, "order-231-1.xml");
@@ -42,11 +48,13 @@ public class ToFileRoutingTest extends TestCase {
     private File file7 = new File(targetDir, "order-231-7.xml");
     private File listFile = new File(targetDir, "order-231.lst");
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         deleteFiles();
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         deleteFiles();
     }
 
@@ -124,7 +132,7 @@ public class ToFileRoutingTest extends TestCase {
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
-            TestCase.fail(e.getMessage());
+            fail(e.getMessage());
         }
     }
 
@@ -143,9 +151,9 @@ public class ToFileRoutingTest extends TestCase {
                 try {
                     smooks = new Smooks(new FileInputStream("smooks-config.xml"));
                 } catch (IOException e) {
-                    TestCase.fail(e.getMessage());
+                    fail(e.getMessage());
                 } catch (SAXException e) {
-                    TestCase.fail(e.getMessage());
+                    fail(e.getMessage());
                 }
 
                 ExecutionContext execCtx = smooks.createExecutionContext();

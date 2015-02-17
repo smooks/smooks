@@ -19,7 +19,8 @@
  */
 package org.milyn.csv;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.payload.StringResult;
 import org.xml.sax.SAXException;
@@ -30,8 +31,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:julien.sirocchi@gmail.com">julien.sirocchi@gmail.com</a>
  */
-public class CSVReaderEnhancementsTest extends TestCase {
+public class CSVReaderEnhancementsTest {
 
+    @Test
     public void testInvalidLines() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-invalidlines.xml"));
 

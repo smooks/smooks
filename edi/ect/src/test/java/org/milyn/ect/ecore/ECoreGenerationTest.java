@@ -7,7 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -16,10 +17,11 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 
-public class ECoreGenerationTest extends TestCase {
+public class ECoreGenerationTest {
 
 	private static final ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
 
+	@Test
 	public void testECoreGeneration() throws Exception {
 		InputStream inputStream = getClass().getResourceAsStream("/D99A.zip");
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
@@ -73,6 +75,7 @@ public class ECoreGenerationTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testMissingSegmentNames() throws Exception {
 		InputStream inputStream = getClass().getResourceAsStream("/d96b.zip");
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);

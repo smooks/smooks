@@ -26,31 +26,34 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanIdRegister;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.payload.StringSource;
 import org.milyn.util.HsqlServer;
 import org.xml.sax.SAXException;
 import org.hsqldb.jdbcDriver;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SQLExecutorTest extends TestCase
-{
+public class SQLExecutorTest {
+
     private HsqlServer hsqlServer;
 
+        @Before
 	public void setUp() throws Exception {
         hsqlServer = new HsqlServer(9992);
         hsqlServer.execScript(getClass().getResourceAsStream("test.script"));
     }
 
+        @After
 	public void tearDown() throws Exception {
         hsqlServer.stop();
     }
 
+    @Test
     public void test_appContextTime() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
         try {
@@ -60,6 +63,7 @@ public class SQLExecutorTest extends TestCase
         }
     }
 
+    @Test
     public void test_appContextTimeExtendedConfig() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config.xml"));
     	test_appContextTime(smooks);
@@ -70,6 +74,7 @@ public class SQLExecutorTest extends TestCase
         }
     }
 
+    @Test
     public void test_appContextTimeProgrammatic() throws Exception {
         Smooks smooks = new Smooks();
 
@@ -145,6 +150,7 @@ public class SQLExecutorTest extends TestCase
         assertTrue(orders32 == orders42); // order42 should come from the app context cache
     }
 
+    @Test
     @SuppressWarnings("unchecked")
 	public void test_ResultsetRowSelector_01() throws IOException, SAXException, InterruptedException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
@@ -162,7 +168,7 @@ public class SQLExecutorTest extends TestCase
         }
     }
 
-
+    @Test
     @SuppressWarnings("unchecked")
 	public void test_ResultsetRowSelector_02() throws IOException, SAXException, InterruptedException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-failed-select-01.xml"));
@@ -180,6 +186,7 @@ public class SQLExecutorTest extends TestCase
         }
     }
 
+    @Test
     public void test_ResultsetRowSelector_03() throws IOException, SAXException, InterruptedException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-failed-select-02.xml"));
 

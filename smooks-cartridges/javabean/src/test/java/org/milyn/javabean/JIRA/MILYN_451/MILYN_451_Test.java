@@ -25,14 +25,16 @@ import org.milyn.javabean.context.BeanContext;
 import org.milyn.payload.JavaResult;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_451_Test extends TestCase {
+public class MILYN_451_Test {
 
+        @Test
 	public void test() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
 		ExecutionContext execCtx = smooks.createExecutionContext();

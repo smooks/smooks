@@ -15,14 +15,16 @@
 */
 package org.milyn.delivery.sax;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SAXUtilTest extends TestCase {
+public class SAXUtilTest {
 
+	@Test
     public void test_getXPath() {
         SAXElement a = new SAXElement("http://x", "a", "a", new AttributesImpl(), null);
         SAXElement b = new SAXElement("http://x", "b", "b", new AttributesImpl(), a);
@@ -30,6 +32,7 @@ public class SAXUtilTest extends TestCase {
         assertEquals("a/b/c", SAXUtil.getXPath(c));
     }
 
+	@Test
     public void test_getAttribute() {
         AttributesImpl attributes = new AttributesImpl();
 

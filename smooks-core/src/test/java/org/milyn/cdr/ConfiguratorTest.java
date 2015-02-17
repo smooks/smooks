@@ -15,7 +15,8 @@
 */
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.annotation.Uninitialize;
@@ -31,8 +32,9 @@ import java.nio.charset.Charset;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ConfiguratorTest extends TestCase {
+public class ConfiguratorTest {
 
+	@Test
     public void test_paramaterSetting_allok() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit1 cdu = new MyContentDeliveryUnit1();
@@ -47,6 +49,7 @@ public class ConfiguratorTest extends TestCase {
         assertEquals(8, cdu.paramC);
     }
 
+	@Test
     public void test_paramaterSetting_missing_required() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit1 cdu = new MyContentDeliveryUnit1();
@@ -63,7 +66,8 @@ public class ConfiguratorTest extends TestCase {
             assertTrue(e.getMessage().startsWith("<param> 'paramC' not specified on resource configuration"));
         }
     }
-
+	
+	@Test
     public void test_paramaterSetting_optional_default() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit2 cdu = new MyContentDeliveryUnit2();
@@ -79,6 +83,7 @@ public class ConfiguratorTest extends TestCase {
         assertEquals(9, cdu.paramC);
     }
 
+	@Test
     public void test_Config_And_Context_Setting() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit3 cdu = new MyContentDeliveryUnit3();
@@ -88,6 +93,7 @@ public class ConfiguratorTest extends TestCase {
         assertNotNull(cdu.appContext);
     }
 
+	@Test
     public void test_paramaterSetting_Config_setConfiguration_on_private_inner_class() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit4 cdu = new MyContentDeliveryUnit4();
@@ -100,6 +106,7 @@ public class ConfiguratorTest extends TestCase {
         }
     }
 
+	@Test
     public void test_paramaterSetting_Config_setConfiguration_on_top_level_class() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit5 cdu = new MyContentDeliveryUnit5();
@@ -108,6 +115,7 @@ public class ConfiguratorTest extends TestCase {
         assertNotNull(cdu.config);
     }
 
+	@Test
     public void test_paramaterSetting_Config_choice() {
         SmooksResourceConfiguration config;
         MyContentDeliveryUnit6 cdu = new MyContentDeliveryUnit6();
@@ -136,6 +144,7 @@ public class ConfiguratorTest extends TestCase {
         }
     }
 
+	@Test
     public void test_paramaterSetting_decode_error() {
         SmooksResourceConfiguration config;
         MyContentDeliveryUnit7 cdu = new MyContentDeliveryUnit7();
@@ -151,6 +160,7 @@ public class ConfiguratorTest extends TestCase {
         }
     }
 
+	@Test
     public void test_paramaterSetting_setterMethod() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit8 cdu1 = new MyContentDeliveryUnit8();
@@ -176,7 +186,7 @@ public class ConfiguratorTest extends TestCase {
         assertEquals("UTF-8", cdu3.getEncoding().displayName());
     }
 
-
+	@Test
     public void test_Initialize_Uninitialize() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit11 cdu1 = new MyContentDeliveryUnit11();

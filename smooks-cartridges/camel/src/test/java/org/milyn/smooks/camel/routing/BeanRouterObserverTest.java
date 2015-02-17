@@ -40,7 +40,7 @@ public class BeanRouterObserverTest extends CamelTestSupport
     @Before
     public void setup() throws Exception
     {
-        endpoint = createAndConfigureMockEndpoint(ENDPOINT_URI);
+        endpoint = getMockEndpoint(ENDPOINT_URI);
     }
     
     @Test 
@@ -69,12 +69,4 @@ public class BeanRouterObserverTest extends CamelTestSupport
         endpoint.expectedBodiesReceived(sampleBean);
     }
     
-    private MockEndpoint createAndConfigureMockEndpoint(String endpointUri) throws Exception
-    {
-        MockEndpoint mockEndpoint = new MockEndpoint(endpointUri);
-        mockEndpoint.setCamelContext(context);
-        context.addEndpoint(endpointUri, mockEndpoint);
-        return mockEndpoint;
-    }
-
 }

@@ -15,14 +15,14 @@
 */
 package org.milyn.templating.freemarker;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
 import org.milyn.StreamFilterType;
 import org.milyn.FilterSettings;
 import org.milyn.container.ExecutionContext;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.payload.JavaSource;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
@@ -44,8 +44,9 @@ import java.util.UUID;
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase {
+public class FreeMarkerContentHandlerFactoryExtendedConfigTest {
 
+    @Test
     public void testFreeMarkerTrans_01() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-01.cdrl"));
 
@@ -54,12 +55,14 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         test_ftl(smooks, "<c x='xvalueonc1' />", "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void testFreeMarkerTrans_01_NS() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-01-NS.cdrl"));
 
         test_ftl(smooks, "<a xmlns:x=\"http://x\"><b><x:c x='xvalueonc1' /><c x='xvalueonc2' /></b></a>", "<a xmlns:x=\"http://x\"><b><mybean>xvalueonc1</mybean><c x=\"xvalueonc2\"></c></b></a>");
     }
 
+    @Test
     public void test_nodeModel_1() throws IOException, SAXException {
         test_nodeModel_1(StreamFilterType.DOM);
         test_nodeModel_1(StreamFilterType.SAX);
@@ -74,6 +77,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         assertEquals("'cvalue1''cvalue2''cvalue3'", result.toString());
     }
 
+    @Test
     public void test_nodeModel_2() throws IOException, SAXException {
         test_nodeModel_2(StreamFilterType.DOM);
         test_nodeModel_2(StreamFilterType.SAX);
@@ -85,6 +89,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         test_ftl(smooks, "<a><b><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>", "<a><b><x>'cvalue1'</x><x>'cvalue2'</x><x>'cvalue3'</x></b></a>");
     }
 
+    @Test
     public void test_nodeModel_3() throws IOException, SAXException {
         test_nodeModel_3(StreamFilterType.DOM);
         test_nodeModel_3(StreamFilterType.SAX);
@@ -98,10 +103,12 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         assertEquals("'cvalue1''cvalue2''cvalue3' javaVal=javaval", result.toString());
     }
 
+    @Test
     public void testFreeMarkerTrans_02_DOM() throws SAXException, IOException {
         testFreeMarkerTrans_02(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void testFreeMarkerTrans_02_SAX() throws SAXException, IOException {
         testFreeMarkerTrans_02(FilterSettings.DEFAULT_SAX);
     }
@@ -116,6 +123,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         test_ftl(smooks, "<c x='xvalueonc1' />", "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void testFreeMarkerTrans_03() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-03.cdrl"));
 
@@ -136,10 +144,12 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         assertEquals("<mybean>xxxxxxx</mybean>", myTransformResult.toString());
     }
 
+    @Test
     public void testFreeMarkerTrans_bind_DOM() throws SAXException, IOException {
         testFreeMarkerTrans_bind(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void testFreeMarkerTrans_bind_SAX() throws SAXException, IOException {
         testFreeMarkerTrans_bind(FilterSettings.DEFAULT_SAX);
     }
@@ -163,6 +173,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         assertEquals("<mybean>xvalueonc1</mybean>", context.getBeanContext().getBean("mybeanTemplate"));
     }
 
+    @Test
     public void test_template_include() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-include.cdrl"));
 
@@ -170,6 +181,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
                          "<a><maintemplate><included>blah</included></maintemplate></a>");
     }
 
+    @Test
     public void testInsertBefore() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-insert-before.cdrl"));
 
@@ -187,6 +199,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
                          "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void testInsertAfter() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-insert-after.cdrl"));
 
@@ -204,6 +217,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
                          "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void testAddTo() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-addto.cdrl"));
 
@@ -236,6 +250,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
                          "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void test_outputTo_Stream() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-outputToOutStream.cdrl"));
         ExecutionContext context = smooks.createExecutionContext();
@@ -246,6 +261,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         assertEquals("data to outstream", MockOutStreamResource.outputStream.toString());
     }
 
+    @Test
     public void test_PTIME() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-PTIME.cdrl"));
         StringResult result = new StringResult();
@@ -256,6 +272,7 @@ public class FreeMarkerContentHandlerFactoryExtendedConfigTest extends TestCase 
         new Long(result.toString());
     }
 
+    @Test
     public void test_PUUID() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test-configs-ext-PUUID.cdrl"));
         StringResult result = new StringResult();

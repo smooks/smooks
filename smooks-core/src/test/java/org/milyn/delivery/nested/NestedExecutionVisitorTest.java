@@ -1,6 +1,7 @@
 package org.milyn.delivery.nested;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
@@ -22,8 +23,9 @@ import java.util.List;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class NestedExecutionVisitorTest extends TestCase {
+public class NestedExecutionVisitorTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
         StringResult result = new StringResult();

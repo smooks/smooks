@@ -21,7 +21,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,11 +40,11 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * @author <a href="mailto:maurice@zeijen.net">maurice@zeijen.net</a>
  */
-public class JSONReaderExtendedConfigTest extends TestCase {
+public class JSONReaderExtendedConfigTest {
 
 	private static final Log logger = LogFactory.getLog(JSONReaderExtendedConfigTest.class);
 
-
+    @Test
     public void test_simple_smooks_config() throws Exception {
     	test_config_file("simple_smooks_config");
 
@@ -53,6 +54,7 @@ public class JSONReaderExtendedConfigTest extends TestCase {
         test_config_file("simple_smooks_config", smooks);
     }
 
+    @Test
     public void test_key_replacement() throws Exception {
     	test_config_file("key_replacement");
 
@@ -68,6 +70,7 @@ public class JSONReaderExtendedConfigTest extends TestCase {
         test_config_file("key_replacement", smooks);
     }
 
+    @Test
     public void test_several_replacements() throws Exception {
     	test_config_file("several_replacements");
 
@@ -83,6 +86,7 @@ public class JSONReaderExtendedConfigTest extends TestCase {
         test_config_file("several_replacements", smooks);
     }
 
+    @Test
     public void test_configured_different_node_names() throws Exception {
     	test_config_file("configured_different_node_names");
 
@@ -95,6 +99,7 @@ public class JSONReaderExtendedConfigTest extends TestCase {
         test_config_file("configured_different_node_names", smooks);
     }
 
+    @Test
     public void test_indent() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("indent-config.xml"));
         StringResult result = new StringResult();

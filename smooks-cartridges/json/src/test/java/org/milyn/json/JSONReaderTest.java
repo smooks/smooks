@@ -19,7 +19,8 @@ package org.milyn.json;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,52 +34,62 @@ import org.milyn.profile.DefaultProfileSet;
 /**
  * @author <a href="mailto:maurice@zeijen.net">maurice@zeijen.net</a>
  */
-public class JSONReaderTest extends TestCase {
+public class JSONReaderTest {
 
 	private static final Log logger = LogFactory.getLog(JSONReaderTest.class);
 
+        @Test
 	public void test_json_types() throws Exception {
 
         test_progammed_config("json_types");
 	}
 
+        @Test
 	public void test_json_map() throws Exception {
 
         test_progammed_config("json_map");
 	}
 
+        @Test
 	public void test_json_array() throws Exception {
 
         test_progammed_config("json_array");
 	}
 
+        @Test
 	public void test_json_map_array() throws Exception {
 
         test_progammed_config("json_map_array");
 	}
 
+        @Test
 	public void test_json_array_map() throws Exception {
 
         test_progammed_config("json_array_map");
 	}
 
+        @Test
 	public void test_json_map_array_map() throws Exception {
 
         test_progammed_config("json_map_array_map");
 	}
 
+    @Test
     public void test_simple_smooks_config() throws Exception {
     	test_config_file("simple_smooks_config");
     }
 
+    @Test
     public void test_key_replacement() throws Exception {
     	test_config_file("key_replacement");
     }
 
+    @Test
     public void test_several_replacements() throws Exception {
     	test_config_file("several_replacements");
     }
 
+    @Test
     public void test_configured_different_node_names() throws Exception {
     	test_config_file("configured_different_node_names");
     }

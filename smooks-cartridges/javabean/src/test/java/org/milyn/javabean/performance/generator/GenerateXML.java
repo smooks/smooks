@@ -8,7 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.DefaultObjectWrapperBuilder;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateSequenceModel;
@@ -27,14 +28,14 @@ public class GenerateXML {
 
 		boolean simple = false;
 
-		Configuration cfg = new Configuration();
+		Configuration cfg = new Configuration(Configuration.VERSION_2_3_21);
 		// Specify the data source where the template files come from.
 		// Here I set a file directory for it:
 		cfg.setDirectoryForTemplateLoading(new File("src/test/resources/templates"));
 
 		// Specify how templates will see the data-model. This is an advanced topic...
 		// but just use this:
-		cfg.setObjectWrapper(new DefaultObjectWrapper());
+		cfg.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_21).build());
 
 		Template temp;
 		String name;

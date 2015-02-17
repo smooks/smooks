@@ -15,19 +15,25 @@
 */
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.delivery.ContentDeliveryConfig;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class ParameterAccessorTest extends TestCase {
+public class ParameterAccessorTest {
 
-    protected void tearDown() throws Exception {
+	@After
+    public void tearDown() throws Exception {
         System.getProperties().remove("test.parameter");
     }
 
+	@Test
     public void test_system_property() {
         Smooks smooks = new Smooks();
         ContentDeliveryConfig deliveryConfig = smooks.createExecutionContext().getDeliveryConfig();

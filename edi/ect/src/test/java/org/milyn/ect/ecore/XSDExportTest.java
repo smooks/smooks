@@ -23,14 +23,16 @@ import java.util.Set;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.milyn.archive.Archive;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 
-public class XSDExportTest extends TestCase {
+public class XSDExportTest {
 
+        @Test
 	public void testSchemaExport() throws Exception {
 		String directory = "d03b";
 		String pluginID = "org.milyn.edi.unedifact." + directory;

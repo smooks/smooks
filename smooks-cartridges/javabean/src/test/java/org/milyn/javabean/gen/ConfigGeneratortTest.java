@@ -15,11 +15,15 @@
 */
 package org.milyn.javabean.gen;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ConfigGeneratortTest extends junit.framework.TestCase {
+public class ConfigGeneratortTest {
 
+    @Test
     public void test() throws ClassNotFoundException, java.io.IOException {
         java.util.Properties properties = new java.util.Properties();
         java.io.StringWriter writer = new java.io.StringWriter();
@@ -34,6 +38,7 @@ public class ConfigGeneratortTest extends junit.framework.TestCase {
         assertTrue("Generated config not as expected.", org.milyn.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
     }
 
+    @Test
     public void test_commandLine() throws ClassNotFoundException, java.io.IOException {
         ConfigGenerator.main(new String[] {"-c", org.milyn.javabean.Order.class.getName(), "-o", "./target/binding-config-test.xml"});
     }

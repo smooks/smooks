@@ -16,14 +16,14 @@
 
 package org.milyn.templating.xslt;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.SmooksUtil;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
 import org.milyn.templating.util.CharUtils;
@@ -38,8 +38,9 @@ import java.io.StringReader;
  *
  * @author tfennelly
  */
-public class XslContentHandlerFactoryTest extends TestCase {
+public class XslContentHandlerFactoryTest {
 
+        @Test
 	public void testXslUnitTrans_filebased_replace() {
 		Smooks smooks = new Smooks();
 		SmooksResourceConfiguration res = new SmooksResourceConfiguration("p", "org/milyn/templating/xslt/xsltransunit.xsl");
@@ -59,6 +60,7 @@ public class XslContentHandlerFactoryTest extends TestCase {
 		CharUtils.assertEquals("XSL Comparison Failure - See xsltransunit.expected1.", "/org/milyn/templating/xslt/xsltransunit.expected1", transResult);
 	}
 
+        @Test
 	public void testXslUnitTrans_parambased() {
 		testXslUnitTrans_parambased("insertbefore", "xsltransunit.expected2");
 		testXslUnitTrans_parambased("insertafter", "xsltransunit.expected3");
@@ -89,6 +91,7 @@ public class XslContentHandlerFactoryTest extends TestCase {
 		CharUtils.assertEquals("XSL Comparison Failure.  action=" + action + ".  See " + expectedFileName, "/org/milyn/templating/xslt/" + expectedFileName, transResult);
 	}
 
+    @Test
     public void test_xsl_bind() throws SAXException, IOException {
         test_xsl_bind("test-configs-bind.cdrl");
         test_xsl_bind("test-configs-bind-ext.cdrl");
@@ -111,6 +114,7 @@ public class XslContentHandlerFactoryTest extends TestCase {
         assertEquals("<bind/>", context.getBeanContext().getBean("mybeanTemplate"));
     }
 
+    @Test
     public void test_inline_01() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("inline-01.xml"));
         StringResult result = new StringResult();
@@ -119,6 +123,7 @@ public class XslContentHandlerFactoryTest extends TestCase {
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><xxxxxx/>", result.getResult());
     }
 
+    @Test
     public void test_inline_xsl_function() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("inline-xsl.xml"));
         StringResult result = new StringResult();
@@ -127,6 +132,7 @@ public class XslContentHandlerFactoryTest extends TestCase {
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><x>kalle</x>", result.getResult());
     }
 
+    @Test
     public void test_inline_02() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("inline-02.xml"));
         StringResult result = new StringResult();
@@ -135,6 +141,7 @@ public class XslContentHandlerFactoryTest extends TestCase {
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>Hi there!", result.getResult());
     }
 
+    @Test
     public void test_inline_03() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("inline-03.xml"));
         StringResult result = new StringResult();
@@ -143,6 +150,7 @@ public class XslContentHandlerFactoryTest extends TestCase {
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><xxxxxx/>", result.getResult());
     }
 
+    @Test
     public void test_badxsl() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("bad-xsl-config.xml"));
 

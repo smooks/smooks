@@ -16,7 +16,8 @@
 
 package org.milyn.JIRAs.MILYN_560;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
@@ -33,8 +34,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_560_Test extends TestCase {
+public class MILYN_560_Test {
 
+	@Test
     public void test_DOM() {
         Smooks smooks = new Smooks();
 
@@ -51,6 +53,7 @@ public class MILYN_560_Test extends TestCase {
         assertEquals("<element attrib=\"&amp;tomfennelly\">&amp;tomfennelly</element>", serializedRes.getResult());
     }
 
+	@Test
     public void test_SAX() {
         Smooks smooks = new Smooks();
 

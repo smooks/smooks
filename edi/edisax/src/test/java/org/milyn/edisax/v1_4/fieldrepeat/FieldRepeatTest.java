@@ -28,14 +28,16 @@ import org.milyn.edisax.model.EdifactModel;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class FieldRepeatTest extends TestCase {
+public class FieldRepeatTest {
 
+        @Test
 	public void test() throws IOException, SAXException, EDIConfigurationException {
 		MockContentHandler handler;
 		EdifactModel msg1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("edi-to-xml-mapping.xml"));

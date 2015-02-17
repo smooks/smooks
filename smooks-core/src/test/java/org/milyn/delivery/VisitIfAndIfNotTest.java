@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
@@ -30,8 +31,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class VisitIfAndIfNotTest extends TestCase {
+public class VisitIfAndIfNotTest {
 
+	@Test
     public void test_sax_visitBefore() {
         SmooksResourceConfiguration resourceConfig;
 
@@ -47,6 +49,7 @@ public class VisitIfAndIfNotTest extends TestCase {
         assertFalse(VisitorConfigMap.visitBeforeAnnotationsOK(resourceConfig, new MySAXVisitBeforeVisitor1()));
     }
 
+	@Test
     public void test_sax_visitAfter() {
         SmooksResourceConfiguration resourceConfig;
 

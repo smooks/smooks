@@ -16,7 +16,11 @@
 
 package org.smooks.model.csv;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.javabean.dynamic.Model;
@@ -33,26 +37,31 @@ import java.io.StringWriter;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class CSVReader_1_2_Test extends TestCase {
+public class CSVReader_1_2_Test {
 
     private ModelBuilder modelBuilder;
 
-    public CSVReader_1_2_Test() throws IOException, SAXException {
+    @Before
+    public void setup() throws IOException, SAXException {
         modelBuilder = new ModelBuilder(SmooksModel.MODEL_DESCRIPTOR, false);
     }
 
+    @Test
     public void test_01() throws IOException, SAXException {
         test("v12/csv-config-01.xml");
     }
 
+    @Test
     public void test_02() throws IOException, SAXException {
         test("v12/csv-config-02.xml");
     }
 
+    @Test
     public void test_03() throws IOException, SAXException {
         test("v12/csv-config-03.xml");
     }
 
+    @Test
     public void test_04() throws IOException, SAXException {
         test("v12/csv-config-04.xml");
     }
@@ -67,6 +76,7 @@ public class CSVReader_1_2_Test extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream(messageFile)), new StringReader(modelWriter.toString()));
     }
 
+    @Test
     public void test_programmatic_build() throws IOException, SAXException {
         SmooksModel smooksModel = new SmooksModel();
         Model<SmooksModel> model = new Model<SmooksModel>(smooksModel, modelBuilder);

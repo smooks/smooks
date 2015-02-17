@@ -16,7 +16,11 @@
 
 package org.milyn.javabean.context;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.MockExecutionContext;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
@@ -30,13 +34,14 @@ import java.util.Map;
 /**
  *	@author maurice_zeijen
  */
-public class BeanContextTest extends TestCase {
+public class BeanContextTest {
 
 	private ExecutionContext executionContext;
 
 	/**
 	 * Tests adding a bean
 	 */
+	@Test
 	public void test_add_bean() {
         Object bean1 = new MyGoodBean();
         Object bean2 = new MyGoodBean();
@@ -68,6 +73,7 @@ public class BeanContextTest extends TestCase {
 	/**
 	 * Test adding and replacing a bean
 	 */
+	@Test
 	public void test_add_and_overwrite_bean() {
         Object bean1 = new MyGoodBean();
         Object newBean1 = new MyGoodBean();
@@ -90,6 +96,7 @@ public class BeanContextTest extends TestCase {
 	/**
 	 * Test adding and changing a bean
 	 */
+	@Test
 	public void test_change_bean() {
         Object bean1 = new MyGoodBean();
         Object newBean1 = new MyGoodBean();
@@ -121,6 +128,7 @@ public class BeanContextTest extends TestCase {
 	/**
 	 * Test adding and replacing a bean
 	 */
+	@Test
 	public void test_bean_map() {
 		Object bean1 = new Object();
 		Object bean2 = new Object();
@@ -182,9 +190,8 @@ public class BeanContextTest extends TestCase {
 		assertNull(BeanContext.getBean("bean4"));
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		executionContext = new MockExecutionContext();
 	}
 

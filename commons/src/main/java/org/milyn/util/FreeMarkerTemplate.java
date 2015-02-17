@@ -98,7 +98,7 @@ public class FreeMarkerTemplate {
     }
 
     private static Configuration createDefaultConfiguration() {
-        Configuration config = new Configuration();
+        Configuration config = new Configuration(Configuration.VERSION_2_3_21);
         config.setNumberFormat(DEFAULT_MACHINE_READABLE_NUMBER_FORMAT);
         return config;
     }

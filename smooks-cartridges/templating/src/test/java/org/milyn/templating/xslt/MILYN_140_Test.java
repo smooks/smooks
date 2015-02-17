@@ -15,7 +15,8 @@
 */
 package org.milyn.templating.xslt;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
@@ -26,12 +27,14 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_140_Test extends TestCase {
+public class MILYN_140_Test {
 
+    @Test
     public void test_external() throws IOException, SAXException {
         test("MILYN-140-01.xml");
     }
 
+    @Test
     public void test_templatelet() throws IOException, SAXException {
         test("MILYN-140-02.xml");
     }

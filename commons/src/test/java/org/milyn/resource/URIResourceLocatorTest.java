@@ -23,23 +23,30 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author tfennelly
  */
-public class URIResourceLocatorTest extends TestCase {
+public class URIResourceLocatorTest {
 
 	private File file = new File("testfilex.zap");
 
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		file.createNewFile();
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		file.delete();
 	}
 
+	@Test
 	public void test_urlBasedResource() throws IllegalArgumentException,
 			IOException {
 		URIResourceLocator locator = new URIResourceLocator();
@@ -60,6 +67,7 @@ public class URIResourceLocatorTest extends TestCase {
 		stream.close();
 	}
 
+	@Test
     public void test_fileBasedResource() throws IllegalArgumentException, IOException, URISyntaxException {
         URIResourceLocator locator = new URIResourceLocator();
         InputStream stream;
@@ -74,6 +82,7 @@ public class URIResourceLocatorTest extends TestCase {
         assertNotNull(stream);
     }
 
+	@Test
 	public void test_classpathBasedResource() throws IllegalArgumentException, IOException {
 		URIResourceLocator locator = new URIResourceLocator();
 		InputStream stream;
@@ -96,6 +105,7 @@ public class URIResourceLocatorTest extends TestCase {
 		assertNotNull(stream);
 	}
 
+	@Test
 	public void test_setBaseURI() throws IllegalArgumentException, IOException {
 		URIResourceLocator locator = new URIResourceLocator();
 		InputStream stream;

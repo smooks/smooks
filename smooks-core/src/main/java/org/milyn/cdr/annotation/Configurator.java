@@ -68,7 +68,7 @@ public class Configurator {
 
     /**
      * Configure the supplied {@link org.milyn.delivery.ContentHandler} instance using the supplied
-     * {@link SmooksResourceConfiguration} isntance.
+     * {@link SmooksResourceConfiguration} instance.
      * @param instance The instance to be configured.
      * @param config The configuration.
      * @return The configured ContentHandler instance.

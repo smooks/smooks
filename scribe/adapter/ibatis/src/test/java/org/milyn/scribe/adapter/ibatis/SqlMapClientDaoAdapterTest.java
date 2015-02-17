@@ -16,8 +16,8 @@
 package org.milyn.scribe.adapter.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import org.milyn.scribe.adapter.ibatis.test.util.BaseTestCase;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;

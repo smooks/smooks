@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.javabean.DataDecodeException;
 
@@ -24,8 +25,9 @@ import java.util.Properties;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class EnumDecoderTest extends TestCase {
+public class EnumDecoderTest {
 
+	@Test
     public void test_bad_config() {
         EnumDecoder decoder = new EnumDecoder();
         Properties config = new Properties();
@@ -48,6 +50,7 @@ public class EnumDecoderTest extends TestCase {
         }
     }
 
+	@Test
     public void test_good_config() {
         EnumDecoder decoder = new EnumDecoder();
         Properties config = new Properties();

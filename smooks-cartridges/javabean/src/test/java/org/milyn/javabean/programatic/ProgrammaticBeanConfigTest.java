@@ -16,7 +16,8 @@
 */
 package org.milyn.javabean.programatic;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.ExecutionEvent;
@@ -45,8 +46,9 @@ import java.util.Map;
  * Programmatic Binding config test for the Bean class.
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class ProgrammaticBeanConfigTest extends TestCase {
+public class ProgrammaticBeanConfigTest {
 
+    @Test
     public void test_01_fluent() {
         Smooks smooks = new Smooks();
         Bean orderBean = new Bean(Order.class, "order", "/order");
@@ -75,6 +77,7 @@ public class ProgrammaticBeanConfigTest extends TestCase {
         execute_01_test(smooks);
     }
 
+    @Test
     public void test_01_factory() {
         Smooks smooks = new Smooks();
         Bean orderBean = new Bean(Order.class, "order", "/order", new Factory<Order>() {
@@ -109,6 +112,7 @@ public class ProgrammaticBeanConfigTest extends TestCase {
         execute_01_test(smooks);
     }
 
+    @Test
     public void test_invalid_bindTo() {
         Smooks smooks = new Smooks();
         Bean orderBean = new Bean(Order.class, "order", "/order");
@@ -127,6 +131,7 @@ public class ProgrammaticBeanConfigTest extends TestCase {
         }
     }
 
+    @Test
     public void test_01_flat() {
         Smooks smooks = new Smooks();
         Bean orderBean = new Bean(Order.class, "order", "/order");
@@ -166,6 +171,7 @@ public class ProgrammaticBeanConfigTest extends TestCase {
                 "norderItemsArray[[{productId: 111, quantity: 2, price: 8.9}, {productId: 222, quantity: 7, price: 5.2}]]]", order.toString());
     }
 
+    @Test
     public void test_02_Map_fluid() {
         Smooks smooks = new Smooks();
 
@@ -213,6 +219,7 @@ public class ProgrammaticBeanConfigTest extends TestCase {
         }
     }
 
+    @Test
     public void test_02_arrays_programmatic() {
         Smooks smooks = new Smooks();
 
@@ -229,6 +236,7 @@ public class ProgrammaticBeanConfigTest extends TestCase {
         execSmooksArrays(smooks);
     }
 
+    @Test
     public void test_02_arrays_xml() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("xmlconfig_01.xml"));
         execSmooksArrays(smooks);

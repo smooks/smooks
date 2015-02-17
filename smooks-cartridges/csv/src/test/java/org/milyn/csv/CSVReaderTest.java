@@ -23,7 +23,8 @@ import java.util.Map;
 
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
@@ -40,8 +41,9 @@ import org.xml.sax.SAXException;
 /**
  * @author tfennelly
  */
-public class CSVReaderTest extends TestCase {
+public class CSVReaderTest {
 
+    @Test
     public void test_02() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
 
@@ -53,6 +55,7 @@ public class CSVReaderTest extends TestCase {
                 result);
     }
 
+    @Test
     public void test_03() throws SmooksException, IOException, SAXException {
         test_03("smooks-config-02.xml");
         test_03("smooks-config-03.xml");
@@ -69,6 +72,7 @@ public class CSVReaderTest extends TestCase {
                 result);
     }
 
+    @Test
     public void test_04() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-04.xml"));
 
@@ -80,6 +84,7 @@ public class CSVReaderTest extends TestCase {
                 result);
     }
 
+    @Test
     public void test_05() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-05.xml"));
 
@@ -99,6 +104,7 @@ public class CSVReaderTest extends TestCase {
                 result);
     }
 
+    @Test
     public void test_06() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-06.xml"));
 
@@ -110,6 +116,7 @@ public class CSVReaderTest extends TestCase {
                 result);
     }
 
+    @Test
     public void test_07() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -123,6 +130,7 @@ public class CSVReaderTest extends TestCase {
                 result.getResult());
     }
 
+    @Test
     public void test_08() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -138,6 +146,7 @@ public class CSVReaderTest extends TestCase {
                 result.getResult());
     }
 
+    @Test
     public void test_09_1() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-07.xml"));
 
@@ -148,6 +157,7 @@ public class CSVReaderTest extends TestCase {
         assertEquals("(Linda, Coughlan, Ireland, Female, 22)", person.toString());
     }
 
+    @Test
     public void test_09_2() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-08.xml"));
 
@@ -160,6 +170,7 @@ public class CSVReaderTest extends TestCase {
                 people.toString());
     }
 
+    @Test
     public void test_10() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -175,6 +186,7 @@ public class CSVReaderTest extends TestCase {
                 people.toString());
     }
 
+    @Test
     public void test_11() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -188,6 +200,7 @@ public class CSVReaderTest extends TestCase {
         assertEquals("(Linda, Coughlan, Ireland, Female, 22)", person.toString());
     }
 
+    @Test
     public void test_12() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -224,18 +237,22 @@ public class CSVReaderTest extends TestCase {
         assertEquals("Ireland", person.get("country"));
     }
 
+    @Test
     public void test_13_xml_dom() throws SmooksException, IOException, SAXException {
         test_13_xml(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void test_13_xml_sax() throws SmooksException, IOException, SAXException {
         test_13_xml(FilterSettings.DEFAULT_SAX);
     }
 
+    @Test
     public void test_13_programmatic_dom() throws SmooksException, IOException, SAXException {
         test_13_programmatic(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void test_13_programmatic_sax() throws SmooksException, IOException, SAXException {
         test_13_programmatic(FilterSettings.DEFAULT_SAX);
     }
@@ -271,18 +288,22 @@ public class CSVReaderTest extends TestCase {
         assertEquals("(Linda, Coughlan, Ireland, Female, 22)", person.toString());
     }
 
+    @Test
     public void test_14_xml_dom() throws SmooksException, IOException, SAXException {
         test_14_xml(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void test_14_xml_sax() throws SmooksException, IOException, SAXException {
         test_14_xml(FilterSettings.DEFAULT_SAX);
     }
 
+    @Test
     public void test_14_programmatic_dom() throws SmooksException, IOException, SAXException {
         test_14_programmatic(FilterSettings.DEFAULT_DOM);
     }
 
+    @Test
     public void test_14_programmatic_sax() throws SmooksException, IOException, SAXException {
         test_14_programmatic(FilterSettings.DEFAULT_SAX);
     }
@@ -332,6 +353,7 @@ public class CSVReaderTest extends TestCase {
         assertEquals("Ireland", person.get("country"));
     }
 
+    @Test
     public void test_15() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-11.xml"));
 
@@ -345,6 +367,7 @@ public class CSVReaderTest extends TestCase {
         }
     }
 
+    @Test
     public void test_16() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-12.xml"));
 
@@ -357,6 +380,7 @@ public class CSVReaderTest extends TestCase {
                 result);
     }
 
+    @Test
     public void test_17() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-13.xml"));
 
@@ -379,6 +403,7 @@ public class CSVReaderTest extends TestCase {
 
     }
 
+    @Test
     public void test_17_wildcard() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-13-wildcard.xml"));
         StringResult result = new StringResult();
@@ -390,6 +415,7 @@ public class CSVReaderTest extends TestCase {
                 result.toString());
     }
 
+    @Test
     public void test_18() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -415,6 +441,7 @@ public class CSVReaderTest extends TestCase {
         assertEquals("coughlan", person.get("lastname"));
     }
 
+    @Test
     public void test_19() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-13.xml"));
 
@@ -426,6 +453,7 @@ public class CSVReaderTest extends TestCase {
                 result);
     }
 
+    @Test
     public void test_20() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-14.xml"));
 
@@ -437,6 +465,7 @@ public class CSVReaderTest extends TestCase {
                 result);
     }
 
+    @Test
     public void test_21() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-extended-config-15.xml"));
 
@@ -447,7 +476,8 @@ public class CSVReaderTest extends TestCase {
                 "<csv-set><csv-record number=\"1\"><firstname>Tom</firstname><lastname>Collins</lastname><address>Victoria Ave</address><age>32</age></csv-record><csv-record number=\"2\"><firstname>Fred</firstname><lastname>Cook</lastname><address>Mainstreet 12</address><age>40</age></csv-record></csv-set>",
                 result);
     }
-    
+   
+    @Test 
     public void test_null_field_values() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 
