@@ -10,7 +10,7 @@
                 <repository>
                     <id>codehaus-snapshots</id>
                     <name>Codehaus Snapshots</name>
-                    <url>http://nexus.codehaus.org/snapshots/</url>
+                    <url>https://repository-master.mulesoft.org/nexus/content/repositories/public/</url>
                     <releases>
                         <enabled>false</enabled>
                     </releases>

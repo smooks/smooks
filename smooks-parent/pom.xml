@@ -17,7 +17,7 @@
     <version>1.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Milyn :: Parent POM</name>
-    <url>http://milyn.codehaus.org</url>
+    <url>https://repository-master.mulesoft.org/nexus/content/groups/public/</url>
 
     <description>
         Milyn parent pom. Provides unified dependency information and build configuration for sub-modules.
@@ -1125,7 +1125,7 @@
         </repository>
         <repository>
             <id>mvel</id>
-            <url>http://repository.codehaus.org</url>
+            <url>https://repository-master.mulesoft.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
             <id>smooks</id>
@@ -1173,7 +1173,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>codehaus</id>
-            <url>http://repository.codehaus.org</url>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/public/</url>
         </pluginRepository>
         <pluginRepository>
             <id>jibx.sf.net</id>
