@@ -79,6 +79,7 @@
         <maven.eclipse.plugin.version>2.9</maven.eclipse.plugin.version>
         <org.osgi.core.version>1.4.0</org.osgi.core.version>
         <peaberry.version>1.1.1</peaberry.version>
+        <jdom2.version>2.0.5</jdom2.version>
     </properties>
 
     <dependencyManagement>
@@ -721,7 +722,7 @@
               <dependency>
                  <groupId>org.jdom</groupId>
                  <artifactId>jdom</artifactId>
-                 <version>2.0.2</version>
+                 <version>${jdom2.version}</version>
               </dependency> 
 
               <dependency>

@@ -22,10 +22,10 @@ import java.io.StringWriter;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.jdom.Document;
-import org.jdom.input.SAXHandler;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Document;
+import org.jdom2.input.sax.SAXHandler;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.milyn.edi.utils.EDIParsingUtils;
 import org.milyn.edisax.EDIParser;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
