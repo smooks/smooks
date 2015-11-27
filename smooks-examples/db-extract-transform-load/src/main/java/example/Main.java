@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.xml.transform.stream.StreamSource;
 
@@ -78,6 +79,7 @@ public class Main {
     protected void runSmooksTransform() throws IOException, SAXException, SmooksException {
     	Locale defaultLocale = Locale.getDefault();
     	Locale.setDefault(new Locale("en", "IE"));
+    	TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     	
     	Smooks smooks = new Smooks("./smooks-configs/smooks-config.xml");
 
