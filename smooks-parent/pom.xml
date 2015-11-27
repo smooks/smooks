@@ -14,7 +14,7 @@
 
     <groupId>org.milyn</groupId>
     <artifactId>smooks-parent</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>${smooks.version}</version>
     <packaging>pom</packaging>
     <name>Milyn :: Parent POM</name>
     <url>http://milyn.codehaus.org</url>
@@ -79,6 +79,7 @@
         <maven.eclipse.plugin.version>2.9</maven.eclipse.plugin.version>
         <org.osgi.core.version>1.4.0</org.osgi.core.version>
         <peaberry.version>1.1.1</peaberry.version>
+        <smooks.version>1.7-SNAPSHOT</smooks.version>
     </properties>
 
     <dependencyManagement>
