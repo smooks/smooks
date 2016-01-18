@@ -18,4 +18,25 @@
 		<field-4>5</field-4>
 		<field-5>6</field-5>
 	</message-seg>
+    <message-seg>
+        <field-1>2</field-1>
+        <field-2>4?'</field-2>
+        <field-3>3</field-3>
+        <field-4>5</field-4>
+        <field-5>6</field-5>
+    </message-seg>
+    <message-seg>
+        <field-1>2</field-1>
+        <field-2>4</field-2>
+        <field-3>3</field-3>
+        <field-4>5</field-4>
+        <field-5>6?'</field-5>
+    </message-seg>
+    <message-seg>
+        <field-1>2</field-1>
+        <field-2>4</field-2>
+        <field-3>3</field-3>
+        <field-4>5</field-4>
+        <field-5>6?'?+'</field-5>
+    </message-seg>
 </test-message>

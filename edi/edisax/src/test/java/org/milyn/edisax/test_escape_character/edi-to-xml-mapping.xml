@@ -27,6 +27,27 @@
 			<medi:field xmltag="field-4" />
 			<medi:field xmltag="field-5" />
 		</medi:segment>
+		<medi:segment segcode="SEG4" xmltag="message-seg">
+			<medi:field xmltag="field-1" />
+			<medi:field xmltag="field-2" />
+			<medi:field xmltag="field-3" />
+			<medi:field xmltag="field-4" />
+			<medi:field xmltag="field-5" />
+		</medi:segment>
+        <medi:segment segcode="SEG5" xmltag="message-seg">
+            <medi:field xmltag="field-1" />
+            <medi:field xmltag="field-2" />
+            <medi:field xmltag="field-3" />
+            <medi:field xmltag="field-4" />
+            <medi:field xmltag="field-5" />
+        </medi:segment>
+        <medi:segment segcode="SEG6" xmltag="message-seg">
+            <medi:field xmltag="field-1" />
+            <medi:field xmltag="field-2" />
+            <medi:field xmltag="field-3" />
+            <medi:field xmltag="field-4" />
+            <medi:field xmltag="field-5" />
+        </medi:segment>
 	</medi:segments>
 	
 </medi:edimap>
