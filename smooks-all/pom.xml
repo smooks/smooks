@@ -313,6 +313,7 @@
                         <Bundle-Activator>org.milyn.SmooksActivator</Bundle-Activator>
                         <Export-Package>
                             org.milyn.*;-split-package:=merge-first;version="${project.version}",
+                            META-INF.xsd.smooks,
                             META-INF.xsd.smooks.*;-split-package:=merge-first,
                             !META-INF.services.*,
                             !META-INF.maven.*
