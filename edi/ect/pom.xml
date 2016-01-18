@@ -34,8 +34,9 @@
 
 		<dependency>
 			<groupId>org.jdom</groupId>
-			<artifactId>jdom</artifactId>
+			<artifactId>jdom2</artifactId>
 			<scope>test</scope>
+			<version>${jdom2.version}</version>
 		</dependency>
 
 		<dependency>

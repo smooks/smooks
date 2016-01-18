@@ -42,6 +42,11 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+        	<groupId>org.jdom</groupId>
+        	<artifactId>jdom2</artifactId>
+        	<version>${jdom2.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
