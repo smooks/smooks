@@ -24,10 +24,10 @@
     </description>
 
     <properties>
-        <camel.version>2.12.4</camel.version>
-        <activemq.version>5.9.0</activemq.version>
-        <activemq.plugin.version>5.7.0</activemq.plugin.version>
-        <spring.version>3.2.8.RELEASE</spring.version>
+        <camel.version>2.15.1</camel.version>
+        <activemq.version>5.11.0</activemq.version>
+        <activemq.plugin.version>5.11.0</activemq.plugin.version>
+        <spring.version>3.2.12.RELEASE</spring.version>
         <xerces.version>2.9.1</xerces.version>
         <xalan.version>2.7.1</xalan.version>
         <xml_apis.version>1.3.02</xml_apis.version>
