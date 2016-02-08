@@ -34,7 +34,7 @@
         <xstream.version>1.4.7</xstream.version>
         <commons_lang.version>2.4</commons_lang.version>
         <dtdparser.version>1.21</dtdparser.version>
-        <freemarker.version>2.3.21</freemarker.version>
+        <freemarker.version>2.3.23</freemarker.version>
         <opencsv.version>2.3</opencsv.version>
         <ant.version>1.9.4</ant.version>
         <javassist.version>3.11.0.GA</javassist.version>
