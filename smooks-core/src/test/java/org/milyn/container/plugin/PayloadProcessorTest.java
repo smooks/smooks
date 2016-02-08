@@ -105,7 +105,7 @@ public class PayloadProcessorTest {
         assertThat(map, hasEntry("theBean", (Object) "Hi there!"));
 
         assertThat(map.toString(), allOf( 
-                stringContainsInOrder(Arrays.asList("PTIME=<noop>", "theBean=Hi there!", "PUUID=<noop>"))));
+                stringContainsInOrder(Arrays.asList("PTIME=<noop>", "PUUID=<noop>", "theBean=Hi there!"))));
     }
 
     @Test
