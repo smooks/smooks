@@ -80,8 +80,8 @@ public class MultiLineToStringBuilderTest {
 			"   \"emptyArray\" : []," + NL +
 			"   \"stringMap\" : {" + NL +
 			"      \"v1\" : \"some text\"," + NL +
-			"      \"v3\" : NULL," + NL +
-			"      \"v2\" : \"other text\"" + NL +
+			"      \"v2\" : \"other text\"," + NL +
+			"      \"v3\" : NULL" + NL +
 			"   }," + NL +
 			"   \"integerList\" : [" + NL +
 			"      1," + NL +
