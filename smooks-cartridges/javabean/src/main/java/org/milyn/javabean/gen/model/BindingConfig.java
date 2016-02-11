@@ -26,18 +26,28 @@ public class BindingConfig {
 
     private Field property;
     private String wireBeanId;
+    private boolean isWiring;
 
     public BindingConfig(Field property) {
         this.property = property;
+        this.isWiring = false;
     }
 
     public BindingConfig(String wireBeanId) {
         this.wireBeanId = wireBeanId;
+        this.isWiring = (wireBeanId != null);
     }
 
     public BindingConfig(Field property, String wireBeanId) {
         this.property = property;
         this.wireBeanId = wireBeanId;
+        this.isWiring = (wireBeanId != null);
+    }
+
+    public BindingConfig(Field property, String wireBeanId, boolean isWiring) {
+        this.property = property;
+        this.wireBeanId = isWiring ? wireBeanId : capitalizeFirstLetter(wireBeanId);
+        this.isWiring = isWiring;
     }
 
     public Field getProperty() {
@@ -53,7 +63,7 @@ public class BindingConfig {
     }
 
     public boolean isWiring() {
-        return (wireBeanId != null);
+        return isWiring;
     }
 
     public boolean isBoundToProperty() {
@@ -78,5 +88,18 @@ public class BindingConfig {
         }
 
         return "$TODO$";
+    }
+
+    private String capitalizeFirstLetter(String text) {
+        if (text != null && text.length() > 0) {
+            String cap = text.substring(0, 1).toUpperCase();
+            if (text.length() > 1) {
+                cap = cap + text.substring(1);
+            }
+            return cap;
+        }
+        else {
+            return text;
+        }
     }
 }

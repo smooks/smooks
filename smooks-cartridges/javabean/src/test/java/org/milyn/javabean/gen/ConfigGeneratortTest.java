@@ -29,13 +29,33 @@ public class ConfigGeneratortTest {
         java.io.StringWriter writer = new java.io.StringWriter();
 
         properties.setProperty(ConfigGenerator.ROOT_BEAN_CLASS, org.milyn.javabean.Order.class.getName());
+        properties.setProperty(ConfigGenerator.INHERIT_FIELDS, Boolean.FALSE.toString());
 
         ConfigGenerator generator = new ConfigGenerator(properties, writer);
 
         generator.generate();
 
         String expected = org.milyn.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"));
-        assertTrue("Generated config not as expected.", org.milyn.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
+        String result = writer.toString();
+        assertTrue("Generated config not as expected.", org.milyn.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(result)));
+    }
+
+    @Test
+    public void testWithValueSelector() throws ClassNotFoundException, java.io.IOException {
+        java.util.Properties properties = new java.util.Properties();
+        java.io.StringWriter writer = new java.io.StringWriter();
+
+        properties.setProperty(ConfigGenerator.ROOT_BEAN_CLASS, org.milyn.javabean.Order.class.getName());
+        properties.setProperty(ConfigGenerator.INHERIT_FIELDS, Boolean.TRUE.toString());
+        properties.setProperty(ConfigGenerator.USE_BEAN_ID_AS_XML_SELECTOR, Boolean.TRUE.toString());
+
+        ConfigGenerator generator = new ConfigGenerator(properties, writer);
+
+        generator.generate();
+
+        String expected = org.milyn.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-02.xml"));
+        String result = writer.toString();
+        assertTrue("Generated config not as expected.", org.milyn.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(result)));
     }
 
     @Test

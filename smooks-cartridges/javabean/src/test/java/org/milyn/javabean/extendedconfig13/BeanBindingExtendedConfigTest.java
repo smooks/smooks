@@ -54,7 +54,15 @@ public class BeanBindingExtendedConfigTest {
         assertOrderOK(order, true);
 
         Map headerHash = (Map) result.getBean("headerBeanHash");
-        assertEquals("{privatePerson=, customer=Joe, date=Wed Nov 15 13:45:28 EST 2006}", headerHash.toString());
+        Object privatePerson = headerHash.get("privatePerson");
+        assertNotNull(privatePerson);
+        assertEquals("", privatePerson.toString());
+        Object customer = headerHash.get("customer");
+        assertNotNull(customer);
+        assertEquals("Joe", customer.toString());
+        Object date = headerHash.get("date");
+        assertNotNull(date);
+        assertEquals("Wed Nov 15 13:45:28 EST 2006", date.toString());
     }
 
 	/**

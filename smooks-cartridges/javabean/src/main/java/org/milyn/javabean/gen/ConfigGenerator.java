@@ -45,6 +45,8 @@ import java.util.*;
  * <ul>
  *  <li><b>packages.included</b>: Semi-colon separated list of packages. Any fields in the class matching these packages will be included in the binding configuration generated.</li>
  *  <li><b>packages.excluded</b>: Semi-colon separated list of packages. Any fields in the class matching these packages will be excluded from the binding configuration generated.</li>
+ *  <li><b>inheritFields</b>: Boolean value, defaults to {@code false}. {@code true} to traverse collect fields of super classes for classes whose binding config is to be generated; {@code false} to exclude inherited fields.</li>
+ *  <li><b>useBeanIdAsXmlSelector</b>: Boolean value, defaults to {@code false}. {@code true} use the field bean name (with capitalized starting letter) as the XML selector; {@code false} to populate $TODO$ as the ZML selector.</li>
  * </ul>
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -54,11 +56,15 @@ public class ConfigGenerator {
     public static final String ROOT_BEAN_CLASS = "root.beanClass";
     public static final String PACKAGES_INCLUDED = "packages.included";
     public static final String PACKAGES_EXCLUDED = "packages.excluded";
+    public static final String INHERIT_FIELDS = "inheritFields";
+    public static final String USE_BEAN_ID_AS_XML_SELECTOR = "useBeanIdAsXmlSelector";
 
     private Writer outputWriter;
     private Class<?> rootBeanClass;
     private List<String> packagesIncluded;
     private List<String> packagesExcluded;
+    private boolean inheritFields;
+    private boolean useBeanIdAsXmlSelector;
     private Stack<Class<?>> classStack = new Stack<Class<?>>();
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
@@ -113,7 +119,14 @@ public class ConfigGenerator {
         classStack.push(beanClass);
         try {
             ClassConfig classConfig = new ClassConfig(beanClass, beanId);
-            Field[] fields = beanClass.getDeclaredFields();
+            List<Field> fields = new ArrayList<Field>(getFields(beanClass));
+            if (inheritFields) {
+                Class superClass = beanClass.getSuperclass();
+                while (superClass != null) {
+                    fields.addAll(getFields(superClass));
+                    superClass = superClass.getSuperclass();
+                }
+            }
             List<BindingConfig> bindings = classConfig.getBindings();
             String rootPackage = rootBeanClass.getPackage().getName();
 
@@ -124,7 +137,12 @@ public class ConfigGenerator {
                 Class<? extends DataDecoder> decoder = DataDecoder.Factory.getInstance(type);
 
                 if(decoder != null) {
-                    bindings.add(new BindingConfig(field));
+                    if (useBeanIdAsXmlSelector) {
+                        bindings.add(new BindingConfig(field, field.getName(), false));
+                    }
+                    else {
+                        bindings.add(new BindingConfig(field));
+                    }
                 } else {
                     if(type.isArray()) {
                         addArrayConfig(classConfigs, bindings, rootPackage, field);
@@ -194,6 +212,16 @@ public class ConfigGenerator {
         }
     }
 
+    private Collection<Field> getFields(Class clazz) {
+        List<Field> fields = new ArrayList<Field>();
+        if (clazz != null) {
+            for (Field declaredField : clazz.getDeclaredFields()) {
+                fields.add(declaredField);
+            }
+        }
+        return fields;
+    }
+
     private boolean isIncluded(String packageName) {
         if(packagesIncluded != null) {
             if(isInPackageList(packagesIncluded, packageName)) {
@@ -226,6 +254,8 @@ public class ConfigGenerator {
         String rootBeanClassConfig = bindingProperties.getProperty(ConfigGenerator.ROOT_BEAN_CLASS);
         String packagesIncludedConfig = bindingProperties.getProperty(ConfigGenerator.PACKAGES_INCLUDED);
         String packagesExcludedConfig = bindingProperties.getProperty(ConfigGenerator.PACKAGES_EXCLUDED);
+        String inheritFieldsConfig = bindingProperties.getProperty(ConfigGenerator.INHERIT_FIELDS);
+        String useBeanIdAsXmlSelectorConfig = bindingProperties.getProperty(ConfigGenerator.USE_BEAN_ID_AS_XML_SELECTOR);
 
         if(rootBeanClassConfig == null) {
             throw new IllegalArgumentException("Binding configuration property '" + ConfigGenerator.ROOT_BEAN_CLASS + "' not defined.");
@@ -237,6 +267,12 @@ public class ConfigGenerator {
         }
         if(packagesExcludedConfig != null) {
             packagesExcluded = parsePackages(packagesExcludedConfig);
+        }
+        if(inheritFieldsConfig != null) {
+            inheritFields = Boolean.parseBoolean(inheritFieldsConfig);
+        }
+        if(useBeanIdAsXmlSelectorConfig != null) {
+            useBeanIdAsXmlSelector = Boolean.parseBoolean(useBeanIdAsXmlSelectorConfig);
         }
     }
 
