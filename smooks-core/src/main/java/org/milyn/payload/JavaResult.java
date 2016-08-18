@@ -42,7 +42,7 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
      * Public default constructor.
      */
     public JavaResult() {
-        this(false);
+        this(true);
     }
     
     /**

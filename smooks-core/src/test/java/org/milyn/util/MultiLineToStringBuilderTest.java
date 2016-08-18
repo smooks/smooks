@@ -33,7 +33,7 @@ public class MultiLineToStringBuilderTest {
 		context.getBeanContext().addBean("emptyList", Collections.emptyList(), null);
 		context.getBeanContext().addBean("emptyArray", new String[0], null);
 
-		Map<String, String> stringMap = new HashMap<String, String>();
+		Map<String, String> stringMap = new LinkedHashMap<String, String>();
 		stringMap.put("v1", "some text");
 		stringMap.put("v2", "other text");
 		stringMap.put("v3", null);
@@ -80,8 +80,8 @@ public class MultiLineToStringBuilderTest {
 			"   \"emptyArray\" : []," + NL +
 			"   \"stringMap\" : {" + NL +
 			"      \"v1\" : \"some text\"," + NL +
-			"      \"v3\" : NULL," + NL +
-			"      \"v2\" : \"other text\"" + NL +
+			"      \"v2\" : \"other text\"," + NL +
+			"      \"v3\" : NULL" + NL +
 			"   }," + NL +
 			"   \"integerList\" : [" + NL +
 			"      1," + NL +

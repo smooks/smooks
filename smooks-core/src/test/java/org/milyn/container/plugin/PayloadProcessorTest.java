@@ -16,14 +16,11 @@
 package org.milyn.container.plugin;
 
 import junit.framework.TestCase;
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.hamcrest.collection.IsMapContaining.hasKey;
-import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.milyn.Smooks;
+import org.milyn.javabean.context.preinstalled.Time;
+import org.milyn.javabean.context.preinstalled.UniqueID;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -33,7 +30,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.any;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.hamcrest.collection.IsMapContaining.hasKey;
 
 /**
  * Unit test for PayloadProcessor.
@@ -100,13 +105,15 @@ public class PayloadProcessorTest {
         final PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.JAVA);
         Map<String, Object> map = (Map<String, Object>) processor.process("<testing/>", smooks.createExecutionContext());
 
+        assertThat(map, hasEntry("theBean", (Object) "Hi there!"));
         assertThat(map, hasKey("PTIME"));
         assertThat(map, hasKey("PUUID"));
-        assertThat(map, hasEntry("theBean", (Object) "Hi there!"));
 
-        assertThat(map.toString(), allOf( 
-                stringContainsInOrder(Arrays.asList("PTIME=<noop>", "theBean=Hi there!", "PUUID=<noop>"))));
+        assertThat(map.get("PTIME"), instanceOf(Time.class));
+        assertThat(map.get("PUUID"), instanceOf(UniqueID.class));
+
     }
+
 
     @Test
     public void process_String2Java_02() {
