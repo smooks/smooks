@@ -2,7 +2,7 @@
 
 #
 # Run:
-# ./deploy.sh -u <codehaus-username> -p <codehaus-password> -g <passphrase-of-gpg-key>
+# ./deploy.sh -u <repo-username> -p <repo-password> -g <passphrase-of-gpg-key>
 #
 
 while getopts u:p:g: option
@@ -15,7 +15,7 @@ do
     esac
 done
 
-export CH_UN="$USERNM"
-export CH_PW="$PASSWD"
+export REPO_UN="$USERNM"
+export REPO_PW="$PASSWD"
 
-mvn clean deploy -Pdeploy -Dgpg.passphrase="$GPGPPH" -Dmaven.test.skip=true --settings ./settings_codehaus.xml
+mvn clean deploy -Pdeploy -Dgpg.passphrase="$GPGPPH" -Dmaven.test.skip=true --settings ./settings_deploy.xml

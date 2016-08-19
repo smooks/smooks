@@ -30,10 +30,5 @@
         <module>smooks-examples</module>
     </modules>
 
-    <scm>
-        <connection>scm:git:git@github.com:smooks/smooks.git</connection>
-        <developerConnection>scm:git:git@github.com:smooks/smooks.git</developerConnection>
-        <url>git@github.com:smooks/smooks.git</url>
-    </scm>
 
 </project>

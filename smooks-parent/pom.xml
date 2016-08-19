@@ -4,24 +4,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!--
-    <parent>
-        <groupId>org.codehaus</groupId>
-        <artifactId>codehaus-parent</artifactId>
-        <version>4</version>
-    </parent>
-    -->
-
     <groupId>org.milyn</groupId>
     <artifactId>smooks-parent</artifactId>
     <version>1.7-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Milyn :: Parent POM</name>
-    <url>http://milyn.codehaus.org</url>
+    <name>Milyn :: Smooks</name>
+    <url>http://www.smooks.org</url>
 
     <description>
-        Milyn parent pom. Provides unified dependency information and build configuration for sub-modules.
+        Smooks is an extensible framework for building applications for processing XML and non XML
+        data (CSV, EDI, Java etc) using Java.
     </description>
+
+    <licenses>
+        <license>
+            <name>LGPL license, Version 3.0</name>
+            <url>https://www.gnu.org/licenses/lgpl.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:smooks/smooks.git</connection>
+        <developerConnection>scm:git:git@github.com:smooks/smooks.git</developerConnection>
+        <url>git@github.com:smooks/smooks.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Tom Fennelly</name>
+            <email>tfennelly@cloudbees.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <camel.version>2.12.4</camel.version>
@@ -1076,6 +1089,10 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadoc</id>
@@ -1087,7 +1104,21 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -1098,10 +1129,28 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <repositories>
         <repository>
