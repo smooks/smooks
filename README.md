@@ -1,5 +1,7 @@
 # Smooks Framework
 
+[![Join the chat at https://gitter.im/smooks/smooks](https://badges.gitter.im/smooks/smooks.svg)](https://gitter.im/smooks/smooks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is the git source code repository for the Smooks Project.
 
 * [Home Page][1].
