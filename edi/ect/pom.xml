@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.milyn</groupId>
 		<artifactId>testres</artifactId>
-		<version>1.7.0</version>
+		<version>1.7.1-SNAPSHOT</version>
 		<relativePath>../../testres/pom.xml</relativePath>
 	</parent>
 
