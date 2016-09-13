@@ -31,7 +31,7 @@ import java.util.Properties;
  * param. Enum constant value mappings can be performed as per the
  * {@link org.milyn.javabean.decoders.MappingDecoder}.
  * The "<b>strict</b>" configuration param determines how data that do not
- * map to valid enum constants will handled.  Under the default behavior, or
+ * map to valid enum constants will be handled.  Under the default behavior, or
  * when specifying strict as "true", an error will be thrown.  If strict is
  * "false" null will be returned
  *
