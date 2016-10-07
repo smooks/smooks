@@ -16,19 +16,18 @@
 
 package org.milyn.edisax;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.edisax.model.internal.Delimiters;
-import org.milyn.edisax.util.EDIUtils;
-import org.xml.sax.InputSource;
-
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Stack;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.milyn.edisax.model.internal.Delimiters;
+import org.milyn.edisax.util.EDIUtils;
+import org.xml.sax.InputSource;
 
 /**
  * Buffered EDI Stream Segment reader.
@@ -347,12 +346,34 @@ public class BufferedSegmentReader {
 	            	int escapeIndex = segLen - 1 - i - escapeLen;
                     if (escapeIndex > -1 && escape != null) {
                         String escapeString = segmentBuffer.substring(escapeIndex, escapeIndex + escapeLen);
-                        String precedingEscapeString = escapeIndex - escapeLen > -1 ? segmentBuffer.substring(escapeIndex - escapeLen, escapeIndex) : "";
-                        if (escape.equals(escapeString) && !escape.equals(precedingEscapeString)) {
-                            segmentBuffer = segmentBuffer.delete(escapeIndex, escapeIndex + escapeLen);
-                            reachedSegEnd = false;
-                            break;
+                        
+                        if (escape.equals(escapeString)) {
+
+                        	int escapesCount = 1;
+                        	String precedingEscapeString = escapeIndex - escapeLen > -1 ? segmentBuffer.substring(escapeIndex - escapeLen, escapeIndex) : "";
+                        	while (escape.equals(precedingEscapeString)) {
+                        		escapesCount++;
+                        		escapeIndex = escapeIndex - escapeLen;
+                        		precedingEscapeString = escapeIndex - escapeLen > -1 ? segmentBuffer.substring(escapeIndex - escapeLen, escapeIndex) : "";
+                        	}
+                        	if (escapesCount % 2 == 0) {
+                        		for (int j = 0; j < escapesCount % 2; j++) {
+                        			segmentBuffer = segmentBuffer.delete(escapeIndex, escapeIndex + escapeLen);
+                        			escapeIndex += escapeLen;
+                        		}
+                        	} else {
+                        		for (int j = 0; j < (escapesCount - 1) % 2; j++) {
+                        			segmentBuffer = segmentBuffer.delete(escapeIndex, escapeIndex + escapeLen);
+                        			escapeIndex += escapeLen;
+                        		}
+                        		segmentBuffer = segmentBuffer.delete(escapeIndex, escapeIndex + escapeLen);
+                        		reachedSegEnd = false;
+                        		break;
+                        		
+                        	}
+                        	
                         }
+                        
                     }
 
                 }
