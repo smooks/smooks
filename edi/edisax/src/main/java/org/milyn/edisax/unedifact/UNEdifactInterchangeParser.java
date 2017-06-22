@@ -107,7 +107,7 @@ public class UNEdifactInterchangeParser implements XMLReader, NamespaceDeclarati
                     // Add the UN/EDIFACT namespace to the namespace stack...
                     namespaceDeclarationStack.pushNamespaces(envElementQName, handlerFactory.getNamespace(), attrs);
 
-                    ControlBlockHandler handler = handlerFactory.getControlBlockHandler(segCode);
+                    ControlBlockHandler handler = interchangeContext.getControlBlockHandler(segCode);
 
 					interchangeContext.indentDepth.value++;
 		        	handler.process(interchangeContext);
