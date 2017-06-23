@@ -134,6 +134,10 @@ public class UNEdifact41ControlBlockHandlerFactory implements ControlBlockHandle
         addCharsetMapping("6", "UTF-32");
         addCharsetMapping("7", "UTF-8");
         addCharsetMapping("8", "UTF-16");
+
+        // IATA PADIS
+        addCharsetMapping("IATA", "ASCII");
+        addCharsetMapping("IATB", "ASCII");
     }
 
     private static void addCharsetMapping(String code, String charsetName) {
