@@ -78,7 +78,7 @@ public class EJCExecutor {
         for(Map.Entry<String, EdifactModel> model : modelSet) {
             Description description = model.getValue().getDescription();
 
-            if(description.equals(EDIUtils.MODEL_SET_DEFINITIONS_DESCRIPTION_LOOKUP_NAME)) {
+            if(definitionsModel != null && definitionsModel.getDescription().equals(description)) {
                 // Already done (above).  Skip it...
                 continue;
             }
