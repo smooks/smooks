@@ -43,7 +43,6 @@ import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.DelimiterType;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.model.internal.Description;
-import org.milyn.io.StreamUtils;
 import org.milyn.javabean.pojogen.JType;
 import org.milyn.resource.URIResourceLocator;
 import org.milyn.util.ClassUtil;
@@ -224,7 +223,7 @@ public class EDIUtils {
             throw new EDIConfigurationException("Failed to locate jar file for EDI Mapping Model URN '" + urn + "'.  Jar must be available on classpath.");
         }
 
-        return getMappingModelList(mappingModelListStream);
+        return getMappingModelList(mappingModelListStream, '/' + urn.replace('.', '_').replace(':', '/'));
     }
 
     public static Properties getInterchangeProperties(String ediMappingModel) throws IOException {
@@ -295,26 +294,46 @@ public class EDIUtils {
         	ignoreVersion = true;
         	urn = urn.substring(0, urn.lastIndexOf(':'));
         }
-        
+
+        boolean trace = logger.isTraceEnabled();
+        if (trace) {
+            logger.trace("found " + urnFiles
+                    .size() + " urn resources (" + EDI_MAPPING_MODEL_URN + ") looking for '" + urn + "'");
+        }
         for(URL urnFile : urnFiles) {
             InputStream urnStream = urnFile.openStream();
             try {
-                String archiveURN = StreamUtils.readStreamAsString(urnStream);
-                if (ignoreVersion) {
-                	// Cut the version out
-                	archiveURN = archiveURN.substring(0, archiveURN.lastIndexOf(':'));
-                }
-                if(archiveURN.equals(urn)) {
-                    String urnFileString = urnFile.toString();
-                    String modelConfigFile = urnFileString.substring(0, urnFileString.length() - EDI_MAPPING_MODEL_URN.length()) + fileName;
-
-                    List<URL> urlList = ClassUtil.getResources(fileName, EDIUtils.class);
-
-                    for(URL url : urlList) {
-                        if(url.toString().equals(modelConfigFile)) {
-                            return url.openStream();
-                        }
+                BufferedReader lines = new BufferedReader(new InputStreamReader(urnStream, "UTF-8"));
+                String archiveURN = lines.readLine();
+                while (archiveURN != null) {
+                    archiveURN = archiveURN.trim();
+                    if (ignoreVersion) {
+                        // Cut the version out
+                        archiveURN = archiveURN.substring(0, archiveURN.lastIndexOf(':'));
                     }
+                    if (archiveURN.equals(urn)) {
+                        String urnFileString = urnFile.toString();
+                        String modelConfigFile = urnFileString
+                                                         .substring(0, urnFileString.length() - EDI_MAPPING_MODEL_URN
+                                                                 .length()) + fileName;
+
+                        List<URL> urlList = ClassUtil.getResources(fileName, EDIUtils.class);
+
+                        for (URL url : urlList) {
+                            if (url.toString().equals(modelConfigFile)) {
+                                if (trace) {
+                                    logger.trace("found urn " + modelConfigFile + " for " + urn);
+                                }
+                                return url.openStream();
+                            }
+                        }
+                        if (trace) {
+                            logger.trace("found urn " + urn + " but couldn't find " + EDI_MAPPING_MODEL_URN + ": " + modelConfigFile);
+                        }
+                    } else if (trace) {
+                        logger.trace("ignored urn '" + archiveURN + "'");
+                    }
+                    archiveURN = lines.readLine();
                 }
             } finally {
                 urnStream.close();
@@ -325,7 +344,16 @@ public class EDIUtils {
     }
 
     public static List<String> getMappingModelList(InputStream modelListStream) throws IOException {
+        return getMappingModelList(modelListStream, null);
+    }
+
+    public static List<String> getMappingModelList(InputStream modelListStream, String urn) throws IOException {
         List<String> rootMappingModels = new ArrayList<String>();
+
+        // We have an wildcard as a version
+        if (urn != null && urn.endsWith("/*")) {
+            urn = urn.substring(0, urn.length() - 1);
+        }
 
         try {
             BufferedReader lineReader = new BufferedReader(new InputStreamReader(modelListStream, "UTF-8"));
@@ -333,7 +361,9 @@ public class EDIUtils {
             String line = lineReader.readLine();
             while(line != null) {
                 line = line.trim();
-                if(line.length() > 0 && !line.startsWith("#")) {
+                if(line.length() > 0
+                        && !line.startsWith("#")
+                        && (urn == null || line.startsWith(urn))) {
                     rootMappingModels.add(line);
                 }
                 line = lineReader.readLine();
