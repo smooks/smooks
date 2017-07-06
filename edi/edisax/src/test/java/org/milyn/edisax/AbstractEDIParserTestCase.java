@@ -15,7 +15,6 @@
 */
 package org.milyn.edisax;
 
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.milyn.io.StreamUtils;
 import org.milyn.resource.URIResourceLocator;
@@ -42,7 +41,7 @@ public abstract class AbstractEDIParserTestCase  {
 		expected = removeCRLF(expected);
 		try {
 			EDIParser parser = new EDIParser();
-			String mappingResult = null;
+			String mappingResult;
 
 			parser.setContentHandler(contentHandler);
 			parser.setMappingModel(EDIParser.parseMappingModel(mappingModel, URIResourceLocator.extractBaseURI(mappingModel)));
@@ -68,7 +67,7 @@ public abstract class AbstractEDIParserTestCase  {
         }
     }
 
-    protected void testEDIParseException(String testpack, String segmentNodeName, int segmentNumber) throws IOException, EDIParseException {
+    void testEDIParseException(String testpack, String segmentNodeName, int segmentNumber) throws IOException, EDIParseException {
 		InputStream input = new ByteArrayInputStream(StreamUtils.readStream(getClass().getResourceAsStream(testpack + "/edi-input.txt")));
 		InputStream mapping = new ByteArrayInputStream(StreamUtils.readStream(getClass().getResourceAsStream(testpack + "/edi-to-xml-mapping.xml")));
 
@@ -82,7 +81,7 @@ public abstract class AbstractEDIParserTestCase  {
             parser.setFeature(EDIParser.FEATURE_VALIDATE, true);
 			parser.parse(new InputSource(input));
 
-            assertTrue("Test case should thow an EdiParseException.", false);
+            assertTrue("Test case should throw an EdiParseException.", false);
 
 		} catch (EDIParseException e) {
             if (segmentNodeName == null) {

@@ -5,7 +5,7 @@
   <medi:description name="Test Message" version="1.0"/>
 
   <!-- Without fieldRepeat delimiter -->
-  <medi:delimiters segment="'&#10;" field="+" component=":" escape="?"/>
+  <medi:delimiters segment="'&#10;" field="+" component=":" sub-component="^" escape="?"/>
 
   <medi:segments xmltag="test-message">
     <medi:segment segcode="TVL" truncatable="true" xmltag="TVL">
