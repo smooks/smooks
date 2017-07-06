@@ -18,9 +18,12 @@ package org.milyn.edisax.unedifact.no_ung;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URI;
+import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -40,24 +43,47 @@ import org.xml.sax.SAXException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class UNEdifactInterchangeParser_no_ung_Test {
+	private static final String XSLT_IDENTITY = ""
+			+ "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n"
+			+ "  <xsl:template match=\"@*|node()\">\n"
+			+ "    <xsl:copy>\n"
+			+ "      <xsl:apply-templates select=\"@*|node()\"/>\n"
+			+ "    </xsl:copy>\n"
+			+ "  </xsl:template>\n"
+			+ "</xsl:stylesheet>\n";
 
         @Test
 	public void test_unzipped() throws IOException, SAXException, EDIConfigurationException {
-		EdifactModel model1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG1-model.xml"));
-		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
-		
-		UNEdifactInterchangeParser parser = new UNEdifactInterchangeParser();
-		parser.setMappingsRegistry(new DefaultMappingsRegistry(model1, model2));
+		UNEdifactInterchangeParser parser = newUnEdifactInterchangeParser();
 
 		testExchanges(parser);
 	}
 
-        @Test
+	private UNEdifactInterchangeParser newUnEdifactInterchangeParser() throws IOException, SAXException {
+		EdifactModel model1 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG1-model.xml"));
+		EdifactModel model2 = EDIParser.parseMappingModel(getClass().getResourceAsStream("../MSG2-model.xml"));
+
+		UNEdifactInterchangeParser parser = new UNEdifactInterchangeParser();
+		parser.setMappingsRegistry(new DefaultMappingsRegistry(model1, model2));
+		return parser;
+	}
+
+	@Test
 	public void test_zipped() throws IOException, SAXException, EDIConfigurationException {
 		createZip();
 		UNEdifactInterchangeParser parser = new UNEdifactInterchangeParser();
@@ -65,7 +91,42 @@ public class UNEdifactInterchangeParser_no_ung_Test {
 		testExchanges(parser);
 	}
 
-	private void testExchanges(UNEdifactInterchangeParser parser) throws IOException, SAXException {		
+	@Test
+	public void parseWithTransformerHandler() throws TransformerConfigurationException, IOException, SAXException {
+		TransformerFactory factory = TransformerFactory.newInstance();
+		assertTrue(factory.getFeature(SAXTransformerFactory.FEATURE));
+		SAXTransformerFactory saxFactory = (SAXTransformerFactory) factory;
+		Templates identity = saxFactory.newTemplates(new StreamSource(new StringReader(XSLT_IDENTITY)));
+		TransformerHandler handler = saxFactory.newTransformerHandler(identity);
+		MockContentHandler result = new MockContentHandler();
+		handler.setResult(new SAXResult(result));
+
+		UNEdifactInterchangeParser parser = newUnEdifactInterchangeParser();
+		parser.setContentHandler(handler);
+
+		URL edifact = getClass().getResource("unedifact-msg-01.edi");
+		assertNotNull(edifact);
+
+		InputSource inputSource = new InputSource(edifact.toExternalForm());
+		try {
+
+			// XXX BufferedSegmentReader does not support InputSource without stream
+			inputSource.setByteStream(edifact.openStream());
+			parser.parse(inputSource);
+
+			XMLUnit.setIgnoreWhitespace(true);
+			URL expectedXml = getClass().getResource("unedifact-msg-expected.xml");
+			assertNotNull(expectedXml);
+			XMLAssert.assertXMLEqual(new InputSource(expectedXml
+					.toExternalForm()), new InputSource(new StringReader(result.xmlMapping.toString())));
+		} finally {
+			if (inputSource.getByteStream() != null) {
+				inputSource.getByteStream().close();
+			}
+		}
+	}
+
+	private void testExchanges(UNEdifactInterchangeParser parser) throws IOException, SAXException {
 		MockContentHandler handler;
 		
 		// Test message 01 - no UNA segment...
