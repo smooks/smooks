@@ -32,6 +32,7 @@ import java.util.Properties;
  */
 public class ValueNode extends MappingNode {
 
+    protected Boolean required;
     private String dataType;
     private List<Map.Entry<String,String>> parameters;
     private Integer minLength;
@@ -39,15 +40,17 @@ public class ValueNode extends MappingNode {
     private DataDecoder decoder;
     private Class<?> typeClass;
     private Properties decodeParams;
+    private Integer maxOccurs;
 
     public ValueNode() {
 	}
     
-	public ValueNode(String xmltag, String namespace) {
+	public ValueNode(String xmltag, String namespace, Boolean required) {
 		super(xmltag, namespace);
 		minLength = 0;
 		maxLength = 1;
-	}
+        this.required = required;
+    }
 
 	public String getDataType() {
         return dataType;
@@ -132,5 +135,25 @@ public class ValueNode extends MappingNode {
 
     public void isValidForType(String value) throws DataDecodeException {
         decoder.decode(value);
+    }
+
+    public boolean isRequired() {
+return required != null && required;
+}
+
+    public void setRequired(Boolean value) {
+this.required = value;
+}
+
+    public int getMaxOccurs() {
+        if (maxOccurs == null) {
+            return  1;
+        } else {
+            return maxOccurs;
+        }
+    }
+
+    public void setMaxOccurs(Integer value) {
+        this.maxOccurs = value;
     }
 }

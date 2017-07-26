@@ -123,18 +123,22 @@ public class ClassModelCompiler {
                 }
             }
 
-            if(isCollection(childBeanConfig.getPropertyOnParent())) {
-                BindingConfig collectionBinding = new BindingConfig(childBeanConfig.getBeanId() + "_List", parentBinding.getCreateOnElement(), ArrayList.class, parentBinding, childBeanConfig.getPropertyOnParent());
+            addWireBindings(parentBinding, childBeanConfig);
+        }
+    }
 
-                // Wire the List binding into the parent binding and wire the child binding into the list binding...
-                parentBinding.getWireBindings().add(collectionBinding);
-                collectionBinding.getWireBindings().add(childBeanConfig);
+    private void addWireBindings(BindingConfig parentBinding, BindingConfig childBeanConfig) {
+        if(isCollection(childBeanConfig.getPropertyOnParent())) {
+            BindingConfig collectionBinding = new BindingConfig(childBeanConfig.getBeanId() + "_List", parentBinding.getCreateOnElement(), ArrayList.class, parentBinding, childBeanConfig.getPropertyOnParent());
 
-                // And zap the propertyOnParent config because you don't wire onto a property on a collection...
-                childBeanConfig.setPropertyOnParent(null);
-            } else {
-                parentBinding.getWireBindings().add(childBeanConfig);
-            }
+            // Wire the List binding into the parent binding and wire the child binding into the list binding...
+            parentBinding.getWireBindings().add(collectionBinding);
+            collectionBinding.getWireBindings().add(childBeanConfig);
+
+            // And zap the propertyOnParent config because you don't wire onto a property on a collection...
+            childBeanConfig.setPropertyOnParent(null);
+        } else {
+            parentBinding.getWireBindings().add(childBeanConfig);
         }
     }
 
@@ -175,22 +179,27 @@ public class ClassModelCompiler {
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
      */
     private void processFields(List<Field> fields, BindingConfig parent) throws IllegalNameException {
+        Set<String> names = new HashSet<String>();
         for (Field field : fields) {
             LOG.debug("Parsing field " + field.getXmltag());
-
             pushNode(field);
+
+            boolean added = names.add(field.getXmltag());
+            if (!added) {
+                throw new EJCException("The <field> element can have the same 'xmltag' attribute. However, this attribute must unique for EJC to work properly. Current path: " + getCurrentNodePath());
+            }
 
             if (field.getComponents() != null && field.getComponents().size() > 0) {
                 //Add class type.
-                BindingConfig childBinding = createChildAndConnectWithParent(parent, field, 1, DelimiterType.FIELD);
+                BindingConfig childBinding = createChildAndConnectWithParent(parent, field, field.getMaxOccurs(), DelimiterType.FIELD);
 
-                parent.getWireBindings().add(childBinding);
+                addWireBindings(parent, childBinding);
 
                 // Now add the components to the field...
                 processComponents(field.getComponents(), childBinding);
             } else {
                 // Add primitive type.
-                createAndAddSimpleType(field, parent, DelimiterType.FIELD);
+                createAndAddSimpleType(field, parent, field.getMaxOccurs(), DelimiterType.FIELD);
             }
 
             popNode();
@@ -207,16 +216,18 @@ public class ClassModelCompiler {
     private void collapseSingleFieldSegmentBinding(BindingConfig parent) {
         if(parent.getValueBindings().isEmpty() && parent.getWireBindings().size() == 1) {
             BindingConfig child = parent.getWireBindings().get(0);
-            String parentClassName = parent.getBeanClass().getSkeletonClass().getName();
-            String childClassName = child.getBeanClass().getSkeletonClass().getName();
+            if (parent.getBeanClass() != null && child.getBeanClass() != null) {
+                String parentClassName = parent.getBeanClass().getSkeletonClass().getName();
+                String childClassName = child.getBeanClass().getSkeletonClass().getName();
 
-            if(parentClassName.equals(childClassName)) {
-                // This is a segment with just one field, having the same name
-                // as the segment itself.  Need to collapse the child
-                // up into the parent...
-                parent.setBeanClass(child.getBeanClass());
-                parent.setValueBindings(child.getValueBindings());
-                parent.setWireBindings(child.getWireBindings());
+                if (parentClassName.equals(childClassName)) {
+                    // This is a segment with just one field, having the same name
+                    // as the segment itself.  Need to collapse the child
+                    // up into the parent...
+                    parent.setBeanClass(child.getBeanClass());
+                    parent.setValueBindings(child.getValueBindings());
+                    parent.setWireBindings(child.getWireBindings());
+                }
             }
         }
     }
@@ -226,12 +237,12 @@ public class ClassModelCompiler {
      * When {@link org.milyn.edisax.model.internal.ValueNode} contains no type information String-type is used as default.
      * The new {@link org.milyn.javabean.pojogen.JNamedType} is inserted into parent and the xmltag- and
      * typeParameters-value is inserted into classModel.
-     * @param valueNode the {@link org.milyn.edisax.model.internal.ValueNode} to process.
-     * @param parent the {@link org.milyn.javabean.pojogen.JClass} 'owning' the valueNode.
-     * @param delimiterType Node delimiter type.
-     * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
+     * @param valueNode the {@link ValueNode} to process.
+     * @param parent the {@link JClass} 'owning' the valueNode.
+     * @param maxOccurs
+     * @param delimiterType Node delimiter type.  @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
      */
-    private JNamedType createAndAddSimpleType(ValueNode valueNode, BindingConfig parent, DelimiterType delimiterType) throws IllegalNameException {
+    private JNamedType createAndAddSimpleType(ValueNode valueNode, BindingConfig parent, int maxOccurs, DelimiterType delimiterType) throws IllegalNameException {
         JType jtype;
         JNamedType childToParentProperty;
 
@@ -240,6 +251,10 @@ public class ClassModelCompiler {
         } else {
             // Default type when no specific type is given.
             jtype = new JType(String.class);
+        }
+
+        if (maxOccurs > 1 || maxOccurs == -1) {
+            jtype = new JType(ArrayList.class, jtype.getType());
         }
 
         String propertyName = EDIUtils.encodeAttributeName(jtype, valueNode.getJavaName());
@@ -251,7 +266,19 @@ public class ClassModelCompiler {
             getWriteMethod(parent).writeValue(childToParentProperty, valueNode, delimiterType);
         }
 
-        parent.getValueBindings().add(new ValueNodeInfo(childToParentProperty, getCurrentNodePath(), valueNode));
+        if (isCollection(childToParentProperty)) {
+            String currentClassId = getCurrentClassId();
+            BindingConfig collectionBinding = new BindingConfig(currentClassId + "_List", parent.getCreateOnElement(), ArrayList.class, parent, childToParentProperty);
+
+            // Wire the List binding into the parent binding and wire the child binding into the list binding...
+            parent.getWireBindings().add(collectionBinding);
+
+            BindingConfig childBinding = new BindingConfig(currentClassId, getCurrentNodePath(), jtype.getGenericType(), collectionBinding, null);
+            collectionBinding.getWireBindings().add(childBinding);
+        } else {
+            ValueNodeInfo childBinding = new ValueNodeInfo(childToParentProperty, getCurrentNodePath(), valueNode);
+            parent.getValueBindings().add(childBinding);
+        }
 
         return childToParentProperty;
     }
@@ -263,20 +290,26 @@ public class ClassModelCompiler {
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
      */
     private void processComponents(List<Component> components, BindingConfig parent) throws IllegalNameException {
+        Set<String> names = new HashSet<String>();
         for (Component component : components) {
-
+            LOG.debug("Parsing component " + component.getXmltag());
             pushNode(component);
+
+            boolean added = names.add(component.getXmltag());
+            if (!added) {
+                throw new EJCException("The <component> element can have the same 'xmltag' attribute. However, this attribute must unique for EJC to work properly. Current path: " + getCurrentNodePath());
+            }
 
             if (component.getSubComponents() != null && component.getSubComponents().size() > 0) {
                 //Add class type.
-                BindingConfig childBeanConfig = createChildAndConnectWithParent(parent, component, 1, DelimiterType.COMPONENT);
+                BindingConfig childBeanConfig = createChildAndConnectWithParent(parent, component, component.getMaxOccurs(), DelimiterType.COMPONENT);
 
-                parent.getWireBindings().add(childBeanConfig);
+                addWireBindings(parent, childBeanConfig);
 
                 processSubComponents(component.getSubComponents(), childBeanConfig);
             } else {
                 //Add primitive type.
-                createAndAddSimpleType(component, parent, DelimiterType.COMPONENT);
+                createAndAddSimpleType(component, parent, component.getMaxOccurs(), DelimiterType.COMPONENT);
             }
 
             popNode();
@@ -295,7 +328,7 @@ public class ClassModelCompiler {
             pushNode(subComponent);
 
             //Add primitive type.
-            createAndAddSimpleType(subComponent, parent, DelimiterType.SUB_COMPONENT);
+            createAndAddSimpleType(subComponent, parent, 1, DelimiterType.SUB_COMPONENT);
 
             popNode();
         }
@@ -359,7 +392,11 @@ public class ClassModelCompiler {
         if(!parentBeanClass.isFinalized() && !parentBeanClass.hasProperty(propertyName) && model.isClassCreator(parentBeanClass)) {
             parentBeanClass.addBeanProperty(childProperty);
             if(delimiterType != null) {
-                getWriteMethod(parentBinding).writeObject(childProperty, delimiterType, parentBinding, mappingNode);
+                if (isCollection(childProperty)) {
+                    getWriteMethod(parentBinding).writeFieldCollection(childProperty, delimiterType, parentBinding, maxOccurs);
+                } else {
+                    getWriteMethod(parentBinding).writeObject(childProperty, delimiterType, parentBinding, mappingNode);
+                }
             }
         }
         if(addClassToModel) {
@@ -435,8 +472,7 @@ public class ClassModelCompiler {
 
     /**********************************************************************************************************
      * Private Helper Methods
-     *********************************************************************************************************
-     * @param bindingConfig*/
+     **********************************************************************************************************/
 
     private WriteMethod getWriteMethod(BindingConfig bindingConfig) {
         for(JMethod method : bindingConfig.getBeanClass().getMethods()) {

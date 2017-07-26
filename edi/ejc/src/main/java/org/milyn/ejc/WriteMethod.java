@@ -78,6 +78,35 @@ class WriteMethod extends JMethod {
         writeObject(property, bindingConfig, mappingNode);
     }
 
+    public void writeFieldCollection(JNamedType property, DelimiterType delimiterType, BindingConfig bindingConfig, int maxOccurs) {
+        boolean first = getBodyBuilder().length() == 0;
+        appendToBody("\n        if(" + property.getName() + " != null && !" + property.getName() + ".isEmpty()) {");
+        appendToBody("\n            for(" + property.getType().getGenericType().getSimpleName() + " item : " + property.getName() + ") {");
+        if (first) {
+            appendToBody("\n                if(!nodeTokens.isEmpty()) {");
+            writeDelimiter(delimiterType, "\n                    ");
+            appendToBody("\n                }");
+        } else {
+            writeDelimiter(delimiterType, "\n                ");
+        }
+        appendToBody("\n                item.write(nodeWriter, delimiters);");
+        if(trunacate) {
+            appendToBody("\n                nodeTokens.add(nodeWriter.toString());");
+            appendToBody("\n                ((StringWriter)nodeWriter).getBuffer().setLength(0);");
+        }
+        appendToBody("\n            }");
+        appendToBody("\n        }");
+        if (first) {
+            appendToBody("\n        for(int i = " + property.getName() + " == null ? 1 : " + property.getName() + ".size() + 1; i < " + maxOccurs + "; i++) {");
+            writeDelimiter(delimiterType, "\n            ");
+            appendToBody("\n        }");
+        } else {
+            appendToBody("\n        for(int i = " + property.getName() + " == null ? 0 : " + property.getName() + ".size(); i < " + maxOccurs + "; i++) {");
+            writeDelimiter(delimiterType, "\n            ");
+            appendToBody("\n        }");
+        }
+    }
+
     public void writeObject(JNamedType property, BindingConfig bindingConfig, MappingNode mappingNode) {
         appendToBody("\n        if(" + property.getName() + " != null) {");
         if(mappingNode instanceof Segment) {
@@ -202,32 +231,40 @@ class WriteMethod extends JMethod {
     }
 
     public void writeDelimiter(DelimiterType delimiterType) {
-        writeDelimiter(delimiterType, "nodeWriter", getBodyBuilder());
+        writeDelimiter(delimiterType, "\n        ");
+    }
+
+    public void writeDelimiter(DelimiterType delimiterType, String indent) {
+        writeDelimiter(delimiterType, "nodeWriter", getBodyBuilder(), indent);
     }
 
     private void writeDelimiter(DelimiterType delimiterType, String writerVariableName, StringBuilder builder) {
+        writeDelimiter(delimiterType, writerVariableName, builder, "\n        ");
+    }
+
+    private void writeDelimiter(DelimiterType delimiterType, String writerVariableName, StringBuilder builder, String indent) {
         if(bodyLength() == 0) {
             return;
         }
 
         switch (delimiterType) {
             case SEGMENT:
-                builder.append("\n        " + writerVariableName + ".write(delimiters.getSegmentDelimiter());");
+                builder.append(indent + writerVariableName + ".write(delimiters.getSegmentDelimiter());");
                 break;
             case FIELD:
-                builder.append("\n        " + writerVariableName + ".write(delimiters.getField());");
+                builder.append(indent + writerVariableName + ".write(delimiters.getField());");
                 break;
             case FIELD_REPEAT:
-                builder.append("\n        " + writerVariableName + ".write(delimiters.getFieldRepeat());");
+                builder.append(indent + writerVariableName + ".write(delimiters.getFieldRepeat());");
                 break;
             case COMPONENT:
-                builder.append("\n        " + writerVariableName + ".write(delimiters.getComponent());");
+                builder.append(indent + writerVariableName + ".write(delimiters.getComponent());");
                 break;
             case SUB_COMPONENT:
-                builder.append("\n        " + writerVariableName + ".write(delimiters.getSubComponent());");
+                builder.append(indent + writerVariableName + ".write(delimiters.getSubComponent());");
                 break;
             case DECIMAL_SEPARATOR:
-                builder.append("\n        " + writerVariableName + ".write(delimiters.getDecimalSeparator());");
+                builder.append(indent + writerVariableName + ".write(delimiters.getDecimalSeparator());");
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported '" + DelimiterType.class.getName() + "' enum conversion.  Enum '" + delimiterType + "' not specified in switch statement.");

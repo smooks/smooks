@@ -22,21 +22,18 @@ import java.util.List;
 public class Component extends ValueNode implements ContainerNode {
 
     private List<SubComponent> subComponent;
-    private Boolean required;
     private Boolean truncatable;
 
-	public Component() {
+    public Component() {
 	}
     
 	public Component(String xmltag, String namespace, Boolean required) {
-		super(xmltag, namespace);
-		this.required = required;
+		super(xmltag, namespace, required);
 		this.truncatable = true;
 	}
     
 	public Component(String xmltag, String namespace, Boolean required, Boolean truncatable) {
-		super(xmltag, namespace);
-		this.required = required;
+		super(xmltag, namespace, required);
 		this.truncatable = truncatable;
 	}
 
@@ -50,14 +47,6 @@ public class Component extends ValueNode implements ContainerNode {
     public Component addSubComponent(SubComponent subComponent) {
     	getSubComponents().add(subComponent);
     	return this;
-    }
-
-    public boolean isRequired() {
-        return required != null && required;
-    }
-
-    public void setRequired(Boolean value) {
-        this.required = value;
     }
 
     public boolean isTruncatable() {

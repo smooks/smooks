@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.EDIParser;
+import org.milyn.edisax.model.EDIConfigDigester;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.io.StreamUtils;
 import org.milyn.util.ClassUtil;
@@ -200,14 +201,16 @@ public class UnEdifactSpecificationReaderTest {
     }
 
 	private void testSegment(final String segmentCode, Document doc, boolean useShortName) throws IOException, SAXException, JDOMException {
-        String expected = new String(StreamUtils.readStream(getClass().getResourceAsStream("d08a/segment/expected-" + (useShortName ? "shortname-" : "") + segmentCode.toLowerCase() + ".xml"))).trim();
+
+	    // Edimap writes in version 1.7 but the test cases still have v1.5
         XPath lookup = XPath.newInstance("//medi:segment[@segcode='" + segmentCode + "']");
-        lookup.addNamespace("medi", "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd");
+        lookup.addNamespace("medi", EDIConfigDigester.XSD_V17);
         Element node = (Element) lookup.selectSingleNode(doc);
         assertNotNull("Node with segment code " + segmentCode + " wasn't found", node);
 
 //        System.out.println(out.outputString(node));
 
+        String expected = new String(StreamUtils.readStream(getClass().getResourceAsStream("d08a/segment/expected-" + (useShortName ? "shortname-" : "") + segmentCode.toLowerCase() + ".xml"))).trim();
         XMLUnit.setIgnoreWhitespace( true );
         XMLUnit.setIgnoreAttributeOrder(true);
     	XMLAssert.assertXMLEqual("Failed to compare XMLs for " + segmentCode, new StringReader(expected), new StringReader(out.outputString(node)));

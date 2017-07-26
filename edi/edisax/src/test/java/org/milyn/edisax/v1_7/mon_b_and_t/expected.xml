@@ -1,0 +1,14 @@
+<test-message>
+  <MON>
+    <C663>
+      <Monetary_amount_type_qualifier>B</Monetary_amount_type_qualifier>
+      <Allowance_or_charge_number>5000</Allowance_or_charge_number>
+      <Currency>AED</Currency>
+    </C663>
+    <C663_2>
+      <Monetary_amount_type_qualifier>T</Monetary_amount_type_qualifier>
+      <Allowance_or_charge_number>5100</Allowance_or_charge_number>
+      <Currency>AED</Currency>
+    </C663_2>
+  </MON>
+</test-message>

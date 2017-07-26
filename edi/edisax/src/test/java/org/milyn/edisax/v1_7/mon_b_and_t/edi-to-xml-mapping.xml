@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<medi:edimap
+        xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.7.xsd">
+
+  <medi:description name="Test Message" version="1.0"/>
+
+  <!-- Without fieldRepeat delimiter -->
+  <medi:delimiters segment="'&#10;" field="+" component=":" escape="?"/>
+
+  <medi:segments xmltag="test-message">
+    <medi:segment description="MONETARY INFORMATION" segcode="MON" truncatable="true" xmltag="MON">
+      <medi:field nodeTypeRef="C663" required="true" truncatable="true" xmltag="C663">
+        <medi:component dataType="String" maxLength="3" minLength="1" nodeTypeRef="5025" required="true" truncatable="true" xmltag="Monetary_amount_type_qualifier"/>
+        <medi:component dataType="String" maxLength="35" minLength="1" nodeTypeRef="1230" required="false" truncatable="true" xmltag="Allowance_or_charge_number"/>
+        <medi:component dataType="String" maxLength="3" minLength="1" nodeTypeRef="6345" required="false" truncatable="true" xmltag="Currency"/>
+        <medi:component dataType="String" maxLength="25" minLength="1" nodeTypeRef="3225" required="false" truncatable="true" xmltag="Place_location_identification"/>
+      </medi:field>
+      <medi:field maxOccurs="19" nodeTypeRef="C663" required="false" truncatable="true" xmltag="C663_2">
+        <medi:component dataType="String" maxLength="3" minLength="1" nodeTypeRef="5025" required="true" truncatable="true" xmltag="Monetary_amount_type_qualifier"/>
+        <medi:component dataType="String" maxLength="35" minLength="1" nodeTypeRef="1230" required="false" truncatable="true" xmltag="Allowance_or_charge_number"/>
+        <medi:component dataType="String" maxLength="3" minLength="1" nodeTypeRef="6345" required="false" truncatable="true" xmltag="Currency"/>
+        <medi:component dataType="String" maxLength="25" minLength="1" nodeTypeRef="3225" required="false" truncatable="true" xmltag="Place_location_identification"/>
+      </medi:field>
+    </medi:segment>
+
+  </medi:segments>
+
+</medi:edimap>

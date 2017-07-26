@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<medi:edimap
+        xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.7.xsd">
+
+  <medi:description name="Test Message" version="1.0"/>
+
+  <!-- Without fieldRepeat delimiter -->
+  <medi:delimiters segment="'&#10;" field="+" component=":" escape="?"/>
+
+  <medi:segments xmltag="test-message">
+    <medi:segment segcode="TVL" truncatable="true" xmltag="TVL">
+      <medi:field truncatable="true" xmltag="C306">
+        <medi:component maxOccurs="2" truncatable="true" xmltag="Company_identification"/>
+      </medi:field>
+    </medi:segment>
+  </medi:segments>
+
+</medi:edimap>

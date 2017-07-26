@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -315,9 +316,7 @@ public class EDIParser implements XMLReader {
 		try {
 			configStream = resourceLocator.getResource(mappingConfig);
 		} catch (IOException e) {
-			IllegalStateException state = new IllegalStateException("Invalid EDI mapping model config specified for " + EDIParser.class.getName() + ".  Unable to access URI based mapping model [" + resourceLocator.resolveURI(mappingConfig) + "].");
-			state.initCause(e);
-			throw state;
+            throw new IllegalStateException("Invalid EDI mapping model config specified for " + EDIParser.class.getName() + ".  Unable to access URI based mapping model [" + resourceLocator.resolveURI(mappingConfig) + "].", e);
 		}
 		
 		return configStream;
@@ -418,7 +417,7 @@ public class EDIParser implements XMLReader {
 		return this;
 	}
 
-	private void parse(boolean indent) throws SAXException, IOException, EDIParseException {
+	private void parse(boolean indent) throws SAXException, IOException {
         boolean ignoreUnmappedSegment = edifactModel.getEdimap().isIgnoreUnmappedSegments();
 
 		startElement(edifactModel.getEdimap().getSegments(), indent);
@@ -586,26 +585,32 @@ public class EDIParser implements XMLReader {
 
 		// Iterate over the fields and map them...
         int numFields = currentSegmentFields.length - 1; // It's "currentSegmentFields.length - 1" because we don't want to include the segment code.
-        int numFieldsMapped = segment.getFields().size();
+        int numFieldsMapped = 0;
+        for (Field field : segment.getFields()) {
+            numFieldsMapped += field.getMaxOccurs();
+        }
         boolean ignoreUnmappedFields = segment.isIgnoreUnmappedFields();
         Delimiters delimiters = segmentReader.getDelimiters();
         String fieldRepeat = delimiters.getFieldRepeat();
-		for(int i = 0; i < numFields; i++) {
-			if (ignoreUnmappedFields && i >= numFieldsMapped) {
+        int index = 0;
+        for (Field expectedField : expectedFields) {
+            if (ignoreUnmappedFields && index >= numFieldsMapped) {
                 break;
             }
-			String fieldMessageVal = currentSegmentFields[i + 1]; // +1 to skip the segment code
-			Field expectedField = expectedFields.get(i);
-
-			if(fieldRepeat != null) {
-				String[] repeatedFields = EDIUtils.split(fieldMessageVal, fieldRepeat, delimiters.getEscape());
-				for(String repeatedField : repeatedFields) {
-					mapField(repeatedField, expectedField, i, segmentCode);
-				}
-			} else {			
-				mapField(fieldMessageVal, expectedField, i, segmentCode);
-			}
-		}
+            int end = Math.min(currentSegmentFields.length - 1, index + expectedField.getMaxOccurs());
+            for (int i = index; i < end; i++) {
+                String fieldMessageVal = currentSegmentFields[i + 1]; // +1 to skip the segment code
+                if(fieldRepeat != null) {
+                    String[] repeatedFields = EDIUtils.split(fieldMessageVal, fieldRepeat, delimiters.getEscape());
+                    for(String repeatedField : repeatedFields) {
+                        mapField(repeatedField, expectedField, i, segmentCode);
+                    }
+                } else {
+                    mapField(fieldMessageVal, expectedField, i, segmentCode);
+                }
+            }
+            index += expectedField.getMaxOccurs();
+        }
 	}
 
     /**
@@ -629,12 +634,15 @@ public class EDIParser implements XMLReader {
             if (currentFieldComponents.length > 0 || !ignoreEmptyNodes()) {
             	startElement(expectedField, true);
 	            // Iterate over the field components and map them...
-				for(int i = 0; i < currentFieldComponents.length; i++) {
-					String componentMessageVal = currentFieldComponents[i];
-					Component expectedComponent = expectedComponents.get(i);
-	
-					mapComponent(componentMessageVal, expectedComponent, fieldIndex, i, segmentCode, expectedField.getXmltag());
-				}
+                int index = 0;
+                for (Component expectedComponent : expectedComponents) {
+                    int end = Math.min(currentFieldComponents.length, index + expectedComponent.getMaxOccurs());
+                    for (int i = index; i < end; i++) {
+                        String componentMessageVal = currentFieldComponents[i];
+                        mapComponent(componentMessageVal, expectedComponent, fieldIndex, i, segmentCode, expectedField.getXmltag());
+                    }
+                    index += expectedComponent.getMaxOccurs();
+                }
 		        endElement(expectedField, true);
             }
 		} else {
@@ -699,8 +707,11 @@ public class EDIParser implements XMLReader {
 
         List<Field> expectedFields = segment.getFields();
 
-        int numFieldsExpected = expectedFields.size() + 1; // It's "expectedFields.length + 1" because the segment code is included.
-        int numberOfFieldsToValidate = 0;
+        // It starts with 1 because the segment code is included.
+        int numFieldsExpected = 1;
+        for (Field field : expectedFields) {
+            numFieldsExpected += field.getMaxOccurs();
+        }
 
         if(currentSegmentFields.length < numFieldsExpected) {
             boolean throwException = false;
@@ -709,12 +720,7 @@ public class EDIParser implements XMLReader {
             // and are the missing fields required or not...
             if(segment.isTruncatable()) {
                 int numFieldsMissing = numFieldsExpected - currentSegmentFields.length;
-                for(int i = expectedFields.size() - 1; i > (expectedFields.size() - numFieldsMissing - 1); i--) {
-                    if(expectedFields.get(i).isRequired()) {
-                        throwException = true;
-                        break;
-                    }
-                }
+                throwException = isRequireValueNodeMissing(expectedFields, numFieldsMissing);
             } else {
                 throwException = true;
             }
@@ -723,30 +729,52 @@ public class EDIParser implements XMLReader {
                 throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segment.getSegcode() + "] expected to contain " + (numFieldsExpected - 1) + " fields.  Actually contains " + (currentSegmentFields.length - 1) + " fields (not including segment code).  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", segment, segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
             }
 
-            numberOfFieldsToValidate = currentSegmentFields.length;
-
         } else if (currentSegmentFields.length > numFieldsExpected) {
         	// we have more fields than we are expecting.
-        	if(segment.isIgnoreUnmappedFields()) {
-        		numberOfFieldsToValidate= numFieldsExpected;
-        	} else {
+        	if(!segment.isIgnoreUnmappedFields()) {
         		throw new EDIParseException(edifactModel.getEdimap(), "Segment [" + segment.getSegcode() + "] expected to contain " + (numFieldsExpected - 1) + " fields.  Actually contains " + (currentSegmentFields.length - 1) + " fields (not including segment code).  Currently at segment number " + segmentReader.getCurrentSegmentNumber() + ".", segment, segmentReader.getCurrentSegmentNumber(), segmentReader.getCurrentSegmentFields());
         	}
         } else {
         	// number of fields matches the expected number of fields.
-        	numberOfFieldsToValidate = currentSegmentFields.length;
         }
 
-        for (int i = 1; i < numberOfFieldsToValidate; i++) {
-            Field field = expectedFields.get(i-1);
-            if (field.getComponents().size() == 0 && (!currentSegmentFields[i].equals(""))) {
-                validateValueNode(field, currentSegmentFields[i]);
+        int index = 1;
+        for (Field field : expectedFields) {
+            if (field.getComponents().size() == 0) {
+                int end = Math.min(currentSegmentFields.length, index + field.getMaxOccurs());
+                for (int i = index; i < end; i++) {
+                    if (!currentSegmentFields[i].equals("")){
+                        validateValueNode(field, currentSegmentFields[i]);
+                    }
+                }
+            }
+            index += field.getMaxOccurs();
+            if (index > currentSegmentFields.length) {
+                break;
             }
         }
     }
 
+    private boolean isRequireValueNodeMissing(List<? extends ValueNode> expectedValueNodes, int numMissing) {
+        ListIterator<? extends ValueNode> i = expectedValueNodes.listIterator(expectedValueNodes.size());
+        while (numMissing > 0) {
+            ValueNode previous = i.previous();
+            if (previous.isRequired()) {
+                return true;
+            }
+            numMissing -= previous.getMaxOccurs();
+        }
+        return false;
+    }
+
     private void assertComponentsOK(Field expectedField, int fieldIndex, String segmentCode, List<Component> expectedComponents, String[] currentFieldComponents) throws EDIParseException {
-        if (currentFieldComponents.length != expectedComponents.size()) {
+
+        int numComponentsExpected = 0;
+        for (Component component : expectedComponents) {
+            numComponentsExpected += component.getMaxOccurs();
+        }
+
+        if (currentFieldComponents.length != numComponentsExpected) {
             boolean throwException = false;
 
             if (expectedField.isTruncatable()){
@@ -759,13 +787,7 @@ public class EDIParser implements XMLReader {
                 }
 
                 int numComponentsMissing = expectedComponents.size() - currentFieldComponents.length;
-                for (int i = expectedComponents.size() - 1; i > (expectedComponents.size() - numComponentsMissing - 1); i--)
-                {
-                    if (expectedComponents.get(i).isRequired()) {
-                        throwException = true;
-                        break;
-                    }
-                }
+                throwException = isRequireValueNodeMissing(expectedComponents, numComponentsMissing);
             } else {
                 throwException = true;
             }
@@ -775,10 +797,19 @@ public class EDIParser implements XMLReader {
             }
         }
 
-        for (int i = 0; i < currentFieldComponents.length; i++) {
-            Component component = expectedComponents.get(i);
-            if (component.getSubComponents().size() == 0 && (!currentFieldComponents[i].equals(""))) {
-                validateValueNode(component, currentFieldComponents[i]);
+        int index = 0;
+        for (Component component : expectedComponents) {
+            if (component.getSubComponents().size() == 0) {
+                int end = Math.min(currentFieldComponents.length, index + component.getMaxOccurs());
+                for (int i = index; i < end; i++) {
+                    if (!currentFieldComponents[i].equals("")){
+                        validateValueNode(component, currentFieldComponents[i]);
+                    }
+                }
+            }
+            index += component.getMaxOccurs();
+            if (index > currentFieldComponents.length) {
+                break;
             }
         }
     }
