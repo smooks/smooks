@@ -18,22 +18,11 @@ package org.milyn.edisax.model.internal;
 
 public class SubComponent extends ValueNode {
 
-    private Boolean required;
-
 	public SubComponent() {
 	}
 
 	public SubComponent(String xmltag, String namespace, Boolean required) {
-		super(xmltag, namespace);
-		this.required = required;
+		super(xmltag, namespace, required);
 	}
-
-	public boolean isRequired() {
-        return required != null && required;
-    }
-
-    public void setRequired(Boolean value) {
-        this.required = value;
-    }
 
 }

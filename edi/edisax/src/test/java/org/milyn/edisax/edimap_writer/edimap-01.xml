@@ -1,89 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd">
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.7.xsd">
 
-	<medi:description name="Test Message" version="1.0" />
+  <medi:description name="Test Message" version="1.0"/>
 
-	<medi:delimiters segment="&#10;" field="*" component="^" sub-component="~" />
+  <medi:delimiters segment="&#10;" field="*" component="^" sub-component="~"/>
 
-	<medi:segments xmltag="test-message">
-        <medi:documentation>segments docs...</medi:documentation>
-		<medi:segment segcode="SEG" xmltag="message-seg" maxOccurs="1" minOccurs="1" ignoreUnmappedFields="false" truncatable="false">
-            <medi:documentation>segment docs...</medi:documentation>
-			<medi:field required="false" truncatable="false" xmltag="field-1" />
-			<medi:field required="false" truncatable="false" xmltag="field-2">
-                <medi:documentation>field docs...</medi:documentation>
-			</medi:field>
-			<medi:field required="false" truncatable="false" xmltag="field-3">
-                <medi:component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false" />
-			</medi:field>
-			<medi:field xmltag="field-4" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false" />
-			<medi:field required="false" truncatable="false" xmltag="field-5">
-                <medi:component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
-                    <medi:documentation>component 1 docs...</medi:documentation>
-                    <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" />
-                </medi:component>
-			</medi:field>
-            <medi:field xmltag="field-6" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false" />
-            <medi:field required="false" truncatable="false" xmltag="field-7">
-                <medi:component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
-                    <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
-                        <medi:documentation>sub-component docs...</medi:documentation>
-                    </medi:sub-component>
-                </medi:component>
-            </medi:field>
-		</medi:segment>
+  <medi:segments xmltag="test-message">
+    <medi:documentation>segments docs...</medi:documentation>
+    <medi:segment segcode="SEG" xmltag="message-seg" maxOccurs="1" minOccurs="1" ignoreUnmappedFields="false" truncatable="false">
+      <medi:documentation>segment docs...</medi:documentation>
+      <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-1"/>
+      <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-2">
+        <medi:documentation>field docs...</medi:documentation>
+      </medi:field>
+      <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-3">
+        <medi:component maxOccurs="1" xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false"/>
+      </medi:field>
+      <medi:field maxOccurs="1" xmltag="field-4" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM"
+                  truncatable="false"/>
+      <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-5">
+        <medi:component maxOccurs="1" xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM"
+                        truncatable="false">
+          <medi:documentation>component 1 docs...</medi:documentation>
+          <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM"/>
+        </medi:component>
+      </medi:field>
+      <medi:field maxOccurs="1" xmltag="field-6" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false"/>
+      <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-7">
+        <medi:component maxOccurs="1" xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
+          <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
+            <medi:documentation>sub-component docs...</medi:documentation>
+          </medi:sub-component>
+        </medi:component>
+      </medi:field>
+    </medi:segment>
 
-        <medi:segment segcode="SEG2" xmltag="message-seg" maxOccurs="1" minOccurs="1" ignoreUnmappedFields="false" truncatable="false">
-            <medi:documentation>segment docs...</medi:documentation>
-            <medi:field required="false" truncatable="false" xmltag="field-1" />
-            <medi:segment xmltag="SEG22" segcode="xxx" minOccurs="1" maxOccurs="6" ignoreUnmappedFields="false" truncatable="false">
-                <medi:field required="false" truncatable="false" xmltag="field-1-1">
-                    <medi:component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
-                        <medi:documentation>component docs...</medi:documentation>
-                        <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
-                            <medi:documentation>sub-component docs...</medi:documentation>
-                        </medi:sub-component>
-                    </medi:component>
-                </medi:field>
-            </medi:segment>
+    <medi:segment segcode="SEG2" xmltag="message-seg" maxOccurs="1" minOccurs="1" ignoreUnmappedFields="false" truncatable="false">
+      <medi:documentation>segment docs...</medi:documentation>
+      <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-1"/>
+      <medi:segment xmltag="SEG22" segcode="xxx" minOccurs="1" maxOccurs="6" ignoreUnmappedFields="false" truncatable="false">
+        <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-1-1">
+          <medi:component maxOccurs="1" xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
+            <medi:documentation>component docs...</medi:documentation>
+            <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
+              <medi:documentation>sub-component docs...</medi:documentation>
+            </medi:sub-component>
+          </medi:component>
+        </medi:field>
+      </medi:segment>
 
-            <medi:segmentGroup minOccurs="1" maxOccurs="5" xmltag="boo">
-                <medi:segment xmltag="SEG31" segcode="xxx" minOccurs="1" maxOccurs="6" ignoreUnmappedFields="false" truncatable="false">
-                    <medi:field required="false" truncatable="false" xmltag="field-1-1">
-                        <medi:component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
-                            <medi:documentation>component docs...</medi:documentation>
-                            <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
-                                <medi:documentation>sub-component docs...</medi:documentation>
-                            </medi:sub-component>
-                        </medi:component>
-                    </medi:field>
-                </medi:segment>
-                <medi:segment xmltag="SEG32" segcode="xxx" minOccurs="1" maxOccurs="6" ignoreUnmappedFields="false" truncatable="false">
-                    <medi:field required="false" truncatable="false" xmltag="field-1-1">
-                        <medi:component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
-                            <medi:documentation>component docs...</medi:documentation>
-                            <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
-                                <medi:documentation>sub-component docs...</medi:documentation>
-                            </medi:sub-component>
-                        </medi:component>
-                    </medi:field>
-                </medi:segment>
-            </medi:segmentGroup>
+      <medi:segmentGroup minOccurs="1" maxOccurs="5" xmltag="boo">
+        <medi:segment xmltag="SEG31" segcode="xxx" minOccurs="1" maxOccurs="6" ignoreUnmappedFields="false" truncatable="false">
+          <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-1-1">
+            <medi:component maxOccurs="1" xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
+              <medi:documentation>component docs...</medi:documentation>
+              <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
+                <medi:documentation>sub-component docs...</medi:documentation>
+              </medi:sub-component>
+            </medi:component>
+          </medi:field>
         </medi:segment>
+        <medi:segment xmltag="SEG32" segcode="xxx" minOccurs="1" maxOccurs="6" ignoreUnmappedFields="false" truncatable="false">
+          <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-1-1">
+            <medi:component maxOccurs="1" xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
+              <medi:documentation>component docs...</medi:documentation>
+              <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
+                <medi:documentation>sub-component docs...</medi:documentation>
+              </medi:sub-component>
+            </medi:component>
+          </medi:field>
+        </medi:segment>
+      </medi:segmentGroup>
+    </medi:segment>
 
-        <medi:segmentGroup minOccurs="3" maxOccurs="9" xmltag="blablah">
-            <medi:segment xmltag="SEG32" segcode="xxx" minOccurs="1" maxOccurs="6" ignoreUnmappedFields="false" truncatable="false">
-                <medi:field required="false" truncatable="false" xmltag="field-1-1">
-                    <medi:component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
-                        <medi:documentation>component docs...</medi:documentation>
-                        <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
-                            <medi:documentation>sub-component docs...</medi:documentation>
-                        </medi:sub-component>
-                    </medi:component>
-                </medi:field>
-            </medi:segment>
-        </medi:segmentGroup>
+    <medi:segmentGroup minOccurs="3" maxOccurs="9" xmltag="blablah">
+      <medi:segment xmltag="SEG32" segcode="xxx" minOccurs="1" maxOccurs="6" ignoreUnmappedFields="false" truncatable="false">
+        <medi:field maxOccurs="1" required="false" truncatable="false" xmltag="field-1-1">
+          <medi:component maxOccurs="1" xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM" truncatable="false">
+            <medi:documentation>component docs...</medi:documentation>
+            <medi:sub-component xmltag="comp1" minLength="0" maxLength="4" required="true" dataType="Date" dataTypeParameters="format=MMM">
+              <medi:documentation>sub-component docs...</medi:documentation>
+            </medi:sub-component>
+          </medi:component>
+        </medi:field>
+      </medi:segment>
+    </medi:segmentGroup>
 
-	</medi:segments>
-	
+  </medi:segments>
+
 </medi:edimap>

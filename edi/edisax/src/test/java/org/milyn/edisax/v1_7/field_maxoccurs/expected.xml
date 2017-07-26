@@ -1,0 +1,6 @@
+<test-message>
+  <IFT>
+    <Free_Text>Free text on field 1</Free_Text>
+    <Free_Text>and field 2</Free_Text>
+  </IFT>
+</test-message>

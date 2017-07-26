@@ -24,6 +24,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.milyn.edisax.model.EDIConfigDigester;
 import org.milyn.edisax.model.internal.Component;
 import org.milyn.edisax.model.internal.Delimiters;
 import org.milyn.edisax.model.internal.Description;
@@ -53,7 +54,7 @@ public class EdimapWriter {
         docBuilderFactory.setNamespaceAware(true);
     }
 
-    private static final String NS = "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd";
+    private static final String NS = EDIConfigDigester.XSD_V17;
 
     private Document doc;
 
@@ -147,7 +148,7 @@ public class EdimapWriter {
         for(Field field : fields) {
             Element fieldEl = newElement("field", segmentEl, field);
 
-            mapBeanProperties(field, fieldEl, "name", "xmltag", "nodeTypeRef", "truncatable", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
+            mapBeanProperties(field, fieldEl, "name", "xmltag", "nodeTypeRef", "truncatable", "maxOccurs", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
             addComponents(field.getComponents(), fieldEl);
         }
     }
@@ -156,7 +157,7 @@ public class EdimapWriter {
         for(Component component : components) {
             Element componentEl = newElement("component", fieldEl, component);
 
-            mapBeanProperties(component, componentEl, "name", "xmltag", "nodeTypeRef", "truncatable", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
+            mapBeanProperties(component, componentEl, "name", "xmltag", "nodeTypeRef", "truncatable", "maxOccurs", "maxLength", "minLength", "required", "dataType", "dataTypeParametersString|dataTypeParameters");
             addSubComponents(component.getSubComponents(), componentEl);
         }
     }

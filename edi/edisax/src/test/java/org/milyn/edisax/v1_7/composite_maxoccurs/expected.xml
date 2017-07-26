@@ -1,0 +1,10 @@
+<test-message>
+  <TVL>
+    <C328>
+      <Place_Location_Identification>KEF</Place_Location_Identification>
+    </C328>
+    <C328>
+      <Place_Location_Identification>CPH</Place_Location_Identification>
+    </C328>
+  </TVL>
+</test-message>
