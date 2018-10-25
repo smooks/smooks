@@ -736,7 +736,7 @@
                  <groupId>org.jdom</groupId>
                  <artifactId>jdom</artifactId>
                  <version>${jdom2.version}</version>
-              </dependency> 
+              </dependency>
 
               <dependency>
                  <groupId>org.eclipse.emf</groupId>
@@ -915,6 +915,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.7</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
