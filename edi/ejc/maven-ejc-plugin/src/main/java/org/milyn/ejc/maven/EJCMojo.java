@@ -15,18 +15,14 @@
 */
 package org.milyn.ejc.maven;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.model.Resource;
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.milyn.ejc.EJCExecutor;
-import org.milyn.ejc.EJCException;
 import org.milyn.edisax.util.IllegalNameException;
+import org.milyn.ejc.EJCException;
+import org.milyn.ejc.EJCExecutor;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -34,13 +30,14 @@ import java.io.IOException;
 
 /**
  * EJC Mojo.
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-@Execute( goal = "generate",
-phase = LifecyclePhase.GENERATE_SOURCES,
-lifecycle = "generate-sources" )
-@Mojo( name = "generate",
-requiresDependencyResolution = ResolutionScope.COMPILE)
+@Execute(goal = "generate"
+    , phase = LifecyclePhase.GENERATE_SOURCES
+    , lifecycle = "generate-sources")
+@Mojo(name = "generate"
+    , requiresDependencyResolution = ResolutionScope.COMPILE)
 public class EJCMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
@@ -60,7 +57,7 @@ public class EJCMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
     	getLog().info("Execution EJC Plugin");
-    	
+
         EJCExecutor ejc = new EJCExecutor();
 
         try {

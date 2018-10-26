@@ -15,30 +15,26 @@
 */
 package org.milyn.ect.maven;
 
-import java.io.File;
-
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 import org.milyn.ect.ECTUnEdifactExecutor;
 import org.milyn.ect.EdiParseException;
 
+import java.io.File;
+
 /**
  * ECT Mojo.
- * 
+ *
  * @author bardl
  */
-@Execute( goal = "generate",
-          phase = LifecyclePhase.GENERATE_SOURCES,
-          lifecycle = "generate-sources" )
-@Mojo( name = "generate",
-       requiresDependencyResolution = ResolutionScope.COMPILE)
+@Execute(goal = "generate"
+    , phase = LifecyclePhase.GENERATE_SOURCES
+    , lifecycle = "generate-sources")
+@Mojo(name = "generate"
+    , requiresDependencyResolution = ResolutionScope.COMPILE)
 public class ECTMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true )
@@ -54,7 +50,7 @@ public class ECTMojo extends AbstractMojo {
     private File destDir;
 
     public void execute() throws MojoExecutionException {
-    	
+
         if(!src.exists()) {
         	throw new MojoExecutionException("EDI Specification file '" + src.getAbsolutePath() + "' not found.");
         }
@@ -77,7 +73,7 @@ public class ECTMojo extends AbstractMojo {
                 getLog().info("UN/EDIFACT mapping model set for '" + src.getName() + "' generated in '" + destDir.getAbsolutePath() + "'.");
             } catch (EdiParseException e) {
                 throw new MojoExecutionException("Error Executing ECT Maven Plugin.  See chained cause.", e);
-            } 
+            }
         } else {
             throw new MojoExecutionException("Unsupported ECT 'srcType' configuration value '" + srcType + "'.  Currently support 'UNEDIFACT' only.");
         }
