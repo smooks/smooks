@@ -7,13 +7,20 @@ This is the git source code repository for the [Smooks][1] Project.
 [![Build Status](https://travis-ci.org/smooks/smooks.svg?branch=master)](https://travis-ci.org/smooks/smooks)
 
 
-## Local Build
+## Building
+
+### Pre-requisites
+
+1. JDK 1.5
+1. Apache Maven 3.2.x
+
+### Maven
 
 1. `git clone git://github.com/smooks/smooks.git`
 2. `cd smooks`
 3. `mvn clean install`
 
-Note you will need both maven (version 3+) and git installed on your local machine. 
+Note you will need both maven (version 3+) and git installed on your local machine.
 
 ## Docker Build
 
