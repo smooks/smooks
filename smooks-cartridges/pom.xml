@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
-	<version>1.7.1-SNAPSHOT</version>
-        <relativePath>../smooks-parent/pom.xml</relativePath>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>smooks-parent</artifactId>
+    <version>1.7.1-SNAPSHOT</version>
+    <relativePath>../smooks-parent/pom.xml</relativePath>
+  </parent>
 
-    <name>Milyn :: Smooks Cartridges :: Aggregator</name>
-    <artifactId>smooks-cartridge-aggregator</artifactId>
-    <packaging>pom</packaging>
+  <name>Milyn :: Smooks Cartridges :: Aggregator</name>
+  <artifactId>smooks-cartridge-aggregator</artifactId>
+  <packaging>pom</packaging>
 
-    <modules>
-        <module>flatfile</module>
-        <module>csv</module>
-        <module>javabean</module>
-        <module>edi</module>
-        <module>json</module>
-        <module>misc</module>
-        <module>scripting</module>
-        <module>templating</module>
-        <module>routing</module>
-        <module>calc</module>
-        <module>persistence</module>
-        <module>rules</module>
-        <module>validation</module>
-        <module>fixed-length</module>
-        <module>yaml</module>
-        <module>camel</module>
-    </modules>
+  <modules>
+    <module>flatfile</module>
+    <module>csv</module>
+    <module>javabean</module>
+    <module>edi</module>
+    <module>json</module>
+    <module>misc</module>
+    <module>scripting</module>
+    <module>templating</module>
+    <module>routing</module>
+    <module>calc</module>
+    <module>persistence</module>
+    <module>rules</module>
+    <module>validation</module>
+    <module>fixed-length</module>
+    <module>yaml</module>
+    <module>camel</module>
+  </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-core</artifactId>
-        </dependency>
-    </dependencies>
-
+  <dependencies>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>testres</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-core</artifactId>
+    </dependency>
+  </dependencies>
 </project>

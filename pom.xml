@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>smooks-parent</artifactId>
-	<version>1.7.1-SNAPSHOT</version>
-        <relativePath>smooks-parent/pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>smooks-parent</artifactId>
+    <version>1.7.1-SNAPSHOT</version>
+    <relativePath>smooks-parent/pom.xml</relativePath>
+  </parent>
 
-    <artifactId>milyn-aggregator</artifactId>
-    <packaging>pom</packaging>
-    <name>Milyn :: Main Aggregator</name>
+  <artifactId>milyn-aggregator</artifactId>
+  <packaging>pom</packaging>
+  <name>Milyn :: Main Aggregator</name>
 
-    <description>
-        Aggregates and builds all project modules. Maintains SCM information.
-    </description>
+  <description>
+    Aggregates and builds all project modules. Maintains SCM information.
+  </description>
 
-    <modules>
-        <module>smooks-parent</module>
-        <module>testres</module>
-        <module>commons</module>
-        <module>smooks-core</module>
-        <module>scribe</module>
-        <module>edi</module>
-        <module>smooks-cartridges</module>
-        <module>smooks-all</module>
-        <module>smooks-examples</module>
-    </modules>
-
-
+  <modules>
+    <module>smooks-parent</module>
+    <module>testres</module>
+    <module>commons</module>
+    <module>smooks-core</module>
+    <module>scribe</module>
+    <module>edi</module>
+    <module>smooks-cartridges</module>
+    <module>smooks-all</module>
+    <module>smooks-examples</module>
+  </modules>
 </project>

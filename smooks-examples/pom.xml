@@ -1,77 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>testres</artifactId>
-	<version>1.7.1-SNAPSHOT</version>
-        <relativePath>../testres/pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>testres</artifactId>
+    <version>1.7.1-SNAPSHOT</version>
+    <relativePath>../testres/pom.xml</relativePath>
+  </parent>
 
-    <artifactId>smooks-examples</artifactId>
-    <name>Milyn :: Smooks Examples :: Aggregator</name>
-    <packaging>pom</packaging>
+  <artifactId>smooks-examples</artifactId>
+  <name>Milyn :: Smooks Examples :: Aggregator</name>
+  <packaging>pom</packaging>
 
-    <profiles>
-        <profile>
-            <id>all</id>
-            <modules>
-                <module>parent</module>
-                <module>xslt-basic</module>
-                <module>xslt-groovy</module>
-                <module>xslt-namespaces</module>
-                <module>java-basic</module>
-                <module>xml-to-java</module>
-                <module>xml-to-java-virtual</module>
-                <module>model-driven-basic</module>
-                <module>model-driven-basic-virtual</module>
-                <module>xml-read-write</module>
-                <module>xml-read-write-transform</module>
-                <module>java-to-xml</module>
-                <module>java-to-java</module>
-                <module>csv-to-xml</module>
-                <module>csv-to-xml-2</module>
-                <module>csv-to-java</module>
-                <module>csv-to-java-programmatic</module>
-                <module>csv-variable-record</module>
-                <module>fixed-length-to-java</module>
-                <module>flatfile-to-xml-regex</module>
-                <module>edi-to-xml</module>
-                <module>edi-to-java</module>
-                <module>profiling</module>
-                <module>db-extract-transform-load</module>
-                <module>file-router</module>
-                <module>freemarker-huge-transform</module>
-                <module>groovy</module>
-                <module>jms-router</module>
-                <module>json-to-java</module>
-                <module>sj-testimonial</module>
-                <module>dao-router</module>
-                <module>validation-basic</module>
-                <module>edi-with-import-to-java</module>
-                <module>ejc/ejc-gen</module>
-                <module>ejc/ejc-use</module>
-                <module>yaml-to-java</module>
-                <module>dynamic-model-builder</module>
-                <module>camel</module>
-                <module>osgi</module>
-                <module>drools-fusion</module>
-            </modules>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>deploy</id>
-            <modules>
-                <!--
-                 Don't deploy any of the examples.  Only deploy the
-                 exmaples base POM...
-                -->
-            </modules>
-        </profile>
-    </profiles>
-
+  <profiles>
+    <profile>
+      <id>all</id>
+      <modules>
+        <module>parent</module>
+        <module>xslt-basic</module>
+        <module>xslt-groovy</module>
+        <module>xslt-namespaces</module>
+        <module>java-basic</module>
+        <module>xml-to-java</module>
+        <module>xml-to-java-virtual</module>
+        <module>model-driven-basic</module>
+        <module>model-driven-basic-virtual</module>
+        <module>xml-read-write</module>
+        <module>xml-read-write-transform</module>
+        <module>java-to-xml</module>
+        <module>java-to-java</module>
+        <module>csv-to-xml</module>
+        <module>csv-to-xml-2</module>
+        <module>csv-to-java</module>
+        <module>csv-to-java-programmatic</module>
+        <module>csv-variable-record</module>
+        <module>fixed-length-to-java</module>
+        <module>flatfile-to-xml-regex</module>
+        <module>edi-to-xml</module>
+        <module>edi-to-java</module>
+        <module>profiling</module>
+        <module>db-extract-transform-load</module>
+        <module>file-router</module>
+        <module>freemarker-huge-transform</module>
+        <module>groovy</module>
+        <module>jms-router</module>
+        <module>json-to-java</module>
+        <module>sj-testimonial</module>
+        <module>dao-router</module>
+        <module>validation-basic</module>
+        <module>edi-with-import-to-java</module>
+        <module>ejc/ejc-gen</module>
+        <module>ejc/ejc-use</module>
+        <module>yaml-to-java</module>
+        <module>dynamic-model-builder</module>
+        <module>camel</module>
+        <module>osgi</module>
+        <module>drools-fusion</module>
+      </modules>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>deploy</id>
+      <modules>
+        <!--
+         Don't deploy any of the examples.  Only deploy the
+         exmaples base POM...
+        -->
+      </modules>
+    </profile>
+  </profiles>
 </project>

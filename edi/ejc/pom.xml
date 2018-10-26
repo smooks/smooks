@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>testres</artifactId>
-	<version>1.7.1-SNAPSHOT</version>
-        <relativePath>../../testres/pom.xml</relativePath>
-    </parent>
-    <name>Milyn :: EDI :: Edifact Java Compiler</name>
-    <artifactId>milyn-smooks-ejc</artifactId>
-    <packaging>bundle</packaging>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>testres</artifactId>
+    <version>1.7.1-SNAPSHOT</version>
+    <relativePath>../../testres/pom.xml</relativePath>
+  </parent>
+  <name>Milyn :: EDI :: Edifact Java Compiler</name>
+  <artifactId>milyn-smooks-ejc</artifactId>
+  <packaging>bundle</packaging>
 
-    <dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-javabean</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-edi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-ect</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-edisax-parser</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>default-tools.jar</id>
+      <activation>
+        <property>
+          <name>java.vendor</name>
+          <value>Sun Microsystems Inc.</value>
+        </property>
+      </activation>
+      <dependencies>
         <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-javabean</artifactId>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.6</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-edi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-ect</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-edisax-parser</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-        </dependency>
-
-    </dependencies>
-
-    <profiles>
-        <profile>
-            <id>default-tools.jar</id>
-            <activation>
-                <property>
-                    <name>java.vendor</name>
-                    <value>Sun Microsystems Inc.</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sun</groupId>
-                    <artifactId>tools</artifactId>
-                    <version>1.6</version>
-                    <scope>system</scope>
-                    <systemPath>${java.home}/../lib/tools.jar</systemPath>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.milyn.ejc.EJC</mainClass>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <excludeTransitive>false</excludeTransitive>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.milyn.ejc.EJC</mainClass>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <excludeTransitive>false</excludeTransitive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

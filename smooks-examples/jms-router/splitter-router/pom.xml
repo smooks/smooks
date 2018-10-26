@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-example-jms-router</artifactId>
-	<version>1.7.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>milyn-smooks-example-jms-router</artifactId>
+    <version>1.7.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-    <name>Milyn :: Smooks Example :: JMS Splitter-Router</name>
-    <artifactId>milyn-smooks-example-jms-splitter-router</artifactId>
-    <packaging>bundle</packaging>
+  <name>Milyn :: Smooks Example :: JMS Splitter-Router</name>
+  <artifactId>milyn-smooks-example-jms-splitter-router</artifactId>
+  <packaging>bundle</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-javabean</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-templating</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-routing</artifactId>
-        </dependency>
-    </dependencies>
-
+  <dependencies>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-javabean</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-templating</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-routing</artifactId>
+    </dependency>
+  </dependencies>
 </project>

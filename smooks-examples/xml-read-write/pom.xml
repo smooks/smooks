@@ -1,38 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Milyn - Copyright (C) 2006 - 2010
-  ~
-  ~ This library is free software; you can redistribute it and/or
-  ~ modify it under the terms of the GNU Lesser General Public
-  ~ License (version 2.1) as published by the Free Software
-  ~ Foundation.
-  ~
-  ~ This library is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  ~
-  ~ See the GNU Lesser General Public License for more details:
-  ~ http://www.gnu.org/licenses/lgpl.txt
-  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>smooks-examples-parent</artifactId>
-	<version>1.7.1-SNAPSHOT</version>
-        <relativePath>../parent/pom.xml</relativePath>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>smooks-examples-parent</artifactId>
+    <version>1.7.1-SNAPSHOT</version>
+    <relativePath>../parent/pom.xml</relativePath>
+  </parent>
 
-    <name>Milyn :: Smooks Example :: XML Read/Write</name>
-    <artifactId>milyn-smooks-example-xml-rw</artifactId>
-    <packaging>bundle</packaging>
+  <name>Milyn :: Smooks Example :: XML Read/Write</name>
+  <artifactId>milyn-smooks-example-xml-rw</artifactId>
+  <packaging>bundle</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-javabean</artifactId>
-        </dependency>
-    </dependencies>
-
+  <dependencies>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-javabean</artifactId>
+    </dependency>
+  </dependencies>
 </project>
