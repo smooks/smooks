@@ -969,19 +969,6 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>2.4</version>
-          <executions>
-            <execution>
-              <id>attach-sources</id>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
           <version>1.8</version>
         </plugin>
@@ -998,7 +985,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.1.</version>
+          <version>2.10.4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1059,10 +1046,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
     </plugins>
   </build>
 
@@ -1071,7 +1054,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.1</version>
+        <version>2.10.4</version>
         <configuration>
           <overview>${basedir}/src/main/java/overview.html</overview>
           <links>
@@ -1100,45 +1083,27 @@
 
   <profiles>
     <profile>
-      <id>deploy</id>
+      <id>release</id>
+
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+
       <build>
         <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.4</version>
-            <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
-            </configuration>
-            <executions>
-              <execution>
-                <id>attach-javadoc</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>2.2.1</version>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
+          <!--
+            Signs Maven artifacts. This is a mandatory requirement for
+            publishing Maven artifacts to Maven Central using the open-source
+            Nexus repository operated by Sonatype.
+
+            See details for the Nexus Staging plugin below.
+          -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
             <version>1.5</version>
             <executions>
               <execution>
-                <id>sign-artifacts</id>
                 <phase>verify</phase>
                 <goals>
                   <goal>sign</goal>
@@ -1146,15 +1111,80 @@
               </execution>
             </executions>
           </plugin>
+
+          <!--
+            Generates a JAR file containing Javadocs for the generated classes.
+            This is a mandatory requirement for publishing Maven artifacts to
+            Maven Central using the open-source Nexus repository operated by
+            Sonatype.
+
+            See details for the Nexus Staging plugin below.
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.4</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!--
+            Generates a JAR file containing source code for the generated
+            classes. This is a mandatory requirement for publishing Maven
+            artifacts to Maven Central using the open-source Nexus repository
+            operated by Sonatype.
+
+            See details for the Nexus Staging plugin below.
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!--
+            Skips running tests as part of the deployment process.
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.10</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+
+          <!--
+            Uploads Maven artifacts to the open-source Nexus repository
+            operated by Sonatype. Artifacts are uploaded to a staging area on
+            the Sonatype Nexus repository, where they need to be reviewed for
+            completeness and correctness through the Nexus web interface. Once
+            artifacts have been reviewed and found to be accurate, they can be
+            approved for deployment to Maven Central. Sonatype automatically
+            uploads approved artifacts to Maven Central (usually within a few
+            hours).
+          -->
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.7</version>
+            <version>1.5.1</version>
             <extensions>true</extensions>
             <configuration>
               <serverId>ossrh</serverId>
+              <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
             </configuration>
           </plugin>
         </plugins>

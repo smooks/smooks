@@ -65,12 +65,13 @@
         <activeByDefault>true</activeByDefault>
       </activation>
     </profile>
+
     <profile>
-      <id>deploy</id>
+      <id>release</id>
+
       <modules>
         <!--
-         Don't deploy any of the examples.  Only deploy the
-         exmaples base POM...
+         Don't deploy any of the examples. Only deploy the base POM.
         -->
       </modules>
     </profile>
