@@ -69,7 +69,13 @@ public class ConfigGenerator {
         File outputFile = new File(outputFileName);
 
         properties.setProperty(ROOT_BEAN_CLASS, rootBeanClassName);
-        outputFile.getParentFile().mkdirs();
+
+        // Create the directory (and any parent directories) for the output
+        // file, if possible.
+        if (outputFile.getParentFile() != null) {
+            outputFile.getParentFile().mkdirs();
+        }
+
         Writer outputWriter = new FileWriter(outputFile);
 
         try {
@@ -115,7 +121,13 @@ public class ConfigGenerator {
             ClassConfig classConfig = new ClassConfig(beanClass, beanId);
             Field[] fields = beanClass.getDeclaredFields();
             List<BindingConfig> bindings = classConfig.getBindings();
-            String rootPackage = rootBeanClass.getPackage().getName();
+
+            // Determine the package name for the root bean class.
+            String rootPackage = rootBeanClass.getPackage() != null
+                                ? rootBeanClass.getPackage().getName()
+                                // Fallback case in the rare situation where the
+                                // bean class is in the default package.
+                                : "";
 
             classConfigs.add(classConfig);
 
@@ -196,18 +208,14 @@ public class ConfigGenerator {
 
     private boolean isIncluded(String packageName) {
         if(packagesIncluded != null) {
-            if(isInPackageList(packagesIncluded, packageName)) {
-                return true;
-            }
+          return isInPackageList(packagesIncluded, packageName);
         }
         return false;
     }
 
     private boolean isExcluded(String packageName) {
         if(packagesExcluded != null) {
-            if(isInPackageList(packagesExcluded, packageName)) {
-                return true;
-            }
+          return isInPackageList(packagesExcluded, packageName);
         }
         return false;
     }
