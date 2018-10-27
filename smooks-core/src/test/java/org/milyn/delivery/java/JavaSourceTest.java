@@ -16,12 +16,11 @@
 package org.milyn.delivery.java;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
+import org.milyn.container.ExecutionContext;
 import org.milyn.payload.JavaSource;
 import org.milyn.payload.StringResult;
-import org.milyn.container.ExecutionContext;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -29,9 +28,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class JavaSourceTest {
 
 	@Test
@@ -68,7 +71,7 @@ public class JavaSourceTest {
         Map beans = new HashMap();
         beans.put("abcd", pojo);
         source = new JavaSource(beans);
-        assertEquals(pojo, source.getBeans().get("abcd"));        
+        assertEquals(pojo, source.getBeans().get("abcd"));
     }
 
 	@Test
@@ -81,7 +84,8 @@ public class JavaSourceTest {
     }
 
 	@Test
-    public void test_streamingOff_02() throws IOException, SAXException {
+    public void test_streamingOff_02()
+  {
         Smooks smooks = new Smooks();
         JavaSource javaSource = new JavaSource(new MyBean1());
         StringResult result = new StringResult();

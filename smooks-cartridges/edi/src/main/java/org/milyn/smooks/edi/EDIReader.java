@@ -3,24 +3,18 @@
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
-	License (version 2.1) as published by the Free Software 
+	License (version 2.1) as published by the Free Software
 	Foundation.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    
-	See the GNU Lesser General Public License for more details:    
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
 
 package org.milyn.smooks.edi;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +34,12 @@ import org.milyn.xml.SmooksXMLReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.List;
+
 /**
  * Smooks EDI Reader.
  * <p/>
@@ -50,9 +50,10 @@ import org.xml.sax.SAXException;
  * <pre>
  * &lt;edi:reader mappingModel="edi-to-xml-order-mapping.xml" validate="false"/&gt;
  * </pre>
- * 
+ *
  * @author tfennelly
  */
+@SuppressWarnings("unchecked")
 public class EDIReader extends EDIParser implements SmooksXMLReader {
 
 	/**
@@ -100,12 +101,12 @@ public class EDIReader extends EDIParser implements SmooksXMLReader {
 	 */
 	public void parse(InputSource ediSource) throws IOException, SAXException {
 		EdifactModel edi2xmlMappingModel = getMappingModel();
-		
+
 		setMappingModel(edi2xmlMappingModel);
-        
+
 		// Set features...
-		setFeature(FEATURE_VALIDATE, validate);        
-		setFeature(FEATURE_IGNORE_NEWLINES, ignoreNewLines);        
+		setFeature(FEATURE_VALIDATE, validate);
+		setFeature(FEATURE_IGNORE_NEWLINES, ignoreNewLines);
 
         super.parse(ediSource);
 	}
@@ -143,9 +144,8 @@ public class EDIReader extends EDIParser implements SmooksXMLReader {
 	    				logger.error("Invalid " + MODEL_CONFIG_KEY + " config value '" + modelConfigData + "'. Failed to locate EDI Mapping Model resource!");
 	    			}
 				} catch (IOException e) {
-                    IOException newE = new IOException("Error parsing EDI mapping model [" + configuration.getStringParameter(MODEL_CONFIG_KEY) + "].  Target Profile(s) " + getTargetProfiles() + ".");
-					newE.initCause(e);
-					throw newE;
+					throw new IOException("Error parsing EDI mapping model [" + configuration.getStringParameter(MODEL_CONFIG_KEY) + "].  Target Profile(s) " + getTargetProfiles() + "."
+							, e);
 				} catch (SAXException e) {
 					throw new SAXException("Error parsing EDI mapping model [" + configuration.getStringParameter(MODEL_CONFIG_KEY) + "].  Target Profile(s) " + getTargetProfiles() + ".", e);
 				} catch (EDIConfigurationException e) {
@@ -157,7 +157,7 @@ public class EDIReader extends EDIParser implements SmooksXMLReader {
 				logger.debug("Found EDI mapping model [" + edifactModel.getEdimap().getDescription().getName() + ", Version " + edifactModel.getEdimap().getDescription().getVersion() + "] in the model cache.  Target Profile(s) " + getTargetProfiles() + ".");
 			}
 		}
-		
+
 		return edifactModel;
 	}
 
@@ -168,12 +168,12 @@ public class EDIReader extends EDIParser implements SmooksXMLReader {
 	 */
 	protected static Hashtable getMappingTable(ApplicationContext context) {
 		Hashtable mappingModelTable = (Hashtable) context.getAttribute(MAPPING_TABLE_CTX_KEY);
-		
+
 		if(mappingModelTable == null) {
 			mappingModelTable = new Hashtable();
 			context.setAttribute(MAPPING_TABLE_CTX_KEY, mappingModelTable);
 		}
-		
+
 		return mappingModelTable;
 	}
 

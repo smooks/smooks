@@ -29,11 +29,7 @@ import org.milyn.javabean.DataEncoder;
 import org.milyn.javabean.binding.AbstractBinding;
 import org.milyn.javabean.binding.BeanSerializationException;
 import org.milyn.javabean.binding.SerializationContext;
-import org.milyn.javabean.binding.model.Bean;
-import org.milyn.javabean.binding.model.Binding;
-import org.milyn.javabean.binding.model.DataBinding;
-import org.milyn.javabean.binding.model.ModelSet;
-import org.milyn.javabean.binding.model.WiredBinding;
+import org.milyn.javabean.binding.model.*;
 import org.milyn.javabean.binding.model.get.ConstantGetter;
 import org.milyn.javabean.binding.model.get.GetterGraph;
 import org.milyn.payload.StringSource;
@@ -48,7 +44,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
-import java.util.List;
 
 /**
  * XML Binding class.
@@ -61,6 +56,7 @@ import java.util.List;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  * @since 1.5
  */
+@SuppressWarnings("unchecked")
 public class XMLBinding extends AbstractBinding {
 
     private ModelSet beanModelSet;
@@ -168,7 +164,7 @@ public class XMLBinding extends AbstractBinding {
         AssertArgument.isNotNull(object, "object");
         assertInitialized();
 
-        Class<? extends Object> objectClass = object.getClass();
+        Class<?> objectClass = object.getClass();
         RootNodeSerializer rootNodeSerializer = serializers.get(objectClass);
         if(rootNodeSerializer == null) {
             throw new BeanSerializationException("No serializer for Java type '" + objectClass.getName() + "'.");
@@ -192,7 +188,6 @@ public class XMLBinding extends AbstractBinding {
      * @param object The Object instance.
      * @return The XML as a String.
      * @throws BeanSerializationException Error serializing the bean.
-     * @throws IOException Error writing to the supplied Writer instance.
      */
     public String toXML(Object object) throws BeanSerializationException {
         StringWriter writer = new StringWriter();

@@ -32,7 +32,8 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class GetterGraph<T extends Object> implements Getter<T> {
+@SuppressWarnings("unchecked")
+public class GetterGraph<T> implements Getter<T> {
 
     private String contextObjectName = SerializationContext.ROOT_OBJ;
     private List<Getter> graph = new ArrayList<Getter>();
@@ -40,14 +41,13 @@ public class GetterGraph<T extends Object> implements Getter<T> {
     public Object get(final T contextObject) throws BeanSerializationException {
         AssertArgument.isNotNull(contextObject, "contextObject");
 
-        int graphLenght = graph.size();
         Object value = contextObject;
 
-        for(int i = 0; i < graphLenght; i++) {
-            Getter getter = graph.get(i);
-
+        for (final Getter getter : graph)
+        {
             value = getter.get(value);
-            if(value == null) {
+            if (value == null)
+            {
                 return null;
             }
         }

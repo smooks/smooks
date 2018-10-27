@@ -30,15 +30,7 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.xml.SmooksXMLReader;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.*;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.XMLConstants;
@@ -47,8 +39,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Stack;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * JSON to SAX event reader.
@@ -146,6 +138,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:maurice@zeijen.net">maurice@zeijen.net</a>
  */
+@SuppressWarnings("unchecked")
 public class JSONReader implements SmooksXMLReader {
 
 	private static Log logger = LogFactory.getLog(JSONReader.class);
@@ -205,7 +198,7 @@ public class JSONReader implements SmooksXMLReader {
 	@Config
     private SmooksResourceConfiguration config;
 
-    private static enum Type {
+    private enum Type {
     	OBJECT,
     	ARRAY
     }
@@ -247,37 +240,37 @@ public class JSONReader implements SmooksXMLReader {
 	        if(jsonStreamReader == null) {
 	            jsonStreamReader = new InputStreamReader(csvInputSource.getByteStream(), encoding);
 	        }
-	
+
 	        // Create the JSON parser...
 	        JsonParser jp = null;
 	        try {
-	
+
 	        	if(logger.isTraceEnabled()) {
 	        		logger.trace("Creating JSON parser");
 	        	}
-	
+
 	        	jp = jsonFactory.createJsonParser(jsonStreamReader);
-	
+
 		        // Start the document and add the root "csv-set" element...
 		        contentHandler.startDocument();
 		        startElement(rootName, 0);
-	
+
 		        if(logger.isTraceEnabled()) {
 		        	logger.trace("Starting JSON parsing");
 		        }
-	
+
 		        boolean first = true;
 		        Stack<String> elementStack = new Stack<String>();
 		        Stack<Type> typeStack = new Stack<Type>();
 		        JsonToken t;
 		        while ((t = jp.nextToken()) != null) {
-	
+
 		        	if(logger.isTraceEnabled()) {
 		        		logger.trace("Token: " + t.name());
 		        	}
-	
+
 		        	switch(t) {
-	
+
 		        	case START_OBJECT:
 		        	case START_ARRAY:
 		        		if(!first) {
@@ -287,84 +280,84 @@ public class JSONReader implements SmooksXMLReader {
 		        		}
 		        		typeStack.push(t == JsonToken.START_ARRAY ? Type.ARRAY : Type.OBJECT);
 		        		break;
-	
+
 		        	case END_OBJECT:
 		        	case END_ARRAY:
-	
+
 		        		typeStack.pop();
-	
+
 		        		boolean typeStackPeekIsArray = !typeStack.empty() && typeStack.peek() == Type.ARRAY;
-	
+
 		        		if(!elementStack.empty() && !typeStackPeekIsArray) {
 		        			endElement(elementStack.pop(), typeStack.size());
 		        		}
-	
-	
+
+
 		        		if(typeStackPeekIsArray) {
 		        			endElement(arrayElementName, typeStack.size());
 		        		}
 		        		break;
-	
+
 		        	case FIELD_NAME:
-	
+
 		        		String text = jp.getText();
-	
+
 		        		if(logger.isTraceEnabled()) {
 			        		logger.trace("Field name: " + text);
 			        	}
-	
+
 		        		String name = getElementName(text);
-	
+
 	        			startElement(name, typeStack.size());
 	        			elementStack.add(name);
-	
-	
+
+
 		        		break;
-	
+
 		        	default:
-	
+
 		        		String value;
-	
+
 		        		if(t == JsonToken.VALUE_NULL) {
 		        			value = nullValueReplacement;
 		        		} else {
 		        			value = jp.getText();
 		        		}
-	
+
 		        		if(typeStack.peek() == Type.ARRAY) {
-	
+
 		        			startElement(arrayElementName, typeStack.size());
 		        		}
-	
+
 		        		contentHandler.characters(value.toCharArray(), 0, value.length());
-	
+
 		        		if(typeStack.peek() == Type.ARRAY) {
-	
+
 		        			endElement(arrayElementName);
-	
+
 		        		} else {
-	
+
 			        		endElement(elementStack.pop());
-	
+
 		        		}
-	
+
 		        		break;
-	
-	
+
+
 		        	}
-	
+
 		        	first = false;
 		        }
 		        endElement(rootName, 0);
 		        contentHandler.endDocument();
 	        } finally {
-	
+
 	        	try {
 	        		jp.close();
 	        	} catch (Exception e) {
 				}
-	
-	
+
+
 	        }
         } finally {
         	// These properties need to be reset for every execution (e.g. when reader is pooled).
@@ -373,11 +366,11 @@ public class JSONReader implements SmooksXMLReader {
         }
 	}
 
-    private static char[] INDENT = new String("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t").toCharArray();
+    private static char[] INDENT = "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t".toCharArray();
 
     private void startElement(String name, int indent) throws SAXException {
         indent(indent);
-        contentHandler.startElement(XMLConstants.NULL_NS_URI, name, "", EMPTY_ATTRIBS);        
+        contentHandler.startElement(XMLConstants.NULL_NS_URI, name, "", EMPTY_ATTRIBS);
     }
 
     private void endElement(String name, int indent) throws SAXException {
@@ -605,17 +598,18 @@ public class JSONReader implements SmooksXMLReader {
      *
      ****************************************************************************/
 
-    public void parse(String systemId) throws IOException, SAXException {
+    public void parse(String systemId)
+		{
         throw new UnsupportedOperationException("Operation not supports by this reader.");
     }
 
-    public boolean getFeature(String name) throws SAXNotRecognizedException,
-            SAXNotSupportedException {
+    public boolean getFeature(String name)
+		{
         return false;
     }
 
     public void setFeature(String name, boolean value)
-            throws SAXNotRecognizedException, SAXNotSupportedException {
+		{
     }
 
     public DTDHandler getDTDHandler() {
@@ -639,12 +633,12 @@ public class JSONReader implements SmooksXMLReader {
     public void setErrorHandler(ErrorHandler arg0) {
     }
 
-    public Object getProperty(String name) throws SAXNotRecognizedException,
-            SAXNotSupportedException {
+    public Object getProperty(String name)
+		{
         return null;
     }
 
     public void setProperty(String name, Object value)
-            throws SAXNotRecognizedException, SAXNotSupportedException {
+		{
     }
 }

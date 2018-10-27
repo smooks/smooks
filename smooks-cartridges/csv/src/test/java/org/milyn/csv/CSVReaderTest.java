@@ -16,16 +16,7 @@
 
 package org.milyn.csv;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.transform.stream.StreamSource;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
@@ -38,9 +29,18 @@ import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringResult;
 import org.xml.sax.SAXException;
 
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+
 /**
  * @author tfennelly
  */
+@SuppressWarnings("unchecked")
 public class CSVReaderTest {
 
     @Test
@@ -117,7 +117,8 @@ public class CSVReaderTest {
     }
 
     @Test
-    public void test_07() throws SmooksException, IOException, SAXException {
+    public void test_07() throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,gender,age,country"));
@@ -131,7 +132,8 @@ public class CSVReaderTest {
     }
 
     @Test
-    public void test_08() throws SmooksException, IOException, SAXException {
+    public void test_08() throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,gender,age,country")
@@ -171,7 +173,8 @@ public class CSVReaderTest {
     }
 
     @Test
-    public void test_10() throws SmooksException, IOException, SAXException {
+    public void test_10() throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
@@ -187,7 +190,8 @@ public class CSVReaderTest {
     }
 
     @Test
-    public void test_11() throws SmooksException, IOException, SAXException {
+    public void test_11() throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
@@ -201,7 +205,8 @@ public class CSVReaderTest {
     }
 
     @Test
-    public void test_12() throws SmooksException, IOException, SAXException {
+    public void test_12() throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
@@ -263,7 +268,8 @@ public class CSVReaderTest {
         test_13(smooks);
     }
 
-    public void test_13_programmatic(FilterSettings filterSettings) throws SmooksException, IOException, SAXException {
+    public void test_13_programmatic(FilterSettings filterSettings) throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
@@ -314,7 +320,8 @@ public class CSVReaderTest {
         test_14(smooks);
     }
 
-    public void test_14_programmatic(FilterSettings filterSettings) throws SmooksException, IOException, SAXException {
+    public void test_14_programmatic(FilterSettings filterSettings) throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,$ignore$,gender,age,country")
@@ -416,7 +423,8 @@ public class CSVReaderTest {
     }
 
     @Test
-    public void test_18() throws SmooksException, IOException, SAXException {
+    public void test_18() throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname?upper_case,lastname?uncap_first,$ignore$5")
@@ -476,9 +484,10 @@ public class CSVReaderTest {
                 "<csv-set><csv-record number=\"1\"><firstname>Tom</firstname><lastname>Collins</lastname><address>Victoria Ave</address><age>32</age></csv-record><csv-record number=\"2\"><firstname>Fred</firstname><lastname>Cook</lastname><address>Mainstreet 12</address><age>40</age></csv-record></csv-set>",
                 result);
     }
-   
-    @Test 
-    public void test_null_field_values() throws SmooksException, IOException, SAXException {
+
+    @Test
+    public void test_null_field_values() throws SmooksException
+    {
         Smooks smooks = new Smooks();
 
         smooks.setReaderConfig(new CSVRecordParserConfigurator("firstname,lastname,gender,age,country"));

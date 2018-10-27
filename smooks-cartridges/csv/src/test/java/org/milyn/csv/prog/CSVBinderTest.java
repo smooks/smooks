@@ -1,17 +1,18 @@
 package org.milyn.csv.prog;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.milyn.csv.Person;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.io.InputStream;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author
  */
+@SuppressWarnings("unchecked")
 public class CSVBinderTest {
 
     @Test

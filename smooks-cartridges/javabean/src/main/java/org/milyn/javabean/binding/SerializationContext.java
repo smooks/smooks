@@ -25,6 +25,7 @@ import java.util.Map;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class SerializationContext {
 
     public static final String ROOT_OBJ = SerializationContext.class.getName() + "#ROOT_OBJ";

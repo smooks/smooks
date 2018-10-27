@@ -16,10 +16,13 @@
 package org.milyn.util;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import java.util.Set;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -44,9 +47,9 @@ public class CollectionsUtilTest {
 
 	@Test
     public void test_Set_03() {
-        Set<Integer> integers = CollectionsUtil.toSet();
+        Set<Integer> integers = Collections.emptySet();
         assertEquals(0, integers.size());
-        Set<String> strings = CollectionsUtil.toSet();
+        Set<String> strings = Collections.emptySet();
         assertEquals(0, strings.size());
     }
 

@@ -28,7 +28,6 @@ import org.milyn.delivery.annotation.Initialize;
 import org.milyn.javabean.dynamic.serialize.BeanWriter;
 import org.milyn.javabean.ext.BeanConfigUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,6 +37,7 @@ import java.util.Map;
  *
  * <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings({ "WeakerAccess", "unchecked" })
 public class BeanWriterFactory implements ContentHandler {
 
     @ConfigParam
@@ -57,7 +57,7 @@ public class BeanWriterFactory implements ContentHandler {
             BeanWriter beanWriter = beanWriterClass.newInstance();
 
             Configurator.configure(beanWriter, config, appContext);
-            getBeanWriters(beanClass, appContext).put(config.getSelectorNamespaceURI(), beanWriter);            
+            getBeanWriters(beanClass, appContext).put(config.getSelectorNamespaceURI(), beanWriter);
         } catch (InstantiationException e) {
             throw new SmooksConfigurationException("Unable to create BeanWriter instance.", e);
         } catch (IllegalAccessException e) {

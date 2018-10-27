@@ -37,19 +37,16 @@ import java.util.Map;
  *
  * @author tfennelly
  */
+@SuppressWarnings("unchecked")
 public class MockExecutionContext implements ExecutionContext {
-
-	public String contextPath;
-	public URI docSource;
-	public ProfileSet profileSet = new DefaultProfileSet(Profile.DEFAULT_PROFILE);
-	public ContentDeliveryConfig deliveryConfig = new MockContentDeliveryConfig();
-	public MockApplicationContext context = new MockApplicationContext();
-	private Hashtable attributes = new Hashtable();
-	public LinkedHashMap parameters = new LinkedHashMap();
-	public Hashtable headers = new Hashtable();
-	public Hashtable elementListTable = new Hashtable();
-    private String contentEncoding;
-    private ExecutionEventListener executionListener;
+	private URI                    docSource;
+	public  ProfileSet             profileSet = new DefaultProfileSet(Profile.DEFAULT_PROFILE);
+	public  ContentDeliveryConfig  deliveryConfig = new MockContentDeliveryConfig();
+	public  MockApplicationContext context = new MockApplicationContext();
+	private Hashtable              attributes = new Hashtable();
+	public  LinkedHashMap          parameters = new LinkedHashMap();
+	private String                 contentEncoding;
+	private ExecutionEventListener executionListener;
     private Throwable terminationError;
     private BeanContext beanContext;
 
@@ -64,6 +61,7 @@ public class MockExecutionContext implements ExecutionContext {
 	/* (non-Javadoc)
 	 * @see org.milyn.container.ExecutionContext#getParameterNames()
 	 */
+	@SuppressWarnings("unused")
 	public Enumeration getParameterNames() {
 		return (new IteratorEnumeration(parameters.keySet().iterator()));
 	}
@@ -71,6 +69,7 @@ public class MockExecutionContext implements ExecutionContext {
 	/* (non-Javadoc)
 	 * @see org.milyn.container.ExecutionContext#getParameterValues(java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public String[] getParameterValues(String name) {
 		return (String[])parameters.get(name);
 	}
@@ -144,6 +143,7 @@ public class MockExecutionContext implements ExecutionContext {
     /* (non-Javadoc)
       * @see org.milyn.container.BoundAttributeStore#setAttribute(java.lang.String, java.lang.Object)
       */
+	@SuppressWarnings("unchecked")
 	public void setAttribute(Object key, Object value) {
 		attributes.put(key, value);
 	}
@@ -162,11 +162,13 @@ public class MockExecutionContext implements ExecutionContext {
 		attributes.remove(key);
 	}
 
+	@SuppressWarnings("unused")
     public MockContentDeliveryConfig getMockDeliveryConfig() {
         return (MockContentDeliveryConfig) this.deliveryConfig;
     }
 
-    public Map getAttributes()
+    @SuppressWarnings("unchecked")
+		public Map getAttributes()
     {
     	return attributes;
     }

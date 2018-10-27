@@ -16,11 +16,11 @@
 package org.milyn.javabean.decoders;
 
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.config.Configurable;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.DecodeType;
 import org.milyn.util.ClassUtil;
-import org.milyn.config.Configurable;
 
 import java.util.Properties;
 
@@ -78,6 +78,7 @@ public class EnumDecoder implements DataDecoder, Configurable {
         this.enumType = enumType;
     }
 
+    @SuppressWarnings("unchecked")
     public Object decode(String data) throws DataDecodeException {
         String mappedValue = (String) mappingDecoder.decode(data);
 

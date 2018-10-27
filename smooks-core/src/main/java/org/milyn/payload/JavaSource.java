@@ -18,13 +18,13 @@ package org.milyn.payload;
 import org.milyn.assertion.AssertArgument;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Java Filtration/Transformation {@link javax.xml.transform.Source}.
- * 
+ *
  * <h3 id="eventcontrol">Controlling Event Stream Generation</h3>
  * The Java Objects used to create this source can be used to generate a stream of SAX
  * events, which can then be analysed by Smooks in the normal manner.  Generation of the
@@ -47,14 +47,14 @@ import java.util.HashMap;
  * Smooks must generate at least 1 event to which configured resources can be targeted (e.g. a templating
  * resource).  When event stream generation is turned off, Smooks simply generates what we call a "Null Source"
  * document event.  In XML, it could be represented as "&lt;nullsource-document/&gt;".  So when event stream
- * generation is turned off, simply target resources at "<b>nullsource-document</b>" or "<b>#document</b>". 
+ * generation is turned off, simply target resources at "<b>nullsource-document</b>" or "<b>#document</b>".
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class JavaSource extends FilterSource {
 
     /**
-     * 
+     *
      */
     public static final String FEATURE_GENERATE_EVENT_STREAM = "http://www.smooks.org/sax/features/generate-java-event-stream";
 
@@ -63,7 +63,7 @@ public class JavaSource extends FilterSource {
     private boolean eventStreamRequired = true;
 
     /**
-     * Default Contructor.
+     * Default Constructor.
      * @deprecated Use any of the other constructors.
      */
     public JavaSource() {
@@ -75,6 +75,7 @@ public class JavaSource extends FilterSource {
      *
      * @param sourceObject The source object.
      */
+    @SuppressWarnings("unchecked")
     public JavaSource(Object sourceObject) {
         AssertArgument.isNotNull(sourceObject, "sourceObject");
         sourceObjects = new ArrayList<Object>();
@@ -97,7 +98,7 @@ public class JavaSource extends FilterSource {
         AssertArgument.isNotNull(sourceObject, "sourceObject");
         sourceObjects = new ArrayList<Object>();
         sourceObjects.add(sourceObject);
-        beans = new HashMap();
+        beans = new HashMap<String, Object>();
         beans.put(objectName, sourceObject);
     }
 
@@ -109,7 +110,7 @@ public class JavaSource extends FilterSource {
     public JavaSource(List<Object> sourceObjects) {
         AssertArgument.isNotNull(sourceObjects, "sourceObjects");
         this.sourceObjects = sourceObjects;
-        beans = new HashMap();
+        beans = new HashMap<String, Object>();
         beans.put("objects", sourceObjects);
     }
 

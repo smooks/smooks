@@ -54,8 +54,9 @@ public interface FactoryDefinitionParser {
 	Factory<?> parse(String factoryDefinition);
 
 
-	public static class FactoryDefinitionParserFactory {
-        
+	@SuppressWarnings("unchecked")
+  class FactoryDefinitionParserFactory {
+
         private static Log logger = LogFactory.getLog(FactoryDefinitionParserFactory.class);
 
         public static String GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS = "factory.definition.parser.class";
@@ -74,7 +75,7 @@ public interface FactoryDefinitionParser {
                 className = applicationContext.getStore().getGlobalParams().getStringParameter(GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS, DEFAULT_FACTORY_DEFINITION_PARSER_CLASS);
             } else {
                 loadAliasToClassMap();
-                            
+
                 Class<? extends FactoryDefinitionParser> clazz = aliasToClassMap.get(alias);
                 if(clazz == null) {
 
@@ -86,7 +87,7 @@ public interface FactoryDefinitionParser {
                     } catch (ClassNotFoundException e) {
                        throw new IllegalFactoryAliasException("The FactoryDefinitionParser alias '" + alias + "' can't be found and doesn't seem to be a classname.", e);
                     }
-                }      
+                }
                 className = clazz.getName();
             }
 
@@ -137,7 +138,7 @@ public interface FactoryDefinitionParser {
 
                         aliasToClassMap = new HashMap<String, Class<? extends FactoryDefinitionParser>>();
                         for (Class<? extends FactoryDefinitionParser> factory : factories) {
-                            Alias alias = (Alias) factory.getAnnotation(Alias.class);
+                            Alias alias = factory.getAnnotation(Alias.class);
                             if(alias != null) {
                                 String[] names = alias.value();
 
@@ -167,4 +168,3 @@ public interface FactoryDefinitionParser {
         }
 	}
 }
-;

@@ -25,15 +25,15 @@ import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.*;
 import org.milyn.delivery.dom.serialize.Serializer;
-import org.milyn.payload.JavaSource;
-import org.milyn.payload.FilterResult;
-import org.milyn.payload.FilterSource;
 import org.milyn.event.ExecutionEventListener;
 import org.milyn.event.report.AbstractReportGenerator;
 import org.milyn.event.types.DOMFilterLifecycleEvent;
 import org.milyn.event.types.ElementPresentEvent;
 import org.milyn.event.types.ElementVisitEvent;
 import org.milyn.event.types.ResourceTargetingEvent;
+import org.milyn.payload.FilterResult;
+import org.milyn.payload.FilterSource;
+import org.milyn.payload.JavaSource;
 import org.milyn.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -131,6 +131,7 @@ import java.util.Vector;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("WeakerAccess")
 public class SmooksDOMFilter extends Filter {
 
     /**
@@ -277,9 +278,8 @@ public class SmooksDOMFilter extends Filter {
      *
      * @param source The source of markup to be filtered.
      * @return Node representing filtered document.
-     * @throws SmooksException
      */
-    public Node filter(Source source) throws SmooksException {
+    public Node filter(Source source) {
         Node deliveryNode;
 
         if (source == null) {
@@ -388,17 +388,7 @@ public class SmooksDOMFilter extends Filter {
         return (Node) executionContext.getAttribute(DELIVERY_NODE_REQUEST_KEY);
     }
 
-    /**
-     * Get the global mappings from the supplied handler table.
-	 * @param assemblyVisitBefores The handler table.
-	 * @return A handler config map list containing the merged
-	 */
-	private List<ContentHandlerConfigMap<? extends ContentHandler>> getGlobalConfigs(ContentHandlerConfigMapTable<? extends ContentHandler> assemblyVisitBefores) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private boolean applyAssembly(ContentHandlerConfigMapTable<DOMVisitBefore> visitBefores, ContentHandlerConfigMapTable<DOMVisitAfter> visitAfters) {
+    private boolean applyAssembly(ContentHandlerConfigMapTable<DOMVisitBefore> visitBefores, ContentHandlerConfigMapTable<DOMVisitAfter> visitAfters) {
         return !visitBefores.isEmpty() || !visitAfters.isEmpty() ||
                 (globalAssemblyBefores != null && !globalAssemblyBefores.isEmpty()) ||
                 (globalAssemblyAfters != null && !globalAssemblyAfters.isEmpty());
@@ -414,7 +404,7 @@ public class SmooksDOMFilter extends Filter {
      */
     private void assemble(Element element, boolean isRoot) {
         List nodeListCopy = copyList(element.getChildNodes());
-        int childCount = nodeListCopy.size();
+
         ContentHandlerConfigMapTable<DOMVisitBefore> visitBeforeTable = deliveryConfig.getAssemblyVisitBefores();
         ContentHandlerConfigMapTable<DOMVisitAfter> visitAfterTable = deliveryConfig.getAssemblyVisitAfters();
         String elementName = DomUtils.getName(element);
@@ -444,9 +434,11 @@ public class SmooksDOMFilter extends Filter {
         }
 
         // Recursively iterate the elements child content...
-        for (int i = 0; i < childCount; i++) {
-            Node child = (Node) nodeListCopy.get(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
+        for (final Object aNodeListCopy : nodeListCopy)
+        {
+            Node child = (Node) aNodeListCopy;
+            if (child.getNodeType() == Node.ELEMENT_NODE)
+            {
                 assemble((Element) child, false);
             }
         }
@@ -461,31 +453,40 @@ public class SmooksDOMFilter extends Filter {
     }
 
     private void applyAssemblyBefores(Element element, List<ContentHandlerConfigMap<DOMVisitBefore>> assemblyBefores) {
-        for (int i = 0; i < assemblyBefores.size(); i++) {
-            ContentHandlerConfigMap<DOMVisitBefore> configMap = assemblyBefores.get(i);
+        for (final ContentHandlerConfigMap<DOMVisitBefore> configMap : assemblyBefores)
+        {
             SmooksResourceConfiguration config = configMap.getResourceConfig();
 
             // Make sure the assembly unit is targeted at this element...
-            if (!config.isTargetedAtElement(element, executionContext)) {
+            if (!config.isTargetedAtElement(element, executionContext))
+            {
                 continue;
             }
 
             // Register the targeting event.  No need to register it again in the visitAfter loop...
-            if (eventListener != null) {
+            if (eventListener != null)
+            {
                 eventListener.onEvent(new ResourceTargetingEvent(element, config, VisitSequence.BEFORE, VisitPhase.ASSEMBLY));
             }
 
             DOMVisitBefore assemblyUnit = configMap.getContentHandler();
-            try {
-                if (logger.isDebugEnabled()) {
+            try
+            {
+                if (logger.isDebugEnabled())
+                {
                     logger.debug("(Assembly) Calling visitBefore on element [" + DomUtils.getXPath(element) + "]. Config [" + config + "]");
                 }
                 assemblyUnit.visitBefore(element, executionContext);
-                if (eventListener != null) {
+                if (eventListener != null)
+                {
                     eventListener.onEvent(new ElementVisitEvent(element, configMap, VisitSequence.BEFORE));
                 }
-            } catch (Throwable e) {
-                String errorMsg = "(Assembly) visitBefore failed [" + assemblyUnit.getClass().getName() + "] on [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
+            }
+            catch (Throwable e)
+            {
+                String errorMsg =
+                    "(Assembly) visitBefore failed [" + assemblyUnit.getClass().getName() + "] on [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element)
+                        + "].";
                 processVisitorException(element, e, configMap, VisitSequence.BEFORE, errorMsg);
             }
         }
@@ -498,8 +499,8 @@ public class SmooksDOMFilter extends Filter {
                 applyAssemblyAfter(element, configMap);
             }
         } else {
-            for (int i = 0; i < elementVisitAfters.size(); i++) {
-                ContentHandlerConfigMap<DOMVisitAfter> configMap = elementVisitAfters.get(i);
+            for (final ContentHandlerConfigMap<DOMVisitAfter> configMap : elementVisitAfters)
+            {
                 applyAssemblyAfter(element, configMap);
             }
         }
@@ -536,6 +537,7 @@ public class SmooksDOMFilter extends Filter {
      * @param element        Current element being tested.  Starts at the document root element.
      * @param isRoot         Is the supplied element the document root element.
      */
+    @SuppressWarnings("unchecked")
     private void buildProcessingList(List processingList, Element element, boolean isRoot) {
         String elementName;
         List<ContentHandlerConfigMap<DOMVisitBefore>> processingBefores;
@@ -571,7 +573,7 @@ public class SmooksDOMFilter extends Filter {
             processingList.add(processor);
         }
 
-        // Iterate over the child elements, calling this method recurcively....
+        // Iterate over the child elements, calling this method recursively....
         NodeList children = element.getChildNodes();
         int childCount = children.getLength();
         for (int i = 0; i < childCount; i++) {
@@ -595,7 +597,7 @@ public class SmooksDOMFilter extends Filter {
 
         if (processingCleanables != null && !processingCleanables.isEmpty()) {
             ElementProcessor processor = new ElementProcessor(element);
-            processor.setVisitCleanable(processingCleanables);
+            processor.setVisitCleanables(processingCleanables);
             processingList.add(processor);
         }
     }
@@ -645,6 +647,7 @@ public class SmooksDOMFilter extends Filter {
      * @param nodeList Nodelist to copy.
      * @return List copy.
      */
+    @SuppressWarnings("unchecked")
     private List copyList(NodeList nodeList) {
         Vector copy = new Vector(nodeList.getLength());
         int nodeCount = nodeList.getLength();
@@ -657,7 +660,7 @@ public class SmooksDOMFilter extends Filter {
     }
 
     /**
-     * Element Prcessor class.
+     * Element Processor class.
      * <p/>
      * Simple DOM Element to ProcessingUnit[] processing mapping and support functions.
      *
@@ -671,7 +674,7 @@ public class SmooksDOMFilter extends Filter {
 
         private List<ContentHandlerConfigMap<DOMVisitBefore>> visitBefores;
         private List<ContentHandlerConfigMap<DOMVisitAfter>> visitAfters;
-        private List<ContentHandlerConfigMap<VisitLifecycleCleanable>> visitCleanable;
+        private List<ContentHandlerConfigMap<VisitLifecycleCleanable>> visitCleanables;
 
         /**
          * Constructor.
@@ -690,8 +693,8 @@ public class SmooksDOMFilter extends Filter {
             this.visitAfters = visitAfters;
         }
 
-        public void setVisitCleanable(List<ContentHandlerConfigMap<VisitLifecycleCleanable>> visitCleanable) {
-            this.visitCleanable = visitCleanable;
+        public void setVisitCleanables(List<ContentHandlerConfigMap<VisitLifecycleCleanable>> visitCleanables) {
+            this.visitCleanables = visitCleanables;
         }
 
         /**
@@ -704,10 +707,9 @@ public class SmooksDOMFilter extends Filter {
         private void process(ExecutionContext executionContext) {
 
             if (visitBefores != null) {
-                int loopLength = visitBefores.size();
-                for (int i = 0; i < loopLength; i++) {
-                    ContentHandlerConfigMap configMap = visitBefores.get(i);
-                    processMapping(executionContext, configMap, VisitSequence.BEFORE);
+                for (final ContentHandlerConfigMap<DOMVisitBefore> visitBefore : visitBefores)
+                {
+                    processMapping(executionContext, visitBefore, VisitSequence.BEFORE);
                 }
             } else if(visitAfters != null) {
                 int loopLength = visitAfters.size();
@@ -717,16 +719,15 @@ public class SmooksDOMFilter extends Filter {
                         processMapping(executionContext, configMap, VisitSequence.AFTER);
                     }
                 } else {
-                    for (int i = 0; i < loopLength; i++) {
-                        ContentHandlerConfigMap configMap = visitAfters.get(i);
-                        processMapping(executionContext, configMap, VisitSequence.AFTER);
+                    for (final ContentHandlerConfigMap<DOMVisitAfter> visitAfter : visitAfters)
+                    {
+                        processMapping(executionContext, visitAfter, VisitSequence.AFTER);
                     }
                 }
             } else {
-                int loopLength = visitCleanable.size();
-                for (int i = 0; i < loopLength; i++) {
-                    ContentHandlerConfigMap configMap = visitCleanable.get(i);
-                    processMapping(executionContext, configMap, VisitSequence.CLEAN);
+                for (final ContentHandlerConfigMap<VisitLifecycleCleanable> visitCleanable : visitCleanables)
+                {
+                    processMapping(executionContext, visitCleanable, VisitSequence.CLEAN);
                 }
             }
         }

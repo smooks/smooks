@@ -15,16 +15,16 @@
 */
 package org.milyn.classpath;
 
-import org.milyn.util.ClassUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.milyn.util.ClassUtil;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract classpath filter.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 abstract class AbstractFilter implements Filter {
@@ -34,14 +34,14 @@ abstract class AbstractFilter implements Filter {
     private String[] includeList = null;
     private String[] igrnoreList = defaultIgnoreList;
     private static String[] defaultIgnoreList = new String[] {
-            "charsets.jar", "javaws.jar", "jce.jar", "jsse.jar", "rt.jar", "dnsns.jar", "sunjce_provider.jar", "sunpkcs11.jar", "junit-", "servlet-api-", "idea_rt.jar",  
+            "charsets.jar", "javaws.jar", "jce.jar", "jsse.jar", "rt.jar", "dnsns.jar", "sunjce_provider.jar", "sunpkcs11.jar", "junit-", "servlet-api-", "idea_rt.jar",
             "java/", "javax/", "netscape/", "sun/", "com/sun", "org/omg", "org/xml", "org/w3c", "junit/", "org/apache/commons", "org/apache/log4j",
     };
 
-    public AbstractFilter() {
+    AbstractFilter() {
     }
 
-    public AbstractFilter(String[] ignoreList, String[] includeList) {
+    AbstractFilter(String[] ignoreList, String[] includeList) {
         if(ignoreList != null) {
             this.igrnoreList = ignoreList;
         }
@@ -63,7 +63,7 @@ abstract class AbstractFilter implements Filter {
         }
     }
 
-    protected abstract boolean addClass(Class clazz);
+    protected abstract boolean addClass(Class<?> clazz);
 
     public boolean isIgnorable(String resourceName) {
         boolean isJar = resourceName.endsWith(".jar");

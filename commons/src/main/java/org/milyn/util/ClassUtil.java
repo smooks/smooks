@@ -15,26 +15,22 @@
 */
 package org.milyn.util;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.classpath.InstanceOfFilter;
 import org.milyn.classpath.IsAnnotationPresentFilter;
 import org.milyn.classpath.Scanner;
+
+import java.io.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
 
 /**
  * Utility methods to aid in class/resource loading.
@@ -80,7 +76,7 @@ public class ClassUtil {
         if (threadClassLoader != null) {
 			try {
 				return threadClassLoader.loadClass(className);
-			} catch (final ClassNotFoundException cnfe) {
+			} catch (final ClassNotFoundException ignored) {
 			} // ignore
 		}
 
@@ -88,7 +84,7 @@ public class ClassUtil {
 		if (classLoader != null) {
 			try {
 				return classLoader.loadClass(className);
-			} catch (final ClassNotFoundException cnfe) {
+			} catch (final ClassNotFoundException ignored) {
 			} // ignore
 		}
 
@@ -118,7 +114,7 @@ public class ClassUtil {
 
             return getResourceAsStream(resource, caller.getClassLoader());
         } else {
-            return getResourceAsStream(resourceName, caller.getClassLoader());            
+            return getResourceAsStream(resourceName, caller.getClassLoader());
         }
     }
 
@@ -156,7 +152,7 @@ public class ClassUtil {
 
 		return ClassLoader.getSystemResourceAsStream(resource);
 	}
-	
+
     public static List<URL> getResources(String resourcePath, Class<?> caller) throws IOException {
         return getResources(resourcePath, caller.getClassLoader());
     }
@@ -180,11 +176,13 @@ public class ClassUtil {
 		return new ArrayList<URL>(resources);
 	}
 
+    @SuppressWarnings("unused")
     public static List<Class> findInstancesOf(final Class type, String[] igrnoreList, String[] includeList) {
         InstanceOfFilter filter = new InstanceOfFilter(type, igrnoreList, includeList);
         return findInstancesOf(type, filter);
     }
 
+    @SuppressWarnings("unused")
     public static List<Class> findInstancesOf(final Class type) {
         InstanceOfFilter filter = new InstanceOfFilter(type);
         return findInstancesOf(type, filter);
@@ -204,11 +202,13 @@ public class ClassUtil {
         return filter.getClasses();
     }
 
+    @SuppressWarnings("unused")
     public static List<Class> findAnnotatedWith(Class<? extends Annotation> type, String[] igrnoreList, String[] includeList) {
         IsAnnotationPresentFilter filter = new IsAnnotationPresentFilter(type, igrnoreList, includeList);
         return findAnnotatedWith(type, filter);
     }
 
+    @SuppressWarnings("unused")
     public static List<Class> findAnnotatedWith(Class<? extends Annotation> type) {
         IsAnnotationPresentFilter filter = new IsAnnotationPresentFilter(type);
         return findAnnotatedWith(type, filter);
@@ -228,6 +228,7 @@ public class ClassUtil {
         return filter.getClasses();
     }
 
+    @SuppressWarnings("unused")
     public static Object newProxyInstance(Class[] classes, InvocationHandler handler) {
         final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
 
@@ -274,6 +275,7 @@ public class ClassUtil {
         return classes;
     }
 
+    @SuppressWarnings("unchecked")
     private static <T>  void addClasses(URL url, Class<T> instanceOf, List<Class<T>> classes) {
         InputStream ins = null;
         BufferedReader br = null;
@@ -363,12 +365,13 @@ public class ClassUtil {
 	 * Checks if the class in the first parameter is assignable
 	 * to one of the classes in the second or any later parameter.
 	 *
-	 * @param toFind
-	 * @param classes
-	 * @return
+	 * @param toFind  The class to check for assignment compatibility.
+	 * @param classes The classes against which {@code toFind} should be checked.
+	 * @return {@literal true} if {@code toFind} is assignable to any one of the
+   * specified classes.
 	 */
 	public static boolean containsAssignableClass(final Class<?> toFind, final Class<?> ... classes) {
-		return indexOffFirstAssignableClass(toFind, classes) != -1;
+		return indexOfFirstAssignableClass(toFind, classes) != -1;
 	}
 
     public static <U> void setField(Field field, U instance, Object value) throws IllegalAccessException {
@@ -404,7 +407,7 @@ public class ClassUtil {
     	getAnnotatedFields(runtimeClass, streamWriterFields, annotationClass);
     	return streamWriterFields;
     }
-    
+
     private static void getAnnotatedFields(Class runtimeClass, List<Field> annotatedFields, Class<? extends Annotation> annotationClass) {
         Field[] fields = runtimeClass.getDeclaredFields();
 
@@ -422,12 +425,16 @@ public class ClassUtil {
     }
 
     /**
-	 *
-	 * @param toFind
-	 * @param classes
-	 * @return
+	 * Gets the array index of the first class within an array of classes to
+   * which a specified class is assignable.
+   *
+	 * @param toFind  The class to check for assignment compatibility.
+	 * @param classes The classes against which {@code toFind} should be checked.
+	 * @return The array index of the first class within {@code classes} to which
+   * {@code toFind} is assignable, if it can be assigned to one of the specified
+   * classes, {@code -1} otherwise.
 	 */
-	public static int indexOffFirstAssignableClass(final Class<?> toFind, final Class<?> ... classes) {
+	public static int indexOfFirstAssignableClass(final Class<?> toFind, final Class<?> ... classes) {
 
 		for(int i = 0; i < classes.length; i++) {
 			final Class<?> cls = classes[i];
@@ -441,7 +448,7 @@ public class ClassUtil {
 	}
 
     public static String toSetterName(String property) {
-        StringBuffer setterName = new StringBuffer();
+        StringBuilder setterName = new StringBuilder();
 
         // Add the property string to the buffer...
         setterName.append(property);
@@ -454,7 +461,7 @@ public class ClassUtil {
     }
 
     public static String toGetterName(String property) {
-        StringBuffer getterName = new StringBuffer();
+        StringBuilder getterName = new StringBuilder();
 
         // Add the property string to the buffer...
         getterName.append(property);
@@ -467,7 +474,7 @@ public class ClassUtil {
     }
 
     public static String toIsGetterName(String property) {
-        StringBuffer getterName = new StringBuffer();
+        StringBuilder getterName = new StringBuilder();
 
         // Add the property string to the buffer...
         getterName.append(property);
@@ -489,7 +496,7 @@ public class ClassUtil {
         for(Method method : methods) {
             if(method.getName().equals(setterName)) {
                 Class<?>[] params = method.getParameterTypes();
-                if(params != null && params.length == 1 && params[0].isAssignableFrom(setterParamType)) {
+                if(params.length == 1 && params[0].isAssignableFrom(setterParamType)) {
                     return method;
                 }
             }
@@ -498,7 +505,8 @@ public class ClassUtil {
         return null;
     }
 
-    public static Method getSetterMethodByProperty(String propertyName, Class<?> beanClass, Class<?> setterParamType) {
+    @SuppressWarnings("SameParameterValue")
+    static Method getSetterMethodByProperty(String propertyName, Class<?> beanClass, Class<?> setterParamType) {
         return getSetterMethod(toSetterName(propertyName), beanClass, setterParamType);
     }
 
@@ -506,7 +514,7 @@ public class ClassUtil {
         return getGetterMethod(getterName, bean.getClass(), returnType);
     }
 
-    public static Method getGetterMethod(String getterName, Class beanclass, Class<?> returnType) {
+    private static Method getGetterMethod(String getterName, Class beanclass, Class<?> returnType) {
         Method[] methods = beanclass.getMethods();
 
         for(Method method : methods) {

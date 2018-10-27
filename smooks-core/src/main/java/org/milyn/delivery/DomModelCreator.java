@@ -16,18 +16,13 @@
 package org.milyn.delivery;
 
 import org.milyn.SmooksException;
-import org.milyn.util.CollectionsUtil;
-import org.milyn.cdr.annotation.Config;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.Config;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
-import org.milyn.delivery.sax.DynamicSAXElementVisitorList;
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXElementVisitor;
-import org.milyn.delivery.sax.SAXText;
-import org.milyn.delivery.sax.SAXVisitAfter;
-import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.delivery.ordering.Producer;
+import org.milyn.delivery.sax.*;
+import org.milyn.util.CollectionsUtil;
 import org.milyn.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,8 +32,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.Stack;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * DOM Node Model creator.
@@ -101,8 +96,7 @@ import java.util.Set;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisitAfter, Producer {
-
-    DocumentBuilder documentBuilder;
+    private DocumentBuilder documentBuilder;
 
     @Config
     private SmooksResourceConfiguration config;
@@ -136,6 +130,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
         nodeModel.getModels().put(DomUtils.getName(element), element);
     }
 
+    @SuppressWarnings("unchecked")
     private void pushCreator(DOMCreator domCreator, ExecutionContext executionContext) {
         Stack<DOMCreator> domCreatorStack = (Stack<DOMCreator>) executionContext.getAttribute(DOMCreator.class);
 
@@ -156,6 +151,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
         domCreatorStack.push(domCreator);
     }
 
+    @SuppressWarnings({ "unchecked", "WeakerAccess", "UnusedReturnValue" })
     public Document popCreator(ExecutionContext executionContext) {
         Stack<DOMCreator> domCreatorStack = (Stack<DOMCreator>) executionContext.getAttribute(DOMCreator.class);
 
@@ -202,6 +198,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
             currentNode = domElement;
         }
 
+        @SuppressWarnings("RedundantThrows")
         public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
             if(currentNode == document) {
                 // Just ignore for now...
@@ -229,6 +226,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
             }
         }
 
+        @SuppressWarnings("RedundantThrows")
         public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
         }
 

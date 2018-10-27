@@ -15,6 +15,8 @@
 */
 package org.milyn.util;
 
+import junit.framework.TestCase;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -22,8 +24,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 /**
  *
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
@@ -47,8 +47,8 @@ public class ClassUtilTest extends TestCase
 		}
 	}
 
-	public void test_getClasses() throws MalformedURLException
-	{
+	public void test_getClasses()
+  {
 		List<Class<Object>> classes = ClassUtil.getClasses( fileName, Object.class);
 		assertNotNull( classes );
 		assertTrue( classes.contains( String.class ) );
@@ -65,10 +65,10 @@ public class ClassUtilTest extends TestCase
 
 	public void test_indexOffAssignableClass() {
 
-		assertEquals(0, ClassUtil.indexOffFirstAssignableClass(ArrayList.class, List.class)) ;
-		assertEquals(1, ClassUtil.indexOffFirstAssignableClass(ArrayList.class, String.class, List.class)) ;
-		assertEquals(1, ClassUtil.indexOffFirstAssignableClass(ArrayList.class, String.class, List.class, List.class)) ;
-		assertEquals(-1, ClassUtil.indexOffFirstAssignableClass(ArrayList.class, String.class, String.class, String.class)) ;
+		assertEquals(0, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, List.class)) ;
+		assertEquals(1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class)) ;
+		assertEquals(1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class, List.class)) ;
+		assertEquals(-1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, String.class, String.class)) ;
 
 	}
 

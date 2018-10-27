@@ -15,10 +15,6 @@
 */
 package org.milyn.edi.test;
 
-import java.io.*;
-import java.lang.reflect.Method;
-import java.util.zip.ZipInputStream;
-
 import org.milyn.archive.Archive;
 import org.milyn.archive.ArchiveClassLoader;
 import org.milyn.edisax.EDIConfigurationException;
@@ -31,10 +27,15 @@ import org.milyn.io.StreamUtils;
 import org.milyn.test.ant.AntRunner;
 import org.xml.sax.SAXException;
 
+import java.io.*;
+import java.lang.reflect.Method;
+import java.util.zip.ZipInputStream;
+
 /**
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class EJCTestUtil {
 
     public static final String ORG_SMOOKS_EJC_TEST = "org.smooks.ejc.test";
@@ -69,7 +70,7 @@ public class EJCTestUtil {
     public static void testModel(String ediMappingModelFile, String ediMessageFile, String factoryClassName) throws EDIConfigurationException, IOException, SAXException, IllegalNameException {
         testModel(ediMappingModelFile, ediMessageFile, factoryClassName, false);
     }
-    
+
     public static void testModel(String ediMappingModelFile, String ediMessageFile, String factoryClassName, boolean dump) throws EDIConfigurationException, IOException, SAXException, IllegalNameException {
         Class callerClass = getCallerClass();
 
@@ -83,7 +84,7 @@ public class EJCTestUtil {
 
     public static void testModel(String ediMessageFile, InputStream mappingModelStream, String factoryClassName, boolean dump, Class callerClass) throws IOException, SAXException, IllegalNameException {
 
-        Archive archive = null;
+        Archive archive;
         try {
             archive = buildModelArchive(mappingModelStream, ORG_SMOOKS_EJC_TEST);
         } catch (ClassNotFoundException e) {
@@ -109,8 +110,8 @@ public class EJCTestUtil {
         Class callerClass = getCallerClass();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-        Class factoryClass = null;
-        Object factoryInstance = null;
+        Class factoryClass;
+        Object factoryInstance;
         try {
             factoryClass = classLoader.loadClass(ORG_SMOOKS_EJC_TEST + "." + factoryClassName);
         } catch (ClassNotFoundException e) {
@@ -125,7 +126,7 @@ public class EJCTestUtil {
         }
 
         String ediMessage = StreamUtils.readStreamAsString(callerClass.getResourceAsStream(ediMessageFile));
-        Object modelInstance = null;
+        Object modelInstance;
 
         try {
             modelInstance = findFromEDIMethod(factoryClass).invoke(factoryInstance, new StringReader(ediMessage));
@@ -181,7 +182,7 @@ public class EJCTestUtil {
     }
 
     private static Method findFromEDIMethod(Class factoryClass) throws NoSuchMethodException {
-        return factoryClass.getMethod("fromEDINR", new Class[] {Reader.class});
+        return factoryClass.getMethod("fromEDINR", Reader.class);
     }
 
     private static Method findToEDIMethod(Class factoryClass) throws NoSuchMethodException {

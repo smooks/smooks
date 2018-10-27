@@ -17,7 +17,6 @@
 package org.milyn.javabean.programatic;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.ExecutionEvent;
@@ -42,10 +41,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 /**
  * Programmatic Binding config test for the Bean class.
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
+@SuppressWarnings("unchecked")
 public class ProgrammaticBeanConfigTest {
 
     @Test

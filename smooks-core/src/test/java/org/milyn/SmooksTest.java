@@ -18,9 +18,6 @@ package org.milyn;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.JavaContentHandlerFactory;
 import org.milyn.delivery.dom.DOMVisitAfter;
@@ -38,6 +35,9 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -111,7 +111,7 @@ public class SmooksTest {
 		assertEquals("classpath:/org/milyn/", resourceLocator.getBaseURI().toString());
 		assertEquals("classpath:/org/milyn/somethingelse.xml", resourceLocator.getBaseURI().resolve("somethingelse.xml").toString());
     }
-    
+
     private class TestDOMVisitorBefore implements DOMVisitBefore {
         private int callCount = 0;
         public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
@@ -142,7 +142,7 @@ public class SmooksTest {
 
     private class TestClassLoader extends ClassLoader {
 
-        private Set requests = new HashSet();
+        private Set<String> requests = new HashSet<String>();
 
         public TestClassLoader(ClassLoader contextClassLoader) {
             super(contextClassLoader);

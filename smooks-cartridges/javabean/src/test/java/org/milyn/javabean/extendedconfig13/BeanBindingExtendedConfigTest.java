@@ -17,9 +17,6 @@ package org.milyn.javabean.extendedconfig13;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
@@ -39,9 +36,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.Assert.*;
+
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class BeanBindingExtendedConfigTest {
 
     @Ignore
@@ -63,9 +64,6 @@ public class BeanBindingExtendedConfigTest {
         assertThat(headerHash, hasEntry("customer","Joe"));
     }
 
-	/**
-	 * @return
-	 */
 	private InputStream getInput(String file) {
 		return ClassUtil.getResourceAsStream("/org/milyn/javabean/extendedconfig/" + file, this.getClass());
 	}
@@ -79,7 +77,7 @@ public class BeanBindingExtendedConfigTest {
         assertEquals("Joe", order.getHeader().getCustomerName());
         assertEquals(new Long(123123), order.getHeader().getCustomerNumber());
         assertEquals(1163616328000L, order.getHeader().getDate().getTime());
-        assertEquals(true, order.getHeader().getPrivatePerson());
+        assertTrue(order.getHeader().getPrivatePerson());
         assertTrue(order == order.getHeader().getOrder());
 
         // OrderItems list...
@@ -215,7 +213,7 @@ public class BeanBindingExtendedConfigTest {
 		assertFlatResult(result);
 	}
 
-	public void assertFlatResult(JavaResult result) {
+	private void assertFlatResult(JavaResult result) {
 		@SuppressWarnings("unchecked")
     	ArrayList<ArrayList<B>> root = (ArrayList<ArrayList<B>>) result.getBean("root");
 
@@ -277,7 +275,7 @@ public class BeanBindingExtendedConfigTest {
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
         Map order =  (Map) result.getBean("orderItem");
-        assertEquals(154.2d, ((Double)order.get("total")).doubleValue(), 0d);
+        assertEquals(154.2d, (Double) order.get("total"), 0d);
     }
 
     @Test

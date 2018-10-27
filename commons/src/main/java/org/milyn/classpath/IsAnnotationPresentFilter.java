@@ -21,26 +21,25 @@ import java.lang.annotation.Annotation;
 
 /**
  * Classpath filter for finding classes that are annotated with a particular annotation.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class IsAnnotationPresentFilter extends AbstractFilter {
+    private final Class<? extends Annotation> searchType;
 
-    private Class<? extends Annotation> searchType;
-
-    public IsAnnotationPresentFilter(Class<? extends Annotation> searchType) {
+    public IsAnnotationPresentFilter(final Class<? extends Annotation> searchType) {
         AssertArgument.isNotNull(searchType, "searchType");
         this.searchType = searchType;
     }
 
-    public IsAnnotationPresentFilter(Class<? extends Annotation> searchType, String[] igrnoreList, String[] includeList) {
-        super(igrnoreList, includeList);
+    public IsAnnotationPresentFilter(final Class<? extends Annotation> searchType, final String[] ignoreList, final String[] includeList) {
+        super(ignoreList, includeList);
 
         AssertArgument.isNotNull(searchType, "searchType");
         this.searchType = searchType;
     }
 
-    protected boolean addClass(Class clazz) {
+    protected boolean addClass(Class<?> clazz) {
         return clazz.isAnnotationPresent(searchType);
     }
 }

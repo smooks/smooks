@@ -15,14 +15,9 @@
 */
 package org.milyn.javabean.extendedconfig11;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
-import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.B;
 import org.milyn.javabean.Header;
@@ -38,11 +33,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class BeanBindingExtendedConfigTest {
 
     @Test
@@ -63,9 +61,6 @@ public class BeanBindingExtendedConfigTest {
         assertThat(headerHash, hasEntry("date","Wed Nov 15 13:45:28 EST 2006"));
     }
 
-	/**
-	 * @return
-	 */
 	private InputStream getInput(String file) {
 		return ClassUtil.getResourceAsStream("/org/milyn/javabean/extendedconfig/" + file, this.getClass());
 	}
@@ -216,7 +211,7 @@ public class BeanBindingExtendedConfigTest {
 	}
 
 
-	public void assertFlatResult(JavaResult result) {
+	private void assertFlatResult(JavaResult result) {
 		@SuppressWarnings("unchecked")
     	ArrayList<ArrayList<B>> root = (ArrayList<ArrayList<B>>) result.getBean("root");
 
@@ -278,7 +273,7 @@ public class BeanBindingExtendedConfigTest {
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
         Map order =  (Map) result.getBean("orderItem");
-        assertEquals(154.2d, ((Double)order.get("total")).doubleValue(), 0d);
+        assertEquals(154.2d, (Double) order.get("total"), 0d);
     }
 
 }

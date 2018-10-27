@@ -15,7 +15,13 @@
 */
 package org.milyn.scribe.reflection;
 
-import static org.milyn.util.ClassUtil.*;
+import org.milyn.annotation.AnnotatedClass;
+import org.milyn.annotation.AnnotatedMethod;
+import org.milyn.annotation.AnnotationManager;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.scribe.AnnotationNotFoundException;
+import org.milyn.scribe.IllegalAnnotationUsageException;
+import org.milyn.scribe.annotation.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -24,20 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.milyn.annotation.AnnotatedClass;
-import org.milyn.annotation.AnnotatedMethod;
-import org.milyn.annotation.AnnotationManager;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.scribe.AnnotationNotFoundException;
-import org.milyn.scribe.IllegalAnnotationUsageException;
-import org.milyn.scribe.annotation.Dao;
-import org.milyn.scribe.annotation.Delete;
-import org.milyn.scribe.annotation.Flush;
-import org.milyn.scribe.annotation.Insert;
-import org.milyn.scribe.annotation.Lookup;
-import org.milyn.scribe.annotation.LookupByQuery;
-import org.milyn.scribe.annotation.ReturnsNoEntity;
-import org.milyn.scribe.annotation.Update;
+import static org.milyn.util.ClassUtil.containsAssignableClass;
+import static org.milyn.util.ClassUtil.indexOfFirstAssignableClass;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -353,7 +347,7 @@ public class AnnotatedDaoRuntimeInfo {
 
 		}
 
-		int queryIndex = indexOffFirstAssignableClass(String.class, parameters);
+		int queryIndex = indexOfFirstAssignableClass(String.class, parameters);
 		if(queryIndex == -1) {
 			throw new IllegalAnnotationUsageException("The FindByQuery annotated method '"+ method +"' of the DAO class '"+ daoClass.getName() +"' " +
 				"doesn't have a String parameter. This parameter is needed to receive the query string.");

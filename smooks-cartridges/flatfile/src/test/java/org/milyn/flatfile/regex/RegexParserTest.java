@@ -33,6 +33,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class RegexParserTest {
 
     @Test

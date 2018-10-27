@@ -23,15 +23,14 @@ import org.milyn.cdr.Parameter;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Configurator;
 import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.sax.SAXHandler;
-import org.milyn.namespace.NamespaceDeclarationStack;
-import org.milyn.namespace.NamespaceDeclarationStackAware;
-import org.milyn.payload.JavaSource;
-import org.milyn.payload.FilterSource;
 import org.milyn.delivery.java.JavaXMLReader;
 import org.milyn.delivery.java.XStreamXMLReader;
 import org.milyn.io.NullReader;
 import org.milyn.io.NullWriter;
+import org.milyn.namespace.NamespaceDeclarationStack;
+import org.milyn.namespace.NamespaceDeclarationStackAware;
+import org.milyn.payload.FilterSource;
+import org.milyn.payload.JavaSource;
 import org.milyn.util.ClassUtil;
 import org.milyn.xml.NamespaceMappings;
 import org.milyn.xml.NullSourceXMLReader;
@@ -44,17 +43,9 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -93,6 +84,7 @@ public class AbstractParser {
         return execContext;
     }
 
+    @SuppressWarnings("unused")
     protected SmooksResourceConfiguration getSaxDriverConfig() {
         return saxDriverConfig;
     }
@@ -126,6 +118,7 @@ public class AbstractParser {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static Stack<XMLReader> getReaders(ExecutionContext execContext) {
         Stack<XMLReader> readers = (Stack<XMLReader>) execContext.getAttribute(XMLReader.class);
 
@@ -162,6 +155,7 @@ public class AbstractParser {
         return saxDriverConfig;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected static Reader getReader(Source source, String contentEncoding) {
     	if(source != null) {
 	        if (source instanceof StreamSource) {
@@ -172,14 +166,14 @@ public class AbstractParser {
 	            	return streamToReader(streamSource.getInputStream(), contentEncoding);
 				} else if (streamSource.getSystemId() != null) {
 					return systemIdToReader(streamSource.getSystemId(), contentEncoding);
-				} 
-	            
+				}
+
 	            throw new SmooksException("Invalid " + StreamSource.class.getName() + ".  No InputStream, Reader or SystemId instance.");
 			} else if (source.getSystemId() != null) {
 				return systemIdToReader(source.getSystemId(), contentEncoding);
-			} 
+			}
     	}
-    	
+
         return new NullReader();
     }
 
@@ -202,7 +196,7 @@ public class AbstractParser {
 		} catch (MalformedURLException e) {
 		    throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Must be a valid URL.", e);
 		}
-	    
+
 	}
 
 	private static Reader streamToReader(InputStream inputStream, String contentEncoding) {
@@ -243,6 +237,7 @@ public class AbstractParser {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected InputStream getInputStream(StreamSource streamSource) {
         InputStream inputStream = streamSource.getInputStream();
         String systemId = streamSource.getSystemId();
@@ -408,7 +403,7 @@ public class AbstractParser {
         } catch (Throwable t) {
             // Not a SAX 2.0.2 compliant parser... Ignore
         }
-        
+
         if (saxDriverConfig != null) {
             List<Parameter> features;
 
@@ -450,9 +445,9 @@ public class AbstractParser {
         return featureOff;
     }
 
-    private static enum FeatureValue {
+    private enum FeatureValue {
         ON,
-        OFF;
+        OFF
     }
 
     private static boolean isFeature(String name, FeatureValue featureValue, SmooksResourceConfiguration saxDriverConfig) {

@@ -15,17 +15,16 @@
 */
 package org.milyn.cdr.xpath.evaluators;
 
-import org.jaxen.expr.*;
-import org.jaxen.saxpath.SAXPathException;
+import org.jaxen.expr.NameStep;
+import org.jaxen.expr.Predicate;
+import org.jaxen.expr.Step;
 import org.jaxen.saxpath.Axis;
-import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
+import org.jaxen.saxpath.SAXPathException;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.xml.Namespace;
 
 import java.util.List;
 import java.util.Properties;
-
-import javassist.*;
 
 /**
  * {@link PredicatesEvaluator} builder.
@@ -50,7 +49,8 @@ public class PredicatesEvaluatorBuilder {
         }
     }
 
-    public XPathExpressionEvaluator build() throws SAXPathException, NotFoundException, CannotCompileException, InstantiationException, IllegalAccessException {
+    public XPathExpressionEvaluator build() throws SAXPathException
+    {
         PredicatesEvaluator evaluator = new PredicatesEvaluator();
 
         if (!(step instanceof NameStep)) {
@@ -67,6 +67,7 @@ public class PredicatesEvaluatorBuilder {
         return evaluator;
     }
 
+    @SuppressWarnings("unchecked")
     private void addEvaluators(Step step, PredicatesEvaluator evaluator) throws SAXPathException {
         List<Predicate> predicates = step.getPredicates();
         for (Predicate predicate : predicates) {

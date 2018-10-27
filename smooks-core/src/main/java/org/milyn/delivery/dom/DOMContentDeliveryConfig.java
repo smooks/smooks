@@ -15,19 +15,19 @@
 */
 package org.milyn.delivery.dom;
 
-import org.milyn.delivery.*;
-import org.milyn.delivery.ordering.Sorter;
-import org.milyn.delivery.dom.serialize.SerializationUnit;
-import org.milyn.container.ExecutionContext;
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.*;
+import org.milyn.delivery.dom.serialize.SerializationUnit;
+import org.milyn.delivery.ordering.Sorter;
 
 /**
  * DOM specific {@link org.milyn.delivery.ContentDeliveryConfig} implementation.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
-
     private ContentHandlerConfigMapTable<DOMVisitBefore> assemblyVisitBefores;
     private ContentHandlerConfigMapTable<DOMVisitAfter> assemblyVisitAfters;
     private ContentHandlerConfigMapTable<DOMVisitBefore> processingVisitBefores;
@@ -76,6 +76,7 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
         this.serailizationVisitors = serailizationVisitors;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public ContentHandlerConfigMapTable<VisitLifecycleCleanable> getVisitCleanables() {
         return visitCleanables;
     }

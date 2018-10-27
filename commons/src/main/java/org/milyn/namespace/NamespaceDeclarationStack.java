@@ -15,20 +15,13 @@
  */
 package org.milyn.namespace;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-
-import javax.xml.XMLConstants;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.AttributesImpl;
+
+import javax.xml.XMLConstants;
+import java.util.*;
 
 /**
  * This class is responsible for managing namespace declarations.
@@ -36,7 +29,6 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author zubairov
  */
 public class NamespaceDeclarationStack {
-
     private final Stack<Map<String, String>> namespaceStack = new Stack<Map<String, String>>();
     private final Stack<XMLReader> readerStack = new Stack<XMLReader>();
 
@@ -54,9 +46,12 @@ public class NamespaceDeclarationStack {
      * @param namespace Element namespace.
 	 * @param attributes optional attributes or null, single element could declare multiple namespaces
 	 * @return modified attributes declaration in case additional prefix mapping should be included
-	 * @throws SAXException
+   *
+	 * @throws SAXException if an error is encountered when attempting to push
+   * the element to the stack.
 	 */
-	public Attributes pushNamespaces(String qName, String namespace, Attributes attributes) throws SAXException {
+	@SuppressWarnings({ "unchecked", "UnusedReturnValue" })
+  public Attributes pushNamespaces(String qName, String namespace, Attributes attributes) throws SAXException {
         if(attributes == null || attributes.getLength() == 0) {
             if(namespace == null || XMLConstants.NULL_NS_URI.equals(namespace)) {
                 namespaceStack.push(Collections.EMPTY_MAP);
@@ -126,7 +121,8 @@ public class NamespaceDeclarationStack {
      * Pop element out of the namespace declaration stack and notifying
      * {@link ContentHandler} if required.
      *
-     * @throws SAXException
+     * @throws SAXException if an error occurs when attempting to pop the
+     * element out of the stack.
      */
     public void popNamespaces() throws SAXException {
         Map<String, String> namespaces = namespaceStack.pop();
@@ -155,6 +151,7 @@ public class NamespaceDeclarationStack {
      * Pop the current XMLReader off the XMLReader stack.
      * @return The reader instance that was popped from the stack.
      */
+    @SuppressWarnings("UnusedReturnValue")
     public XMLReader popReader() {
         return readerStack.pop();
     }
@@ -193,31 +190,13 @@ public class NamespaceDeclarationStack {
         return activeNamespaces;
     }
 
-    public String getUri(String getKey) {
-        int stackDepth = namespaceStack.size();
-
-        for (int i = stackDepth - 1; i >= 0; i--) {
-            Map<String, String> nsMap = namespaceStack.get(i);
-
-            if(!nsMap.isEmpty()) {
-                Set<Map.Entry<String,String>> nsEntries = nsMap.entrySet();
-                for (Map.Entry<String,String> nsEntry : nsEntries) {
-                    if(nsEntry.getKey().equals(getKey)) {
-                        return nsEntry.getValue();
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
     /**
-     * This method returns true if namespace with given prefix was already declared higher
-     * the stack
+     * Checks if a namespace with a given prefix is already declared higher in
+     * the stack.
      *
-     * @param prefix
-     * @return
+     * @param prefix The prefix to check.
+     * @return {@literal true} if a namespace with the specified prefix is
+     * already declared within the stack.
      */
     private boolean prefixAlreadyDeclared(String prefix) {
         for (Map<String, String> set : namespaceStack) {

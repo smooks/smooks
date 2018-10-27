@@ -15,27 +15,28 @@
 */
 package org.milyn.delivery.sax;
 
-import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.*;
-import org.milyn.delivery.ordering.Sorter;
 import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.xpath.SelectorStep;
-import org.milyn.cdr.xpath.evaluators.equality.IndexEvaluator;
 import org.milyn.cdr.xpath.evaluators.equality.ElementIndexCounter;
+import org.milyn.cdr.xpath.evaluators.equality.IndexEvaluator;
+import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.*;
+import org.milyn.delivery.ordering.Sorter;
 
-import javax.xml.namespace.QName;
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import java.util.*;
 
 /**
  * SAX specific {@link org.milyn.delivery.ContentDeliveryConfig} implementation.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings({ "WeakerAccess", "unused", "unchecked" })
 public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
-    
+
     private ContentHandlerConfigMapTable<SAXVisitBefore> visitBefores;
     private ContentHandlerConfigMapTable<SAXVisitChildren> childVisitors = new ContentHandlerConfigMapTable<SAXVisitChildren>();
     private ContentHandlerConfigMapTable<SAXVisitAfter> visitAfters;
@@ -79,7 +80,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
     public Map<String, SAXElementVisitorMap> getOptimizedVisitorConfig() {
         return optimizedVisitorConfig;
     }
-    
+
     public FilterBypass getFilterBypass() {
     	return filterBypass;
     }
@@ -105,12 +106,12 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         }
 
         extractChildVisitors();
-        
+
         List<ContentHandlerConfigMap<SAXVisitBefore>> starVBs = new ArrayList<ContentHandlerConfigMap<SAXVisitBefore>>();
         List<ContentHandlerConfigMap<SAXVisitChildren>> starVCs = new ArrayList<ContentHandlerConfigMap<SAXVisitChildren>>();
         List<ContentHandlerConfigMap<SAXVisitAfter>> starVAs = new ArrayList<ContentHandlerConfigMap<SAXVisitAfter>>();
         List<ContentHandlerConfigMap<VisitLifecycleCleanable>> starCleanables = new ArrayList<ContentHandlerConfigMap<VisitLifecycleCleanable>>();
-        
+
         if(visitBefores.getTable().get("*") != null) {
         	starVBs.addAll(visitBefores.getTable().get("*"));
         }
@@ -135,7 +136,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         if(visitCleanables.getTable().get("**") != null) {
         	starCleanables.addAll(visitCleanables.getTable().get("**"));
         }
-        
+
         // Now extract the before, child and after visitors for all configured elements...
         Set<String> elementNames = new HashSet<String>();
         elementNames.addAll(visitBefores.getTable().keySet());
@@ -151,22 +152,22 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         	// So what's going on with the "*" and "**" resources here?  Basically, we are adding
         	// these resources to all targeted elements, accept for "*" and "**" themselves.
-        	
+
             if(befores != null && !isStar) {
             	befores.addAll(starVBs);
             }
             entry.setVisitBefores(befores);
-            
+
             if(children != null && !isStar) {
             	children.addAll(starVCs);
             }
             entry.setChildVisitors(children);
-            
+
             if(afters != null && !isStar) {
             	afters.addAll(starVAs);
             }
             entry.setVisitAfters(afters);
-            
+
             if(cleanables != null && !isStar) {
             	cleanables.addAll(starCleanables);
             }
@@ -182,7 +183,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         maintainElementStack = ParameterAccessor.getBoolParameter(Filter.MAINTAIN_ELEMENT_STACK, true, this);
         reverseVisitOrderOnVisitAfter = ParameterAccessor.getBoolParameter(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, true, this);
         terminateOnVisitorException = ParameterAccessor.getBoolParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, true, this);
-        
+
 		filterBypass = getFilterBypass(visitBefores, visitAfters);
     }
 
@@ -208,7 +209,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
     }
 
     public void addIndexCounters() {
-        Map<String, SAXElementVisitorMap> optimizedVisitorConfigCopy = new LinkedHashMap(optimizedVisitorConfig);
+        Map<String, SAXElementVisitorMap> optimizedVisitorConfigCopy = new LinkedHashMap<String, SAXElementVisitorMap>(optimizedVisitorConfig);
         Collection<SAXElementVisitorMap> visitorMaps = optimizedVisitorConfigCopy.values();
 
         for(SAXElementVisitorMap visitorMap : visitorMaps) {
@@ -264,7 +265,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration(targetElementName);
 
-        if(targetNS != null && targetNS != XMLConstants.NULL_NS_URI) {
+        if(!XMLConstants.NULL_NS_URI.equals(targetNS)) {
             resourceConfig.setSelectorNamespaceURI(targetNS);
         }
 
@@ -300,7 +301,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
                 if(elementVisitCleanables != null) {
                     combinedConfig.getVisitCleanables().addAll(elementVisitCleanables);
                 }
-                
+
                 combinedConfig.initAccumulateText(elementConfig);
                 combinedConfig.initAcquireWriterFor(elementConfig);
             }

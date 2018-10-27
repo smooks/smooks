@@ -15,19 +15,10 @@
 */
 package org.milyn.smooks.edi.unedifact;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.xml.transform.stream.StreamSource;
-
+import com.thoughtworks.xstream.XStream;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
@@ -40,15 +31,17 @@ import org.milyn.smooks.edi.unedifact.model.r41.UNEdifactInterchange41;
 import org.milyn.smooks.edi.unedifact.model.r41.UNEdifactMessage41;
 import org.xml.sax.SAXException;
 
-import com.thoughtworks.xstream.XStream;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class UNEdifactReaderTest {
 
         @Test
@@ -60,15 +53,15 @@ public class UNEdifactReaderTest {
 	public void test_SAX() throws IOException, SAXException {
 		test(FilterSettings.DEFAULT_SAX);
 	}
-	
+
 	public void test(FilterSettings filterSettings) throws IOException, SAXException {
 		Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-xml.xml");
 		StringResult result = new StringResult();
-		
+
 		smooks.setFilterSettings(filterSettings);
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01.edi")), result);
 		XMLUnit.setIgnoreWhitespace( true );
-        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));		
+        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));
 	}
 
     @Test
@@ -120,51 +113,51 @@ public class UNEdifactReaderTest {
         @Test
 	public void test_zipped() throws IOException, SAXException, EDIConfigurationException {
 		createZip();
-		
+
 		Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-zip.xml");
 		StringResult result = new StringResult();
-		
+
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("unedifact-msg-01.edi")), result);
 
 		XMLUnit.setIgnoreWhitespace( true );
-        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));		
+        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-01.xml")), new StringReader(result.toString()));
 	}
 
-        @Test	
+        @Test
 	public void test_java_binding_simple_messages() throws IOException, SAXException {
 		Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-jb-01.xml");
-		JavaResult jResult = new JavaResult();		
-		StringResult sResult = new StringResult();		
+		JavaResult jResult = new JavaResult();
+		StringResult sResult = new StringResult();
 		ExecutionContext execCtx = smooks.createExecutionContext();
-		
+
 		//execCtx.setEventListener(new HtmlReportGenerator("target/report.html"));
 		smooks.filterSource(execCtx, new StreamSource(getClass().getResourceAsStream("unedifact-msg-02.edi")), jResult, sResult);
-		
+
 		List<UNEdifactMessage41> messages = (List<UNEdifactMessage41>) jResult.getBean("unEdifactMessages");
 
 //		System.out.println(sResult);
 //		System.out.println(new XStream().toXML(messages));
-		
+
 		XMLUnit.setIgnoreWhitespace( true );
-        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-02.xml")), new StringReader(new XStream().toXML(messages)));		
+        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-02.xml")), new StringReader(new XStream().toXML(messages)));
 	}
 
-        @Test	
+        @Test
 	public void test_java_binding_interchange_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks("/org/milyn/smooks/edi/unedifact/smooks-config-jb-02.xml");
-		JavaResult jResult = new JavaResult();		
-		StringResult sResult = new StringResult();		
+		JavaResult jResult = new JavaResult();
+		StringResult sResult = new StringResult();
 		ExecutionContext execCtx = smooks.createExecutionContext();
-		
+
 		//execCtx.setEventListener(new HtmlReportGenerator("target/report.html"));
 		smooks.filterSource(execCtx, new StreamSource(getClass().getResourceAsStream("unedifact-msg-02.edi")), jResult, sResult);
-		
+
 		UNEdifactInterchange41 interchange = jResult.getBean(UNEdifactInterchange41.class);
 
 //		System.out.println(new XStream().toXML(interchange));
-		
+
 		XMLUnit.setIgnoreWhitespace( true );
-        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-03.xml")), new StringReader(new XStream().toXML(interchange)));		
+        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("unedifact-msg-expected-03.xml")), new StringReader(new XStream().toXML(interchange)));
 	}
 
     @Test
@@ -187,10 +180,10 @@ public class UNEdifactReaderTest {
 
 	private void createZip() throws IOException {
 		File zipFile = new File("target/mapping-models.zip");
-		
+
 		zipFile.delete();
-		
-		ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFile));		
+
+		ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFile));
 		try {
 			addZipEntry("test/models/MSG1-model.xml", "MSG1-model.xml", zipStream);
 			addZipEntry("test/models/MSG2-model.xml", "MSG2-model.xml", zipStream);
@@ -204,7 +197,7 @@ public class UNEdifactReaderTest {
 	private void addZipEntry(String name, String resource, ZipOutputStream zipStream) throws IOException {
 		ZipEntry zipEntry = new ZipEntry(name);
 		byte[] resourceBytes = StreamUtils.readStream(getClass().getResourceAsStream(resource));
-		
+
 		zipStream.putNextEntry(zipEntry);
 		zipStream.write(resourceBytes);
 	}

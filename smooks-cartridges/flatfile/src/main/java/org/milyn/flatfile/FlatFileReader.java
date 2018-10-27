@@ -17,8 +17,6 @@
 package org.milyn.flatfile;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.Config;
@@ -30,21 +28,11 @@ import org.milyn.delivery.VisitorAppender;
 import org.milyn.delivery.VisitorConfigMap;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.xml.SmooksXMLReader;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.*;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.XMLConstants;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
 
 /**
@@ -52,9 +40,8 @@ import java.util.List;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
-
-	private static Log logger = LogFactory.getLog(FlatFileReader.class);
     private static Attributes EMPTY_ATTRIBS = new AttributesImpl();
 
     private static char[] INDENT_LF = new char[] {'\n'};
@@ -112,8 +99,6 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
         }
 
         try {
-			Reader recordReader;
-
             // Create the record parser....
             RecordParser recordParser = parserFactory.newRecordParser();
             recordParser.setRecordParserFactory(parserFactory);
@@ -133,45 +118,43 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
                 while (record != null) {
                     lineNumber++; // First line is line "1"
 
-                    if(record != null) {
-                        List<Field> recordFields = record.getFields();
+                    List<Field> recordFields = record.getFields();
 
-                        if(indent) {
-                            contentHandler.characters(INDENT_LF, 0, 1);
-                            contentHandler.characters(INDENTCHARS, 0, 1);
-                        }
-
-                        AttributesImpl attrs = new AttributesImpl();
-                        attrs.addAttribute(XMLConstants.NULL_NS_URI, RECORD_NUMBER_ATTR, RECORD_NUMBER_ATTR, "xs:int", Integer.toString(lineNumber));
-
-                        RecordMetaData recordMetaData = record.getRecordMetaData();
-                        if(recordFields.size() < recordMetaData.getUnignoredFieldCount()) {
-                            attrs.addAttribute(XMLConstants.NULL_NS_URI, RECORD_TRUNCATED_ATTR, RECORD_TRUNCATED_ATTR, "xs:boolean", Boolean.TRUE.toString());
-                        }
-
-                        contentHandler.startElement(XMLConstants.NULL_NS_URI, record.getName(), StringUtils.EMPTY, attrs);
-                        for(Field recordField : recordFields) {
-                            String fieldName = recordField.getName();
-
-                            if(indent) {
-                                contentHandler.characters(INDENT_LF, 0, 1);
-                                contentHandler.characters(INDENTCHARS, 0, 2);
-                            }
-
-                            contentHandler.startElement(XMLConstants.NULL_NS_URI, fieldName, StringUtils.EMPTY, EMPTY_ATTRIBS);
-
-                            String value = recordField.getValue();
-                            contentHandler.characters(value.toCharArray(), 0, value.length());
-                            contentHandler.endElement(XMLConstants.NULL_NS_URI, fieldName, StringUtils.EMPTY);
-                        }
-
-                        if(indent) {
-                            contentHandler.characters(INDENT_LF, 0, 1);
-                            contentHandler.characters(INDENTCHARS, 0, 1);
-                        }
-
-                        contentHandler.endElement(XMLConstants.NULL_NS_URI, record.getName(), StringUtils.EMPTY);
+                    if(indent) {
+                        contentHandler.characters(INDENT_LF, 0, 1);
+                        contentHandler.characters(INDENTCHARS, 0, 1);
                     }
+
+                    AttributesImpl attrs = new AttributesImpl();
+                    attrs.addAttribute(XMLConstants.NULL_NS_URI, RECORD_NUMBER_ATTR, RECORD_NUMBER_ATTR, "xs:int", Integer.toString(lineNumber));
+
+                    RecordMetaData recordMetaData = record.getRecordMetaData();
+                    if(recordFields.size() < recordMetaData.getUnignoredFieldCount()) {
+                        attrs.addAttribute(XMLConstants.NULL_NS_URI, RECORD_TRUNCATED_ATTR, RECORD_TRUNCATED_ATTR, "xs:boolean", Boolean.TRUE.toString());
+                    }
+
+                    contentHandler.startElement(XMLConstants.NULL_NS_URI, record.getName(), StringUtils.EMPTY, attrs);
+                    for(Field recordField : recordFields) {
+                        String fieldName = recordField.getName();
+
+                        if(indent) {
+                            contentHandler.characters(INDENT_LF, 0, 1);
+                            contentHandler.characters(INDENTCHARS, 0, 2);
+                        }
+
+                        contentHandler.startElement(XMLConstants.NULL_NS_URI, fieldName, StringUtils.EMPTY, EMPTY_ATTRIBS);
+
+                        String value = recordField.getValue();
+                        contentHandler.characters(value.toCharArray(), 0, value.length());
+                        contentHandler.endElement(XMLConstants.NULL_NS_URI, fieldName, StringUtils.EMPTY);
+                    }
+
+                    if(indent) {
+                        contentHandler.characters(INDENT_LF, 0, 1);
+                        contentHandler.characters(INDENTCHARS, 0, 1);
+                    }
+
+                    contentHandler.endElement(XMLConstants.NULL_NS_URI, record.getName(), StringUtils.EMPTY);
 
                     record = recordParser.nextRecord();
                 }
@@ -207,17 +190,18 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
      *
      ****************************************************************************/
 
-    public void parse(String systemId) throws IOException, SAXException {
+    public void parse(String systemId)
+    {
         throw new UnsupportedOperationException("Operation not supports by this reader.");
     }
 
-    public boolean getFeature(String name) throws SAXNotRecognizedException,
-            SAXNotSupportedException {
+    public boolean getFeature(String name)
+    {
         return false;
     }
 
     public void setFeature(String name, boolean value)
-            throws SAXNotRecognizedException, SAXNotSupportedException {
+    {
     }
 
     public DTDHandler getDTDHandler() {
@@ -241,11 +225,12 @@ public class FlatFileReader implements SmooksXMLReader, VisitorAppender {
     public void setErrorHandler(ErrorHandler arg0) {
     }
 
-    public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
+    public Object getProperty(String name)
+    {
         return null;
     }
 
     public void setProperty(String name, Object value)
-            throws SAXNotRecognizedException, SAXNotSupportedException {
+    {
     }
 }
