@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.milyn</groupId>
     <artifactId>testres</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>1.7.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <name>Milyn :: Test Resources</name>

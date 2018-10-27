@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.milyn</groupId>
     <artifactId>milyn-smooks-example-jms-router</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>1.7.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
