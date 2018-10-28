@@ -67,7 +67,7 @@ public class Main {
         System.out.println(new String(messageIn));
         System.out.println("======================================\n");
 
-        pause("The EDI input stream can be seen above.  Press 'enter' to see how this stream is transformed the Order Object graph...");
+        pause("The EDI input stream can be seen above.  Press 'enter' to see how this stream is transformed into an Order Object graph...");
 
         Main smooksMain = new Main();
         ExecutionContext executionContext = smooksMain.smooks.createExecutionContext();
