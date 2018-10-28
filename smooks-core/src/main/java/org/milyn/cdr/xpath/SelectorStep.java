@@ -46,9 +46,8 @@ import java.util.Properties;
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
+@SuppressWarnings("unused")
 public class SelectorStep {
-
-    @SuppressWarnings("unused")
     public static final long NO_ELEMENT_INDEX = -1;
 
     private String xpathExpression;
@@ -144,7 +143,6 @@ public class SelectorStep {
         targetAttribute = new QName(targetAttributeName);
     }
 
-    @SuppressWarnings("unused")
     public Step getAttributeStep() {
         return attributeStep;
     }
@@ -162,9 +160,7 @@ public class SelectorStep {
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public SelectorStep clone() {
-        SelectorStep clone;
-
-        clone = new SelectorStep(xpathExpression);
+        SelectorStep clone = new SelectorStep(xpathExpression);
 
         clone.xpathExpression = xpathExpression;
         clone.step = step;
@@ -265,7 +261,7 @@ public class SelectorStep {
             return false;
         }
 
-        return !isTargetedAtNamespace(qname.getNamespaceURI());
+        return isTargetedAtNamespace(qname.getNamespaceURI());
     }
 
     public boolean isTargetedAtElement(Element element) {
@@ -279,7 +275,7 @@ public class SelectorStep {
             return false;
         }
 
-        return !isTargetedAtNamespace(element.getNamespaceURI());
+        return isTargetedAtNamespace(element.getNamespaceURI());
     }
 
     /**
