@@ -225,7 +225,8 @@ public class FileOutputStreamResource extends AbstractOutputStreamResource
             throw new SmooksRoutingException("The file routing target directory '" + destinationDirectory.getAbsolutePath() + "' exist but is not a directory. destinationDirectoryPattern: '" + destinationDirectoryPattern + "'");
         }
         if(!destinationDirectory.exists()) {
-            if(!destinationDirectory.mkdirs()) {
+			if (!destinationDirectory.mkdirs()
+					&& !(destinationDirectory.exists() && destinationDirectory.isDirectory())) {
                 throw new SmooksRoutingException("Failed to create file routing target directory '" + destinationDirectory.getAbsolutePath() + "'. destinationDirectoryPattern: '" + destinationDirectoryPattern + "'");
             }
         }
