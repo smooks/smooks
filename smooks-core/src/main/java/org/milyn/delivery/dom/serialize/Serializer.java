@@ -99,7 +99,7 @@ public class Serializer {
      */
     DOMContentDeliveryConfig deliveryConfig = (DOMContentDeliveryConfig) executionContext.getDeliveryConfig();
 		// Initialise the serializationUnits member
-		serializationUnits = deliveryConfig.getSerailizationVisitors();
+		serializationUnits = deliveryConfig.getSerializationVisitors();
 
         globalSUs = serializationUnits.getMappings(new String[] {"*", "**"});
 

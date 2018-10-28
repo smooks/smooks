@@ -16,19 +16,20 @@
 package org.milyn.delivery;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.StreamFilterType;
-import org.milyn.io.StreamUtils;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMContentDeliveryConfig;
 import org.milyn.delivery.sax.SAXContentDeliveryConfig;
 import org.milyn.delivery.sax.SAXVisitor01;
+import org.milyn.io.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -43,7 +44,7 @@ public class ContentDeliveryConfigBuilderTest {
         assertTrue(execContext.getDeliveryConfig() instanceof SAXContentDeliveryConfig);
         SAXContentDeliveryConfig config = (SAXContentDeliveryConfig) execContext.getDeliveryConfig();
 
-        // Should be 5: 4 configured + 2 auto-installed 
+        // Should be 5: 4 configured + 2 auto-installed
         assertEquals(7, config.getVisitBefores().getCount());
         assertTrue(config.getVisitBefores().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
         assertTrue(config.getVisitBefores().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
@@ -64,7 +65,7 @@ public class ContentDeliveryConfigBuilderTest {
         assertEquals(1, config.getAssemblyVisitAfters().getCount());
         assertEquals(2, config.getProcessingVisitBefores().getCount());
         assertEquals(2, config.getProcessingVisitAfters().getCount());
-        assertEquals(4, config.getSerailizationVisitors().getCount());
+        assertEquals(4, config.getSerializationVisitors().getCount());
     }
 
 	@Test

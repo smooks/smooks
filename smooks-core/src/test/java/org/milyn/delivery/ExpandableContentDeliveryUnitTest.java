@@ -16,7 +16,6 @@
 package org.milyn.delivery;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMContentDeliveryConfig;
@@ -28,6 +27,9 @@ import org.milyn.delivery.dom.serialize.SerializationUnit;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * ConfigurationExpander tests.
@@ -48,7 +50,7 @@ public class ExpandableContentDeliveryUnitTest {
         ContentHandlerConfigMapTable<DOMVisitAfter> assemblyVisitAfters = config.getAssemblyVisitAfters();
         ContentHandlerConfigMapTable<DOMVisitBefore> processingVisitBefores = config.getProcessingVisitBefores();
         ContentHandlerConfigMapTable<DOMVisitAfter> processingVisitAfters = config.getProcessingVisitAfters();
-        ContentHandlerConfigMapTable<SerializationUnit> serializationUnits = config.getSerailizationVisitors();
+        ContentHandlerConfigMapTable<SerializationUnit> serializationUnits = config.getSerializationVisitors();
 
         assertEquals(1, assemblyVisitBefores.getCount());
         assertTrue(assemblyVisitBefores.getMappings("a").get(0).getContentHandler() instanceof Assembly1);

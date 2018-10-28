@@ -43,27 +43,27 @@ public class SerializerTest {
 	private static final Log log = LogFactory.getLog(SerializerTest.class);
 
 	@Test
-	public void testSerailize() {
+	public void testSerialize() {
 		MockExecutionContext executionContext = new MockExecutionContext();
 
         // Target a resource at the "document fragment" i.e. the root..
 
         // Don't write xxx but write its child elements
 		SmooksResourceConfiguration configuration = new SmooksResourceConfiguration(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, "deviceX", "....");
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).serializationUnits.addMapping(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, configuration, Configurator.configure(new AddAttributeSerializer(), configuration));
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, configuration, Configurator.configure(new AddAttributeSerializer(), configuration));
 
         // Don't write xxx but write its child elements
 		configuration = new SmooksResourceConfiguration("xxx", "deviceX", "....");
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).serializationUnits.addMapping("xxx", configuration, Configurator.configure(new RemoveTestSerializationUnit(), configuration));
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("xxx", configuration, Configurator.configure(new RemoveTestSerializationUnit(), configuration));
 
 		// write yyyy as a badly-formed empty element
 		configuration = new SmooksResourceConfiguration("yyyy", "deviceX", "....");
 		configuration.setParameter("wellformed", "false");
-        ((MockContentDeliveryConfig)executionContext.deliveryConfig).serializationUnits.addMapping("yyyy", configuration, Configurator.configure(new EmptyElTestSerializationUnit(), configuration));
+        ((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("yyyy", configuration, Configurator.configure(new EmptyElTestSerializationUnit(), configuration));
 
 		/// write zzz as a well-formed empty element
 		configuration = new SmooksResourceConfiguration("zzz", "deviceX", "....");
-        ((MockContentDeliveryConfig)executionContext.deliveryConfig).serializationUnits.addMapping("zzz", configuration, Configurator.configure(new EmptyElTestSerializationUnit(), configuration));
+        ((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("zzz", configuration, Configurator.configure(new EmptyElTestSerializationUnit(), configuration));
 
 		try {
 			Document doc = XmlUtil.parseStream(getClass().getResourceAsStream("testmarkup.xxml"), XmlUtil.VALIDATION_TYPE.NONE, true);

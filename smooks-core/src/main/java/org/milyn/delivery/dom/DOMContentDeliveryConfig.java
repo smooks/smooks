@@ -28,13 +28,13 @@ import org.milyn.delivery.ordering.Sorter;
  */
 @SuppressWarnings("unchecked")
 public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
-    private ContentHandlerConfigMapTable<DOMVisitBefore> assemblyVisitBefores;
-    private ContentHandlerConfigMapTable<DOMVisitAfter> assemblyVisitAfters;
-    private ContentHandlerConfigMapTable<DOMVisitBefore> processingVisitBefores;
-    private ContentHandlerConfigMapTable<DOMVisitAfter> processingVisitAfters;
-    private ContentHandlerConfigMapTable<SerializationUnit> serailizationVisitors;
+    private ContentHandlerConfigMapTable<DOMVisitBefore>          assemblyVisitBefores;
+    private ContentHandlerConfigMapTable<DOMVisitAfter>           assemblyVisitAfters;
+    private ContentHandlerConfigMapTable<DOMVisitBefore>          processingVisitBefores;
+    private ContentHandlerConfigMapTable<DOMVisitAfter>           processingVisitAfters;
+    private ContentHandlerConfigMapTable<SerializationUnit>       serializationVisitors;
     private ContentHandlerConfigMapTable<VisitLifecycleCleanable> visitCleanables;
-    private FilterBypass filterBypass;
+    private FilterBypass                                          filterBypass;
 
     public ContentHandlerConfigMapTable<DOMVisitBefore> getAssemblyVisitBefores() {
         return assemblyVisitBefores;
@@ -68,12 +68,12 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
         this.processingVisitAfters = processingVisitAfters;
     }
 
-    public ContentHandlerConfigMapTable<SerializationUnit> getSerailizationVisitors() {
-        return serailizationVisitors;
+    public ContentHandlerConfigMapTable<SerializationUnit> getSerializationVisitors() {
+        return serializationVisitors;
     }
 
-    public void setSerailizationVisitors(ContentHandlerConfigMapTable<SerializationUnit> serailizationVisitors) {
-        this.serailizationVisitors = serailizationVisitors;
+    public void setSerializationVisitors(ContentHandlerConfigMapTable<SerializationUnit> serializationVisitors) {
+        this.serializationVisitors = serializationVisitors;
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -108,6 +108,6 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
     }
 
     public void configureFilterBypass() {
-		filterBypass = getFilterBypass(assemblyVisitBefores, assemblyVisitAfters, processingVisitBefores, processingVisitAfters, serailizationVisitors);
+		filterBypass = getFilterBypass(assemblyVisitBefores, assemblyVisitAfters, processingVisitBefores, processingVisitAfters, serializationVisitors);
 	}
 }

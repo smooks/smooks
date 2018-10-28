@@ -159,7 +159,7 @@ public class ContentDeliveryConfigBuilder {
             domConfig.setAssemblyVisitAfters(visitorConfig.getDomAssemblyVisitAfters());
             domConfig.setProcessingVisitBefores(visitorConfig.getDomProcessingVisitBefores());
             domConfig.setProcessingVisitAfters(visitorConfig.getDomProcessingVisitAfters());
-            domConfig.setSerailizationVisitors(visitorConfig.getDomSerializationVisitors());
+            domConfig.setSerializationVisitors(visitorConfig.getDomSerializationVisitors());
             domConfig.setVisitCleanables(visitorConfig.getVisitCleanables());
 
             domConfig.setApplicationContext(applicationContext);
