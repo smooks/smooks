@@ -77,6 +77,7 @@ public class UNEdifactInterchangeParser implements XMLReader, NamespaceDeclarati
             throw new IllegalStateException("'mappingsRegistry' not set.  Cannot parse EDI stream.");
         }
 
+        boolean endDocument = false;
         try {
             ControlBlockHandlerFactory handlerFactory = new UNEdifact41ControlBlockHandlerFactory(hierarchyChangeListener);
 	        BufferedSegmentReader segmentReader = new BufferedSegmentReader(unedifactInterchange, defaultUNEdifactDelimiters);
@@ -119,7 +120,7 @@ public class UNEdifactInterchangeParser implements XMLReader, NamespaceDeclarati
 	        
 	        contentHandler.characters(new char[] {'\n'}, 0, 1);
 	        contentHandler.endElement(handlerFactory.getNamespace(), "unEdifact", envElementQName);
-	        contentHandler.endDocument();
+            endDocument = true;
         } finally {
             if (namespaceDeclarationStack != null) {
                 namespaceDeclarationStack.popNamespaces();
@@ -128,6 +129,9 @@ public class UNEdifactInterchangeParser implements XMLReader, NamespaceDeclarati
                 } else if (!interchangeContext.isContainerManagedNamespaceStack()) {
                     interchangeContext.getNamespaceDeclarationStack().popReader();
                 }
+            }
+            if (endDocument) {
+                contentHandler.endDocument();
             }
             contentHandler = null;
         }
