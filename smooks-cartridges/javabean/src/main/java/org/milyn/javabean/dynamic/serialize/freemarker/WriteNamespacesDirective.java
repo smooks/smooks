@@ -20,7 +20,6 @@ import freemarker.core.Environment;
 import freemarker.ext.beans.BeanModel;
 import freemarker.template.*;
 import org.milyn.javabean.dynamic.Model;
-import org.milyn.javabean.dynamic.serialize.BeanWriter;
 
 import javax.xml.XMLConstants;
 import java.io.IOException;
@@ -36,7 +35,7 @@ class WriteNamespacesDirective implements TemplateDirectiveModel {
     public void execute(Environment environment, Map params, TemplateModel[] templateModels, TemplateDirectiveBody templateDirectiveBody) throws TemplateException, IOException {
         Writer writer = environment.getOut();
         BeanModel modelBeanModel = (BeanModel) environment.getDataModel().get(FreeMarkerBeanWriter.MODEL_CTX_KEY);
-        Model model = (Model) modelBeanModel.getWrappedObject();
+        Model<?> model = (Model<?>) modelBeanModel.getWrappedObject();
         Map<String, String> namespaces = model.getNamespacePrefixMappings();
         Set<Map.Entry<String, String>> nsEntries = namespaces.entrySet();
         boolean addNewline = false;
@@ -73,7 +72,7 @@ class WriteNamespacesDirective implements TemplateDirectiveModel {
             writer.write('"');
             writer.write(uri);
             writer.write('"');
-            
+
             addNewline = true;
         }
     }

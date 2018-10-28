@@ -19,18 +19,16 @@ package org.milyn.profile;
 import org.milyn.profile.DefaultProfileSet;
 import org.milyn.profile.Profile;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author tfennelly
  */
-public class DefaultProfileSetTest extends TestCase {
+public class DefaultProfileSetTest {
 
-	public DefaultProfileSetTest(String arg0) {
-		super(arg0);
-	}
-
+    @Test
 	public void testAddProfile_exceptions() {
 		DefaultProfileSet set = new DefaultProfileSet("baseProfile");
 
@@ -51,6 +49,7 @@ public class DefaultProfileSetTest extends TestCase {
 		}
 	}
 
+    @Test
 	public void testIsMember_exceptions() {
 		DefaultProfileSet set = new DefaultProfileSet("baseProfile");
 
@@ -61,6 +60,7 @@ public class DefaultProfileSetTest extends TestCase {
 		}
 	}
 
+    @Test
 	public void testIsMember() {
 		DefaultProfileSet set = new DefaultProfileSet("baseProfile");
 

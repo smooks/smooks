@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.xml.sax.SAXException;
@@ -27,8 +28,9 @@ import java.io.*;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class FilterCloseTest extends TestCase {
+public class FilterCloseTest {
 
+	@Test
     public void test_close_io() throws IOException, SAXException {
         test_close_io("dom-dont-close", 0);
         test_close_io("sax-dont-close", 0);

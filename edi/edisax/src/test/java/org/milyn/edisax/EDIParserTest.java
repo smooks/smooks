@@ -16,22 +16,27 @@
 
 package org.milyn.edisax;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.junit.Test;
 import org.milyn.edisax.model.EDIConfigDigester;
 import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.util.List;
-
 /**
  * @author tfennelly
  */
 public class EDIParserTest extends AbstractEDIParserTestCase {
 
-	public void test_validation() throws IOException, SAXException {
-		// Valid doc...
+    @Test
+    public void test_validation() throws IOException, SAXException {
+        // Valid doc...
         try {
             EDIConfigDigester.digestConfig(getClass().getResourceAsStream("edi-mapping_01.xml"));
         } catch (EDIConfigurationException e) {
@@ -39,116 +44,137 @@ public class EDIParserTest extends AbstractEDIParserTestCase {
         }
 
         // Invalid doc...
-		try {
-			EDIConfigDigester.digestConfig(getClass().getResourceAsStream("edi-mapping_02.xml"));
-			fail("Expected SAXException");
-		} catch (SAXException e) {
-			// OK
-        } catch (EDIConfigurationException e) { 
+        try {
+            EDIConfigDigester.digestConfig(getClass().getResourceAsStream("edi-mapping_02.xml"));
+            fail("Expected SAXException");
+        } catch (SAXException e) {
+            // OK
+        } catch (EDIConfigurationException e) {
             fail("Expected SAXException");
         }
     }
-	
-	public void test_parseMappingModel() throws IOException, SAXException, EDIConfigurationException {
-		EdifactModel map = EDIParser.parseMappingModel(getClass().getResourceAsStream("edi-mapping_01.xml"));
-		
-		// Some basic checks on the model produced by xmlbeans...
-		
-		// Make sure xml character refs are rewritten on the delimiters
-		assertEquals("\n", map.getDelimiters().getSegment());
-		assertEquals("*", map.getDelimiters().getField());
-		assertEquals("^", map.getDelimiters().getComponent());
-		assertEquals("~", map.getDelimiters().getSubComponent());
-		
-		assertEquals("message-x", map.getEdimap().getSegments().getXmltag());
-		List<SegmentGroup> segments = map.getEdimap().getSegments().getSegments();
-		assertEquals(2, segments.size());
+
+    @Test
+    public void test_parseMappingModel() throws IOException, SAXException, EDIConfigurationException {
+        EdifactModel map = EDIParser.parseMappingModel(getClass().getResourceAsStream("edi-mapping_01.xml"));
+
+        // Some basic checks on the model produced by xmlbeans...
+
+        // Make sure xml character refs are rewritten on the delimiters
+        assertEquals("\n", map.getDelimiters().getSegment());
+        assertEquals("*", map.getDelimiters().getField());
+        assertEquals("^", map.getDelimiters().getComponent());
+        assertEquals("~", map.getDelimiters().getSubComponent());
+
+        assertEquals("message-x", map.getEdimap().getSegments().getXmltag());
+        List<SegmentGroup> segments = map.getEdimap().getSegments().getSegments();
+        assertEquals(2, segments.size());
 
         Segment segment = (Segment) segments.get(0);
         assertEquals(1, segment.getSegments().size());
-		assertEquals(1, segment.getFields().size());
+        assertEquals(1, segment.getFields().size());
 
         segment = (Segment) segments.get(1);
         assertEquals(0, segment.getSegments().size());
-		assertEquals(1, segment.getFields().size());
-	}
-	
-	public void test_escape_character() throws IOException {
-		test("test_escape_character");
-	}
-	
-	public void test_mapping_01() throws IOException {
-		test("test01");
-	}
-	
-	public void test_mapping_02() throws IOException {
-		test("test02");
-	}
-	
-	public void test_mapping_03() throws IOException {
-		test("test03");
-	}
-	
-	public void test_mapping_04() throws IOException {
-		test("test04");
-	}
-	
-	public void test_mapping_05() throws IOException {
-		test("test05");
-	}
-	
-	public void test_mapping_06() throws IOException {
-		test("test06");
-	}
-	
-	public void test_mapping_07() throws IOException {
-		test("test07");
-	}
-	
-	public void test_mapping_08() throws IOException {
-		test("test08");
-	}
-	
-	public void test_mapping_09() throws IOException {
-		test("test09");
-	}
-	
-	public void test_mapping_10() throws IOException {
-		test("test10");
-	}
-	
-	public void test_mapping_11() throws IOException {
-		test("test11");
-	}
-	
-	public void test_mapping_12() throws IOException {
-		test("test12");
-	}
-	
-	public void test_mapping_13() throws IOException {
-		test("test13");
-	}
-	
-	public void test_mapping_14() throws IOException {
-		test("test14");
-	}
-	
-	public void test_mapping_15() throws IOException {
-		test("test15");
-	}
-	
-	public void test_mapping_16() throws IOException {
-		test("test16");
-	}
-	
-	public void test_mapping_17() throws IOException {
-		test("test17");
-	}
-	
-	public void test_mapping_18() throws IOException {
-		test("test18");
-	}
+        assertEquals(1, segment.getFields().size());
+    }
 
+    @Test
+    public void test_escape_character() throws IOException {
+        test("test_escape_character");
+    }
+
+    @Test
+    public void test_mapping_01() throws IOException {
+        test("test01");
+    }
+
+    @Test
+    public void test_mapping_02() throws IOException {
+        test("test02");
+    }
+
+    @Test
+    public void test_mapping_03() throws IOException {
+        test("test03");
+    }
+
+    @Test
+    public void test_mapping_04() throws IOException {
+        test("test04");
+    }
+
+    @Test
+    public void test_mapping_05() throws IOException {
+        test("test05");
+    }
+
+    @Test
+    public void test_mapping_06() throws IOException {
+        test("test06");
+    }
+
+    @Test
+    public void test_mapping_07() throws IOException {
+        test("test07");
+    }
+
+    @Test
+    public void test_mapping_08() throws IOException {
+        test("test08");
+    }
+
+    @Test
+    public void test_mapping_09() throws IOException {
+        test("test09");
+    }
+
+    @Test
+    public void test_mapping_10() throws IOException {
+        test("test10");
+    }
+
+    @Test
+    public void test_mapping_11() throws IOException {
+        test("test11");
+    }
+
+    @Test
+    public void test_mapping_12() throws IOException {
+        test("test12");
+    }
+
+    @Test
+    public void test_mapping_13() throws IOException {
+        test("test13");
+    }
+
+    @Test
+    public void test_mapping_14() throws IOException {
+        test("test14");
+    }
+
+    @Test
+    public void test_mapping_15() throws IOException {
+        test("test15");
+    }
+
+    @Test
+    public void test_mapping_16() throws IOException {
+        test("test16");
+    }
+
+    @Test
+    public void test_mapping_17() throws IOException {
+        test("test17");
+    }
+
+    @Test
+    public void test_mapping_18() throws IOException {
+        test("test18");
+    }
+
+    @Test
     public void test_MILYN_108() throws IOException {
         test("test-MILYN-108-01"); // Tests Segment Truncation
         test("test-MILYN-108-02"); // Tests Segment Truncation
@@ -166,6 +192,7 @@ public class EDIParserTest extends AbstractEDIParserTestCase {
         test("test-MILYN-108-11"); // Tests Field and Component Truncation
     }
 
+    @Test
     public void testCorrectEdiParseException() throws IOException, EDIParseException {
         /**
          * Test correct EDIParseException when reaching end of Edimap-model but more data exists in inputfile.
@@ -181,10 +208,10 @@ public class EDIParserTest extends AbstractEDIParserTestCase {
          * Test error in segment node.
          */
         try {
-        	testEDIParseException("error-segment", "message-seg", 2);
-        	fail("Expected EDIParseException.");
-        } catch(EDIParseException e) {
-        	assertEquals("EDI message processing failed [Test Message][1.0].  Reached end of mapping model but there are more EDI segments in the incoming message.  Read 2 segment(s). Current EDI segment is [SEG*6*7**9*10]", e.getMessage());
+            testEDIParseException("error-segment", "message-seg", 2);
+            fail("Expected EDIParseException.");
+        } catch (EDIParseException e) {
+            assertEquals("EDI message processing failed [Test Message][1.0].  Reached end of mapping model but there are more EDI segments in the incoming message.  Read 2 segment(s). Current EDI segment is [SEG*6*7**9*10]", e.getMessage());
         }
 
         /**

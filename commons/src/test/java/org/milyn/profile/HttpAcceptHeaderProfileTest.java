@@ -18,10 +18,12 @@ package org.milyn.profile;
 
 import org.milyn.profile.HttpAcceptHeaderProfile;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class HttpAcceptHeaderProfileTest extends TestCase {
+public class HttpAcceptHeaderProfileTest {
 
+	@Test
 	public void testHttpAcceptHeaderProfile() {
 		HttpAcceptHeaderProfile profile = new HttpAcceptHeaderProfile(
 				"text/plain", new String[] { "q=0.9", "", " level=1 " });

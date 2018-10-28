@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import example.model.Order;
 import example.model.OrderItem;
 
@@ -26,8 +27,9 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JavabeanTest extends TestCase {
+public class JavabeanTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         Order order = Main.runSmooks();
 
@@ -41,12 +43,12 @@ public class JavabeanTest extends TestCase {
         assertEquals(new Long(123123), order.getHeader().getCustomerNumber());
 
         OrderItem orderItem = order.getOrderItems().get(0);
-        assertEquals(8.90d, orderItem.getPrice());
+        assertEquals(8.90d, orderItem.getPrice(), 0d);
         assertEquals(111, orderItem.getProductId());
         assertEquals(new Integer(2), orderItem.getQuantity());
 
         orderItem = order.getOrderItems().get(1);
-        assertEquals(5.20d, orderItem.getPrice());
+        assertEquals(5.20d, orderItem.getPrice(), 0d);
         assertEquals(222, orderItem.getProductId());
         assertEquals(new Integer(7), orderItem.getQuantity());
     }

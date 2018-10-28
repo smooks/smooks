@@ -63,7 +63,6 @@ import java.util.Set;
 /**
  * Bean instance creator visitor class.
  * <p/>
- * Targeted via {@link org.milyn.javabean.BeanPopulator} expansion configuration.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */

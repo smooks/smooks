@@ -3,7 +3,6 @@ package org.milyn.templating.xslt;
 import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.container.ExecutionContext;
 import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.javabean.BeanAccessor;
 import org.milyn.xml.DomUtils;
 import org.milyn.SmooksException;
 import org.w3c.dom.Element;
@@ -25,7 +24,7 @@ public class TransformOrderItem implements DOMElementVisitor {
     }
 
     public void visitAfter(Element orderItemElement, ExecutionContext executionContext) throws SmooksException {
-        OrderItem orderItem = (OrderItem) BeanAccessor.getBean("order-item", executionContext);
+        OrderItem orderItem = (OrderItem) executionContext.getBeanContext().getBean("order-item");
 
         // Remove the order items child content
         DomUtils.removeChildren(orderItemElement);

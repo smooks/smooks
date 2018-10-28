@@ -15,35 +15,32 @@
 */
 package org.milyn.scribe.adapter.ibatis;
 
-import static junit.framework.Assert.*;
-
+import com.ibatis.sqlmap.client.SqlMapClient;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import org.milyn.scribe.adapter.ibatis.test.util.BaseTestCase;
 import org.mockito.Mock;
 import org.testng.annotations.Test;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
- *
  */
 public class SqlMapClientRegisterTest extends BaseTestCase {
 
-	@Mock
-	SqlMapClient sqlMapClient;
+    @Mock
+    SqlMapClient sqlMapClient;
 
-	@Test( groups = "unit" )
-	public void test_getDao() {
+    @Test(groups = "unit")
+    public void test_getDao() {
 
-		SqlMapClientRegister register = new SqlMapClientRegister(sqlMapClient);
+        SqlMapClientRegister register = new SqlMapClientRegister(sqlMapClient);
 
-		SqlMapClientDaoAdapter entityManagerDaoAdapter = register.getDefaultDao();
+        SqlMapClientDaoAdapter entityManagerDaoAdapter = register.getDefaultDao();
 
-		assertNotNull(entityManagerDaoAdapter);
+        assertNotNull(entityManagerDaoAdapter);
 
-		assertSame(sqlMapClient, entityManagerDaoAdapter.getSqlMapClient());
+        assertSame(sqlMapClient, entityManagerDaoAdapter.getSqlMapClient());
 
-	}
-
+    }
 
 }

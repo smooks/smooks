@@ -15,7 +15,7 @@
 */
 package org.milyn.visitors.remove;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.FilterSettings;
@@ -30,20 +30,24 @@ import java.io.StringReader;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class RemoveTest extends TestCase {
+public class RemoveTest {
 
+	@Test
     public void test_no_children_SAX() throws IOException, SAXException {
         test(FilterSettings.DEFAULT_SAX, false, "<a><something /></a>");
     }
 
+	@Test
     public void test_no_children_DOM() throws IOException, SAXException {
         test(FilterSettings.DEFAULT_DOM, false, "<a><something></something></a>");
     }
 
+	@Test
     public void test_children_SAX() throws IOException, SAXException {
         test(FilterSettings.DEFAULT_SAX, true, "<a><d><e>some text</e></d><something /></a>");
     }
 
+	@Test
     public void test_children_DOM() throws IOException, SAXException {
         test(FilterSettings.DEFAULT_DOM, true, "<a><d><e>some text</e></d><something></something></a>");
     }
@@ -61,10 +65,12 @@ public class RemoveTest extends TestCase {
         XMLAssert.assertXMLEqual(new StringReader(expected), new StringReader(result.getResult()));
     }
 
+	@Test
     public void test_XML_config_SAX() throws IOException, SAXException {
         test_XML_config(FilterSettings.DEFAULT_SAX);
     }
 
+	@Test
     public void test_XML_config_DOM() throws IOException, SAXException {
         test_XML_config(FilterSettings.DEFAULT_DOM);
     }

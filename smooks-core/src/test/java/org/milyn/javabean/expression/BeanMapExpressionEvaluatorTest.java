@@ -22,7 +22,8 @@ import java.util.Map;
 
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
@@ -32,8 +33,9 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class BeanMapExpressionEvaluatorTest extends TestCase {
+public class BeanMapExpressionEvaluatorTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         Smooks smooks;
         ExecutionContext execContext;
@@ -60,6 +62,7 @@ public class BeanMapExpressionEvaluatorTest extends TestCase {
         assertFalse(DOMVisitor.visited);
     }
 
+	@Test
     public void testInvalidExpression() {
         // Just eval on an unbound variable...
         try {

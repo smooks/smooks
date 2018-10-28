@@ -6,6 +6,7 @@ target
 .project
 .classpath
 .settings
+.checkstyle
 # ignore IDEA files
 *.iml
 *.ipr
@@ -13,3 +14,4 @@ target
 .idea
 runner
 .gradle
+/bin

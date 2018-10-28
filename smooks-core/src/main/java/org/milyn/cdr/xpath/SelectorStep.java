@@ -15,41 +15,40 @@
 */
 package org.milyn.cdr.xpath;
 
-import org.milyn.delivery.sax.SAXElement;
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
+import org.jaxen.expr.NameStep;
+import org.jaxen.expr.Step;
+import org.jaxen.saxpath.Axis;
+import org.jaxen.saxpath.SAXPathException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.xpath.evaluators.PassThruEvaluator;
+import org.milyn.cdr.xpath.evaluators.PredicatesEvaluator;
 import org.milyn.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
 import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
-import org.milyn.cdr.xpath.evaluators.PredicatesEvaluator;
+import org.milyn.cdr.xpath.evaluators.equality.AbstractEqualityEvaluator;
 import org.milyn.cdr.xpath.evaluators.logical.AbstractLogicalEvaluator;
 import org.milyn.cdr.xpath.evaluators.value.TextValue;
-import org.milyn.cdr.xpath.evaluators.equality.AbstractEqualityEvaluator;
-import org.milyn.cdr.xpath.evaluators.equality.IndexEvaluator;
+import org.milyn.delivery.sax.SAXElement;
 import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
-import org.jaxen.expr.Step;
-import org.jaxen.expr.NameStep;
-import org.jaxen.saxpath.Axis;
-import org.jaxen.saxpath.SAXPathException;
 
-import javax.xml.namespace.QName;
 import javax.xml.XMLConstants;
-import java.util.Properties;
+import javax.xml.namespace.QName;
 import java.util.List;
-
-import javassist.NotFoundException;
-import javassist.CannotCompileException;
+import java.util.Properties;
 
 /**
  * XPath Expression Evaluator.
  * <p/>
- * Implemenations evaluate a single step in an XPath expression.
+ * Implementations evaluate a single step in an XPath expression.
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class SelectorStep {
 
+    @SuppressWarnings("unused")
     public static final long NO_ELEMENT_INDEX = -1;
 
     private String xpathExpression;
@@ -66,9 +65,9 @@ public class SelectorStep {
      * Public constructor.
      * @param xpathExpression The XPath expression of which the {@link Step} is a
      * part.
-     * @throws SAXPathException Error constructing the selector step.
      */
-    public SelectorStep(String xpathExpression) throws SAXPathException {
+    public SelectorStep(String xpathExpression)
+    {
         AssertArgument.isNotNull(xpathExpression, "xpathExpression");
         this.xpathExpression = xpathExpression;
         targetElement = new QName(xpathExpression);
@@ -145,10 +144,12 @@ public class SelectorStep {
         targetAttribute = new QName(targetAttributeName);
     }
 
+    @SuppressWarnings("unused")
     public Step getAttributeStep() {
         return attributeStep;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void setAttributeStep(Step attributeStep) {
         this.attributeStep = attributeStep;
         try {
@@ -158,15 +159,12 @@ public class SelectorStep {
         }
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public SelectorStep clone() {
         SelectorStep clone;
 
-        try {
-            clone = new SelectorStep(xpathExpression);
-        } catch (SAXPathException e) {
-            throw new IllegalStateException("Unexpected SAXPathException cloning SelectorStep.", e);
-        }
+        clone = new SelectorStep(xpathExpression);
 
         clone.xpathExpression = xpathExpression;
         clone.step = step;
@@ -191,7 +189,7 @@ public class SelectorStep {
     }
 
     /**
-     * Get the XPath selector expression of which this SelectorStep instance is a part. 
+     * Get the XPath selector expression of which this SelectorStep instance is a part.
      * @return The XPath selector expression of which this SelectorStep instance is a part.
      */
     public String getXPathExpression() {
@@ -214,6 +212,7 @@ public class SelectorStep {
         return isRooted;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void setRooted(boolean rooted) {
         isRooted = rooted;
 
@@ -264,26 +263,23 @@ public class SelectorStep {
 
         if(!qname.getLocalPart().equalsIgnoreCase(targetElement.getLocalPart())) {
             return false;
-        } else if (!isTargetedAtNamespace(qname.getNamespaceURI())) {
-            return false;
         }
 
-        return true;
+        return !isTargetedAtNamespace(qname.getNamespaceURI());
     }
 
     public boolean isTargetedAtElement(Element element) {
         String elementName = DomUtils.getName(element);
-        
+
         if(isStar || isStarStar) {
             return true;
         }
 
         if(!elementName.equalsIgnoreCase(targetElement.getLocalPart())) {
             return false;
-        } else if (!isTargetedAtNamespace(element.getNamespaceURI())) {
-            return false;
         }
-        return true;
+
+        return !isTargetedAtNamespace(element.getNamespaceURI());
     }
 
     /**
@@ -295,14 +291,15 @@ public class SelectorStep {
      * @param namespace The namespace to be tested.
      * @return True if the target namespace matches (or is null), otherwise false.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isTargetedAtNamespace(String namespace) {
         String targetNS = targetElement.getNamespaceURI();
 
         // If the target NS is null, we match, no matter what the specified namespace...
-        if(targetNS == null || targetNS == XMLConstants.NULL_NS_URI) {
+        if(targetNS == null || targetNS.equals(XMLConstants.NULL_NS_URI)) {
             return true;
         }
-        
+
         return targetNS.equals(namespace);
     }
 
@@ -320,11 +317,7 @@ public class SelectorStep {
             return false;
         }
 
-        if(accessesText(evaluator)) {
-            return true;
-        }
-
-        return false;
+        return accessesText(evaluator);
     }
 
     /**
@@ -332,6 +325,7 @@ public class SelectorStep {
      * @return True if the supplied {@link XPathExpressionEvaluator} accesses the element text content,
      * otherwise false.
      */
+    @SuppressWarnings("RedundantIfStatement")
     private boolean accessesText(XPathExpressionEvaluator evaluator) {
         if(evaluator instanceof AbstractEqualityEvaluator) {
             if(((AbstractEqualityEvaluator)evaluator).getLhs() instanceof TextValue) {
@@ -357,6 +351,7 @@ public class SelectorStep {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends XPathExpressionEvaluator> void getEvaluators(Class<T> evaluatorClass, List<T> evaluators) {
         getEvaluators(getPredicatesEvaluator(), evaluatorClass, (List<XPathExpressionEvaluator>) evaluators);
     }
@@ -399,7 +394,7 @@ public class SelectorStep {
 
         stringBuilder.append(getTargetElement());
         if(targetAttribute != null) {
-            stringBuilder.append("{@" + targetAttribute + "}");
+            stringBuilder.append("{@").append(targetAttribute).append("}");
         }
 
         XPathExpressionEvaluator evaluator = getPredicatesEvaluator();

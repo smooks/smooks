@@ -44,15 +44,17 @@ import static org.mockito.Mockito.when;
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
+@SuppressWarnings("unchecked")
 @Test(groups="unit")
 public class EntityLocatorTest extends BaseTestCase {
 	private static final boolean ENABLE_REPORTING = false;
 
     private static final String SIMPLE_XML =  "<root />";
-    
+
 	@Mock
 	private FullInterfaceDao<Object> dao;
 
+	@Test
 	public void test_entity_locate_no_selector() throws Exception {
 		String searchResult = "Test";
         List<String> searchResultList = new ArrayList<String>();
@@ -88,10 +90,6 @@ public class EntityLocatorTest extends BaseTestCase {
 
 	}
 
-	/**
-	 * @param resource
-	 * @return
-	 */
 	private InputStream getResourceAsStream(String resource) {
 		return EntityLocatorTest.class.getResourceAsStream(resource);
 	}

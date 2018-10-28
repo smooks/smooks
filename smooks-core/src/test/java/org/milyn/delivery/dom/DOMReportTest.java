@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.dom;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -33,8 +34,9 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DOMReportTest extends TestCase {
+public class DOMReportTest {
 
+	@Test
     public void test_report() throws IOException, SAXException {
         System.out.println("******* FIX TEST");
         /*

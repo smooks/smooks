@@ -20,20 +20,20 @@ import org.milyn.javabean.DataDecoder;
 import java.lang.annotation.*;
 
 /**
- * Configuration paramater field annotation.
+ * Configuration parameter field annotation.
  * <p/>
- * Helps supports reflective injection of {@link org.milyn.delivery.ContentHandler} paramaters
+ * Helps supports reflective injection of {@link org.milyn.delivery.ContentHandler} parameters
  * from its {@link org.milyn.cdr.SmooksResourceConfiguration} instance.  To inject the whole
  * {@link org.milyn.cdr.SmooksResourceConfiguration} instance, use the {@link @org.milyn.cdr.annotation.Config}
  * annotation.
  *
  * <h3>Usage</h3>
- * Where the paramater name is the same as the field name:
+ * Where the parameter name is the same as the field name:
  * <pre>
  *     &#64;ConfigParam(decoder={@link org.milyn.javabean.decoders.IntegerDecoder}.class)
  *     private int maxDigits;
  * </pre>
- * Where the paramater name is NOT the same as the field name:
+ * Where the parameter name is NOT the same as the field name:
  * <pre>
  *     &#64;ConfigParam(name="max-digits", decoder={@link org.milyn.javabean.decoders.IntegerDecoder}.class)
  *     private int maxDigits;

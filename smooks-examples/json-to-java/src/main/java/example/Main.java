@@ -30,7 +30,6 @@ import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.io.StreamUtils;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.payload.StringResult;
 import org.milyn.xml.XmlUtil;
 import org.xml.sax.SAXException;
@@ -88,7 +87,7 @@ public class Main {
         pause("Now press 'enter' to see how this XML loads into the Order Object graph...");
 
         System.out.println("==============JSON as Java Object Graph=============");
-        System.out.println(BeanRepositoryManager.getBeanRepository(executionContext).getBean("order"));
+        System.out.println(executionContext.getBeanContext().getBean("order"));
         System.out.println("======================================\n\n");
 
         pause("And that's it!  Press 'enter' to finish...");

@@ -18,27 +18,25 @@ package org.milyn.templating;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
-import org.milyn.delivery.Fragment;
-import org.milyn.delivery.sax.SAXUtil;
-import org.milyn.util.CollectionsUtil;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AppContext;
-import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.Config;
+import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.Fragment;
+import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.delivery.dom.serialize.ContextObjectSerializationUnit;
 import org.milyn.delivery.dom.serialize.TextSerializationUnit;
-import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.ordering.Producer;
 import org.milyn.io.AbstractOutputStreamResource;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanRepositoryManager;
+import org.milyn.util.CollectionsUtil;
 import org.milyn.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -60,6 +58,7 @@ import java.util.Set;
  * See implementations.
  * @author tfennelly
  */
+@SuppressWarnings("unchecked")
 public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Producer {
 
     /**

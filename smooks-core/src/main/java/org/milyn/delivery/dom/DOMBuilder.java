@@ -17,14 +17,14 @@ package org.milyn.delivery.dom;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.milyn.cdr.ParameterAccessor;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.Filter;
 import org.milyn.delivery.SmooksContentHandler;
 import org.milyn.delivery.replay.EndElementEvent;
 import org.milyn.delivery.replay.StartElementEvent;
 import org.milyn.dtd.DTDStore;
 import org.milyn.xml.DocType;
-import org.milyn.cdr.ParameterAccessor;
-import org.milyn.delivery.Filter;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -32,6 +32,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -39,9 +40,10 @@ import java.util.Stack;
  * DOM Document builder.
  * <p/>
  * Handler class for DOM construction.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class DOMBuilder extends SmooksContentHandler {
 
     private static Log logger = LogFactory.getLog(DOMBuilder.class);
@@ -53,15 +55,13 @@ public class DOMBuilder extends SmooksContentHandler {
     private boolean inEntity = false;
     private HashSet emptyElements = new HashSet();
     private StringBuilder cdataNodeBuilder = new StringBuilder();
-    private boolean rewriteEntities = true;
+    private boolean rewriteEntities;
 
     static {
     	try {
 			documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			IllegalStateException state = new IllegalStateException("XML DOM Parsing environment not configured properly.");
-			state.initCause(e);
-			throw state;
+          throw new IllegalStateException("XML DOM Parsing environment not configured properly.", e);
 		}
     }
 
@@ -71,7 +71,7 @@ public class DOMBuilder extends SmooksContentHandler {
 
     public DOMBuilder(ExecutionContext execContext, SmooksContentHandler parentContentHandler) {
         super(execContext, parentContentHandler);
-        
+
         this.execContext = execContext;
         initialiseEmptyElements();
         rewriteEntities = ParameterAccessor.getBoolParameter(Filter.ENTITIES_REWRITE, true, execContext.getDeliveryConfig());
@@ -83,9 +83,7 @@ public class DOMBuilder extends SmooksContentHandler {
             String[] emptyEls = dtd.getEmptyElements();
 
             if(emptyEls != null && emptyEls.length > 0) {
-                for(int i = 0; i < emptyEls.length; i++) {
-                    emptyElements.add(emptyEls[i]);
-                }
+                Collections.addAll(emptyElements, emptyEls);
             }
         }
     }
@@ -116,17 +114,20 @@ public class DOMBuilder extends SmooksContentHandler {
      * Used to merge ownerDocument fragments etc.
      * @param appendElement The append DOM element.
      */
+    @SuppressWarnings({ "WeakerAccess", "unchecked" })
     public void setAppendElement(Element appendElement) {
         ownerDocument = appendElement.getOwnerDocument();
         // Initialise the stack with the append element node.
         nodeStack.push(appendElement);
     }
 
+    @SuppressWarnings("RedundantThrows")
     public void endDocument() throws SAXException {
     }
 
+    @SuppressWarnings({ "unchecked", "RedundantThrows" })
     public void startElement(StartElementEvent startEvent) throws SAXException {
-        Element newElement = null;
+        Element newElement;
         int attsCount = startEvent.atts.getLength();
         Node currentNode = (Node)nodeStack.peek();
 
@@ -172,6 +173,7 @@ public class DOMBuilder extends SmooksContentHandler {
         }
     }
 
+    @SuppressWarnings("RedundantThrows")
     public void endElement(EndElementEvent endEvent) throws SAXException {
         String elName;
 
@@ -192,11 +194,11 @@ public class DOMBuilder extends SmooksContentHandler {
     }
 
     @Override
-    public void cleanup() {        
+    public void cleanup() {
     }
 
     private String getCurPath() {
-        StringBuffer path = new StringBuffer();
+        StringBuilder path = new StringBuilder();
         int stackSize = nodeStack.size();
 
         for(int i = 0; i < stackSize; i++) {
@@ -223,6 +225,7 @@ public class DOMBuilder extends SmooksContentHandler {
         return -1;
     }
 
+    @SuppressWarnings("RedundantThrows")
     public void characters(char[] ch, int start, int length) throws SAXException {
         try {
             Node currentNode = (Node)nodeStack.peek();
@@ -251,6 +254,7 @@ public class DOMBuilder extends SmooksContentHandler {
         characters(ch, start, length);
     }
 
+    @SuppressWarnings({ "unchecked", "RedundantThrows" })
     public void startCDATA() throws SAXException {
         CDATASection newCDATASection = ownerDocument.createCDATASection("dummy");
         Node currentNode;
@@ -261,12 +265,14 @@ public class DOMBuilder extends SmooksContentHandler {
         cdataNodeBuilder.setLength(0);
     }
 
+    @SuppressWarnings("RedundantThrows")
     public void endCDATA() throws SAXException {
         CDATASection cdata = (CDATASection) nodeStack.pop();
         cdata.setData(cdataNodeBuilder.toString());
         cdataNodeBuilder.setLength(0);
     }
 
+    @SuppressWarnings("RedundantThrows")
     public void comment(char[] ch, int start, int length) throws SAXException {
         try {
             Node currentNode = (Node)nodeStack.peek();
@@ -281,14 +287,17 @@ public class DOMBuilder extends SmooksContentHandler {
         }
     }
 
+    @SuppressWarnings("RedundantThrows")
     public void startEntity(String name) throws SAXException {
         inEntity = true;
     }
 
+    @SuppressWarnings("RedundantThrows")
     public void endEntity(String name) throws SAXException {
         inEntity = false;
     }
 
+    @SuppressWarnings("RedundantThrows")
     public void startDTD(String name, String publicId, String systemId) throws SAXException {
         DocumentType docType = documentBuilder.getDOMImplementation().createDocumentType(name, publicId, systemId);
 

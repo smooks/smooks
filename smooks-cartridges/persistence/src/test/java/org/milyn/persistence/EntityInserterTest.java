@@ -55,6 +55,7 @@ public class EntityInserterTest extends BaseTestCase {
 	@Mock
 	private MappingDao<String> mappedDao;
 
+	@Test
 	public void test_entity_insert() throws Exception {
 		String toInsert1 = new String("toInsert1");
 
@@ -78,6 +79,7 @@ public class EntityInserterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_insert_with_named_dao() throws Exception {
 		String toInsert1 = new String("toInsert1");
 
@@ -104,6 +106,7 @@ public class EntityInserterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_insert_to_other_beanId() throws Exception {
 		String toInsert1 = new String("toInsert1");
 
@@ -131,6 +134,7 @@ public class EntityInserterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_insert_with_mapped_dao() throws Exception {
 		String toInsert1 = new String("toInsert1");
 
@@ -154,6 +158,7 @@ public class EntityInserterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_insert_with_insertBefore() throws Exception {
 		String toInsert1 = new String("toInsert1");
 
@@ -177,7 +182,8 @@ public class EntityInserterTest extends BaseTestCase {
         }
 	}
 
-
+	
+	@Test
 	public void test_entity_insert_producer_consumer() throws Exception {
 
 		Smooks smooks = new Smooks(getResourceAsStream("entity-inserter-06.xml"));

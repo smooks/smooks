@@ -15,19 +15,19 @@
  */
 package org.milyn.archive;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.io.StreamUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ArchiveClassLoaderTest extends TestCase {
+public class ArchiveClassLoaderTest {
 
+	@Test
     public void test_produced_zip() throws IOException, ClassNotFoundException {
         Archive archive = new Archive("testarchive");
 
@@ -36,7 +36,7 @@ public class ArchiveClassLoaderTest extends TestCase {
 
         ArchiveClassLoader classLoader = new ArchiveClassLoader(archive);
 
-        Class clazzInst = classLoader.loadClass(Archive.class.getName());
+        Class<?> clazzInst = classLoader.loadClass(Archive.class.getName());
 
         // Classes are loaded by different classloaders, so shouldn't be the same class instance...
         assertNotSame(Archive.class, clazzInst);

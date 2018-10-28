@@ -27,14 +27,17 @@ import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SAXToXMLWriterTest extends TestCase {
+public class SAXToXMLWriterTest {
 
+	@Test
 	public void test_all_write_methods() {
 		Smooks smooks = new Smooks();
 		StringResult stringResult = new StringResult();
@@ -46,6 +49,7 @@ public class SAXToXMLWriterTest extends TestCase {
 		assertEquals("{{<a>((<b>sometext</b>))</a>}}", stringResult.getResult());
 	}	
 
+	@Test
 	public void test_vafter_write_method() throws IOException, SAXException {
         if (LangUtil.getJavaVersion() != 1.5) {
             return;

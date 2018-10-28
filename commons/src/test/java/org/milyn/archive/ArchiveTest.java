@@ -15,7 +15,8 @@
 */
 package org.milyn.archive;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,8 +32,9 @@ import org.milyn.io.StreamUtils;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ArchiveTest extends TestCase {
+public class ArchiveTest {
 
+	@Test
     public void test_produced_zip() throws IOException {
         Archive archive = new Archive("testarchive");
 
@@ -64,6 +66,7 @@ public class ArchiveTest extends TestCase {
         assertEquals("org/milyn/archive/Archive.class", zipEntry.getName());
     }
 
+	@Test
     public void test_addEntries() throws IOException {
         Archive archive1 = new Archive("testarchive1");
 
@@ -91,6 +94,7 @@ public class ArchiveTest extends TestCase {
         assertEquals("org/milyn/archive/Archive.class", zipEntry.getName());
     }
 
+	@Test
     public void test_toFileSystem() throws IOException {
         Archive archive = new Archive();
 
@@ -107,6 +111,7 @@ public class ArchiveTest extends TestCase {
         assertTrue(new File(folder, "org/milyn/archive/Archive.class").exists());
     }
 
+	@Test
     public void test_ManifestIsFirstWrite() throws IOException {
         Archive archive1 = new Archive();
 
@@ -131,7 +136,8 @@ public class ArchiveTest extends TestCase {
         assertEquals("my/emptyfile.xxx/", archive2.getEntryName(2));
         assertEquals(3, archive2.getEntries().size());        
     }
-    
+
+	@Test
     public void test_merge() throws Exception
     {
         Archive archive1 = new Archive();
@@ -149,6 +155,7 @@ public class ArchiveTest extends TestCase {
         assertEquals("archive2/resource.txt", merged.getEntryName(3));
     }
     
+	@Test
     public void test_contains() throws Exception
     {
         Archive archive1 = new Archive();

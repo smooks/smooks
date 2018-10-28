@@ -20,24 +20,26 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class StandaloneResourceLocatorTest extends TestCase {
+public class StandaloneResourceLocatorTest {
 
+	@Test
 	public void testGetResourceLocator() {
 		URIResourceLocator standAloneResLocator = new URIResourceLocator();
 
 		standAloneResLocator.setBaseURI((new File("src/test/java")).toURI());
 
 		try {
-			InputStream buildDotXmlStream = standAloneResLocator.getResource(
+			standAloneResLocator.getResource(
 					null, "xxxxyz.txt");
 			fail("Expected exception on non-existant file resource.");
 		} catch (IOException e) {
 			// OK
 		}
 		try {
-			InputStream buildDotXmlStream = standAloneResLocator.getResource(
+			standAloneResLocator.getResource(
 					null, "a.adf");
 		} catch (IOException e) {
 			fail(e.getMessage());

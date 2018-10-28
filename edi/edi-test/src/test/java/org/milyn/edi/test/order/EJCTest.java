@@ -15,7 +15,8 @@
 */
 package org.milyn.edi.test.order;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
@@ -29,8 +30,9 @@ import org.xml.sax.SAXException;
  *
  * @author bardl 
  */
-public class EJCTest extends TestCase {
+public class EJCTest {
 
+    @Test
     public void testOrderModel() throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
         EJCTestUtil.testModel("order-mapping.xml", "order.edi", "OrderFactory");
     }

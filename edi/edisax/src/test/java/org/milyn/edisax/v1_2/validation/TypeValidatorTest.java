@@ -16,13 +16,14 @@
 
 package org.milyn.edisax.v1_2.validation;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Tests validation of type in ValueNode.
  * @author bardl 
  */
-public class TypeValidatorTest extends TestCase {
+public class TypeValidatorTest {
 
     public void test() {
 

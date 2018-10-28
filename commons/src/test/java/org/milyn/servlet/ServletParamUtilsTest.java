@@ -19,20 +19,14 @@ package org.milyn.servlet;
 import com.mockobjects.servlet.MockServletConfig;
 import com.mockobjects.servlet.MockServletContext;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author tfennelly
  */
-public class ServletParamUtilsTest extends TestCase {
-
-	/**
-	 * @param arg0
-	 */
-	public ServletParamUtilsTest(String arg0) {
-		super(arg0);
-	}
+public class ServletParamUtilsTest {
 
 	private MockServletConfig getServletConfig() {
 		MockServletConfig config = new MockServletConfig();
@@ -40,6 +34,7 @@ public class ServletParamUtilsTest extends TestCase {
 		return config;
 	}
 
+	@Test
 	public void testGetResource_exceptions() {
 		try {
 			ServletParamUtils.getParameterValue(null, null);
@@ -67,6 +62,7 @@ public class ServletParamUtilsTest extends TestCase {
 	 * Test that getResource loads based on the servlet config param -
 	 * <init-param>
 	 */
+	@Test
 	public void testGetResource_initparam() {
 		MockServletConfig config = getServletConfig();
 
@@ -85,6 +81,7 @@ public class ServletParamUtilsTest extends TestCase {
 	 * Test that getResource loads based on the servlet context param -
 	 * <context-param>
 	 */
+	@Test
 	public void testGetResource_contextparam() {
 		MockServletConfig config = getServletConfig();
 

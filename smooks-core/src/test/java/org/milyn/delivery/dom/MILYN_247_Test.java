@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.dom;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
@@ -27,8 +28,9 @@ import org.milyn.payload.StringResult;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN_247_Test extends TestCase {
+public class MILYN_247_Test {
 
+	@Test
     public void test_MILYN_247_01() {
         if (LangUtil.getJavaVersion() != 1.5) {
             return;
@@ -43,6 +45,7 @@ public class MILYN_247_Test extends TestCase {
         assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringResult.getResult());
     }
 
+	@Test
     public void test_MILYN_247_02() {
         if (LangUtil.getJavaVersion() != 1.5) {
             return;
@@ -57,6 +60,7 @@ public class MILYN_247_Test extends TestCase {
         assertEquals("<a attrib=\"an & 'attribute\">Bigger &#62; is better!</a>", stringResult.getResult());
     }
 
+	@Test
     public void test_MILYN_247_03() {
         if (LangUtil.getJavaVersion() != 1.5) {
             return;
@@ -71,6 +75,7 @@ public class MILYN_247_Test extends TestCase {
         assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringResult.getResult());
     }
 
+	@Test
     public void test_MILYN_247_04() {
         if (LangUtil.getJavaVersion() != 1.5) {
             return;

@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.JIRA.MILYN_619;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
@@ -29,8 +30,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_619_Test extends TestCase {
+public class MILYN_619_Test {
 
+    @Test
     public void test() throws IOException, SAXException {
         RootObject rootObj = new RootObject();
 

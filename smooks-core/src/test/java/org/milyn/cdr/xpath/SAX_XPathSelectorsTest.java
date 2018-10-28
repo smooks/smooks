@@ -15,24 +15,30 @@
 */
 package org.milyn.cdr.xpath;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.IOException;
 import java.util.Properties;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class SAX_XPathSelectorsTest extends TestCase {
+public class SAX_XPathSelectorsTest {
 
     private Properties namespaces;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         XPathVisitor.saxVisitedBeforeElementStatic = null;
         XPathVisitor.saxVisitedAfterElementStatic = null;
         XPathVisitor.domVisitedBeforeElementStatic = null;
@@ -47,6 +53,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         namespaces.put("d", "http://d");
     }
 
+    @Test
     public void test_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
 
@@ -56,6 +63,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("8655", XPathVisitor.saxVisitedAfterElementStatic.getAttribute("code"));
     }
 
+    @Test
     public void test_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-02.xml"));
 
@@ -69,6 +77,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         }
     }
 
+    @Test
     public void test_03() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-03.xml"));
 
@@ -77,6 +86,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.saxVisitedAfterElement.getTextContent());
     }
 
+    @Test
     public void test_04() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -87,6 +97,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("8655", XPathVisitor.saxVisitedAfterElementStatic.getAttribute("code"));
     }
 
+    @Test
     public void test_05() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -100,6 +111,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         }
     }
 
+    @Test
     public void test_06() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -109,6 +121,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.saxVisitedAfterElement.getTextContent());
     }
 
+    @Test
     public void test_07() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-04.xml"));
 
@@ -117,6 +130,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.saxVisitedAfterElement.getTextContent());
     }
 
+    @Test
     public void test_08() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-05.xml"));
 
@@ -125,6 +139,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals(null, XPathAfterVisitor.saxVisitedAfterElement);
     }
 
+    @Test
     public void test_09() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-06.xml"));
 
@@ -133,6 +148,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.saxVisitedAfterElement.getTextContent());
     }
 
+    @Test
     public void test_10() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -144,6 +160,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.saxVisitedAfterElement.getTextContent());
     }
 
+    @Test
     public void test_indexevaluator_sax_01() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-07.xml"));
 
@@ -154,6 +171,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertTrue(XPathVisitor.saxVisitedAfterElementStatic != null);
     }
 
+    @Test
     public void test_indexevaluator_sax_02() {
         Smooks smooks = new Smooks();
 
@@ -165,6 +183,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertTrue(XPathVisitor.saxVisitedAfterElementStatic != null);
     }
 
+    @Test
     public void test_indexevaluator_sax_03() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-08.xml"));
 
@@ -175,6 +194,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertTrue(XPathVisitor.saxVisitedAfterElementStatic == null);
     }
 
+    @Test
     public void test_indexevaluator_sax_04() {
         Smooks smooks = new Smooks();
 
@@ -186,6 +206,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertTrue(XPathVisitor.saxVisitedAfterElementStatic == null);
     }
 
+    @Test
     public void test_indexevaluator_sax_05() {
         Smooks smooks = new Smooks();
         XPathVisitor visitor1 = new XPathVisitor();
@@ -202,6 +223,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("1", visitor2.getSaxVisitedAfterElement().getAttribute("index"));
     }
 
+    @Test
     public void test_indexevaluator_sax_06() {
         Smooks smooks = new Smooks();
         XPathVisitor visitor1 = new XPathVisitor();
@@ -220,6 +242,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
     }
 
 
+    @Test
     public void test_indexevaluator_sax_07() {
         Smooks smooks = new Smooks();
         XPathVisitor visitor1 = new XPathVisitor();
@@ -237,6 +260,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals(null, visitor2.getSaxVisitedAfterElement());
     }
 
+    @Test
     public void test_indexevaluator_dom_01() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-07.xml"));
 
@@ -247,6 +271,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertTrue(XPathVisitor.domVisitedAfterElementStatic != null);
     }
 
+    @Test
     public void test_indexevaluator_dom_02() {
         Smooks smooks = new Smooks();
 
@@ -258,6 +283,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertTrue(XPathVisitor.domVisitedAfterElementStatic != null);
     }
 
+    @Test
     public void test_indexevaluator_dom_03() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-08.xml"));
 
@@ -268,6 +294,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertTrue(XPathVisitor.domVisitedAfterElementStatic == null);
     }
 
+    @Test
     public void test_indexevaluator_dom_04() {
         Smooks smooks = new Smooks();
 
@@ -279,6 +306,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertTrue(XPathVisitor.domVisitedAfterElementStatic == null);
     }
 
+    @Test
     public void test_indexevaluator_dom_05() {
         Smooks smooks = new Smooks();
         XPathVisitor visitor1 = new XPathVisitor();
@@ -295,6 +323,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
         assertEquals("1", visitor2.getDomVisitedAfterElement().getAttribute("index"));
     }
 
+    @Test
     public void test_indexevaluator_dom_06() {
         Smooks smooks = new Smooks();
         XPathVisitor visitor1 = new XPathVisitor();
@@ -313,6 +342,7 @@ public class SAX_XPathSelectorsTest extends TestCase {
     }
 
 
+    @Test
     public void test_indexevaluator_dom_07() {
         Smooks smooks = new Smooks();
         XPathVisitor visitor1 = new XPathVisitor();

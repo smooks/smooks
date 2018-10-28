@@ -18,7 +18,7 @@ package example;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -28,8 +28,9 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JSONtoJavaTest extends TestCase {
+public class JSONtoJavaTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
         Main smooksMain = new Main();

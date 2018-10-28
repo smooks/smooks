@@ -55,6 +55,7 @@ public class EntityDeleterTest extends BaseTestCase {
 	@Mock
 	private MappingDao<String> mappedDao;
 
+	@Test
 	public void test_entity_delete() throws Exception {
 		String toDelete1 = new String("toDelete1");
 
@@ -78,6 +79,7 @@ public class EntityDeleterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_delete_with_named_dao() throws Exception {
 		String toDelete1 = new String("toDelete1");
 
@@ -104,6 +106,7 @@ public class EntityDeleterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_delete_to_other_beanId() throws Exception {
 		String toDelete1 = new String("toDelete1");
 
@@ -131,6 +134,7 @@ public class EntityDeleterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_delete_with_mapped_dao() throws Exception {
 		String toDelete1 = new String("toDelete1");
 
@@ -154,6 +158,7 @@ public class EntityDeleterTest extends BaseTestCase {
         }
 	}
 
+	@Test
 	public void test_entity_delete_with_deleteBefore() throws Exception {
 		String toDelete1 = new String("toDelete1");
 
@@ -178,6 +183,7 @@ public class EntityDeleterTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_entity_delete_producer_consumer() throws Exception {
 
 		Smooks smooks = new Smooks(getResourceAsStream("entity-deleter-06.xml"));

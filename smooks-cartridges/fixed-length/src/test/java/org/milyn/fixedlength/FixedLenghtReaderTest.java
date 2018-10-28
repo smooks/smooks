@@ -15,7 +15,8 @@
 */
 package org.milyn.fixedlength;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
@@ -31,19 +32,23 @@ import java.util.Map;
  *
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class FixedLenghtReaderTest extends TestCase {
+public class FixedLenghtReaderTest  {
+        @Test
 	public void test_01_xml_dom_map_binding() throws Exception {
 		test_01_xml_map_binding(FilterSettings.DEFAULT_DOM);
 	}
 
+        @Test
 	public void test_01_xml_sax_map_binding() throws Exception {
 		test_01_xml_map_binding(FilterSettings.DEFAULT_SAX);
 	}
 
+        @Test
 	public void test_01_programmatic_dom_map_binding() throws Exception {
 		test_01_programmatic_map_binding(FilterSettings.DEFAULT_DOM);
 	}
 
+        @Test
 	public void test_01_programmatic_sax_map_binding() throws Exception {
 		test_01_programmatic_map_binding(FilterSettings.DEFAULT_SAX);
 	}
@@ -91,12 +96,14 @@ public class FixedLenghtReaderTest extends TestCase {
 		assertEquals("nld", person.get("country"));
 	}
 
+    @Test
     public void test_01_xml_list_binding() throws Exception{
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-01-list.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 		test_01_list_binding(smooks);
 	}
 
+        @Test
 	public void test_01_programmatic_list_binding() throws Exception {
 		Smooks smooks = new Smooks();
 
@@ -132,12 +139,14 @@ public class FixedLenghtReaderTest extends TestCase {
 		assertEquals("nld", person.get("country"));
 	}
 
+    @Test
     public void test_01_xml_single_binding() throws Exception{
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-01-single.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 		test_01_single_binding(smooks);
 	}
 
+        @Test
 	public void test_01_programmatic_single_binding() throws Exception {
 		Smooks smooks = new Smooks();
 
@@ -164,12 +173,14 @@ public class FixedLenghtReaderTest extends TestCase {
 		assertEquals("nld", person.get("country"));
 	}
 
+    @Test
     public void test_02_xml_skip_lines_line_number() throws Exception {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-02.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 		test_02(smooks);
 	}
 
+    @Test
     public void test_02_programmatic_skip_lines_line_number() throws Exception {
 		Smooks smooks = new Smooks();
 
@@ -191,12 +202,14 @@ public class FixedLenghtReaderTest extends TestCase {
         assertEquals(expected, result);
 	}
 
+    @Test
     public void test_03_xml_element_names() throws Exception {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-03.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 		test_03(smooks);
 	}
 
+    @Test
     public void test_03_programmatic_element_names() throws Exception {
 		Smooks smooks = new Smooks();
 
@@ -219,12 +232,14 @@ public class FixedLenghtReaderTest extends TestCase {
         assertEquals(expected, result);
 	}
 
+    @Test
     public void test_04_xml_truncate() throws Exception {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-04-truncate.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 		test_04_truncate(smooks);
 	}
 
+    @Test
     public void test_04_programmatic_truncate() throws Exception {
 		Smooks smooks = new Smooks();
 
@@ -246,12 +261,14 @@ public class FixedLenghtReaderTest extends TestCase {
         assertEquals(expected, result);
 	}
 
+    @Test
     public void test_04_xml_truncate_line_number_diff_name() throws Exception {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-04-truncate-line-number-diff-name.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 		test_04_truncate_line_number_diff_name(smooks);
 	}
 
+    @Test
     public void test_04_programmatic_truncate_line_number_diff_name() throws Exception {
 		Smooks smooks = new Smooks();
 
@@ -275,12 +292,14 @@ public class FixedLenghtReaderTest extends TestCase {
         assertEquals(expected, result);
 	}
 
+    @Test
     public void test_04_xml_strict() throws Exception {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-04-strict.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 		test_04_strict(smooks);
 	}
 
+    @Test
     public void test_04_programmatic_strict() throws Exception {
 		Smooks smooks = new Smooks();
 
@@ -301,12 +320,14 @@ public class FixedLenghtReaderTest extends TestCase {
         assertEquals(expected, result);
 	}
 
+    @Test
     public void test_05_xml_indent() throws Exception {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-05.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
 		test_05_indent(smooks);
 	}
 
+    @Test
     public void test_05_programmatic_indent() throws Exception {
 		Smooks smooks = new Smooks();
 
@@ -341,6 +362,7 @@ public class FixedLenghtReaderTest extends TestCase {
         assertEquals(expected, result);
 	}
 
+     @Test
      public void test_06_xml_profiles() throws Exception {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("/smooks-config-06.xml"));
 		smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);

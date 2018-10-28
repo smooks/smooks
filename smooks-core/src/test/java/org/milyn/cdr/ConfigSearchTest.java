@@ -15,14 +15,16 @@
 */
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ConfigSearchTest extends TestCase {
+public class ConfigSearchTest {
 
+	@Test
 	public void test() {
 		SmooksResourceConfiguration config = new SmooksResourceConfiguration();
 		ConfigSearch search = new ConfigSearch();

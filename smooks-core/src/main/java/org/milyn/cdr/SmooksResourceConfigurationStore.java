@@ -3,14 +3,14 @@
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
-	License (version 2.1) as published by the Free Software 
+	License (version 2.1) as published by the Free Software
 	Foundation.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    
-	See the GNU Lesser General Public License for more details:    
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
 
@@ -18,27 +18,26 @@ package org.milyn.cdr;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jaxen.saxpath.SAXPathException;
+import org.milyn.Smooks;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.annotation.Configurator;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.classpath.ClasspathUtils;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ApplicationContextInitializer;
-import org.milyn.container.standalone.StandaloneApplicationContext;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.ContentHandlerFactory;
 import org.milyn.delivery.JavaContentHandlerFactory;
 import org.milyn.delivery.UnsupportedContentHandlerTypeException;
 import org.milyn.delivery.annotation.Resource;
+import org.milyn.javabean.DataDecoder;
 import org.milyn.profile.ProfileSet;
 import org.milyn.profile.ProfileStore;
 import org.milyn.resource.ContainerResourceLocator;
 import org.milyn.util.ClassUtil;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.Smooks;
 import org.milyn.xml.NamespaceMappings;
 import org.xml.sax.SAXException;
-import org.jaxen.saxpath.SAXPathException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,7 +51,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * {@link org.milyn.cdr.SmooksResourceConfiguration} context store.
  * <p/>
  * Stores the {@link org.milyn.cdr.SmooksResourceConfiguration SmooksResourceConfigurations}
- * for a given container context in the form of 
+ * for a given container context in the form of
  * {@link org.milyn.cdr.SmooksResourceConfigurationList} entries.  Also maintains
  * a "default" config list for the context.
  * @author tfennelly
@@ -60,7 +59,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SmooksResourceConfigurationStore {
 
     private static List<Class<ContentHandlerFactory>> handlerFactories = ClassUtil.getClasses("META-INF/content-handlers.inf", ContentHandlerFactory.class);
-    
+
 	/**
 	 * Logger.
 	 */
@@ -158,7 +157,7 @@ public class SmooksResourceConfigurationStore {
             throw new IllegalStateException("Failed to load " + resourceFile + ".  Expected to be in the same package as " + getClass().getName());
         }
         try {
-            SmooksResourceConfigurationList resourceList = registerResources(resourceFile, resource);            
+            SmooksResourceConfigurationList resourceList = registerResources(resourceFile, resource);
             for(int i = 0; i < resourceList.size(); i++) {
             	resourceList.get(i).setDefaultResource(true);
             }
@@ -228,7 +227,7 @@ public class SmooksResourceConfigurationStore {
 
         configList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, applicationContext.getClassLoader());
         addSmooksResourceConfigurationList(configList);
-        
+
         return configList;
     }
 
@@ -252,6 +251,7 @@ public class SmooksResourceConfigurationStore {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void addProfileSets(List<ProfileSet> profileSets) {
         if(profileSets == null) {
             return;
@@ -284,7 +284,7 @@ public class SmooksResourceConfigurationStore {
     /**
      * Add a {@link SmooksResourceConfigurationList} to this store.
      *
-     * @return All the SmooksResourceConfigurationList instances added on this store.
+     * @param resourceList All the SmooksResourceConfigurationList instances added on this store.
      */
     public void addSmooksResourceConfigurationList(SmooksResourceConfigurationList resourceList) {
         processAppContextInitializers(resourceList);
@@ -300,6 +300,7 @@ public class SmooksResourceConfigurationStore {
      *
      * @return All the SmooksResourceConfigurationList instances added on this store.
      */
+    @SuppressWarnings("WeakerAccess")
     public Iterator<SmooksResourceConfigurationList> getSmooksResourceConfigurationLists() {
         return configLists.iterator();
     }
@@ -310,17 +311,18 @@ public class SmooksResourceConfigurationStore {
 	 * @param profileSet The profile set against which to lookup.
 	 * @return All SmooksResourceConfiguration entries targeted at the specified useragent.
 	 */
-	public SmooksResourceConfiguration[] getSmooksResourceConfigurations(ProfileSet profileSet) {
+	@SuppressWarnings({ "unchecked", "SuspiciousToArrayCall" })
+  public SmooksResourceConfiguration[] getSmooksResourceConfigurations(ProfileSet profileSet) {
 		Vector allSmooksResourceConfigurationsColl = new Vector();
 		SmooksResourceConfiguration[] allSmooksResourceConfigurations;
 
 		// Iterate through each of the loaded SmooksResourceConfigurationLists.
-		for(int i = 0; i < configLists.size(); i++) {
-            SmooksResourceConfigurationList list = configLists.get(i);
-			SmooksResourceConfiguration[] resourceConfigs = list.getTargetConfigurations(profileSet);
+    for (final SmooksResourceConfigurationList list : configLists)
+    {
+      SmooksResourceConfiguration[] resourceConfigs = list.getTargetConfigurations(profileSet);
 
-			allSmooksResourceConfigurationsColl.addAll(Arrays.asList(resourceConfigs));
-		}
+      allSmooksResourceConfigurationsColl.addAll(Arrays.asList(resourceConfigs));
+    }
 
 		allSmooksResourceConfigurations = new SmooksResourceConfiguration[allSmooksResourceConfigurationsColl.size()];
 		allSmooksResourceConfigurationsColl.toArray(allSmooksResourceConfigurations);
@@ -333,7 +335,8 @@ public class SmooksResourceConfigurationStore {
 	 * @param resourceConfig SmooksResourceConfiguration instance.
 	 * @return An Object instance from the SmooksResourceConfiguration.
 	 */
-	public Object getObject(SmooksResourceConfiguration resourceConfig) {
+	@SuppressWarnings("unchecked")
+  public Object getObject(SmooksResourceConfiguration resourceConfig) {
 		Object object = resourceConfig.getJavaResourceObject();
 
         if(object == null) {
@@ -344,22 +347,18 @@ public class SmooksResourceConfigurationStore {
             try {
                 classRuntime = ClassUtil.forName(className, getClass());
             } catch (ClassNotFoundException e) {
-                IllegalStateException state = new IllegalStateException("Error loading Java class: " + className);
-                state.initCause(e);
-                throw state;
+              throw new IllegalStateException("Error loading Java class: " + className, e);
             }
 
             // Try constructing via a SmooksResourceConfiguration constructor...
             Constructor constructor;
             try {
-                constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
-                object = constructor.newInstance(new Object[] {resourceConfig});
+                constructor = classRuntime.getConstructor(SmooksResourceConfiguration.class);
+                object = constructor.newInstance(resourceConfig);
             } catch (NoSuchMethodException e) {
                 // OK, we'll try a default constructor later...
             } catch (Exception e) {
-                IllegalStateException state = new IllegalStateException("Error loading Java class: " + className);
-                state.initCause(e);
-                throw state;
+              throw new IllegalStateException("Error loading Java class: " + className, e);
             }
 
             // If we still don't have an object, try constructing via the default construtor...
@@ -367,9 +366,8 @@ public class SmooksResourceConfigurationStore {
                 try {
                     object = classRuntime.newInstance();
                 } catch (Exception e) {
-                    IllegalStateException state = new IllegalStateException("Java class " + className + " must contain a default constructor if it does not contain a constructor that takes an instance of " + SmooksResourceConfiguration.class.getName() + ".");
-                    state.initCause(e);
-                    throw state;
+                  throw new IllegalStateException("Java class " + className + " must contain a default constructor if it does not contain a constructor that takes an instance of " + SmooksResourceConfiguration.class.getName() + "."
+                      , e);
                 }
             }
 
@@ -391,15 +389,17 @@ public class SmooksResourceConfigurationStore {
     public SmooksResourceConfiguration getGlobalParams() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
 
-        for(int i = 0; i < configLists.size(); i++) {
-            SmooksResourceConfigurationList list = configLists.get(i);
-            for(int ii = 0; ii < list.size(); ii++) {
-                SmooksResourceConfiguration nextConfig = list.get(ii);
-                if(ParameterAccessor.GLOBAL_PARAMETERS.equals(nextConfig.getSelector())) {
-                    config.addParmeters(nextConfig);
-                }
-            }
+      for (final SmooksResourceConfigurationList list : configLists)
+      {
+        for (int ii = 0; ii < list.size(); ii++)
+        {
+          SmooksResourceConfiguration nextConfig = list.get(ii);
+          if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextConfig.getSelector()))
+          {
+            config.addParameters(nextConfig);
+          }
         }
+      }
 
         return config;
     }
@@ -419,18 +419,19 @@ public class SmooksResourceConfigurationStore {
             throw new IllegalArgumentException("null 'resourceExtension' arg in method call.");
         }
 
-        for(int i = 0; i < configLists.size(); i++) {
-            SmooksResourceConfigurationList list = configLists.get(i);
+      for (final SmooksResourceConfigurationList list : configLists)
+      {
+        for (int ii = 0; ii < list.size(); ii++)
+        {
+          SmooksResourceConfiguration config = list.get(ii);
+          String selector = config.getSelector();
 
-            for(int ii = 0; ii < list.size(); ii++) {
-                SmooksResourceConfiguration config = list.get(ii);
-                String selector = config.getSelector();
-
-                if(CDU_CREATOR.equals(selector) && type.equalsIgnoreCase(config.getStringParameter(ContentHandlerFactory.PARAM_RESTYPE))) {
-                    return (ContentHandlerFactory) getObject(config);
-                }
-            }
+          if (CDU_CREATOR.equals(selector) && type.equalsIgnoreCase(config.getStringParameter(ContentHandlerFactory.PARAM_RESTYPE)))
+          {
+            return (ContentHandlerFactory) getObject(config);
+          }
         }
+      }
 
         throw new UnsupportedContentHandlerTypeException(type);
     }
@@ -466,6 +467,7 @@ public class SmooksResourceConfigurationStore {
         }
     }
 
+    @SuppressWarnings("unused")
     public List<SmooksResourceConfiguration> lookupResource(ConfigSearch configSearch) {
         List<SmooksResourceConfiguration> resultSet = new ArrayList<SmooksResourceConfiguration>();
 

@@ -18,15 +18,17 @@ package org.milyn.javabean.decoders;
 import java.sql.Time;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Tests for the SqlTimeDecoder class
  * 
  * @author <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a>
  */
-public class SqlTimeDecoderTest extends TestCase {
+public class SqlTimeDecoderTest {
 
+	@Test
     public void test_DateDecoder() {
         
         Properties config = new Properties();

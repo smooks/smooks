@@ -8,12 +8,12 @@
                 // modify groceries: quality items please
                 def groceries = element.category.findAll{ it.'@type' == 'groceries' }[0].item
                 groceries.each { g ->
-                    g.value = 'Luxury ' + g.text()
+                    g.value = 'Luxury ' + g.firstChild.nodeValue
                 }
 
                 // modify supplies: we need extra pens
                 def supplies = element.category.findAll{ it.'@type' == 'supplies' }[0].item
-                supplies.findAll{ it.text() == 'Pens' }.each { s ->
+                supplies.findAll{ it.firstChild.nodeValue == 'Pens' }.each { s ->
                     s['@quantity'] = s.'@quantity'.toInteger() + 2
                     s['@when'] = 'Urgent'
                 }

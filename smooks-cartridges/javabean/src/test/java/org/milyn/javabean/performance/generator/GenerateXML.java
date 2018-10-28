@@ -1,4 +1,7 @@
 package org.milyn.javabean.performance.generator;
+
+import freemarker.template.*;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -6,16 +9,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateSequenceModel;
-
-/**
- *
- */
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -27,14 +20,14 @@ public class GenerateXML {
 
 		boolean simple = false;
 
-		Configuration cfg = new Configuration();
+		Configuration cfg = new Configuration(Configuration.VERSION_2_3_21);
 		// Specify the data source where the template files come from.
 		// Here I set a file directory for it:
 		cfg.setDirectoryForTemplateLoading(new File("src/test/resources/templates"));
 
 		// Specify how templates will see the data-model. This is an advanced topic...
 		// but just use this:
-		cfg.setObjectWrapper(new DefaultObjectWrapper());
+		cfg.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_21).build());
 
 		Template temp;
 		String name;
@@ -59,16 +52,11 @@ public class GenerateXML {
 
 	}
 
-	/**
-	 * @param temp
-	 * @throws TemplateException
-	 * @throws IOException
-	 */
-	private static void write(Template temp, int numCustomers, String fileName, boolean simple) throws TemplateException,
+	private static void write(Template template, int numCustomers, String fileName, boolean simple) throws TemplateException,
 			IOException {
 		System.out.println("Writing " + fileName);
 
-		Map<String, TemplateSequenceModel> root = new HashMap();
+		Map<String, TemplateSequenceModel> root = new HashMap<String, TemplateSequenceModel>();
 		if(simple) {
 			root.put("customers", new SimpleGenerator(numCustomers));
 		} else {
@@ -79,7 +67,7 @@ public class GenerateXML {
 		try {
 			out = createWriter(fileName);
 
-			temp.process(root, out);
+			template.process(root, out);
 		} finally {
 			closeWriter(out);
 		}

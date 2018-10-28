@@ -16,7 +16,8 @@
 
 package org.milyn.xml;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.ls.LSInput;
@@ -37,8 +38,9 @@ import java.util.Map;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class XsdValidatorTest extends TestCase {
+public class XsdValidatorTest {
 
+	@Test
     public void test_validation_via_sources() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
         XsdValidator validator = new XsdValidator();
@@ -51,6 +53,7 @@ public class XsdValidatorTest extends TestCase {
         validator.validate(new DOMSource(document));
     }
 
+	@Test
     public void test_dom_validation_via_resolver() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
         XsdValidator validator = new XsdValidator();
@@ -65,6 +68,7 @@ public class XsdValidatorTest extends TestCase {
         validator.validate(new DOMSource(document));
     }
 
+	@Test
     public void test_stream_validation_via_resolver() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         XsdValidator validator = new XsdValidator();
 

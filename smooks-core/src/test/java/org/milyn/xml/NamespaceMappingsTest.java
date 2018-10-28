@@ -23,13 +23,15 @@ import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class NamespaceMappingsTest extends TestCase {
+public class NamespaceMappingsTest {
 
+	@Test
 	public void test_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));		
 		ExecutionContext execContext = smooks.createExecutionContext();

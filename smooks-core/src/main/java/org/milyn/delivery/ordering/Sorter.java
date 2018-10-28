@@ -15,10 +15,10 @@
 */
 package org.milyn.delivery.ordering;
 
-import org.milyn.delivery.ContentHandlerConfigMap;
-import org.milyn.delivery.ContentHandler;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.delivery.ContentHandler;
+import org.milyn.delivery.ContentHandlerConfigMap;
 
 import java.util.*;
 
@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class Sorter {
 
-    public static enum SortOrder {
+    public enum SortOrder {
         PRODUCERS_FIRST,
         CONSUMERS_FIRST
     }
@@ -45,7 +45,8 @@ public class Sorter {
         remapList(dependancySpecs, visitors);
     }
 
-    protected static <T extends ContentHandler> List<DependencySpec> buildDependencyMap(List<ContentHandlerConfigMap<T>> visitors) {
+    @SuppressWarnings("unchecked")
+    private static <T extends ContentHandler> List<DependencySpec> buildDependencyMap(List<ContentHandlerConfigMap<T>> visitors) {
         List<DependencySpec> dependancySpecs = new ArrayList<DependencySpec>();
 
         for(ContentHandlerConfigMap<T> visitor : visitors) {
@@ -54,7 +55,7 @@ public class Sorter {
 
         for(DependencySpec outer : dependancySpecs) {
             if(outer.visitor.getContentHandler() instanceof Producer) {
-                Set<? extends Object> outerProducts = ((Producer) outer.visitor.getContentHandler()).getProducts();
+                Set<?> outerProducts = ((Producer) outer.visitor.getContentHandler()).getProducts();
 
                 for(DependencySpec inner : dependancySpecs) {
                     if(inner != outer && inner.visitor.getContentHandler() instanceof Consumer) {
@@ -125,6 +126,7 @@ public class Sorter {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static boolean applySort(List<DependencySpec> dependencySpecs) {
         int specCount = dependencySpecs.size();
 
@@ -152,6 +154,7 @@ public class Sorter {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     private static <T extends ContentHandler> void remapList(List<DependencySpec> dependancySpecs, List<ContentHandlerConfigMap<T>> visitors) {
         visitors.clear();
 
@@ -160,6 +163,7 @@ public class Sorter {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void assertNo2WayDependencies(List<DependencySpec> dependancySpecs) throws SmooksConfigurationException {
         Stack<DependencySpec> dependencyStack = new Stack<DependencySpec>();
         for(DependencySpec spec : dependancySpecs) {
@@ -169,6 +173,7 @@ public class Sorter {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void assertNo2WayDependencies(DependencySpec spec, List<DependencySpec> dependancySpecs, Stack<DependencySpec> dependencyStack) {
         for(DependencySpec dependancy : dependancySpecs) {
             dependencyStack.push(dependancy);

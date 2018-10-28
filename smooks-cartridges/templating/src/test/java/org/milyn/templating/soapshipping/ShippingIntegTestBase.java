@@ -26,10 +26,12 @@ import org.milyn.profile.DefaultProfileSet;
 import org.milyn.templating.util.CharUtils;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public abstract class ShippingIntegTestBase extends TestCase {
+public abstract class ShippingIntegTestBase {
 
+    @Test
     public void testTransform() throws SAXException, IOException {
         Smooks smooks = new Smooks();
 
@@ -39,12 +41,12 @@ public abstract class ShippingIntegTestBase extends TestCase {
         smooks.addConfigurations("trans-request.cdrl", getClass().getResourceAsStream("trans-request.cdrl"));
         smooks.addConfigurations("trans-response.cdrl", getClass().getResourceAsStream("trans-response.cdrl"));
                 
-        InputStream requestStream = getClass().getResourceAsStream("../request.xml");
+        InputStream requestStream = getClass().getResourceAsStream("/org/milyn/templating/soapshipping/request.xml");
         ExecutionContext context = smooks.createExecutionContext("shipping-request");
         String requestResult = SmooksUtil.filterAndSerialize(context, requestStream, smooks);
 		CharUtils.assertEquals("Template test failed.", "/org/milyn/templating/soapshipping/request.xml.tran.expected", requestResult);
 
-        InputStream responseStream = getClass().getResourceAsStream("../response.xml");
+        InputStream responseStream = getClass().getResourceAsStream("/org/milyn/templating/soapshipping/response.xml");
         context = smooks.createExecutionContext("shipping-response");
         String responseResult = SmooksUtil.filterAndSerialize(context, responseStream, smooks);
 		CharUtils.assertEquals("Template test failed.", "/org/milyn/templating/soapshipping/response.xml.tran.expected", responseResult);

@@ -15,7 +15,8 @@
 */
 package org.milyn.edisax;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.io.StreamUtils;
 import org.milyn.resource.URIResourceLocator;
 import org.xml.sax.InputSource;
@@ -29,7 +30,7 @@ import java.io.StringReader;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public abstract class AbstractEDIParserTestCase extends TestCase {
+public abstract class AbstractEDIParserTestCase  {
 
     protected void test(String testpack) throws IOException {
     	String packageName = getClass().getPackage().getName().replace('.', '/');

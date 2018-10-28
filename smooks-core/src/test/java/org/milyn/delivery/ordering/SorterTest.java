@@ -15,7 +15,11 @@
 */
 package org.milyn.delivery.ordering;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.delivery.Visitor;
 import org.milyn.delivery.ContentHandlerConfigMap;
 import org.milyn.delivery.ordering.testvisitors.TestProducer;
@@ -31,16 +35,18 @@ import java.util.ArrayList;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class SorterTest extends TestCase {
+public class SorterTest {
 
     private List<ContentHandlerConfigMap<Visitor>> sortList = new ArrayList<ContentHandlerConfigMap<Visitor>>();
     private List<ContentHandlerConfigMap<Visitor>> originalList = new ArrayList<ContentHandlerConfigMap<Visitor>>();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         sortList.clear();
         originalList.clear();
     }
 
+    @Test
     public void test_sort_01_producer_first() {
         addVisitor(new TestConsumer("e", "f"));
         addVisitor(new TestProducerConsumer().setProducts("h").setConsumes("g"));
@@ -64,6 +70,7 @@ public class SorterTest extends TestCase {
         assertEquals(originalList.get(6), sortList.get(8));
     }
 
+    @Test
     public void test_sort_02_producer_first() {
         addVisitor(new TestProducerConsumer().setProducts("h").setConsumes("g"));
         addVisitor(new TestConsumer("e", "f"));
@@ -87,6 +94,7 @@ public class SorterTest extends TestCase {
         assertEquals(originalList.get(5), sortList.get(8));
     }
 
+    @Test
     public void test_sort_01_consumers_first() {
         addVisitor(new TestProducerConsumer().setProducts("h").setConsumes("g"));
         addVisitor(new TestConsumer("e", "f"));
@@ -110,6 +118,7 @@ public class SorterTest extends TestCase {
         assertEquals(originalList.get(5), sortList.get(0));
     }
 
+    @Test
     public void test_sort_no_producers_consumers_producersfirst() {
         addVisitor(new TestVisitor());
         addVisitor(new TestVisitor());
@@ -133,6 +142,7 @@ public class SorterTest extends TestCase {
         assertEquals(originalList.get(8), sortList.get(8));
     }
 
+    @Test
     public void test_sort_no_producers_consumers_consumersfirst() {
         addVisitor(new TestVisitor());
         addVisitor(new TestVisitor());
@@ -156,6 +166,7 @@ public class SorterTest extends TestCase {
         assertEquals(originalList.get(8), sortList.get(0));
     }
 
+    @Test
     public void test_sort_2way_dependency_01() {
         addVisitor(new TestProducerConsumer().setProducts("a").setConsumes("b"));
         addVisitor(new TestProducerConsumer().setProducts("b").setConsumes("a"));
@@ -171,6 +182,7 @@ public class SorterTest extends TestCase {
         }
     }
 
+    @Test
     public void test_sort_2way_dependency_02() {
         addVisitor(new TestProducerConsumer().setProducts("a").setConsumes("b"));
         addVisitor(new TestProducerConsumer().setProducts("b").setConsumes("c"));

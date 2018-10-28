@@ -16,11 +16,11 @@
 package org.milyn.javabean.decoders;
 
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.config.Configurable;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.DecodeType;
 import org.milyn.util.ClassUtil;
-import org.milyn.config.Configurable;
 
 import java.util.Properties;
 
@@ -30,7 +30,11 @@ import java.util.Properties;
  * The enumeration type is specified through the "<b>enumType</b>" configuration
  * param. Enum constant value mappings can be performed as per the
  * {@link org.milyn.javabean.decoders.MappingDecoder}.
- * 
+ * The "<b>strict</b>" configuration param determines how data that do not
+ * map to valid enum constants will be handled.  Under the default behavior, or
+ * when specifying strict as "true", an error will be thrown.  If strict is
+ * "false" null will be returned
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @DecodeType({Enum.class})
@@ -39,6 +43,7 @@ public class EnumDecoder implements DataDecoder, Configurable {
     private Properties configuration;
     private Class enumType;
     private MappingDecoder mappingDecoder = new MappingDecoder();
+    private boolean strict = true;
 
     public void setConfiguration(Properties resourceConfig) throws SmooksConfigurationException {
         String enumTypeName = resourceConfig.getProperty("enumType");
@@ -57,6 +62,7 @@ public class EnumDecoder implements DataDecoder, Configurable {
         if(!Enum.class.isAssignableFrom(enumType)) {
             throw new SmooksConfigurationException("Invalid Enum decoder configuration.  Resolved 'enumType' '" + enumTypeName + "' is not a Java Enum Class.");
         }
+        strict = resourceConfig.getProperty("strict", "true").equals("true");
 
         mappingDecoder.setConfiguration(resourceConfig);
         mappingDecoder.setStrict(false);
@@ -72,13 +78,23 @@ public class EnumDecoder implements DataDecoder, Configurable {
         this.enumType = enumType;
     }
 
+    @SuppressWarnings("unchecked")
     public Object decode(String data) throws DataDecodeException {
         String mappedValue = (String) mappingDecoder.decode(data);
 
         try {
             return Enum.valueOf(enumType, mappedValue.trim());
         } catch(IllegalArgumentException e) {
-            throw new DataDecodeException("Failed to decode '" + mappedValue + "' as a valid Enum constant of type '" + enumType.getName() + "'.");
+            if(strict) {
+                throw new DataDecodeException("Failed to decode '" + mappedValue + "' as a valid Enum constant of type '" + enumType.getName() + "'.");
+            } else {
+                return null;
+            }
+
         }
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
     }
 }

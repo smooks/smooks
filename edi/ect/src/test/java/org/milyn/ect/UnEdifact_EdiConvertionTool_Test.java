@@ -26,7 +26,8 @@ import java.io.Writer;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 import org.milyn.edisax.EDIConfigurationException;
@@ -37,8 +38,9 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class UnEdifact_EdiConvertionTool_Test extends TestCase {
+public class UnEdifact_EdiConvertionTool_Test {
 
+	@Test
     public void test_D08A_longName() throws IOException {
         ZipInputStream zipInputStream = new ZipInputStream(getClass().getResourceAsStream("D08A.zip"));
         File modelSetFile = new File("./target/D08A-mapping-model.zip");
@@ -48,6 +50,7 @@ public class UnEdifact_EdiConvertionTool_Test extends TestCase {
         EdiConvertionTool.fromUnEdifactSpec(zipInputStream, new ZipOutputStream(new FileOutputStream(modelSetFile)), "org.milyn.edi.unedifact:d08a:1.0-SNAPSHOT", false);
     }
 
+	@Test
     public void test_MILYN_475() throws IOException, EDIConfigurationException, SAXException {
         ZipInputStream zipInputStream = new ZipInputStream(getClass().getResourceAsStream("D08A.zip"));
         UnEdifactSpecificationReader specReader = new UnEdifactSpecificationReader(zipInputStream, false, false);
@@ -61,6 +64,7 @@ public class UnEdifact_EdiConvertionTool_Test extends TestCase {
         EDIConfigDigester.digestConfig(new ByteArrayInputStream(serializedMap.toByteArray()));
     }
 
+	@Test
     public void test_MILYN_476() throws IOException, EDIConfigurationException, SAXException {
         ZipInputStream zipInputStream = new ZipInputStream(getClass().getResourceAsStream("d93a.zip"));
         UnEdifactSpecificationReader specReader = new UnEdifactSpecificationReader(zipInputStream, false, false);

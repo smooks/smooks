@@ -15,18 +15,11 @@
 
 package org.milyn.db;
 
-import static org.mockito.Mockito.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.io.IOException;
-import java.sql.Connection;
-
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
-import javax.xml.transform.Source;
-
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.milyn.Smooks;
@@ -35,269 +28,294 @@ import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.payload.StringSource;
 import org.mockejb.jndi.MockContextFactory;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.mockito.MockitoAnnotations;
-import org.xml.sax.SAXException;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import javax.transaction.Status;
+import javax.transaction.UserTransaction;
+import javax.xml.transform.Source;
+
+import java.sql.Connection;
 
 /**
  * Unit test for {@link JndiDataSource}.
  *
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class JndiDataSourceTest extends TestCase {
+public class JndiDataSourceTest {
 
-	public Source source;
+    public Source source;
 
-	@Mock
-	private DataSource dataSource;
+    @Mock
+    private DataSource dataSource;
 
-	@Mock
-	private UserTransaction transaction;
+    @Mock
+    private UserTransaction transaction;
 
-	@Mock
-	private Connection connection;
+    @Mock
+    private Connection connection;
 
-	private static boolean REPORT = false;
+    private static boolean REPORT = false;
 
 
-	public void test_jndi_autoCommit() throws Exception {
+    @Test
+    public void test_jndi_autoCommit() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(false);
+        when(connection.getAutoCommit()).thenReturn(false);
 
-		executeSmooks("jndi_autocommit", "test_jndi_autoCommit", REPORT);
+        executeSmooks("jndi_autocommit", "test_jndi_autoCommit", REPORT);
 
-		verify(dataSource).getConnection();
-		verify(connection).setAutoCommit(true);
-		verify(connection).close();
+        verify(dataSource).getConnection();
+        verify(connection).setAutoCommit(true);
+        verify(connection).close();
 
-		verify(connection, never()).commit();
-		verify(connection, never()).rollback();
-	}
+        verify(connection, never()).commit();
+        verify(connection, never()).rollback();
+    }
 
-	public void test_jndi() throws Exception{
+    @Test
+    public void test_jndi() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(true);
+        when(connection.getAutoCommit()).thenReturn(true);
 
-		executeSmooks("jndi", "test_jndi", REPORT);
+        executeSmooks("jndi", "test_jndi", REPORT);
 
-		verify(dataSource).getConnection();
-		verify(connection).setAutoCommit(false);
-		verify(connection).commit();
-		verify(connection).close();
+        verify(dataSource).getConnection();
+        verify(connection).setAutoCommit(false);
+        verify(connection).commit();
+        verify(connection).close();
 
-		verify(connection, never()).rollback();
-	}
+        verify(connection, never()).rollback();
+    }
 
 
-	public void test_jndi_exception() throws Exception{
+    @Test
+    public void test_jndi_exception() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(false);
+        when(connection.getAutoCommit()).thenReturn(false);
 
-		executeSmooksWithException("jndi_exception", "test_jndi_exception", REPORT);
+        executeSmooksWithException("jndi_exception", "test_jndi_exception", REPORT);
 
-		verify(dataSource).getConnection();
-		verify(connection).rollback();
-		verify(connection).close();
+        verify(dataSource).getConnection();
+        verify(connection).rollback();
+        verify(connection).close();
 
-		verify(connection, never()).setAutoCommit(false);
-		verify(connection, never()).commit();
-	}
+        verify(connection, never()).setAutoCommit(false);
+        verify(connection, never()).commit();
+    }
 
-	public void test_jta_new_transaction() throws Exception{
+    @Test
+    public void test_jta_new_transaction() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(true);
-		when(transaction.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
+        when(connection.getAutoCommit()).thenReturn(true);
+        when(transaction.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
 
-		executeSmooks("jta", "test_jta_new_transaction", REPORT);
+        executeSmooks("jta", "test_jta_new_transaction", REPORT);
 
-		verify(dataSource, atLeastOnce()).getConnection();
-		verify(transaction).begin();
-		verify(connection).setAutoCommit(false);
-		verify(transaction).commit();
-		verify(connection).close();
+        verify(dataSource, atLeastOnce()).getConnection();
+        verify(transaction).begin();
+        verify(connection).setAutoCommit(false);
+        verify(transaction).commit();
+        verify(connection).close();
 
-		verify(transaction, never()).rollback();
-		verify(connection, never()).commit();
-		verify(connection, never()).rollback();
+        verify(transaction, never()).rollback();
+        verify(connection, never()).commit();
+        verify(connection, never()).rollback();
 
-	}
+    }
 
-	public void test_jta_existing_transaction() throws Exception{
+    @Test
+    public void test_jta_existing_transaction() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(false);
-		when(transaction.getStatus()).thenReturn(Status.STATUS_ACTIVE);
+        when(connection.getAutoCommit()).thenReturn(false);
+        when(transaction.getStatus()).thenReturn(Status.STATUS_ACTIVE);
 
-		executeSmooks("jta", "test_jta_existing_transaction", REPORT);
+        executeSmooks("jta", "test_jta_existing_transaction", REPORT);
 
-		verify(dataSource, atLeastOnce()).getConnection();
-		verify(connection).close();
+        verify(dataSource, atLeastOnce()).getConnection();
+        verify(connection).close();
 
-		verify(transaction, never()).begin();
-		verify(transaction, never()).commit();
-		verify(transaction, never()).rollback();
-		verify(connection, never()).setAutoCommit(false);
-		verify(connection, never()).commit();
-		verify(connection, never()).rollback();
+        verify(transaction, never()).begin();
+        verify(transaction, never()).commit();
+        verify(transaction, never()).rollback();
+        verify(connection, never()).setAutoCommit(false);
+        verify(connection, never()).commit();
+        verify(connection, never()).rollback();
 
-	}
+    }
 
-	public void test_jta_exception() throws Exception{
+    @Test
+    public void test_jta_exception() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(false);
-		when(transaction.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
+        when(connection.getAutoCommit()).thenReturn(false);
+        when(transaction.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
 
-		executeSmooksWithException("jta_exception", "test_jta_exception", REPORT);
+        executeSmooksWithException("jta_exception", "test_jta_exception", REPORT);
 
-		verify(dataSource, atLeastOnce()).getConnection();
-		verify(transaction).begin();
-		verify(transaction).rollback();
-		verify(connection).close();
+        verify(dataSource, atLeastOnce()).getConnection();
+        verify(transaction).begin();
+        verify(transaction).rollback();
+        verify(connection).close();
 
-		verify(transaction, never()).commit();
-		verify(transaction, never()).setRollbackOnly();
-		verify(connection, never()).setAutoCommit(false);
-		verify(connection, never()).commit();
-		verify(connection, never()).rollback();
+        verify(transaction, never()).commit();
+        verify(transaction, never()).setRollbackOnly();
+        verify(connection, never()).setAutoCommit(false);
+        verify(connection, never()).commit();
+        verify(connection, never()).rollback();
 
-	}
+    }
 
-	public void test_jta_existing_transaction_exception() throws Exception{
+    @Test
+    public void test_jta_existing_transaction_exception() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(false);
-		when(transaction.getStatus()).thenReturn(Status.STATUS_ACTIVE);
+        when(connection.getAutoCommit()).thenReturn(false);
+        when(transaction.getStatus()).thenReturn(Status.STATUS_ACTIVE);
 
-		executeSmooksWithException("jta_exception", "test_jta_existing_transaction_exception", REPORT);
+        executeSmooksWithException("jta_exception", "test_jta_existing_transaction_exception", REPORT);
 
-		verify(dataSource, atLeastOnce()).getConnection();
-		verify(transaction).setRollbackOnly();
-		verify(connection).close();
+        verify(dataSource, atLeastOnce()).getConnection();
+        verify(transaction).setRollbackOnly();
+        verify(connection).close();
 
-		verify(transaction, never()).begin();
-		verify(transaction, never()).commit();
-		verify(transaction, never()).rollback();
-		verify(connection, never()).setAutoCommit(false);
-		verify(connection, never()).commit();
-		verify(connection, never()).rollback();
+        verify(transaction, never()).begin();
+        verify(transaction, never()).commit();
+        verify(transaction, never()).rollback();
+        verify(connection, never()).setAutoCommit(false);
+        verify(connection, never()).commit();
+        verify(connection, never()).rollback();
 
-	}
+    }
 
-	public void test_jta_set_autocommit_not_allowed() throws Exception{
-		when(transaction.getStatus()).thenReturn(Status.STATUS_ACTIVE);
+    @Test
+    public void test_jta_set_autocommit_not_allowed() throws Exception {
+        when(transaction.getStatus()).thenReturn(Status.STATUS_ACTIVE);
 
-		executeSmooks("jta_set_autocommit_not_allowed", "test_jta_set_autocommit_not_allowed", REPORT);
+        executeSmooks("jta_set_autocommit_not_allowed", "test_jta_set_autocommit_not_allowed", REPORT);
 
-		verify(dataSource, atLeastOnce()).getConnection();
-		verify(connection).close();
+        verify(dataSource, atLeastOnce()).getConnection();
+        verify(connection).close();
 
-		verify(connection, never()).setAutoCommit(false);
-		verify(connection, never()).getAutoCommit();
-	}
+        verify(connection, never()).setAutoCommit(false);
+        verify(connection, never()).getAutoCommit();
+    }
 
-	public void test_jta_missing_transaction() {
+    @Test
+    public void test_jta_missing_transaction() {
 
-		try {
-			executeSmooks("jta_missing_transaction", "test_jta_missing_transaction", REPORT);
-		} catch (Exception e) {
-			assertEquals("The transactionJndi attribute must be set when the JTA transaction manager is set.", ExceptionUtils.getCause(e).getMessage());
+        try {
+            executeSmooks("jta_missing_transaction", "test_jta_missing_transaction", REPORT);
+        } catch (Exception e) {
+            assertEquals("The transactionJndi attribute must be set when the JTA transaction manager is set.", ExceptionUtils.getCause(e).getMessage());
 
-			return;
-		}
-		fail("Exception was not thrown to indicate that the transactionJndi wasn't set.");
-	}
+            return;
+        }
+        fail("Exception was not thrown to indicate that the transactionJndi wasn't set.");
+    }
 
-	public void test_external() throws Exception{
+    @Test
+    public void test_external() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(true);
+        when(connection.getAutoCommit()).thenReturn(true);
 
-		executeSmooks("external", "external", true);
+        executeSmooks("external", "external", true);
 
-		verify(dataSource).getConnection();
-		verify(connection).setAutoCommit(false);
-		verify(connection).close();
+        verify(dataSource).getConnection();
+        verify(connection).setAutoCommit(false);
+        verify(connection).close();
 
-		verify(connection, never()).commit();
-		verify(connection, never()).rollback();
-	}
+        verify(connection, never()).commit();
+        verify(connection, never()).rollback();
+    }
 
-	public void test_external_autocommit() throws Exception{
+    @Test
+    public void test_external_autocommit() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(false);
+        when(connection.getAutoCommit()).thenReturn(false);
 
-		executeSmooks("external_autocommit", "test_external_autocommit", REPORT);
+        executeSmooks("external_autocommit", "test_external_autocommit", REPORT);
 
-		verify(dataSource).getConnection();
-		verify(connection).setAutoCommit(true);
-		verify(connection).close();
+        verify(dataSource).getConnection();
+        verify(connection).setAutoCommit(true);
+        verify(connection).close();
 
-		verify(connection, never()).commit();
-		verify(connection, never()).rollback();
-	}
+        verify(connection, never()).commit();
+        verify(connection, never()).rollback();
+    }
 
-	public void test_external_set_autocommit_not_allowed() throws Exception{
+    @Test
+    public void test_external_set_autocommit_not_allowed() throws Exception {
 
-		executeSmooks("external_set_autocommit_not_allowed", "test_external_set_autocommit_not_allowed", true);
+        executeSmooks("external_set_autocommit_not_allowed", "test_external_set_autocommit_not_allowed", true);
 
-		verify(dataSource).getConnection();
-		verify(connection).close();
+        verify(dataSource).getConnection();
+        verify(connection).close();
 
-		verify(connection, never()).getAutoCommit();
-		verify(connection, never()).setAutoCommit(true);
-		verify(connection, never()).commit();
-		verify(connection, never()).rollback();
-	}
+        verify(connection, never()).getAutoCommit();
+        verify(connection, never()).setAutoCommit(true);
+        verify(connection, never()).commit();
+        verify(connection, never()).rollback();
+    }
 
-	public void test_external_exception() throws Exception{
+    @Test
+    public void test_external_exception() throws Exception {
 
-		when(connection.getAutoCommit()).thenReturn(false);
+        when(connection.getAutoCommit()).thenReturn(false);
 
-		executeSmooksWithException("external_exception", "test_external_exception", REPORT);
+        executeSmooksWithException("external_exception", "test_external_exception", REPORT);
 
-		verify(dataSource).getConnection();
-		verify(connection).close();
+        verify(dataSource).getConnection();
+        verify(connection).close();
 
-		verify(connection, never()).setAutoCommit(false);
-		verify(connection, never()).rollback();
-		verify(connection, never()).commit();
-	}
+        verify(connection, never()).setAutoCommit(false);
+        verify(connection, never()).rollback();
+        verify(connection, never()).commit();
+    }
 
-	private void executeSmooks(String profile, String testName, boolean report) throws Exception {
+    private void executeSmooks(String profile, String testName, boolean report) throws Exception {
 
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("jndi-ds-lifecycle.xml"));
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("jndi-ds-lifecycle.xml"));
 
-		ExecutionContext ec = smooks.createExecutionContext(profile);
+        ExecutionContext ec = smooks.createExecutionContext(profile);
 
-		if(report) {
-			ec.setEventListener(new HtmlReportGenerator("target/report/"+ testName +".html"));
-		}
+        if (report) {
+            ec.setEventListener(new HtmlReportGenerator("target/report/" + testName + ".html"));
+        }
 
-		smooks.filterSource(ec, source);
-	}
+        smooks.filterSource(ec, source);
+    }
 
-	private void executeSmooksWithException(String profile, String testName, boolean report) throws Exception {
-		try {
-			executeSmooks(profile, testName, report);
-		} catch (Exception e) {
-		}
-		return;
-	}
+    private void executeSmooksWithException(String profile, String testName, boolean report) throws Exception {
+        try {
+            executeSmooks(profile, testName, report);
+        } catch (Exception e) {
+        }
+        return;
+    }
 
-	@Override
-	protected void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		MockContextFactory.setAsInitial();
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        MockContextFactory.setAsInitial();
 
-		source = new StringSource("<root><a /><b /></root>");
+        source = new StringSource("<root><a /><b /></root>");
 
-		InitialContext context = new InitialContext();
-		context.bind("java:/mockDS", dataSource);
-		context.bind("java:/mockTransaction", transaction);
+        InitialContext context = new InitialContext();
+        context.bind("java:/mockDS", dataSource);
+        context.bind("java:/mockTransaction", transaction);
 
-		when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSource.getConnection()).thenReturn(connection);
 
-	}
+    }
 
-	@Override
-	protected void tearDown() throws Exception {
-		MockContextFactory.revertSetAsInitial();
-	}
+    @After
+    public void tearDown() throws Exception {
+        MockContextFactory.revertSetAsInitial();
+    }
 }

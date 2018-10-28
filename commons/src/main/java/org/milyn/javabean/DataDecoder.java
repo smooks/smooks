@@ -113,7 +113,7 @@ public interface DataDecoder extends Serializable {
                         }
 
                         installedDecoders = new HashMap<Class, Class<? extends DataDecoder>>();
-                        for (Class decoder : decoders) {
+                        for (Class<DataDecoder> decoder : decoders) {
                             DecodeType decoodeType = (DecodeType) decoder.getAnnotation(DecodeType.class);
                             if(decoodeType != null) {
                                 Class[] types = decoodeType.value();

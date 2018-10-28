@@ -8,7 +8,7 @@
                 // modify groceries: quality items please
                 def groceries = element.category.findAll{ it.'@type' == 'groceries' }[0].item
                 groceries.each { g ->
-                    g.value = 'Luxury ' + g.text()
+                    g.value = 'Luxury ' + g.firstChild.nodeValue
                 }
 
                 // modify supplies: we need extra pens

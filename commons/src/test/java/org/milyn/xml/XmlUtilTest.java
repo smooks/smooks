@@ -2,8 +2,8 @@
 
 package org.milyn.xml;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,38 +27,14 @@ import javax.xml.transform.dom.DOMResult;
  * @see org.milyn.xml.XmlUtil
  */
 
-public class XmlUtilTest extends TestCase {
+public class XmlUtilTest {
 
-	// private XmlUtil.UnitTest xmlutil;
-
-	/**
-	 * Constructor (needed for JTest)
-	 * 
-	 * @param name
-	 *            Name of Object
-	 */
-	public XmlUtilTest(String name) {
-		super(name);
-	}
-
-	/**
-	 * Used by JUnit (called before each test method)
-	 */
-	protected void setUp() {
-		// xmlutil = new XmlUtil.UnitTest(new XmlUtil());
-	}
-
-	/**
-	 * Used by JUnit (called after each test method)
-	 */
-	protected void tearDown() {
-		// xmlutil = null;
-	}
 
 	/**
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_1() {
 		try {
 			XmlUtil.removeEntities(null, null);
@@ -74,6 +50,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_2() {
 		try {
 			Reader reader = new StringReader("abcdefg");
@@ -90,6 +67,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_3() {
 		try {
 			StringReader reader = new StringReader("abcdefg");
@@ -106,6 +84,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_4() {
 		try {
 			StringReader reader = new StringReader("a&bcdefg");
@@ -122,6 +101,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_5() {
 		try {
 			StringReader reader = new StringReader("a;bcdefg");
@@ -138,6 +118,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_6() {
 		try {
 			StringReader reader = new StringReader("&abcdefg;");
@@ -154,6 +135,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_7() {
 		try {
 			StringReader reader = new StringReader("&&abcdefg");
@@ -170,6 +152,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_8() {
 		try {
 			StringReader reader = new StringReader("&;abcdefg;");
@@ -186,6 +169,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_9() {
 		try {
 			StringReader reader = new StringReader("&amp;bcdefg");
@@ -202,6 +186,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_10() {
 		try {
 			StringReader reader = new StringReader("&amp;amp;");
@@ -218,6 +203,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_11() {
 		try {
 			StringReader reader = new StringReader("&amp;&;");
@@ -234,6 +220,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_12() {
 		try {
 			StringReader reader = new StringReader("&");
@@ -250,6 +237,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_13() {
 		try {
 			StringReader reader = new StringReader("&;");
@@ -266,6 +254,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_14() {
 		try {
 			StringReader reader = new StringReader("");
@@ -282,6 +271,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_15() {
 		try {
 			StringReader reader = new StringReader("abc&#;");
@@ -298,6 +288,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_16() {
 		try {
 			StringReader reader = new StringReader("&#;");
@@ -314,6 +305,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_17() {
 		try {
 			StringReader reader = new StringReader("abc&#");
@@ -330,6 +322,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_18() {
 		try {
 			StringReader reader = new StringReader("&#");
@@ -346,6 +339,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_19() {
 		try {
 			StringReader reader = new StringReader("&#x");
@@ -362,6 +356,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_20() {
 		try {
 			StringReader reader = new StringReader("&#x;");
@@ -378,6 +373,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_21() {
 		try {
 			StringReader reader = new StringReader("&#60;");
@@ -394,6 +390,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_22() {
 		try {
 			StringReader reader = new StringReader("&#x3C;");
@@ -410,6 +407,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_23() {
 		try {
 			StringReader reader = new StringReader("a&#x3C;");
@@ -426,6 +424,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_24() {
 		try {
 			StringReader reader = new StringReader("a&#x3C;a");
@@ -442,6 +441,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_25() {
 		try {
 			StringReader reader = new StringReader("a&#X3C;a");
@@ -458,6 +458,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRemoveEntities_26() {
 		try {
 			assertEquals("a<a & & &g", XmlUtil
@@ -471,6 +472,7 @@ public class XmlUtilTest extends TestCase {
 	 * Test method: void removeEntities(Reader, Writer) removeEntities throws
 	 * java.io.IOException
 	 */
+	@Test
 	public void testRewriteEntities_01() {
 		try {
 			StringReader reader = new StringReader(
@@ -507,6 +509,7 @@ public class XmlUtilTest extends TestCase {
 		return null;
 	}
 
+	@Test
 	public void testParseStream() {
 		try {
 			Document doc = XmlUtil.parseStream(getClass().getResourceAsStream(
@@ -543,6 +546,7 @@ public class XmlUtilTest extends TestCase {
 		return null;
 	}
 
+	@Test
 	public void testGetString() {
 		Document doc = getXPathDocument();
 
@@ -553,26 +557,32 @@ public class XmlUtilTest extends TestCase {
 		assertEquals("<x><y attrib=\"attribval\"/><z>zval</z></x>", XmlUtil.getString(doc, "/x"));
 	}
 
+	@Test
     public void test_indent_01() throws IOException {
         test_indent("xml1.xml");
     }
 
+	@Test
     public void test_indent_02() throws IOException {
         test_indent("xml2.xml");
     }
 
+	@Test
     public void test_indent_03() throws IOException {
         test_indent("xml3.xml");
     }
 
+	@Test
     public void test_indent_04() throws IOException {
         test_indent("xml4.xml");
     }
 
+	@Test
     public void test_indent_05() throws IOException {
         test_indent("xml5.xml");
     }
 
+	@Test
     public void test_indent_06() throws IOException {
         test_indent("xml6.xml");
     }

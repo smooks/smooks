@@ -16,13 +16,16 @@
 
 package org.milyn.function;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class CapitalizeFirstFunctionTest extends TestCase {
+public class CapitalizeFirstFunctionTest {
 
+	@Test
     public void test_execute() {
         CapitalizeFirstFunction function = new CapitalizeFirstFunction();
 

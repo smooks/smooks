@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.MockExecutionContext;
@@ -28,13 +29,14 @@ import org.milyn.container.MockExecutionContext;
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-public class MVELFactoryTest  extends TestCase {
+public class MVELFactoryTest {
 
+        @Test
 	public void test_create() throws Exception {
 
 		ExecutionContext context = new MockExecutionContext();
 
-		Factory<Map<?, ?>> factory = new MVELFactory<Map<?, ?>>("new java.util.TreeMap");
+		Factory<Map<?, ?>> factory = new MVELFactory<Map<?, ?>>("new java.util.TreeMap()");
 
 		Map<?, ?> map = factory.create(context);
 

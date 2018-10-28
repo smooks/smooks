@@ -15,14 +15,14 @@
 */
 package org.milyn.cdr.xpath.evaluators.value;
 
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.javabean.DataDecoder;
-import org.milyn.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
-import org.w3c.dom.Element;
 import org.jaxen.expr.*;
 import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.javabean.DataDecoder;
+import org.w3c.dom.Element;
 
 import java.util.List;
 import java.util.Properties;
@@ -37,6 +37,7 @@ public abstract class Value {
 
     public abstract Object getValue(Element element);
 
+    @SuppressWarnings("unchecked")
     public static Value getValue(Expr expr, DataDecoder decoder, Properties namespaces) throws SAXPathException {
         AssertArgument.isNotNull(expr, "expr");
 

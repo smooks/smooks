@@ -15,7 +15,10 @@
 */
 package org.milyn.smooks.scripting.groovy;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.FilterSettings;
@@ -36,16 +39,19 @@ import java.util.Map;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class ScriptedVisitorTest extends TestCase {
+public class ScriptedVisitorTest {
 
+    @Before
     public void setUp() {
         System.setProperty(Filter.STREAM_FILTER_TYPE, "DOM");
     }
 
+    @After
     public void tearDown() {
         System.getProperties().remove(Filter.STREAM_FILTER_TYPE);
     }
 
+    @Test
     public void test_templated_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-01.xml"));
         StringResult result = new StringResult();
@@ -56,6 +62,7 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<a><b><xxx newElementAttribute=\"1234\"></xxx></b></a>", result.getResult());
     }
 
+    @Test
     public void test_templated_ext_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-01.xml"));
         StringResult result = new StringResult();
@@ -64,6 +71,7 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<a><b><xxx newElementAttribute=\"1234\"></xxx></b></a>", result.getResult());
     }
 
+    @Test
     public void test_templated_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-02.xml"));
         StringResult result = new StringResult();
@@ -76,6 +84,7 @@ public class ScriptedVisitorTest extends TestCase {
         }
     }
 
+    @Test
     public void test_templated_ext_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-02.xml"));
         StringResult result = new StringResult();
@@ -88,6 +97,7 @@ public class ScriptedVisitorTest extends TestCase {
         }
     }
 
+    @Test
     public void test_templated_03() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-03.xml"));
         StringResult result = new StringResult();
@@ -96,6 +106,7 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<a><b><xxx newElementAttribute=\"1234\"></xxx></b></a>", result.getResult());
     }
 
+    @Test
     public void test_templated_ext_03() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-03.xml"));
         StringResult result = new StringResult();
@@ -104,6 +115,7 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<a><b><xxx newElementAttribute=\"1234\"></xxx></b></a>", result.getResult());
     }
 
+    @Test
     public void test_templated_04() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-04.xml"));
         StringResult result = new StringResult();
@@ -112,6 +124,7 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<a><b><c><car make=\"Holden\" name=\"HSV Maloo\" year=\"2006\"><country>Australia</country><record type=\"speed\">Production Pickup Truck with speed of 271kph</record></car><car make=\"Peel\" name=\"P50\" year=\"1962\"><country>Isle of Man</country><record type=\"size\">Smallest Street-Legal Car at 99cm wide and 59 kg in weight</record></car><car make=\"Bugatti\" name=\"Royale\" year=\"1931\"><country>France</country><record type=\"price\">Most Valuable Car at $15 million</record></car></c></b></a>", result.getResult());
     }
 
+    @Test
     public void test_templated_ext_04() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-04.xml"));
         StringResult result = new StringResult();
@@ -120,6 +133,7 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<a><b><c><car make=\"Holden\" name=\"HSV Maloo\" year=\"2006\"><country>Australia</country><record type=\"speed\">Production Pickup Truck with speed of 271kph</record></car><car make=\"Peel\" name=\"P50\" year=\"1962\"><country>Isle of Man</country><record type=\"size\">Smallest Street-Legal Car at 99cm wide and 59 kg in weight</record></car><car make=\"Bugatti\" name=\"Royale\" year=\"1931\"><country>France</country><record type=\"price\">Most Valuable Car at $15 million</record></car></c></b></a>", result.getResult());
     }
 
+    @Test
     public void test_templated_05() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-05.xml"));
         StringResult result = new StringResult();
@@ -142,6 +156,7 @@ public class ScriptedVisitorTest extends TestCase {
                 result.getResult());
     }
 
+    @Test
     public void test_templated_ext_05() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-05.xml"));
         StringResult result = new StringResult();
@@ -164,6 +179,7 @@ public class ScriptedVisitorTest extends TestCase {
                 result.getResult());
     }
 
+    @Test
     public void test_templated_ext_06() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-06.xml"));
         StringResult result = new StringResult();
@@ -172,6 +188,7 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<a><b><newElX newElementAttribute=\"1234\"></newElX></b></a>", result.getResult());
     }
 
+    @Test
     public void test_templated_ext_07() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-07.xml"));
         StringResult result = new StringResult();
@@ -179,6 +196,7 @@ public class ScriptedVisitorTest extends TestCase {
         smooks.filterSource(new StringSource("<a><b><c/></b></a>"), result);
     }
 
+    @Test
     public void test_templated_ext_08() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-08.xml"));
         StringResult result = new StringResult();
@@ -187,6 +205,7 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<a><b><xxx/></b></a>", result.getResult());
     }
 
+    @Test
     public void test_templated_ext_09() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-09.xml"));
         StringResult result = new StringResult();
@@ -210,6 +229,7 @@ public class ScriptedVisitorTest extends TestCase {
                 result.getResult()));
     }
 
+    @Test
     public void test_templated_ext_10() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-10.xml"));
         StringResult result = new StringResult();
@@ -224,6 +244,7 @@ public class ScriptedVisitorTest extends TestCase {
                 result.getResult()));
     }
 
+    @Test
     public void test_templated_ext_11() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("scripted-ext-11.xml"));
         StringResult result = new StringResult();
@@ -232,11 +253,13 @@ public class ScriptedVisitorTest extends TestCase {
         assertEquals("<category type=\"supplies\"><item>Paper</item><item quantity=\"6\">Pens</item></category>", result.getResult());
     }
 
+    @Test
     public void test_templated_ext_12() throws IOException, SAXException {
         test_templated_ext_12_13("scripted-ext-12.xml", StreamFilterType.DOM);
         test_templated_ext_12_13("scripted-ext-12.xml", StreamFilterType.SAX);
     }
 
+    @Test
     public void test_templated_ext_13() throws IOException, SAXException {
         test_templated_ext_12_13("scripted-ext-13.xml", StreamFilterType.DOM);
         test_templated_ext_12_13("scripted-ext-13.xml", StreamFilterType.SAX);

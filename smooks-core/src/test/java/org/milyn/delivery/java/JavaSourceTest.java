@@ -15,12 +15,12 @@
 */
 package org.milyn.delivery.java;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
+import org.milyn.container.ExecutionContext;
 import org.milyn.payload.JavaSource;
 import org.milyn.payload.StringResult;
-import org.milyn.container.ExecutionContext;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -28,19 +28,26 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JavaSourceTest extends TestCase {
+@SuppressWarnings("unchecked")
+public class JavaSourceTest {
 
+	@Test
     public void test_dom() throws IOException, SAXException {
         test("smooks-config-dom.xml", SOURCE_1, EXPECTED_1);
     }
 
+	@Test
     public void test_sax() throws IOException, SAXException {
         test("smooks-config-sax.xml", SOURCE_1, EXPECTED_1);
     }
 
+	@Test
     public void test_includeEnclosingDocument() throws IOException, SAXException {
         // Not sure what that "includeEnclosingDocument" flag on the XStream SaxWriter is supposed to do.
         // Seems to do the same thing whether it's on or off???...
@@ -50,6 +57,7 @@ public class JavaSourceTest extends TestCase {
         test("smooks-config-inc-encl-doc-off.xml", SOURCE_2, EXPECTED_2);
     }
 
+	@Test
     public void test_beanSetting() {
         MyBean1 pojo = new MyBean1();
         JavaSource source;
@@ -63,9 +71,10 @@ public class JavaSourceTest extends TestCase {
         Map beans = new HashMap();
         beans.put("abcd", pojo);
         source = new JavaSource(beans);
-        assertEquals(pojo, source.getBeans().get("abcd"));        
+        assertEquals(pojo, source.getBeans().get("abcd"));
     }
 
+	@Test
     public void test_streamingOff_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-eventstream-off.xml"));
         StringResult result = new StringResult();
@@ -74,7 +83,9 @@ public class JavaSourceTest extends TestCase {
         assertEquals("<nullsource-document />", result.getResult());
     }
 
-    public void test_streamingOff_02() throws IOException, SAXException {
+	@Test
+    public void test_streamingOff_02()
+  {
         Smooks smooks = new Smooks();
         JavaSource javaSource = new JavaSource(new MyBean1());
         StringResult result = new StringResult();
@@ -86,6 +97,7 @@ public class JavaSourceTest extends TestCase {
         assertEquals("<nullsource-document />", result.getResult());
     }
 
+	@Test
     public void test_streamingOn_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-eventstream-on.xml"));
         StringResult result = new StringResult();
@@ -94,6 +106,7 @@ public class JavaSourceTest extends TestCase {
         assertNotSame("<nullsource-document></nullsource-document>", result.getResult());
     }
 
+	@Test
     public void test_streamingOn_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-eventstream-on.xml"));
         JavaSource javaSource = new JavaSource(new MyBean1());

@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>smooks-examples-parent</artifactId>
+    <version>1.7.1</version>
+    <relativePath>../../parent/pom.xml</relativePath>
+  </parent>
+
+  <name>Milyn :: Smooks Example :: EJC - Model Gen</name>
+  <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
+  <packaging>bundle</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-ejc</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
         <groupId>org.milyn</groupId>
-        <artifactId>smooks-examples</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
-    <name>Milyn Smooks Example - EJC - Model Gen</name>
-    <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.milyn</groupId>
-                <artifactId>maven-ejc-plugin</artifactId>
-                <version>${project.version}</version> <!-- base pom version - do not remove this comment -->
-                <configuration>
-                    <ediMappingFile>edi-model.xml</ediMappingFile>
-                    <packageName>com.acme.order.model</packageName>
-                </configuration>
-                <executions>
-                    <execution><goals><goal>generate</goal></goals></execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-ejc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-
+        <artifactId>ejc-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <packageName>com.acme.order.model</packageName>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

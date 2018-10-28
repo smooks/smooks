@@ -21,7 +21,8 @@ import java.io.IOException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.log4j.Logger;
 import org.milyn.Smooks;
@@ -40,10 +41,11 @@ import org.xml.sax.SAXException;
  * 
  * @author Clemens Fuchslocher
  */
-public class MILYN_424_Test extends TestCase {
+public class MILYN_424_Test {
 
 	private static Logger logger = Logger.getLogger(MILYN_424_Test.class);
 
+        @Test
 	public void test() throws IOException, SAXException {
 		Smooks smooks = null;
 

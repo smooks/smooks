@@ -1,58 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>smooks-examples</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-    </parent>
-    <name>Milyn Smooks Example - XSLT-Groovy</name>
-    <artifactId>milyn-smooks-example-xslt-groovy</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>smooks-examples-parent</artifactId>
+    <version>1.7.1</version>
+    <relativePath>../parent/pom.xml</relativePath>
+  </parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-scripting</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-templating</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+  <name>Milyn :: Smooks Example :: XSLT-Groovy</name>
+  <artifactId>milyn-smooks-example-xslt-groovy</artifactId>
+  <packaging>bundle</packaging>
 
-        <!--
-        To switch XSLT processors, simple include/exclude the following
-        dependencies.  When both Xalan and Saxon are excluded, the
-        installed JDK's processor will be used (Sun XSLTC Processor).
-        -->
+  <dependencies>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-scripting</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-templating</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.1</version>
-        </dependency>
+    <!--
+    To switch XSLT processors, simple include/exclude the following
+    dependencies.  When both Xalan and Saxon are excluded, the
+    installed JDK's processor will be used (Sun XSLTC Processor).
+    -->
 
-        <!-- dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <version>8.7</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-dom</artifactId>
-            <version>8.7</version>
-        </dependency -->
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+    </dependency>
 
-    </dependencies>
-
-
-
+    <!-- dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>saxon-HE</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>saxon-dom</artifactId>
+    </dependency -->
+  </dependencies>
 </project>

@@ -15,9 +15,6 @@
  */
 package org.milyn.csv;
 
-import java.nio.charset.Charset;
-import java.util.List;
-
 import org.milyn.GenericReaderConfigurator;
 import org.milyn.ReaderConfigurator;
 import org.milyn.assertion.AssertArgument;
@@ -25,16 +22,20 @@ import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.flatfile.FlatFileReader;
 
+import java.nio.charset.Charset;
+import java.util.List;
+
 /**
  * CSV Reader configurator.
  * <p/>
  * Supports programmatic {@link CSVReader} configuration on a
  * {@link org.milyn.Smooks#setReaderConfig(org.milyn.ReaderConfigurator) Smooks}
  * instance.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  * @deprecated Use the {@link CSVRecordParserConfigurator}.
  */
+@SuppressWarnings("deprecation")
 public class CSVReaderConfigurator implements ReaderConfigurator {
 
     private String csvFields;
@@ -66,7 +67,7 @@ public class CSVReaderConfigurator implements ReaderConfigurator {
         this.quoteChar = quoteChar;
         return this;
     }
-	
+
     public CSVReaderConfigurator setEscapeChar(char escapeChar) {
         AssertArgument.isNotNull(escapeChar, "escapeChar");
         this.escapeChar = escapeChar;
@@ -107,6 +108,7 @@ public class CSVReaderConfigurator implements ReaderConfigurator {
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     public CSVReaderConfigurator setBinding(CSVBinding binding) {
         this.binding = binding;
         return this;

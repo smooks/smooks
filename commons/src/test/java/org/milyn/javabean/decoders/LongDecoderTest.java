@@ -16,7 +16,12 @@
 
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.javabean.DataDecodeException;
 
 import java.util.Locale;
@@ -25,24 +30,28 @@ import java.util.Properties;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class LongDecoderTest extends TestCase {
+public class LongDecoderTest {
 
     private Locale defaultLocale;
 
+    @Before
     public void setUp() {
         defaultLocale = Locale.getDefault();
 		Locale.setDefault( new Locale("en", "IE") );
 	}
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         Locale.setDefault(defaultLocale);
     }
 
+    @Test
     public void test_empty_ok_value() {
         LongDecoder decoder = new LongDecoder();
         assertEquals(new Long(1), decoder.decode("1"));
     }
 
+    @Test
     public void test_empty_data_string() {
         LongDecoder decoder = new LongDecoder();
         try {
@@ -53,6 +62,7 @@ public class LongDecoderTest extends TestCase {
         }
     }
 
+    @Test
     public void test_decode_locale_config() {
         LongDecoder decoder = new LongDecoder();
         Properties config = new Properties();
@@ -64,6 +74,7 @@ public class LongDecoderTest extends TestCase {
         assertEquals(new Long(1234), longVal);
     }
 
+    @Test
     public void test_decode_format_config_01() {
         LongDecoder decoder = new LongDecoder();
         Properties config = new Properties();
@@ -75,6 +86,7 @@ public class LongDecoderTest extends TestCase {
         assertEquals(new Long(1234), longVal);
     }
 
+    @Test
     public void test_decode_format_config_02() {
         LongDecoder decoder = new LongDecoder();
         Properties config = new Properties();
@@ -86,6 +98,7 @@ public class LongDecoderTest extends TestCase {
         assertEquals(new Long(30), longVal);
     }
 
+    @Test
     public void test_encode_format_config() {
         LongDecoder decoder = new LongDecoder();
         Properties config = new Properties();
@@ -96,6 +109,7 @@ public class LongDecoderTest extends TestCase {
         assertEquals("1,234", decoder.encode(1234L));
     }
 
+    @Test
     public void test_encode_locale_config() {
         LongDecoder decoder = new LongDecoder();
         Properties config = new Properties();

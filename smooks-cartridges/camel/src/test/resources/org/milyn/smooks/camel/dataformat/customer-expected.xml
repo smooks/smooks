@@ -1,6 +1,7 @@
 <org.milyn.smooks.camel.dataformat.Customer>
     <firstName>John</firstName>
     <lastName>Cocktolstol</lastName>
+    <gender>Male</gender>
     <age>35</age>
     <country>USA</country>
 </org.milyn.smooks.camel.dataformat.Customer>

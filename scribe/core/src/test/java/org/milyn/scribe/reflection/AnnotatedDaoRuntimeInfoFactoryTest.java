@@ -15,7 +15,7 @@
 */
 package org.milyn.scribe.reflection;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import org.milyn.scribe.reflection.AnnotatedDaoRuntimeInfo;
 import org.milyn.scribe.reflection.AnnotatedDaoRuntimeInfoFactory;

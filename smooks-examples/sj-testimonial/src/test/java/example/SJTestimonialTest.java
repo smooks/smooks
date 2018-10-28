@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.xml.sax.SAXException;
 import se.sj.ipl.rollingstock.domain.RollingStockList;
 
@@ -25,12 +26,14 @@ import java.util.Map;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SJTestimonialTest extends TestCase {
+public class SJTestimonialTest {
 
+	@Test
     public void test_dom() throws IOException, SAXException {
         test("smooks-config.xml");
     }
 
+	@Test
     public void test_sax() throws IOException, SAXException {
         test("smooks-config-sax.xml");
     }

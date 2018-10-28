@@ -27,33 +27,38 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.xml.sax.SAXParseException;
 
 /**
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ModelBuilderTest extends TestCase {
+public class ModelBuilderTest {
 
 	public static final String NS_DESCRIPTOR = "META-INF/services/org/smooks/javabean/dynamic/ns-descriptors.properties";
 
+        @Test
 	public void test_1_schema() throws SAXException, IOException {
 		ModelBuilder builder = new ModelBuilder(NS_DESCRIPTOR, true);
 
 		Model<AAA> model = builder.readModel(getClass().getResourceAsStream("aaa-message.xml"), AAA.class);
 		AAA aaa = model.getModelRoot();
-		assertEquals(1234.98765, aaa.getDoubleProperty());
+		assertEquals(1234.98765, aaa.getDoubleProperty(), 0d);
 		assertEquals("http://www.acme.com/xsd/aaa.xsd", model.getBeanMetadata(aaa).getNamespace());
 
 		aaa = builder.readObject(getClass().getResourceAsStream("aaa-message.xml"), AAA.class);
-		assertEquals(1234.98765, aaa.getDoubleProperty());
+		assertEquals(1234.98765, aaa.getDoubleProperty(), 0d);
 	}
 
+        @Test
 	public void test_2_schema_with_validation_1() throws SAXException, IOException {
 		test_2_schema(new ModelBuilder(NS_DESCRIPTOR, true), "bbb-message.xml");
 	}
 
+    @Test
     public void test_2_schema_with_validation_2() throws SAXException, IOException {
         try {
             test_2_schema(new ModelBuilder(NS_DESCRIPTOR, true), "bbb-message-invalid.xml");
@@ -63,6 +68,7 @@ public class ModelBuilderTest extends TestCase {
         }
     }
 
+        @Test
 	public void test_2_schema_without_validation() throws SAXException, IOException {
 		test_2_schema(new ModelBuilder(NS_DESCRIPTOR, false), "bbb-message-invalid.xml");
 	}
@@ -81,7 +87,7 @@ public class ModelBuilderTest extends TestCase {
 		assertEquals(1234, bbb.getFloatProperty(), 1.0);
 
 		aaas = bbb.getAaas();
-		assertEquals(1234.98765, aaas.get(0).getDoubleProperty());
+		assertEquals(1234.98765, aaas.get(0).getDoubleProperty(), 0d);
 
         StringWriter writer = new StringWriter();
         model.writeModel(writer);
@@ -90,6 +96,7 @@ public class ModelBuilderTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream(message)), new StringReader(writer.toString()));
 	}
 
+    @Test
     public void test_build_model() throws IOException, SAXException {
         ModelBuilder builder = new ModelBuilder(NS_DESCRIPTOR, false);
         BBB bbb = new BBB();
@@ -119,8 +126,8 @@ public class ModelBuilderTest extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("bbb-message.xml")), new StringReader(writer.toString()));
     }
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before 
+    public void setUp() throws Exception {
     	Locale.setDefault(new Locale("en", "IE"));
     }
 

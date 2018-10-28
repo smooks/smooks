@@ -19,17 +19,13 @@ package org.milyn.javabean.dynamic.visitor;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
-import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXUtil;
-import org.milyn.delivery.sax.SAXVisitBefore;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.xml.sax.Attributes;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,6 +34,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public class NamespaceReaper implements DOMVisitBefore {
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
@@ -52,7 +49,10 @@ public class NamespaceReaper implements DOMVisitBefore {
                 String uri = attr.getValue();
                 QName attrQName = SAXUtil.toQName(uri, attr.getLocalName(), attr.getNodeName());
 
-                addMapping(namespacePrefixMappings, uri, attrQName.getLocalPart());
+                if (attrQName != null)
+                {
+                    addMapping(namespacePrefixMappings, uri, attrQName.getLocalPart());
+                }
             }
         }
     }

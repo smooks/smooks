@@ -16,7 +16,9 @@
 
 package org.smooks.model.javabean;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.javabean.dynamic.Model;
@@ -32,31 +34,37 @@ import java.io.StringWriter;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class BeanTest extends TestCase {
+public class BeanTest {
 
     private ModelBuilder modelBuilder;
 
-    public BeanTest() throws IOException, SAXException {
+    @Before
+    public void setUp() throws IOException, SAXException {
         modelBuilder = new ModelBuilder(SmooksModel.MODEL_DESCRIPTOR, false);
     }
 
+    @Test
     public void test_v11() throws IOException, SAXException {
         test("v11/config-01.xml");
     }
 
+    @Test
     public void test_v12_01() throws IOException, SAXException {
         test("v12/config-01.xml");
     }
 
+    @Test
     public void test_v12_02() throws IOException, SAXException {
         // mixed namespaces...
         test("v12/config-02.xml");
     }
 
+    @Test
     public void test_v13_01() throws IOException, SAXException {
         test("v13/config-01.xml");
     }
 
+    @Test
     public void test_v13_02() throws IOException, SAXException {
         // mixed namespaces...
         test("v13/config-02.xml");

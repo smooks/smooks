@@ -27,9 +27,9 @@ import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.ContentHandlerFactory;
 import org.milyn.delivery.DomModelCreator;
 import org.milyn.delivery.Visitor;
-import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.annotation.Resource;
+import org.milyn.delivery.sax.SAXElement;
 import org.milyn.io.StreamUtils;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.util.FreeMarkerTemplate;
@@ -163,15 +163,12 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
     /* (non-Javadoc)
 	 * @see org.milyn.delivery.ContentHandlerFactory#create(org.milyn.cdr.SmooksResourceConfiguration)
 	 */
-	public ContentHandler create(SmooksResourceConfiguration configuration) throws SmooksConfigurationException, InstantiationException {
+	public ContentHandler create(SmooksResourceConfiguration configuration) throws SmooksConfigurationException
+  {
 
         try {
 			byte[] groovyScriptBytes = configuration.getBytes();
             String groovyScript = new String(groovyScriptBytes, "UTF-8");
-
-            if(groovyScriptBytes == null) {
-				throw new InstantiationException("No resource specified in either the resource path or resource 'resdata'.");
-			}
 
             Object groovyObject;
 
@@ -199,7 +196,7 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
 
     private Object createFromTemplate(String groovyScript, SmooksResourceConfiguration configuration) throws InstantiationException, IllegalAccessException {
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader(getClass().getClassLoader());
-        Map templateVars = new HashMap();
+        Map<String, Object> templateVars = new HashMap<String, Object>();
         String imports = configuration.getStringParameter("imports", "");
 
         templateVars.put("imports", cleanImportsConfig(imports));
@@ -210,7 +207,7 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
 
         String templatedClass = classTemplate.apply(templateVars);
 
-        if(groovyScript.indexOf("writeFragment") != -1) {
+        if(groovyScript.contains("writeFragment")) {
             configuration.setParameter("writeFragment", "true");
         }
 

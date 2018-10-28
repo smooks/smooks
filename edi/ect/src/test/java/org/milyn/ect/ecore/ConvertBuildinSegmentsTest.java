@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -47,10 +48,11 @@ import org.milyn.edisax.model.internal.Edimap;
  * @author zubairov
  *
  */
-public class ConvertBuildinSegmentsTest extends TestCase {
+public class ConvertBuildinSegmentsTest {
 
 	private static final ExtendedMetaData METADATA = ExtendedMetaData.INSTANCE;
 
+        @Test
 	public void testConversion() throws Exception {
 		InputStream is = ConvertBuildinSegmentsTest.class.getResourceAsStream("/org/milyn/edisax/unedifact/handlers/r41/v41-segments.xml");
 		assertNotNull("Can't find a v41-segments.xml", is);

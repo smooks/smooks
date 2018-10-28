@@ -22,7 +22,6 @@ import javax.jms.TextMessage;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 
 /**
  *
@@ -37,7 +36,7 @@ public class TextMessageCreationStrategy implements MessageCreationStrategy
 			final ExecutionContext context,
 			final Session jmsSession ) throws SmooksException
 	{
-        final Object bean = BeanRepositoryManager.getBeanRepository(context).getBean( beanId );
+        final Object bean = context.getBeanContext().getBean( beanId );
         if(bean == null) {
             throw new SmooksException("Bean beandId '" + beanId + "' not available in the bean repository of this execution context.  Check the order in which your resources are being applied (in Smooks configuration).");
         }

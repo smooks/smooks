@@ -16,7 +16,11 @@
 
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 import java.util.Locale;
@@ -25,19 +29,22 @@ import java.util.Properties;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class BigIntegerDecoderTest extends TestCase {
+public class BigIntegerDecoderTest {
 
     private Locale defaultLocale;
 
+    @Before
     public void setUp() {
         defaultLocale = Locale.getDefault();
 		Locale.setDefault( new Locale("en", "IE") );
 	}
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         Locale.setDefault(defaultLocale);
     }
 
+    @Test
     public void test_decode_no_config() {
         BigIntegerDecoder decoder = new BigIntegerDecoder();
 
@@ -45,6 +52,7 @@ public class BigIntegerDecoderTest extends TestCase {
         assertEquals(new BigInteger("1234"), bigI);
     }
 
+    @Test
     public void test_decode_locale_config() {
         BigIntegerDecoder decoder = new BigIntegerDecoder();
         Properties config = new Properties();
@@ -56,6 +64,7 @@ public class BigIntegerDecoderTest extends TestCase {
         assertEquals(new BigInteger("1234"), bigI);
     }
 
+    @Test
     public void test_decode_format_config() {
         BigIntegerDecoder decoder = new BigIntegerDecoder();
         Properties config = new Properties();
@@ -67,6 +76,7 @@ public class BigIntegerDecoderTest extends TestCase {
         assertEquals(new BigInteger("1234"), bigI);
     }
 
+    @Test
     public void test_encode_format_config() {
         BigIntegerDecoder decoder = new BigIntegerDecoder();
         Properties config = new Properties();
@@ -77,6 +87,7 @@ public class BigIntegerDecoderTest extends TestCase {
         assertEquals("1,234", decoder.encode(new BigInteger("1234")));
     }
 
+    @Test
     public void test_encode_locale_config() {
         BigIntegerDecoder decoder = new BigIntegerDecoder();
         Properties config = new Properties();

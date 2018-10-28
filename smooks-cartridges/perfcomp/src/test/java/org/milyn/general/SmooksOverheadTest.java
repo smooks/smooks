@@ -21,7 +21,8 @@ import java.util.List;
 
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.Smooks;
 import org.milyn.payload.JavaResult;
@@ -39,12 +40,13 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SmooksOverheadTest extends TestCase {
+public class SmooksOverheadTest {
 
     private static final int NUM_WARMUPS = 10;
     //private static final int NUM_ITERATIONS = 10000000;
     private static final int NUM_ITERATIONS = 100;
 
+    @Test
     public void test_saxonly_timings() throws SAXException, IOException {
         for(int i = 0; i < NUM_WARMUPS; i++) {
             readBySax();
@@ -57,38 +59,47 @@ public class SmooksOverheadTest extends TestCase {
         System.out.println("SAX only Took: " + (System.currentTimeMillis() - start));
     }
 
+    @Test
     public void test_smookssax_timings_novis() throws IOException, SAXException {
         runSmooks("smooks-sax-empty.xml");
     }
 
+    @Test
     public void test_smookssax_java3() throws IOException, SAXException {
         runSmooks("smooks-sax-java3.xml");
     }
 
+    @Test
     public void test_smookssax_java3_object() throws IOException, SAXException {
         runSmooks("smooks-sax-java3-object.xml");
     }
 
+    @Test
     public void test_smookssax_timings_1vis() throws IOException, SAXException {
         runSmooks("smooks-sax-1vis.xml");
     }
 
+    @Test
     public void test_smookssax_timings_2vis() throws IOException, SAXException {
         runSmooks("smooks-sax-2vis.xml");
     }
 
+    @Test
     public void test_smookssax_java1() throws IOException, SAXException {
         runSmooks("smooks-sax-java1.xml");
     }
 
+    @Test
     public void test_smookssax_java2() throws IOException, SAXException {
         runSmooks("smooks-sax-java2.xml");
     }
 
+    @Test
     public void test_smookssax_java4() throws IOException, SAXException {
         runSmooks("smooks-sax-java4.xml");
     }
 
+    @Test
     public void test_configLoad() throws IOException, SAXException {
         for(int i = 0; i < NUM_WARMUPS; i++) {
             readAndLoadConfig();

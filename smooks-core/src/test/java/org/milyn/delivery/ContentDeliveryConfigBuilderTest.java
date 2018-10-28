@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.StreamFilterType;
@@ -32,8 +33,9 @@ import java.io.StringReader;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ContentDeliveryConfigBuilderTest extends TestCase {
+public class ContentDeliveryConfigBuilderTest {
 
+	@Test
     public void test_sax() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-sax.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -50,6 +52,7 @@ public class ContentDeliveryConfigBuilderTest extends TestCase {
         assertTrue(config.getVisitAfters().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
     }
 
+	@Test
     public void test_dom() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -64,6 +67,7 @@ public class ContentDeliveryConfigBuilderTest extends TestCase {
         assertEquals(4, config.getSerailizationVisitors().getCount());
     }
 
+	@Test
     public void test_dom_sax_1() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-1.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -72,6 +76,7 @@ public class ContentDeliveryConfigBuilderTest extends TestCase {
         assertTrue(execContext.getDeliveryConfig() instanceof SAXContentDeliveryConfig);
     }
 
+	@Test
     public void test_dom_sax_2() throws IOException, SAXException {
         Smooks smooks;
         ExecutionContext execContext;
@@ -93,6 +98,7 @@ public class ContentDeliveryConfigBuilderTest extends TestCase {
         }
     }
 
+	@Test
     public void test_dom_sax_3() throws IOException, SAXException {
         String origDefault = System.setProperty(Filter.STREAM_FILTER_TYPE, StreamFilterType.DOM.toString());
 
@@ -111,6 +117,7 @@ public class ContentDeliveryConfigBuilderTest extends TestCase {
         }
     }
 
+	@Test
     public void test_invalid() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-invalid.xml"));
 

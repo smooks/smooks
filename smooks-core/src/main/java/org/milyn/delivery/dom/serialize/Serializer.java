@@ -3,14 +3,14 @@
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
-	License (version 2.1) as published by the Free Software 
+	License (version 2.1) as published by the Free Software
 	Foundation.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    
-	See the GNU Lesser General Public License for more details:    
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
 
@@ -18,21 +18,21 @@ package org.milyn.delivery.dom.serialize;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.milyn.SmooksException;
+import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.ResourceConfigurationNotFoundException;
 import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.ParameterAccessor;
 import org.milyn.container.ExecutionContext;
-import org.milyn.event.ExecutionEventListener;
 import org.milyn.delivery.ContentHandlerConfigMap;
 import org.milyn.delivery.ContentHandlerConfigMapTable;
 import org.milyn.delivery.Filter;
-import org.milyn.event.types.ResourceTargetingEvent;
-import org.milyn.event.types.ElementPresentEvent;
-import org.milyn.event.types.DOMFilterLifecycleEvent;
 import org.milyn.delivery.dom.DOMContentDeliveryConfig;
+import org.milyn.event.ExecutionEventListener;
+import org.milyn.event.types.DOMFilterLifecycleEvent;
+import org.milyn.event.types.ElementPresentEvent;
+import org.milyn.event.types.ResourceTargetingEvent;
 import org.milyn.xml.DocType;
 import org.milyn.xml.DomUtils;
-import org.milyn.SmooksException;
 import org.w3c.dom.*;
 
 import java.io.IOException;
@@ -44,11 +44,11 @@ import java.util.List;
  * <p/>
  * This class uses the {@link org.milyn.delivery.ContentDeliveryConfig} and the
  * {@link org.milyn.delivery.dom.serialize.SerializationUnit} instances defined there on
- * to perform the serialization. 
+ * to perform the serialization.
  * @author tfennelly
  */
 public class Serializer {
-	
+
 	/**
 	 * Logger.
 	 */
@@ -61,19 +61,11 @@ public class Serializer {
 	 * Target device context.
 	 */
 	private ExecutionContext executionContext;
-	/**
-	 * Target content delivery config.
-	 */
-	private DOMContentDeliveryConfig deliveryConfig;
-	/**
+  /**
 	 * Target content delivery context SerializationUnit definitions.
 	 */
 	private ContentHandlerConfigMapTable<SerializationUnit> serializationUnits;
-    /**
-     * Turn default serialization on/off.  Default is "true".
-     */
-    private boolean defaultSerializationOn;
-    /**
+  /**
      * Default serialization unit.
      */
 	private DefaultSerializationUnit defaultSerializationUnit;
@@ -102,14 +94,20 @@ public class Serializer {
 		this.executionContext = executionContext;
         eventListener = executionContext.getEventListener();
 		// Get the delivery context for the device.
-		deliveryConfig = (DOMContentDeliveryConfig) executionContext.getDeliveryConfig();
+    /*
+      Target content delivery config.
+     */
+    DOMContentDeliveryConfig deliveryConfig = (DOMContentDeliveryConfig) executionContext.getDeliveryConfig();
 		// Initialise the serializationUnits member
 		serializationUnits = deliveryConfig.getSerailizationVisitors();
 
         globalSUs = serializationUnits.getMappings(new String[] {"*", "**"});
 
         // Set the default SerializationUnit
-        defaultSerializationOn = ParameterAccessor.getBoolParameter(Filter.DEFAULT_SERIALIZATION_ON, true, executionContext.getDeliveryConfig());
+    /*
+      Turn default serialization on/off.  Default is "true".
+     */
+    boolean defaultSerializationOn = ParameterAccessor.getBoolParameter(Filter.DEFAULT_SERIALIZATION_ON, true, executionContext.getDeliveryConfig());
         if(defaultSerializationOn) {
             defaultSerializationUnit = new DefaultSerializationUnit();
             boolean rewriteEntities = ParameterAccessor.getBoolParameter(Filter.ENTITIES_REWRITE, true, executionContext.getDeliveryConfig());
@@ -117,24 +115,22 @@ public class Serializer {
         }
         terminateOnVisitorException = ParameterAccessor.getBoolParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, true, executionContext.getDeliveryConfig());
 	}
-	
+
 	/**
 	 * Serialise the document to the supplied output writer instance.
 	 * <p/>
 	 * Adds the DOCTYPE decl if one defined in the Content Delivery Configuration.
 	 * <p/>
-	 * If the node is a Document (or DocumentFragment) node the whole node is serialised.  
+	 * If the node is a Document (or DocumentFragment) node the whole node is serialised.
 	 * Otherwise, only the node child elements are serialised i.e. the node itself is skipped.
 	 * @param writer Output writer.
 	 * @throws ResourceConfigurationNotFoundException DOM Serialiser exception.
 	 * @throws IOException Unable to write to output writer.
 	 */
-	public void serailize(Writer writer) throws ResourceConfigurationNotFoundException, IOException {		
-		List docTypeUDs;
-		
-		if(writer == null) {
+	public void serailize(Writer writer) throws ResourceConfigurationNotFoundException, IOException {
+    if(writer == null) {
 			throw new IllegalArgumentException("null 'writer' arg passed in method call.");
-		} 
+		}
 
         // Register the DOM phase events...
         if(eventListener != null) {
@@ -170,45 +166,13 @@ public class Serializer {
         }
     }
 
-	/**
-	 * Serialize the DocumentType.
-	 * <p/>
-	 * Only called if a DOCTYPE was suppied in the original source and
-	 * no doctype overrides were configured (in .cdrl) for the requesting
-	 * device.
-	 * @param publicId Docytype public ID.
-     * @param systemId Docytype system ID.
-	 * @param rootElement The root element name.
-	 * @param writer The target writer.
-	 * @throws IOException Exception writing to the output writer.
-	 */
-	private void serializeDoctype(String publicId, String systemId, String rootElement, Writer writer) throws IOException {
-
-        writer.write("<!DOCTYPE ");
-		writer.write(rootElement);
-		writer.write(' ');
-		if(publicId != null) {
-			writer.write("PUBLIC \"");
-			writer.write(publicId);
-			writer.write("\" ");
-		}
-		if(systemId != null) {
-			writer.write('"');
-			writer.write(systemId);
-			writer.write('"');
-		}
-        writer.write('>');
-		writer.write('\n');
-	}
-
-	/**
+  /**
 	 * Recursively write the DOM tree to the supplied writer.
 	 * @param element Element to write.
 	 * @param writer Writer to use.
      * @param isRoot Is the supplied element the document root element.
-     * @throws IOException Exception writing to Writer.
 	 */
-	private void recursiveDOMWrite(Element element, Writer writer, boolean isRoot) throws IOException {
+	private void recursiveDOMWrite(Element element, Writer writer, boolean isRoot) {
 		SerializationUnit elementSU;
 		NodeList children = element.getChildNodes();
 
@@ -220,10 +184,10 @@ public class Serializer {
 
             if(children != null && children.getLength() > 0) {
 				int childCount = children.getLength();
-	
+
 				for(int i = 0; i < childCount; i++) {
 					Node childNode = children.item(i);
-					
+
                     if(elementSU != null) {
                         switch(childNode.getNodeType()) {
                             case Node.CDATA_SECTION_NODE: {
@@ -282,7 +246,8 @@ public class Serializer {
      * @param isRoot Is the supplied element the document root element.
      * @return SerializationUnit.
 	 */
-	private SerializationUnit getSerializationUnit(Element element, boolean isRoot) {
+	@SuppressWarnings("unchecked")
+  private SerializationUnit getSerializationUnit(Element element, boolean isRoot) {
 		String elementName = DomUtils.getName(element);
         List<ContentHandlerConfigMap<SerializationUnit>> elementSUs;
 
@@ -290,44 +255,45 @@ public class Serializer {
         if(eventListener != null) {
             eventListener.onEvent(new ElementPresentEvent(element));
         }
-        
+
         if(isRoot) {
             // The document as a whole (root node) can also be targeted through the "#document" selector.
             elementSUs = serializationUnits.getMappings(new String[] {SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
             elementSUs = serializationUnits.getMappings(elementName);
         }
-        
+
         if(elementSUs == null || elementSUs.isEmpty()) {
 			elementSUs = globalSUs;
 		}
 
         if(elementSUs != null) {
-            int numSUs = elementSUs.size();
+          for (final ContentHandlerConfigMap<SerializationUnit> elementSU : elementSUs)
+          {
+            SmooksResourceConfiguration config = elementSU.getResourceConfig();
 
-            for(int i = 0; i < numSUs; i++) {
-                ContentHandlerConfigMap configMap = elementSUs.get(i);
-                SmooksResourceConfiguration config = configMap.getResourceConfig();
-
-                // Make sure the serialization unit is targeted at this element.
-                if(!config.isTargetedAtElement(element, executionContext)) {
-                    continue;
-                }
-
-                // Register the targeting event...
-                if(eventListener != null) {
-                    eventListener.onEvent(new ResourceTargetingEvent(element, config));
-                }
-
-                if(logger.isDebugEnabled()) {
-                    logger.debug("Applying serialisation resource [" + config + "] to element [" + DomUtils.getXPath(element) + "].");
-                }
-
-                // This is the one, return it...
-                return (SerializationUnit)configMap.getContentHandler();
+            // Make sure the serialization unit is targeted at this element.
+            if (!config.isTargetedAtElement(element, executionContext))
+            {
+              continue;
             }
+
+            // Register the targeting event...
+            if (eventListener != null)
+            {
+              eventListener.onEvent(new ResourceTargetingEvent(element, config));
+            }
+
+            if (logger.isDebugEnabled())
+            {
+              logger.debug("Applying serialisation resource [" + config + "] to element [" + DomUtils.getXPath(element) + "].");
+            }
+
+            // This is the one, return it...
+            return (SerializationUnit) ((ContentHandlerConfigMap) elementSU).getContentHandler();
+          }
         }
-        
+
         return defaultSerializationUnit;
 	}
 
@@ -340,9 +306,9 @@ public class Serializer {
      * Recursively write the DOM tree to the supplied writer.
      * @param element Element to write.
      * @param writer Writer to use.
-     * @throws IOException Exception writing to Writer.
      */
-    public static void recursiveDOMWrite(Element element, Writer writer) throws IOException {
+    @SuppressWarnings({ "unused", "WeakerAccess" })
+    public static void recursiveDOMWrite(Element element, Writer writer) {
         NodeList children = element.getChildNodes();
 
         try {

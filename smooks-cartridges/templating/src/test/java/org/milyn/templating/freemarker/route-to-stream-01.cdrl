@@ -1,19 +1,14 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
 
     <resource-config selector="$document">
         <resource>org.milyn.templating.MockOutStreamResource</resource>
         <param name="resourceName">mockOutStream</param>
     </resource-config>
 
-    <resource-config selector="c">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
-        <param name="beanId">myBeanCData</param>
-        <param name="beanClass">org.milyn.templating.MyBean</param>
-        <param name="bindings">
-            <binding property="x" selector="c @x" />
-        </param>
-    </resource-config>
+    <jb:bean beanId="myBeanCData" class="org.milyn.templating.MyBean" createOnElement="c">
+       <jb:value property="x" data="c/@x" />
+    </jb:bean>
 
     <resource-config selector="d">
         <resource type="ftl"><!--<mybean>${myBeanCData.x}</mybean>--></resource>
@@ -25,13 +20,8 @@
         <param name="outputStreamResource">mockOutStream</param>
     </resource-config>
 
-    <resource-config selector="e">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
-        <param name="beanId">myBeanEData</param>
-        <param name="beanClass">org.milyn.templating.MyBean</param>
-        <param name="bindings">
-            <binding property="x" selector="e @x" />
-        </param>
-    </resource-config>
+    <jb:bean beanId="myBeanEData" class="org.milyn.templating.MyBean" createOnElement="e">
+        <jb:value property="x" data="e/@x" />
+    </jb:bean>
 
 </smooks-resource-list>

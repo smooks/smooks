@@ -3,14 +3,14 @@
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
-	License (version 2.1) as published by the Free Software 
+	License (version 2.1) as published by the Free Software
 	Foundation.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    
-	See the GNU Lesser General Public License for more details:    
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
 
@@ -18,15 +18,9 @@ package org.milyn.delivery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.FilterSettings;
 import org.milyn.SmooksException;
 import org.milyn.StreamFilterType;
-import org.milyn.cdr.Parameter;
-import org.milyn.cdr.ParameterAccessor;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksResourceConfigurationSortComparator;
-import org.milyn.cdr.SmooksResourceConfigurationStore;
+import org.milyn.cdr.*;
 import org.milyn.container.ApplicationContext;
 import org.milyn.delivery.dom.DOMContentDeliveryConfig;
 import org.milyn.delivery.sax.SAXContentDeliveryConfig;
@@ -36,22 +30,15 @@ import org.milyn.event.types.ConfigBuilderEvent;
 import org.milyn.profile.ProfileSet;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Vector;
 
 /**
  * Content delivery configuration builder.
  * @author tfennelly
  */
 public class ContentDeliveryConfigBuilder {
-	
+
 	/**
 	 * Logger.
 	 */
@@ -106,7 +93,7 @@ public class ContentDeliveryConfigBuilder {
         visitorConfig = new VisitorConfigMap(applicationContext);
         visitorConfig.setConfigBuilderEvents(configBuilderEvents);
     }
-	
+
 	/**
 	 * Get the ContentDeliveryConfig instance for the specified profile set.
 	 * @param profileSet The profile set with which this delivery config is associated.
@@ -117,7 +104,7 @@ public class ContentDeliveryConfigBuilder {
 	public static ContentDeliveryConfig getConfig(ProfileSet profileSet, ApplicationContext applicationContext, VisitorConfigMap extendedVisitorConfigMap) {
 		ContentDeliveryConfig config;
 		LinkedHashMap<String, ContentDeliveryConfig> configTable;
-		
+
 		if(profileSet == null) {
 			throw new IllegalArgumentException("null 'profileSet' arg passed in method call.");
 		} else if(applicationContext == null) {
@@ -150,7 +137,7 @@ public class ContentDeliveryConfigBuilder {
                 }
             }
         }
-		
+
 		return config;
 	}
 
@@ -204,14 +191,14 @@ public class ContentDeliveryConfigBuilder {
             saxConfig.setSmooksResourceConfigurations(resourceConfigTable);
             saxConfig.setDtd(dtd);
             saxConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
-            
+
             saxConfig.optimizeConfig();
             saxConfig.assertSelectorsNotAccessingText();
 
             if(sortVisitors) {
                 saxConfig.sort();
             }
-            
+
             saxConfig.addToExecutionLifecycleSets();
             saxConfig.initializeXMLReaderPool();
 
@@ -265,7 +252,7 @@ public class ContentDeliveryConfigBuilder {
                 throw new SmooksException("The configured Filter ('" + filterTypeParam + "') cannot be used with the specified set of Smooks visitors.  The '" + filterType + "' Filter is the only filter that can be used for this set of Visitors.  Turn on Debug logging for more information.");
             }
         }
-        
+
         return filterType;
     }
 
@@ -308,13 +295,18 @@ public class ContentDeliveryConfigBuilder {
                     printedHandlers.add(handler);
                 }
 
-                stringBuf.append("\t\t " + (domSupported?"x":" ") +
-                        "     " + (saxSupported?"x":" ") +
-                        "     " + configMap.getResourceConfig() + "\n");
+                stringBuf.append("\t\t ")
+                         .append(domSupported ? "x" : " ")
+                         .append("     ")
+                         .append(saxSupported ? "x" : " ")
+                         .append("     ")
+                         .append(configMap.getResourceConfig())
+                         .append("\n");
             }
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static LinkedHashMap<String, ContentDeliveryConfig> getDeliveryConfigTable(ApplicationContext applicationContext) {
         return (LinkedHashMap) applicationContext.getAttribute(DELIVERY_CONFIG_TABLE_CTX_KEY);
     }
@@ -371,11 +363,11 @@ public class ContentDeliveryConfigBuilder {
 		logger.debug("Resource configuration (sorted) for profile [" + profileSet.getBaseProfile() + "].  Sub Profiles: [" + profileSet + "]");
 		Iterator configurations = resourceConfigTable.entrySet().iterator();
 		int i = 0;
-		
+
 		while(configurations.hasNext()) {
 			Map.Entry entry = (Entry) configurations.next();
 			List resources = (List)entry.getValue();
-			
+
 			logger.debug(i + ") " + entry.getKey());
 			for (int ii = 0; ii < resources.size(); ii++) {
 				logger.debug("\t(" + ii + ") " + resources.get(ii));
@@ -389,12 +381,10 @@ public class ContentDeliveryConfigBuilder {
 	 * @param resourceConfigsList List of SmooksResourceConfigurations.
 	 */
 	private void buildSmooksResourceConfigurationTable(List resourceConfigsList) {
-		Iterator iterator = resourceConfigsList.iterator();
-		
-		while(iterator.hasNext()) {
-			SmooksResourceConfiguration config = (SmooksResourceConfiguration)iterator.next();
-            addResourceConfiguration(config);
-		}
+    for (final Object resourceConfig : resourceConfigsList)
+    {
+      addResourceConfiguration((SmooksResourceConfiguration) resourceConfig);
+    }
 	}
 
     /**
@@ -418,6 +408,7 @@ public class ContentDeliveryConfigBuilder {
      * @param element The element to which the config is to be added.
      * @param resourceConfiguration The Object to be added.
      */
+    @SuppressWarnings("unchecked")
     private void addResourceConfiguration(String element, SmooksResourceConfiguration resourceConfiguration) {
         // Add it to the unsorted list...
         if(!resourceConfigsList.contains(resourceConfiguration)) {
@@ -448,9 +439,10 @@ public class ContentDeliveryConfigBuilder {
 				// Expand XmlDef entries.
 				if(resourceConfig.isXmlDef()) {
 					String[] elements = getDTDElements(resourceConfig.getSelector().substring(SmooksResourceConfiguration.XML_DEF_PREFIX.length()));
-					for(int i = 0; i < elements.length; i++) {
-						addResourceConfiguration(elements[i], resourceConfig);
-					}
+          for (final String element : elements)
+          {
+            addResourceConfiguration(element, resourceConfig);
+          }
 				}
 
 				// Add code to expand other expandable entry types here.
@@ -464,21 +456,23 @@ public class ContentDeliveryConfigBuilder {
 	 * Iterate over the table smooks-resource instances and sort the SmooksResourceConfigurations
 	 * on each element.  Ordered by specificity.
 	 */
-	private void sortSmooksResourceConfigurations(Map<String, List<SmooksResourceConfiguration>> table) {
+	@SuppressWarnings("unchecked")
+  private void sortSmooksResourceConfigurations(Map<String, List<SmooksResourceConfiguration>> table) {
         Parameter sortParam = ParameterAccessor.getParameter("sort.resources", table);
         if(sortParam != null && sortParam.getValue().trim().equalsIgnoreCase("true")) {
             if(!table.isEmpty()) {
-                Iterator tableEntrySet = table.entrySet().iterator();
 
-                while(tableEntrySet.hasNext()) {
-                    Map.Entry entry = (Map.Entry)tableEntrySet.next();
-                    List markupElSmooksResourceConfigurations = (List)entry.getValue();
-                    SmooksResourceConfiguration[] resourceConfigs = (SmooksResourceConfiguration[])markupElSmooksResourceConfigurations.toArray(new SmooksResourceConfiguration[markupElSmooksResourceConfigurations.size()]);
-                    SmooksResourceConfigurationSortComparator sortComparator = new SmooksResourceConfigurationSortComparator(profileSet);
+              for (final Object o : table.entrySet())
+              {
+                Entry entry = (Entry) o;
+                List markupElSmooksResourceConfigurations = (List) entry.getValue();
+                SmooksResourceConfiguration[] resourceConfigs = (SmooksResourceConfiguration[]) markupElSmooksResourceConfigurations
+                    .toArray(new SmooksResourceConfiguration[0]);
+                SmooksResourceConfigurationSortComparator sortComparator = new SmooksResourceConfigurationSortComparator(profileSet);
 
-                    Arrays.sort(resourceConfigs, sortComparator);
-                    entry.setValue(new Vector(Arrays.asList(resourceConfigs)));
-                }
+                Arrays.sort(resourceConfigs, sortComparator);
+                entry.setValue(new Vector(Arrays.asList(resourceConfigs)));
+              }
             }
         }
     }
@@ -545,25 +539,25 @@ public class ContentDeliveryConfigBuilder {
 	 * @author tfennelly
 	 */
 	private final class ContentHandlerExtractionStrategy implements SmooksResourceConfigurationStrategy {
-		
+
         private SmooksResourceConfigurationStore store;
 
-        public ContentHandlerExtractionStrategy(ApplicationContext applicationContext) {
+        private ContentHandlerExtractionStrategy(ApplicationContext applicationContext) {
             store = applicationContext.getStore();
         }
 
         public void applyStrategy(String elementName, SmooksResourceConfiguration resourceConfig) {
-            applyCDUStrategy(elementName, resourceConfig);
+            applyCDUStrategy(resourceConfig);
         }
 
-        public boolean applyCDUStrategy(String elementName, SmooksResourceConfiguration resourceConfig) {
+        private boolean applyCDUStrategy(SmooksResourceConfiguration resourceConfig) {
 			ContentHandlerFactory creator;
 
 			// Try it as a Java class before trying anything else.  This is to
-			// accomodate specification of the class in the standard 
+			// accomodate specification of the class in the standard
 			// Java form e.g. java.lang.String Vs java/lang/String.class
             if(resourceConfig.isJavaContentHandler()) {
-    			try {                
+    			try {
     				creator = store.getContentHandlerFactory("class");
     				if(addCDU(resourceConfig, creator)) {
     					// Job done - it's a CDU and we've added it!
@@ -571,26 +565,20 @@ public class ContentDeliveryConfigBuilder {
     				}
     			} catch (UnsupportedContentHandlerTypeException e) {
     				throw new IllegalStateException("No ContentHandlerFactory configured (IoC) for type 'class' (Java).");
-    			} catch (InstantiationException e) {
-                    // Ignore it again - not a proper Java CDU - continue on, may be a different type...
-                }
+    			}
             }
 
             // Get the resource type and "try" creating a ContentHandlerFactory for that resource
             // type.
             String restype = resourceConfig.getResourceType();
             creator = tryCreateCreator(restype);
-			
+
             // If we have a creator but it's the JavaContentHandlerFactory we ignore it because
             // we know the class in question does not implement ContentHandler.  We know because
             // we tried this above.
             if(creator != null) {
                 if(!(creator instanceof JavaContentHandlerFactory)) {
-                    try {
-                        return addCDU(resourceConfig, creator);
-                    } catch (InstantiationException e) {
-                        logger.debug("ContentHandler creation failure.", e);
-                    }
+                    return addCDU(resourceConfig, creator);
                 }
             } else {
 				// Just ignore it - something else will use it (hopefully)
@@ -603,7 +591,7 @@ public class ContentDeliveryConfigBuilder {
 
             return false;
         }
-        
+
         /**
          * Try create the CDU creator for the specified resource type.
          * <p/>
@@ -623,7 +611,7 @@ public class ContentDeliveryConfigBuilder {
 			} catch (UnsupportedContentHandlerTypeException e) {
 				return null;
 			}
-			
+
 			return creator;
         }
 
@@ -631,10 +619,10 @@ public class ContentDeliveryConfigBuilder {
 		 * Add a {@link ContentHandler} for the specified element and configuration.
 		 * @param resourceConfig Configuration.
 		 * @param handlerFactory CDU Creator class.
-		 * @throws InstantiationException Failed to instantia
-         * @return True if the CDU was added, otherwise false. 
+		 * @return True if the CDU was added, otherwise false.
 		 */
-		private boolean addCDU(SmooksResourceConfiguration resourceConfig, ContentHandlerFactory handlerFactory) throws InstantiationException {
+		private boolean addCDU(SmooksResourceConfiguration resourceConfig, ContentHandlerFactory handlerFactory)
+    {
 			Object contentHandler;
 
 			// Create the ContentHandler.
@@ -652,7 +640,7 @@ public class ContentDeliveryConfigBuilder {
                     logger.debug(message + thrown.getMessage());
 				}
                 configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message, thrown));
-                
+
                 return false;
 			}
 
@@ -688,11 +676,9 @@ public class ContentDeliveryConfigBuilder {
          * @param additionalConfigs Expansion configs.
          */
         private void processExpansionConfigurations(List<SmooksResourceConfiguration> additionalConfigs) {
-            for(SmooksResourceConfiguration config : additionalConfigs) {
-                String targetElement = config.getTargetElement();
-
-                // Try adding it as a ContentHandler instance...
-                if(!applyCDUStrategy(targetElement, config)) {
+            for(final SmooksResourceConfiguration config : additionalConfigs) {
+              // Try adding it as a ContentHandler instance...
+                if(!applyCDUStrategy(config)) {
                     // Else just add it to the main list...
                     addResourceConfiguration(config);
                 }
@@ -712,7 +698,7 @@ public class ContentDeliveryConfigBuilder {
 		 * Iteration strategy.
 		 */
 		private SmooksResourceConfigurationStrategy strategy;
-		
+
 		/**
 		 * Private constructor.
 		 * @param strategy Strategy algorithm implementation.
@@ -720,18 +706,18 @@ public class ContentDeliveryConfigBuilder {
 		private SmooksResourceConfigurationTableIterator(SmooksResourceConfigurationStrategy strategy) {
 			this.strategy = strategy;
 		}
-		
+
 		/**
 		 * Iterate over the table applying the strategy.
 		 */
 		private void iterate() {
-            for (int i = 0; i < resourceConfigsList.size(); i++) {
-                SmooksResourceConfiguration smooksResourceConfiguration = resourceConfigsList.get(i);
-                strategy.applyStrategy(smooksResourceConfiguration.getTargetElement(), smooksResourceConfiguration);
-            }
+      for (final SmooksResourceConfiguration smooksResourceConfiguration : resourceConfigsList)
+      {
+        strategy.applyStrategy(smooksResourceConfiguration.getTargetElement(), smooksResourceConfiguration);
+      }
 		}
 	}
-	
+
 	/**
 	 * Unitdef iteration strategy interface.
 	 * @author tfennelly
@@ -739,9 +725,9 @@ public class ContentDeliveryConfigBuilder {
 	private interface SmooksResourceConfigurationStrategy {
 		/**
 		 * Apply the strategy algorithm.
-		 * @param elementName The element name the SmooksResourceConfiguration
-		 * @param unitDef
+		 * @param elementName The element name
+		 * @param unitDef The SmooksResourceConfiguration
 		 */
-		public void applyStrategy(String elementName, SmooksResourceConfiguration unitDef);
+		void applyStrategy(String elementName, SmooksResourceConfiguration unitDef);
 	}
 }

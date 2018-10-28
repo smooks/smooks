@@ -15,7 +15,11 @@
 */
 package org.milyn.delivery.sax;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.io.StreamUtils;
@@ -24,6 +28,7 @@ import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,8 +38,9 @@ import java.io.StringWriter;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SAXFilterTest extends TestCase {
+public class SAXFilterTest {
 
+	@Test
     public void test_reader_writer() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -45,6 +51,7 @@ public class SAXFilterTest extends TestCase {
         assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(writer.toString())).toString());
     }
 
+	@Test
     public void test_reader_stream() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -55,6 +62,7 @@ public class SAXFilterTest extends TestCase {
         assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(outStream.toString())).toString());
     }
 
+	@Test
     public void test_stream_stream() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -65,6 +73,7 @@ public class SAXFilterTest extends TestCase {
         assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(outStream.toString())).toString());
     }
 
+	@Test
     public void test_stream_writer() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -75,7 +84,8 @@ public class SAXFilterTest extends TestCase {
         assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(writer.toString())).toString());
     }
 
-    protected void setUp() throws Exception {
+	@Before
+    public void setUp() throws Exception {
         SAXVisitor01.element = null;
         SAXVisitor01.children.clear();
         SAXVisitor01.childText.clear();
@@ -92,6 +102,7 @@ public class SAXFilterTest extends TestCase {
         SAXVisitAfterAndChildrenVisitor.reset();
     }
 
+	@Test
     public void test_selection() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-02.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -119,14 +130,17 @@ public class SAXFilterTest extends TestCase {
         }
     }
 
+	@Test
     public void test_contextual_1() throws IOException, SAXException {
         test_contextual("smooks-config-03.xml");
     }
 
+	@Test
     public void test_contextual_2() throws IOException, SAXException {
         test_contextual("smooks-config-03.01.xml");
     }
 
+	@Test
     public void test_contextual_3() throws IOException, SAXException {
         test_contextual("smooks-config-03.02.xml");
     }
@@ -152,6 +166,7 @@ public class SAXFilterTest extends TestCase {
         assertEquals(1, SAXVisitor03.childText.size());
     }
 
+    @Test
     public void test_$document() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-04.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
@@ -163,6 +178,7 @@ public class SAXFilterTest extends TestCase {
         assertNull(SAXVisitor03.element);
     }
 
+    @Test
     public void test_visitBeforeOnly() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
@@ -171,6 +187,7 @@ public class SAXFilterTest extends TestCase {
         assertEquals("Hi There!", SAXVisitBeforeVisitor.staticInjectedParam);
     }
 
+    @Test
     public void test_visitBeforeAndChildren() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
@@ -199,6 +216,7 @@ public class SAXFilterTest extends TestCase {
         SAXVisitBeforeAndChildrenVisitor.reset();
     }
 
+    @Test
     public void test_visitAfterOnly() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
@@ -206,6 +224,7 @@ public class SAXFilterTest extends TestCase {
         assertTrue(SAXVisitAfterVisitor.visited);
     }
 
+    @Test
     public void test_visitAfterAndChildren() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
@@ -234,6 +253,7 @@ public class SAXFilterTest extends TestCase {
         SAXVisitAfterAndChildrenVisitor.reset();
     }
 
+    @Test
     public void test_report() throws IOException, SAXException {
         System.out.println("********* FIX TEST!!");
         /*

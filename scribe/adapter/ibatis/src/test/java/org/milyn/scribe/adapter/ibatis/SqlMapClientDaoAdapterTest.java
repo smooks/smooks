@@ -15,9 +15,19 @@
 */
 package org.milyn.scribe.adapter.ibatis;
 
-import static junit.framework.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import org.milyn.scribe.adapter.ibatis.test.util.BaseTestCase;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import org.mockito.Mock;
+import static org.mockito.Mockito.stub;
+import static org.mockito.Mockito.verify;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -26,119 +36,110 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.milyn.scribe.adapter.ibatis.test.util.BaseTestCase;
-import org.mockito.Mock;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import com.ibatis.sqlmap.client.SqlMapClient;
-
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
- *
  */
 public class SqlMapClientDaoAdapterTest extends BaseTestCase {
 
-	@Mock
-	private SqlMapClient sqlMapClient;
+    @Mock
+    private SqlMapClient sqlMapClient;
 
-	private SqlMapClientDaoAdapter adapter;
+    private SqlMapClientDaoAdapter adapter;
 
-	@Test( groups = "unit" )
-	public void test_persist() throws SQLException {
+    @Test(groups = "unit")
+    public void test_persist() throws SQLException {
 
-		// EXECUTE
+        // EXECUTE
 
-		Object toPersist = new Object();
+        Object toPersist = new Object();
 
-		// VERIFY
+        // VERIFY
 
-		adapter.insert("id", toPersist);
+        adapter.insert("id", toPersist);
 
-		verify(sqlMapClient).insert(eq("id"), same(toPersist));
+        verify(sqlMapClient).insert(eq("id"), same(toPersist));
 
-	}
+    }
 
-	@Test( groups = "unit" )
-	public void test_merge() throws SQLException {
+    @Test(groups = "unit")
+    public void test_merge() throws SQLException {
 
-		// EXECUTE
+        // EXECUTE
 
-		Object toMerge = new Object();
+        Object toMerge = new Object();
 
-		Object merged = adapter.update("id", toMerge);
+        Object merged = adapter.update("id", toMerge);
 
-		// VERIFY
+        // VERIFY
 
-		verify(sqlMapClient).update(eq("id"), same(toMerge));
+        verify(sqlMapClient).update(eq("id"), same(toMerge));
 
-		assertNull(merged);
+        assertNull(merged);
 
-	}
-
-
-	@Test( groups = "unit" )
-	public void test_lookup_map_parameters() throws SQLException {
-
-		// STUB
-
-		List<?> listResult = Collections.emptyList();
-
-		stub(sqlMapClient.queryForList(anyString(), anyObject())).toReturn(listResult);
-
-		// EXECUTE
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("key1", "value1");
-		params.put("key2", "value2");
-
-		Collection<Object> result = adapter.lookup("name", params);
-
-		// VERIFY
-
-		assertSame(listResult, result);
-
-		verify(sqlMapClient).queryForList(eq("name"), same(params));
+    }
 
 
-	}
+    @Test(groups = "unit")
+    public void test_lookup_map_parameters() throws SQLException {
 
-	@Test( groups = "unit" )
-	public void test_lookup_array_parameters() throws SQLException {
+        // STUB
 
-		// STUB
+        List<?> listResult = Collections.emptyList();
 
-		List<?> listResult = Collections.emptyList();
+        stub(sqlMapClient.queryForList(anyString(), anyObject())).toReturn(listResult);
 
-		stub(sqlMapClient.queryForList(anyString(), anyObject())).toReturn(listResult);
+        // EXECUTE
 
-		// EXECUTE
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("key1", "value1");
+        params.put("key2", "value2");
 
-		Object[] params = new Object[2];
-		params[0] = "value1";
-		params[1] = "value2";
+        Collection<Object> result = adapter.lookup("name", params);
 
-		Collection<Object> result = adapter.lookup("name", params);
+        // VERIFY
 
-		// VERIFY
+        assertSame(listResult, result);
 
-		assertSame(listResult, result);
-
-		verify(sqlMapClient).queryForList(eq("name"), same(params));
-
-	}
+        verify(sqlMapClient).queryForList(eq("name"), same(params));
 
 
-	/* (non-Javadoc)
-	 * @see org.milyn.scribe.test.util.BaseTestCase#beforeMethod()
-	 */
-	@BeforeMethod(alwaysRun = true)
-	@Override
-	public void beforeMethod() {
-		super.beforeMethod();
+    }
 
-		adapter = new SqlMapClientDaoAdapter(sqlMapClient);
-	}
+    @Test(groups = "unit")
+    public void test_lookup_array_parameters() throws SQLException {
 
+        // STUB
+
+        List<?> listResult = Collections.emptyList();
+
+        stub(sqlMapClient.queryForList(anyString(), anyObject())).toReturn(listResult);
+
+        // EXECUTE
+
+        Object[] params = new Object[2];
+        params[0] = "value1";
+        params[1] = "value2";
+
+        Collection<Object> result = adapter.lookup("name", params);
+
+        // VERIFY
+
+        assertSame(listResult, result);
+
+        verify(sqlMapClient).queryForList(eq("name"), same(params));
+
+    }
+
+
+    /* (non-Javadoc)
+     * @see org.milyn.scribe.test.util.BaseTestCase#beforeMethod()
+     */
+    @BeforeMethod(alwaysRun = true)
+    @Override
+    public void beforeMethod() {
+        super.beforeMethod();
+
+        adapter = new SqlMapClientDaoAdapter(sqlMapClient);
+    }
 
 }

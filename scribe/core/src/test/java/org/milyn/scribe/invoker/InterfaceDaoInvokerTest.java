@@ -56,6 +56,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_insert_named() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(fullDao);
@@ -68,6 +69,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_update() {
 
 
@@ -82,6 +84,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 	}
 
 
+	@Test
 	public void test_update_named() {
 
 
@@ -95,6 +98,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_delete() {
 
 
@@ -108,6 +112,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_delete_named() {
 
 
@@ -121,6 +126,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_flush() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(fullDao);
@@ -140,6 +146,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_lookup() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(fullDao);
@@ -164,6 +171,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_lookupByQuery_map_params() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(fullDao);
@@ -176,6 +184,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_lookupByQuery_array_params() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(fullDao);

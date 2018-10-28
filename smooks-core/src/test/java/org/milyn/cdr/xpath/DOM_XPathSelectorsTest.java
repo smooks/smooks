@@ -15,26 +15,33 @@
 */
 package org.milyn.cdr.xpath;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.IOException;
 import java.util.Properties;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class DOM_XPathSelectorsTest extends TestCase {
+public class DOM_XPathSelectorsTest {
 
-    protected void setUp() throws Exception {
+	@Before
+    public void setUp() throws Exception {
         XPathVisitor.domVisitedBeforeElementStatic = null;
         XPathVisitor.domVisitedAfterElementStatic = null;
         XPathAfterVisitor.domVisitedAfterElement = null;
     }
-
+	
+	@Test
     public void test_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
 
@@ -44,6 +51,7 @@ public class DOM_XPathSelectorsTest extends TestCase {
         assertEquals("8655", XPathVisitor.domVisitedAfterElementStatic.getAttributeNS("http://c", "code"));
     }
 
+	@Test
     public void test_03() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-03.xml"));
 
@@ -52,6 +60,7 @@ public class DOM_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
+	@Test
     public void test_04() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -62,6 +71,7 @@ public class DOM_XPathSelectorsTest extends TestCase {
         assertEquals("8655", XPathVisitor.domVisitedAfterElementStatic.getAttributeNS("http://c", "code"));
     }
 
+	@Test
     public void test_06() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
@@ -71,6 +81,7 @@ public class DOM_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
+	@Test
     public void test_07() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-04.xml"));
 
@@ -79,6 +90,7 @@ public class DOM_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
+	@Test
     public void test_08() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-05.xml"));
 
@@ -87,6 +99,7 @@ public class DOM_XPathSelectorsTest extends TestCase {
         assertEquals(null, XPathAfterVisitor.domVisitedAfterElement);
     }
 
+	@Test
     public void test_09() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-06.xml"));
 
@@ -95,6 +108,7 @@ public class DOM_XPathSelectorsTest extends TestCase {
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
+	@Test
     public void test_10() throws IOException, SAXException {
         Smooks smooks = new Smooks();
         Properties namespaces = new Properties();

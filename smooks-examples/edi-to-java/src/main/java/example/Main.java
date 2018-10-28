@@ -15,19 +15,24 @@
 */
 package example;
 
-import org.milyn.*;
+import org.milyn.Smooks;
+import org.milyn.SmooksException;
+import org.milyn.container.ExecutionContext;
+import org.milyn.event.report.HtmlReportGenerator;
+import org.milyn.io.StreamUtils;
 import org.milyn.payload.JavaResult;
-import org.milyn.container.*;
-import org.milyn.event.report.*;
-import org.milyn.io.*;
-import org.xml.sax.*;
+import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.*;
-import java.io.*;
-import java.util.*;
+import javax.xml.transform.stream.StreamSource;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Simple example main class.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class Main {
@@ -42,8 +47,8 @@ public class Main {
     }
 
     protected JavaResult runSmooksTransform(ExecutionContext executionContext) throws IOException, SAXException, SmooksException {
-    	try {
-            org.milyn.payload.JavaResult javaResult = new org.milyn.payload.JavaResult();
+        try {
+            JavaResult javaResult = new JavaResult();
 
             // Configure the execution context to generate a report...
             executionContext.setEventListener(new HtmlReportGenerator("target/report/report.html"));
@@ -62,7 +67,7 @@ public class Main {
         System.out.println(new String(messageIn));
         System.out.println("======================================\n");
 
-        pause("The EDI input stream can be seen above.  Press 'enter' to see how this stream is transformed the Order Object graph...");
+        pause("The EDI input stream can be seen above.  Press 'enter' to see how this stream is transformed into an Order Object graph...");
 
         Main smooksMain = new Main();
         ExecutionContext executionContext = smooksMain.smooks.createExecutionContext();
@@ -95,7 +100,7 @@ public class Main {
         System.out.println("\n");
     }
 
-    public org.milyn.payload.JavaResult runSmooksTransform() throws IOException, SAXException {
+    public JavaResult runSmooksTransform() throws IOException, SAXException {
         ExecutionContext executionContext = smooks.createExecutionContext();
         return runSmooksTransform(executionContext);
     }

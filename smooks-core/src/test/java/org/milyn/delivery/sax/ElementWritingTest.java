@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.payload.StringResult;
@@ -27,8 +28,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ElementWritingTest extends TestCase {
+public class ElementWritingTest {
 
+	@Test
     public void test_one_writer_per_element() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("OnWriterPerElementTest.xml"));
 
@@ -40,6 +42,7 @@ public class ElementWritingTest extends TestCase {
         }
     }
 
+	@Test
     public void test_default_writing() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingTest.xml"));
 
@@ -56,6 +59,7 @@ public class ElementWritingTest extends TestCase {
         assertTrue(SAXVisitAfterVisitor.visited);
     }
 
+	@Test
     public void test_default_writing_off_no_serializers() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_No_Serializers_Test.xml"));
 
@@ -73,6 +77,7 @@ public class ElementWritingTest extends TestCase {
         assertTrue(SAXVisitAfterVisitor.visited);
     }
 
+	@Test
     public void test_default_writing_off_one_serializer() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_One_Serializer_Test.xml"));
 

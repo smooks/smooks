@@ -15,17 +15,17 @@
 */
 package org.milyn.javabean.decoders;
 
-import org.milyn.javabean.DataDecodeException;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * BooleanDecoderTest
  * 
  * @author <a href="mailto:mgoodwin1989@gmail.com">Matt Goodwin</a>
  */
-public class BooleanDecoderTest extends TestCase {
+public class BooleanDecoderTest {
 
+	@Test
     public void testBoolean() {
         String data = "Y";
         BooleanDecoder decoder = new BooleanDecoder();

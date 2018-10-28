@@ -15,24 +15,28 @@
 */
 package org.milyn.delivery;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.milyn.Smooks;
-import org.milyn.io.NullWriter;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.BasicExecutionEventListener;
 import org.milyn.event.types.FilterLifecycleEvent;
 import org.milyn.event.types.ResourceTargetingEvent;
+import org.milyn.io.NullWriter;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ExecutionEventListenerTest extends TestCase {
+@SuppressWarnings("unchecked")
+public class ExecutionEventListenerTest {
 
+	@Test
     public void test_01_dom() throws IOException, SAXException {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
@@ -40,6 +44,7 @@ public class ExecutionEventListenerTest extends TestCase {
         assertEquals(38, eventListener.getEvents().size());
     }
 
+	@Test
     public void test_01_sax() throws IOException, SAXException {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
@@ -47,6 +52,7 @@ public class ExecutionEventListenerTest extends TestCase {
         assertEquals(23, eventListener.getEvents().size());
     }
 
+	@Test
     public void test_02_dom() throws IOException, SAXException {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
@@ -55,6 +61,7 @@ public class ExecutionEventListenerTest extends TestCase {
         assertEquals(23, eventListener.getEvents().size());
     }
 
+	@Test
     public void test_03_dom() throws IOException, SAXException {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
@@ -63,6 +70,7 @@ public class ExecutionEventListenerTest extends TestCase {
         assertEquals(30, eventListener.getEvents().size());
     }
 
+	@Test
     public void test_04_dom() throws IOException, SAXException {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 

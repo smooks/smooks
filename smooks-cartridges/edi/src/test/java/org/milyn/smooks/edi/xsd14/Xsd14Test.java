@@ -27,14 +27,16 @@ import org.milyn.Smooks;
 import org.milyn.payload.StringResult;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class Xsd14Test extends TestCase {
+public class Xsd14Test {
 
+        @Test
 	public void test_no_newlines() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("default-config.xml"));
 		StringResult result = new StringResult();
@@ -45,6 +47,7 @@ public class Xsd14Test extends TestCase {
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("expected.xml")), new StringReader(result.toString()));
 	}
 
+        @Test
 	public void test_with_newlines() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("newlines-config.xml"));
 		StringResult result;

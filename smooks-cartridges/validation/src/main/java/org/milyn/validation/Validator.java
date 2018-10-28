@@ -14,38 +14,37 @@
  */
 package org.milyn.validation;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.InputStream;
-import java.util.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
-import org.milyn.resource.URIResourceLocator;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.util.FreeMarkerTemplate;
-import org.milyn.xml.DomUtils;
-import org.milyn.event.report.annotation.VisitBeforeReport;
-import org.milyn.event.report.annotation.VisitAfterReport;
-import org.milyn.payload.FilterResult;
-import org.milyn.cdr.annotation.AppContext;
-import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.cdr.annotation.Config;
-import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.AppContext;
+import org.milyn.cdr.annotation.Config;
+import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXUtil;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.delivery.sax.SAXUtil;
+import org.milyn.event.report.annotation.VisitAfterReport;
+import org.milyn.event.report.annotation.VisitBeforeReport;
+import org.milyn.payload.FilterResult;
+import org.milyn.resource.URIResourceLocator;
 import org.milyn.rules.RuleEvalResult;
 import org.milyn.rules.RuleProvider;
 import org.milyn.rules.RuleProviderAccessor;
+import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  *
@@ -160,7 +159,8 @@ public final class Validator implements SAXVisitBefore, SAXVisitAfter, DOMVisitA
         this.onFail = onFail;
     }
 
-    public void visitBefore(final SAXElement element, final ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitBefore(final SAXElement element, final ExecutionContext executionContext) throws SmooksException
+    {
         if(targetAttribute == null) {
             // The selected text is not an attribute, which means it's the element text,
             // which means we need to turn on text accumulation for SAX...
@@ -168,7 +168,7 @@ public final class Validator implements SAXVisitBefore, SAXVisitAfter, DOMVisitA
         }
     }
 
-    public void visitAfter(final SAXElement element, final ExecutionContext executionContext) throws SmooksException, IOException
+    public void visitAfter(final SAXElement element, final ExecutionContext executionContext) throws SmooksException
     {
         if(targetAttribute != null) {
             OnFailResultImpl result = _validate(element.getAttribute(targetAttribute), executionContext);
@@ -387,7 +387,7 @@ public final class Validator implements SAXVisitBefore, SAXVisitAfter, DOMVisitA
             // Need to create a shallow copy as the context data may change.
             // Even this is not foolproof, as internal bean data can also be
             // overwritten by the bean context!!
-            this.beanContext = new HashMap();
+            this.beanContext = new HashMap<String, Object>();
             this.beanContext.putAll(beanContext);
         }
 
@@ -428,32 +428,8 @@ public final class Validator implements SAXVisitBefore, SAXVisitAfter, DOMVisitA
            return bundle.getString(messageName);
          }
 
-        /*
-        public String getMessage(Locale locale) {
-            if(ruleResult.getEvalException() != null) {
-                return ruleResult.getEvalException().getMessage();
-            } else {
-                ResourceBundle bundle = getMessageBundle(locale);
-
-                String message = bundle.getString(ruleName);
-                if (message != null && message.startsWith("ftl:")) {
-                    // TODO: Is there a way to optimize this e.g. attach the compiled template
-                    // to the bundle as an object and then get back using ResourceBundle.getObject??
-                    // I timed it and it was able to create and apply 10000 templates in about 2500 ms
-                    // on an "average" spec machine, so it's not toooooo bad, and it's only done on demand :)
-                    FreeMarkerTemplate template = new FreeMarkerTemplate(message.substring("ftl:".length()));
-                    beanContext.put("ruleResult", ruleResult);
-                    beanContext.put("path", failFragmentPath);
-                    message = template.apply(beanContext);
-                }
-
-                return message;
-            }
-        }
-        */
-
         /**
-         * @param The Locale to look up.
+         * @param locale The Locale to look up.
          * @return {@link ResourceBundle} for the Locale and message bundle base name. Or null if no bundle exists.
          */
         private ResourceBundle getMessageBundle(final Locale locale) {

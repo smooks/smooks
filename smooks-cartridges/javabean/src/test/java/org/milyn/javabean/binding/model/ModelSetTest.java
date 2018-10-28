@@ -1,6 +1,7 @@
 package org.milyn.javabean.binding.model;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.xml.sax.SAXException;
 
@@ -9,12 +10,14 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ModelSetTest extends TestCase {
+public class ModelSetTest {
 
+    @Test
     public void test_01() throws IOException, SAXException {
         test("config-01.xml", true);
     }
 
+    @Test
     public void test_02() throws IOException, SAXException {
         test("config-02.xml", false);
     }

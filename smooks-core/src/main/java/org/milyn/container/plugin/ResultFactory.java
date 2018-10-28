@@ -50,7 +50,7 @@ public class ResultFactory
             result = new ByteResult();
 			break;
 		case JAVA:
-            result = new JavaResult();
+            result = new JavaResult(true);
 			break;
 		case NORESULT:
 			break;

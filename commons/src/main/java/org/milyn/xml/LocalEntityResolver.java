@@ -45,7 +45,7 @@ public abstract class LocalEntityResolver implements EntityResolver {
 	/**
 	 * Entity entity lookup table. <p/> Contains preread Entity entity byte arrays.
 	 */
-	private static Hashtable entities = new Hashtable();
+	private static Hashtable<String,byte[]> entities = new Hashtable<String,byte[]>();
 
     /**
      * Document type.  This is a bit of a hack.  There's a way of getting the DOM

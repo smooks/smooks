@@ -20,12 +20,12 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import junit.framework.TestCase;
-
-import org.jdom.Document;
-import org.jdom.input.SAXHandler;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.jdom2.Document;
+import org.jdom2.input.sax.SAXHandler;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.milyn.edi.utils.EDIParsingUtils;
 import org.milyn.edisax.EDIParser;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
@@ -39,13 +39,15 @@ import org.xml.sax.XMLReader;
  * Test for parsing D99A file
  * 
  **/
-public class D99AParsingTest extends TestCase {
+public class D99AParsingTest {
 
+        @Test
 	public void test99A_cuscar() throws Exception {
 		InputStream inputStream = D99AParsingTest.class.getResourceAsStream("/99a_cuscar.edi");
 		parseAndValidate(inputStream);
 	}
 
+        @Test
 	public void test96B_cusdec() throws Exception {
 		InputStream inputStream = D99AParsingTest.class.getResourceAsStream("/96b_cusdec.edi");
 		parseAndValidate(inputStream);

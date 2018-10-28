@@ -18,11 +18,8 @@ package org.milyn.ect.maven;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
-import org.jfrog.maven.annomojo.annotations.MojoGoal;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
-import org.jfrog.maven.annomojo.annotations.MojoPhase;
-import org.jfrog.maven.annomojo.annotations.MojoRequiresDependencyResolution;
 import org.milyn.ect.ECTUnEdifactExecutor;
 import org.milyn.ect.EdiParseException;
 
@@ -30,28 +27,30 @@ import java.io.File;
 
 /**
  * ECT Mojo.
- * 
+ *
  * @author bardl
  */
-@MojoGoal("generate")
-@MojoPhase("generate-sources")
-@MojoRequiresDependencyResolution
+@Execute(goal = "generate"
+    , phase = LifecyclePhase.GENERATE_SOURCES
+    , lifecycle = "generate-sources")
+@Mojo(name = "generate"
+    , requiresDependencyResolution = ResolutionScope.COMPILE)
 public class ECTMojo extends AbstractMojo {
 
-    @MojoParameter(expression = "${project}", required = true, readonly = true)
+    @Parameter(defaultValue = "${project}", readonly = true, required = true )
     private MavenProject project;
 
-    @MojoParameter(required = true, description = "The message definition file.  Depends on the message definition type ('srcType') e.g. for UN/EDIFACT, this is a ZIP file that can be downloaded from the web.")
+    @Parameter(required = true)
     private File src;
 
-    @MojoParameter(required = true, description = "The EDI message definition type.  Currently Supports 'UNEDIFACT' only.")
+    @Parameter(required = true)
     private String srcType ;
 
-    @MojoParameter(expression = "target/ect", required = false)
+    @Parameter(defaultValue = "target/ect", required = false)
     private File destDir;
 
     public void execute() throws MojoExecutionException {
-    	
+
         if(!src.exists()) {
         	throw new MojoExecutionException("EDI Specification file '" + src.getAbsolutePath() + "' not found.");
         }
@@ -74,7 +73,7 @@ public class ECTMojo extends AbstractMojo {
                 getLog().info("UN/EDIFACT mapping model set for '" + src.getName() + "' generated in '" + destDir.getAbsolutePath() + "'.");
             } catch (EdiParseException e) {
                 throw new MojoExecutionException("Error Executing ECT Maven Plugin.  See chained cause.", e);
-            } 
+            }
         } else {
             throw new MojoExecutionException("Unsupported ECT 'srcType' configuration value '" + srcType + "'.  Currently support 'UNEDIFACT' only.");
         }

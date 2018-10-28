@@ -51,6 +51,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
         super(reportConfiguration);
     }
 
+    @SuppressWarnings("unchecked")
     public void applyTemplate(Report report) throws IOException {
         FreeMarkerTemplate template;
 
@@ -75,6 +76,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
         writer.write(template.apply(templateModel));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static Writer createOutputWriter(String outputFile) throws IOException {
         File file = new File(outputFile);
         if(file.getParentFile() != null) {

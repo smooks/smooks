@@ -22,7 +22,8 @@ import java.io.Writer;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
@@ -32,16 +33,19 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SaxDomCompTest extends TestCase {
+public class SaxDomCompTest {
 
+    @Test
     public void test_dom() throws IOException, SAXException, InterruptedException {
         runTransform("smooks-dom.xml");
     }
 
+    @Test
     public void test_sax_01() throws IOException, SAXException, InterruptedException {
         runTransform("smooks-sax.xml");
     }
 
+    @Test
     public void test_sax_02() throws IOException, SAXException, InterruptedException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-sax.xml"));
         StringWriter writer = new StringWriter();
@@ -67,7 +71,7 @@ public class SaxDomCompTest extends TestCase {
     }
 
     private void runTransform(Smooks smooks, Writer writer) throws InterruptedException {
-        smooks.filter(new StreamSource(getClass().getResourceAsStream("order-message.xml")), new StreamResult(writer));
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order-message.xml")), new StreamResult(writer));
         Thread.sleep(20);
     }
 }

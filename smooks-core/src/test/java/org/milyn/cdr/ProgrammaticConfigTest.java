@@ -15,14 +15,16 @@
 */
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class ProgrammaticConfigTest extends TestCase {
+public class ProgrammaticConfigTest {
 
+	@Test
     public void test_properly_configed() {
         Smooks smooks = new Smooks();
         ConfigurableVisitor visitor = new ConfigurableVisitor().setStringParam("hi");
@@ -34,6 +36,7 @@ public class ProgrammaticConfigTest extends TestCase {
         assertEquals(null, visitor.getOptionalStringParam());
     }
 
+	@Test
     public void test_not_configed() {
         Smooks smooks = new Smooks();
 

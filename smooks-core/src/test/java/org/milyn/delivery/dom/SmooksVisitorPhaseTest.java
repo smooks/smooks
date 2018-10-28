@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.dom;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,10 +39,11 @@ import java.util.List;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SmooksVisitorPhaseTest extends TestCase {
+public class SmooksVisitorPhaseTest {
 	
 	Log log = LogFactory.getLog( SmooksVisitorPhaseTest.class );
 
+	@Test
     public void test_phase_selection() throws IOException, SAXException {
         Smooks smooks = new Smooks();
         ExecutionContext execContext;
@@ -71,6 +73,7 @@ public class SmooksVisitorPhaseTest extends TestCase {
         assertTrue(processingVAs.get(1).getContentHandler() instanceof ProcessorVisitor1);
     }
 
+	@Test
     public void test_filtering() throws IOException, SAXException {
         Smooks smooks = new Smooks();
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();

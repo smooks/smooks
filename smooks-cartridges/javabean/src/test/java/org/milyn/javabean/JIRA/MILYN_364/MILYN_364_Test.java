@@ -24,13 +24,15 @@ import org.xml.sax.SAXException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class MILYN_364_Test extends TestCase {
+public class MILYN_364_Test {
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(MILYN_364_Test.class.getResourceAsStream("config.xml"));
 

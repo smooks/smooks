@@ -3,26 +3,26 @@
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
-	License (version 2.1) as published by the Free Software 
+	License (version 2.1) as published by the Free Software
 	Foundation.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    
-	See the GNU Lesser General Public License for more details:    
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
 
 package org.milyn.delivery;
 
-import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.annotation.Configurator;
+import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AppContext;
+import org.milyn.cdr.annotation.Configurator;
 import org.milyn.classpath.ClasspathUtils;
-import org.milyn.util.ClassUtil;
 import org.milyn.container.ApplicationContext;
+import org.milyn.util.ClassUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -45,43 +45,39 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
      * to be created.
      * @return Java {@link ContentHandler} instance.
 	 */
-	public synchronized Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException {
+	@SuppressWarnings("unchecked")
+  public synchronized Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException {
         Object javaResource = resourceConfig.getJavaResourceObject();
 
         if(javaResource != null) {
             return javaResource;
         }
 
-		Object contentHandler = null;
-        Exception exception = null;
-        String className = null;
-		
+		Object contentHandler;
+
 		try {
-            className = ClasspathUtils.toClassName(resourceConfig.getResource());
+			String className = ClasspathUtils.toClassName(resourceConfig.getResource());
 			Class classRuntime = ClassUtil.forName(className, getClass());
 			Constructor constructor;
 			try {
-				constructor = classRuntime.getConstructor(new Class[] {SmooksResourceConfiguration.class});
-				contentHandler = constructor.newInstance(new Object[] {resourceConfig});
+				constructor = classRuntime.getConstructor(SmooksResourceConfiguration.class);
+				contentHandler = constructor.newInstance(resourceConfig);
 			} catch (NoSuchMethodException e) {
 				contentHandler = classRuntime.newInstance();
 			}
             Configurator.configure(contentHandler, resourceConfig, appContext);
         } catch (InstantiationException e) {
-            exception = e;
+            throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
+                , e);
         } catch (IllegalAccessException e) {
-            exception = e;
+            throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
+                , e);
         } catch (InvocationTargetException e) {
-            exception = e;
+            throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
+                , e);
         } catch (ClassNotFoundException e) {
-            exception = e;
-        } finally {
-            // One of the above exception.
-            if(exception != null) {
-                IllegalStateException state = new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause...");
-                state.initCause(exception);
-                throw state;
-            }
+            throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
+                , e);
         }
 
         resourceConfig.setJavaResourceObject(contentHandler);

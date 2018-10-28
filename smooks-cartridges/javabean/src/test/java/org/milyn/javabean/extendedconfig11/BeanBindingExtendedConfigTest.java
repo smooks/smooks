@@ -15,10 +15,9 @@
 */
 package org.milyn.javabean.extendedconfig11;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
-import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.B;
 import org.milyn.javabean.Header;
@@ -34,13 +33,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class BeanBindingExtendedConfigTest extends TestCase {
+@SuppressWarnings("unchecked")
+public class BeanBindingExtendedConfigTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_01.xml"));
         JavaResult result = new JavaResult();
@@ -52,13 +55,12 @@ public class BeanBindingExtendedConfigTest extends TestCase {
         ExtendedOrder order = (ExtendedOrder) result.getBean("order");
         assertOrderOK(order, true);
 
-        Map headerHash = (Map) result.getBean("headerBeanHash");
-        assertEquals("{privatePerson=, customer=Joe, date=Wed Nov 15 13:45:28 EST 2006}", headerHash.toString());
+        Map<String,String> headerHash = (Map) result.getBean("headerBeanHash");
+        assertThat(headerHash, hasEntry("privatePerson",""));
+        assertThat(headerHash, hasEntry("customer","Joe"));
+        assertThat(headerHash, hasEntry("date","Wed Nov 15 13:45:28 EST 2006"));
     }
 
-	/**
-	 * @return
-	 */
 	private InputStream getInput(String file) {
 		return ClassUtil.getResourceAsStream("/org/milyn/javabean/extendedconfig/" + file, this.getClass());
 	}
@@ -66,7 +68,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
     private void assertOrderOK(ExtendedOrder order, boolean checkArrays) {
 
         // Order total...
-        assertEquals(54.2d, order.getTotal());
+        assertEquals(54.2d, order.getTotal(), 0d);
 
         // Header...
         assertEquals("Joe", order.getHeader().getCustomerName());
@@ -78,11 +80,11 @@ public class BeanBindingExtendedConfigTest extends TestCase {
         // OrderItems list...
         assertEquals(2, order.getOrderItems().size());
         assertTrue(order == order.getOrderItems().get(0).getOrder());
-        assertEquals(8.9d, order.getOrderItems().get(0).getPrice());
+        assertEquals(8.9d, order.getOrderItems().get(0).getPrice(), 0d);
         assertEquals(111, order.getOrderItems().get(0).getProductId());
         assertEquals(new Integer(2), order.getOrderItems().get(0).getQuantity());
         assertTrue(order == order.getOrderItems().get(1).getOrder());
-        assertEquals(5.2d, order.getOrderItems().get(1).getPrice());
+        assertEquals(5.2d, order.getOrderItems().get(1).getPrice(), 0d);
         assertEquals(222, order.getOrderItems().get(1).getProductId());
         assertEquals(new Integer(7), order.getOrderItems().get(1).getQuantity());
 
@@ -90,16 +92,17 @@ public class BeanBindingExtendedConfigTest extends TestCase {
 	        // OrderItems array...
 	        assertEquals(2, order.getOrderItemsArray().length);
 	        assertTrue(order == order.getOrderItemsArray()[0].getOrder());
-	        assertEquals(8.9d, order.getOrderItemsArray()[0].getPrice());
+	        assertEquals(8.9d, order.getOrderItemsArray()[0].getPrice(), 0d);
 	        assertEquals(111, order.getOrderItemsArray()[0].getProductId());
 	        assertEquals(new Integer(2), order.getOrderItemsArray()[0].getQuantity());
 	        assertTrue(order == order.getOrderItemsArray()[1].getOrder());
-	        assertEquals(5.2d, order.getOrderItemsArray()[1].getPrice());
+	        assertEquals(5.2d, order.getOrderItemsArray()[1].getPrice(), 0d);
 	        assertEquals(222, order.getOrderItemsArray()[1].getProductId());
 	        assertEquals(new Integer(7), order.getOrderItemsArray()[1].getQuantity());
         }
     }
 
+    @Test
     public void test_error_for_List_property() throws IOException, SAXException {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_02.xml"));
@@ -109,6 +112,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
         }
     }
 
+    @Test
     public void test_error_for_Array_property() throws IOException, SAXException {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_03.xml"));
@@ -118,6 +122,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
         }
     }
 
+    @Test
     public void test_error_for_no_property_on_non_list_or_array() throws IOException, SAXException {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_04.xml"));
@@ -127,6 +132,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
         }
     }
 
+    @Test
     public void test_error_for_property_and_setterMethod() throws IOException, SAXException {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_10.xml"));
@@ -136,6 +142,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
         }
     }
 
+    @Test
     public void test_order_update() throws IOException, SAXException {
     	 Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_05.xml"));
 
@@ -162,6 +169,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
          assertOrderOK(order, false);
     }
 
+    @Test
     public void test_error_for_no_wireOnElement() throws IOException, SAXException {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_06.xml"));
@@ -174,6 +182,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
         }
     }
 
+    @Test
     public void test_flat_xml_set_in_binding() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_07.xml"));
 
@@ -187,6 +196,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
 		assertFlatResult(result);
 	}
 
+    @Test
     public void test_flat_xml_set_global() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_08.xml"));
 
@@ -201,7 +211,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
 	}
 
 
-	public void assertFlatResult(JavaResult result) {
+	private void assertFlatResult(JavaResult result) {
 		@SuppressWarnings("unchecked")
     	ArrayList<ArrayList<B>> root = (ArrayList<ArrayList<B>>) result.getBean("root");
 
@@ -212,6 +222,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
 		assertEquals(3, root.get(1).size());
     }
 
+        @Test
 	public void test_profile() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_09.xml"));
 
@@ -223,7 +234,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
 		smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
 		ExtendedOrder order =  (ExtendedOrder) result.getBean("order");
-		assertEquals(2d, order.getTotal());
+		assertEquals(2d, order.getTotal(), 0d);
 
 		execContext = smooks.createExecutionContext("B");
 
@@ -231,10 +242,11 @@ public class BeanBindingExtendedConfigTest extends TestCase {
 		smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
 		order =  (ExtendedOrder) result.getBean("order");
-		assertEquals(4d, order.getTotal());
+		assertEquals(4d, order.getTotal(), 0d);
 
 	}
 
+        @Test
 	public void test_condition() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_11.xml"));
 
@@ -246,9 +258,10 @@ public class BeanBindingExtendedConfigTest extends TestCase {
 		smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
 		ExtendedOrder order =  (ExtendedOrder) result.getBean("order");
-		assertEquals(2d, order.getTotal());
+		assertEquals(2d, order.getTotal(), 0d);
 	}
 
+    @Test
     public void test_expression_initVal() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_12.xml"));
 
@@ -260,7 +273,7 @@ public class BeanBindingExtendedConfigTest extends TestCase {
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
         Map order =  (Map) result.getBean("orderItem");
-        assertEquals(154.2d, order.get("total"));
+        assertEquals(154.2d, (Double) order.get("total"), 0d);
     }
 
 }

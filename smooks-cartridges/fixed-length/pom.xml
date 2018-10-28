@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>smooks-cartridge-base-pom</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-    </parent>
-    <name>Milyn Smooks Cartridge - Fixed Length Reader</name>
-    <artifactId>milyn-smooks-fixed-length</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>testres</artifactId>
+    <version>1.7.1</version>
+    <relativePath>../../testres/pom.xml</relativePath>
+  </parent>
 
-	<description>A Smooks cartridge that can read fixed length files. The code of this cartridge was donated by Cedric Rathgeb.</description>
+  <name>Milyn :: Smooks Cartridge :: Fixed Length Reader</name>
+  <artifactId>milyn-smooks-fixed-length</artifactId>
 
-	<developers>
-		<developer>
-			<name>Cedric Rathgeb</name>
-            <roles>
-                <role>Contribution</role>
-            </roles>
-		</developer>
-	</developers>
+  <description>
+    A Smooks cartridge that can read fixed length files. The code of this cartridge was donated by Cedric Rathgeb.
+  </description>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.milyn</groupId>
-			<artifactId>milyn-smooks-javabean</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+  <developers>
+    <developer>
+      <name>Cedric Rathgeb</name>
+      <roles>
+        <role>Contribution</role>
+      </roles>
+    </developer>
+  </developers>
 
-		<!-- testng -->
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>5.7</version>
-			<scope>test</scope>
-			<classifier>jdk15</classifier>
-		</dependency>
-	</dependencies>
-
-
+  <dependencies>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-javabean</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+  </dependencies>
 </project>

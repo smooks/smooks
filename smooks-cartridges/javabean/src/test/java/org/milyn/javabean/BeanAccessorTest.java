@@ -16,15 +16,15 @@
 
 package org.milyn.javabean;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.MockExecutionContext;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
-import org.milyn.javabean.repository.BeanRepositoryManager;
-import org.milyn.javabean.repository.BeanRepository;
 import org.milyn.javabean.repository.BeanId;
 
 /**
@@ -32,13 +32,14 @@ import org.milyn.javabean.repository.BeanId;
  * @author tfennelly
  */
 @SuppressWarnings("deprecation")
-public class BeanAccessorTest extends TestCase {
+public class BeanAccessorTest {
 
 	private ExecutionContext executionContext;
 
 	/**
 	 * Tests adding a bean
 	 */
+        @Test
 	public void test_add_bean() {
         Object bean1 = new MyGoodBean();
         Object bean2 = new MyGoodBean();
@@ -63,6 +64,7 @@ public class BeanAccessorTest extends TestCase {
 	/**
 	 * Test adding and replacing a bean
 	 */
+        @Test
 	public void test_add_and_replace_bean() {
         Object bean1 = new MyGoodBean();
         Object newBean1 = new MyGoodBean();
@@ -83,6 +85,7 @@ public class BeanAccessorTest extends TestCase {
 	/**
 	 * Test adding and replacing a bean
 	 */
+        @Test
 	public void test_change_bean() {
         Object bean1 = new MyGoodBean();
         Object newBean1 = new MyGoodBean();
@@ -108,9 +111,8 @@ public class BeanAccessorTest extends TestCase {
         assertTrue(fired);
     }
 
-    @Override
-	protected void setUp() throws Exception {
-		super.setUp();
+        @Before
+	public void setUp() throws Exception {
 		executionContext = new MockExecutionContext();
 	}
 

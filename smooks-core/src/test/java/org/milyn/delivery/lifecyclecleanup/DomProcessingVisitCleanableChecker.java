@@ -24,7 +24,8 @@ import org.milyn.delivery.dom.Phase;
 import org.milyn.delivery.dom.VisitPhase;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.w3c.dom.Element;
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -34,7 +35,7 @@ public class DomProcessingVisitCleanableChecker implements DOMVisitBefore {
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if(!DomProcessingVisitCleanable.cleaned) {
-            TestCase.fail("Resource should have been cleaned!");
+            fail("Resource should have been cleaned!");
         }
     }
 }

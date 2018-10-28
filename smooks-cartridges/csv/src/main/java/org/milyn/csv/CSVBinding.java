@@ -21,10 +21,11 @@ import org.milyn.assertion.AssertArgument;
  * CSV Binding configuration.
  * <p/>
  * For more complex bindings, use the main java binding framwework.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  * @deprecated Use the {@link org.milyn.flatfile.FlatFileReader} configured with the {@link CSVRecordParserFactory}.
  */
+@SuppressWarnings("deprecation")
 public class CSVBinding {
 
     private String beanId;
@@ -32,6 +33,7 @@ public class CSVBinding {
     private CSVBindingType bindingType;
     private String keyField;
 
+    @SuppressWarnings("deprecation")
     public CSVBinding(String beanId, Class beanClass, CSVBindingType bindingType) {
         AssertArgument.isNotNullAndNotEmpty(beanId, "beanId");
         AssertArgument.isNotNull(beanClass, "beanClass");
@@ -48,6 +50,7 @@ public class CSVBinding {
         return beanClass;
     }
 
+    @SuppressWarnings("deprecation")
     public CSVBindingType getBindingType() {
         return bindingType;
     }

@@ -15,7 +15,11 @@
 */
 package org.milyn.db;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.payload.StringSource;
@@ -26,12 +30,14 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DatasourceCleanupTest extends TestCase {
+public class DatasourceCleanupTest {
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         MockDatasource.cleanupCallCount = 0;
     }
 
+    @Test
     public void test_normal() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("normal-ds-lifecycle.xml"));
 
@@ -42,6 +48,7 @@ public class DatasourceCleanupTest extends TestCase {
         assertTrue(MockDatasource.committed);
     }
 
+    @Test
     public void test_exception() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("exception-ds-lifecycle.xml"));
 

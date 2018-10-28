@@ -15,17 +15,14 @@
 */
 package org.milyn.ejc.maven;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.model.Resource;
-import org.jfrog.maven.annomojo.annotations.MojoGoal;
-import org.jfrog.maven.annomojo.annotations.MojoPhase;
-import org.jfrog.maven.annomojo.annotations.MojoRequiresDependencyResolution;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
-import org.milyn.ejc.EJCExecutor;
-import org.milyn.ejc.EJCException;
 import org.milyn.edisax.util.IllegalNameException;
+import org.milyn.ejc.EJCException;
+import org.milyn.ejc.EJCExecutor;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -33,29 +30,34 @@ import java.io.IOException;
 
 /**
  * EJC Mojo.
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-@MojoGoal("generate")
-@MojoPhase("generate-sources")
-@MojoRequiresDependencyResolution
+@Execute(goal = "generate"
+    , phase = LifecyclePhase.GENERATE_SOURCES
+    , lifecycle = "generate-sources")
+@Mojo(name = "generate"
+    , requiresDependencyResolution = ResolutionScope.COMPILE)
 public class EJCMojo extends AbstractMojo {
 
-    @MojoParameter(expression = "${project}", required = true, readonly = true)
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
-    @MojoParameter(expression = "target/ejc", required = false)
+    @Parameter(defaultValue = "target/ejc", required = false)
     private File destDir;
 
-    @MojoParameter(expression = "src/main/resources/edi-model.xml", required = false)
+    @Parameter(defaultValue = "src/main/resources/edi-model.xml", required = false)
     private String ediMappingFile;
 
-    @MojoParameter(required = false)
+    @Parameter(required = false)
     private String messages;
 
-    @MojoParameter(required = false)
+    @Parameter(required = false)
     private String packageName;
 
     public void execute() throws MojoExecutionException {
+    	getLog().info("Execution EJC Plugin");
+
         EJCExecutor ejc = new EJCExecutor();
 
         try {

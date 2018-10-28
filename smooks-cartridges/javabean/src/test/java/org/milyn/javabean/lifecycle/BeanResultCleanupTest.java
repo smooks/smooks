@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.lifecycle;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
 import org.milyn.StreamFilterType;
@@ -28,8 +29,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class BeanResultCleanupTest extends TestCase {
+public class BeanResultCleanupTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         test(StreamFilterType.DOM);
         test(StreamFilterType.SAX);

@@ -26,7 +26,8 @@ import org.milyn.javabean.decoders.DateDecoder;
 import org.milyn.javabean.decoders.IntegerDecoder;
 import org.milyn.payload.JavaResult;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Programmatic Binding config test for the Value class.
@@ -34,8 +35,9 @@ import junit.framework.TestCase;
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-public class ProgrammaticValueConfigTest extends TestCase {
+public class ProgrammaticValueConfigTest {
 
+        @Test
 	public void test_01() {
 
 		Smooks smooks = new Smooks();
@@ -55,6 +57,7 @@ public class ProgrammaticValueConfigTest extends TestCase {
 		assertEquals(Boolean.TRUE, result.getBean("privatePerson"));
 	}
 
+        @Test
 	public void test_02() {
 
 		Smooks smooks = new Smooks();

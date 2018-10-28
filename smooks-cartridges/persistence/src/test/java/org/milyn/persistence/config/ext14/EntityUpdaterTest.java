@@ -48,6 +48,7 @@ public class EntityUpdaterTest extends BaseTestCase {
 	@Mock
 	private Dao<String> dao;
     
+	@Test
 	public void test_entity_update_no_selector() throws Exception {
 
 		Smooks smooks = new Smooks(getResourceAsStream("entity-updater-no-selector.xml"));

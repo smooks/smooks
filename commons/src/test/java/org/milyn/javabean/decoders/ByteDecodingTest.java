@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.javabean.DataDecodeException;
 
@@ -26,13 +27,15 @@ import org.milyn.javabean.DataDecodeException;
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-public class ByteDecodingTest extends TestCase {
+public class ByteDecodingTest {
 	private final ByteDecoder decoder = new ByteDecoder();
 
+	@Test
     public void test_empty_ok_value() {
         assertEquals(new Byte((byte)1), decoder.decode("1"));
     }
 
+	@Test
     public void test_empty_data_string() {
         try {
             decoder.decode("");

@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.dom.serialize;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
@@ -27,9 +28,10 @@ import org.milyn.payload.StringSource;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DefaultSerializationTest extends TestCase {
+public class DefaultSerializationTest {
 
 
+	@Test
     public void test_default_writing_off_no_serializers() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_No_Serializers_Test.xml"));
 
@@ -46,6 +48,7 @@ public class DefaultSerializationTest extends TestCase {
         assertTrue(SimpleDOMVisitor.visited);
     }
 
+	@Test
     public void test_default_writing_off_one_serializer() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_One_Serializer_Test.xml"));
 

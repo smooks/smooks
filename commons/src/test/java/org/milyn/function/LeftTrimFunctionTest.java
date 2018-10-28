@@ -16,12 +16,13 @@
 
 package org.milyn.function;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class LeftTrimFunctionTest extends TestCase {
+public class LeftTrimFunctionTest {
 
     public void test_execute() {
         LeftTrimFunction function = new LeftTrimFunction();

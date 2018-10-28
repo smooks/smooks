@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMContentDeliveryConfig;
@@ -33,8 +34,9 @@ import java.io.IOException;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ExpandableContentDeliveryUnitTest extends TestCase {
+public class ExpandableContentDeliveryUnitTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 

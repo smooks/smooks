@@ -16,19 +16,20 @@
 package org.milyn.event.report;
 
 import org.milyn.assertion.AssertArgument;
+import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.event.ExecutionEvent;
 import org.milyn.event.types.ConfigBuilderEvent;
 import org.milyn.event.types.ElementVisitEvent;
-import org.milyn.cdr.SmooksConfigurationException;
 
 import java.io.File;
 import java.io.Writer;
 
 /**
  * Report generation configuration.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("WeakerAccess")
 public class ReportConfiguration {
 
     public static File TEMP_DIR = new File(System.getProperty("java.io.tmpdir"));
@@ -40,6 +41,7 @@ public class ReportConfiguration {
     private boolean autoCloseWriter = true;
     private File tempOutDir = TEMP_DIR;
 
+    @SuppressWarnings("unchecked")
     public ReportConfiguration(Writer outputWriter) {
         AssertArgument.isNotNull(outputWriter, "outputWriter");
         this.outputWriter = outputWriter;
@@ -54,10 +56,12 @@ public class ReportConfiguration {
         return outputWriter;
     }
 
+    @SuppressWarnings("unused")
     public boolean escapeXMLChars() {
         return escapeXMLChars;
     }
 
+    @SuppressWarnings("unused")
     public void setEscapeXMLChars(boolean escapeXMLChars) {
         this.escapeXMLChars = escapeXMLChars;
     }
@@ -66,6 +70,7 @@ public class ReportConfiguration {
         return showDefaultAppliedResources;
     }
 
+    @SuppressWarnings("unused")
     public void setShowDefaultAppliedResources(boolean showDefaultAppliedResources) {
         this.showDefaultAppliedResources = showDefaultAppliedResources;
     }
@@ -79,6 +84,7 @@ public class ReportConfiguration {
      *
      * @param filterEvents Filter events.
      */
+    @SuppressWarnings("unused")
     public void setFilterEvents(Class<? extends ExecutionEvent>... filterEvents) {
         this.filterEvents = filterEvents;
     }
@@ -98,10 +104,12 @@ public class ReportConfiguration {
      *
      * @param autoCloseWriter True if the writer is to be closed, otherwise false.
      */
+    @SuppressWarnings("unused")
     public void setAutoCloseWriter(boolean autoCloseWriter) {
         this.autoCloseWriter = autoCloseWriter;
     }
 
+    @SuppressWarnings("unused")
     public File getTempOutDir() {
         if(tempOutDir == null) {
             throw new SmooksConfigurationException("Temp OutDir not set.");

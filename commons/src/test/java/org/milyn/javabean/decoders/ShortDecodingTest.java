@@ -15,7 +15,11 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 import org.milyn.javabean.DataDecodeException;
 
@@ -27,24 +31,28 @@ import java.util.Properties;
  * 
  * @author <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a>
  */
-public class ShortDecodingTest extends TestCase {
+public class ShortDecodingTest {
 
 	private final ShortDecoder decoder = new ShortDecoder();
     private Locale defaultLocale;
 
+    @Before
     public void setUp() {
         defaultLocale = Locale.getDefault();
 		Locale.setDefault( new Locale("en", "IE") );
 	}
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         Locale.setDefault(defaultLocale);
     }
 
+    @Test
     public void test_empty_ok_value() {
         assertEquals(new Short((short)1), decoder.decode("1"));
     }
 
+    @Test
     public void test_empty_data_string() {
         try {
             decoder.decode("");
@@ -54,6 +62,7 @@ public class ShortDecodingTest extends TestCase {
         }
     }
 
+    @Test
     public void test_decode_locale_config() {
         ShortDecoder decoder = new ShortDecoder();
         Properties config = new Properties();
@@ -65,6 +74,7 @@ public class ShortDecodingTest extends TestCase {
         assertEquals(new Short((short)1234), shortVal);
     }
 
+    @Test
     public void test_decode_format_config() {
         ShortDecoder decoder = new ShortDecoder();
         Properties config = new Properties();
@@ -76,6 +86,7 @@ public class ShortDecodingTest extends TestCase {
         assertEquals(new Short((short)1234), shortVal);
     }
 
+    @Test
     public void test_encode_format_config() {
         ShortDecoder decoder = new ShortDecoder();
         Properties config = new Properties();
@@ -86,6 +97,7 @@ public class ShortDecodingTest extends TestCase {
         assertEquals("1,234", decoder.encode((short)1234));
     }
 
+    @Test
     public void test_encode_locale_config() {
         ShortDecoder decoder = new ShortDecoder();
         Properties config = new Properties();

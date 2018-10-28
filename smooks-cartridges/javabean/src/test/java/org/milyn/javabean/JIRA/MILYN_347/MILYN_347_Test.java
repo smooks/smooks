@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.JIRA.MILYN_347;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.payload.JavaSource;
 import org.milyn.payload.JavaResult;
@@ -26,8 +27,9 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN_347_Test extends TestCase {
+public class MILYN_347_Test {
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks.xml"));
         JavaSource source = new JavaSource("x", "XValObject");

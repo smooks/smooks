@@ -18,14 +18,16 @@ package org.milyn.edisax.model.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DescriptionTest extends TestCase {
+public class DescriptionTest {
 
+        @Test
 	public void test() {
 		assertEquals(new Description().setName("A").setVersion("1"), new Description().setName("A").setVersion("1"));
 		assertNotSame(new Description().setName("A").setVersion("2"), new Description().setName("A").setVersion("1"));

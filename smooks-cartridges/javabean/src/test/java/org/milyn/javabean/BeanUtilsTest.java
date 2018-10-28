@@ -15,17 +15,19 @@
 */
 package org.milyn.javabean;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class BeanUtilsTest extends TestCase {
+public class BeanUtilsTest {
 
+    @Test
     public void test_convertListToArray() {
-        ArrayList list = new ArrayList();
+        ArrayList<Object> list = new ArrayList<Object>();
 
         // An Object array...
         list.add(new Integer(3));

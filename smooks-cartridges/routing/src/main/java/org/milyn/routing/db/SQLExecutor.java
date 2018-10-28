@@ -17,41 +17,33 @@ package org.milyn.routing.db;
 
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
-import org.milyn.delivery.Fragment;
-import org.milyn.delivery.sax.SAXUtil;
-import org.milyn.util.CollectionsUtil;
 import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.SmooksResourceConfigurationFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.SmooksResourceConfigurationFactory;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.db.AbstractDataSource;
+import org.milyn.delivery.Fragment;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.annotation.VisitAfterIf;
 import org.milyn.delivery.annotation.VisitBeforeIf;
 import org.milyn.delivery.dom.DOMElementVisitor;
+import org.milyn.delivery.ordering.Consumer;
+import org.milyn.delivery.ordering.Producer;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.delivery.ordering.Producer;
-import org.milyn.delivery.ordering.Consumer;
-import org.milyn.delivery.VisitorAppender;
-import org.milyn.delivery.VisitorConfigMap;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.repository.BeanId;
-import org.milyn.javabean.repository.BeanIdRegister;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.javabean.repository.BeanRepositoryManager;
+import org.milyn.util.CollectionsUtil;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -63,6 +55,7 @@ import java.util.*;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 @VisitBeforeIf(	condition = "parameters.containsKey('executeBefore') && parameters.executeBefore.value == 'true'")
 @VisitAfterIf(	condition = "!parameters.containsKey('executeBefore') || parameters.executeBefore.value != 'true'")
 @VisitBeforeReport(summary = "Execute statement '${resource.parameters.statement}' on Datasource '${resource.parameters.datasource}'.", detailTemplate = "reporting/SQLExecutor.html")
@@ -150,7 +143,7 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
         rsAppContextKey = datasource + ":" + statement;
     }
 
-    public Set<? extends Object> getProducts() {
+    public Set<?> getProducts() {
         if(statementExec.getStatementType() == StatementType.QUERY) {
             return CollectionsUtil.toSet(resultSetName);
         }
@@ -159,18 +152,16 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
     }
 
     public boolean consumes(Object object) {
-        if(statement.indexOf(object.toString()) != -1) {
-            return true;
-        }
-
-        return false;
+        return statement.contains(object.toString());
     }
 
-    public void visitBefore(SAXElement saxElement, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitBefore(SAXElement saxElement, ExecutionContext executionContext) throws SmooksException
+    {
             executeSQL(executionContext, new Fragment(saxElement));
         }
 
-    public void visitAfter(SAXElement saxElement, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitAfter(SAXElement saxElement, ExecutionContext executionContext) throws SmooksException
+    {
             executeSQL(executionContext, new Fragment(saxElement));
         }
 
@@ -266,10 +257,7 @@ public class SQLExecutor implements SmooksResourceConfigurationFactory, SAXVisit
         private long expiresAt = 0L;
 
         private boolean hasExpired() {
-            if(expiresAt <= System.currentTimeMillis()) {
-                return true;
-            }
-            return false;
+            return expiresAt <= System.currentTimeMillis();
         }
 
         private static ResultSetContextObject getInstance(String rsAppContextKey, ApplicationContext appContext) {

@@ -35,8 +35,8 @@ public class JavaObjectSetter implements SAXVisitBefore {
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         Result result = FilterResult.getResult(executionContext, JavaResult.class);
         if(result != null) {
-            Map beans = new HashMap();
-            
+            Map<String, Object> beans = new HashMap<String, Object>();
+
             ((JavaResult)result).setResultMap(beans);
             beans.put("theBean", "Hi there!");
         }

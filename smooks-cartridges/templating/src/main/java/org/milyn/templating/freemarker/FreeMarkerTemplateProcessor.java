@@ -107,7 +107,7 @@ public class FreeMarkerTemplateProcessor extends AbstractTemplateProcessor imple
 	protected void loadTemplate(SmooksResourceConfiguration config) throws IOException {
         this.config = config;
 
-        Configuration configuration = new Configuration();
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
 
         configuration.setSharedVariable("serialize", new NodeModelSerializer());
         configuration.setNumberFormat(defaultNumberFormat);

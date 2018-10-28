@@ -15,7 +15,7 @@
 */
 package org.milyn.scribe.register;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -15,7 +15,8 @@
 */
 package example;
 
-import junit.framework.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.*;
 import java.util.List;
@@ -29,8 +30,9 @@ import org.xml.sax.SAXException;
  *  
  * @author bardl
  */
-public class    EJCtoJavaTest extends TestCase {
+public class EJCtoJavaTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         OrderFactory orderFactory = OrderFactory.getInstance();
         FileInputStream ediStream = new FileInputStream("input-message.edi");

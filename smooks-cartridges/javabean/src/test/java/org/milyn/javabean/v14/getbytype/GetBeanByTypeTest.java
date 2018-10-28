@@ -29,14 +29,16 @@ import org.milyn.payload.JavaResult;
 import org.milyn.util.ClassUtil;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class GetBeanByTypeTest extends TestCase {
+public class GetBeanByTypeTest {
 
+    @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(RetainBeanTest.class.getResourceAsStream("test_bean_01.xml"));
         JavaResult result = new JavaResult();

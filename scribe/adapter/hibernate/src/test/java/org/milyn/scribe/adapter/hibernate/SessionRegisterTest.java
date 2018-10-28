@@ -15,7 +15,7 @@
 */
 package org.milyn.scribe.adapter.hibernate;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import org.hibernate.Session;
 import org.milyn.scribe.adapter.hibernate.SessionDaoAdapter;

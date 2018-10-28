@@ -15,16 +15,21 @@
 */
 package org.milyn.util;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-import java.util.Set;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class CollectionsUtilTest extends TestCase {
+public class CollectionsUtilTest {
 
+	@Test
     public void test_Set_01() {
         Set<String> strings = CollectionsUtil.toSet("1", "2", "3");
         assertTrue(strings.contains("1"));
@@ -32,6 +37,7 @@ public class CollectionsUtilTest extends TestCase {
         assertTrue(strings.contains("3"));
     }
 
+	@Test
     public void test_Set_02() {
         Set<Integer> integers = CollectionsUtil.toSet(1, 2, 3);
         assertTrue(integers.contains(1));
@@ -39,13 +45,15 @@ public class CollectionsUtilTest extends TestCase {
         assertTrue(integers.contains(3));
     }
 
+	@Test
     public void test_Set_03() {
-        Set<Integer> integers = CollectionsUtil.toSet();
+        Set<Integer> integers = Collections.emptySet();
         assertEquals(0, integers.size());
-        Set<String> strings = CollectionsUtil.toSet();
+        Set<String> strings = Collections.emptySet();
         assertEquals(0, strings.size());
     }
 
+	@Test
     public void test_List_01() {
         List<String> strings = CollectionsUtil.toList("1", "2", "3");
         assertTrue(strings.contains("1"));
@@ -53,6 +61,7 @@ public class CollectionsUtilTest extends TestCase {
         assertTrue(strings.contains("3"));
     }
 
+	@Test
     public void test_List_02() {
         List<Integer> integers = CollectionsUtil.toList(1, 2, 3);
         assertTrue(integers.contains(1));

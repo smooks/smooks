@@ -15,9 +15,6 @@
 */
 package org.milyn.delivery.sax.terminate;
 
-import java.io.IOException;
-import java.util.Set;
-
 import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.cdr.annotation.ConfigParam.Use;
@@ -28,15 +25,18 @@ import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.util.CollectionsUtil;
 
+import java.io.IOException;
+import java.util.Set;
+
 /**
  * Terminate Visitor.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class TerminateVisitor implements SAXVisitBefore, SAXVisitAfter, Producer {
 
 	private boolean terminateBefore = false;
-	
+
 	/* (non-Javadoc)
 	 * @see org.milyn.delivery.sax.SAXVisitBefore#visitBefore(org.milyn.delivery.sax.SAXElement, org.milyn.container.ExecutionContext)
 	 */
@@ -58,6 +58,7 @@ public class TerminateVisitor implements SAXVisitBefore, SAXVisitAfter, Producer
 	/**
 	 * @param terminateBefore the terminateBefore to set
 	 */
+	@SuppressWarnings("WeakerAccess")
 	@ConfigParam(use = Use.OPTIONAL)
 	public TerminateVisitor setTerminateBefore(boolean terminateBefore) {
 		this.terminateBefore = terminateBefore;
@@ -67,7 +68,8 @@ public class TerminateVisitor implements SAXVisitBefore, SAXVisitAfter, Producer
 	/* (non-Javadoc)
 	 * @see org.milyn.delivery.ordering.Producer#getProducts()
 	 */
-	public Set<? extends Object> getProducts() {
+	@SuppressWarnings("unchecked")
+	public Set<?> getProducts() {
 		// Doesn't actually produce anything.  Just using the Producer/Consumer mechanism to
 		// force this vistor to the top of the visitor apply list.
 		return CollectionsUtil.toSet();

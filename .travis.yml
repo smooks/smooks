@@ -1,0 +1,20 @@
+language: java
+
+# workaround for travis-ci/travis-ci#5227
+# See https://github.com/travis-ci/travis-ci/issues/5227#issuecomment-165131913
+addons:
+  hosts:
+    - smooks
+  hostname: smooks
+
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk7
+
+notifications:
+  email:
+    recipients:
+      - dev@milyn.codehaus.org
+    on_success: [change]
+    on_failure: [always]

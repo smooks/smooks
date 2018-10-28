@@ -15,7 +15,11 @@
 */
 package org.milyn.delivery;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 import org.milyn.Smooks;
 import org.milyn.FilterSettings;
 import org.milyn.container.ExecutionContext;
@@ -24,17 +28,20 @@ import org.milyn.xml.XmlUtil;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DomModelCreatorTest extends TestCase {
+public class DomModelCreatorTest {
 
-    protected void setUp() throws Exception {
+	@Before
+    public void setUp() throws Exception {
         ModelCatcher.elements.clear();
     }
 
+	@Test
     public void test_sax_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-01.xml"));
 
@@ -85,6 +92,7 @@ public class DomModelCreatorTest extends TestCase {
                 XmlUtil.serialize(ModelCatcher.elements.get(1), true)));
     }
 
+	@Test
     public void test_sax_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-02.xml"));
 
@@ -145,6 +153,7 @@ public class DomModelCreatorTest extends TestCase {
                 XmlUtil.serialize(ModelCatcher.elements.get(3), true)));
     }
 
+	@Test
     public void test_sax_03() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-02.xml"));
 
@@ -180,6 +189,7 @@ public class DomModelCreatorTest extends TestCase {
                 XmlUtil.serialize(nodeModel.getModels().get("product"), true)));
     }
 
+	@Test
     public void test_dom() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-01.xml"));
         ExecutionContext executionContext = smooks.createExecutionContext();

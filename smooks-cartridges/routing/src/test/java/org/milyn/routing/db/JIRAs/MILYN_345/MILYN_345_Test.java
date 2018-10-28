@@ -15,14 +15,16 @@
 */
 package org.milyn.routing.db.JIRAs.MILYN_345;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.routing.db.ResultsetRowSelector;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MILYN_345_Test extends TestCase {
+public class MILYN_345_Test {
 
+    @Test
     public void test_where() {
         ResultsetRowSelector selector = new ResultsetRowSelector();
 
@@ -31,6 +33,7 @@ public class MILYN_345_Test extends TestCase {
         assertTrue(selector.consumes("b"));
     }
 
+    @Test
     public void test_failError() {
         ResultsetRowSelector selector = new ResultsetRowSelector();
 

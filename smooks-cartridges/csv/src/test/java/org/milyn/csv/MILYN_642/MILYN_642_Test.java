@@ -13,39 +13,30 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.milyn.csv;
+package org.milyn.csv.MILYN_642;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-import javax.xml.transform.stream.StreamSource;
-
-import junit.framework.TestCase;
-
-import org.milyn.FilterSettings;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.SmooksUtil;
-import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
-import org.milyn.flatfile.Binding;
-import org.milyn.flatfile.BindingType;
-import org.milyn.payload.JavaResult;
-import org.milyn.payload.StringResult;
+import org.milyn.csv.CSVRecordParserConfigurator;
 import org.xml.sax.SAXException;
 
 /**
  * @author Ken Hill
  */
-public class MILYN_642_Test extends TestCase {
+public class MILYN_642_Test {
 	// Default escape char
+    @Test
     public void test_01() throws SmooksException, IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("MILYN_642/test-01-config.xml"));
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("test-01-config.xml"));
 
         ExecutionContext context = smooks.createExecutionContext();
-        String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("MILYN_642/test-01-data.csv"), smooks);
+        String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("test-01-data.csv"), smooks);
 
         assertEquals(
             "<csv-set><csv-record number=\"1\"><name>Erika Mustermann</name><email>e.m@ex.org</email></csv-record><csv-record number=\"2\"><name>Max \"The Man\" Mustermann</name><email>m.m@ex.org</email></csv-record></csv-set>",
@@ -53,11 +44,12 @@ public class MILYN_642_Test extends TestCase {
     }
 
 	// Custom escape char, xml config
+    @Test
     public void test_02() throws SmooksException, IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("MILYN_642/test-02-config.xml"));
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("test-02-config.xml"));
 
         ExecutionContext context = smooks.createExecutionContext();
-        String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("MILYN_642/test-02-data.csv"), smooks);
+        String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("test-02-data.csv"), smooks);
 
         assertEquals(
             "<csv-set><csv-record number=\"1\"><name>Erika Mustermann</name><email>e.m@ex.org</email></csv-record><csv-record number=\"2\"><name>Max \"The Man\" Mustermann</name><email>m.m@ex.org</email></csv-record></csv-set>",
@@ -65,6 +57,7 @@ public class MILYN_642_Test extends TestCase {
     }
 	
 	// Custom escape, programmatic config
+    @Test
     public void test_03() throws SmooksException, IOException, SAXException {
         Smooks smooks = new Smooks();
 		
@@ -73,7 +66,7 @@ public class MILYN_642_Test extends TestCase {
                 .setEscapeChar('~'));
 
         ExecutionContext context = smooks.createExecutionContext();
-        String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("MILYN_642/test-02-data.csv"), smooks);
+        String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("test-02-data.csv"), smooks);
 		
         assertEquals(
             "<csv-set><csv-record number=\"1\"><name>Erika Mustermann</name><email>e.m@ex.org</email></csv-record><csv-record number=\"2\"><name>Max \"The Man\" Mustermann</name><email>m.m@ex.org</email></csv-record></csv-set>",

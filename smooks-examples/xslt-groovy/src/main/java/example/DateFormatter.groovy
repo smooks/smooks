@@ -31,6 +31,7 @@ public class DateFormatter implements DOMVisitAfter {
 
         assert inputFormat != null;
         assert inputFormat != '';
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         dateDecodeFormat = new SimpleDateFormat(inputFormat);
         outputFields = parseOutputFields(outputFormats);
     }

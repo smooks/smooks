@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-example-jms-router</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-    </parent>
-    <name>Milyn Smooks Example - JMS Router (Provider)</name>
-    <artifactId>milyn-smooks-example-jms-router-provider</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>milyn-smooks-example-jms-router</artifactId>
+    <version>1.7.1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.activemq.tooling</groupId>
-                <artifactId>maven-activemq-plugin</artifactId>
-                <version>4.1.2</version>
-                <configuration>
-                    <configFile>./activemq.xml</configFile>
-                    <fork>false</fork>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <name>Milyn :: Smooks Example :: JMS Router (Provider)</name>
+  <artifactId>milyn-smooks-example-jms-router-provider</artifactId>
+  <packaging>bundle</packaging>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.activemq.tooling</groupId>
+        <artifactId>maven-activemq-plugin</artifactId>
+        <configuration>
+          <configFile>./activemq.xml</configFile>
+          <fork>false</fork>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

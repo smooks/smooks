@@ -20,18 +20,16 @@ import org.milyn.profile.DefaultProfileSet;
 import org.milyn.profile.DefaultProfileStore;
 import org.milyn.profile.UnknownProfileMemberException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author tfennelly
  */
-public class DefaultProfileStoreTest extends TestCase {
+public class DefaultProfileStoreTest {
 
-	public DefaultProfileStoreTest(String arg0) {
-		super(arg0);
-	}
-
+	@Test
 	public void testAddGetProfileSet() {
 		ProfileStore store = new DefaultProfileStore();
 		DefaultProfileSet set1 = new DefaultProfileSet("device1");

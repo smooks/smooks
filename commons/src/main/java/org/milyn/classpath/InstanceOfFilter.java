@@ -19,26 +19,25 @@ import org.milyn.assertion.AssertArgument;
 
 /**
  * Filter classpath classes based on their type.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class InstanceOfFilter extends AbstractFilter {
+    private final Class<?> searchType;
 
-    private Class searchType;
-    
-    public InstanceOfFilter(Class searchType) {
+    public InstanceOfFilter(final Class<?> searchType) {
         AssertArgument.isNotNull(searchType, "searchType");
         this.searchType = searchType;
     }
 
-    public InstanceOfFilter(Class searchType, String[] igrnoreList, String[] includeList) {
-        super(igrnoreList, includeList);
+    public InstanceOfFilter(final Class<?> searchType, final String[] ignoreList, final String[] includeList) {
+        super(ignoreList, includeList);
 
         AssertArgument.isNotNull(searchType, "searchType");
         this.searchType = searchType;
     }
 
-    protected boolean addClass(Class clazz) {
+    protected boolean addClass(Class<?> clazz) {
         return searchType.isAssignableFrom(clazz);
     }
 }

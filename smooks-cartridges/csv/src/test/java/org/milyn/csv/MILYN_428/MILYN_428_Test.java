@@ -26,7 +26,8 @@ import java.util.Arrays;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
@@ -37,9 +38,10 @@ import org.xml.sax.SAXException;
  * 
  * @author Clemens Fuchslocher
  */
-public class MILYN_428_Test extends TestCase {
+public class MILYN_428_Test {
 
 	// No errors.
+	@Test
 	public void test01() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {
@@ -55,6 +57,7 @@ public class MILYN_428_Test extends TestCase {
 	}
 
 	// No header.
+	@Test
 	public void test02() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {
@@ -76,6 +79,7 @@ public class MILYN_428_Test extends TestCase {
 	}
 
 	// Empty header.
+	@Test
 	public void test03() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {
@@ -97,6 +101,7 @@ public class MILYN_428_Test extends TestCase {
 	}
 
 	// Ignored fields.
+	@Test
 	public void test04() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {
@@ -112,6 +117,7 @@ public class MILYN_428_Test extends TestCase {
 	}
 
 	// String manipulation functions.
+	@Test
 	public void test05() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {
@@ -127,6 +133,7 @@ public class MILYN_428_Test extends TestCase {
 	}
 
 	// To few header fields.
+	@Test
 	public void test06() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {
@@ -148,6 +155,7 @@ public class MILYN_428_Test extends TestCase {
 	}
 
 	// To much header fields.
+	@Test
 	public void test07() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {
@@ -169,6 +177,7 @@ public class MILYN_428_Test extends TestCase {
 	}
 
 	// No header validation.
+	@Test
 	public void test08() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {
@@ -184,6 +193,7 @@ public class MILYN_428_Test extends TestCase {
 	}
 
 	// Disabled header validation.
+	@Test
 	public void test09() throws IOException, SAXException {
 		Smooks smooks = null;
 		try {

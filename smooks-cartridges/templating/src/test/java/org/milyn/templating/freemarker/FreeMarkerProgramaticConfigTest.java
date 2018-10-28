@@ -15,7 +15,8 @@
 */
 package org.milyn.templating.freemarker;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.milyn.Smooks;
@@ -23,7 +24,6 @@ import org.milyn.StreamFilterType;
 import org.milyn.FilterSettings;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.DomModelCreator;
-import org.milyn.javabean.repository.BeanRepositoryManager;
 import org.milyn.javabean.Bean;
 import org.milyn.payload.StringResult;
 import org.milyn.payload.StringSource;
@@ -40,8 +40,9 @@ import java.io.StringReader;
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class FreeMarkerProgramaticConfigTest extends TestCase {
+public class FreeMarkerProgramaticConfigTest {
 
+    @Test
     public void testFreeMarkerTrans_01() throws SAXException, IOException {
         Smooks smooks = new Smooks();
 
@@ -53,6 +54,7 @@ public class FreeMarkerProgramaticConfigTest extends TestCase {
         test_ftl(smooks, "<c x='xvalueonc1' />", "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void test_nodeModel_1() throws IOException, SAXException, ParserConfigurationException {
         test_nodeModel_1(StreamFilterType.DOM);
         test_nodeModel_1(StreamFilterType.SAX);
@@ -73,6 +75,7 @@ public class FreeMarkerProgramaticConfigTest extends TestCase {
         assertEquals("'cvalue1''cvalue2''cvalue3'", result.getResult());
     }
 
+    @Test
     public void test_nodeModel_2() throws IOException, SAXException, ParserConfigurationException {
         test_nodeModel_2(StreamFilterType.DOM);
         test_nodeModel_2(StreamFilterType.SAX);
@@ -90,6 +93,7 @@ public class FreeMarkerProgramaticConfigTest extends TestCase {
         test_ftl(smooks, "<a><b><c>cvalue1</c><c>cvalue2</c><c>cvalue3</c></b></a>", "<a><b><x>'cvalue1'</x><x>'cvalue2'</x><x>'cvalue3'</x></b></a>");
     }
 
+    @Test
     public void testFreeMarkerTrans_bind() throws SAXException, IOException {
         StringReader input;
         ExecutionContext context;
@@ -116,6 +120,7 @@ public class FreeMarkerProgramaticConfigTest extends TestCase {
         assertEquals("<mybean>xvalueonc1</mybean>", context.getBeanContext().getBean("mybeanTemplate"));
     }
 
+    @Test
     public void testInsertBefore() throws SAXException, IOException {
         Smooks smooks = new Smooks();
 
@@ -141,6 +146,7 @@ public class FreeMarkerProgramaticConfigTest extends TestCase {
                          "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void testInsertAfter() throws SAXException, IOException {
         Smooks smooks = new Smooks();
 
@@ -166,6 +172,7 @@ public class FreeMarkerProgramaticConfigTest extends TestCase {
                          "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void testAddTo() throws SAXException, IOException {
         Smooks smooks = new Smooks();
 
@@ -206,6 +213,7 @@ public class FreeMarkerProgramaticConfigTest extends TestCase {
                          "<mybean>xvalueonc1</mybean>");
     }
 
+    @Test
     public void test_outputTo_Stream() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 

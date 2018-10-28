@@ -12,12 +12,14 @@ import org.milyn.container.MockExecutionContext;
 import org.milyn.payload.FilterResult;
 import org.milyn.payload.JavaResult;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class MultiLineToStringBuilderTest extends TestCase {
+public class MultiLineToStringBuilderTest {
 
 	private static final String NL = System.getProperty("line.separator");
 
+	@Test
 	public void test() {
 
 		ExecutionContext context = new MockExecutionContext();
@@ -31,7 +33,7 @@ public class MultiLineToStringBuilderTest extends TestCase {
 		context.getBeanContext().addBean("emptyList", Collections.emptyList(), null);
 		context.getBeanContext().addBean("emptyArray", new String[0], null);
 
-		Map<String, String> stringMap = new HashMap<String, String>();
+		Map<String, String> stringMap = new LinkedHashMap<String, String>();
 		stringMap.put("v1", "some text");
 		stringMap.put("v2", "other text");
 		stringMap.put("v3", null);
@@ -78,8 +80,8 @@ public class MultiLineToStringBuilderTest extends TestCase {
 			"   \"emptyArray\" : []," + NL +
 			"   \"stringMap\" : {" + NL +
 			"      \"v1\" : \"some text\"," + NL +
-			"      \"v3\" : NULL," + NL +
-			"      \"v2\" : \"other text\"" + NL +
+			"      \"v2\" : \"other text\"," + NL +
+			"      \"v3\" : NULL" + NL +
 			"   }," + NL +
 			"   \"integerList\" : [" + NL +
 			"      1," + NL +

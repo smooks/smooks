@@ -16,33 +16,39 @@
 
 package org.milyn.cdr;
 
-import org.apache.commons.logging.*;
-import org.milyn.classpath.*;
-import org.milyn.container.*;
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jaxen.saxpath.SAXPathException;
+import org.milyn.cdr.xpath.SelectorStep;
+import org.milyn.cdr.xpath.SelectorStepBuilder;
+import org.milyn.cdr.xpath.evaluators.PassThruEvaluator;
+import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
+import org.milyn.classpath.ClasspathUtils;
+import org.milyn.container.ApplicationContext;
+import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Filter;
 import org.milyn.delivery.Visitor;
-import org.milyn.delivery.sax.*;
-import org.milyn.expression.*;
-import org.milyn.io.*;
-import org.milyn.profile.*;
-import org.milyn.resource.*;
-import org.milyn.util.*;
-import org.milyn.xml.*;
-import org.milyn.cdr.xpath.SelectorStepBuilder;
-import org.milyn.cdr.xpath.SelectorStep;
-import org.milyn.cdr.xpath.evaluators.XPathExpressionEvaluator;
-import org.milyn.cdr.xpath.evaluators.PassThruEvaluator;
-import org.w3c.dom.*;
-import org.jaxen.saxpath.SAXPathException;
-
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javassist.NotFoundException;
-import javassist.CannotCompileException;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.expression.ExecutionContextExpressionEvaluator;
+import org.milyn.expression.ExpressionEvaluator;
+import org.milyn.io.StreamUtils;
+import org.milyn.profile.Profile;
+import org.milyn.resource.URIResourceLocator;
+import org.milyn.util.ClassUtil;
+import org.milyn.xml.DomUtils;
+import org.milyn.xml.XmlUtil;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.util.*;
 
 /**
  * Smooks Resource Targeting Configuration.
@@ -113,7 +119,7 @@ import javax.xml.namespace.QName;
  * <br/>
  * Example selectors:
  * <ol>
- * <li>For a {@link Visitor} implementation, use the target fragment name e.g. "order", "address", "address/name", "item[2]/price[text() = 99.99]" etc. 
+ * <li>For a {@link Visitor} implementation, use the target fragment name e.g. "order", "address", "address/name", "item[2]/price[text() = 99.99]" etc.
  * Also supports wildcard based fragment selection ("*").  See the <a href="www.smooks.org">User Guide</a> for more details on setting selectors for {@link Visitor} type
  * resources.
  * </li>
@@ -138,6 +144,7 @@ import javax.xml.namespace.QName;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  * @see SmooksResourceConfigurationSortComparator
  */
+@SuppressWarnings({ "WeakerAccess", "unused", "deprecation", "unchecked" })
 public class SmooksResourceConfiguration {
 
     /**
@@ -342,6 +349,7 @@ public class SmooksResourceConfiguration {
      *
      * @return Configuration clone.
      */
+    @SuppressWarnings({ "MethodDoesntCallSuperMethod", "unchecked" })
     public Object clone() {
         SmooksResourceConfiguration clone = new SmooksResourceConfiguration();
 
@@ -368,12 +376,12 @@ public class SmooksResourceConfiguration {
 
         return clone;
     }
-    
+
     /**
      * Get the extended config namespace from which this configuration was created.
 	 * @return The extended config namespace from which this configuration was created.
 	 */
-	public String getExtendedConfigNS() {
+  public String getExtendedConfigNS() {
 		return extendedConfigNS;
 	}
 
@@ -399,7 +407,7 @@ public class SmooksResourceConfiguration {
         return clone;
     }
 
-    public void addParmeters(SmooksResourceConfiguration config) {
+    public void addParameters(SmooksResourceConfiguration config) {
         parameters.putAll(config.parameters);
     }
 
@@ -483,7 +491,7 @@ public class SmooksResourceConfiguration {
 
         logger.debug("Unable to parse selector '" + selector + "' as an XPath selector (even after normalization).  Parsing as a legacy style selector.");
 
-        return selectorStepList.toArray(new SelectorStep[selectorStepList.size()]);
+        return selectorStepList.toArray(new SelectorStep[0]);
     }
 
     public static String[] parseSelector(String selector) {
@@ -632,7 +640,7 @@ public class SmooksResourceConfiguration {
      * See details about the "selector" attribute in the
      * <a href="#attribdefs">Attribute Definitions</a> section.
      *
-     * @return The contxtual selector definition.
+     * @return The contextual selector definition.
      * @deprecated Use {#link #getSelectorSteps}.
      */
     public String[] getContextualSelector() {
@@ -805,7 +813,7 @@ public class SmooksResourceConfiguration {
      * <li>Return the resource path file extension e.g. "xsl".</li>
      * </ol>
      *
-     * @return
+     * @return The resource type.
      */
     public String getResourceType() {
         String restype;
@@ -862,7 +870,7 @@ public class SmooksResourceConfiguration {
             File resFile = new File(path);
             String resName = resFile.getName();
 
-            if (resName != null && !resName.trim().equals("")) {
+            if (!resName.trim().equals("")) {
                 int extensionIndex = resName.lastIndexOf('.');
                 if (extensionIndex != -1 && (extensionIndex + 1 < resName.length())) {
                     return resName.substring(extensionIndex + 1);
@@ -971,10 +979,7 @@ public class SmooksResourceConfiguration {
             return null;
         }
 
-        List list = new ArrayList();
-        list.addAll(parameters.values());
-
-        return list;
+        return new ArrayList(parameters.values());
     }
 
     /**
@@ -1119,7 +1124,7 @@ public class SmooksResourceConfiguration {
             return paramBasedData.getBytes();
         }
         if (resource != null) {
-            InputStream resStream = null;
+            InputStream resStream;
             try {
                 resStream = uriResourceLocator.getResource(resource);
             } catch (Exception e) {
@@ -1127,7 +1132,7 @@ public class SmooksResourceConfiguration {
             }
 
             try {
-                byte[] resourceBytes = null;
+                byte[] resourceBytes;
 
                 if (resStream == null) {
                     throw new IOException("Resource [" + resource + "] not found.");
@@ -1218,6 +1223,7 @@ public class SmooksResourceConfiguration {
      *         or if the resource is not targeted at any namespace (i.e. not specified),
      *         otherwise false.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isTargetedAtNamespace(String namespace) {
         if (namespaceURI != null) {
             return namespaceURI.equals(namespace);
@@ -1248,7 +1254,7 @@ public class SmooksResourceConfiguration {
      * Note this doesn't perform any namespace checking.
      *
      * @param element The element to check against.
-     * @param executionContext
+     * @param executionContext The current execution context.
      * @return True if this resource configuration is targeted at the specified
      *         element in context, otherwise false.
      */
@@ -1276,7 +1282,7 @@ public class SmooksResourceConfiguration {
         }
 
         // Check the element name(s).
-        while (index.i >= 0 && currentNode != null) {
+        while (index.i >= 0) {
             Element currentElement = (Element) currentNode;
             Node parentNode;
 
@@ -1309,7 +1315,7 @@ public class SmooksResourceConfiguration {
      * Note this doesn't perform any namespace checking.
      *
      * @param element The element to check against.
-     * @param executionContext
+     * @param executionContext The current execution context.
      * @return True if this resource configuration is targeted at the specified
      *         element in context, otherwise false.
      */
@@ -1370,7 +1376,7 @@ public class SmooksResourceConfiguration {
                     // we're at the root of the document and the only selector left is
                     // the document selector.  Pass..
                     return true;
-                } else 
+                } else
                 	if(parentElement == null) {
                     // we're at the root of the document, yet there are still
                     // unmatched tokens in the selector.  Fail...
@@ -1434,7 +1440,7 @@ public class SmooksResourceConfiguration {
                     // we're at the root of the document and the only selector left is
                     // the document selector.  Pass..
                     return true;
-                } else 
+                } else
                 	if(parentElement == null) {
                     // we're at the root of the document, yet there are still
                     // unmatched tokens in the selector.  Fail...
@@ -1489,7 +1495,7 @@ public class SmooksResourceConfiguration {
      * match for the configuration.
      *
      * @param element The element to be checked.
-     * @param executionContext
+     * @param executionContext The current execution context.
      * @return True if this configuration is targeted at the supplied element, otherwise false.
      */
     public boolean isTargetedAtElement(Element element, ExecutionContext executionContext) {
@@ -1542,7 +1548,7 @@ public class SmooksResourceConfiguration {
      * match for the configuration.
      *
      * @param element The element to be checked.
-     * @param executionContext
+     * @param executionContext The current execution context.
      * @return True if this configuration is targeted at the supplied element, otherwise false.
      */
     public boolean isTargetedAtElement(SAXElement element, ExecutionContext executionContext) {
@@ -1588,6 +1594,7 @@ public class SmooksResourceConfiguration {
         return true;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean assertConditionTrue() {
         if (expressionEvaluator == null) {
             return true;
@@ -1623,14 +1630,20 @@ public class SmooksResourceConfiguration {
     public String toXML() {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("<resource-config selector=\"" + selector + "\"");
+        builder.append("<resource-config selector=\"")
+               .append(selector)
+               .append("\"");
         if (namespaceURI != null) {
-            builder.append(" selector-namespace=\"" + namespaceURI + "\"");
+            builder.append(" selector-namespace=\"")
+                   .append(namespaceURI)
+                   .append("\"");
         }
         if (targetProfile != null && !targetProfile.equals(Profile.DEFAULT_PROFILE)) {
-            builder.append(" target-profile=\"" + targetProfile + "\"");
+            builder.append(" target-profile=\"")
+                   .append(targetProfile)
+                   .append("\"");
         }
-        builder.append("\">\n");
+        builder.append(">\n");
 
         if (resource != null) {
             String resourceStartEl;
@@ -1639,15 +1652,21 @@ public class SmooksResourceConfiguration {
             } else {
                 resourceStartEl = "<resource>";
             }
+
+            builder.append("\t")
+                   .append(resourceStartEl);
             if (resource.length() < 300) {
-                builder.append("\t" + resourceStartEl + resource + "</resource>\n");
+               builder.append(resource)
+                       .append("</resource>\n");
             } else {
-                builder.append("\t" + resourceStartEl + resource.substring(0, 300) + " ... more</resource>\n");
+               builder.append(resource, 0, 300)
+                       .append(" ... more</resource>\n");
             }
         }
 
         if (expressionEvaluator != null) {
-            builder.append("\t<condition evaluator=\"" + expressionEvaluator.getClass().getName() + "\">" + expressionEvaluator.getExpression() + "</condition>\n");
+            builder.append("\t<condition evaluator=\"").append(expressionEvaluator.getClass().getName()).append("\">").append(expressionEvaluator.getExpression())
+                   .append("</condition>\n");
         }
 
         if (parameters != null) {
@@ -1663,7 +1682,11 @@ public class SmooksResourceConfiguration {
                     } else {
                         value = ((Parameter) param).getValue();
                     }
-                    builder.append("\t<param name=\"" + paramName + "\">" + value + "</param>\n");
+                    builder.append("\t<param name=\"")
+                           .append(paramName)
+                           .append("\">")
+                           .append(value)
+                           .append("</param>\n");
                 }
             }
         }
@@ -1709,7 +1732,7 @@ public class SmooksResourceConfiguration {
     }
 
     public static String extractTargetAttribute(String[] selectorTokens) {
-        StringBuffer selectorProp = new StringBuffer();
+        StringBuilder selectorProp = new StringBuilder();
 
         for (String selectorToken : selectorTokens) {
             if (selectorToken.trim().startsWith("@")) {
@@ -1743,6 +1766,7 @@ public class SmooksResourceConfiguration {
         public XPathExpressionEvaluator getPredicatesEvaluator() {
             return PassThruEvaluator.INSTANCE;
         }
+        @SuppressWarnings("RedundantThrows")
         public void buildPredicatesEvaluator(Properties namespaces) throws SAXPathException, NotFoundException, CannotCompileException, IllegalAccessException, InstantiationException {
             // Ignore this.
         }

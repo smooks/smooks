@@ -1,68 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>milyn</artifactId>
-        <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-	<packaging>pom</packaging>
-    <name>Milyn Scribe</name>
-	<artifactId>milyn-scribe</artifactId>
 
-    <modules>
-    	<module>core</module>
-    	<module>adapter</module>
-    </modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>scribe-parent</artifactId>
+    <version>1.7.1</version>
+    <relativePath>scribe-parent/pom.xml</relativePath>
+  </parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>5.14.6</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <artifactId>milyn-scribe</artifactId>
+  <packaging>pom</packaging>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.milyn</groupId>
-				<artifactId>milyn-scribe-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+  <name>Milyn :: Scribe :: Main aggregator</name>
 
-			<dependency>
-				<groupId>org.milyn</groupId>
-				<artifactId>milyn-commons</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-
-		</dependencies>
-	</dependencyManagement>
-
-	<profiles>
-		<profile>
-			<id>test-unit</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-            </activation>
-			<properties>
-				<testGroups>unit</testGroups>
-			</properties>
-		</profile>
-		<profile>
-			<id>test-integration</id>
-			<properties>
-				<testGroups>unit,integration</testGroups>
-			</properties>
-		</profile>
-	</profiles>
-
+  <modules>
+    <module>scribe-parent</module>
+    <module>core</module>
+    <module>adapter/jpa</module>
+    <module>adapter/hibernate</module>
+    <module>adapter/ibatis</module>
+  </modules>
 </project>

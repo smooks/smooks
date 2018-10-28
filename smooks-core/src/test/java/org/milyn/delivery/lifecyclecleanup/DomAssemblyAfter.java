@@ -22,7 +22,7 @@ import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.dom.Phase;
 import org.milyn.delivery.dom.VisitPhase;
 import org.w3c.dom.Element;
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -34,7 +34,7 @@ public class DomAssemblyAfter implements DOMVisitAfter, ExecutionLifecycleCleana
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
-            TestCase.fail("Resource shouldn't be clened yet!");
+            fail("Resource shouldn't be cleaned yet!");
         }
     }
 

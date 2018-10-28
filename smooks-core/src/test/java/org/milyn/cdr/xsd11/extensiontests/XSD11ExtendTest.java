@@ -15,7 +15,8 @@
 */
 package org.milyn.cdr.xsd11.extensiontests;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.delivery.ContentDeliveryConfig;
 import org.milyn.container.ExecutionContext;
@@ -35,8 +36,9 @@ import java.util.List;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class XSD11ExtendTest extends TestCase {
+public class XSD11ExtendTest {
 
+	@Test
     public void test_validation() throws IOException, SAXException, ParserConfigurationException {
         Document configDoc = XmlUtil.parseStream(getClass().getResourceAsStream("config_01.xml"));
         XsdDOMValidator validator = new XsdDOMValidator(configDoc);
@@ -47,6 +49,7 @@ public class XSD11ExtendTest extends TestCase {
         validator.validate();
     }
 
+	@Test
     public void test_digest_01_simple() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_01.xml"));
         StringResult result = new StringResult();
@@ -55,6 +58,7 @@ public class XSD11ExtendTest extends TestCase {
         assertEquals("<a><c></c><c></c><d></d></a>", result.getResult());
     }
 
+	@Test
     public void test_digest_02_simple_import() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_02.xml"));
         StringResult result = new StringResult();
@@ -63,6 +67,7 @@ public class XSD11ExtendTest extends TestCase {
         assertEquals("<a><c></c><b></b></a>", result.getResult());
     }
 
+	@Test
     public void test_digest_03_simple_invalid_condition() throws IOException, SAXException {
         try {
             new Smooks(getClass().getResourceAsStream("config_03.xml"));
@@ -73,6 +78,7 @@ public class XSD11ExtendTest extends TestCase {
         }
     }
 
+	@Test
     public void test_digest_04_simple_invalid_profiles() throws IOException, SAXException {
         try {
             new Smooks(getClass().getResourceAsStream("config_04.xml"));
@@ -83,6 +89,7 @@ public class XSD11ExtendTest extends TestCase {
         }
     }
 
+	@Test
     public void test_digest_05_simple_default_1() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_05.1.xml"));
         ExecutionContext execContext;
@@ -109,6 +116,7 @@ public class XSD11ExtendTest extends TestCase {
         assertNotNull(config.getConditionEvaluator());
     }
 
+	@Test
     public void test_digest_05_simple_default_2() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_05.2.xml"));
         ExecutionContext execContext;

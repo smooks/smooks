@@ -28,11 +28,7 @@ import org.milyn.net.URIUtil;
 import org.milyn.profile.DefaultProfileSet;
 import org.milyn.resource.URIResourceLocator;
 import org.milyn.util.ClassUtil;
-import org.milyn.xml.DomUtils;
-import org.milyn.xml.LocalDTDEntityResolver;
-import org.milyn.xml.LocalEntityResolver;
-import org.milyn.xml.XmlUtil;
-import org.milyn.xml.XsdDOMValidator;
+import org.milyn.xml.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,12 +37,7 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -59,6 +50,7 @@ import java.util.Stack;
  *
  * @author tfennelly
  */
+@SuppressWarnings("WeakerAccess")
 public final class XMLConfigDigester {
 
     public static final String DTD_V10 = "http://www.milyn.org/dtd/smooksres-list-1.0.dtd";
@@ -110,6 +102,7 @@ public final class XMLConfigDigester {
      * @throws IOException  Error reading the XML stream.
      * @throws SmooksConfigurationException  Invalid configuration..
      */
+    @SuppressWarnings("unused")
     public static SmooksResourceConfigurationList digestConfig(InputStream stream, String baseURI, Map<String, Smooks> extendedConfigDigesters) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
         return digestConfig(stream, baseURI, extendedConfigDigesters, null);
     }
@@ -185,7 +178,7 @@ public final class XMLConfigDigester {
 
         return list;
     }
-    
+
     /**
      * Get the active resource configuration list.
      * @return The active resource configuration list.
@@ -363,6 +356,7 @@ public final class XMLConfigDigester {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void digestImport(Element importElement, URI baseURI) throws SAXException, URISyntaxException, SmooksConfigurationException {
         String file = DomUtils.getAttributeValue(importElement, "file");
         URIResourceLocator resourceLocator;
@@ -407,7 +401,7 @@ public final class XMLConfigDigester {
                     resourceStream.close();
                 }
             } finally {
-                popConfig();                
+                popConfig();
             }
         } catch (IOException e) {
             throw new SmooksConfigurationException("Failed to load Smooks configuration resource <import> '" + file + "': " + e.getMessage(), e);
@@ -523,7 +517,7 @@ public final class XMLConfigDigester {
 
         resourcelist.add(resourceConfig);
         if (resource == null) {
-            if (resourceConfig.getParameters(SmooksResourceConfiguration.PARAM_RESDATA) != null) {
+            if (resourceConfig.getParameters("restype") != null) {
                 logger.debug("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
             } else {
                 logger.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
@@ -534,6 +528,7 @@ public final class XMLConfigDigester {
         }
     }
 
+    @SuppressWarnings("ConfusingArgumentToVarargsMethod")
     private void digestExtendedResourceConfig(Element configElement, String defaultSelector, String defaultNamespace, String defaultProfile, String defaultConditionRef) {
         String configNamespace = configElement.getNamespaceURI();
         Smooks configDigester = getExtenededConfigDigester(configNamespace);
@@ -581,7 +576,7 @@ public final class XMLConfigDigester {
             assertExtendedConfigOK(configNamespace, resourcePath);
 
             // Construct the Smooks instance for processing this config namespace...
-            smooks = new Smooks(new StandaloneApplicationContext(false));
+            smooks = new Smooks(StandaloneApplicationContext.createNewInstance(false));
             setExtentionDigestOn();
             try {
                 SmooksResourceConfigurationStore configStore = smooks.getApplicationContext().getStore();
@@ -672,6 +667,7 @@ public final class XMLConfigDigester {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public ExpressionEvaluator digestCondition(Element conditionElement) throws SmooksConfigurationException {
         String idRef = DomUtils.getAttributeValue(conditionElement, "idRef");
 

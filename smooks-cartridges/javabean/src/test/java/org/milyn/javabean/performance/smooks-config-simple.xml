@@ -1,18 +1,12 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
 	
 	<resource-config selector="global-parameters">
         <param name="stream.filter.type">SAX</param>
     </resource-config>
 
-    <resource-config selector="person">
-        <resource>org.milyn.javabean.BeanPopulator</resource>
-        <param name="beanId">person</param>
-        <param name="beanClass">org.milyn.javabean.performance.model.Person</param>
-        <param name="bindings">
-        	<binding property="surname" type="String" selector="person" />
-		</param>
-    </resource-config>
-     
+    <jb:bean beanId="person" className="org.milyn.javabean.performance.model.Person" createOnElement="person">
+    	<jb:value property="surname" data="person"/>
+    </jb:bean>     
     
 </smooks-resource-list>

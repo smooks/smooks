@@ -16,22 +16,19 @@
 
 package org.milyn.container.standalone;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
 import org.milyn.cdr.SmooksResourceConfigurationStore;
 import org.milyn.container.ApplicationContext;
 import org.milyn.javabean.context.BeanIdStore;
-import org.milyn.javabean.context.StandaloneBeanContextFactory;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.milyn.profile.*;
+import org.milyn.profile.DefaultProfileSet;
+import org.milyn.profile.DefaultProfileStore;
+import org.milyn.profile.Profile;
+import org.milyn.profile.ProfileStore;
 import org.milyn.resource.ContainerResourceLocator;
 import org.milyn.resource.URIResourceLocator;
+
+import java.net.URI;
+import java.util.*;
 
 /**
  * Standalone container execution context for Smooks.
@@ -51,14 +48,24 @@ public class StandaloneApplicationContext implements ApplicationContext {
     private ClassLoader classLoader;
 
     /**
-     * Public constructor.
+     * create a new context
+     * @return the StandaloneApplicationContext instance
      */
-    public StandaloneApplicationContext(boolean registerInstalledResources) {
+    public static StandaloneApplicationContext createNewInstance(boolean registerInstalledResources) {
+        StandaloneApplicationContext sac = new StandaloneApplicationContext();
+        sac.resStore = new SmooksResourceConfigurationStore(sac, registerInstalledResources);
+        // Add the open profile...
+        sac.profileStore.addProfileSet(new DefaultProfileSet(Profile.DEFAULT_PROFILE));
+
+        return sac;
+    }
+
+    /**
+     * Private constructor.
+     */
+    private StandaloneApplicationContext() {
         resourceLocator = new URIResourceLocator();
         ((URIResourceLocator)resourceLocator).setBaseURI(URI.create(URIResourceLocator.SCHEME_CLASSPATH + ":/"));
-        resStore = new SmooksResourceConfigurationStore(this, registerInstalledResources);
-        // Add the open profile...
-        profileStore.addProfileSet(new DefaultProfileSet(Profile.DEFAULT_PROFILE));
     }
 
 	/* (non-Javadoc)

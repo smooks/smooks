@@ -18,7 +18,8 @@ package example;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.milyn.io.StreamUtils;
 import org.xml.sax.SAXException;
@@ -26,8 +27,9 @@ import org.xml.sax.SAXException;
 /**
  * @author <a href="daniel.bevenius@redpill.se">Daniel Bevenius</a>
  */
-public class BasicXslTransformTest extends TestCase {
+public class BasicXslTransformTest {
 
+	@Test
     public void test() throws IOException, SAXException {
         byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream("expected.xml"));
         String result = Main.runSmooksTransform();

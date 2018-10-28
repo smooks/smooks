@@ -15,18 +15,21 @@
 */
 package org.milyn.cdr.xpath;
 
-import org.jaxen.expr.*;
+import org.jaxen.JaxenHandler;
+import org.jaxen.expr.Expr;
+import org.jaxen.expr.LocationPath;
+import org.jaxen.expr.Step;
+import org.jaxen.expr.XPathExpr;
+import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
 import org.jaxen.saxpath.XPathReader;
-import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.helpers.XPathReaderFactory;
-import org.jaxen.JaxenHandler;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
 
 import javax.xml.namespace.QName;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -57,7 +60,7 @@ public class SelectorStepBuilder {
      * @throws SAXPathException Error parsing expression.
      */
     public static SelectorStep[] buildSteps(String selectorExpression) throws SAXPathException {
-        if(selectorExpression == SmooksResourceConfiguration.SELECTOR_NONE) {
+        if(SmooksResourceConfiguration.SELECTOR_NONE.equals(selectorExpression)) {
             return SELECTOR_NONE_STEP;
         }
 
@@ -74,6 +77,7 @@ public class SelectorStepBuilder {
      * @return The set of selector steps.
      * @throws SAXPathException Error parsing expression.
      */
+    @SuppressWarnings("unchecked")
     private static SelectorStep[] _buildSteps(String selectorExpression) throws SAXPathException {
         AssertArgument.isNotNull(selectorExpression, "selectorExpression");
 
@@ -164,17 +168,15 @@ public class SelectorStepBuilder {
             selectorSteps.add(new SelectorStep(xpathExpression, "**"));
         }
 
-        return selectorSteps.toArray(new SelectorStep[selectorSteps.size()]);
+        return selectorSteps.toArray(new SelectorStep[0]);
     }
 
     private static boolean isEncodedToken(String xpathExpression) {
         if(xpathExpression.startsWith("#") && !xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
             return true;
-        } else if(xpathExpression.startsWith("$") && !xpathExpression.startsWith(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
-            return true;
         }
 
-        return false;
+        return xpathExpression.startsWith("$") && !xpathExpression.startsWith(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR);
     }
 
     /**
@@ -185,6 +187,7 @@ public class SelectorStepBuilder {
      * @return The set of selector steps.
      * @throws SAXPathException Error parsing expression.
      */
+    @SuppressWarnings("WeakerAccess")
     public static SelectorStep[] buildSteps(String selectorExpression, Properties namespaces) throws SAXPathException {
         SelectorStep[] steps = buildSteps(selectorExpression);
         return SelectorStep.setNamespaces(steps, namespaces);
@@ -279,10 +282,12 @@ public class SelectorStepBuilder {
         return contextualSelector;
     }
 
+    @SuppressWarnings("unused")
     public static String extractTargetElement(SelectorStep[] selectorSteps) {
         return selectorSteps[selectorSteps.length - 1].getTargetElement().getLocalPart();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static String extractTargetAttribute(SelectorStep[] selectorSteps) {
         QName targetAttribute = selectorSteps[selectorSteps.length - 1].getTargetAttribute();
 

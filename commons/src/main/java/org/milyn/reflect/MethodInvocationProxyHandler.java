@@ -30,16 +30,18 @@ import java.util.Map;
  * <p/>
  * <b>Note</b>: <i>Be careful how you use this class.  It doesn't filter out
  * recursive/internal method calls i.e. you could eat memory with this class
- * if not carefull. Ideally, it should only log external Object invocations.</i>
+ * if not careful. Ideally, it should only log external Object invocations.</i>
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unused")
 public class MethodInvocationProxyHandler<T> implements InvocationHandler {
 
     private T object;
     private List<MethodCall> callList = new ArrayList<MethodCall>();
     private Map<String, List<MethodCall>> callMap = new LinkedHashMap<String, List<MethodCall>>();
 
+    @SuppressWarnings("unused")
     public MethodInvocationProxyHandler(T object) {
         this.object = object;
     }
@@ -48,6 +50,7 @@ public class MethodInvocationProxyHandler<T> implements InvocationHandler {
         return object;
     }
 
+    @SuppressWarnings({ "unchecked", "unused" })
     public T newProxy(Class[] interfaces) {
         return (T) Proxy.newProxyInstance(MethodInvocationProxyHandler.class.getClassLoader(), interfaces, this);
     }
@@ -74,6 +77,7 @@ public class MethodInvocationProxyHandler<T> implements InvocationHandler {
      *
      * @return Call list.
      */
+    @SuppressWarnings({ "WeakerAccess", "unused" })
     public List<MethodCall> getCallList() {
         return callList;
     }
@@ -86,6 +90,7 @@ public class MethodInvocationProxyHandler<T> implements InvocationHandler {
      * @param methodName The method name.
      * @return Call list.
      */
+    @SuppressWarnings("WeakerAccess")
     public synchronized List<MethodCall> getCallList(String methodName) {
         List<MethodCall> methodCallList = callMap.get(methodName);
 
@@ -93,7 +98,7 @@ public class MethodInvocationProxyHandler<T> implements InvocationHandler {
             methodCallList = new ArrayList<MethodCall>();
             callMap.put(methodName, methodCallList);
         }
-        
+
         return methodCallList;
     }
 
@@ -106,6 +111,7 @@ public class MethodInvocationProxyHandler<T> implements InvocationHandler {
      *
      * @return The call map.
      */
+    @SuppressWarnings("unused")
     public Map<String, List<MethodCall>> getCallMap() {
         return callMap;
     }

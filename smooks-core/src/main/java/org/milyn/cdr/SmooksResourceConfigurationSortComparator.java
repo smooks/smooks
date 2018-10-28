@@ -139,7 +139,7 @@ public class SmooksResourceConfigurationSortComparator implements Comparator {
 			// account for that.  Subtract 1 because that "1" is already accounted
 			// for by the addition of 100 - it's the extra we're accounting for here...
 			if(resourceConfig.isSelectorContextual()) {
-			    int contextSpecificity = resourceConfig.getContextualSelector().length;
+			    int contextSpecificity = resourceConfig.getSelectorSteps().length;
 			    specificity += (10 * (contextSpecificity - 1));
 			}
 		}

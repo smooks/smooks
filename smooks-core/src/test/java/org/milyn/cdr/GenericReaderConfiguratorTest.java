@@ -15,7 +15,8 @@
 */
 package org.milyn.cdr;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.delivery.java.JavaXMLReader;
 import org.milyn.delivery.AbstractParser;
 import org.milyn.GenericReaderConfigurator;
@@ -24,8 +25,9 @@ import org.xml.sax.SAXException;
 /**
  * @author
  */
-public class GenericReaderConfiguratorTest extends TestCase {
+public class GenericReaderConfiguratorTest {
 
+	@Test
     public void test_resource_only() {
         GenericReaderConfigurator configurator = new GenericReaderConfigurator(JavaXMLReader.class);
 
@@ -33,6 +35,7 @@ public class GenericReaderConfiguratorTest extends TestCase {
         assertConfigOK(config, JavaXMLReader.class.getName(), 0, 0, 0);
     }
 
+	@Test
     public void test_resource_and_features_and_params() throws SAXException {
         GenericReaderConfigurator configurator = new GenericReaderConfigurator(JavaXMLReader.class);
 
@@ -59,6 +62,7 @@ public class GenericReaderConfiguratorTest extends TestCase {
         assertTrue(AbstractParser.isFeatureOff("http://f", config));
     }
 
+	@Test
     public void test_features_and_params_only() throws SAXException {
         GenericReaderConfigurator configurator = new GenericReaderConfigurator();
 

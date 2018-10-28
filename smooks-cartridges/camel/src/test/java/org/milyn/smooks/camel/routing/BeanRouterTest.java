@@ -124,9 +124,7 @@ public class BeanRouterTest extends CamelTestSupport
 	
 	private MockEndpoint createAndConfigureMockEndpoint(String endpointUri) throws Exception
 	{
-		MockEndpoint mockEndpoint = new MockEndpoint(endpointUri);
-		mockEndpoint.setCamelContext(context);
-		context.addEndpoint(endpointUri, mockEndpoint);
+		MockEndpoint mockEndpoint = getMockEndpoint(endpointUri);
 		return mockEndpoint;
 	}
 

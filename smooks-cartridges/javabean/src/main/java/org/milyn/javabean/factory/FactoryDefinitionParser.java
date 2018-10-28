@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.container.ApplicationContext;
-import org.milyn.javabean.BeanPopulator;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.util.ClassUtil;
 
@@ -55,9 +54,13 @@ public interface FactoryDefinitionParser {
 	Factory<?> parse(String factoryDefinition);
 
 
-	public static class FactoryDefinitionParserFactory {
-        
+	@SuppressWarnings("unchecked")
+  class FactoryDefinitionParserFactory {
+
         private static Log logger = LogFactory.getLog(FactoryDefinitionParserFactory.class);
+
+        public static String GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS = "factory.definition.parser.class";
+        public static String DEFAULT_FACTORY_DEFINITION_PARSER_CLASS = "org.milyn.javabean.factory.BasicFactoryDefinitionParser";
 
         public static final String DEFAULT_ALIAS = "default";
 
@@ -69,10 +72,10 @@ public interface FactoryDefinitionParser {
 
     		String className;
             if(StringUtils.isEmpty(alias) || alias.equals(DEFAULT_ALIAS)) {
-                className = applicationContext.getStore().getGlobalParams().getStringParameter(BeanPopulator.GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS, BeanPopulator.DEFAULT_FACTORY_DEFINITION_PARSER_CLASS);
+                className = applicationContext.getStore().getGlobalParams().getStringParameter(GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS, DEFAULT_FACTORY_DEFINITION_PARSER_CLASS);
             } else {
                 loadAliasToClassMap();
-                            
+
                 Class<? extends FactoryDefinitionParser> clazz = aliasToClassMap.get(alias);
                 if(clazz == null) {
 
@@ -84,7 +87,7 @@ public interface FactoryDefinitionParser {
                     } catch (ClassNotFoundException e) {
                        throw new IllegalFactoryAliasException("The FactoryDefinitionParser alias '" + alias + "' can't be found and doesn't seem to be a classname.", e);
                     }
-                }      
+                }
                 className = clazz.getName();
             }
 
@@ -135,7 +138,7 @@ public interface FactoryDefinitionParser {
 
                         aliasToClassMap = new HashMap<String, Class<? extends FactoryDefinitionParser>>();
                         for (Class<? extends FactoryDefinitionParser> factory : factories) {
-                            Alias alias = (Alias) factory.getAnnotation(Alias.class);
+                            Alias alias = factory.getAnnotation(Alias.class);
                             if(alias != null) {
                                 String[] names = alias.value();
 
@@ -165,4 +168,3 @@ public interface FactoryDefinitionParser {
         }
 	}
 }
-;

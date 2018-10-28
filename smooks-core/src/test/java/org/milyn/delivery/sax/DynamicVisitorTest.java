@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -24,8 +25,9 @@ import org.milyn.payload.StringSource;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DynamicVisitorTest extends TestCase {
+public class DynamicVisitorTest {
     
+	@Test
     public void test() {
         Smooks smooks = new Smooks();
         StringSource source = new StringSource("<a><b><c>c1</c><d>c2</d><e>c3</e></b></a>");

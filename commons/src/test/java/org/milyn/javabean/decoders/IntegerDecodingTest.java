@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.javabean.DataDecodeException;
 
 /**
@@ -23,13 +24,15 @@ import org.milyn.javabean.DataDecodeException;
  * 
  * @author <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a>
  */
-public class IntegerDecodingTest extends TestCase {
+public class IntegerDecodingTest {
 	private IntegerDecoder decoder = new IntegerDecoder();
 
+	@Test
     public void test_empty_ok_value() {
         assertEquals(new Integer(1), decoder.decode("1"));
     }
 
+	@Test
     public void test_empty_data_string() {
         try {
             decoder.decode("");

@@ -1,50 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.milyn</groupId>
-		<artifactId>milyn</artifactId>
-		<version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-	</parent>
-    <artifactId>milyn-edi</artifactId>
-    <packaging>pom</packaging>
-    <name>Milyn EDI</name>
-    <url>http://milyn.codehaus.org</url>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>smooks-parent</artifactId>
+    <version>1.7.1</version>
+    <relativePath>../smooks-parent/pom.xml</relativePath>
+  </parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>testres</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <artifactId>milyn-edi</artifactId>
+  <packaging>pom</packaging>
+  <name>Milyn :: EDI :: Aggregator</name>
 
-    <profiles>
-        <profile>
-            <id>all</id>
-            <modules>
-                <module>edisax</module>
-                <module>ect</module>
-                <module>ect/maven-ect-plugin</module>
-                <module>ejc</module>
-                <module>ejc/maven-ejc-plugin</module>
-                <module>edi-test</module>
-                <!-- module>edi-utils</module -->
-            </modules>
-        </profile>
-        <profile>
-            <id>deploy</id>
-            <modules>
-                <!--
-                 Don't build anything.  Just install the POM...
-                -->
-            </modules>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-    </profiles>
-
+  <modules>
+    <module>edisax</module>
+    <module>ect</module>
+    <module>ect/maven-ect-plugin</module>
+    <module>ejc</module>
+    <module>ejc/maven-ejc-plugin</module>
+    <module>edi-test</module>
+    <module>edi-utils</module>
+  </modules>
 </project>

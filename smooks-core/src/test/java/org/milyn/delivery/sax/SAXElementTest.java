@@ -15,7 +15,8 @@
 */
 package org.milyn.delivery.sax;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.SmooksException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -23,8 +24,9 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SAXElementTest extends TestCase {
+public class SAXElementTest {
 
+	@Test
     public void test_create() {
         SAXElement saxElement;
 
@@ -68,6 +70,7 @@ public class SAXElementTest extends TestCase {
         }
     }
 
+	@Test
     public void test_attributes() {
         AttributesImpl attributes = new AttributesImpl();
 
@@ -81,6 +84,7 @@ public class SAXElementTest extends TestCase {
         assertEquals("b", saxElement.getAttributeNS("http://b", "a"));
     }
 
+	@Test
     public void test_accumulateText() {
         SAXElement saxElement1 = new SAXElement("http://x", "a", "x", new AttributesImpl(), null);
         SAXElement saxElement2 = new SAXElement("http://x", "a", "x", new AttributesImpl(), null);

@@ -15,7 +15,8 @@
 */
 package org.milyn.net;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,8 +24,9 @@ import java.net.URISyntaxException;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class URIUtilTest extends TestCase {
+public class URIUtilTest {
 
+	@Test
     public void test_getParent() throws URISyntaxException {
         URI uriIn;
         URI uriOut;

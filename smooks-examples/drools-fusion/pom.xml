@@ -1,118 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.milyn</groupId>
+    <artifactId>testres</artifactId>
+    <version>1.7.1</version>
+    <relativePath>../../testres/pom.xml</relativePath>
+  </parent>
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>drools</artifactId>
-        <groupId>org.drools</groupId>
-        <version>5.1.1</version>
-    </parent>
+  <!--
+    TODO make this packing pom and make 2 submodules: example-waltz and example-manners
+    (and possibly example-common too)
+  -->
+  <artifactId>drools-examples-fusion</artifactId>
+  <packaging>jar</packaging>
+  <name>Drools :: Examples Fusion</name>
 
-    <!--
-      TODO make this packing pom and make 2 submodules: example-waltz and example-manners
-      (and possibly example-common too)
-    -->
-    <artifactId>drools-examples-fusion</artifactId>
-    <packaging>jar</packaging>
-    <name>Drools :: Examples Fusion</name>
+  <properties>
+    <project.mainClass>org.drools.benchmark.waltz.WaltzBenchmark</project.mainClass>
+  </properties>
 
-    <dependencies>
-        <!-- Internal dependencies -->
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-compiler</artifactId>
-        </dependency>
+  <dependencies>
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.milyn</groupId>
+          <artifactId>milyn-smooks-javabean</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.milyn</groupId>
+          <artifactId>milyn-smooks-javabean</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-        <!-- External dependencies -->
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>looks</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-csv</artifactId>
-            <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-        </dependency>
-        <dependency>
-            <groupId>org.milyn</groupId>
-            <artifactId>milyn-smooks-javabean</artifactId>
-            <version>1.6-SNAPSHOT</version> <!-- base pom version - do not remove this comment -->
-        </dependency>
-    </dependencies>
+    <!-- External dependencies -->
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>looks</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>forms</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-csv</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.milyn</groupId>
+      <artifactId>milyn-smooks-javabean</artifactId>
+    </dependency>
+  </dependencies>
 
-    <properties>
-        <project.mainClass>org.drools.benchmark.waltz.WaltzBenchmark</project.mainClass>
-    </properties>
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>src/main/rules</directory>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <additionalBuildcommands>
-                        <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
-                    </additionalBuildcommands>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>${project.mainClass}</mainClass>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </build>
-
-    <repositories>
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Maven Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>codehaus-snapshots</id>
-            <name>Codehaus Snapshots</name>
-            <url>http://nexus.codehaus.org/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/rules</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <additionalBuildcommands>
+            <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
+          </additionalBuildcommands>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>${project.mainClass}</mainClass>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

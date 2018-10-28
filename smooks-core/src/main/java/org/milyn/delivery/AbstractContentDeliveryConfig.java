@@ -17,13 +17,12 @@ package org.milyn.delivery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.ParameterAccessor;
+import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.dtd.DTDStore;
 import org.milyn.event.types.ConfigBuilderEvent;
-import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import java.util.*;
@@ -35,6 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@SuppressWarnings("unchecked")
 public abstract class AbstractContentDeliveryConfig implements ContentDeliveryConfig {
 
     private static Log logger = LogFactory.getLog(AbstractContentDeliveryConfig.class);
@@ -66,9 +66,9 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     private Set<ExecutionLifecycleCleanable> execCleanableHandlers = new LinkedHashSet<ExecutionLifecycleCleanable>();
 
     private Boolean isDefaultSerializationOn = null;
-    
-    private List<XMLReader> readerPool = new CopyOnWriteArrayList<XMLReader>();
-	private int readerPoolSize;
+
+    private final List<XMLReader> readerPool = new CopyOnWriteArrayList<XMLReader>();
+	private         int             readerPoolSize;
 
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -125,10 +125,11 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
                     throw new IllegalStateException("Call to getObjects() before the setApplicationContext() was called.");
                 }
 
-                for(int i = 0; i < unitDefs.size(); i++) {
-                    SmooksResourceConfiguration resConfig = (SmooksResourceConfiguration)unitDefs.get(i);
-                    objects.add(applicationContext.getStore().getObject(resConfig));
-                }
+              for (final Object unitDef : unitDefs)
+              {
+                SmooksResourceConfiguration resConfig = (SmooksResourceConfiguration) unitDef;
+                objects.add(applicationContext.getStore().getObject(resConfig));
+              }
             } else {
                 objects = EMPTY_LIST;
             }
@@ -162,6 +163,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         return isDefaultSerializationOn;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public <T extends Visitor> void addToExecutionLifecycleSets(ContentHandlerConfigMapTable<T> handlerSet) {
         Collection<List<ContentHandlerConfigMap<T>>> mapEntries = handlerSet.getTable().values();
 
@@ -201,7 +203,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     	}
     }
 
-	public XMLReader getXMLReader() throws SAXException {
+	public XMLReader getXMLReader()
+  {
 		synchronized(readerPool) {
 			if(!readerPool.isEmpty()) {
 				return readerPool.remove(0);
@@ -226,39 +229,39 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
             	return null;
             }
     	}
-    	
+
     	// Gather the possible set of FilterBypass instances...
     	Set<FilterBypass> bypassSet = new HashSet<FilterBypass>();
     	for(ContentHandlerConfigMapTable visitorTable : visitorTables) {
             if(visitorTable != null && visitorTable.getUserConfiguredCount() == 1) {
             	FilterBypass filterBypass = getFilterBypass(visitorTable);
-            	
+
             	if(filterBypass != null) {
             		bypassSet.add(filterBypass);
             	} else {
-            		// There's a non-FilterBypass Visitor configured, so we can't 
+            		// There's a non-FilterBypass Visitor configured, so we can't
             		// use the Bypass Filter
             		return null;
             	}
             }
     	}
-    	
+
     	// If there's just one FilterBypass instance, return it...
     	if(bypassSet.size() == 1) {
     		return bypassSet.iterator().next();
     	}
-    	
+
     	// Otherwise we're not going to allow filter bypassing...
     	return null;
     }
-	
+
     private <T extends Visitor> FilterBypass getFilterBypass(ContentHandlerConfigMapTable<T> visitorTable) {
         Set<Entry<String, List<ContentHandlerConfigMap<T>>>> entries = visitorTable.getTable().entrySet();
-        
+
         for(Entry<String, List<ContentHandlerConfigMap<T>>> entry : entries) {
         	ContentHandlerConfigMap<T> configMap = entry.getValue().get(0);
         	SmooksResourceConfiguration resourceConfig = configMap.getResourceConfig();
-        	
+
         	if(!resourceConfig.isDefaultResource()) {
 	        	if(resourceConfig.getTargetElement().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
 	        		T visitor = configMap.getContentHandler();
@@ -266,12 +269,12 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 	        			return (FilterBypass) visitor;
 	        		}
 	        	}
-	
+
 	        	// Make sure we only iterate once...
 	        	return null;
         	}
-        }    	
-    	
+        }
+
     	return null;
     }
 }

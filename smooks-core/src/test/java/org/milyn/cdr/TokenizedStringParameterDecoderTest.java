@@ -23,13 +23,15 @@ import java.util.List;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Configurator;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class TokenizedStringParameterDecoderTest extends TestCase {
+public class TokenizedStringParameterDecoderTest {
 
 	/*
 	 * Class under test for Object decodeValue(String)
 	 */
+	@Test
 	public void testDecodeValue_string_list() {
 		Collection collection = getParameter("string-list", "a,b,c,d ,");
 		assertTrue("Expected to get back a java.util.List parameter", (collection instanceof List));
@@ -44,6 +46,7 @@ public class TokenizedStringParameterDecoderTest extends TestCase {
 	/*
 	 * Class under test for Object decodeValue(String)
 	 */
+	@Test
 	public void testDecode_string_hashset() {
 		Collection collection = getParameter("string-hashset", "a,b,c,d ,");
 		assertTrue("Expected to get back a java.util.List parameter", (collection instanceof HashSet));

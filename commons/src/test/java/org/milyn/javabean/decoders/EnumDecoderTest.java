@@ -15,7 +15,8 @@
 */
 package org.milyn.javabean.decoders;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.javabean.DataDecodeException;
 
@@ -24,8 +25,9 @@ import java.util.Properties;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class EnumDecoderTest extends TestCase {
+public class EnumDecoderTest {
 
+	@Test
     public void test_bad_config() {
         EnumDecoder decoder = new EnumDecoder();
         Properties config = new Properties();
@@ -48,9 +50,60 @@ public class EnumDecoderTest extends TestCase {
         }
     }
 
-    public void test_good_config() {
-        EnumDecoder decoder = new EnumDecoder();
-        Properties config = new Properties();
+    /**
+     * DOCUMENT ME!
+     */
+    @Test public void test_good_config_strict_false() {
+        final EnumDecoder decoder = new EnumDecoder();
+        final Properties config = new Properties();
+
+        config.setProperty("enumType", MyEnum.class.getName());
+        config.setProperty("strict", "false");
+        config.setProperty("val-A", "ValA");
+        config.setProperty("val-B", "ValB");
+        decoder.setConfiguration(config);
+
+        assertEquals(MyEnum.ValA, decoder.decode("ValA"));
+        assertEquals(MyEnum.ValA, decoder.decode("val-A"));
+        assertEquals(MyEnum.ValB, decoder.decode("ValB"));
+        assertEquals(MyEnum.ValB, decoder.decode("val-B"));
+        assertNull(decoder.decode("xxxxx"));
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    @Test public void test_good_config_strict_true() {
+        final EnumDecoder decoder = new EnumDecoder();
+        final Properties config = new Properties();
+
+        config.setProperty("enumType", MyEnum.class.getName());
+        config.setProperty("strict", "true");
+        config.setProperty("val-A", "ValA");
+        config.setProperty("val-B", "ValB");
+        decoder.setConfiguration(config);
+
+        assertEquals(MyEnum.ValA, decoder.decode("ValA"));
+        assertEquals(MyEnum.ValA, decoder.decode("val-A"));
+        assertEquals(MyEnum.ValB, decoder.decode("ValB"));
+        assertEquals(MyEnum.ValB, decoder.decode("val-B"));
+
+        try {
+            decoder.decode("xxxxx");
+            fail("Expected DataDecodeException");
+        } catch (DataDecodeException e) {
+            assertEquals(
+                    "Failed to decode 'xxxxx' as a valid Enum constant of type 'org.milyn.javabean.decoders.MyEnum'.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    @Test public void test_good_config_strict_undefined() {
+        final EnumDecoder decoder = new EnumDecoder();
+        final Properties config = new Properties();
 
         config.setProperty("enumType", MyEnum.class.getName());
         config.setProperty("val-A", "ValA");
@@ -65,8 +118,10 @@ public class EnumDecoderTest extends TestCase {
         try {
             decoder.decode("xxxxx");
             fail("Expected DataDecodeException");
-        } catch(DataDecodeException e) {
-            assertEquals("Failed to decode 'xxxxx' as a valid Enum constant of type 'org.milyn.javabean.decoders.MyEnum'.", e.getMessage());
+        } catch (DataDecodeException e) {
+            assertEquals(
+                    "Failed to decode 'xxxxx' as a valid Enum constant of type 'org.milyn.javabean.decoders.MyEnum'.",
+                    e.getMessage());
         }
     }
 }
