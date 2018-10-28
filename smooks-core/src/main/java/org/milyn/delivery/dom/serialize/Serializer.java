@@ -127,7 +127,7 @@ public class Serializer {
 	 * @throws ResourceConfigurationNotFoundException DOM Serialiser exception.
 	 * @throws IOException Unable to write to output writer.
 	 */
-	public void serailize(Writer writer) throws ResourceConfigurationNotFoundException, IOException {
+	public void serialize(Writer writer) throws ResourceConfigurationNotFoundException, IOException {
     if(writer == null) {
 			throw new IllegalArgumentException("null 'writer' arg passed in method call.");
 		}

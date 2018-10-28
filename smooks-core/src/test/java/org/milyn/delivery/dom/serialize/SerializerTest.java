@@ -71,7 +71,7 @@ public class SerializerTest {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			OutputStreamWriter writer = new OutputStreamWriter(output);
 
-			serializer.serailize(writer);
+			serializer.serialize(writer);
 			writer.flush();
 			byte[] actualBytes = output.toByteArray();
 			log.debug(new String(actualBytes));

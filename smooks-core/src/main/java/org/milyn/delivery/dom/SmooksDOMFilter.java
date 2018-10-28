@@ -629,7 +629,7 @@ public class SmooksDOMFilter extends Filter {
         }
         serializer = new Serializer(node, executionContext);
         try {
-            serializer.serailize(writer);
+            serializer.serialize(writer);
         } catch (ResourceConfigurationNotFoundException e) {
             throw new SmooksException("Unable to serialize document.", e);
         }
