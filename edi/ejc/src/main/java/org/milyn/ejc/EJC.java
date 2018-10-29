@@ -15,23 +15,24 @@
 */
 package org.milyn.ejc;
 
+import org.apache.commons.logging.Log;
 import org.milyn.assertion.AssertArgument;
-import org.milyn.edisax.model.internal.Edimap;
-import org.milyn.edisax.model.EdifactModel;
 import org.milyn.edisax.EDIConfigurationException;
+import org.milyn.edisax.model.EdifactModel;
+import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.MappingNode;
 import org.milyn.edisax.util.IllegalNameException;
-import org.milyn.io.StreamUtils;
 import org.milyn.io.FileUtils;
+import org.milyn.io.StreamUtils;
 import org.milyn.javabean.pojogen.JClass;
 import org.xml.sax.SAXException;
-import org.apache.commons.logging.Log;
-import static org.milyn.ejc.EJCLogFactory.Level;
 
 import java.io.*;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static org.milyn.ejc.EJCLogFactory.Level;
 
 /**
  * EJC is the main class parsing parameters and starting the compilation of the edi-mapping-config.
@@ -45,7 +46,7 @@ import java.util.Set;
  * <b>Example of how to execute the EJC:</b><br/>
  * EJC -p "package.name" -d "place/classes/in/directory/"  "path/to/edi-mapping-config"
  *
- * @author bardl  
+ * @author bardl
  */
 public class EJC {
 
@@ -171,11 +172,10 @@ public class EJC {
      * @param beanFolder the folder to place the generated java classes.
      * @throws EDIConfigurationException When edi-mapping-configuration is badly formatted.
      * @throws IOException When unable to read edi-mapping-configuration.
-     * @throws SAXException When edi-mapping-configuration is badly formatted.
      * @throws IllegalNameException when name of java-classes is illegal.
      * @throws ClassNotFoundException when error occurs while creating bindingfile.
      */
-    public ClassModel compile(Edimap mappingModel, String beanPackage, String beanFolder, Map<MappingNode, JClass> commonTypes) throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
+    public ClassModel compile(Edimap mappingModel, String beanPackage, String beanFolder, Map<MappingNode, JClass> commonTypes) throws EDIConfigurationException, IOException, IllegalNameException, ClassNotFoundException {
         ClassModel model = compile(mappingModel, beanPackage, commonTypes);
         String bindingFile = beanFolder + "/" + beanPackage.replace('.', '/') + "/" + BINDINGCONFIG_XML;
 
@@ -213,9 +213,8 @@ public class EJC {
      * @throws IOException When unable to read edi-mapping-configuration.
      * @throws SAXException When edi-mapping-configuration is badly formatted.
      * @throws IllegalNameException when name of java-classes is illegal.
-     * @throws ClassNotFoundException when error occurs while creating bindingfile.
      */
-    public ClassModel compile(InputStream mappingModel, String beanPackage) throws EDIConfigurationException, IOException, SAXException, IllegalNameException, ClassNotFoundException {
+    public ClassModel compile(InputStream mappingModel, String beanPackage) throws EDIConfigurationException, IOException, SAXException, IllegalNameException {
         //Read edifact configuration
         Edimap edimap = readEDIConfig(mappingModel);
 
@@ -263,14 +262,14 @@ public class EJC {
         LOG.info("Writing java beans to " + beanFolder + "...");
         BeanWriter.writeBeansToFolder(model, beanFolder, bindingFile);
 
-        LOG.info("Creating bindingfile...");
+        LOG.info("Creating binding file...");
 
         BindingWriter bindingWriter = new BindingWriter(model);
         bindingWriter.generate(bindingFile);
         model.setBindingFilePath(bindingFile);
 
         LOG.info("-----------------------------------------------------------------------");
-        LOG.info(" Compilatation complete.");
+        LOG.info(" Compilation complete.");
         LOG.info("-----------------------------------------------------------------------");
         LOG.info(" Files are located in folder ");
         LOG.info(" " + beanFolder);
@@ -283,9 +282,8 @@ public class EJC {
      * @return the Edimap.
      * @throws EDIConfigurationException When edi-mapping-configuration is badly formatted.
      * @throws IOException When unable to read edi-mapping-configuration.
-     * @throws SAXException When edi-mapping-configuration is badly formatted.
      */
-    private Edimap readEDIConfig(InputStream inputStream) throws EDIConfigurationException, IOException, SAXException {
+    private Edimap readEDIConfig(InputStream inputStream) throws EDIConfigurationException, IOException {
         EdifactModel edifactModel = new EdifactModel(inputStream);
         return edifactModel.getEdimap();
     }
