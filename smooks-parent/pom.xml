@@ -7,7 +7,7 @@
 
   <groupId>org.milyn</groupId>
   <artifactId>smooks-parent</artifactId>
-  <version>1.7.1</version>
+  <version>1.7.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Milyn :: Smooks</name>
   <url>http://www.smooks.org</url>
