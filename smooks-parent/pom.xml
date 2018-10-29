@@ -1024,8 +1024,6 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
           <compilerArgs>
             <arg>-Xlint:deprecation</arg>
             <arg>-Xlint:unchecked</arg>
