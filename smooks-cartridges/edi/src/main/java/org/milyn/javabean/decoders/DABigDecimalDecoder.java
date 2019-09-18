@@ -80,7 +80,7 @@ public class DABigDecimalDecoder extends BigDecimalDecoder {
     private synchronized void setDecimalPointFormat(DecimalFormat decimalFormat, Delimiters interchangeDelimiters) {
         DecimalFormatSymbols dfs = decimalFormat.getDecimalFormatSymbols();
 
-        decimalFormat.applyPattern("#0.0#");
+        decimalFormat.applyPattern("#0.##");
         if (interchangeDelimiters != null) {
             dfs.setDecimalSeparator(interchangeDelimiters.getDecimalSeparator().charAt(0));
         }
