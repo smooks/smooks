@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<smooks-resource-list  xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"  xmlns:rules="http://www.milyn.org/xsd/smooks/rules-1.0.xsd">
+<smooks-resource-list  xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"  xmlns:rules="https://www.smooks.org/xsd/smooks/rules-1.1.xsd">
 
     <rules:ruleBases>
         <rules:ruleBase name="custom" src="/regex.properties" provider="org.milyn.rules.regex.RegexProvider"/>

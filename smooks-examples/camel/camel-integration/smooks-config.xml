@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <smooks-resource-list 
-	xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" 
-	xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.3.xsd"
-	xmlns:camel="http://www.milyn.org/xsd/smooks/camel-1.4.xsd"
+	xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+	xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
+	xmlns:camel="https://www.smooks.org/xsd/smooks/camel-1.5.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.milyn.org/xsd/smooks-1.1.xsd http://www.milyn.org/xsd/smooks-1.1.xsd
-		http://www.milyn.org/xsd/smooks/javabean-1.3.xsd http://www.milyn.org/xsd/smooks/javabean-1.3.xsd
-		http://www.milyn.org/xsd/smooks/camel-1.4.xsd http://www.milyn.org/xsd/smooks/camel-1.4.xsd">
+	xsi:schemaLocation="https://www.smooks.org/xsd/smooks-1.2.xsd https://www.smooks.org/xsd/smooks-1.2.xsd
+		https://www.smooks.org/xsd/smooks/javabean-1.6.xsd https://www.smooks.org/xsd/smooks/javabean-1.6.xsd
+		https://www.smooks.org/xsd/smooks/camel-1.5.xsd https://www.smooks.org/xsd/smooks/camel-1.5.xsd">
  
 	<!-- Create a new ActivityLogEvent for each log entry... -->
 	<jb:bean beanId="logEvent" class="example.LogEvent" createOnElement="activity/event">

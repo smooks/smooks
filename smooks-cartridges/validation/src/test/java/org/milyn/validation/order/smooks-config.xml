@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-                      xmlns:rules="http://www.milyn.org/xsd/smooks/rules-1.0.xsd"
-                      xmlns:validation="http://www.milyn.org/xsd/smooks/validation-1.0.xsd"
-                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:rules="https://www.smooks.org/xsd/smooks/rules-1.1.xsd"
+                      xmlns:validation="https://www.smooks.org/xsd/smooks/validation-1.1.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
 
     <params>
         <param name="validation.maxFails">5</param>

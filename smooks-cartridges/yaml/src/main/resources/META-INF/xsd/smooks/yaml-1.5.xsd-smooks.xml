@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-selector-namespace="https://www.smooks.org/xsd/smooks/yaml-1.5.xsd">
+
+    <!--
+        Bean Instance Creator Resource...
+    -->
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.yaml.YamlReader</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
+        <param name="setOn">selector</param>
+        <param name="value">org.xml.sax.driver</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">aliasStrategy</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">anchorAttributeName</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">aliasAttributeName</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">rootName</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">documentName</param>
+    </resource-config>
+
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">arrayElementName</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">nullValueReplacement</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">keyWhitspaceReplacement</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">keyPrefixOnNumeric</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">illegalElementNameCharReplacement</param>
+    </resource-config>
+
+    <resource-config selector="reader">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">indent</param>
+    </resource-config>
+
+    <resource-config selector="reader keyMap">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <param name="mapTo">keyMap</param>
+    </resource-config>
+
+</smooks-resource-list>

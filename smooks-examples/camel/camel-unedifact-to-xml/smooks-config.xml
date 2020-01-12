@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 <smooks-resource-list 
-    xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-    xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.2.xsd" 
-    xmlns:edi="http://www.milyn.org/xsd/smooks/edi-1.2.xsd"
-    xmlns:unedifact="http://www.milyn.org/xsd/smooks/unedifact-1.4.xsd"
-    xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd">
+    xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+    xmlns:unedifact="https://www.smooks.org/xsd/smooks/unedifact-1.6.xsd"
+    xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.5.xsd">
 
     <unedifact:reader mappingModel="urn:org.milyn.edi.unedifact:d96a-mapping:1.4" ignoreNewLines="true" />
 

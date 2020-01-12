@@ -15,9 +15,9 @@
   ~ See the GNU Lesser General Public License for more details:
   ~ http://www.gnu.org/licenses/lgpl.txt
   -->
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-                      xmlns:unedifact="http://www.milyn.org/xsd/smooks/unedifact-1.5.xsd"
-                      xmlns:frag="http://www.milyn.org/xsd/smooks/fragment-routing-1.4.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:unedifact="https://www.smooks.org/xsd/smooks/unedifact-1.6.xsd"
+                      xmlns:frag="https://www.smooks.org/xsd/smooks/fragment-routing-1.5.xsd">
 
     <unedifact:reader mappingModel="urn:org.milyn.edi.unedifact:d03b-mapping:*" />
 

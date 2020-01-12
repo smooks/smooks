@@ -109,7 +109,7 @@ import java.util.Map;
  *
  * <pre>
  * &lt;?xml version="1.0"?&gt;
- * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:g="<a href="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">http://www.milyn.org/xsd/smooks/groovy-1.1.xsd</a>"&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:g="<a href="https://www.smooks.org/xsd/smooks/groovy-1.2.xsd">https://www.smooks.org/xsd/smooks/groovy-1.2.xsd</a>"&gt;
  *
  *     &lt;!--
  *     Use the SAX filter.  Note how we can still process the fragment as a DOM, and write it out

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-selector-namespace="https://www.smooks.org/xsd/smooks/io-routing-1.2.xsd">
+
+    <!--
+        FileOutputStreamResource Resource
+    -->
+
+    <resource-config selector="router">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.routing.io.OutputStreamRouter</param>
+    </resource-config>
+
+	<resource-config selector="router">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">routeOnElement</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+	<resource-config selector="router">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">routeOnElementNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="router">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">resourceName</param>
+    </resource-config>
+
+	<resource-config selector="router">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">beanId</param>
+    </resource-config>
+
+   	<resource-config selector="router">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">encoding</param>
+        <param name="mapTo">writerEncoding</param>
+    </resource-config>
+
+	<resource-config selector="router">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">executeBefore</param>
+        <param name="mapTo">visitBefore</param>
+    </resource-config>
+
+</smooks-resource-list>

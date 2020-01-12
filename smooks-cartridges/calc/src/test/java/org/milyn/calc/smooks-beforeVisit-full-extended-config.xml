@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-	xmlns:calc="http://www.milyn.org/xsd/smooks/calc-1.1.xsd"
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+	xmlns:calc="https://www.smooks.org/xsd/smooks/calc-1.2.xsd"
 >
 
 	<calc:counter countOnElement="a" beanId="a" start="1" amount="10" countOnElementNS="http://x" />

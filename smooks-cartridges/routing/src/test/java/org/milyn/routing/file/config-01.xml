@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd"
-                      xmlns:file="http://www.milyn.org/xsd/smooks/file-routing-1.1.xsd"
-                      xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
+                      xmlns:file="https://www.smooks.org/xsd/smooks/file-routing-1.3.xsd"
+                      xmlns:ftl="https://www.smooks.org/xsd/smooks/freemarker-1.2.xsd">
 
     <params>
         <param name="stream.filter.type">SAX</param>
     </params>
 
-    <jb:bindings beanId="object" class="java.util.HashMap" createOnElement="$document">
+    <jb:bean beanId="object" class="java.util.HashMap" createOnElement="$document">
         <jb:value property="a" data="a" />
-    </jb:bindings>
+    </jb:bean>
 
     <ftl:freemarker applyOnElement="a">
         <ftl:template>${object.a}</ftl:template>
