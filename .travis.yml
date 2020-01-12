@@ -11,9 +11,24 @@ jdk:
   - oraclejdk8
   - openjdk7
 
+script:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn test -B
+  - mvn javadoc:aggregate -DreportOutputDirectory=target/site/javadoc/v\${project.version} -DdestDir=smooks
+
 notifications:
   email:
     recipients:
       - dev@milyn.codehaus.org
     on_success: [change]
     on_failure: [always]
+
+deploy:
+  provider: pages
+  local_dir: target/site
+  target_branch: master
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  on:
+    branch: master
