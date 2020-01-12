@@ -14,7 +14,7 @@ jdk:
 script:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
   - mvn test -B
-  - mvn javadoc:aggregate -DreportOutputDirectory=target/site/javadoc/v\${project.version} -DdestDir=smooks
+  - mvn javadoc:aggregate -DreportOutputDirectory=target/site/javadoc/v\${project.version} -DdestDir=smooks -Dadditionalparam=-Xdoclint:none
 
 notifications:
   email:
