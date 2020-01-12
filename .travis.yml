@@ -14,7 +14,7 @@ jdk:
 script:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
   - mvn test -B
-  - "mvn javadoc:aggregate -DreportOutputDirectory=target/site/javadoc/v\${project.version} -DdestDir=smooks $(echo $TRAVIS_JDK_VERSION | grep -q oraclejdk8 && echo -n -Dadditionalparam=-Xdoclint:none) -B"
+  - mvn javadoc:aggregate -DreportOutputDirectory=target/site/javadoc/v\${project.version} -DdestDir=smooks $(echo $TRAVIS_JDK_VERSION | grep -q oraclejdk8 && echo -n -Dadditionalparam=-Xdoclint:none) -B
 
 notifications:
   email:
