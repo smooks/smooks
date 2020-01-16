@@ -22,13 +22,3 @@ notifications:
       - dev@milyn.codehaus.org
     on_success: [change]
     on_failure: [always]
-
-deploy:
-  provider: pages
-  local_dir: target/site
-  target_branch: master
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  keep_history: true
-  on:
-    branch: master
