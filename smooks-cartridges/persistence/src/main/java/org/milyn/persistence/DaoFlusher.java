@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * This DAO flusher calls the flush method of a DAO.
  *
  * <h3>Configuration</h3>
- * <b>Namespace:</b> http://www.milyn.org/xsd/smooks/persistence-1.2.xsd<br>
+ * <b>Namespace:</b> https://www.smooks.org/xsd/smooks/persistence-1.5.xsd<br>
  * <b>Element:</b> flusher<br>
  * <b>Attributes:</b>
  * <ul>
@@ -57,8 +57,8 @@ import org.w3c.dom.Element;
  * <h3>Configuration Example</h3>
  * <pre>
  * &lt;?xml version=&quot;1.0&quot;?&gt;
- * &lt;smooks-resource-list xmlns=&quot;http://www.milyn.org/xsd/smooks-1.1.xsd&quot;
- *   xmlns:dao=&quot;http://www.milyn.org/xsd/smooks/persistence-1.2.xsd&quot;&gt;
+ * &lt;smooks-resource-list xmlns=&quot;https://www.smooks.org/xsd/smooks-1.2.xsd&quot;
+ *   xmlns:dao=&quot;https://www.smooks.org/xsd/smooks/persistence-1.5.xsd&quot;&gt;
  *
  *      &lt;dao:flusher dao=&quot;dao&quot; flushOnElement=&quot;root&quot; flushBefore=&quot;false&quot; /&gt;
  * &lt;/smooks-resource-list&gt;

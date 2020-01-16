@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-                      xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.2.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:csv="https://www.smooks.org/xsd/smooks/csv-1.7.xsd">
 
     <!--
         Smooks v1.2 makes binding of CSV records very easy. Here

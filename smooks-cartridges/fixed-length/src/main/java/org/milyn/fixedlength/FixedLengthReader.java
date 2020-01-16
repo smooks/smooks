@@ -68,7 +68,7 @@ import java.util.Map;
  * To maintain a single binding instance in memory:
  * <pre>
  * &lt;?xml version="1.0"?&gt;
- * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:fl="http://www.milyn.org/xsd/smooks/fixed-length-1.3.xsd"&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:fl="https://www.smooks.org/xsd/smooks/fixed-length-1.4.xsd"&gt;
  *
  *     &lt;fl:reader fields="" separator="" quote="" skipLines="" lineNumber="" rootElementName="" recordElementName="" lineNumberAttributeName="" truncatedAttributeName=""&gt;
  *         &lt;fl:singleBinding beanId="" class="" /&gt;
@@ -80,7 +80,7 @@ import java.util.Map;
  * To maintain a {@link java.util.List} of binding instances in memory:
  * <pre>
  * &lt;?xml version="1.0"?&gt;
- * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:fl="http://www.milyn.org/xsd/smooks/fixed-length-1.3.xsd"&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:fl="https://www.smooks.org/xsd/smooks/fixed-length-1.4.xsd"&gt;
  *
  *     &lt;fl:reader fields="" separator="" quote="" skipLines="" lineNumber="" rootElementName="" recordElementName="" lineNumberAttributeName="" truncatedAttributeName=""&gt;
  *         &lt;fl:listBinding beanId="" class="" /&gt;
@@ -92,7 +92,7 @@ import java.util.Map;
  * To maintain a {@link Map} of binding instances in memory:
  * <pre>
  * &lt;?xml version="1.0"?&gt;
- * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:fl="http://www.milyn.org/xsd/smooks/fixed-length-1.3.xsd"&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:fl="https://www.smooks.org/xsd/smooks/fixed-length-1.4.xsd"&gt;
  *
  *     &lt;fl:reader fields="" separator="" quote="" skipLines="" lineNumber="" rootElementName="" recordElementName="" lineNumberAttributeName="" truncatedAttributeName=""&gt;
  *         &lt;fl:mapBinding beanId="" class="" keyField="" /&gt;

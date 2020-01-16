@@ -46,7 +46,7 @@ import javax.xml.namespace.QName;
  * The counter can increment or decrement a value.
  * <p />
  * This counter has extended xml schema configuration. Take a look at the
- * schema {@link http://www.milyn.org/xsd/smooks/calc-1.1.xsd} for more
+ * schema {@link https://www.smooks.org/xsd/smooks/calc-1.2.xsd} for more
  * information.
  * <p />
  * Example basic configuration:

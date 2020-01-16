@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd"
-                      xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.5.xsd"
+                      xmlns:ftl="https://www.smooks.org/xsd/smooks/freemarker-1.2.xsd">
 
     <ftl:freemarker applyOnElement="nullsource-document">
         <ftl:template><!--<#foreach customer in arrayList>${customer.firstName},${customer.lastName},${customer.gender},${customer.age},${customer.country}

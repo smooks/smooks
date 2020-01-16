@@ -71,6 +71,8 @@ public class EDIConfigDigester {
     public static final String XSD_V14 = "http://www.milyn.org/schema/edi-message-mapping-1.4.xsd";
     public static final String XSD_V15 = "http://www.milyn.org/schema/edi-message-mapping-1.5.xsd";
     public static final String XSD_V16 = "http://www.milyn.org/schema/edi-message-mapping-1.6.xsd";
+    public static final String XSD_V17 = "https://www.smooks.org/schema/edi-message-mapping-1.7.xsd";
+
     private static final String NAMESPACE_SUFFIX = ":";
     
     /**
@@ -175,7 +177,7 @@ public class EDIConfigDigester {
      * @return true if ediNS is valid, false otherwise.
      */
     private static boolean assertValidXSD(String ediNS) {
-        return XSD_V10.equals(ediNS) || XSD_V11.equals(ediNS) || XSD_V12.equals(ediNS) || XSD_V13.equals(ediNS) || XSD_V14.equals(ediNS) || XSD_V15.equals(ediNS) || XSD_V16.equals(ediNS);
+        return XSD_V10.equals(ediNS) || XSD_V11.equals(ediNS) || XSD_V12.equals(ediNS) || XSD_V13.equals(ediNS) || XSD_V14.equals(ediNS) || XSD_V15.equals(ediNS) || XSD_V16.equals(ediNS) || XSD_V17.equals(ediNS);
     }
 
     /**

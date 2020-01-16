@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
  * or the Scribe adapter what the query language is.
  *
  * <h3>Configuration</h3>
- * <b>Namespace:</b> http://www.milyn.org/xsd/smooks/persistence-1.2.xsd<br>
+ * <b>Namespace:</b> https://www.smooks.org/xsd/smooks/persistence-1.5.xsd<br>
  * <b>Element:</b> locator<br>
  * <b>Attributes:</b>
  *
@@ -72,8 +72,8 @@ import org.w3c.dom.Element;
  * <h3>Configuration Example</h3>
  * <pre>
  * &lt;?xml version=&quot;1.0&quot;?&gt;
- * &lt;smooks-resource-list xmlns=&quot;http://www.milyn.org/xsd/smooks-1.1.xsd&quot;
- *    xmlns:dao=&quot;http://www.milyn.org/xsd/smooks/persistence-1.2.xsd&quot;&gt;
+ * &lt;smooks-resource-list xmlns=&quot;https://www.smooks.org/xsd/smooks-1.2.xsd&quot;
+ *    xmlns:dao=&quot;https://www.smooks.org/xsd/smooks/persistence-1.5.xsd&quot;&gt;
  *      &lt;dao:locator beanId=&quot;entity&quot; lookup=&quot;something&quot; lookupOnElement=&quot;b&quot;&gt;
  *      &lt;dao:params&gt;
  *         &lt;dao:value name=&quot;arg1&quot; decoder=&quot;Integer&quot; data=&quot;c&quot; /&gt;

@@ -56,6 +56,7 @@ public final class XMLConfigDigester {
     public static final String DTD_V10 = "http://www.milyn.org/dtd/smooksres-list-1.0.dtd";
     public static final String XSD_V10 = "http://www.milyn.org/xsd/smooks-1.0.xsd";
     public static final String XSD_V11 = "http://www.milyn.org/xsd/smooks-1.1.xsd";
+    public static final String XSD_V12 = "https://www.smooks.org/xsd/smooks-1.2.xsd";
 
     private static Log logger = LogFactory.getLog(XMLConfigDigester.class);
 
@@ -215,7 +216,7 @@ public final class XMLConfigDigester {
                     throw new SmooksConfigurationException("Unsupported use of multiple configuration namespaces from inside a v1.0 Smooks configuration. Configuration extension not supported from a v1.0 configuration.  Use the v1.1 configuration namespace.");
                 }
                 digestV10XSDValidatedConfig(baseURI, configDoc);
-            } else if(XSD_V11.equals(defaultNS)) {
+            } else if(XSD_V11.equals(defaultNS) || XSD_V12.equals(defaultNS)) {
                 digestV11XSDValidatedConfig(baseURI, configDoc);
             } else {
                 throw new SAXException("Cannot parse Smooks configuration.  Unsupported default Namespace '" + defaultNS + "'.");
@@ -314,7 +315,7 @@ public final class XMLConfigDigester {
 
                 String elementName = DomUtils.getName(configElement);
                 String namespaceURI = configElement.getNamespaceURI();
-                if(namespaceURI == null || namespaceURI.equals(XSD_V11)) {
+                if(namespaceURI == null || namespaceURI.equals(XSD_V11) || namespaceURI.equals(XSD_V12)) {
 	                if (elementName.equals("params")) {
 	                    digestParams(configElement);
 	                } else if (elementName.equals("conditions")) {
@@ -537,7 +538,7 @@ public final class XMLConfigDigester {
         Element conditionElement = DomUtils.getElement(configElement, "condition", 1);
 
         // Create the ExtenstionContext and set it on the ExecutionContext...
-        if(conditionElement != null && (conditionElement.getNamespaceURI().equals(XSD_V10) || conditionElement.getNamespaceURI().equals(XSD_V11))) {
+        if(conditionElement != null && (conditionElement.getNamespaceURI().equals(XSD_V10) || conditionElement.getNamespaceURI().equals(XSD_V11) || conditionElement.getNamespaceURI().equals(XSD_V12))) {
             extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, digestCondition(conditionElement));
         } else if(defaultConditionRef != null) {
             extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, getConditionEvaluator(defaultConditionRef));
@@ -626,11 +627,11 @@ public final class XMLConfigDigester {
         }
 
         String defaultNS = validator.getDefaultNamespace().toString();
-        if (!XSD_V10.equals(defaultNS) && !XSD_V11.equals(defaultNS)) {
+        if (!XSD_V10.equals(defaultNS) && !XSD_V11.equals(defaultNS) && !XSD_V12.equals(defaultNS)) {
             throw new SmooksConfigurationException("Extended resource configuration '" + resourcePath + "' default namespace must be a valid Smooks configuration namespace.");
         }
         if(validator.getNamespaces().size() > 1) {
-            throw new SmooksConfigurationException("Extended resource configuration '" + resourcePath + "' defines configurations from multiple namespaces.  This is not permitted.  Only use configurations from the base Smooks config namespaces e.g. '" + XSD_V11 + "'.");
+            throw new SmooksConfigurationException("Extended resource configuration '" + resourcePath + "' defines configurations from multiple namespaces.  This is not permitted.  Only use configurations from the base Smooks config namespaces e.g. '" + XSD_V12 + "'.");
         }
     }
 
@@ -758,7 +759,7 @@ public final class XMLConfigDigester {
         SmooksConfig currentConfig = configStack.pop();
 
         // Make sure we don't have a v1.1 imported from config within a v1.0...
-        if(XSD_V11.equals(currentConfig.defaultNS) && !configStack.isEmpty()) {
+        if((XSD_V11.equals(currentConfig.defaultNS) || XSD_V12.equals(currentConfig.defaultNS)) && !configStack.isEmpty()) {
             SmooksConfig parentConfig = configStack.peek();
 
             if(parentConfig.defaultNS.equals(XSD_V10)) {

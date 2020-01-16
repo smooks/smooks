@@ -15,7 +15,7 @@
   ~ http://www.gnu.org/licenses/lgpl.txt
   -->
 
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:ff="http://www.milyn.org/xsd/smooks/flatfile-1.5.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:ff="https://www.smooks.org/xsd/smooks/flatfile-1.6.xsd">
 
     <ff:reader parserFactory="org.milyn.flatfile.regex.RegexParserFactory" indent="true">
         <params>

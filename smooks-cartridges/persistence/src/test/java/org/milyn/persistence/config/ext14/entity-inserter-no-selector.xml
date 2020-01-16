@@ -15,11 +15,11 @@
   ~  http://www.gnu.org/licenses/lgpl.txt
   -->
 
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-	xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd"
-	xmlns:dao="http://www.milyn.org/xsd/smooks/persistence-1.4.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+					  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
+					  xmlns:dao="https://www.smooks.org/xsd/smooks/persistence-1.5.xsd">
 
-	<jb:bindings class="java.lang.String" beanId="toInsert" createOnElement="root" />
+	<jb:bean class="java.lang.String" beanId="toInsert" createOnElement="root" />
 
     <dao:inserter beanId="toInsert" />
 

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:fl="http://www.milyn.org/xsd/smooks/fixed-length-1.3.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:fl="https://www.smooks.org/xsd/smooks/fixed-length-1.4.xsd">
 
     <fl:reader fields="firstname[10]?right_trim,lastname[10].trim.capitalize,$ignore$[2],gender[1],age[3],country[3]lower_case">
         <fl:mapBinding beanId="people" class="java.util.HashMap" keyField="firstname" />

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.6.xsd">
+<medi:edimap xmlns:medi="https://www.smooks.org/schema/edi-message-mapping-1.7.xsd">
     <medi:description name="Test Message" version="1.0" />
     <medi:delimiters segment="&#10;" field="|" fieldRepeat="~" component="^" sub-component="&amp;" escape="\" />
     <medi:segments xmltag="test-message" ignoreUnmappedSegments="true">

@@ -1057,11 +1057,11 @@
           <overview>${basedir}/src/main/java/overview.html</overview>
           <links>
             <link>http://java.sun.com/j2se/1.6.0/docs/api</link>
-            <link>http://www.milyn.org/javadoc/v${project.version}/commons</link>
-            <link>http://www.milyn.org/javadoc/v${project.version}/tinak</link>
-            <link>http://www.milyn.org/javadoc/v${project.version}/smooks</link>
-            <link>http://www.milyn.org/javadoc/v${project.version}/edisax</link>
-            <link>http://www.w3.org/Style/CSS/SAC/doc/</link>
+            <link>https://www.smooks.org/javadoc/v${project.version}/commons</link>
+            <link>https://www.smooks.org/javadoc/v${project.version}/tinak</link>
+            <link>https://www.smooks.org/javadoc/v${project.version}/smooks</link>
+            <link>https://www.smooks.org/javadoc/v${project.version}/edisax</link>
+            <link>https://www.w3.org/Style/CSS/SAC/doc/</link>
           </links>
         </configuration>
       </plugin>

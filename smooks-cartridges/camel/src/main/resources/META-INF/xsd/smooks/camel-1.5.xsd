@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="https://www.smooks.org/xsd/smooks/camel-1.5.xsd"
+	xmlns:smooks-camel="https://www.smooks.org/xsd/smooks/camel-1.5.xsd"
+	xmlns:smooks="https://www.smooks.org/xsd/smooks-1.2.xsd">
+
+	<xs:import namespace="https://www.smooks.org/xsd/smooks-1.2.xsd" />
+
+	<xs:annotation>
+		<xs:documentation xml:lang="en">Smooks Camel Integration
+			Configuration</xs:documentation>
+	</xs:annotation>
+
+	<xs:element name="route" substitutionGroup="smooks:abstract-resource-config" type="smooks-camel:route" />
+	<xs:complexType name="route">
+        <xs:complexContent>
+            <xs:extension base="smooks:abstract-resource-config">
+		        <xs:sequence>
+		            <xs:element name="to" type="smooks-camel:to" minOccurs="1" maxOccurs="unbounded" />
+		        </xs:sequence>
+				<xs:attribute name="beanId" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">
+							The beanId of the bean to be routed.
+		                      </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+                <xs:attribute name="correlationIdName" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Default correlation ID header name e.g. "JMSCorrelationID" when working
+                            with JMS components.
+                            <p/>
+                            This configuration property can be overridden on the "to" child element.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="correlationIdPattern" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Correlation ID value pattern.  This is a FreeMarker template, allowing
+                            construction of correlation IDs from BeanContext data.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+				<xs:attribute name="routeOnElement" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">
+							The source element event on which to trigger routing of the bean.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="to">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+				<xs:attribute name="endpoint" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">
+							The Camel endpoint to which the bean is to be routed.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="if" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">
+							If condition.  Also supports adding of the condition on the child element.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+                <xs:attribute name="correlationIdName" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Endpoint specific correlation ID header name e.g. "JMSCorrelationID" when working
+                            with JMS components.  Allows override of the default correlationIdName set on the
+                            parent "route" element.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+	</xs:complexType>
+
+</xs:schema>

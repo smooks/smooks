@@ -16,9 +16,9 @@
   -->
 
 <smooks-resource-list
-	xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-	xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd"
-	xmlns:dao="http://www.milyn.org/xsd/smooks/persistence-1.4.xsd">
+	xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+	xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
+	xmlns:dao="https://www.smooks.org/xsd/smooks/persistence-1.5.xsd">
 
 	<!--
 		This is the normal Javabean binding. Notice that we have a wiring on customer. The

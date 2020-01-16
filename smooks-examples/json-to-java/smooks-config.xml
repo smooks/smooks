@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <smooks-resource-list
-	 xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-	 xmlns:json="http://www.milyn.org/xsd/smooks/json-1.1.xsd"
-	 xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd">
+	 xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+	 xmlns:json="https://www.smooks.org/xsd/smooks/json-1.3.xsd"
+	 xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
 
     <!--
     Configure the JSON Reader to read the message stream into a stream of SAX events.
