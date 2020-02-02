@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="https://www.smooks.org/xsd/smooks/yaml-1.5.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="https://www.smooks.org/xsd/smooks-1.2.xsd"
+           xmlns:smooks-yaml="https://www.smooks.org/xsd/smooks/yaml-1.5.xsd">
+
+    <xs:import namespace="https://www.smooks.org/xsd/smooks-1.2.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">Smooks YAML Reader Configuration</xs:documentation>
+    </xs:annotation>
+
+
+    <xs:element name="reader" type="smooks-yaml:reader" substitutionGroup="smooks:abstract-reader">
+    	<xs:annotation>
+    		<xs:documentation xml:lang="en">
+    			YAML Reader Configuration
+    		 	The YAML reader reads a YAML stream and converts it to SAX events that Smooks
+    		 	can process.
+    		</xs:documentation>
+    	</xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="reader">
+    	<xs:annotation>
+    		 <xs:documentation xml:lang="en">YAML Reader</xs:documentation>
+    	</xs:annotation>
+    	<xs:complexContent>
+    		<xs:extension base="smooks:abstract-reader">
+    			<xs:sequence>
+    				<xs:element name="keyMap" type="smooks-yaml:keyMap" maxOccurs="1" minOccurs="0">
+    					<xs:annotation>
+				    		 <xs:documentation xml:lang="en">
+				    		 	Defines a YAML element name mapping
+				    		 	The "from" key will be replaced with the "to" key or the contents of the element.
+				    		 </xs:documentation>
+				    	</xs:annotation>
+    				</xs:element>
+    			</xs:sequence>
+
+    			<xs:attribute name="aliasStrategy" use="optional" default="REFER">
+    				<xs:annotation>
+    					<xs:documentation xml:lang="en">
+    						The strategy how to handle YAML anchors and aliases.
+
+    						Possible values:
+
+    						- REFER:
+    						Adds a 'id' attribute to the
+    						element with the anchor and the 'ref'
+    						attribute to the elements with the alias.
+    						The value of these attributes is the name of
+    						the anchor. The reference needs to be
+    						handled within the Smooks config. The
+    						attribute names can be set via the
+    						'anchorAttributeName' and
+    						'aliasAttributeName' properties.
+
+    						- RESOLVE:
+    						The elements or value from the anchor are
+    						resolved (copied) under the element with the
+    						alias. Smooks doesn't see that there was a
+    						reference.
+
+    						- REFER_RESOLVE:
+    						A combination of REFER and RESOLVE. The element of the anchor
+    						are resolved and the attributes are set. You
+    						should use this if you want to resolve the
+    						element but also need the alias name because
+    						it has a business meaning.
+    					</xs:documentation>
+    				</xs:annotation>
+    				<xs:simpleType>
+    					<xs:restriction base="xs:string">
+    						<xs:enumeration value="REFER">
+    							<xs:annotation>
+    								<xs:documentation>
+    									Adds a 'id' attribute to the
+			    						element with the anchor and the 'ref'
+			    						attribute to the elements with the alias.
+			    						The value of these attributes is the name of
+			    						the anchor. The reference needs to be
+			    						handled within the Smooks config. The
+			    						attribute names can be set via the
+			    						'anchorAttributeName' and
+			    						'aliasAttributeName' properties.
+    								</xs:documentation>
+    							</xs:annotation>
+    						</xs:enumeration>
+    						<xs:enumeration value="RESOLVE">
+    							<xs:annotation>
+    								<xs:documentation>
+    									A combination of
+			    						REFER and RESOLVE. The element of the anchor
+			    						are resolved and the attributes are set. You
+			    						should use this if you want to resolve the
+			    						element but also need the alias name because
+			    						it has a business meaning.
+    								</xs:documentation>
+    							</xs:annotation>
+    						</xs:enumeration>
+    						<xs:enumeration value="REFER_RESOLVE">
+    							<xs:annotation>
+    								<xs:documentation>
+    									A combination of
+			    						REFER and RESOLVE. The element of the anchor
+			    						are resolved and the attributes are set. You
+			    						should use this if you want to resolve the
+			    						element but also need the alias name because
+			    						it has a business meaning.
+    								</xs:documentation>
+    							</xs:annotation>
+    						</xs:enumeration>
+    					</xs:restriction>
+    				</xs:simpleType>
+    			</xs:attribute>
+    			<xs:attribute name="anchorAttributeName" type="xs:string" default="id" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The name of the anchor attribute when the aliasStrategy is REFER or REFER_RESOLVER.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="aliasAttributeName" type="xs:string" default="ref" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The name of the alias attribute when the aliasStrategy is REFER or REFER_RESOLVER.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="rootName" type="xs:string" use="optional" default="yaml">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The element name of the document root. Default of 'yaml'.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="documentName" type="xs:string" use="optional" default="document">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The element name of the yaml document declaration. Default of 'document'.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="arrayElementName" type="xs:string" use="optional" default="element">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The element name of a array element. Default of 'element'.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="keyWhitspaceReplacement" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The replacement character for whitespaces in a YAML map key.
+			    		 	By default this not defined, so that the reader doesn't search for whitespaces.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="keyPrefixOnNumeric" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The prefix character to add if the YAML node name starts with a number.
+			    		 	By default this is not defined, so that the reader doesn't search for element names that start with a number.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="illegalElementNameCharReplacement" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	If illegal characters are encountered in a YAML element name then they are replaced with this value.
+			    		 	By default this is not defined, so that the reader doesn't doesn't search for illegal characters.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+                <xs:attribute name="indent" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Add indentation character data to the generated event stream.  This simply makes
+                            the generated event stream easier to read in its serialized form.  Useful for
+                            testing etc.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+    		</xs:extension>
+    	</xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="keyMap">
+    	<xs:sequence>
+    		<xs:element name="key" type="smooks-yaml:key" maxOccurs="unbounded" minOccurs="1">
+    			<xs:annotation>
+    				<xs:documentation xml:lang="en">
+			   		 	Defines a YAML element name mapping.
+			   		 	The "from" key will be replaced with the "to" key or the contents of this element.
+		   		 	</xs:documentation>
+    			</xs:annotation>
+    		</xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="key">
+    	<xs:simpleContent>
+    		<xs:extension base="xs:string">
+    			<xs:attribute name="from" type="xs:string"	use="required">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The name of the key that will be replaced.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    			<xs:attribute name="to" type="xs:string" use="optional">
+    				<xs:annotation>
+			    		 <xs:documentation xml:lang="en">
+			    		 	The name the "from" key name is changed into.
+			    		 </xs:documentation>
+			    	</xs:annotation>
+    			</xs:attribute>
+    		</xs:extension>
+    	</xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="https://www.smooks.org/xsd/smooks/xsl-1.2.xsd"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:smooks="https://www.smooks.org/xsd/smooks-1.2.xsd"
+           xmlns:smooks-xsl="https://www.smooks.org/xsd/smooks/xsl-1.2.xsd">
+
+    <xs:import namespace="https://www.smooks.org/xsd/smooks-1.2.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">XSL Templating Configuration</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="xsl" type="smooks-xsl:xsl" substitutionGroup="smooks:abstract-resource-config">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                XSL Templating Configuration.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="xsl">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                XSL Templating Configuration Type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="smooks:element-visitor">
+                <xs:sequence>
+                    <xs:element name="template" type="smooks-xsl:template" />
+                    <xs:element name="use" type="smooks-xsl:use" minOccurs="0" />
+                    <xs:element ref="smooks:param" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="applyOnElement" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The name of the element on which the template is to be applied.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="applyOnElementNS" type="xs:anyURI" use="optional">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The namespace of the element on which the template is to be applied.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="applyBefore" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Apply the template before visiting the elements child content.<p/>Default is 'false'.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="template">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                The XSL Template.
+                <p/>
+                This can be an inline template, or a reference (URI) to an externally defined template (filesystem, classpath, www).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="encoding" type="xs:string" use="optional" default="UTF-8">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Template character encodng.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="use">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                The &lt;use&gt; element allows you to define how the templating result is to be used.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice minOccurs="0" maxOccurs="1">
+            <xs:element name="inline" type="smooks-xsl:inline" />
+            <xs:element name="bindTo" type="smooks-xsl:bindTo" />
+            <xs:element name="outputTo" type="smooks-xsl:outputTo" />
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="inline">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Inline the templating result into the <b>Smooks.filter</b> Result message.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="directive" type="smooks-xsl:inlineDirective" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    How the templating result is to be used (relative to the element on which it
+                    is applied).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="bindTo">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Bind the templating result into the bean context under the specified "id".  This makes the
+                templating result available for routing or other operations.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="id" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    The bean context ID under which the templating result is to be bound if the "bindTo" action is chosen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="outputTo">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Output the templating result to a named OutputStreamResource.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="outputStreamResource" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    The name of the "outputStreamResource" to which the templating result is to be written.  By default,
+                    the templating result is written to the  Smooks.filter result if (if a StreamResult is provided).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:simpleType name="inlineDirective">
+		<xs:restriction base="xs:string">
+            <xs:enumeration value="addto" />
+            <xs:enumeration value="replace" />
+            <xs:enumeration value="insertbefore" />
+            <xs:enumeration value="insertafter" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-                      xmlns:xsl="http://www.milyn.org/xsd/smooks/xsl-1.1.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:xsl="https://www.smooks.org/xsd/smooks/xsl-1.2.xsd">
 
     <xsl:xsl applyOnElement="c/b">
         <xsl:template>/example/BasicXslTransform.xsl</xsl:template>

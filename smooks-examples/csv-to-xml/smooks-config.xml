@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <smooks-resource-list
-	xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-	xmlns:csv="http://www.milyn.org/xsd/smooks/csv-1.2.xsd">
+	xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+	xmlns:csv="https://www.smooks.org/xsd/smooks/csv-1.7.xsd">
 
     <!--
     Configure the CSV Reader to read the message and change it into a stream of SAX events.

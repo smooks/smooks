@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
 
     <params>
         <param name="stream.filter.type">SAX</param>

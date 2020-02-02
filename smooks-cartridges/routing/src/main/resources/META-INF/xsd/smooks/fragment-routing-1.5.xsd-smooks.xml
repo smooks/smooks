@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+  ~ Milyn - Copyright (C) 2006 - 2010
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License (version 2.1) as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~
+  ~ See the GNU Lesser General Public License for more details:
+  ~ http://www.gnu.org/licenses/lgpl.txt
+  -->
+
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-selector-namespace="https://www.smooks.org/xsd/smooks/fragment-routing-1.5.xsd">
+
+    <!--
+        Fragment Routing Resource
+    -->
+
+    <resource-config selector="serialize">
+        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.milyn.routing.basic.FragmentSerializer</param>
+    </resource-config>
+
+	<resource-config selector="serialize">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">fragment</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+	<resource-config selector="serialize">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">fragmentNS</param>
+        <param name="mapTo">selector-namespace</param>
+    </resource-config>
+
+    <resource-config selector="serialize">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">bindTo</param>
+    </resource-config>
+
+	<resource-config selector="serialize">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">omitXMLDeclaration</param>
+    </resource-config>
+
+   	<resource-config selector="serialize">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">childContentOnly</param>
+    </resource-config>
+
+    <resource-config selector="serialize">
+        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">retain</param>
+        <param name="defaultValue">false</param>
+    </resource-config>
+
+</smooks-resource-list>

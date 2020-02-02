@@ -54,7 +54,7 @@ import javax.xml.namespace.QName;
  * <h3>XML Schema & Namespace</h3>
  * The Value Binder XML configuration schema is in the following XML Schema Namespace:
  * <p/>
- * <a href="http://www.milyn.org/xsd/smooks/javabean-1.3.xsd"><b>http://www.milyn.org/xsd/smooks/javabean-1.3.xsd</b></a>
+ * <a href="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"><b>https://www.smooks.org/xsd/smooks/javabean-1.6.xsd</b></a>
  * <p/>
  * The value binder element is '&lt;value&gt;'. Take a look in the schema for all
  * the configuration attributes.
@@ -82,7 +82,7 @@ import javax.xml.namespace.QName;
  * <h4>The Binding Configuration</h4>
  * <pre>
  * &lt;?xml version=&quot;1.0&quot;?&gt;
- * &lt;smooks-resource-list xmlns=&quot;http://www.milyn.org/xsd/smooks-1.1.xsd&quot; xmlns:jb=&quot;http://www.milyn.org/xsd/smooks/javabean-1.3.xsd&quot;&gt;
+ * &lt;smooks-resource-list xmlns=&quot;https://www.smooks.org/xsd/smooks-1.2.xsd&quot; xmlns:jb=&quot;https://www.smooks.org/xsd/smooks/javabean-1.6.xsd&quot;&gt;
  *
  *    &lt;jb:value
  *       beanId=&quot;customerName&quot;
