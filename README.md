@@ -16,7 +16,7 @@ This is the git source code repository for the [Smooks][1] Project.
 
 ### Pre-requisites
 
-1. JDK 1.5
+1. JDK 8
 1. Apache Maven 3.2.x
 
 ### Maven
