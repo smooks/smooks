@@ -43,7 +43,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <activemq.plugin.version>5.7.0</activemq.plugin.version>
-    <activemq.version>5.9.0</activemq.version>
+    <activemq.version>5.15.11</activemq.version>
     <ant.version>1.9.4</ant.version>
     <antlr.version>3.5.2</antlr.version>
 
