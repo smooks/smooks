@@ -862,7 +862,7 @@
       <dependency>
         <groupId>org.eclipse.gemini.blueprint</groupId>
         <artifactId>gemini-blueprint-extender</artifactId>
-        <version>1.0.0.M1</version>
+        <version>3.0.0.M01</version>
       </dependency>
 
       <dependency>
