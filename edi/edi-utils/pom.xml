@@ -24,7 +24,7 @@
     <dependency>
       <groupId>org.milyn.edi.unedifact</groupId>
       <artifactId>d99a-mapping</artifactId>
-      <version>1.4</version>
+      <version>1.7.1.0</version>
       <type>jar</type>
       <scope>test</scope>
     </dependency>
