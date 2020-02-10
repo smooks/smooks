@@ -44,7 +44,7 @@
 
     <activemq.plugin.version>5.7.0</activemq.plugin.version>
     <activemq.version>5.15.11</activemq.version>
-    <ant.version>1.9.4</ant.version>
+    <ant.version>1.10.7</ant.version>
     <antlr.version>3.5.2</antlr.version>
 
     <camel.version>2.24.2</camel.version>
