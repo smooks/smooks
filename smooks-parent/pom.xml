@@ -54,7 +54,7 @@
     <drools.version>5.1.1</drools.version>
     <dtdparser.version>1.21</dtdparser.version>
 
-    <freemarker.version>2.3.21</freemarker.version>
+    <freemarker.version>2.3.29</freemarker.version>
 
     <groovy.version>2.4.18</groovy.version>
 
