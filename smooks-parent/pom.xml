@@ -67,7 +67,7 @@
     <jackson-core-lgpl.version>1.0.1</jackson-core-lgpl.version>
     <javassist.version>3.12.1.GA</javassist.version>
     <javax.transaction.version>1.1</javax.transaction.version>
-    <jaxen.version>1.1.1</jaxen.version>
+    <jaxen.version>1.2.0</jaxen.version>
     <jdom2.version>2.0.5</jdom2.version>
     <jgoodies.forms.version>1.2.1</jgoodies.forms.version>
     <jgoodies.looks.version>2.2.0</jgoodies.looks.version>
