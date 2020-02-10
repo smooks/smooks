@@ -77,7 +77,7 @@
 
     <log4j.version>1.2.17</log4j.version>
 
-    <maven.eclipse.plugin.version>2.9</maven.eclipse.plugin.version>
+    <maven.eclipse.plugin.version>2.10</maven.eclipse.plugin.version>
     <mockejb.version>0.6-beta2</mockejb.version>
     <mockito.version>1.10.19</mockito.version>
     <mockobjects-core.version>0.09</mockobjects-core.version>
