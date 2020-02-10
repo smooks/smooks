@@ -110,7 +110,7 @@
     <xerces.version>2.9.1</xerces.version>
     <xml_apis.version>1.3.02</xml_apis.version>
     <xmlunit.version>1.6</xmlunit.version>
-    <xstream.version>1.4.7</xstream.version>
+    <xstream.version>1.4.11.1</xstream.version>
   </properties>
 
   <dependencyManagement>
