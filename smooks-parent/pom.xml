@@ -62,7 +62,7 @@
     <hibernate-core.version>4.3.8.Final</hibernate-core.version>
     <hsqldb.version>1.8.0.7</hsqldb.version>
 
-    <ibatis-sqlmap.version>2.3.0</ibatis-sqlmap.version>
+    <ibatis-sqlmap.version>2.3.4.726</ibatis-sqlmap.version>
 
     <jackson-core-lgpl.version>1.0.1</jackson-core-lgpl.version>
     <javassist.version>3.11.0.GA</javassist.version>
