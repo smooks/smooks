@@ -565,7 +565,7 @@
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi</artifactId>
-        <version>1.0</version>
+        <version>3.0.0</version>
       </dependency>
 
       <dependency>
