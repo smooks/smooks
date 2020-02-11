@@ -47,7 +47,7 @@
     <ant.version>1.10.7</ant.version>
     <antlr.version>3.5.2</antlr.version>
 
-    <camel.version>2.24.2</camel.version>
+    <camel.version>3.0.1</camel.version>
     <commons-lang.version>2.6</commons-lang.version>
     <commons-logging.version>1.2</commons-logging.version>
 
@@ -709,7 +709,19 @@
 
       <dependency>
         <groupId>org.apache.camel</groupId>
+        <artifactId>camel-attachments</artifactId>
+        <version>${camel.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.camel</groupId>
         <artifactId>camel-spring</artifactId>
+        <version>${camel.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>apt</artifactId>
         <version>${camel.version}</version>
       </dependency>
 

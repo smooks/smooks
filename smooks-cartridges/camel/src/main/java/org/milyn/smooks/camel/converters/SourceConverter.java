@@ -14,16 +14,16 @@
  */
 package org.milyn.smooks.camel.converters;
 
-import java.io.File;
-import java.io.InputStream;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
 import org.apache.camel.Converter;
 import org.apache.camel.component.file.GenericFile;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.JavaSource;
 import org.milyn.payload.JavaSourceWithoutEventStream;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.InputStream;
 
 /**
  * SourceConverter is a Camel {@link Converter} that converts from different
@@ -31,7 +31,7 @@ import org.milyn.payload.JavaSourceWithoutEventStream;
  * 
  * @author Daniel Bevenius
  */
-@Converter
+@Converter(generateLoader = true)
 public class SourceConverter
 {
     private SourceConverter()
