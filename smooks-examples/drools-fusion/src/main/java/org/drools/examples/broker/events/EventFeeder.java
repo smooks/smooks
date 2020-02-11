@@ -16,29 +16,24 @@
 
 package org.drools.examples.broker.events;
 
-import java.util.Date;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.time.*;
 
-import org.drools.time.Job;
-import org.drools.time.JobContext;
-import org.drools.time.JobHandle;
-import org.drools.time.TimerService;
-import org.drools.time.Trigger;
+import java.util.Date;
 
 /**
  * An event feeder reads an event data file and publishes
  * the read events to the consumer
- * 
+ *
  * @author etirelli
  */
 public class EventFeeder {
 
-    private final TimerService  clock;
-    private final EventSource   source;
+    private final TimerService clock;
+    private final EventSource source;
     private final EventReceiver sink;
 
-    public EventFeeder(final TimerService clock,
-                       final EventSource source,
-                       final EventReceiver sink) {
+    public EventFeeder(final TimerService clock, final EventSource source, final EventReceiver sink) {
         this.clock = clock;
         this.source = source;
         this.sink = sink;
@@ -47,32 +42,29 @@ public class EventFeeder {
     /**
      * For this simple demo, we are loading the
      * whole stream of events into the memory.
-     * 
      */
     public void feed() {
-        if ( source.hasNext() ) {
-            Event< ? > event = source.getNext();
-            FeedContext context = new FeedContext( event );
+        if (source.hasNext()) {
+            Event<?> event = source.getNext();
+            FeedContext context = new FeedContext(event);
             FeedTrigger trigger = new FeedTrigger();
-            trigger.setNextFireTime( event.getDate() );
-            FeedJob job = new FeedJob( source,
-                                       sink,
-                                       trigger,
-                                       clock );
-            clock.scheduleJob( job,
-                               context,
-                               trigger );
+            trigger.setNextFireTime(event.getDate());
+            FeedJob job = new FeedJob(source,
+                    sink,
+                    trigger,
+                    clock);
+            clock.scheduleJob(job,
+                    context,
+                    trigger);
         }
     }
 
-    private static class FeedJob
-        implements
-        Job {
+    private static class FeedJob implements Job {
 
-        private final EventSource   source;
+        private final EventSource source;
         private final EventReceiver sink;
-        private final FeedTrigger   trigger;
-        private final TimerService  clock;
+        private final FeedTrigger trigger;
+        private final TimerService clock;
 
         public FeedJob(final EventSource source,
                        final EventReceiver sink,
@@ -85,24 +77,22 @@ public class EventFeeder {
         }
 
         public void execute(JobContext context) {
-            this.sink.receive( ((FeedContext) context).event );
-            if ( this.source.hasNext() ) {
-                ((FeedContext) context).setEvent( this.source.getNext() );
-                this.trigger.setNextFireTime( ((FeedContext) context).getEvent().getDate() );
-                clock.scheduleJob( this,
-                                   context,
-                                   trigger );
+            this.sink.receive(((FeedContext) context).event);
+            if (this.source.hasNext()) {
+                ((FeedContext) context).setEvent(this.source.getNext());
+                this.trigger.setNextFireTime(((FeedContext) context).getEvent().getDate());
+                clock.scheduleJob(this,
+                        context,
+                        trigger);
             }
         }
     }
 
-    private static class FeedContext
-        implements
-        JobContext {
-        private JobHandle  handle;
-        private Event< ? > event;
+    private static class FeedContext implements JobContext {
+        private JobHandle handle;
+        private Event<?> event;
 
-        public FeedContext(Event< ? > event) {
+        public FeedContext(Event<?> event) {
             super();
             this.event = event;
         }
@@ -111,22 +101,25 @@ public class EventFeeder {
             return this.handle;
         }
 
+        @Override
+        public InternalWorkingMemory getWorkingMemory() {
+            return null;
+        }
+
         public void setJobHandle(JobHandle handle) {
             this.handle = handle;
         }
 
-        public Event< ? > getEvent() {
+        public Event<?> getEvent() {
             return event;
         }
 
-        public void setEvent(Event< ? > event) {
+        public void setEvent(Event<?> event) {
             this.event = event;
         }
     }
 
-    private static class FeedTrigger
-        implements
-        Trigger {
+    private static class FeedTrigger implements Trigger {
         private Date next;
 
         public void setNextFireTime(Date date) {
