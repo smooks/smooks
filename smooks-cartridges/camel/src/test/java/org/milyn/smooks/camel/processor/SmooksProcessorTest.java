@@ -16,44 +16,32 @@
  */
 package org.milyn.smooks.camel.processor;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.Set;
+import org.apache.camel.CamelExecutionException;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.Exchange;
+import org.apache.camel.attachment.AttachmentMessage;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.spi.ManagementAgent;
+import org.apache.camel.support.DefaultExchange;
+import org.apache.camel.test.junit4.CamelTestSupport;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.*;
+import org.milyn.delivery.Filter;
+import org.milyn.io.StreamUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import java.io.*;
+import java.util.Set;
 
-import org.apache.camel.CamelExecutionException;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Exchange;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.impl.DefaultExchange;
-import org.apache.camel.spi.ManagementAgent;
-import org.apache.camel.test.junit4.CamelTestSupport;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.milyn.delivery.Filter;
-import org.milyn.io.StreamUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.hamcrest.CoreMatchers.*;
 
 /**
  * Unit test for {@link SmooksProcessor}.
@@ -122,7 +110,7 @@ public class SmooksProcessorTest extends CamelTestSupport
         
         template.send("direct://input", exchange);
         
-        final DataHandler datahandler = result.assertExchangeReceived(0).getIn().getAttachment(attachmentId);
+        final DataHandler datahandler = result.assertExchangeReceived(0).getIn(AttachmentMessage.class).getAttachment(attachmentId);
         assertThat(datahandler, is(notNullValue()));
         assertThat(datahandler.getContent(), is(instanceOf(ByteArrayInputStream.class)));
         
@@ -134,7 +122,7 @@ public class SmooksProcessorTest extends CamelTestSupport
     {
         final DataSource ds = new StringDataSource(attachment);
         final DataHandler dataHandler = new DataHandler(ds);
-        exchange.getIn().addAttachment(id, dataHandler);
+        exchange.getIn(AttachmentMessage.class).addAttachment(id, dataHandler);
     }
     
     private String getAttachmentContent(final DataHandler datahandler) throws IOException 

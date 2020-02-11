@@ -31,7 +31,7 @@ import java.io.StringWriter;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-@Converter
+@Converter(generateLoader = true)
 public class EDITypeConverter {
 
     @Converter

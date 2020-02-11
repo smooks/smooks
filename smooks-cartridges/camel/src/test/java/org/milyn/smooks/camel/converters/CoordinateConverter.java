@@ -14,11 +14,11 @@
  */
 package org.milyn.smooks.camel.converters;
 
-import java.util.Map;
-
 import org.apache.camel.Converter;
 import org.milyn.payload.JavaResult;
 import org.milyn.smooks.camel.Coordinate;
+
+import java.util.Map;
 
 /**
  * Converts a JavaResult to a Coordinate object. 
@@ -28,7 +28,7 @@ import org.milyn.smooks.camel.Coordinate;
  * @author Daniel Bevenius
  *
  */
-@Converter
+@Converter(generateLoader = true)
 public class CoordinateConverter
 {
 	private CoordinateConverter()

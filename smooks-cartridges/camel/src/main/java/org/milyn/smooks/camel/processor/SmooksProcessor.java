@@ -1,44 +1,26 @@
 /*
  * Milyn - Copyright (C) 2006 - 2010
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License (version 2.1) as published
  * by the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.
- * 
+ *
  * See the GNU Lesser General Public License for more details:
  * http://www.gnu.org/licenses/lgpl.txt
  */
 package org.milyn.smooks.camel.processor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.camel.CamelContext;
-import org.apache.camel.CamelContextAware;
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
-import org.apache.camel.Processor;
-import org.apache.camel.Service;
+import org.apache.camel.*;
+import org.apache.camel.attachment.Attachment;
+import org.apache.camel.attachment.AttachmentMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
+import org.milyn.SmooksException;
 import org.milyn.SmooksFactory;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Visitor;
@@ -48,9 +30,20 @@ import org.milyn.payload.Exports;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.*;
+import java.util.Map.Entry;
+
 /**
  * Smooks {@link Processor} for Camel.
- * 
+ *
  * @author Christian Mueller
  * @author Daniel Bevenius
  */
@@ -58,16 +51,18 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
 {
     public static final String SMOOKS_EXECUTION_CONTEXT = "CamelSmooksExecutionContext";
     public static final String CAMEL_CHARACTER_ENCODING = "CamelCharsetName";
-    private final Log log = LogFactory.getLog(SmooksProcessor.class);
+    private static final Log LOGGER = LogFactory.getLog(SmooksProcessor.class);
+
     private Smooks smooks;
     private String configUri;
     private String reportPath;
 
-    private Set<VisitorAppender> visitorAppenders = new HashSet<VisitorAppender>();
-    private Map<String, Visitor> selectorVisitorMap = new HashMap<String, Visitor>();
+    private Set<VisitorAppender> visitorAppenders = new HashSet<>();
+    private Map<String, Visitor> selectorVisitorMap = new HashMap<>();
     private CamelContext camelContext;
-    
-    public SmooksProcessor(final CamelContext camelContext) 
+    private boolean attachmentsSupported = false;
+
+    public SmooksProcessor(final CamelContext camelContext)
     {
         this.camelContext = camelContext;
     }
@@ -84,41 +79,44 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
         this.configUri = configUri;
     }
 
-    public void process(final Exchange exchange) throws Exception
-    {
-    	//forward headers
-    	exchange.getOut().setHeaders(exchange.getIn().getHeaders());  
-    	//forward attachments
-    	exchange.getOut().setAttachments(exchange.getIn().getAttachments());  
-        
-    	final ExecutionContext executionContext = smooks.createExecutionContext();
+    public void process(final Exchange exchange) {
+        //forward headers
+        exchange.getMessage().setHeaders(exchange.getIn().getHeaders());
+
+        if (attachmentsSupported) {
+            //forward attachments
+            if (exchange.getIn(AttachmentMessage.class).hasAttachments()) {
+                for (Entry<String, Attachment> attachmentObject : exchange.getIn(AttachmentMessage.class).getAttachmentObjects().entrySet()) {
+                    exchange.getMessage(AttachmentMessage.class).addAttachmentObject(attachmentObject.getKey(), attachmentObject.getValue());
+                }
+            }
+        }
+
+        final ExecutionContext executionContext = smooks.createExecutionContext();
         executionContext.setAttribute(Exchange.class, exchange);
         String charsetName = (String) exchange.getProperty(CAMEL_CHARACTER_ENCODING);
         if (charsetName != null) //if provided use the came character encoding
         {
-        	executionContext.setContentEncoding(charsetName);
+            executionContext.setContentEncoding(charsetName);
         }
         exchange.getIn().setHeader(SMOOKS_EXECUTION_CONTEXT, executionContext);
         setupSmooksReporting(executionContext);
 
         final Exports exports = Exports.getExports(smooks.getApplicationContext());
-        if (exports.hasExports())
-        {
+        if (exports.hasExports()) {
             final Result[] results = exports.createResults();
-	        smooks.filterSource(executionContext, getSource(exchange), results);
-	        setResultOnBody(exports, results, exchange);
+            smooks.filterSource(executionContext, getSource(exchange), results);
+            setResultOnBody(exports, results, exchange);
+        } else {
+            smooks.filterSource(executionContext, getSource(exchange));
         }
-        else
-		{
-	        smooks.filterSource(executionContext, getSource(exchange));
-        }
-        
+
         executionContext.removeAttribute(Exchange.class);
     }
-    
+
     protected void setResultOnBody(final Exports exports, final Result[] results, final Exchange exchange)
     {
-        final Message message = exchange.getOut();
+        final Message message = exchange.getMessage();
         final List<Object> objects = Exports.extractResults(results, exports);
         if (objects.size() == 1)
         {
@@ -130,7 +128,7 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
 	        message.setBody(objects);
         }
     }
-    
+
     private void setupSmooksReporting(final ExecutionContext executionContext)
     {
         if (reportPath != null)
@@ -138,10 +136,10 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
             try
             {
                 executionContext.setEventListener(new HtmlReportGenerator(reportPath));
-            } 
+            }
             catch (final IOException e)
             {
-                log.info("Could not generate Smooks Report. The reportPath specified was [" + reportPath + "].", e);
+                LOGGER.info("Could not generate Smooks Report. The reportPath specified was [" + reportPath + "].", e);
             }
         }
     }
@@ -150,28 +148,28 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
     {
         Object payload = exchange.getIn().getBody();
 
-        
-        if(payload instanceof SAXSource) 
+
+        if(payload instanceof SAXSource)
         {
         	return new StreamSource((Reader)((SAXSource)payload).getXMLReader());
         }
-        
-        if(payload instanceof Source) 
+
+        if(payload instanceof Source)
         {
             return (Source) payload;
         }
-        
-        if(payload instanceof Node) 
+
+        if(payload instanceof Node)
         {
             return new DOMSource((Node) payload);
         }
-        
-        if(payload instanceof InputStream) 
+
+        if(payload instanceof InputStream)
         {
             return new StreamSource((InputStream) payload);
         }
-        
-        if(payload instanceof Reader) 
+
+        if(payload instanceof Reader)
         {
             return new StreamSource((Reader) payload);
         }
@@ -191,7 +189,7 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
 
     /**
      * Add a visitor instance.
-     * 
+     *
      * @param visitor
      *            The visitor implementation.
      * @param targetSelector
@@ -207,7 +205,7 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
     /**
      * Add a visitor instance to <code>this</code> Smooks instance via a
      * {@link VisitorAppender}.
-     * 
+     *
      * @param appender
      *            The visitor appender.
      * @return This instance.
@@ -223,30 +221,52 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
         this.reportPath = reportPath;
     }
 
-    public void start() throws Exception
-    {
-        if (smooks == null)
-        {
-            smooks = createSmooks(configUri);
-	        if (configUri != null)
-	        {
-	            smooks.addConfigurations(configUri);
-	        }
+    @Override
+    public void start() {
+        try {
+            if (smooks == null) {
+                smooks = createSmooks();
+                if (configUri != null) {
+                    smooks.addConfigurations(configUri);
+                }
+            }
+
+            smooks.getApplicationContext().setAttribute(CamelContext.class, camelContext);
+            addAppenders(smooks, visitorAppenders);
+            addVisitors(smooks, selectorVisitorMap);
+
+            InputStream inputStream = null;
+            try {
+                inputStream = camelContext.getClassResolver().loadResourceAsStream("META-INF/services/org/apache/camel/other.properties");
+                if (inputStream != null) {
+                    final Properties properties = new Properties();
+                    properties.load(inputStream);
+                    if (properties.getProperty("name") != null && properties.getProperty("name").equals("attachments")) {
+                        attachmentsSupported = true;
+                    }
+                }
+            } finally {
+                if (!attachmentsSupported) {
+                    LOGGER.warn("Attachments module could not be found: attachments will not be propagated");
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
+
+            LOGGER.info(this + " Started");
+        } catch (SAXException | IOException e) {
+            throw new SmooksException(e.getMessage(), e);
         }
-        
-        smooks.getApplicationContext().setAttribute(CamelContext.class, camelContext);
-        addAppenders(smooks, visitorAppenders);
-        addVisitors(smooks, selectorVisitorMap);
-        log.info(this + " Started");
     }
 
-    private Smooks createSmooks(String configUri) throws IOException, SAXException
+    private Smooks createSmooks()
     {
         final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookupByName(SmooksFactory.class.getName());
         return smooksFactory != null ? smooksFactory.createInstance() : new Smooks();
     }
 
-    private void addAppenders(Smooks smooks, Set<VisitorAppender> appenders)
+    private void addAppenders(Smooks smooks, Set<VisitorAppender> visitorAppenders)
     {
         for (VisitorAppender appender : visitorAppenders)
             smooks.addVisitor(appender);
@@ -258,14 +278,14 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
             smooks.addVisitor(entry.getValue(), entry.getKey());
     }
 
-    public void stop() throws Exception
+    public void stop()
     {
         if (smooks != null)
         {
             smooks.close();
             smooks = null;
         }
-        log.info(this + " Stopped");
+        LOGGER.info(this + " Stopped");
     }
 
     @Override

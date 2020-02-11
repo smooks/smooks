@@ -14,19 +14,13 @@
  */
 package org.milyn.smooks.camel.dataformat;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.impl.DefaultExchange;
-import org.apache.camel.processor.MarshalProcessor;
-import org.apache.camel.processor.UnmarshalProcessor;
+import org.apache.camel.support.DefaultExchange;
+import org.apache.camel.support.processor.MarshalProcessor;
+import org.apache.camel.support.processor.UnmarshalProcessor;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.After;
@@ -34,6 +28,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.milyn.io.StreamUtils;
 import org.milyn.payload.JavaSource;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
 /**
  * Unit test for {@link SmooksDataFormat}
