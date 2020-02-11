@@ -16,25 +16,23 @@
 
 package org.drools.examples.broker;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.conf.EventProcessingOption;
-import org.drools.conf.MBeansOption;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.examples.broker.events.Event;
 import org.drools.examples.broker.events.EventReceiver;
 import org.drools.examples.broker.model.Company;
 import org.drools.examples.broker.model.CompanyRegistry;
 import org.drools.examples.broker.model.StockTick;
 import org.drools.examples.broker.ui.BrokerWindow;
-import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.MBeansOption;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 
 /**
  * The broker application
@@ -46,8 +44,8 @@ public class Broker implements EventReceiver, BrokerServices {
     
     private BrokerWindow window;
     private CompanyRegistry companies;
-    private StatefulKnowledgeSession session;
-    private WorkingMemoryEntryPoint tickStream;
+    private KieSession session;
+    private EntryPoint tickStream;
 
     public Broker(BrokerWindow window,
                   CompanyRegistry companies) {
@@ -55,7 +53,7 @@ public class Broker implements EventReceiver, BrokerServices {
         this.window = window;
         this.companies = companies;
         this.session = createSession();
-        this.tickStream = this.session.getWorkingMemoryEntryPoint( "StockTick stream" );
+        this.tickStream = this.session.getEntryPoint( "StockTick stream" );
     }
 
     @SuppressWarnings("unchecked")
@@ -76,9 +74,9 @@ public class Broker implements EventReceiver, BrokerServices {
         }
     }
     
-    private StatefulKnowledgeSession createSession() {
-        KnowledgeBase kbase = loadRuleBase();
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+    private KieSession createSession() {
+        InternalKnowledgeBase kbase = loadRuleBase();
+        KieSession session = kbase.newKieSession();
         //KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newConsoleLogger( session );
         session.setGlobal( "services", this );
         for( Company company : this.companies.getCompanies() ) {
@@ -88,7 +86,7 @@ public class Broker implements EventReceiver, BrokerServices {
         return session;
     }
 
-    private KnowledgeBase loadRuleBase() {
+    private InternalKnowledgeBase loadRuleBase() {
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         try {
             for( int i = 0; i < ASSET_FILES.length; i++ ) {
@@ -103,11 +101,11 @@ public class Broker implements EventReceiver, BrokerServices {
             System.err.println(builder.getErrors());
             System.exit( 0 );
         }
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( "Stock Broker", conf ); 
-        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( "Stock Broker", conf );
+        kbase.addPackages( builder.getKnowledgePackages() );
         return kbase;
     }
 
