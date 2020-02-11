@@ -15,8 +15,6 @@
 */
 package org.milyn.smooks.camel.processor;
 
-import java.util.Map;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
@@ -29,6 +27,8 @@ import org.milyn.payload.Exports;
 import org.milyn.payload.JavaResult;
 import org.milyn.payload.StringSource;
 import org.milyn.smooks.camel.Coordinate;
+
+import java.util.Map;
 
 /**
  * 
@@ -107,7 +107,7 @@ public class SmooksProcessor_JavaResult_Test extends CamelTestSupport {
             }
         });
         
-        Coordinate coord = response.getOut().getBody(Coordinate.class);
+        Coordinate coord = response.getMessage().getBody(Coordinate.class);
         
         assertEquals(111, coord.getX());
         assertEquals(222, coord.getY());

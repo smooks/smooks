@@ -24,6 +24,18 @@
 
     <dependency>
       <groupId>org.apache.camel</groupId>
+      <artifactId>camel-attachments</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>apt</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
       <artifactId>camel-spring</artifactId>
       <scope>provided</scope>
     </dependency>

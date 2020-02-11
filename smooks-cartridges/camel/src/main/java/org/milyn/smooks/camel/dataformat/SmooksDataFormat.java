@@ -14,24 +14,24 @@
  */
 package org.milyn.smooks.camel.dataformat;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.CamelContextAware;
-import org.apache.camel.Exchange;
-import org.apache.camel.Service;
-import org.apache.camel.TypeConverter;
-import org.apache.camel.processor.MarshalProcessor;
+import org.apache.camel.*;
 import org.apache.camel.spi.DataFormat;
+import org.apache.camel.support.processor.MarshalProcessor;
+import org.apache.camel.support.processor.UnmarshalProcessor;
 import org.milyn.Smooks;
+import org.milyn.SmooksException;
 import org.milyn.SmooksFactory;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.Exports;
-import org.milyn.payload.StringResult;
 import org.milyn.payload.JavaSource;
+import org.milyn.payload.StringResult;
 import org.milyn.smooks.camel.component.SmooksComponent;
 import org.milyn.smooks.camel.processor.SmooksProcessor;
+import org.xml.sax.SAXException;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -88,7 +88,7 @@ public class SmooksDataFormat implements DataFormat, CamelContextAware, Service 
     /**
      * Unmarshals the fromStream to an Object.
      * </p>
-     * The Camel framework will call this method from {@link UnMarshalProcessor#process(Exchange)}
+     * The Camel framework will call this method from {@link UnmarshalProcessor#process(Exchange)}
      * and it will take care of setting the returned Object on the Out Message's body.
      *
      * @param exchange   The Camel {@link Exchange}.
@@ -119,16 +119,20 @@ public class SmooksDataFormat implements DataFormat, CamelContextAware, Service 
         return camelContext;
     }
 
-    public void start() throws Exception {
+    public void start() {
         final SmooksFactory smooksFactory = (SmooksFactory) camelContext.getRegistry().lookupByName(SmooksFactory.class.getName());
-        if (smooksFactory != null) {
-            smooks = smooksFactory.createInstance(smooksConfig);
-        } else {
-            smooks = new Smooks(smooksConfig);
+        try {
+            if (smooksFactory != null) {
+                smooks = smooksFactory.createInstance(smooksConfig);
+            } else {
+                smooks = new Smooks(smooksConfig);
+            }
+        } catch (IOException | SAXException e) {
+            throw new SmooksException(e.getMessage(), e);
         }
     }
 
-    public void stop() throws Exception {
+    public void stop() {
         if (smooks != null) {
             smooks.close();
         }

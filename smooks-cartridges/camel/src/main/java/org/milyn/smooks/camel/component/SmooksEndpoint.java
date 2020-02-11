@@ -16,7 +16,8 @@ package org.milyn.smooks.camel.component;
 
 import org.apache.camel.Component;
 import org.apache.camel.Service;
-import org.apache.camel.impl.ProcessorEndpoint;
+import org.apache.camel.support.ProcessorEndpoint;
+import org.milyn.SmooksException;
 import org.milyn.smooks.camel.processor.SmooksProcessor;
 
 /**
@@ -38,14 +39,22 @@ public class SmooksEndpoint extends ProcessorEndpoint implements Service
         this.smooksProcesor = processor;
     }
 
-    public void start() throws Exception
+    public void start()
     {
-        smooksProcesor.start();
+        try {
+            smooksProcesor.start();
+        } catch (Exception e) {
+            throw new SmooksException(e.getMessage(), e);
+        }
     }
 
-    public void stop() throws Exception
+    public void stop()
     {
-        smooksProcesor.stop();
+        try {
+            smooksProcesor.stop();
+        } catch (Exception e) {
+            throw new SmooksException(e.getMessage(), e);
+        }
     }
 
 }

@@ -16,6 +16,7 @@
 package org.milyn.smooks.camel.processor;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.test.junit4.CamelTestSupport;
@@ -31,12 +32,12 @@ public class SmooksProcessor_Null_Test extends CamelTestSupport {
 
 	@Test
     public void test() throws Exception {
-        Exchange response = template.request("direct:blah", new Processor() {
+        Exchange response = template.send("direct:blah", ExchangePattern.InOptionalOut, new Processor() {
             public void process(Exchange exchange) throws Exception {
                 exchange.getIn().setBody(new StringSource("<x/>"));
             }
         });
-        assertNull(response.getOut().getBody());
+        assertFalse(response.hasOut());
     }
 
 	/* (non-Javadoc)
