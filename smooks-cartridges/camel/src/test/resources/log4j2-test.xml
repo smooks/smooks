@@ -9,8 +9,8 @@
         </File>
     </Appenders>
     <Loggers>
-        <Logger name="org.apache.camel" level="debug"/>
-        <Logger name="org.milyn" level="debug"/>
+<!--        <Logger name="org.apache.camel" level="debug"/>-->
+<!--        <Logger name="org.milyn" level="debug"/>-->
         <Root level="info">
             <AppenderRef ref="console"/>
             <AppenderRef ref="file"/>

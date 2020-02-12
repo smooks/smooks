@@ -6,16 +6,12 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="org.milyn" level="error"/>
-        <Logger name="org.milyn.javabean" level="error"/>
-        <Logger name="org.milyn.cdr.xpath" level="debug"/>
-        <Logger name="freemarker" level="error"/>
+<!--        <Logger name="org.milyn.cdr.xpath" level="debug"/>-->
         <Logger name="org.apache.activemq" level="info"/>
-        <Logger name="org.hsqldb" level="debug"/>
+<!--        <Logger name="org.hsqldb" level="debug"/>-->
         <Logger name="org.apache.camel" level="info"/>
         <Logger name="example" level="info"/>
         <Logger name="org.springframework" level="info"/>
-        <Logger name="org.apache.camel" level="error"/>
 
         <Root>
             <AppenderRef ref="console"/>
