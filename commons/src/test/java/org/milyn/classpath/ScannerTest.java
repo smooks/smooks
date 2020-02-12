@@ -17,7 +17,8 @@ package org.milyn.classpath;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,13 +27,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class ScannerTest {
-	private Logger log = Logger.getLogger( ScannerTest.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScannerTest.class);
 	
 	private URLClassLoader classLoader;
 
@@ -53,10 +55,10 @@ public class ScannerTest {
 
         long start = System.currentTimeMillis();
         scanner.scanClasspath(classLoader);
-        log.debug("Took: " + (System.currentTimeMillis() - start));
+        LOGGER.debug("Took: " + (System.currentTimeMillis() - start));
         List<Class> classes = filter.getClasses();
 
-        log.debug(classes);
+        LOGGER.debug(classes.toString());
         assertEquals(4, classes.size());
         assertTrue(classes.contains(InstanceOfFilter.class));
         assertTrue(classes.contains(IsAnnotationPresentFilter.class));
@@ -71,10 +73,10 @@ public class ScannerTest {
 
         long start = System.currentTimeMillis();
         scanner.scanClasspath(classLoader);
-        log.debug("Took: " + (System.currentTimeMillis() - start));
+        LOGGER.debug("Took: " + (System.currentTimeMillis() - start));
         List<Class> classes = filter.getClasses();
 
-        log.debug(classes);
+        LOGGER.debug(classes.toString());
         assertEquals(2, classes.size());
         assertTrue(classes.contains(AnnotatedClass1.class));
         assertTrue(classes.contains(AnnotatedClass1.class));
@@ -87,10 +89,10 @@ public class ScannerTest {
 
         long start = System.currentTimeMillis();
         scanner.scanClasspath(classLoader);
-        log.debug("Took: " + (System.currentTimeMillis() - start));
+        LOGGER.debug("Took: " + (System.currentTimeMillis() - start));
         List<Class> classes = filter.getClasses();
 
-        log.debug(classes);
+        LOGGER.debug(classes.toString());
         assertEquals(4, classes.size());
         assertTrue(classes.contains(InstanceOfFilter.class));
         assertTrue(classes.contains(IsAnnotationPresentFilter.class));

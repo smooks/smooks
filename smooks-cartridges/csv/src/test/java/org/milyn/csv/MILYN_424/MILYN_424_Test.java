@@ -15,24 +15,24 @@
 */
 package org.milyn.csv.MILYN_424;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.apache.log4j.Logger;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.payload.StringResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 /**
  * Test for http://jira.codehaus.org/browse/MILYN-424.
@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
  */
 public class MILYN_424_Test {
 
-	private static Logger logger = Logger.getLogger(MILYN_424_Test.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MILYN_424_Test.class);
 
         @Test
 	public void test() throws IOException, SAXException {
@@ -57,22 +57,22 @@ public class MILYN_424_Test {
 				public void visitAfter(final SAXElement element, final ExecutionContext execution) throws IOException {
 					n++;
 
-					logger.info("n == " + n);
-					logger.info("element.getAttribute(\"number\") == " + element.getAttribute("number"));
-					logger.info("element.getAttribute(\"truncated\") == " + element.getAttribute("truncated"));
+					LOGGER.info("n == " + n);
+					LOGGER.info("element.getAttribute(\"number\") == " + element.getAttribute("number"));
+					LOGGER.info("element.getAttribute(\"truncated\") == " + element.getAttribute("truncated"));
 
 					Attributes attributes = element.getAttributes();
 					assertNotNull(attributes);
 
-					logger.info("attributes.getIndex(\"number\") == " + attributes.getIndex("number"));
-					logger.info("attributes.getIndex(\"truncated\") == " + attributes.getIndex("truncated"));
+					LOGGER.info("attributes.getIndex(\"number\") == " + attributes.getIndex("number"));
+					LOGGER.info("attributes.getIndex(\"truncated\") == " + attributes.getIndex("truncated"));
 
 					for (int n = 0; n < attributes.getLength(); n++) {
-						logger.info("attributes.getURI(" + n + ") == " + attributes.getURI(n));
-						logger.info("attributes.getLocalName(" + n + ") == " + attributes.getLocalName(n));
-						logger.info("attributes.getQName(" + n + ") == " + attributes.getQName(n));
-						logger.info("attributes.getType(" + n + ") == " + attributes.getType(n));
-						logger.info("attributes.getValue(" + n + ") == " + attributes.getValue(n));
+						LOGGER.info("attributes.getURI(" + n + ") == " + attributes.getURI(n));
+						LOGGER.info("attributes.getLocalName(" + n + ") == " + attributes.getLocalName(n));
+						LOGGER.info("attributes.getQName(" + n + ") == " + attributes.getQName(n));
+						LOGGER.info("attributes.getType(" + n + ") == " + attributes.getType(n));
+						LOGGER.info("attributes.getValue(" + n + ") == " + attributes.getValue(n));
 					}
 
 					BeanContext beans = execution.getBeanContext();
@@ -81,8 +81,8 @@ public class MILYN_424_Test {
 					Data data = (Data) beans.getBean("Data");
 					assertNotNull(data);
 
-					logger.info("data.getNumber() == " + data.getNumber());
-					logger.info("data.getTruncated() == " + data.getTruncated());
+					LOGGER.info("data.getNumber() == " + data.getNumber());
+					LOGGER.info("data.getTruncated() == " + data.getTruncated());
 
 					String number = element.getAttribute("number");
 					assertNotNull("number == null", number);
@@ -101,7 +101,7 @@ public class MILYN_424_Test {
 
 			StringResult result = new StringResult();
 			smooks.filterSource(smooks.createExecutionContext(), getSource(), result);
-			logger.info(result.toString());
+			LOGGER.info(result.toString());
 		} finally {
 			if (smooks != null) {
 				smooks.close();
