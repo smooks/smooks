@@ -15,24 +15,25 @@
 */
 package org.milyn.routing.db;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+import org.hsqldb.jdbcDriver;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
-import org.milyn.db.DirectDataSource;
 import org.milyn.container.ExecutionContext;
+import org.milyn.db.DirectDataSource;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.javabean.repository.BeanId;
 import org.milyn.payload.StringSource;
 import org.milyn.util.HsqlServer;
 import org.xml.sax.SAXException;
-import org.hsqldb.jdbcDriver;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 /**
@@ -40,16 +41,16 @@ import static org.junit.Assert.*;
  */
 public class SQLExecutorTest {
 
-    private HsqlServer hsqlServer;
+    private static HsqlServer hsqlServer;
 
-        @Before
-	public void setUp() throws Exception {
+    @BeforeClass
+	public static void afterClass() throws Exception {
         hsqlServer = new HsqlServer(9992);
-        hsqlServer.execScript(getClass().getResourceAsStream("test.script"));
+        hsqlServer.execScript(SQLExecutorTest.class.getResourceAsStream("test.script"));
     }
 
-        @After
-	public void tearDown() throws Exception {
+    @AfterClass
+	public static void beforeClass() throws Exception {
         hsqlServer.stop();
     }
 
