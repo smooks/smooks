@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console">
+            <PatternLayout pattern="%-5p %d{dd-MM HH:mm:ss,SSS} (%F:%M:%L)  %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.milyn" level="debug"/>
+        <Logger name="freemarker" level="error"/>
+
+        <Root>
+            <AppenderRef ref="console" level="debug"/>
+        </Root>
+    </Loggers>
+</Configuration>
