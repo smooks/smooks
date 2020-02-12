@@ -16,8 +16,6 @@
 
 package org.milyn.delivery.dom;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.AbstractParser;
@@ -26,13 +24,16 @@ import org.milyn.delivery.XMLReaderHierarchyChangeListener;
 import org.milyn.namespace.NamespaceDeclarationStack;
 import org.milyn.xml.NamespaceMappings;
 import org.milyn.xml.hierarchy.HierarchyChangeReader;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import javax.xml.transform.Source;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * Smooks DOM data stream parser.
@@ -59,7 +60,7 @@ import javax.xml.transform.Source;
  */
 public class DOMParser extends AbstractParser {
 
-	private static Log logger = LogFactory.getLog(DOMParser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DOMParser.class);
 
 	/**
 	 * Public constructor.

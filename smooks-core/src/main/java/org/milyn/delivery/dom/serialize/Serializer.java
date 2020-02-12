@@ -16,8 +16,6 @@
 
 package org.milyn.delivery.dom.serialize;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.ResourceConfigurationNotFoundException;
@@ -33,6 +31,8 @@ import org.milyn.event.types.ElementPresentEvent;
 import org.milyn.event.types.ResourceTargetingEvent;
 import org.milyn.xml.DocType;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class Serializer {
 	/**
 	 * Logger.
 	 */
-	private static Log logger = LogFactory.getLog(Serializer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Serializer.class);
 	/**
 	 * Node to be serialized.
 	 */
@@ -235,7 +235,7 @@ public class Serializer {
                     throw new SmooksException(error, thrown);
                 }
             } else {
-                logger.debug(error, thrown);
+                LOGGER.debug(error, thrown);
             }
 		}
 	}
@@ -284,9 +284,9 @@ public class Serializer {
               eventListener.onEvent(new ResourceTargetingEvent(element, config));
             }
 
-            if (logger.isDebugEnabled())
+            if (LOGGER.isDebugEnabled())
             {
-              logger.debug("Applying serialisation resource [" + config + "] to element [" + DomUtils.getXPath(element) + "].");
+              LOGGER.debug("Applying serialisation resource [" + config + "] to element [" + DomUtils.getXPath(element) + "].");
             }
 
             // This is the one, return it...

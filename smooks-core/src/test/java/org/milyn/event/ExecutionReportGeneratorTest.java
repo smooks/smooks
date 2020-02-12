@@ -16,15 +16,13 @@
 package org.milyn.event;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
+import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.FlatReportGenerator;
 import org.milyn.event.report.ReportConfiguration;
-import org.milyn.container.ExecutionContext;
 import org.milyn.io.StreamUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -37,7 +35,7 @@ import java.io.StringWriter;
  */
 public class ExecutionReportGeneratorTest {
 	
-	Log log = LogFactory.getLog(ExecutionReportGeneratorTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionReportGeneratorTest.class);
 
 	@Test
     public void test_basic_dom() throws IOException, SAXException {
@@ -68,7 +66,7 @@ public class ExecutionReportGeneratorTest {
 
         execContext.setEventListener(new FlatReportGenerator(new ReportConfiguration(reportWriter)));
         smooks.filterSource(execContext, new StreamSource(getClass().getResourceAsStream("test-data-01.xml")), new StreamResult(new StringWriter()));
-        log.debug(reportWriter);
+        LOGGER.debug(reportWriter.toString());
         return reportWriter.toString();
     }
 }

@@ -18,8 +18,6 @@ package org.milyn.fixedlength;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.ConfigParam;
@@ -36,15 +34,10 @@ import org.milyn.function.StringFunctionExecutor;
 import org.milyn.javabean.Bean;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.xml.SmooksXMLReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.*;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.XMLConstants;
@@ -154,7 +147,7 @@ import java.util.Map;
  */
 public class FixedLengthReader implements SmooksXMLReader, VisitorAppender {
 
-	private static Log logger = LogFactory.getLog(FixedLengthReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FixedLengthReader.class);
 
     private static final AttributesImpl EMPTY_ATTRIBS = new AttributesImpl();
     private static final String IGNORE_FIELD = "$ignore$";
@@ -315,8 +308,8 @@ public class FixedLengthReader implements SmooksXMLReader, VisitorAppender {
 	        	}
 	        	boolean invalidLength = flRecord.length() < totalFieldLenght;
 	        	if(invalidLength && strict) {
-	        		if(logger.isWarnEnabled()) {
-	            		logger.debug("[WARNING-FIXEDLENGTH] Fixed Length line #" + lineNumber + " is invalid.  The line doesn't contain enough characters to fill all the fields. This line is skipped.");
+	        		if(LOGGER.isWarnEnabled()) {
+	            		LOGGER.debug("[WARNING-FIXEDLENGTH] Fixed Length line #" + lineNumber + " is invalid.  The line doesn't contain enough characters to fill all the fields. This line is skipped.");
 	            	}
 	        		continue;
 	        	}

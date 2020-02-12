@@ -15,11 +15,6 @@
 */
 package org.milyn.cdr.extension;
 
-import java.util.EmptyStackException;
-import java.util.Stack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -29,7 +24,12 @@ import org.milyn.cdr.annotation.ConfigParam.Use;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMVisitBefore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+
+import java.util.EmptyStackException;
+import java.util.Stack;
 
 /**
  * Map a property value from a parent {@link org.milyn.cdr.SmooksResourceConfiguration} and onto
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  */
 public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
 
-    private static Log logger = LogFactory.getLog(MapToResourceConfigFromText.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromText.class);
 
     @ConfigParam(defaultVal = "-1")
     private int parentRelIndex;
@@ -90,8 +90,8 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
             throw new SmooksException("No Parent SmooksResourceConfiguration available in ExtensionContext stack at relative index '" + parentRelIndex + "'.  Unable to set SmooksResourceConfiguration property '" + actualMapTo + "' with value of '" + mapFrom + "' from parent configuration.");
         }
 
-        if(logger.isDebugEnabled()) {
-        	logger.debug("Mapping property '" + mapFrom + "' on parent resource configuration to property'" + actualMapTo + "'.");
+        if(LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Mapping property '" + mapFrom + "' on parent resource configuration to property'" + actualMapTo + "'.");
         }
         ResourceConfigUtil.mapProperty(parentConfig, mapFrom, currentConfig, actualMapTo, defaultValue, executionContext);
     }

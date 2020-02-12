@@ -15,8 +15,6 @@
 
 package org.milyn.rules;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.AppContext;
@@ -25,6 +23,8 @@ import org.milyn.cdr.annotation.ConfigParam.Use;
 import org.milyn.container.ApplicationContext;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.annotation.Initialize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RulesProviderFactory is responsible for creating {@link RuleProvider}s
@@ -38,7 +38,7 @@ public final class RulesProviderFactory implements ContentHandler<RuleProvider>
     /**
      * Logger.
      */
-    private static Log logger = LogFactory.getLog(RulesProviderFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RulesProviderFactory.class);
 
     /**
      * The Smooks {@link ApplicationContext}.
@@ -72,7 +72,7 @@ public final class RulesProviderFactory implements ContentHandler<RuleProvider>
     @Initialize
     public void installRuleProvider() throws SmooksConfigurationException
     {
-        logger.debug(this);
+        LOGGER.debug(this.toString());
         if(RuleProvider.class.isAssignableFrom(provider))
         {
             final RuleProvider providerImpl = createProvider(provider);

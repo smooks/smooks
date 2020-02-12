@@ -16,8 +16,6 @@
 package org.milyn.javabean;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.Parameter;
@@ -52,6 +50,8 @@ import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
 import org.milyn.util.CollectionsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -73,7 +73,7 @@ import java.util.Set;
         detailTemplate = "reporting/BeanInstanceCreatorReport_After.html")
 public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, ContentDeliveryConfigBuilderLifecycleListener, Producer, VisitLifecycleCleanable {
 
-    private static Log logger = LogFactory.getLog(BeanInstanceCreator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BeanInstanceCreator.class);
 
     public static final String INIT_VAL_EXPRESSION = "initValExpression";
 
@@ -191,8 +191,8 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
     		throw new SmooksConfigurationException("Using a factory with an array is not supported");
     	}
 
-        if(logger.isDebugEnabled()) {
-        	logger.debug("BeanInstanceCreator created for [" + beanIdName + "]. BeanRuntimeInfo: " + beanRuntimeInfo);
+        if(LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("BeanInstanceCreator created for [" + beanIdName + "]. BeanRuntimeInfo: " + beanRuntimeInfo);
         }
 
         List<Parameter> initValExpressions = config.getParameters(INIT_VAL_EXPRESSION);
@@ -265,8 +265,8 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
         if(isBeanTypeArray) {
             Object bean  = beanContext.getBean(beanId);
 
-            if(logger.isDebugEnabled()) {
-                logger.debug("Converting bean [" + beanIdName + "] to an array and rebinding to context.");
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Converting bean [" + beanIdName + "] to an array and rebinding to context.");
             }
             bean = convert(executionContext, bean, source);
         }
@@ -299,8 +299,8 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
         beanContext.addBean(beanId, bean, source);
         beanContext.setBeanInContext(beanId, true);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Bean [" + beanIdName + "] instance created.");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Bean [" + beanIdName + "] instance created.");
         }
     }
 

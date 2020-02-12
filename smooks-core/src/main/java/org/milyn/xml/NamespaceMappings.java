@@ -15,10 +15,6 @@
 */
 package org.milyn.xml;
 
-import java.util.Properties;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.Config;
@@ -27,6 +23,10 @@ import org.milyn.container.ApplicationContextInitializer;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.namespace.NamespaceDeclarationStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 /**
  * Namespace Mappings.
@@ -40,7 +40,7 @@ public class NamespaceMappings implements ApplicationContextInitializer {
     /**
      * Logger.
      */
-    private static Log logger = LogFactory.getLog(NamespaceMappings.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceMappings.class);
 	
 	@Config
 	private SmooksResourceConfiguration config;
@@ -56,8 +56,8 @@ public class NamespaceMappings implements ApplicationContextInitializer {
 		Properties namespaces = getMappings(appContext);
 		Properties namespacesToAdd = config.toProperties();
 		
-		if(logger.isDebugEnabled()) {
-			logger.debug("Adding namespace prefix-to-uri mappings: " + namespacesToAdd);
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Adding namespace prefix-to-uri mappings: " + namespacesToAdd);
 		}
 		namespaces.putAll(namespacesToAdd);
 

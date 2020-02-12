@@ -1,11 +1,11 @@
 package org.milyn.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hsqldb.Server;
 import org.hsqldb.ServerConstants;
 import org.hsqldb.jdbcDriver;
 import org.milyn.io.StreamUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class HsqlServer {
 
-    private static Log logger = LogFactory.getLog(HsqlServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HsqlServer.class);
 
     private Server hsqlServer;
 
@@ -38,12 +38,12 @@ public class HsqlServer {
         final String databaseName = "milyn-hsql-" + port;
 
         url = "jdbc:hsqldb:hsql://localhost:" + port + "/" + databaseName +";shutdown=true";
-        logger.info("Starting Hypersonic Database '" + url + "'.");
+        LOGGER.info("Starting Hypersonic Database '" + url + "'.");
         new Thread() {
             @Override
             public void run() {
                 Server server = new Server();
-                Log targetLogger = LogFactory.getLog("org.hsqldb");
+                Logger targetLogger = LoggerFactory.getLogger("org.hsqldb");
                 server.setLogWriter(new PrintWriter(new StdoutToLog4jFilter(server.getLogWriter(), targetLogger)));
                 server.setDatabasePath(0, "target/hsql/" + databaseName);
                 server.setDatabaseName(0, databaseName);
@@ -69,7 +69,7 @@ public class HsqlServer {
             hsqlServer.signalCloseAllServerConnections();
             connection.close();
         } catch (final SQLException ignored) {
-            logger.debug(ignored.getMessage(), ignored);
+            LOGGER.debug(ignored.getMessage(), ignored);
         } 
         finally {
             hsqlServer.stop();

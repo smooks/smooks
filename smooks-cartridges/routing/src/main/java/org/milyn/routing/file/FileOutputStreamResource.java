@@ -15,8 +15,6 @@
 
 package org.milyn.routing.file;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
@@ -32,6 +30,8 @@ import org.milyn.routing.SmooksRoutingException;
 import org.milyn.util.DollarBraceDecoder;
 import org.milyn.util.FreeMarkerTemplate;
 import org.milyn.util.FreeMarkerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Map;
@@ -93,7 +93,7 @@ public class FileOutputStreamResource extends AbstractOutputStreamResource {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final Object LOCK = new Object();
 
-    private static Log logger = LogFactory.getLog(FileOutputStreamResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileOutputStreamResource.class);
 
     @ConfigParam
     private String fileNamePattern;
@@ -244,15 +244,15 @@ public class FileOutputStreamResource extends AbstractOutputStreamResource {
         if (currentList.length >= highWaterMark) {
             long start = System.currentTimeMillis();
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Destination directoy '" + destinationDirectory.getAbsolutePath() + "' contains " + currentList.length + " file matching pattern '" + listFileNamePattern + "'.  High Water Mark is " + highWaterMark + ".  Waiting for file count to drop.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Destination directoy '" + destinationDirectory.getAbsolutePath() + "' contains " + currentList.length + " file matching pattern '" + listFileNamePattern + "'.  High Water Mark is " + highWaterMark + ".  Waiting for file count to drop.");
             }
 
             while (System.currentTimeMillis() < start + highWaterMarkTimeout) {
                 try {
                     Thread.sleep(highWaterMarkPollFrequency);
                 } catch (InterruptedException e) {
-                    logger.error("Interrupted", e);
+                    LOGGER.error("Interrupted", e);
                     return;
                 }
                 currentList = destinationDirectory.listFiles(fileFilter);
@@ -363,7 +363,7 @@ public class FileOutputStreamResource extends AbstractOutputStreamResource {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    logger.debug("Failed to close list file '" + getListFileName(executionContext) + "'.", e);
+                    LOGGER.debug("Failed to close list file '" + getListFileName(executionContext) + "'.", e);
                 }
             }
         }

@@ -15,16 +15,16 @@
 */
 package org.milyn.javabean.expression;
 
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.expression.ExecutionContextExpressionEvaluator;
 import org.milyn.expression.ExpressionEvaluationException;
 import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.javabean.context.BeanContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * Javabean Cartridge bean Map expression evaluator.
@@ -47,7 +47,7 @@ public class BeanMapExpressionEvaluator extends MVELExpressionEvaluator implemen
 	 */
 	public static final String MVEL_EXECUTION_CONTEXT_KEY = "EC";
 
-	private static Log logger = LogFactory.getLog(BeanMapExpressionEvaluator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BeanMapExpressionEvaluator.class);
 
     public BeanMapExpressionEvaluator() {
     }
@@ -65,12 +65,12 @@ public class BeanMapExpressionEvaluator extends MVELExpressionEvaluator implemen
 
         Object value = exec(beans);
 
-        if(logger.isDebugEnabled()) {
-            logger.debug("Expression value evaluation:===============================================================");
-            logger.debug("\tExpression='" + getExpression() + "'");
-            logger.debug("\tBean Map='" + beans + "'");
-            logger.debug("\tValue='" + value + "'");
-            logger.debug("===========================================================================================");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Expression value evaluation:===============================================================");
+            LOGGER.debug("\tExpression='" + getExpression() + "'");
+            LOGGER.debug("\tBean Map='" + beans + "'");
+            LOGGER.debug("\tValue='" + value + "'");
+            LOGGER.debug("===========================================================================================");
         }
 
         return value;

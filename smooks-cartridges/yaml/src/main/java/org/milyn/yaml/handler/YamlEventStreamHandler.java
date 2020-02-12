@@ -15,17 +15,17 @@
 */
 package org.milyn.yaml.handler;
 
-import java.util.Stack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.yaml.ElementNameFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.yaml.snakeyaml.events.AliasEvent;
 import org.yaml.snakeyaml.events.CollectionStartEvent;
 import org.yaml.snakeyaml.events.Event;
-import org.yaml.snakeyaml.events.ScalarEvent;
 import org.yaml.snakeyaml.events.Event.ID;
+import org.yaml.snakeyaml.events.ScalarEvent;
+
+import java.util.Stack;
 
 /**
  * Takes a iterable yaml event stream and handles the events of the stream.
@@ -34,7 +34,7 @@ import org.yaml.snakeyaml.events.Event.ID;
  */
 public class YamlEventStreamHandler {
 
-	private static Log logger = LogFactory.getLog(YamlEventStreamHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(YamlEventStreamHandler.class);
 
     private static enum Type {
     	MAPPING,
@@ -62,8 +62,8 @@ public class YamlEventStreamHandler {
 		boolean outputStructAsElement = false;
 		for (Event e : yamlEventStream) {
 
-			if(logger.isTraceEnabled()) {
-				logger.trace("Event: " + e);
+			if(LOGGER.isTraceEnabled()) {
+				LOGGER.trace("Event: " + e);
 			}
 
 			if(e.is(ID.DocumentStart)) {
@@ -76,8 +76,8 @@ public class YamlEventStreamHandler {
 				if(isNextElementName && !lastTypeIsArray(typeStack)) {
 					String name = nameFormatter.format(es.getValue());
 
-					if(logger.isTraceEnabled()) {
-		        		logger.trace("Element name: " + name);
+					if(LOGGER.isTraceEnabled()) {
+		        		LOGGER.trace("Element name: " + name);
 		        	}
 
 					elementNameStack.push(name);

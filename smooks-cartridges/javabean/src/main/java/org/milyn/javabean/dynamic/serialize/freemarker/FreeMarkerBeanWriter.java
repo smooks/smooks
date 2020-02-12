@@ -16,8 +16,6 @@
 
 package org.milyn.javabean.dynamic.serialize.freemarker;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;
@@ -28,6 +26,8 @@ import org.milyn.javabean.dynamic.BeanRegistrationException;
 import org.milyn.javabean.dynamic.Model;
 import org.milyn.javabean.dynamic.serialize.BeanWriter;
 import org.milyn.util.FreeMarkerTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +42,7 @@ import java.util.Map;
  */
 public class FreeMarkerBeanWriter implements BeanWriter {
 
-    private static Log logger = LogFactory.getLog(FreeMarkerBeanWriter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FreeMarkerBeanWriter.class);
 
     public static final String MODEL_CTX_KEY = "dyna_model_inst";
 
@@ -72,7 +72,7 @@ public class FreeMarkerBeanWriter implements BeanWriter {
                     templateConfig = StreamUtils.readStreamAsString(templateStream);                    
                 }
             } catch (IOException e) {
-                logger.debug("'template' configuration value '" + trimmedTemplateConfig + "' does not resolve to an external FreeMarker template.  Using configured value as the actual template.");
+                LOGGER.debug("'template' configuration value '" + trimmedTemplateConfig + "' does not resolve to an external FreeMarker template.  Using configured value as the actual template.");
             }
         }
 

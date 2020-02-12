@@ -16,8 +16,6 @@
 
 package org.milyn.delivery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.StreamFilterType;
 import org.milyn.cdr.*;
@@ -28,6 +26,8 @@ import org.milyn.dtd.DTDStore;
 import org.milyn.dtd.DTDStore.DTDObjectContainer;
 import org.milyn.event.types.ConfigBuilderEvent;
 import org.milyn.profile.ProfileSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -42,7 +42,7 @@ public class ContentDeliveryConfigBuilder {
 	/**
 	 * Logger.
 	 */
-	private static Log logger = LogFactory.getLog(ContentDeliveryConfigBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ContentDeliveryConfigBuilder.class);
 	/**
 	 * Context key for the table of loaded ContentDeliveryConfig instances.
 	 */
@@ -154,7 +154,7 @@ public class ContentDeliveryConfigBuilder {
         if(filterType == StreamFilterType.DOM) {
             DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
-            logger.debug("Using the DOM Stream Filter.");
+            LOGGER.debug("Using the DOM Stream Filter.");
             domConfig.setAssemblyVisitBefores(visitorConfig.getDomAssemblyVisitBefores());
             domConfig.setAssemblyVisitAfters(visitorConfig.getDomAssemblyVisitAfters());
             domConfig.setProcessingVisitBefores(visitorConfig.getDomProcessingVisitBefores());
@@ -182,7 +182,7 @@ public class ContentDeliveryConfigBuilder {
         } else {
             SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
 
-            logger.debug("Using the SAX Stream Filter.");
+            LOGGER.debug("Using the SAX Stream Filter.");
             saxConfig.setVisitBefores(visitorConfig.getSaxVisitBefores());
             saxConfig.setVisitAfters(visitorConfig.getSaxVisitAfters());
             saxConfig.setVisitCleanables(visitorConfig.getVisitCleanables());
@@ -214,8 +214,8 @@ public class ContentDeliveryConfigBuilder {
     private StreamFilterType getStreamFilterType() {
         StreamFilterType filterType;
 
-        if(logger.isDebugEnabled()) {
-            logger.debug("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics());
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics());
         }
 
         String filterTypeParam = ParameterAccessor.getStringParameter(Filter.STREAM_FILTER_TYPE, resourceConfigTable);
@@ -224,10 +224,10 @@ public class ContentDeliveryConfigBuilder {
 
             if(filterTypeParam == null) {
                 filterType = StreamFilterType.SAX;
-                logger.debug("All configured XML Element Content Handler resource configurations can be " +
+                LOGGER.debug("All configured XML Element Content Handler resource configurations can be " +
                         "applied using the SAX or DOM Stream Filter.  Defaulting to " + filterType + " Filter.  Set '" + ParameterAccessor.GLOBAL_PARAMETERS + ":"
                         + Filter.STREAM_FILTER_TYPE + "'.");
-                logger.debug("You can explicitly select the Filter type as follows:\n" +
+                LOGGER.debug("You can explicitly select the Filter type as follows:\n" +
                         "\t\t<resource-config selector=\"" + ParameterAccessor.GLOBAL_PARAMETERS + "\">\n" +
                         "\t\t\t<param name=\"" + Filter.STREAM_FILTER_TYPE + "\">SAX/DOM</param>\n" +
                         "\t\t</resource-config>");
@@ -336,7 +336,7 @@ public class ContentDeliveryConfigBuilder {
                 // Initialise the DTD reference for this config table.
                 dtd = DTDStore.getDTDObject(profileSet);
             } else {
-                logger.error("DTD resource [" + dtdSmooksResourceConfiguration.getResource() + "] not found in classpath.");
+                LOGGER.error("DTD resource [" + dtdSmooksResourceConfiguration.getResource() + "] not found in classpath.");
             }
 		}
 
@@ -350,7 +350,7 @@ public class ContentDeliveryConfigBuilder {
         // Tell all interested listeners that all the handlers have now been created.
         fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.HANDLERS_CREATED);
 
-        if(logger.isDebugEnabled()) {
+        if(LOGGER.isDebugEnabled()) {
             logResourceConfig();
         }
 	}
@@ -359,8 +359,8 @@ public class ContentDeliveryConfigBuilder {
 	 * Print a debug log of the resource configurations for the associated profile.
 	 */
 	private void logResourceConfig() {
-		logger.debug("==================================================================================================");
-		logger.debug("Resource configuration (sorted) for profile [" + profileSet.getBaseProfile() + "].  Sub Profiles: [" + profileSet + "]");
+		LOGGER.debug("==================================================================================================");
+		LOGGER.debug("Resource configuration (sorted) for profile [" + profileSet.getBaseProfile() + "].  Sub Profiles: [" + profileSet + "]");
 		Iterator configurations = resourceConfigTable.entrySet().iterator();
 		int i = 0;
 
@@ -368,12 +368,12 @@ public class ContentDeliveryConfigBuilder {
 			Map.Entry entry = (Entry) configurations.next();
 			List resources = (List)entry.getValue();
 
-			logger.debug(i + ") " + entry.getKey());
+			LOGGER.debug(i + ") " + entry.getKey());
 			for (int ii = 0; ii < resources.size(); ii++) {
-				logger.debug("\t(" + ii + ") " + resources.get(ii));
+				LOGGER.debug("\t(" + ii + ") " + resources.get(ii));
 			}
 		}
-		logger.debug("==================================================================================================");
+		LOGGER.debug("==================================================================================================");
 	}
 
 	/**
@@ -604,7 +604,7 @@ public class ContentDeliveryConfigBuilder {
 
 			try {
 				if(restype == null || restype.trim().equals("")) {
-					logger.debug("Request to attempt ContentHandlerFactory creation based on a null/empty resource type.");
+					LOGGER.debug("Request to attempt ContentHandlerFactory creation based on a null/empty resource type.");
 					return null;
 				}
 				creator = store.getContentHandlerFactory(restype);
@@ -634,10 +634,10 @@ public class ContentDeliveryConfigBuilder {
             } catch(Throwable thrown) {
                 String message = "ContentHandlerFactory [" + handlerFactory.getClass().getName()  + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
 
-                if(logger.isDebugEnabled()) {
-                    logger.debug(message, thrown);
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(message, thrown);
                 } else {
-                    logger.debug(message + thrown.getMessage());
+                    LOGGER.debug(message + thrown.getMessage());
 				}
                 configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message, thrown));
 
@@ -654,10 +654,10 @@ public class ContentDeliveryConfigBuilder {
             if(contentHandler instanceof ConfigurationExpander) {
                 List<SmooksResourceConfiguration> additionalConfigs = ((ConfigurationExpander)contentHandler).expandConfigurations();
                 if(additionalConfigs != null && !additionalConfigs.isEmpty()) {
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("Adding expansion resource configurations created by: " + resourceConfig);
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Adding expansion resource configurations created by: " + resourceConfig);
                         for (SmooksResourceConfiguration additionalConfig : additionalConfigs) {
-                            logger.debug("\tAdding expansion resource configuration: " + additionalConfig);
+                            LOGGER.debug("\tAdding expansion resource configuration: " + additionalConfig);
                         }
                     }
                     processExpansionConfigurations(additionalConfigs);

@@ -16,23 +16,24 @@
 package org.milyn.delivery.dom;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
-import org.milyn.io.StreamUtils;
-import org.milyn.delivery.ContentHandlerConfigMap;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.ContentHandlerConfigMap;
 import org.milyn.event.BasicExecutionEventListener;
+import org.milyn.io.StreamUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.CharArrayWriter;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
+import java.io.CharArrayWriter;
+import java.io.IOException;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests to make sure the phase annotations work properly.
@@ -41,7 +42,7 @@ import java.util.List;
  */
 public class SmooksVisitorPhaseTest {
 	
-	Log log = LogFactory.getLog( SmooksVisitorPhaseTest.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( SmooksVisitorPhaseTest.class );
 
 	@Test
     public void test_phase_selection() throws IOException, SAXException {
@@ -87,7 +88,7 @@ public class SmooksVisitorPhaseTest {
         executionContext.setEventListener(eventListener);
         smooks.filterSource(executionContext, new StreamSource(getClass().getResourceAsStream("testxml1.xml")), new StreamResult(outputWriter));
 
-        log.debug(outputWriter.toString());
+        LOGGER.debug(outputWriter.toString());
         byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream("testxml1-expected.xml"));
         assertTrue(StreamUtils.compareCharStreams(new ByteArrayInputStream(expected), new ByteArrayInputStream(outputWriter.toString().getBytes())));
         assertEquals(32, eventListener.getEvents().size());

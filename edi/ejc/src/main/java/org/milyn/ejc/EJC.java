@@ -15,7 +15,6 @@
 */
 package org.milyn.ejc;
 
-import org.apache.commons.logging.Log;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.edisax.EDIConfigurationException;
 import org.milyn.edisax.model.EdifactModel;
@@ -25,6 +24,7 @@ import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.io.FileUtils;
 import org.milyn.io.StreamUtils;
 import org.milyn.javabean.pojogen.JClass;
+import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
 import java.io.*;
@@ -32,7 +32,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.milyn.ejc.EJCLogFactory.Level;
+import static org.milyn.ejc.EJCLoggerFactory.Level;
 
 /**
  * EJC is the main class parsing parameters and starting the compilation of the edi-mapping-config.
@@ -50,7 +50,7 @@ import static org.milyn.ejc.EJCLogFactory.Level;
  */
 public class EJC {
 
-    private static Log LOG = EJCLogFactory.getLog(EJC.class);
+    private static final Logger LOGGER = EJCLoggerFactory.getLogger(EJC.class);
 
     private static final String VERISON = "0.1";
 
@@ -234,7 +234,7 @@ public class EJC {
      * @throws IllegalNameException when name of java-classes is illegal.
      */
     private ClassModel compile(Edimap edimap, String beanPackage, Map<MappingNode, JClass> commonTypes) throws IllegalNameException {
-        LOG.info("Reading the edi-configuration...");
+        LOGGER.info("Reading the edi-configuration...");
         ClassModelCompiler classModelCompiler = new ClassModelCompiler(commonTypes, addEDIMessageAnnotation);
         return classModelCompiler.compile(edimap, beanPackage);
     }
@@ -259,21 +259,21 @@ public class EJC {
 	}
 
     private void writeModelToFolder(ClassModel model, String beanFolder, String bindingFile) throws IOException, IllegalNameException, ClassNotFoundException {
-        LOG.info("Writing java beans to " + beanFolder + "...");
+        LOGGER.info("Writing java beans to " + beanFolder + "...");
         BeanWriter.writeBeansToFolder(model, beanFolder, bindingFile);
 
-        LOG.info("Creating binding file...");
+        LOGGER.info("Creating binding file...");
 
         BindingWriter bindingWriter = new BindingWriter(model);
         bindingWriter.generate(bindingFile);
         model.setBindingFilePath(bindingFile);
 
-        LOG.info("-----------------------------------------------------------------------");
-        LOG.info(" Compilation complete.");
-        LOG.info("-----------------------------------------------------------------------");
-        LOG.info(" Files are located in folder ");
-        LOG.info(" " + beanFolder);
-        LOG.info("-----------------------------------------------------------------------");
+        LOGGER.info("-----------------------------------------------------------------------");
+        LOGGER.info(" Compilation complete.");
+        LOGGER.info("-----------------------------------------------------------------------");
+        LOGGER.info(" Files are located in folder ");
+        LOGGER.info(" " + beanFolder);
+        LOGGER.info("-----------------------------------------------------------------------");
     }
 
     /**
@@ -331,12 +331,12 @@ public class EJC {
         }
 
         if (isVerbose && isQuiet) {
-            LOG.error("Both 'quiet' and 'verbose' is activated. Only one of these can be active at once.");
+            LOGGER.error("Both 'quiet' and 'verbose' is activated. Only one of these can be active at once.");
             return;
         }
 
         // Set log-level depending on argument VERBOSE or QUIET.
-        ((EJCLog)LOG).setLevel(isVerbose ? Level.DEBUG : (isQuiet ? Level.ERROR : Level.INFO));
+        ((EJCLog) LOGGER).setLevel(isVerbose ? Level.DEBUG : (isQuiet ? Level.ERROR : Level.INFO));
 
         InputStream configInputStream = null;
         try {

@@ -16,18 +16,18 @@
 
 package org.milyn.edisax;
 
+import org.milyn.edisax.model.internal.Delimiters;
+import org.milyn.edisax.util.EDIUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Stack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.edisax.model.internal.Delimiters;
-import org.milyn.edisax.util.EDIUtils;
-import org.xml.sax.InputSource;
 
 /**
  * Buffered EDI Stream Segment reader.
@@ -37,7 +37,7 @@ public class BufferedSegmentReader {
 
     private static final int MAX_MARK_READ = 512;
 
-    private static Log logger = LogFactory.getLog(BufferedSegmentReader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BufferedSegmentReader.class);
 
     public static String IGNORE_CR_LF = "!$";
 
@@ -83,10 +83,10 @@ public class BufferedSegmentReader {
                 underlyingByteStream.mark(MAX_MARK_READ);
                 marked = true;
             } else {
-                logger.debug("Unable to mark EDI Reader for rest (to change reader encoding).  Underlying InputStream type '" + underlyingByteStream.getClass().getName() + "' does not support mark.");
+                LOGGER.debug("Unable to mark EDI Reader for rest (to change reader encoding).  Underlying InputStream type '" + underlyingByteStream.getClass().getName() + "' does not support mark.");
             }
         } else {
-            logger.debug("Unable to mark EDI Reader for rest (to change reader encoding).  BufferedSegmentReader instance does not have access to the underlying InputStream.");
+            LOGGER.debug("Unable to mark EDI Reader for rest (to change reader encoding).  BufferedSegmentReader instance does not have access to the underlying InputStream.");
         }
     }
 
@@ -106,11 +106,11 @@ public class BufferedSegmentReader {
             return readEncoding;
         }
         if(!underlyingByteStream.markSupported()) {
-            logger.debug("Unable to to change stream read encoding on a stream that does not support 'mark'.");
+            LOGGER.debug("Unable to to change stream read encoding on a stream that does not support 'mark'.");
             return readEncoding;
         }
         if(!marked) {
-            logger.debug("Unable to to change stream read encoding on a stream.  'mark' was not called, or was called and failed.");
+            LOGGER.debug("Unable to to change stream read encoding on a stream.  'mark' was not called, or was called and failed.");
             return readEncoding;
         }
 
@@ -119,7 +119,7 @@ public class BufferedSegmentReader {
             underlyingByteStream.reset();
             marked = false;
         } catch (IOException e) {
-            logger.debug("Unable to to change stream read encoding on stream because reset failed.  Probably because the mark has been invalidated after reading more than " + MAX_MARK_READ + " bytes from the stream.", e);
+            LOGGER.debug("Unable to to change stream read encoding on stream because reset failed.  Probably because the mark has been invalidated after reading more than " + MAX_MARK_READ + " bytes from the stream.", e);
             return readEncoding;
         }
 
@@ -368,8 +368,8 @@ public class BufferedSegmentReader {
             c = readChar();
         }
 
-        if(logger.isDebugEnabled()) {
-            logger.debug(segmentBuffer.toString());
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug(segmentBuffer.toString());
         }
 
         currentSegmentNumber++;

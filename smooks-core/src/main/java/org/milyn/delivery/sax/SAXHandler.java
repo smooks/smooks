@@ -15,8 +15,6 @@
 */
 package org.milyn.delivery.sax;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -32,6 +30,8 @@ import org.milyn.event.types.ElementVisitEvent;
 import org.milyn.event.types.ResourceTargetingEvent;
 import org.milyn.io.NullWriter;
 import org.milyn.xml.DocType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -49,7 +49,7 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class SAXHandler extends SmooksContentHandler {
 
-    private static Log logger = LogFactory.getLog(SAXHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SAXHandler.class);
     private ExecutionContext execContext;
     private Writer writer;
     private ElementProcessor currentProcessor = null;
@@ -502,7 +502,7 @@ public class SAXHandler extends SmooksContentHandler {
             try {
                 writer.flush();
             } catch (IOException e) {
-                logger.debug("Error flushing writer.", e);
+                LOGGER.debug("Error flushing writer.", e);
             }
         }
     }
@@ -590,7 +590,7 @@ public class SAXHandler extends SmooksContentHandler {
                 throw new SmooksException(errorMsg, error);
             }
         } else {
-            logger.debug(errorMsg, error);
+            LOGGER.debug(errorMsg, error);
         }
     }
 

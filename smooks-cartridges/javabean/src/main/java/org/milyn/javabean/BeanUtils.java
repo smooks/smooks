@@ -15,12 +15,12 @@
 */
 package org.milyn.javabean;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 public abstract class BeanUtils {
 
-    private static Log logger = LogFactory.getLog(BeanUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
 
     /**
      * Create the bean setter method instance for this visitor.
@@ -123,7 +123,7 @@ public abstract class BeanUtils {
             try {
                 Array.set(arrayObj, i, list.get(i));
             } catch(ClassCastException e) {
-                logger.error("Failed to cast type '" + list.get(i).getClass().getName() + "' to '" + arrayClass.getName() + "'.", e);
+                LOGGER.error("Failed to cast type '" + list.get(i).getClass().getName() + "' to '" + arrayClass.getName() + "'.", e);
             }
         }
 

@@ -18,8 +18,6 @@ package org.milyn.csv;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.ConfigParam;
@@ -36,16 +34,10 @@ import org.milyn.function.StringFunctionExecutor;
 import org.milyn.javabean.Bean;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.xml.SmooksXMLReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.*;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.XMLConstants;
@@ -53,11 +45,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -152,7 +140,7 @@ import java.util.Map;
  */
 public class CSVReader implements SmooksXMLReader, VisitorAppender {
 
-	private static Log logger = LogFactory.getLog(CSVReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CSVReader.class);
     private static Attributes EMPTY_ATTRIBS = new AttributesImpl();
     private static final String IGNORE_FIELD = "$ignore$";
 
@@ -333,7 +321,7 @@ public class CSVReader implements SmooksXMLReader, VisitorAppender {
 	        	lineNumber++; // First line is line "1"
 	
 	        	if(csvRecord.length < expectedCount && strict) {
-	        		logger.debug("[CORRUPT-CSV] CSV line #" + lineNumber + " invalid [" + Arrays.asList(csvRecord) + "].  The line should contain number of items at least as in CSV config file " + csvFields.length + " fields [" + csvFields + "], but contains " + csvRecord.length + " fields.  Ignoring!!");
+	        		LOGGER.debug("[CORRUPT-CSV] CSV line #" + lineNumber + " invalid [" + Arrays.asList(csvRecord) + "].  The line should contain number of items at least as in CSV config file " + csvFields.length + " fields [" + csvFields + "], but contains " + csvRecord.length + " fields.  Ignoring!!");
 	        		continue;
 	        	}
 	

@@ -15,29 +15,25 @@
 */
 package org.milyn.javabean.expressionbinding;
 
-import java.io.IOException;
+import org.junit.Test;
+import org.milyn.Smooks;
+import org.milyn.container.ExecutionContext;
+import org.milyn.payload.JavaResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.transform.stream.StreamSource;
 import java.util.Date;
 import java.util.Map;
 
-import javax.xml.transform.stream.StreamSource;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.Smooks;
-import org.milyn.container.ExecutionContext;
-import org.milyn.event.report.HtmlReportGenerator;
-import org.milyn.payload.JavaResult;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class ExpressionBindingTest {
 
-	private final Log logger = LogFactory.getLog(ExpressionBindingTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionBindingTest.class);
 
     @Test
     public void test_data_variable() throws Exception {
@@ -60,7 +56,7 @@ public class ExpressionBindingTest {
     private void assertDateValue(JavaResult result, String beanId) {
         Map<?, ?> message = (Map<?, ?>) result.getBean(beanId);
         Date messageDate = (Date) message.get("date");
-        logger.debug("Date: " + messageDate);
+        LOGGER.debug("Date: " + messageDate);
         assertEquals(946143900000L, messageDate.getTime());
     }
 }

@@ -15,8 +15,6 @@
 */
 package org.milyn.delivery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.Parameter;
@@ -35,6 +33,8 @@ import org.milyn.util.ClassUtil;
 import org.milyn.xml.NamespaceMappings;
 import org.milyn.xml.NullSourceXMLReader;
 import org.milyn.xml.SmooksXMLReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.*;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -56,7 +56,7 @@ import java.util.Stack;
  */
 public class AbstractParser {
 
-    private static Log logger = LogFactory.getLog(AbstractParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractParser.class);
 
     private ExecutionContext execContext;
     private SmooksResourceConfiguration saxDriverConfig;
@@ -349,7 +349,7 @@ public class AbstractParser {
         try {
             reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
         } catch (SAXNotRecognizedException e) {
-            logger.debug("XMLReader property 'http://xml.org/sax/properties/lexical-handler' not recognized by XMLReader '" + reader.getClass().getName() + "'.");
+            LOGGER.debug("XMLReader property 'http://xml.org/sax/properties/lexical-handler' not recognized by XMLReader '" + reader.getClass().getName() + "'.");
         }
 	}
 

@@ -16,11 +16,11 @@
 package org.milyn.javabean.factory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.container.ApplicationContext;
 import org.milyn.javabean.DataDecodeException;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,7 +57,7 @@ public interface FactoryDefinitionParser {
 	@SuppressWarnings("unchecked")
   class FactoryDefinitionParserFactory {
 
-        private static Log logger = LogFactory.getLog(FactoryDefinitionParserFactory.class);
+        private static final Logger LOGGER = LoggerFactory.getLogger(FactoryDefinitionParserFactory.class);
 
         public static String GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS = "factory.definition.parser.class";
         public static String DEFAULT_FACTORY_DEFINITION_PARSER_CLASS = "org.milyn.javabean.factory.BasicFactoryDefinitionParser";
@@ -149,7 +149,7 @@ public interface FactoryDefinitionParser {
                                     if(aliasToClassMap.containsKey(name)) {
                                         Class<? extends FactoryDefinitionParser> prevClass = aliasToClassMap.get(name);
 
-                                        logger.warn("More than one FactoryDefinitionParser has the alias '" + name + "' on the classpath. Previous: '" + prevClass.getName() + "'. Current '" + factory.getName() + "'. To use one of these factories you will have to declare the complete class name as alias.");
+                                        LOGGER.warn("More than one FactoryDefinitionParser has the alias '" + name + "' on the classpath. Previous: '" + prevClass.getName() + "'. Current '" + factory.getName() + "'. To use one of these factories you will have to declare the complete class name as alias.");
 
                                         toRemove.add(name); // We register that we need to remove that one. We keep it for to be able to give clear warning messages.
                                     }

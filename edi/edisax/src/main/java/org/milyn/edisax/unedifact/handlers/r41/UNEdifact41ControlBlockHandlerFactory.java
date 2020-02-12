@@ -16,8 +16,6 @@
 
 package org.milyn.edisax.unedifact.handlers.r41;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.edisax.interchange.ControlBlockHandler;
 import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
@@ -25,12 +23,10 @@ import org.milyn.edisax.model.EDIConfigDigester;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
-import org.milyn.edisax.unedifact.handlers.GenericHandler;
-import org.milyn.edisax.unedifact.handlers.UNAHandler;
-import org.milyn.edisax.unedifact.handlers.UNBHandler;
-import org.milyn.edisax.unedifact.handlers.UNGHandler;
-import org.milyn.edisax.unedifact.handlers.UNHHandler;
+import org.milyn.edisax.unedifact.handlers.*;
 import org.milyn.xml.hierarchy.HierarchyChangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import java.nio.charset.Charset;
@@ -44,7 +40,7 @@ import java.util.List;
  */
 public class UNEdifact41ControlBlockHandlerFactory implements ControlBlockHandlerFactory {
 
-    private static Log logger = LogFactory.getLog(UNBHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UNBHandler.class);
 
     public static final String NAMESPACE = NAMESPACE_ROOT + ".v41";
 
@@ -144,7 +140,7 @@ public class UNEdifact41ControlBlockHandlerFactory implements ControlBlockHandle
         if(Charset.isSupported(charsetName)) {
             toCharsetMapping.put(code, Charset.forName(charsetName));
         } else {
-            logger.debug("Unsupported character set '" + charsetName + "'.  Cannot support for '" + code + "' if defined on the syntaxIdentifier field on the UNB segment.  Check the JVM version etc.");
+            LOGGER.debug("Unsupported character set '" + charsetName + "'.  Cannot support for '" + code + "' if defined on the syntaxIdentifier field on the UNB segment.  Check the JVM version etc.");
         }
     }
 }

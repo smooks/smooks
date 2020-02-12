@@ -22,21 +22,15 @@ import freemarker.cache.URLTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.Filter;
 import org.milyn.delivery.Fragment;
 import org.milyn.delivery.dom.serialize.TextSerializationUnit;
-import org.milyn.delivery.sax.DefaultSAXElementSerializer;
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXElementVisitor;
-import org.milyn.delivery.sax.SAXText;
-import org.milyn.delivery.sax.SAXUtil;
 import org.milyn.delivery.ordering.Consumer;
-import org.milyn.delivery.Filter;
+import org.milyn.delivery.sax.*;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
 import org.milyn.io.AbstractOutputStreamResource;
@@ -46,6 +40,8 @@ import org.milyn.templating.TemplatingConfiguration;
 import org.milyn.util.FreeMarkerTemplate;
 import org.milyn.util.FreeMarkerUtils;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -75,7 +71,7 @@ import java.util.Map;
 @VisitAfterReport(summary = "FreeMarker Template - See Detail.", detailTemplate = "reporting/FreeMarkerTemplateProcessor_After.html")
 public class FreeMarkerTemplateProcessor extends AbstractTemplateProcessor implements SAXElementVisitor, Consumer {
 
-    private static Log logger = LogFactory.getLog(FreeMarkerTemplateProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FreeMarkerTemplateProcessor.class);
 
     @ConfigParam(name = Filter.ENTITIES_REWRITE, defaultVal = "true")
     private boolean rewriteEntities;

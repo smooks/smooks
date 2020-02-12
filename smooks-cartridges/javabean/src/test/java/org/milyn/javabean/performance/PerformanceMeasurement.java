@@ -16,20 +16,19 @@
 
 package org.milyn.javabean.performance;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.JavaResult;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -37,7 +36,7 @@ import org.xml.sax.SAXException;
  */
 public class PerformanceMeasurement {
 
-	private static final Log logger = LogFactory.getLog(PerformanceMeasurement.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceMeasurement.class);
 
 	/**
 	 * @param args
@@ -46,7 +45,7 @@ public class PerformanceMeasurement {
 	 */
 	public static void main(String[] args) throws IOException, SAXException {
 		try {
-			logger.info("Start");
+			LOGGER.info("Start");
 
 			boolean simple = false;
 
@@ -64,7 +63,7 @@ public class PerformanceMeasurement {
 
 
 		} catch (Exception e) {
-			logger.debug("Exception", e);
+			LOGGER.debug("Exception", e);
 		}
 	}
 
@@ -86,7 +85,7 @@ public class PerformanceMeasurement {
 		File inFile  = new File(inFilename);
 		Long endTime = System.currentTimeMillis();
 
-		logger.info(inFile + " initialize: " + (endTime - beginTime) + "ms");
+		LOGGER.info(inFile + " initialize: " + (endTime - beginTime) + "ms");
 
 		beginTime = System.currentTimeMillis();
 
@@ -94,7 +93,7 @@ public class PerformanceMeasurement {
 
 		endTime = System.currentTimeMillis();
 
-		logger.info(inFile + " filter warmup: " + (endTime - beginTime) + "ms");
+		LOGGER.info(inFile + " filter warmup: " + (endTime - beginTime) + "ms");
 
 		beginTime = System.currentTimeMillis();
 
@@ -102,7 +101,7 @@ public class PerformanceMeasurement {
 
 		endTime = System.currentTimeMillis();
 
-		logger.info(inFile + " filter run: " + (endTime - beginTime) + "ms");
+		LOGGER.info(inFile + " filter run: " + (endTime - beginTime) + "ms");
 
 		System.gc();
 

@@ -16,12 +16,12 @@ package example;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LogProcessor implements Processor
 {
-    private final Log log = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogProcessor.class);
     private final String string;
 
     public LogProcessor(String string)
@@ -32,7 +32,7 @@ public class LogProcessor implements Processor
     public void process(Exchange exchange) throws Exception
     {
         LogEvent logEvent = (LogEvent) exchange.getIn().getBody();
-        log.info("Logging event [" + string + "]" + logEvent);
+        LOGGER.info("Logging event [" + string + "]" + logEvent);
     }
 
 }

@@ -15,22 +15,31 @@
 */
 package org.milyn.cdr.annotation;
 
-import org.apache.commons.logging.*;
-import org.milyn.assertion.*;
-import org.milyn.cdr.*;
-import org.milyn.container.*;
-import org.milyn.delivery.*;
-import org.milyn.delivery.annotation.*;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.config.Configurable;
+import org.milyn.container.ApplicationContext;
+import org.milyn.delivery.ContentHandler;
+import org.milyn.delivery.Filter;
+import org.milyn.delivery.annotation.Initialize;
+import org.milyn.delivery.annotation.Uninitialize;
 import org.milyn.delivery.sax.SAXToXMLWriter;
 import org.milyn.delivery.sax.SAXVisitor;
 import org.milyn.delivery.sax.annotation.StreamResultWriter;
-import org.milyn.javabean.*;
-import org.milyn.config.Configurable;
+import org.milyn.javabean.DataDecodeException;
+import org.milyn.javabean.DataDecoder;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.annotation.*;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Utility class for processing Smooks configuration annotations on an
@@ -41,7 +50,7 @@ import java.util.*;
  */
 public class Configurator {
 
-    private static Log logger = LogFactory.getLog(Configurator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Configurator.class);
 
     /**
      * Configure the supplied {@link org.milyn.delivery.ContentHandler} instance using the supplied
@@ -457,7 +466,7 @@ public class Configurator {
                         throw new SmooksConfigurationException("Error invoking @" + annotation.getSimpleName() + " method '" + method.getName() + "' on class '" + instance.getClass().getName() + "'.", e.getTargetException());
                     }
                 } else {
-                    logger.warn("Method '" + getLongMemberName(method) + "' defines an @" + annotation.getSimpleName() + " annotation on a paramaterized method.  This is not allowed!");
+                    LOGGER.warn("Method '" + getLongMemberName(method) + "' defines an @" + annotation.getSimpleName() + " annotation on a paramaterized method.  This is not allowed!");
                 }
             }
         }

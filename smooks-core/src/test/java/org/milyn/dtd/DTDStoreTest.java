@@ -16,14 +16,14 @@
 
 package org.milyn.dtd;
 
+import org.junit.Test;
+import org.milyn.profile.DefaultProfileSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.profile.DefaultProfileSet;
-
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
  */
 public class DTDStoreTest {
 	
-	Log log = LogFactory.getLog(DTDStore.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DTDStore.class);
 
 	@Test
 	public void testGetEmptyAnyMixedEtcElements() {
@@ -83,7 +83,7 @@ public class DTDStoreTest {
 			l1 = dtdContainer.getElementAttributes("html");
 			l2 = dtdContainer.getElementAttributes("html");
 		} catch (ElementNotDefined e) {
-			log.debug( "ElementNotDefined exception was throws: ", e);
+			LOGGER.debug( "ElementNotDefined exception was throws: ", e);
 			fail(e.getMessage());
 		}
 		
@@ -110,8 +110,8 @@ public class DTDStoreTest {
 		DTDStore.addDTD(profileSet, getClass().getResourceAsStream(name));
 		DTDStore.DTDObjectContainer dtdContainer = DTDStore.getDTDObject(profileSet);
 		
-		log.debug("-------- " + name + " ---------");
-		log.debug(Arrays.asList(dtdContainer.getEmptyElements()));
+		LOGGER.debug("-------- " + name + " ---------");
+		LOGGER.debug(Arrays.asList(dtdContainer.getEmptyElements()).toString());
 	}
 	
 	@Test

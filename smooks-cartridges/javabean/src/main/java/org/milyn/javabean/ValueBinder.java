@@ -15,12 +15,6 @@
 */
 package org.milyn.javabean;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.AnnotationConstants;
@@ -42,9 +36,13 @@ import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.repository.BeanId;
 import org.milyn.util.CollectionsUtil;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Value Binder.
@@ -109,7 +107,7 @@ import javax.xml.namespace.QName;
         detailTemplate = "reporting/ValueBinderReport_After.html")
 public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, Producer {
 
-	private static final Log logger = LogFactory.getLog(ValueBinder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ValueBinder.class);
 
     @ConfigParam(name="beanId")
     private String beanIdName;
@@ -225,8 +223,8 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 
         beanId = appContext.getBeanIdStore().register(beanIdName);
 
-        if(logger.isDebugEnabled()) {
-        	logger.debug("Value Binder created for [" + beanIdName + "].");
+        if(LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Value Binder created for [" + beanIdName + "].");
         }
     }
 

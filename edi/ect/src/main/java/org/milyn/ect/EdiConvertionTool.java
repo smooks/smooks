@@ -16,21 +16,6 @@
 
 package org.milyn.ect;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.emf.ecore.EPackage;
 import org.milyn.archive.Archive;
 import org.milyn.assertion.AssertArgument;
@@ -38,14 +23,18 @@ import org.milyn.ect.ecore.ECoreGenerator;
 import org.milyn.ect.ecore.SchemaConverter;
 import org.milyn.ect.formats.unedifact.UnEdifactSpecificationReader;
 import org.milyn.edisax.interchange.EdiDirectory;
-import org.milyn.edisax.model.internal.Component;
-import org.milyn.edisax.model.internal.Description;
-import org.milyn.edisax.model.internal.Edimap;
-import org.milyn.edisax.model.internal.Field;
-import org.milyn.edisax.model.internal.MappingNode;
-import org.milyn.edisax.model.internal.Segment;
-import org.milyn.edisax.model.internal.SegmentGroup;
+import org.milyn.edisax.model.internal.*;
 import org.milyn.edisax.util.EDIUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * EDI Convertion Tool.
@@ -58,7 +47,7 @@ import org.milyn.edisax.util.EDIUtils;
  */
 public class EdiConvertionTool {
 
-    private static final Log logger = LogFactory.getLog(EdiConvertionTool.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EdiConvertionTool.class);
 
     /**
      * Write an EDI Mapping Model configuration set from a UN/EDIFACT
@@ -130,7 +119,7 @@ public class EdiConvertionTool {
             // Now output the generated archive...
             archive.toOutputStream(modelSetOutStream);
         } catch (Throwable t) {
-            logger.fatal("Error while generating EDI Mapping Model archive for '" + urn + "'.", t);
+            LOGGER.error("Error while generating EDI Mapping Model archive for '" + urn + "'.", t);
         } finally {
             modelSetOutStream.close();
         }

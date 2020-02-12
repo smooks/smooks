@@ -15,13 +15,13 @@
 */
 package org.milyn.cdr.extension;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.EmptyStackException;
@@ -36,7 +36,7 @@ import java.util.EmptyStackException;
  */
 public class SetOnResourceConfig implements DOMVisitBefore {
 
-    private static Log logger = LogFactory.getLog(MapToResourceConfigFromText.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromText.class);
 
     @ConfigParam
     private String setOn;
@@ -53,7 +53,7 @@ public class SetOnResourceConfig implements DOMVisitBefore {
             throw new SmooksException("No SmooksResourceConfiguration available in ExtensionContext stack.  Unable to set SmooksResourceConfiguration property '" + setOn + "' with static value.");
         }
 
-        logger.debug("Setting property '" + setOn + "' on resource configuration to a value of '" + value + "'.");
+        LOGGER.debug("Setting property '" + setOn + "' on resource configuration to a value of '" + value + "'.");
 
         ResourceConfigUtil.setProperty(config, setOn, value, executionContext);
     }

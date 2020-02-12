@@ -15,22 +15,22 @@
 */
 package org.milyn.ect.formats.unedifact;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.ect.EdiConvertionTool;
+import org.milyn.ect.EdiParseException;
+import org.milyn.ect.EdiSpecificationReader;
 import org.milyn.edisax.interchange.ControlBlockHandlerFactory;
 import org.milyn.edisax.interchange.EdiDirectory;
-import org.milyn.ect.EdiSpecificationReader;
-import org.milyn.ect.EdiParseException;
-import org.milyn.edisax.model.internal.Description;
-import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
-import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.model.EdifactModel;
+import org.milyn.edisax.model.internal.Description;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Field;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.unedifact.UNEdifactInterchangeParser;
+import org.milyn.edisax.unedifact.handlers.r41.UNEdifact41ControlBlockHandlerFactory;
+import org.milyn.edisax.util.EDIUtils;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -46,7 +46,7 @@ import java.util.zip.ZipInputStream;
  */
 public class UnEdifactSpecificationReader implements EdiSpecificationReader {
 
-    private static final Log logger = LogFactory.getLog(UnEdifactSpecificationReader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UnEdifactSpecificationReader.class);
 
     public static final String INTERCHANGE_TYPE = "UNEDIFACT";
 
@@ -159,7 +159,7 @@ public class UnEdifactSpecificationReader implements EdiSpecificationReader {
                     if(commonModel == null) {
                         commonModel = model;
                     } else {
-                        logger.warn("Common model message '" + commonMessageName + "' already read.");
+                        LOGGER.warn("Common model message '" + commonMessageName + "' already read.");
                     }
                 } else {
                     models.add(model);

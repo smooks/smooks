@@ -14,10 +14,10 @@
  */
 package org.milyn.routing.jms;
 
-import javax.jms.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.jms.Session;
 
 /**
  * Enum to type-safe JMS Client Acknowledgement mode string
@@ -30,7 +30,7 @@ public enum AcknowledgeModeEnum
 	AUTO_ACKNOWLEDGE(Session.AUTO_ACKNOWLEDGE),
 	DUPS_OK_ACKNOWLEDGE(Session.DUPS_OK_ACKNOWLEDGE);
 
-	private static final Log log = LogFactory.getLog( AcknowledgeModeEnum.class ); // NOPMD by danbev on 8/03/08 09:20
+	private static final Logger LOGGER = LoggerFactory.getLogger( AcknowledgeModeEnum.class ); // NOPMD by danbev on 8/03/08 09:20
 
 	private int jmsAckModeInt;
 
@@ -54,7 +54,7 @@ public enum AcknowledgeModeEnum
 			}
 			catch (IllegalArgumentException e)
 			{
-				log.debug("' " + ackMode + "' is invalid : " + ". Will use default '" + AcknowledgeModeEnum.AUTO_ACKNOWLEDGE);
+				LOGGER.debug("' " + ackMode + "' is invalid : " + ". Will use default '" + AcknowledgeModeEnum.AUTO_ACKNOWLEDGE);
 			}
 		}
 		return AcknowledgeModeEnum.AUTO_ACKNOWLEDGE;

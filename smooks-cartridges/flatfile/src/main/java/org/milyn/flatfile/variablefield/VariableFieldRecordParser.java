@@ -16,18 +16,14 @@
 
 package org.milyn.flatfile.variablefield;
 
+import org.milyn.flatfile.*;
+import org.milyn.function.StringFunctionExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.flatfile.Field;
-import org.milyn.flatfile.FieldMetaData;
-import org.milyn.flatfile.Record;
-import org.milyn.flatfile.RecordMetaData;
-import org.milyn.flatfile.RecordParser;
-import org.milyn.function.StringFunctionExecutor;
 
 /**
  * Abstract variable field record parser.
@@ -36,7 +32,7 @@ import org.milyn.function.StringFunctionExecutor;
  */
 public abstract class VariableFieldRecordParser<T extends VariableFieldRecordParserFactory> implements RecordParser<T> {
 
-    private Log logger = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(VariableFieldRecordParser.class);
 
     private T factory;
     private int lineNumber = 0;
@@ -133,7 +129,7 @@ public abstract class VariableFieldRecordParser<T extends VariableFieldRecordPar
 
         List<FieldMetaData> fieldsMetaData = recordMetaData.getFields();
         if (factory.strict() && fieldValues.size() < getUnignoredFieldCount(recordMetaData)) {
-            logger.debug("[CORRUPT] Record #" + recordCount + " invalid [" + fieldValues
+            LOGGER.debug("[CORRUPT] Record #" + recordCount + " invalid [" + fieldValues
                     + "].  The record should contain " + fieldsMetaData.size() + " fields ["
                     + recordMetaData.getFieldNames() + "], but contains " + fieldValues.size() + " fields.  Ignoring!!");
             return nextRecord();

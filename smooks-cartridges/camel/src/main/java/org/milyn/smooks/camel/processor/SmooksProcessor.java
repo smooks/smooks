@@ -17,8 +17,6 @@ package org.milyn.smooks.camel.processor;
 import org.apache.camel.*;
 import org.apache.camel.attachment.Attachment;
 import org.apache.camel.attachment.AttachmentMessage;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
 import org.milyn.SmooksFactory;
@@ -27,6 +25,8 @@ import org.milyn.delivery.Visitor;
 import org.milyn.delivery.VisitorAppender;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.milyn.payload.Exports;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -51,7 +51,7 @@ public class SmooksProcessor implements Processor, Service, CamelContextAware
 {
     public static final String SMOOKS_EXECUTION_CONTEXT = "CamelSmooksExecutionContext";
     public static final String CAMEL_CHARACTER_ENCODING = "CamelCharsetName";
-    private static final Log LOGGER = LogFactory.getLog(SmooksProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SmooksProcessor.class);
 
     private Smooks smooks;
     private String configUri;

@@ -15,9 +15,9 @@
 */
 package org.milyn.classpath;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.util.zip.ZipFile;
  */
 public class Scanner {
 
-    private static Log logger = LogFactory.getLog(Scanner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Scanner.class);
     private Filter filter;
 
     public Scanner(Filter filter) {
@@ -48,7 +48,7 @@ public class Scanner {
     public void scanClasspath(ClassLoader classLoader) throws IOException {
 
         if (!(classLoader instanceof URLClassLoader)) {
-            logger.warn("Not scanning classpath for ClassLoader '" + classLoader.getClass().getName() + "'.  ClassLoader must implement '" + URLClassLoader.class.getName() + "'.");
+            LOGGER.warn("Not scanning classpath for ClassLoader '" + classLoader.getClass().getName() + "'.  ClassLoader must implement '" + URLClassLoader.class.getName() + "'.");
             return;
         }
 
@@ -69,7 +69,7 @@ public class Scanner {
 
             File file = new File(urlPath);
             if(alreadyScanned.contains(file.getAbsolutePath())) {
-                logger.debug("Ignoring classpath URL '" + file.getAbsolutePath() + "'.  Already scanned this URL.");
+                LOGGER.debug("Ignoring classpath URL '" + file.getAbsolutePath() + "'.  Already scanned this URL.");
                 continue;
             } if (file.isDirectory()) {
                 handleDirectory(file, null);
@@ -82,13 +82,13 @@ public class Scanner {
 
     private void handleArchive(File file) throws IOException {
         if(filter.isIgnorable(file.getName())) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("Ignoring archive: " + file);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Ignoring archive: " + file);
             }
             return;
         }
-        if(logger.isDebugEnabled()) {
-            logger.debug("Scanning archive: " + file.getAbsolutePath());
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Scanning archive: " + file.getAbsolutePath());
         }
 
         ZipFile zip = new ZipFile(file);
@@ -103,13 +103,13 @@ public class Scanner {
 
     private void handleDirectory(File file, String path) {
         if(path != null && filter.isIgnorable(path)) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("Ignoring directory (and subdirectories): " + path);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Ignoring directory (and subdirectories): " + path);
             }
             return;
         }
-        if(logger.isDebugEnabled()) {
-            logger.debug("Scanning directory: " + file.getAbsolutePath());
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Scanning directory: " + file.getAbsolutePath());
         }
 
         for (File child : file.listFiles()) {

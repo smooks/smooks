@@ -17,8 +17,6 @@
 package org.milyn.templating.soapshipping.xslt;
 
 import org.milyn.templating.soapshipping.ShippingIntegTestBase;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 
 /**
  * Run the tests defined in ShippingIntegTestBase using the configs defined in this package.

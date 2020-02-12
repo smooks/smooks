@@ -14,28 +14,6 @@
  */
 package org.milyn.routing.jms;
 
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.QueueBrowser;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
@@ -47,15 +25,28 @@ import org.milyn.delivery.annotation.Uninitialize;
 import org.milyn.delivery.annotation.VisitAfterIf;
 import org.milyn.delivery.annotation.VisitBeforeIf;
 import org.milyn.delivery.dom.DOMElementVisitor;
-import org.milyn.delivery.sax.*;
 import org.milyn.delivery.ordering.Consumer;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXVisitAfter;
+import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.routing.SmooksRoutingException;
 import org.milyn.routing.jms.message.creationstrategies.MessageCreationStrategy;
 import org.milyn.routing.jms.message.creationstrategies.StrategyFactory;
 import org.milyn.routing.jms.message.creationstrategies.TextMessageCreationStrategy;
-import org.milyn.util.FreeMarkerUtils;
 import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.util.FreeMarkerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+
+import javax.jms.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * <p/>
@@ -124,7 +115,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
 	/*
 	 *	Log instance
 	 */
-	private final Log logger = LogFactory.getLog( JMSRouter.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( JMSRouter.class );
 
 	/*
 	 *	JNDI Properties holder
@@ -213,12 +204,12 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
         catch (NamingException e)
         {
             final String errorMsg = "NamingException while trying to lookup [" + jmsProperties.getDestinationName() + "]";
-            logger.error( errorMsg, e );
+            LOGGER.error( errorMsg, e );
             throw new SmooksConfigurationException( errorMsg, e );
         } finally {
             if ( context != null )
             {
-                try { context.close(); } catch (NamingException e) { logger.debug( "NamingException while trying to close initial Context"); }
+                try { context.close(); } catch (NamingException e) { LOGGER.debug( "NamingException while trying to close initial Context"); }
             }
 
             if(!initialized) {
@@ -405,7 +396,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
 
 			msgProducer = session.createProducer( destination );
 			connection.start();
-			logger.info ("JMS Connection started");
+			LOGGER.info ("JMS Connection started");
 		}
 		catch( JMSException e)
 		{
@@ -483,15 +474,15 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
                 int length = getQueueLength(queueBrowser);
                 long start = System.currentTimeMillis();
 
-                if(logger.isDebugEnabled() && length >= highWaterMark) {
-                    logger.debug("Length of JMS destination Queue '" + jmsProperties.getDestinationName() + "' has reached " + length +  ".  High Water Mark is " + highWaterMark +  ".  Waiting for Queue length to drop.");
+                if(LOGGER.isDebugEnabled() && length >= highWaterMark) {
+                    LOGGER.debug("Length of JMS destination Queue '" + jmsProperties.getDestinationName() + "' has reached " + length +  ".  High Water Mark is " + highWaterMark +  ".  Waiting for Queue length to drop.");
                 }
 
                 while(length >= highWaterMark && (System.currentTimeMillis() < start + highWaterMarkTimeout)) {
                     try {
                         Thread.sleep(highWaterMarkPollFrequency);
                     } catch (InterruptedException e) {
-                        logger.error("Interrupted", e);
+                        LOGGER.error("Interrupted", e);
                         return;
                     }
                     length = getQueueLength(queueBrowser);
@@ -528,7 +519,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
 			catch (JMSException e)
 			{
 				final String errorMsg = "JMSException while trying to close connection";
-				logger.debug( errorMsg, e );
+				LOGGER.debug( errorMsg, e );
 			}
 		}
 	}
@@ -544,7 +535,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
 			catch (JMSException e)
 			{
 				final String errorMsg = "JMSException while trying to close session";
-				logger.debug( errorMsg, e );
+				LOGGER.debug( errorMsg, e );
 			}
 		}
 	}
@@ -643,7 +634,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
                     }
                 }
             } catch (JMSException e) {
-                logger.debug("JMSException while trying to stop JMS Connection.", e);
+                LOGGER.debug("JMSException while trying to stop JMS Connection.", e);
             } finally {
                 connection.close();
                 connection = null;
@@ -656,7 +647,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
             try {
                 msgProducer.close();
             } catch (JMSException e) {
-                logger.debug("JMSException while trying to close JMS Message Producer.", e);
+                LOGGER.debug("JMSException while trying to close JMS Message Producer.", e);
             } finally {
                 msgProducer = null;
             }
@@ -668,7 +659,7 @@ public class JMSRouter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAft
             try {
                 session.close();
             } catch (JMSException e) {
-                logger.debug("JMSException while trying to close JMS Session.", e);
+                LOGGER.debug("JMSException while trying to close JMS Session.", e);
             } finally {
                 session = null;
             }

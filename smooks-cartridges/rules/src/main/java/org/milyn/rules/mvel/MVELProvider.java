@@ -15,24 +15,24 @@
 */
 package org.milyn.rules.mvel;
 
-import org.milyn.rules.RuleProvider;
-import org.milyn.rules.RuleEvalResult;
-import org.milyn.container.ExecutionContext;
+import au.com.bytecode.opencsv.CSVReader;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.expression.MVELExpressionEvaluator;
+import org.milyn.container.ExecutionContext;
 import org.milyn.expression.ExpressionEvaluator;
+import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.resource.URIResourceLocator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import au.com.bytecode.opencsv.CSVReader;
+import org.milyn.rules.RuleEvalResult;
+import org.milyn.rules.RuleProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <a href="http://mvel.codehaus.org/">MVEL</a> Rule Provider.
@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class MVELProvider implements RuleProvider {
 
-    private static Log logger = LogFactory.getLog(MVELProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MVELProvider.class);
     private String name;
     private String src;
     private Map<String, ExpressionEvaluator> rules = new HashMap<String, ExpressionEvaluator>();
@@ -106,7 +106,7 @@ public class MVELProvider implements RuleProvider {
             try {
                 ruleStream.close();
             } catch (IOException e) {
-                logger.debug("Error closing MVEL rule file '" + src + "'.", e);
+                LOGGER.debug("Error closing MVEL rule file '" + src + "'.", e);
             }
         }
 
@@ -116,7 +116,7 @@ public class MVELProvider implements RuleProvider {
                 String ruleExpression = ruleLine[1];
 
                 if(rules.containsKey(ruleName)) {
-                    logger.debug("Duplicate rule definition '" + ruleName + "' in MVEL rule file '" + ruleName + "'.  Ignoring duplicate.");
+                    LOGGER.debug("Duplicate rule definition '" + ruleName + "' in MVEL rule file '" + ruleName + "'.  Ignoring duplicate.");
                     continue;
                 }
 

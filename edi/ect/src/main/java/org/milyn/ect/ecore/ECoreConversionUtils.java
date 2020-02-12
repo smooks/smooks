@@ -1,32 +1,16 @@
 package org.milyn.ect.ecore;
 
-import static org.milyn.ect.ecore.SmooksMetadata.ANNOTATION_TYPE_KEY;
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
+import org.milyn.edisax.model.internal.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EModelElement;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.EcoreFactory;
-import org.eclipse.emf.ecore.util.ExtendedMetaData;
-import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-import org.milyn.edisax.model.internal.Component;
-import org.milyn.edisax.model.internal.Description;
-import org.milyn.edisax.model.internal.Edimap;
-import org.milyn.edisax.model.internal.Field;
-import org.milyn.edisax.model.internal.MappingNode;
-import org.milyn.edisax.model.internal.Segment;
-import org.milyn.edisax.model.internal.SegmentGroup;
-import org.milyn.edisax.model.internal.ValueNode;
+import static org.milyn.ect.ecore.SmooksMetadata.ANNOTATION_TYPE_KEY;
 
 /**
  * Utility class that convert EDI model to ECore model elements
@@ -46,7 +30,7 @@ public class ECoreConversionUtils {
 
 	private static ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
 	
-	private static final Log log = LogFactory.getLog(ECoreConversionUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ECoreConversionUtils.class);
 
 	/**
 	 * Converting {@link Segment} to {@link EClass}
@@ -216,7 +200,7 @@ public class ECoreConversionUtils {
 		if (field.getTypeClass() != null) {
 			attr.setEType(toEType(field.getTypeClass()));
 		} else {
-			log.warn("Field " + field.getXmltag()
+			LOGGER.warn("Field " + field.getXmltag()
 					+ " has no type! Setting it's type to String");
 			attr.setEType(XMLTypePackage.Literals.STRING);
 		}

@@ -15,12 +15,6 @@
 */
 package org.milyn.persistence;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.AppContext;
@@ -36,7 +30,6 @@ import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.delivery.ordering.Consumer;
 import org.milyn.delivery.ordering.Producer;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXUtil;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.event.report.annotation.VisitAfterReport;
@@ -49,9 +42,13 @@ import org.milyn.scribe.invoker.DaoInvoker;
 import org.milyn.scribe.invoker.DaoInvokerFactory;
 import org.milyn.scribe.register.DaoRegister;
 import org.milyn.util.CollectionsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 
 /**
@@ -99,7 +96,7 @@ import javax.xml.namespace.QName;
 @VisitAfterReport(summary = "Deleting bean under beanId '${resource.parameters.beanId}'.", detailTemplate="reporting/EntityDeleter.html")
 public class EntityDeleter implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, Consumer, Producer {
 
-    private static Log logger = LogFactory.getLog(EntityDeleter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityDeleter.class);
 
     @ConfigParam(name = "beanId")
     private String beanIdName;
@@ -179,8 +176,8 @@ public class EntityDeleter implements DOMElementVisitor, SAXVisitBefore, SAXVisi
 	@SuppressWarnings("unchecked")
 	private void delete(final ExecutionContext executionContext, final Fragment source) {
 
-		if(logger.isDebugEnabled()) {
-			logger.debug("Deleting bean under BeanId '" + beanIdName + "' with DAO '" + daoName + "'");
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Deleting bean under BeanId '" + beanIdName + "' with DAO '" + daoName + "'");
 		}
 
 		BeanContext beanContext = executionContext.getBeanContext();

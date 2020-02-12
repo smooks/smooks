@@ -16,15 +16,15 @@
 
 package org.milyn.cdr;
 
+import org.milyn.assertion.AssertArgument;
+import org.milyn.profile.ProfileSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.ArrayList;
-import java.net.URI;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.profile.ProfileSet;
-import org.milyn.assertion.AssertArgument;
 
 /**
  * {@link org.milyn.cdr.SmooksResourceConfiguration} list.
@@ -35,7 +35,7 @@ public class SmooksResourceConfigurationList {
 	/**
 	 * Logger.
 	 */
-	private static Log logger = LogFactory.getLog(SmooksResourceConfigurationList.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SmooksResourceConfigurationList.class);
     /**
      * List name.
      */
@@ -66,7 +66,7 @@ public class SmooksResourceConfigurationList {
             throw new IllegalArgumentException("null or empty 'name' arg in constructor call.");
         }
         this.name = name;
-        logger.debug("Smooks ResourceConfiguration List [" + name + "] created.");
+        LOGGER.debug("Smooks ResourceConfiguration List [" + name + "] created.");
     }
     
     /**
@@ -82,7 +82,7 @@ public class SmooksResourceConfigurationList {
 
             clone.setSelector(selector.trim());
             list.add(clone);
-            logger.debug("Smooks ResourceConfiguration [" + clone + "] added to list [" + name + "].");
+            LOGGER.debug("Smooks ResourceConfiguration [" + clone + "] added to list [" + name + "].");
         }
     }
 
@@ -103,7 +103,7 @@ public class SmooksResourceConfigurationList {
     public void add(ProfileSet profileSet) {
         AssertArgument.isNotNull(profileSet, "profileSet");
         profiles.add(profileSet);
-        logger.debug("ProfileSet [" + profileSet.getBaseProfile() + "] added to list Smooks configuration [" + name + "].");
+        LOGGER.debug("ProfileSet [" + profileSet.getBaseProfile() + "] added to list Smooks configuration [" + name + "].");
     }
 
     /**
@@ -177,7 +177,7 @@ public class SmooksResourceConfigurationList {
                     matchingSmooksResourceConfigurationsColl.addElement(resourceConfig);
                     break;
                 } else {
-            		logger.debug("Resource [" + resourceConfig + "] not targeted at profile [" + profileSet.getBaseProfile() + "].  Sub Profiles: [" + profileSet + "]");
+            		LOGGER.debug("Resource [" + resourceConfig + "] not targeted at profile [" + profileSet.getBaseProfile() + "].  Sub Profiles: [" + profileSet + "]");
                 }
             }
         }
@@ -202,7 +202,7 @@ public class SmooksResourceConfigurationList {
         if(loadedResources.contains(resource)) {
             URI lastLoaded = loadedResources.get(loadedResources.size() - 1);
 
-            logger.info("Not adding resource config import '" + resource + "'.  This resource is already loaded on this list.");
+            LOGGER.info("Not adding resource config import '" + resource + "'.  This resource is already loaded on this list.");
 
             return false;
         }

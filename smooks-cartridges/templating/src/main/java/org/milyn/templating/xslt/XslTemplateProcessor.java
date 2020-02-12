@@ -15,36 +15,36 @@
 */
 package org.milyn.templating.xslt;
 
-import org.milyn.event.report.annotation.VisitBeforeReport;
-import org.milyn.event.report.annotation.VisitAfterReport;
-import org.milyn.templating.AbstractTemplateProcessor;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.SmooksConfigurationException;
-import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.io.StreamUtils;
-import org.milyn.util.ClassUtil;
-import org.milyn.xml.XmlUtil;
-import org.milyn.xml.DomUtils;
-import org.milyn.container.ExecutionContext;
+import org.apache.commons.lang.StringUtils;
 import org.milyn.SmooksException;
+import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.ConfigParam;
+import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.AbstractParser;
 import org.milyn.delivery.FilterBypass;
 import org.milyn.delivery.dom.serialize.GhostElementSerializationUnit;
 import org.milyn.delivery.ordering.Consumer;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.milyn.event.report.annotation.VisitAfterReport;
+import org.milyn.event.report.annotation.VisitBeforeReport;
+import org.milyn.io.StreamUtils;
+import org.milyn.templating.AbstractTemplateProcessor;
+import org.milyn.util.ClassUtil;
+import org.milyn.xml.DomUtils;
+import org.milyn.xml.XmlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -59,7 +59,7 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
     /**
      * Logger.
      */
-    private static Log logger = LogFactory.getLog(XslTemplateProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XslTemplateProcessor.class);
 
     /**
      * XSL as a String.
@@ -247,7 +247,7 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
             if(failOnWarning) {
                 throw exception;
             } else {
-                logger.debug("XSL Warning.", exception);
+                LOGGER.debug("XSL Warning.", exception);
             }
         }
 
@@ -271,17 +271,17 @@ public class XslTemplateProcessor extends AbstractTemplateProcessor implements C
     {
         public void error(final SAXParseException exception) throws SAXException
         {
-            logger.debug("SaxParseException error was reported : ", exception);
+            LOGGER.debug("SaxParseException error was reported : ", exception);
         }
 
         public void fatalError(final SAXParseException exception) throws SAXException
         {
-            logger.debug("SaxParseException fatal error was reported : ", exception);
+            LOGGER.debug("SaxParseException fatal error was reported : ", exception);
         }
 
         public void warning(final SAXParseException exception) throws SAXException
         {
-            logger.debug("SaxParseException warning error was reported : ", exception);
+            LOGGER.debug("SaxParseException warning error was reported : ", exception);
         }
     }
 }

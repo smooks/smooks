@@ -16,30 +16,29 @@
 
 package org.milyn;
 
-import java.io.ByteArrayInputStream;
-import java.io.CharArrayWriter;
-import java.io.IOException;
-
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.standalone.PreconfiguredSmooks;
 import org.milyn.profile.DefaultProfileSet;
 import org.milyn.util.DomUtil;
 import org.milyn.xml.XmlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.CharArrayWriter;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
+
 public class SmooksStandaloneTest {
-	
-	Log log = LogFactory.getLog( SmooksStandaloneTest.class );
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SmooksStandaloneTest.class);
 	
 	@Test
     public void testProcess() {
@@ -48,7 +47,7 @@ public class SmooksStandaloneTest {
             smooks = new PreconfiguredSmooks();
             ExecutionContext context = smooks.createExecutionContext("msie6");
             String response = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("html_2.html"), smooks);
-            log.debug(response);
+            LOGGER.debug(response);
             Document doc = DomUtil.parse(response);
 
             assertNull(XmlUtil.getNode(doc, "html/body/xxx"));
@@ -79,11 +78,11 @@ public class SmooksStandaloneTest {
         String message = "<aaa><bbb>888</bbb><ccc>999</ccc></aaa>";
         ExecutionContext context = smooks.createExecutionContext("message-target1");
         String result = SmooksUtil.filterAndSerialize(context, new ByteArrayInputStream(message.getBytes()), smooks);
-        log.debug(result);
+        LOGGER.debug(result);
         assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", result);
         context = smooks.createExecutionContext("message-target2");
         result = SmooksUtil.filterAndSerialize(context, new ByteArrayInputStream(message.getBytes()), smooks);
-        log.debug(result);
+        LOGGER.debug(result);
         assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><ccc>999</ccc></zzz>", result);
     }
 

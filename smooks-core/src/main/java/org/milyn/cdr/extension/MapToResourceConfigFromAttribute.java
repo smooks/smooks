@@ -15,10 +15,6 @@
 */
 package org.milyn.cdr.extension;
 
-import java.util.EmptyStackException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
@@ -27,7 +23,11 @@ import org.milyn.cdr.annotation.ConfigParam.Use;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+
+import java.util.EmptyStackException;
 
 /**
  * Map a property value onto the current {@link SmooksResourceConfiguration} based on an
@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  */
 public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
 
-    private static Log logger = LogFactory.getLog(MapToResourceConfigFromAttribute.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromAttribute.class);
 
     @ConfigParam(use=Use.OPTIONAL)
     private String mapTo;
@@ -80,13 +80,13 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
         }
 
         if (value == null) {
-        	if(logger.isDebugEnabled()) {
-        		logger.debug("Not setting property '" + actualMapTo + "' on resource configuration.  Attribute '" + attribute + "' value on element '" + DomUtils.getName(element) + "' is null.  You may need to set a default value in the binding configuration.");
+        	if(LOGGER.isDebugEnabled()) {
+        		LOGGER.debug("Not setting property '" + actualMapTo + "' on resource configuration.  Attribute '" + attribute + "' value on element '" + DomUtils.getName(element) + "' is null.  You may need to set a default value in the binding configuration.");
         	}
             return;
         } else {
-        	if(logger.isDebugEnabled()) {
-        		logger.debug("Setting property '" + actualMapTo + "' on resource configuration to a value of '" + value + "'.");
+        	if(LOGGER.isDebugEnabled()) {
+        		LOGGER.debug("Setting property '" + actualMapTo + "' on resource configuration to a value of '" + value + "'.");
         	}
         }
 

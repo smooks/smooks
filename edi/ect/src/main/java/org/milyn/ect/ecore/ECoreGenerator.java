@@ -1,27 +1,16 @@
 package org.milyn.ect.ecore;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.EcoreFactory;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.milyn.edisax.interchange.EdiDirectory;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.Field;
 import org.milyn.edisax.model.internal.Segment;
 import org.milyn.edisax.model.internal.SegmentGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * This class is responsible for generating ECore model based on the UN EDI
@@ -36,7 +25,7 @@ public class ECoreGenerator {
 
 	public static final String COMMON_PACKAGE_NAME = "common";
 
-	private static final Log log = LogFactory.getLog(ECoreGenerator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ECoreGenerator.class);
 
 	/**
 	 * This method will convert information available in {@link EdiDirectory}
@@ -50,7 +39,7 @@ public class ECoreGenerator {
 	 * @return The EPackages.
 	 */
 	public Set<EPackage> generatePackages(EdiDirectory ediDirectory) {
-		log.debug("Converting UN EDIFACT Model");
+		LOGGER.debug("Converting UN EDIFACT Model");
 		Set<EPackage> result = new HashSet<EPackage>();
 
 		// Creating common package
@@ -69,10 +58,10 @@ public class ECoreGenerator {
 		for (Edimap mappingModel : ediDirectory.getMessageModels()) {
 			EPackage pkg = processPackage(mappingModel, commonClasses);
 			if (!result.add(pkg)) {
-				log.warn("WARN: Duplicated package " + pkg.getName() + " for ");
+				LOGGER.warn("WARN: Duplicated package " + pkg.getName() + " for ");
 			}
 		}
-		log.debug("Converted EDIFACT Model  into " + result.size()
+		LOGGER.debug("Converted EDIFACT Model  into " + result.size()
 				+ " EPackages");
 		return result;
 	}
@@ -156,8 +145,8 @@ public class ECoreGenerator {
 				if (parent.getEStructuralFeature(segmentRef.getName()) == null) {
 					parent.getEStructuralFeatures().add(segmentRef);
 				} else {
-					if (log.isWarnEnabled()) {
-						log.warn("Duplicate segment " + segmentRef.getName()
+					if (LOGGER.isWarnEnabled()) {
+						LOGGER.warn("Duplicate segment " + segmentRef.getName()
 								+ " (tag: "
 								+ ExtendedMetaData.INSTANCE.getName(segmentRef)
 								+ ")" + " in " + parent.getName());

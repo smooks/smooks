@@ -15,44 +15,46 @@
 */
 package org.milyn.javabean;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.cdr.annotation.Config;
-import org.milyn.delivery.ContentDeliveryConfig;
-import org.milyn.delivery.Fragment;
-import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
-import org.milyn.javabean.lifecycle.BeanLifecycle;
-import org.milyn.util.CollectionsUtil;
-import org.milyn.util.ClassUtil;
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
 import org.milyn.cdr.annotation.AppContext;
+import org.milyn.cdr.annotation.Config;
 import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
+import org.milyn.delivery.ContentDeliveryConfig;
+import org.milyn.delivery.Fragment;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMElementVisitor;
-import org.milyn.delivery.sax.*;
-import org.milyn.delivery.ordering.Producer;
 import org.milyn.delivery.ordering.Consumer;
+import org.milyn.delivery.ordering.Producer;
+import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXUtil;
+import org.milyn.delivery.sax.SAXVisitAfter;
+import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
 import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.javabean.BeanRuntimeInfo.Classification;
-import org.milyn.javabean.observers.ListToArrayChangeObserver;
-import org.milyn.javabean.observers.BeanWiringObserver;
-import org.milyn.javabean.repository.BeanId;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
 import org.milyn.javabean.decoders.PreprocessDecoder;
 import org.milyn.javabean.decoders.StringDecoder;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
+import org.milyn.javabean.lifecycle.BeanLifecycle;
+import org.milyn.javabean.observers.BeanWiringObserver;
+import org.milyn.javabean.observers.ListToArrayChangeObserver;
+import org.milyn.javabean.repository.BeanId;
+import org.milyn.util.ClassUtil;
+import org.milyn.util.CollectionsUtil;
 import org.milyn.xml.DomUtils;
 import org.milyn.xml.NamespaceMappings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -75,7 +77,7 @@ import java.util.*;
         detailTemplate = "reporting/BeanInstancePopulatorReport_After.html")
 public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, Producer, Consumer {
 
-    private static final Log logger = LogFactory.getLog(BeanInstancePopulator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BeanInstancePopulator.class);
 
     private static final String EXPRESSION_VALUE_VARIABLE_NAME = "_VALUE";
 
@@ -297,8 +299,8 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
 	        }
         }
 
-        if(logger.isDebugEnabled()) {
-        	logger.debug("Bean Instance Populator created for [" + beanIdName + "].  property=" + property);
+        if(LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Bean Instance Populator created for [" + beanIdName + "].  property=" + property);
         }
     }
 
@@ -327,7 +329,7 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if(!beanExists(executionContext)) {
-            logger.debug("Cannot bind data onto bean '" + beanId + "' as bean does not exist in BeanContext.");
+            LOGGER.debug("Cannot bind data onto bean '" + beanId + "' as bean does not exist in BeanContext.");
             return;
         }
 
@@ -341,7 +343,7 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(!beanExists(executionContext)) {
-            logger.debug("Cannot bind data onto bean '" + beanId + "' as bean does not exist in BeanContext.");
+            LOGGER.debug("Cannot bind data onto bean '" + beanId + "' as bean does not exist in BeanContext.");
             return;
         }
 
@@ -352,7 +354,7 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(!beanExists(executionContext)) {
-            logger.debug("Cannot bind data onto bean '" + beanId + "' as bean does not exist in BeanContext.");
+            LOGGER.debug("Cannot bind data onto bean '" + beanId + "' as bean does not exist in BeanContext.");
             return;
         }
 
@@ -370,7 +372,7 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
 
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(!beanExists(executionContext)) {
-            logger.debug("Cannot bind data onto bean '" + beanId + "' as bean does not exist in BeanContext.");
+            LOGGER.debug("Cannot bind data onto bean '" + beanId + "' as bean does not exist in BeanContext.");
             return;
         }
 
@@ -465,8 +467,8 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
     	
         if(bean == null) {
 
-            if(logger.isDebugEnabled()) {
-                logger.debug("Registering bean ADD wiring observer for wiring bean '" + wireBeanId + "' onto target bean '" + beanId.getName() + "'.");
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Registering bean ADD wiring observer for wiring bean '" + wireBeanId + "' onto target bean '" + beanId.getName() + "'.");
             }
 
             // Register the observer which looks for the creation of the selected bean via its beanIdName...
@@ -484,8 +486,8 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         // listens for the change from the list to the array...
         if(wiredBeanRI != null && wiredBeanRI.getClassification() == Classification.ARRAY_COLLECTION ) {
 
-            if(logger.isDebugEnabled()) {
-                logger.debug("Registering bean CHANGE wiring observer for wiring bean '" + targetBeanId + "' onto target bean '" + beanId.getName() + "' after it has been converted from a List to an array.");
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Registering bean CHANGE wiring observer for wiring bean '" + targetBeanId + "' onto target bean '" + beanId.getName() + "' after it has been converted from a List to an array.");
             }
             // Register an observer which looks for the change that the mutable list of the selected bean gets converted to an array. We
             // can then set this array
@@ -529,8 +531,8 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
 
         createPropertySetterMethod(bean, dataObject.getClass());
 
-        if(logger.isDebugEnabled()) {
-            logger.debug("Setting data object '" + wireBeanIdName + "' (" + dataObject.getClass().getName() + ") on target bean '" + beanId + "'.");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Setting data object '" + wireBeanIdName + "' (" + dataObject.getClass().getName() + ") on target bean '" + beanId + "'.");
         }
 
         // Set the data on the bean...

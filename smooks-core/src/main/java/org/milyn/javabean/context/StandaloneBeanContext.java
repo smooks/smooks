@@ -15,30 +15,23 @@
  */
 package org.milyn.javabean.context;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Fragment;
-import org.milyn.javabean.context.preinstalled.Time;
-import org.milyn.javabean.context.preinstalled.UniqueID;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
 import org.milyn.util.MultiLineToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class StandaloneBeanContext implements BeanContext {
 
-	private static final Log log = LogFactory.getLog(StandaloneBeanContext.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneBeanContext.class);
 
 	private final ExecutionContext executionContext;
 

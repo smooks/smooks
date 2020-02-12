@@ -16,27 +16,27 @@
 
 package org.milyn.json;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
 import org.milyn.io.StreamUtils;
 import org.milyn.profile.DefaultProfileSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:maurice@zeijen.net">maurice@zeijen.net</a>
  */
 public class JSONReaderTest {
 
-	private static final Log logger = LogFactory.getLog(JSONReaderTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JSONReaderTest.class);
 
         @Test
 	public void test_json_types() throws Exception {
@@ -105,8 +105,8 @@ public class JSONReaderTest {
 		ExecutionContext context = smooks.createExecutionContext("Order-List-Acme-AcmePartner1");
 		String result = SmooksUtil.filterAndSerialize(context,  getClass().getResourceAsStream("/test/"+ testNumber +"/input-message.jsn"), smooks);
 
-        if(logger.isDebugEnabled()) {
-        	logger.debug("Result: " + result);
+        if(LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Result: " + result);
         }
 
         assertEquals("/test/" + testNumber + "/expected.xml", result.getBytes());
@@ -118,8 +118,8 @@ public class JSONReaderTest {
         ExecutionContext context = smooks.createExecutionContext();
         String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("/test/" + testNumber + "/input-message.jsn"), smooks);
 
-        if(logger.isDebugEnabled()) {
-        	logger.debug("Result: " + result);
+        if(LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Result: " + result);
         }
 
         assertEquals("/test/" + testNumber + "/expected.xml", result.getBytes());

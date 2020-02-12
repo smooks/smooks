@@ -15,10 +15,6 @@
 */
 package org.milyn.persistence;
 
-import java.io.IOException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.annotation.AppContext;
 import org.milyn.cdr.annotation.ConfigParam;
@@ -38,7 +34,11 @@ import org.milyn.persistence.util.PersistenceUtil;
 import org.milyn.scribe.invoker.DaoInvoker;
 import org.milyn.scribe.invoker.DaoInvokerFactory;
 import org.milyn.scribe.register.DaoRegister;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+
+import java.io.IOException;
 
 /**
  * DAO Flusher
@@ -72,7 +72,7 @@ import org.w3c.dom.Element;
 @VisitAfterReport(summary = "Flushing <#if !resource.parameters.dao??>default </#if>DAO<#if resource.parameters.dao??> '${resource.parameters.dao}'</#if>.", detailTemplate="reporting/DaoFlusher.html")
 public class DaoFlusher implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter {
 
-    private static Log logger = LogFactory.getLog(DaoFlusher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DaoFlusher.class);
 
     @ConfigParam(name = "dao", use = Use.OPTIONAL)
     private String daoName;
@@ -111,13 +111,13 @@ public class DaoFlusher implements DOMElementVisitor, SAXVisitBefore, SAXVisitAf
 	@SuppressWarnings("unchecked")
 	private void flush(final ExecutionContext executionContext) {
 
-		if(logger.isDebugEnabled()) {
+		if(LOGGER.isDebugEnabled()) {
 			String msg = "Flushing org.milyn.persistence.test.dao";
 			if(daoName != null) {
 				msg += " with name '" + daoName + "'";
 			}
 			msg += ".";
-			logger.debug(msg);
+			LOGGER.debug(msg);
 		}
 
 		final DaoRegister emr = PersistenceUtil.getDAORegister(executionContext);

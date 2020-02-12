@@ -15,23 +15,23 @@
 */
 package org.milyn.archive;
 
+import org.milyn.SmooksException;
+import org.milyn.assertion.AssertArgument;
+import org.milyn.io.FileUtils;
+import org.milyn.io.StreamUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import java.util.zip.ZipEntry;
-import java.io.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
-import org.milyn.assertion.AssertArgument;
-import org.milyn.io.FileUtils;
-import org.milyn.io.StreamUtils;
 
 /**
  * Java Archive.
@@ -40,7 +40,7 @@ import org.milyn.io.StreamUtils;
  */
 public class Archive {
 
-    private static Log logger = LogFactory.getLog(Archive.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Archive.class);
 
 	private String archiveName;
     private File tmpDir;
@@ -115,7 +115,7 @@ public class Archive {
             try {
                 data.close();
             } catch (IOException e) {
-                logger.warn("Unable to close input stream for archive entry '" + path + "'.");
+                LOGGER.warn("Unable to close input stream for archive entry '" + path + "'.");
             }
         }
 
@@ -264,7 +264,7 @@ public class Archive {
             try {
                 zipStream.close();
             } catch (IOException e) {
-                logger.debug("Unexpected error closing EDI Mapping Model Zip stream.", e);
+                LOGGER.debug("Unexpected error closing EDI Mapping Model Zip stream.", e);
             }
         }
 
@@ -412,7 +412,7 @@ public class Archive {
                 try {
                     archiveStream.close();
                 } catch (IOException e) {
-                    logger.info("Unable to close archive output stream.");
+                    LOGGER.info("Unable to close archive output stream.");
                 }
             }
         }
