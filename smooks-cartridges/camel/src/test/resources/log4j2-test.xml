@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Appenders>
-        <Console name="console">
+        <Console name="Console">
             <PatternLayout pattern="%d [%-15.15t] %-5p %-30.30c{1} - %m%n"/>
         </Console>
-        <File name="file" fileName="target/camel-smooks-test.log" append="true">
+        <File name="File" fileName="target/camel-smooks-test.log" append="true">
             <PatternLayout pattern="%d [%-15.15t] %-5p %-30.30c{1} - %m%n"/>
         </File>
     </Appenders>
@@ -12,8 +12,8 @@
 <!--        <Logger name="org.apache.camel" level="debug"/>-->
 <!--        <Logger name="org.milyn" level="debug"/>-->
         <Root level="info">
-            <AppenderRef ref="console"/>
-            <AppenderRef ref="file"/>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
         </Root>
     </Loggers>
 </Configuration>
