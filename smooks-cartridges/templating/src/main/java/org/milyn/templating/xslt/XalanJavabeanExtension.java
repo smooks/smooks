@@ -15,6 +15,7 @@
 */
 package org.milyn.templating.xslt;
 
+import ognl.MemberAccess;
 import ognl.Ognl;
 import ognl.OgnlException;
 import org.apache.commons.logging.Log;
@@ -59,10 +60,9 @@ import java.util.Map;
  */
 public class XalanJavabeanExtension {
 
-    /**
-     * Logger.
-     */
-    private static Log logger = LogFactory.getLog(XalanJavabeanExtension.class);
+    private static final Log LOGGER = LogFactory.getLog(XalanJavabeanExtension.class);
+    private static final MemberAccess MEMBER_ACCESS = new DefaultMemberAccess();
+
     /**
      * Static cache of preparsed expressions.
      */
@@ -115,7 +115,7 @@ public class XalanJavabeanExtension {
 
         if (activeRequest == null) {
             String message = getClass().getName() + " can only be used within the context of a SmooksDOMFilter operation..";
-            logger.error(message);
+            LOGGER.error(message);
             throw new IllegalStateException(message);
         }
 
@@ -128,15 +128,15 @@ public class XalanJavabeanExtension {
                 parsedExpression = Ognl.parseExpression(ognlExpression);
                 expressionCache.put(ognlExpression, parsedExpression);
             } catch (OgnlException e) {
-                logger.error("Exception parsing OGNL expression [" + ognlExpression + "].  Make sure the expression is properly constructed (http://www.ognl.org).", e);
+                LOGGER.error("Exception parsing OGNL expression [" + ognlExpression + "].  Make sure the expression is properly constructed (http://www.ognl.org).", e);
                 throw e;
             }
         }
 
         try {
-            return Ognl.getValue(parsedExpression, beans);
+            return Ognl.getValue(parsedExpression, Ognl.createDefaultContext(beans, MEMBER_ACCESS), beans);
         } catch (OgnlException e) {
-            logger.error("Unexpected exception using OGNL expression [" + ognlExpression + "] on Smooks Javabean cache.", e);
+            LOGGER.error("Unexpected exception using OGNL expression [" + ognlExpression + "] on Smooks Javabean cache.", e);
             throw e;
         }
     }
