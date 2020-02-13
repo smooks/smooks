@@ -15,12 +15,6 @@
 */
 package org.milyn.persistence;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.annotation.AppContext;
@@ -36,7 +30,6 @@ import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.delivery.ordering.Consumer;
 import org.milyn.delivery.ordering.Producer;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXUtil;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.event.report.annotation.VisitAfterReport;
@@ -50,9 +43,13 @@ import org.milyn.scribe.invoker.DaoInvoker;
 import org.milyn.scribe.invoker.DaoInvokerFactory;
 import org.milyn.scribe.register.DaoRegister;
 import org.milyn.util.CollectionsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 
 /**
@@ -98,7 +95,7 @@ import javax.xml.namespace.QName;
 @VisitAfterReport(summary = "Updating bean under beanId '${resource.parameters.beanId}'.", detailTemplate="reporting/EntityUpdater.html")
 public class EntityUpdater implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, Producer, Consumer {
 
-    private static Log logger = LogFactory.getLog(EntityUpdater.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityUpdater.class);
 
     @ConfigParam(name = "beanId")
     private String beanIdName;
@@ -176,8 +173,8 @@ public class EntityUpdater implements DOMElementVisitor, SAXVisitBefore, SAXVisi
 	@SuppressWarnings("unchecked")
 	private void update(final ExecutionContext executionContext, Fragment source) {
 
-		if(logger.isDebugEnabled()) {
-			logger.debug("Updating bean under BeanId '" + beanIdName + "' with DAO '" + daoName + "'.");
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Updating bean under BeanId '" + beanIdName + "' with DAO '" + daoName + "'.");
 		}
 
 		BeanContext beanContext = executionContext.getBeanContext();

@@ -16,8 +16,6 @@
 
 package org.milyn.cdr;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
 import org.milyn.cdr.extension.ExtensionContext;
 import org.milyn.container.ExecutionContext;
@@ -29,6 +27,8 @@ import org.milyn.profile.DefaultProfileSet;
 import org.milyn.resource.URIResourceLocator;
 import org.milyn.util.ClassUtil;
 import org.milyn.xml.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,7 +58,7 @@ public final class XMLConfigDigester {
     public static final String XSD_V11 = "http://www.milyn.org/xsd/smooks-1.1.xsd";
     public static final String XSD_V12 = "https://www.smooks.org/xsd/smooks-1.2.xsd";
 
-    private static Log logger = LogFactory.getLog(XMLConfigDigester.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigDigester.class);
 
     private final SmooksResourceConfigurationList resourcelist;
     private final Stack<SmooksConfig> configStack = new Stack<SmooksConfig>();
@@ -194,9 +194,9 @@ public final class XMLConfigDigester {
 
         try {
             configDoc = XmlUtil.parseStream(new StringReader(streamData), getDTDEntityResolver(), XmlUtil.VALIDATION_TYPE.DTD, true);
-            logger.debug("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
+            LOGGER.debug("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
             digestV10DTDValidatedConfig(configDoc);
-            logger.debug("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
+            LOGGER.debug("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
         } catch (Exception e) {
             // Must be an XSD based config...
             try {
@@ -260,8 +260,8 @@ public final class XMLConfigDigester {
             digestParameters(currentElement, resourceConfig);
 
             resourcelist.add(resourceConfig);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Adding smooks-resource config from [" + resourcelist.getName() + "]: " + resourceConfig);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Adding smooks-resource config from [" + resourcelist.getName() + "]: " + resourceConfig);
             }
 
             cdrIndex++;
@@ -376,8 +376,8 @@ public final class XMLConfigDigester {
             // Add the resource URI to the list.  Will fail if it was already loaded
             pushConfig(file, fileURI);
             try {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Importing resource configuration '" + file + "' from inside '" + configStack.peek().configFile + "'.");
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Importing resource configuration '" + file + "' from inside '" + configStack.peek().configFile + "'.");
                 }
 
                 resourceStream = resourceLocator.getResource(file);
@@ -519,13 +519,13 @@ public final class XMLConfigDigester {
         resourcelist.add(resourceConfig);
         if (resource == null) {
             if (resourceConfig.getParameters("restype") != null) {
-                logger.debug("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
+                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
             } else {
-                logger.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
+                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
             }
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Adding smooks-resource config from [" + resourcelist.getName() + "]: " + resourceConfig);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Adding smooks-resource config from [" + resourcelist.getName() + "]: " + resourceConfig);
         }
     }
 

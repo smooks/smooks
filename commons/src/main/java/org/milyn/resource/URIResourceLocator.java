@@ -16,17 +16,15 @@
 
 package org.milyn.resource;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.io.StreamUtils;
-import org.milyn.resource.ContainerResourceLocator;
-import org.milyn.util.ClassUtil;
 
 /**
  * {@link java.net.URI} resource locator.
@@ -55,7 +53,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
     /**
      * Logger.
      */
-    private static final Log logger = LogFactory.getLog(URIResourceLocator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(URIResourceLocator.class);
 
     /**
      * Scheme name for classpath based resources.
@@ -148,7 +146,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
                             stream.close();
                             stream = null;
                         } catch (IOException e) {
-                            logger.error("Error closing stream for failed resource read.", e);
+                            LOGGER.error("Error closing stream for failed resource read.", e);
                         }
                     }
                 }
@@ -255,7 +253,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
         		return new URI(resourceURI.getScheme(), resourceURI.getUserInfo(), resourceURI.getHost(), resourceURI.getPort(), configFolder.getPath().replace('\\', '/'), resourceURI.getQuery(), resourceURI.getFragment());
         	}
 		} catch (URISyntaxException e) {
-			logger.debug("Error extracting base URI.", e);
+			LOGGER.debug("Error extracting base URI.", e);
 		}
     	
 		return DEFAULT_BASE_URI;

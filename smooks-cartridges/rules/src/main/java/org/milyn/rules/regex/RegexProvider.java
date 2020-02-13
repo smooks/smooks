@@ -15,23 +15,22 @@
 
 package org.milyn.rules.regex;
 
-import java.util.regex.Pattern;
-import java.util.Properties;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashMap;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.milyn.SmooksException;
-import org.milyn.resource.URIResourceLocator;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.container.ExecutionContext;
+import org.milyn.resource.URIResourceLocator;
 import org.milyn.rules.RuleEvalResult;
-import org.milyn.rules.regex.RegexRuleEvalResult;
 import org.milyn.rules.RuleProvider;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Regex Rule Provider.
@@ -43,7 +42,7 @@ public class RegexProvider implements RuleProvider
     /**
      * Logger.
      */
-    private static Log logger = LogFactory.getLog(RegexProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegexProvider.class);
 
     /**
      * Option string identifying a file that contains regex mappings.
@@ -158,7 +157,7 @@ public class RegexProvider implements RuleProvider
             }
             catch (final IOException e)
             {
-                logger.debug("Error closing InputStream to Regex Rule file '" + ruleFile + "'.", e);
+                LOGGER.debug("Error closing InputStream to Regex Rule file '" + ruleFile + "'.", e);
             }
         }
 

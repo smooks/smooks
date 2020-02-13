@@ -16,8 +16,6 @@
 
 package org.milyn.smooks.edi;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.ProfileTargetingExpression;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AppContext;
@@ -31,6 +29,8 @@ import org.milyn.edisax.model.EdifactModel;
 import org.milyn.resource.ContainerResourceLocator;
 import org.milyn.resource.URIResourceLocator;
 import org.milyn.xml.SmooksXMLReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -59,7 +59,7 @@ public class EDIReader extends EDIParser implements SmooksXMLReader {
 	/**
 	 * Logger.
 	 */
-	private static Log logger = LogFactory.getLog(EDIReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EDIReader.class);
 	/**
 	 * Context lookup key for the mapping model table.
 	 */
@@ -141,7 +141,7 @@ public class EDIReader extends EDIParser implements SmooksXMLReader {
 	            		edifactModel = EDIParser.parseMappingModel(modelConfigData, URIResourceLocator.getSystemBaseURI());
 	            	}
 	    			if(edifactModel == null) {
-	    				logger.error("Invalid " + MODEL_CONFIG_KEY + " config value '" + modelConfigData + "'. Failed to locate EDI Mapping Model resource!");
+	    				LOGGER.error("Invalid " + MODEL_CONFIG_KEY + " config value '" + modelConfigData + "'. Failed to locate EDI Mapping Model resource!");
 	    			}
 				} catch (IOException e) {
 					throw new IOException("Error parsing EDI mapping model [" + configuration.getStringParameter(MODEL_CONFIG_KEY) + "].  Target Profile(s) " + getTargetProfiles() + "."
@@ -152,9 +152,9 @@ public class EDIReader extends EDIParser implements SmooksXMLReader {
                     throw new SAXException("Error parsing EDI mapping model [" + configuration.getStringParameter(MODEL_CONFIG_KEY) + "].  Target Profile(s) " + getTargetProfiles() + ".", e);
                 }
                 mappings.put(configuration, edifactModel);
-				logger.debug("Parsed, validated and cached EDI mapping model [" + edifactModel.getEdimap().getDescription().getName() + ", Version " + edifactModel.getEdimap().getDescription().getVersion() + "].  Target Profile(s) " + getTargetProfiles() + ".");
-			} else if(logger.isInfoEnabled()) {
-				logger.debug("Found EDI mapping model [" + edifactModel.getEdimap().getDescription().getName() + ", Version " + edifactModel.getEdimap().getDescription().getVersion() + "] in the model cache.  Target Profile(s) " + getTargetProfiles() + ".");
+				LOGGER.debug("Parsed, validated and cached EDI mapping model [" + edifactModel.getEdimap().getDescription().getName() + ", Version " + edifactModel.getEdimap().getDescription().getVersion() + "].  Target Profile(s) " + getTargetProfiles() + ".");
+			} else if(LOGGER.isInfoEnabled()) {
+				LOGGER.debug("Found EDI mapping model [" + edifactModel.getEdimap().getDescription().getName() + ", Version " + edifactModel.getEdimap().getDescription().getVersion() + "] in the model cache.  Target Profile(s) " + getTargetProfiles() + ".");
 			}
 		}
 

@@ -14,11 +14,11 @@
  */
 package org.milyn.util;
 
+import org.slf4j.Logger;
+
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
-
-import org.apache.commons.logging.Log;
 
 /**
  * StoutToLog4jFilter is just a simple FileWriter implementation that 
@@ -39,7 +39,7 @@ public class StdoutToLog4jFilter extends FilterWriter
 	/**
 	 * Log to log check logging level.
 	 */
-    protected Log logger; 
+    protected Logger logger;
     
     /**
      * string "buffer"
@@ -60,10 +60,10 @@ public class StdoutToLog4jFilter extends FilterWriter
     	super( writer );
     }
 
-    public StdoutToLog4jFilter(Writer writer, Log log)
+    public StdoutToLog4jFilter(Writer writer, Logger logger)
     { 
 		this( writer );
-		this.logger = log;
+		this.logger = logger;
     } 
 
     @Override

@@ -15,8 +15,6 @@
 */
 package org.milyn.cdr.extension;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
@@ -24,6 +22,8 @@ import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.dom.DOMVisitBefore;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.EmptyStackException;
@@ -39,7 +39,7 @@ import java.util.EmptyStackException;
  */
 public class MapToResourceConfigFromText implements DOMVisitBefore {
 
-    private static Log logger = LogFactory.getLog(MapToResourceConfigFromText.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromText.class);
 
     @ConfigParam(use = ConfigParam.Use.OPTIONAL)
     private String mapTo;
@@ -73,13 +73,13 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
         }
 
         if (value == null) {
-        	if(logger.isDebugEnabled()) {
-        		logger.debug("Not setting property '" + mapToPropertyName + "' on resource configuration.  Element '" + DomUtils.getName(element) + "' text value is null.  You may need to set a default value in the binding configuration.");
+        	if(LOGGER.isDebugEnabled()) {
+        		LOGGER.debug("Not setting property '" + mapToPropertyName + "' on resource configuration.  Element '" + DomUtils.getName(element) + "' text value is null.  You may need to set a default value in the binding configuration.");
         	}
             return;
         } else {
-        	if(logger.isDebugEnabled()) {
-        		logger.debug("Setting property '" + mapToPropertyName + "' on resource configuration to a value of '" + value + "'.");
+        	if(LOGGER.isDebugEnabled()) {
+        		LOGGER.debug("Setting property '" + mapToPropertyName + "' on resource configuration to a value of '" + value + "'.");
         	}
         }
 

@@ -16,16 +16,6 @@
 
 package org.milyn.yaml;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.Parameter;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -35,22 +25,19 @@ import org.milyn.cdr.annotation.ConfigParam.Use;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.xml.SmooksXMLReader;
-import org.milyn.yaml.handler.AliasReferencingEventHandler;
-import org.milyn.yaml.handler.AliasResolvingEventHandler;
-import org.milyn.yaml.handler.EventHandler;
-import org.milyn.yaml.handler.YamlEventStreamHandler;
-import org.milyn.yaml.handler.YamlToSaxHandler;
+import org.milyn.yaml.handler.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.*;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.events.Event;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * YAML to SAX event reader.
@@ -123,7 +110,7 @@ import org.yaml.snakeyaml.events.Event;
  */
 public class YamlReader implements SmooksXMLReader {
 
-	private static Log logger = LogFactory.getLog(YamlReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(YamlReader.class);
 
 	public static final String CONFIG_PARAM_KEY_MAP = "keyMap";
 
@@ -218,8 +205,8 @@ public class YamlReader implements SmooksXMLReader {
 	        	eventHandler = new AliasResolvingEventHandler(yamlEventStreamParser, yamlToSaxHandler, aliasStrategy == AliasStrategy.REFER_RESOLVE);
 	        }
 
-	        if(logger.isTraceEnabled()) {
-	        	logger.trace("Starting YAML parsing");
+	        if(LOGGER.isTraceEnabled()) {
+	        	LOGGER.trace("Starting YAML parsing");
 	        }
 
 	        Iterable<Event> yamlEventStream = yaml.parse(yamlStreamReader);

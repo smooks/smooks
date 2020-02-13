@@ -15,12 +15,12 @@
 */
 package org.milyn.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.classpath.InstanceOfFilter;
 import org.milyn.classpath.IsAnnotationPresentFilter;
 import org.milyn.classpath.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -39,7 +39,7 @@ import java.util.*;
  */
 public class ClassUtil {
 
-    private static Log logger = LogFactory.getLog(ClassUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtil.class);
     private static final Map<String, Class> primitives;
 
     static {
@@ -194,7 +194,7 @@ public class ClassUtil {
         try {
             long startTime = System.currentTimeMillis();
             scanner.scanClasspath(Thread.currentThread().getContextClassLoader());
-            logger.debug("Scanned classpath for instances of '" + type.getName() + "'.  Found " + filter.getClasses().size() + " matches. Scan took " + (System.currentTimeMillis() - startTime) + "ms.");
+            LOGGER.debug("Scanned classpath for instances of '" + type.getName() + "'.  Found " + filter.getClasses().size() + " matches. Scan took " + (System.currentTimeMillis() - startTime) + "ms.");
         } catch (IOException e) {
             throw new RuntimeException("Failed to search classspath for instances of '" + type.getName() + "'.", e);
         }
@@ -220,7 +220,7 @@ public class ClassUtil {
         try {
             long startTime = System.currentTimeMillis();
             scanner.scanClasspath(Thread.currentThread().getContextClassLoader());
-            logger.debug("Scanned classpath for class annotated with annotation '" + type.getName() + "'.  Found " + filter.getClasses().size() + " matches. Scan took " + (System.currentTimeMillis() - startTime) + "ms.");
+            LOGGER.debug("Scanned classpath for class annotated with annotation '" + type.getName() + "'.  Found " + filter.getClasses().size() + " matches. Scan took " + (System.currentTimeMillis() - startTime) + "ms.");
         } catch (IOException e) {
             throw new RuntimeException("Failed to search classspath for class annotated with annotation '" + type.getName() + "'.", e);
         }
@@ -269,7 +269,7 @@ public class ClassUtil {
             resCount++;
         }
 
-        logger.debug("Loaded " + classes.size() + " classes from " + resCount + " URLs through class list file "
+        LOGGER.debug("Loaded " + classes.size() + " classes from " + resCount + " URLs through class list file "
                 + fileName + ".  Process took " + (System.currentTimeMillis() - start) + "ms.  Turn on debug logging for more info.");
 
         return classes;
@@ -305,7 +305,7 @@ public class ClassUtil {
                 try {
                     clazz = forName(className, ClassUtil.class);
                 } catch (ClassNotFoundException e) {
-                    logger.debug("Failed to load class '" + className + "'. Class not found.", e);
+                    LOGGER.debug("Failed to load class '" + className + "'. Class not found.", e);
                     continue;
                 }
 
@@ -313,13 +313,13 @@ public class ClassUtil {
                     if(!contains(clazz.getName(), classes)) {
                         classes.add(clazz);
                     }
-                    logger.debug( "Adding " + className + " to list of classes");
+                    LOGGER.debug( "Adding " + className + " to list of classes");
                     count++;
                 } else {
-                    logger.debug("Not adding class '" + clazz.getName() + "' to list.  Class does not implement/extend '" + instanceOf.getName() + "'.");
+                    LOGGER.debug("Not adding class '" + clazz.getName() + "' to list.  Class does not implement/extend '" + instanceOf.getName() + "'.");
                 }
             }
-            logger.debug("Loaded '" + count + "' classes listed in '" + url + "'.");
+            LOGGER.debug("Loaded '" + count + "' classes listed in '" + url + "'.");
     	}
     	catch (IOException e)
 		{
@@ -335,7 +335,7 @@ public class ClassUtil {
     private static <T> boolean contains(String name, List<Class<T>> classes) {
         for (Class<T> aClass : classes) {
             if(aClass.getName().equals(name)) {
-                logger.debug("Class '" + name + "' already found on classpath.  Not adding to list.");
+                LOGGER.debug("Class '" + name + "' already found on classpath.  Not adding to list.");
                 return true;
             }
         }
@@ -352,7 +352,7 @@ public class ClassUtil {
 			}
     		catch (IOException e)
 			{
-    			logger.debug( "Exception while trying to close : " + closable, e);
+    			LOGGER.debug( "Exception while trying to close : " + closable, e);
 			}
     	}
     }

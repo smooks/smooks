@@ -15,8 +15,6 @@
 
 package org.milyn.io;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.annotation.ConfigParam;
@@ -24,10 +22,12 @@ import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.ExecutionLifecycleCleanable;
 import org.milyn.delivery.Fragment;
 import org.milyn.delivery.VisitLifecycleCleanable;
-import org.milyn.delivery.ordering.Consumer;
 import org.milyn.delivery.dom.DOMVisitBefore;
+import org.milyn.delivery.ordering.Consumer;
 import org.milyn.delivery.sax.SAXElement;
 import org.milyn.delivery.sax.SAXVisitBefore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.io.*;
@@ -61,7 +61,7 @@ import java.nio.charset.Charset;
  */
 public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DOMVisitBefore, Consumer, VisitLifecycleCleanable, ExecutionLifecycleCleanable
 {
-	Log log = LogFactory.getLog( AbstractOutputStreamResource.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( AbstractOutputStreamResource.class );
 
     protected static final String RESOURCE_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputresource:";
 
@@ -268,7 +268,7 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
             }
             catch (IOException e)
             {
-                log.debug( "IOException while trying to flush output resource '" + resourceName + "': ", e );
+                LOGGER.debug( "IOException while trying to flush output resource '" + resourceName + "': ", e );
             }
         }
 
@@ -278,7 +278,7 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
 		}
 		catch (IOException e)
 		{
-			log.debug( "IOException while trying to close output resource '" + resourceName + "': ", e );
+			LOGGER.debug( "IOException while trying to close output resource '" + resourceName + "': ", e );
 		}
 	}
 

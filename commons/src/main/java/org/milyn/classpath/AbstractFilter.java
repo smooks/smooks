@@ -15,9 +15,9 @@
 */
 package org.milyn.classpath;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,8 @@ import java.util.List;
  */
 abstract class AbstractFilter implements Filter {
 
-    private static Log logger = LogFactory.getLog(InstanceOfFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InstanceOfFilter.class);
+
     private List<Class> classes = new ArrayList<Class>();
     private String[] includeList = null;
     private String[] igrnoreList = defaultIgnoreList;
@@ -58,7 +59,7 @@ abstract class AbstractFilter implements Filter {
                     classes.add(clazz);
                 }
             } catch (Throwable throwable) {
-                logger.debug("Resource '" + resourceName + "' presented to '" + InstanceOfFilter.class.getName() + "', but not loadable by classloader.  Ignoring.", throwable);
+                LOGGER.debug("Resource '" + resourceName + "' presented to '" + InstanceOfFilter.class.getName() + "', but not loadable by classloader.  Ignoring.", throwable);
             }
         }
     }

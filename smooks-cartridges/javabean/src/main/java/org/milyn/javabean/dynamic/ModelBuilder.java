@@ -15,17 +15,6 @@
 */
 package org.milyn.javabean.dynamic;
 
-import java.io.*;
-import java.util.*;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.FilterSettings;
 import org.milyn.Smooks;
 import org.milyn.SmooksException;
@@ -42,9 +31,24 @@ import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.payload.JavaResult;
-import org.w3c.dom.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Dynamic Model Builder.
@@ -71,7 +75,7 @@ import org.xml.sax.SAXException;
  */
 public class ModelBuilder {
 	
-	private static Log logger = LogFactory.getLog(ModelBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelBuilder.class);
 	private static DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 	static {
 		documentBuilderFactory.setNamespaceAware(true);
@@ -180,7 +184,7 @@ public class ModelBuilder {
 			try {
 				message.close();
 			} catch (IOException e) {
-				logger.debug("Exception closing message reader.", e);
+				LOGGER.debug("Exception closing message reader.", e);
 			}
 		}
 	}
@@ -233,11 +237,11 @@ public class ModelBuilder {
 
                         if(beanWriter != null) {
                             beanMetadata.setWriter(beanWriter);
-                        } else if(logger.isDebugEnabled()) {
-                            logger.debug("BeanWriters are configured for Object type '" + bean.getClass() + "', but not for namespace '" + namespaceURI + "'.");
+                        } else if(LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("BeanWriters are configured for Object type '" + bean.getClass() + "', but not for namespace '" + namespaceURI + "'.");
                         }
-                    } else if(logger.isDebugEnabled()) {
-                        logger.debug("No BeanWriters configured for Object type '" + bean.getClass() + "'.");
+                    } else if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("No BeanWriters configured for Object type '" + bean.getClass() + "'.");
                     }
                 }
             } else if(event.getLifecycle() == BeanLifecycle.POPULATE) {

@@ -18,8 +18,6 @@ package org.milyn.cdr;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jaxen.saxpath.SAXPathException;
 import org.milyn.cdr.xpath.SelectorStep;
 import org.milyn.cdr.xpath.SelectorStepBuilder;
@@ -39,6 +37,8 @@ import org.milyn.resource.URIResourceLocator;
 import org.milyn.util.ClassUtil;
 import org.milyn.xml.DomUtils;
 import org.milyn.xml.XmlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -150,7 +150,7 @@ public class SmooksResourceConfiguration {
     /**
      * Logger.
      */
-    private static Log logger = LogFactory.getLog(SmooksResourceConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SmooksResourceConfiguration.class);
     /**
      * The resource type can be specified as a resource parameter.  This constant defines
      * that parameter name.
@@ -489,7 +489,7 @@ public class SmooksResourceConfiguration {
             }
         }
 
-        logger.debug("Unable to parse selector '" + selector + "' as an XPath selector (even after normalization).  Parsing as a legacy style selector.");
+        LOGGER.debug("Unable to parse selector '" + selector + "' as an XPath selector (even after normalization).  Parsing as a legacy style selector.");
 
         return selectorStepList.toArray(new SelectorStep[0]);
     }
@@ -826,7 +826,7 @@ public class SmooksResourceConfiguration {
         if (restype != null && !restype.trim().equals("")) {
             // Ala DTD v1.0, where we weren't able to specify the type in any other way.
             if (getParameter(PARAM_RESDATA) == null) {
-                logger.debug("Resource configuration defined with '" + PARAM_RESTYPE + "' parameter but no '" + PARAM_RESDATA + "' parameter.");
+                LOGGER.debug("Resource configuration defined with '" + PARAM_RESTYPE + "' parameter but no '" + PARAM_RESDATA + "' parameter.");
             }
         } else if (resourceType != null) {
             // Ala DTD v2.0, where the type is set through the "type" attribute on the <resource> element.
@@ -1180,13 +1180,13 @@ public class SmooksResourceConfiguration {
             return ClassUtil.forName(className, getClass());
         } catch (ClassNotFoundException e) {
             if (resource.equals(className)) {
-                logger.debug("Resource path [" + resource + "] looks as though it may be a Java resource reference.  If so, this class is not available on the classpath.");
+                LOGGER.debug("Resource path [" + resource + "] looks as though it may be a Java resource reference.  If so, this class is not available on the classpath.");
             }
 
             return null;
         } catch (IllegalArgumentException e) {
     		if (resource.equals(className)) {
-    			logger.debug("The string [" + resource + "] contains unescaped characters that are illegal in a Java resource name.");
+    			LOGGER.debug("The string [" + resource + "] contains unescaped characters that are illegal in a Java resource name.");
     		}
 
     		return null;
@@ -1394,7 +1394,7 @@ public class SmooksResourceConfiguration {
                 if(!parentStep.isStarStar()) {
                     XPathExpressionEvaluator evaluator = parentStep.getPredicatesEvaluator();
                     if(evaluator == null) {
-                        logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+                        LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
                     } else if(!evaluator.evaluate(parentElement, index.executionContext)) {
                         return false;
                     }
@@ -1407,7 +1407,7 @@ public class SmooksResourceConfiguration {
             if(!selectorSteps[index.i].isStarStar()) {
                 XPathExpressionEvaluator evaluator = selectorSteps[index.i].getPredicatesEvaluator();
                 if(evaluator == null) {
-                    logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+                    LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
                 } else if(!evaluator.evaluate(element, index.executionContext)) {
                     return false;
                 }
@@ -1458,7 +1458,7 @@ public class SmooksResourceConfiguration {
                 if(!parentStep.isStarStar()) {
                     XPathExpressionEvaluator evaluator = parentStep.getPredicatesEvaluator();
                     if(evaluator == null) {
-                        logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+                        LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
                     } else if(!evaluator.evaluate(parentElement, index.executionContext)) {
                         return false;
                     }
@@ -1471,7 +1471,7 @@ public class SmooksResourceConfiguration {
             if(!selectorSteps[index.i].isStarStar()) {
                 XPathExpressionEvaluator evaluator = selectorSteps[index.i].getPredicatesEvaluator();
                 if(evaluator == null) {
-                    logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+                    LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
                 } else if(!evaluator.evaluate(element, index.executionContext)) {
                     return false;
                 }
@@ -1505,8 +1505,8 @@ public class SmooksResourceConfiguration {
 
         if (namespaceURI != null) {
             if(!isTargetedAtNamespace(element.getNamespaceURI())) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + getSelectorNamespaceURI() + "].");
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + getSelectorNamespaceURI() + "].");
                 }
                 return false;
             }
@@ -1514,8 +1514,8 @@ public class SmooksResourceConfiguration {
             // We don't test the SelectorStep namespace if a namespace is configured on the
             // resource configuration.  This is why we have this code inside the else block.
             if(!selectorStep.isTargetedAtNamespace(element.getNamespaceURI())) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + selectorStep.getTargetElement().getNamespaceURI() + "].");
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + selectorStep.getTargetElement().getNamespaceURI() + "].");
                 }
                 return false;
             }
@@ -1523,7 +1523,7 @@ public class SmooksResourceConfiguration {
 
         XPathExpressionEvaluator evaluator = selectorStep.getPredicatesEvaluator();
         if(evaluator == null) {
-            logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+            LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
         } else if(!evaluator.evaluate(element, executionContext)) {
             return false;
         }
@@ -1532,8 +1532,8 @@ public class SmooksResourceConfiguration {
             // Note: If the selector is not contextual, there's no need to perform the
             // isTargetedAtElementContext check because we already know the unit is targeted at the
             // element by name - because we looked it up by name in the 1st place (at least that's the assumption).
-            if (logger.isDebugEnabled()) {
-                logger.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  This resource is only targeted at '" + DomUtils.getName(element) + "' when in the following context '" + getSelector() + "'.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  This resource is only targeted at '" + DomUtils.getName(element) + "' when in the following context '" + getSelector() + "'.");
             }
             return false;
         }
@@ -1558,8 +1558,8 @@ public class SmooksResourceConfiguration {
 
         if (namespaceURI != null) {
             if(!isTargetedAtNamespace(element.getName().getNamespaceURI())) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + namespaceURI + "].");
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + namespaceURI + "].");
                 }
                 return false;
             }
@@ -1567,8 +1567,8 @@ public class SmooksResourceConfiguration {
             // We don't test the SelectorStep namespace if a namespace is configured on the
             // resource configuration.  This is why we have this code inside the else block.
             if(!selectorStep.isTargetedAtNamespace(element.getName().getNamespaceURI())) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + selectorStep.getTargetElement().getNamespaceURI() + "].");
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + selectorStep.getTargetElement().getNamespaceURI() + "].");
                 }
                 return false;
             }
@@ -1576,7 +1576,7 @@ public class SmooksResourceConfiguration {
 
         XPathExpressionEvaluator evaluator = selectorStep.getPredicatesEvaluator();
         if(evaluator == null) {
-            logger.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
+            LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
         } else if(!evaluator.evaluate(element, executionContext)) {
             return false;
         }
@@ -1585,8 +1585,8 @@ public class SmooksResourceConfiguration {
             // Note: If the selector is not contextual, there's no need to perform the
             // isTargetedAtElementContext check because we already know the visitor is targeted at the
             // element by name - because we looked it up by name in the 1st place (at least that's the assumption).
-            if (logger.isDebugEnabled()) {
-                logger.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  This resource is only targeted at '" + element.getName().getLocalPart() + "' when in the following context '" + getSelector() + "'.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  This resource is only targeted at '" + element.getName().getLocalPart() + "' when in the following context '" + getSelector() + "'.");
             }
             return false;
         }

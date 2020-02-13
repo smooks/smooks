@@ -16,24 +16,6 @@
 
 package org.milyn.edisax.util;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.zip.ZipInputStream;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.archive.Archive;
 import org.milyn.archive.ArchiveClassLoader;
 import org.milyn.assertion.AssertArgument;
@@ -47,7 +29,15 @@ import org.milyn.io.StreamUtils;
 import org.milyn.javabean.pojogen.JType;
 import org.milyn.resource.URIResourceLocator;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
+import java.util.zip.ZipInputStream;
 
 /**
  * EDIUtils contain different helper-methods for handling edifact.
@@ -56,7 +46,7 @@ import org.xml.sax.SAXException;
  */
 public class EDIUtils {
 
-    private static Log logger = LogFactory.getLog(EDIUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EDIUtils.class);
     
     public static final String EDI_MAPPING_MODEL_ZIP_LIST_FILE = "META-INF/services/org/smooks/edi/mapping-model.lst";
     public static final String EDI_MAPPING_MODEL_INTERCHANGE_PROPERTIES_FILE = "META-INF/services/org/smooks/edi/interchange.properties";
@@ -153,7 +143,7 @@ public class EDIUtils {
 		} catch (IOException e) {
 			return false;
 		} catch (SAXException e) {
-			logger.debug("Configured mapping model file '" + mappingModelFile + "' is not a valid Mapping Model xml file.");
+			LOGGER.debug("Configured mapping model file '" + mappingModelFile + "' is not a valid Mapping Model xml file.");
 			return false;
 		}
 	}
@@ -171,7 +161,7 @@ public class EDIUtils {
 				List<String> rootMappingModels = getMappingModelList(archive);
 
 				if(rootMappingModels.isEmpty()) {
-					logger.debug("Configured mapping model file '" + mappingModelFile + "' is not a valid Mapping Model zip file.  Check that the zip has a valid '" + EDI_MAPPING_MODEL_ZIP_LIST_FILE + "' mapping list file.");
+					LOGGER.debug("Configured mapping model file '" + mappingModelFile + "' is not a valid Mapping Model zip file.  Check that the zip has a valid '" + EDI_MAPPING_MODEL_ZIP_LIST_FILE + "' mapping list file.");
 					return false;
 				}
 

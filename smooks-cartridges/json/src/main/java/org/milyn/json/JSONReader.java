@@ -16,8 +16,6 @@
 
 package org.milyn.json;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
@@ -29,6 +27,8 @@ import org.milyn.cdr.annotation.ConfigParam.Use;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.xml.SmooksXMLReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xml.sax.*;
 import org.xml.sax.helpers.AttributesImpl;
@@ -141,7 +141,7 @@ import java.util.Stack;
 @SuppressWarnings("unchecked")
 public class JSONReader implements SmooksXMLReader {
 
-	private static Log logger = LogFactory.getLog(JSONReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JSONReader.class);
 
 	public static final String CONFIG_PARAM_KEY_MAP = "keyMap";
 
@@ -245,8 +245,8 @@ public class JSONReader implements SmooksXMLReader {
 	        JsonParser jp = null;
 	        try {
 
-	        	if(logger.isTraceEnabled()) {
-	        		logger.trace("Creating JSON parser");
+	        	if(LOGGER.isTraceEnabled()) {
+	        		LOGGER.trace("Creating JSON parser");
 	        	}
 
 	        	jp = jsonFactory.createJsonParser(jsonStreamReader);
@@ -255,8 +255,8 @@ public class JSONReader implements SmooksXMLReader {
 		        contentHandler.startDocument();
 		        startElement(rootName, 0);
 
-		        if(logger.isTraceEnabled()) {
-		        	logger.trace("Starting JSON parsing");
+		        if(LOGGER.isTraceEnabled()) {
+		        	LOGGER.trace("Starting JSON parsing");
 		        }
 
 		        boolean first = true;
@@ -265,8 +265,8 @@ public class JSONReader implements SmooksXMLReader {
 		        JsonToken t;
 		        while ((t = jp.nextToken()) != null) {
 
-		        	if(logger.isTraceEnabled()) {
-		        		logger.trace("Token: " + t.name());
+		        	if(LOGGER.isTraceEnabled()) {
+		        		LOGGER.trace("Token: " + t.name());
 		        	}
 
 		        	switch(t) {
@@ -302,8 +302,8 @@ public class JSONReader implements SmooksXMLReader {
 
 		        		String text = jp.getText();
 
-		        		if(logger.isTraceEnabled()) {
-			        		logger.trace("Field name: " + text);
+		        		if(LOGGER.isTraceEnabled()) {
+			        		LOGGER.trace("Field name: " + text);
 			        	}
 
 		        		String name = getElementName(text);
@@ -446,7 +446,7 @@ public class JSONReader implements SmooksXMLReader {
                    setKeyMap(KeyMapDigester.digest(keyMapParamElement));
 
                } else {
-                logger.error("Sorry, the key properties must be available as XML DOM. Please configure using XML.");
+                LOGGER.error("Sorry, the key properties must be available as XML DOM. Please configure using XML.");
                }
            }
        }

@@ -16,24 +16,14 @@
 
 package org.milyn.xml;
 
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Vector;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.*;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * W3C DOM utility methods.
@@ -44,7 +34,7 @@ public abstract class DomUtils {
     /**
      * Logger.
      */
-    private static Log logger = LogFactory.getLog(DomUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DomUtils.class);
 
 	/**
 	 * Copy child node references from source to target.
@@ -75,7 +65,7 @@ public abstract class DomUtils {
 		Node parentNode = oldNode.getParentNode();
 		
 		if(parentNode == null) {
-			logger.debug("Cannot replace node [" + oldNode + "] with [" + newNode + "]. [" + oldNode + "] has no parent.");
+			LOGGER.debug("Cannot replace node [" + oldNode + "] with [" + newNode + "]. [" + oldNode + "] has no parent.");
 		} else {
 			parentNode.replaceChild(newNode, oldNode);
 		}
@@ -105,7 +95,7 @@ public abstract class DomUtils {
 		Node parentNode = oldNode.getParentNode();
 
         if(parentNode == null) {
-			logger.debug("Cannot replace [" + oldNode + "] with a NodeList. [" + oldNode + "] has no parent.");
+			LOGGER.debug("Cannot replace [" + oldNode + "] with a NodeList. [" + oldNode + "] has no parent.");
 			return;
 		}
 		
@@ -123,11 +113,11 @@ public abstract class DomUtils {
 			List elements = DomUtils.getElements(newNodes, "*", null);
 
 			if(!elements.isEmpty()) {
-                logger.debug("Request to replace the Document root node with a 1+ in length NodeList.  Replacing root node with the first element node from the NodeList.");
+                LOGGER.debug("Request to replace the Document root node with a 1+ in length NodeList.  Replacing root node with the first element node from the NodeList.");
 	            parentNode.removeChild(oldNode);
 	            parentNode.appendChild((Node)elements.get(0));
 			} else {
-				logger.debug("Cannot replace document root element with a NodeList that doesn't contain an element node.");
+				LOGGER.debug("Cannot replace document root element with a NodeList that doesn't contain an element node.");
 			}
         } else {
     		for(int i = 0; i < nodeCount; i++) {
@@ -154,12 +144,12 @@ public abstract class DomUtils {
     	Node parentNode = refNode.getParentNode();
     	
     	if(parentNode == null) {
-			logger.debug("Cannot insert [" + newNode + "] before [" + refNode + "]. [" + refNode + "] has no parent.");
+			LOGGER.debug("Cannot insert [" + newNode + "] before [" + refNode + "]. [" + refNode + "] has no parent.");
 			return;
 		}
         
         if(parentNode instanceof Document && newNode.getNodeType() == Node.ELEMENT_NODE) {
-            logger.debug("Request to insert an element before the Document root node.  This is not allowed.  Replacing the Document root with the new Node.");
+            LOGGER.debug("Request to insert an element before the Document root node.  This is not allowed.  Replacing the Document root with the new Node.");
             parentNode.removeChild(refNode);
             parentNode.appendChild(newNode);
         } else {
@@ -180,7 +170,7 @@ public abstract class DomUtils {
 		Node parentNode = refNode.getParentNode();
 		
 		if(parentNode == null) {
-			logger.debug("Cannot insert a NodeList before [" + refNode + "]. [" + refNode + "] has no parent.");
+			LOGGER.debug("Cannot insert a NodeList before [" + refNode + "]. [" + refNode + "] has no parent.");
 			return;
 		}
 		
@@ -195,11 +185,11 @@ public abstract class DomUtils {
 			List elements = DomUtils.getElements(newNodes, "*", null);
 
 			if(!elements.isEmpty()) {
-	            logger.debug("Request to insert a NodeList before the Document root node.  Will replace the root element with the 1st element node from the NodeList.");
+	            LOGGER.debug("Request to insert a NodeList before the Document root node.  Will replace the root element with the 1st element node from the NodeList.");
 	            parentNode.removeChild(refNode);
 	            parentNode.appendChild((Node)elements.get(0));
 			} else {
-				logger.debug("Cannot insert beforen the document root element from a NodeList that doesn't contain an element node.");
+				LOGGER.debug("Cannot insert beforen the document root element from a NodeList that doesn't contain an element node.");
 			}
         	
     		for(int i = 0; i < nodeCount; i++) {
@@ -287,7 +277,7 @@ public abstract class DomUtils {
 
 		Node parent = element.getParentNode();
 		if(parent == null) {
-			logger.debug("Cannot remove element [" + element + "]. [" + element + "] has no parent.");
+			LOGGER.debug("Cannot remove element [" + element + "]. [" + element + "] has no parent.");
 			return;
 		}
 		
@@ -297,7 +287,7 @@ public abstract class DomUtils {
 			List childElements = null;
 			
 			if(!keepChildren) {
-				logger.debug("Cannot remove document root element [" + DomUtils.getName(element) + "] without keeping child content.");
+				LOGGER.debug("Cannot remove document root element [" + DomUtils.getName(element) + "] without keeping child content.");
 			} else {
 				if(children != null && children.getLength() > 0) {
 					childElements = DomUtils.getElements(element, "*", null);
@@ -307,7 +297,7 @@ public abstract class DomUtils {
 					parent.removeChild(element);
 					parent.appendChild((Element)childElements.get(0));
 				} else {
-					logger.debug("Cannot remove empty document root element [" + DomUtils.getName(element) + "].");
+					LOGGER.debug("Cannot remove empty document root element [" + DomUtils.getName(element) + "].");
 				}
 			}
 		} else {
@@ -519,7 +509,7 @@ public abstract class DomUtils {
 
 		Node parent = node.getParentNode();
         if(parent == null) {
-			logger.debug("Cannot get node [" + node + "] previous sibling. [" + node + "] has no parent.");
+			LOGGER.debug("Cannot get node [" + node + "] previous sibling. [" + node + "] has no parent.");
 			return null;
 		}
 		
@@ -567,7 +557,7 @@ public abstract class DomUtils {
 
 		Node parent = node.getParentNode();
         if(parent == null) {
-			logger.debug("Cannot count nodes before [" + node + "]. [" + node + "] has no parent.");
+			LOGGER.debug("Cannot count nodes before [" + node + "]. [" + node + "] has no parent.");
 			return 0;
 		}
 
@@ -608,18 +598,18 @@ public abstract class DomUtils {
 
 		Node parent1 = node1.getParentNode();
         if(parent1 == null) {
-			logger.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. [" + node1 + "] has no parent.");
+			LOGGER.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. [" + node1 + "] has no parent.");
 			return 0;
 		}
 		
 		Node parent2 = node2.getParentNode();
         if(parent2 == null) {
-			logger.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. [" + node2 + "] has no parent.");
+			LOGGER.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. [" + node2 + "] has no parent.");
 			return 0;
 		}
 		
 		if(parent1 != parent2) {
-			logger.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. These nodes do not share the same sparent.");
+			LOGGER.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. These nodes do not share the same sparent.");
 			return 0;
 		}
 		
@@ -646,7 +636,7 @@ public abstract class DomUtils {
 
 		Node parent = node.getParentNode();
         if(parent == null) {
-			logger.debug("Cannot count nodes before [" + node + "]. [" + node + "] has no parent.");
+			LOGGER.debug("Cannot count nodes before [" + node + "]. [" + node + "] has no parent.");
 			return 0;
 		}
 
@@ -683,18 +673,18 @@ public abstract class DomUtils {
 
 		Node parent1 = node1.getParentNode();
         if(parent1 == null) {
-			logger.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. [" + node1 + "] has no parent.");
+			LOGGER.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. [" + node1 + "] has no parent.");
 			return 0;
 		}
 		
 		Node parent2 = node2.getParentNode();
         if(parent2 == null) {
-			logger.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. [" + node2 + "] has no parent.");
+			LOGGER.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. [" + node2 + "] has no parent.");
 			return 0;
 		}
 		
 		if(parent1 != parent2) {
-			logger.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. These nodes do not share the same sparent.");
+			LOGGER.debug("Cannot count nodes between [" + node1 + "] and [" + node2 + "]. These nodes do not share the same sparent.");
 			return 0;
 		}
 		
@@ -721,7 +711,7 @@ public abstract class DomUtils {
 
 		Node parent = node.getParentNode();
 		if(parent == null) {
-			logger.debug("Cannot count nodes before [" + node + "]. [" + node + "] has no parent.");
+			LOGGER.debug("Cannot count nodes before [" + node + "]. [" + node + "] has no parent.");
 			return 0;
 		}
 		
@@ -754,7 +744,7 @@ public abstract class DomUtils {
 
 		Node parent = node.getParentNode();
 		if(parent == null) {
-			logger.debug("Cannot get text before node [" + node + "]. [" + node + "] has no parent.");
+			LOGGER.debug("Cannot get text before node [" + node + "]. [" + node + "] has no parent.");
 			return "";
 		}
 		
@@ -788,18 +778,18 @@ public abstract class DomUtils {
 
 		Node parent1 = node1.getParentNode();
         if(parent1 == null) {
-			logger.debug("Cannot get text between nodes [" + node1 + "] and [" + node2 + "]. [" + node1 + "] has no parent.");
+			LOGGER.debug("Cannot get text between nodes [" + node1 + "] and [" + node2 + "]. [" + node1 + "] has no parent.");
 			return "";
 		}
 		
 		Node parent2 = node2.getParentNode();
         if(parent2 == null) {
-			logger.debug("Cannot get text between nodes [" + node1 + "] and [" + node2 + "]. [" + node2 + "] has no parent.");
+			LOGGER.debug("Cannot get text between nodes [" + node1 + "] and [" + node2 + "]. [" + node2 + "] has no parent.");
 			return "";
 		}
 		
 		if(parent1 != parent2) {
-			logger.debug("Cannot get text between nodes [" + node1 + "] and [" + node2 + "]. These nodes do not share the same sparent.");
+			LOGGER.debug("Cannot get text between nodes [" + node1 + "] and [" + node2 + "]. These nodes do not share the same sparent.");
 			return "";
 		}
 

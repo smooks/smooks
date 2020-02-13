@@ -15,14 +15,13 @@
 */
 package org.milyn.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.util.Properties;
-import java.io.InputStream;
 
 /**
  * JNDI utilities.
@@ -31,7 +30,7 @@ import java.io.InputStream;
  */
 public class JNDIUtil {
 
-    private static Log logger = LogFactory.getLog(JNDIUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JNDIUtil.class);
 
     /**
      * Private default constructor.
@@ -54,7 +53,7 @@ public class JNDIUtil {
             context = jndiProperties.isEmpty() ? new InitialContext() : new InitialContext(jndiProperties);
         }
         catch (NamingException e) {
-            logger.error("NamingException while try to create initialContext. jndiProperties are " + jndiProperties, e);
+            LOGGER.error("NamingException while try to create initialContext. jndiProperties are " + jndiProperties, e);
             throw ((NamingException) new NamingException("Failed to load InitialContext: " + jndiProperties).initCause(e));
         }
         if (context == null) {
@@ -85,7 +84,7 @@ public class JNDIUtil {
                 context.close();
             }
             catch (NamingException ne) {
-                logger.debug("Failed to close Naming Context.", ne);
+                LOGGER.debug("Failed to close Naming Context.", ne);
             }
         }
 
@@ -111,7 +110,7 @@ public class JNDIUtil {
                     return JNDIUtil.lookup(objectName, jndiProperties);
                 }
                 catch (NamingException e) {
-                    logger.debug("NamingException while trying to lookup '" + objectName + "' using JNDI Properties '" + jndiProperties + "', classloader used '" + classLoader + "'", e);
+                    LOGGER.debug("NamingException while trying to lookup '" + objectName + "' using JNDI Properties '" + jndiProperties + "', classloader used '" + classLoader + "'", e);
                     // Try the other ClassLoaders...
                 }
             }
@@ -129,7 +128,7 @@ public class JNDIUtil {
             InitialContext context = new InitialContext();
             defaultProperties.putAll(context.getEnvironment());
         } catch (Exception e) {
-            logger.debug("Unexpected exception when trying to retrieve default naming context.", e);
+            LOGGER.debug("Unexpected exception when trying to retrieve default naming context.", e);
         }
         return defaultProperties;
     }

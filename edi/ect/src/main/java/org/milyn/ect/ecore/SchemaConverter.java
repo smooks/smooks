@@ -15,16 +15,6 @@
  */
 package org.milyn.ect.ecore;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -36,6 +26,16 @@ import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceFactoryImpl;
 import org.milyn.archive.Archive;
 import org.milyn.edisax.model.internal.Edimap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Set;
 
 public class SchemaConverter {
 
@@ -49,7 +49,7 @@ public class SchemaConverter {
 	private static final SimpleDateFormat qualifierFormat = new SimpleDateFormat(
 			"yyyyMMdd-HHmm");
 
-	private static final Log log = LogFactory.getLog(SchemaConverter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SchemaConverter.class);
 
 	protected SchemaConverter() {
 		// noop
@@ -96,7 +96,7 @@ public class SchemaConverter {
 	private Resource addSchemaResource(ResourceSet rs, EPackage pkg) {
 		String message = pkg.getName();
 		// Creating XSD resource
-		log.debug(pkg.getName() + " schema generation start");
+		LOGGER.debug(pkg.getName() + " schema generation start");
 		Resource xsd = null;
 		long start = System.currentTimeMillis();
 		try {
@@ -111,9 +111,9 @@ public class SchemaConverter {
 			}
 			xsd.getContents().add(schema);
 		} catch (Exception e) {
-			log.error("Failed to generate schema for " + pkg.getNsURI(), e);
+			LOGGER.error("Failed to generate schema for " + pkg.getNsURI(), e);
 		}
-		log.info(pkg.getName() + " schema generation took " + (System.currentTimeMillis() - start) / 1000f
+		LOGGER.info(pkg.getName() + " schema generation took " + (System.currentTimeMillis() - start) / 1000f
 				+ " sec.");
 		return xsd;
 	}
@@ -122,7 +122,7 @@ public class SchemaConverter {
 			Resource resource, String ns, String pluginID) {
 		StringBuilder result = new StringBuilder();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		log.info("Saving XML Schema " + ns);
+		LOGGER.info("Saving XML Schema " + ns);
 		try {
 			resource.save(out, null);
 			if (archive.getEntries().containsKey(entryPath)) {
@@ -135,7 +135,7 @@ public class SchemaConverter {
 			result.append(entryPath);
 			result.append("\"/>\n");
 		} catch (Exception e) {
-			log.error("Failed to save XML Schema " + ns, e);
+			LOGGER.error("Failed to save XML Schema " + ns, e);
 		}
 		return result.toString();
 	}

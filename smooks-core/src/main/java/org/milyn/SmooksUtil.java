@@ -15,14 +15,14 @@
 */
 package org.milyn;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ExecutionContext;
 import org.milyn.profile.ProfileSet;
 import org.milyn.profile.ProfileStore;
 import org.milyn.profile.UnknownProfileMemberException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -37,7 +37,7 @@ import java.io.InputStream;
  */
 public abstract class SmooksUtil {
 
-    private static Log logger = LogFactory.getLog(Smooks.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Smooks.class);
 
     private SmooksUtil() {
     }
@@ -57,7 +57,7 @@ public abstract class SmooksUtil {
         ProfileStore profileStore = smooks.getApplicationContext().getProfileStore();
         try {
             profileStore.getProfileSet(profileSet.getBaseProfile());
-            logger.debug("ProfileSet [" + profileSet.getBaseProfile() + "] already registered.  Not registering new profile set.");
+            LOGGER.debug("ProfileSet [" + profileSet.getBaseProfile() + "] already registered.  Not registering new profile set.");
         } catch (UnknownProfileMemberException e) {
             // It's an unregistered profileset...
             profileStore.addProfileSet(profileSet);

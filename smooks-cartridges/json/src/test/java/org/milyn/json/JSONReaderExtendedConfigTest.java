@@ -16,33 +16,31 @@
 
 package org.milyn.json;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.Smooks;
 import org.milyn.SmooksUtil;
-import org.milyn.payload.StringResult;
 import org.milyn.container.ExecutionContext;
 import org.milyn.io.StreamUtils;
+import org.milyn.payload.StringResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.Diff;
 
 import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:maurice@zeijen.net">maurice@zeijen.net</a>
  */
 public class JSONReaderExtendedConfigTest {
 
-	private static final Log logger = LogFactory.getLog(JSONReaderExtendedConfigTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JSONReaderExtendedConfigTest.class);
 
     @Test
     public void test_simple_smooks_config() throws Exception {
@@ -119,8 +117,8 @@ public class JSONReaderExtendedConfigTest {
         ExecutionContext context = smooks.createExecutionContext();
         String result = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("/test/" + testName + "/input-message.jsn"), smooks);
 
-        if(logger.isDebugEnabled()) {
-        	logger.debug("Result: " + result);
+        if(LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Result: " + result);
         }
 
         assertEquals("/test/" + testName + "/expected.xml", result.getBytes());

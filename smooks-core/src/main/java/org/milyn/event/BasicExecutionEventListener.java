@@ -15,22 +15,17 @@
 */
 package org.milyn.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.delivery.ContentHandler;
 import org.milyn.delivery.VisitSequence;
 import org.milyn.event.report.annotation.VisitAfterReport;
 import org.milyn.event.report.annotation.VisitBeforeReport;
+import org.milyn.event.types.ElementPresentEvent;
 import org.milyn.event.types.ElementVisitEvent;
 import org.milyn.event.types.FilterLifecycleEvent;
-import org.milyn.event.types.ElementPresentEvent;
 import org.milyn.expression.MVELExpressionEvaluator;
-import org.milyn.io.StreamUtils;
-import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +47,7 @@ import java.util.List;
  */
 public class BasicExecutionEventListener implements ExecutionEventListener {
 
-    private static Log logger = LogFactory.getLog(BasicExecutionEventListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicExecutionEventListener.class);
     
     private List<ExecutionEvent> events = new ArrayList<ExecutionEvent>();
     private List<? extends Class<? extends ExecutionEvent>> filterEvents;
@@ -86,7 +81,7 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
         if(event != null) {
             events.add(event);
         } else {
-            logger.warn("Invalid call to onEvent method.  null 'event' arg.");
+            LOGGER.warn("Invalid call to onEvent method.  null 'event' arg.");
         }
     }
 

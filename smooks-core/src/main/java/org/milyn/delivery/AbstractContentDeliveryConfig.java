@@ -15,14 +15,14 @@
 */
 package org.milyn.delivery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.dtd.DTDStore;
 import org.milyn.event.types.ConfigBuilderEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.XMLReader;
 
 import java.util.*;
@@ -37,7 +37,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @SuppressWarnings("unchecked")
 public abstract class AbstractContentDeliveryConfig implements ContentDeliveryConfig {
 
-    private static Log logger = LogFactory.getLog(AbstractContentDeliveryConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractContentDeliveryConfig.class);
 
 	/**
      * Container context.
@@ -190,7 +190,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
             try {
                 handler.executeExecutionLifecycleCleanup(executionContext);
             } catch(Throwable t) {
-                logger.error("Error during Visit handler cleanup.", t);
+                LOGGER.error("Error during Visit handler cleanup.", t);
             }
         }
     }

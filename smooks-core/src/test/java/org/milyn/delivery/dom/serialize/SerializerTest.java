@@ -16,8 +16,6 @@
 
 package org.milyn.delivery.dom.serialize;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.Configurator;
@@ -25,6 +23,8 @@ import org.milyn.container.MockExecutionContext;
 import org.milyn.delivery.dom.MockContentDeliveryConfig;
 import org.milyn.util.CharUtils;
 import org.milyn.xml.XmlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
@@ -40,7 +40,7 @@ import static org.junit.Assert.fail;
  */
 @SuppressWarnings("unchecked")
 public class SerializerTest {
-	private static final Log log = LogFactory.getLog(SerializerTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SerializerTest.class);
 
 	@Test
 	public void testSerialize() {
@@ -74,7 +74,7 @@ public class SerializerTest {
 			serializer.serialize(writer);
 			writer.flush();
 			byte[] actualBytes = output.toByteArray();
-			log.debug(new String(actualBytes));
+			LOGGER.debug(new String(actualBytes));
 			boolean areEqual = CharUtils.compareCharStreams(getClass().getResourceAsStream("testmarkup.xxml.ser_1"), new ByteArrayInputStream(actualBytes));
 			assertTrue("Unexpected Serialization result failure.", areEqual);
 		} catch (Exception e) {

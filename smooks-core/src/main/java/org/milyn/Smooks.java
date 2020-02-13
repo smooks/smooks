@@ -16,17 +16,11 @@
 
 package org.milyn;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jaxen.saxpath.SAXPathException;
 import org.milyn.assertion.AssertArgument;
-import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.classpath.CascadingClassLoaderSet;
-import org.milyn.javabean.context.BeanContext;
-import org.milyn.javabean.context.preinstalled.Time;
-import org.milyn.javabean.context.preinstalled.UniqueID;
-import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.milyn.xml.NamespaceMappings;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.container.standalone.StandaloneApplicationContext;
@@ -34,6 +28,10 @@ import org.milyn.container.standalone.StandaloneExecutionContext;
 import org.milyn.delivery.*;
 import org.milyn.event.ExecutionEventListener;
 import org.milyn.event.types.FilterLifecycleEvent;
+import org.milyn.javabean.context.BeanContext;
+import org.milyn.javabean.context.preinstalled.Time;
+import org.milyn.javabean.context.preinstalled.UniqueID;
+import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.net.URIUtil;
 import org.milyn.payload.Exports;
 import org.milyn.payload.FilterResult;
@@ -43,15 +41,15 @@ import org.milyn.profile.Profile;
 import org.milyn.profile.ProfileSet;
 import org.milyn.profile.UnknownProfileMemberException;
 import org.milyn.resource.URIResourceLocator;
+import org.milyn.xml.NamespaceMappings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import org.jaxen.saxpath.SAXPathException;
-
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -94,7 +92,7 @@ import java.util.Properties;
  */
 public class Smooks {
 
-    private static Log logger = LogFactory.getLog(Smooks.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Smooks.class);
     private StandaloneApplicationContext context;
     private ClassLoader classLoader;
     /**
@@ -311,7 +309,7 @@ public class Smooks {
             URI resourceURIObj = new URI(resourceURI);
             addConfigurations(URIUtil.getParent(resourceURIObj).toString(), resourceConfigStream);
         } catch (URISyntaxException e) {
-            logger.error("Failed to load Smooks resource configuration '" + resourceURI + "'.", e);
+            LOGGER.error("Failed to load Smooks resource configuration '" + resourceURI + "'.", e);
         } finally {
             resourceConfigStream.close();
         }
@@ -499,8 +497,8 @@ public class Smooks {
 	                FilterBypass filterBypass = deliveryConfig.getFilterBypass();                
 	                if(filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
 	                	// We're done... a filter bypass was applied...
-                        if(logger.isDebugEnabled()) {
-                            logger.debug("FilterBypass '" + filterBypass.getClass().getName() + "' applied.");
+                        if(LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("FilterBypass '" + filterBypass.getClass().getName() + "' applied.");
                         }
 	                	return;
 	                }

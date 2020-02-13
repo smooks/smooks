@@ -15,25 +15,23 @@
 */
 package org.milyn.delivery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.SmooksException;
 import org.milyn.Smooks;
-import org.milyn.payload.FilterSource;
-import org.milyn.payload.FilterResult;
+import org.milyn.SmooksException;
 import org.milyn.cdr.ParameterAccessor;
 import org.milyn.container.ExecutionContext;
 import org.milyn.io.NullReader;
 import org.milyn.io.NullWriter;
+import org.milyn.payload.FilterResult;
+import org.milyn.payload.FilterSource;
 import org.milyn.thread.StackedThreadLocal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
-import java.util.EmptyStackException;
-import java.util.Stack;
 
 /**
  * Content filter.
@@ -42,7 +40,7 @@ import java.util.Stack;
  */
 public abstract class Filter {
 
-    private static Log logger = LogFactory.getLog(Filter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Filter.class);
 
     /**
      * Stream filter type config parameter.
@@ -232,7 +230,7 @@ public abstract class Filter {
                     }
                 }
             } catch (Throwable throwable) {
-                logger.debug("Failed to close input stream/reader.", throwable);
+                LOGGER.debug("Failed to close input stream/reader.", throwable);
             }
         }
     }
@@ -261,7 +259,7 @@ public abstract class Filter {
                     }
                 }
             } catch (Throwable throwable) {
-                logger.debug("Failed to close output stream/writer.  May already be closed.", throwable);
+                LOGGER.debug("Failed to close output stream/writer.  May already be closed.", throwable);
             }
         }
     }

@@ -15,8 +15,6 @@
 */
 package org.milyn.templating;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
@@ -38,6 +36,8 @@ import org.milyn.javabean.DataDecoder;
 import org.milyn.javabean.repository.BeanId;
 import org.milyn.util.CollectionsUtil;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -66,7 +66,7 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
      */
     public static final String TEMPLATE_SPLIT_PI = "<\\?TEMPLATE-SPLIT-PI\\?>";
 
-    private final Log logger = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTemplateProcessor.class);
     private static boolean legactVisitBeforeParamWarn = false;
 
     protected enum Action {
@@ -144,7 +144,7 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
             String visitBefore = smooksConfig.getStringParameter("visitBefore");
             if(visitBefore != null) {
                 if(!legactVisitBeforeParamWarn) {
-                    logger.warn("Templating <param> 'visitBefore' deprecated.  Use 'applyTemplateBefore'.");
+                    LOGGER.warn("Templating <param> 'visitBefore' deprecated.  Use 'applyTemplateBefore'.");
                     legactVisitBeforeParamWarn = true;
                 }
                 this.applyTemplateBefore = visitBefore.equalsIgnoreCase("true");
@@ -247,7 +247,7 @@ public abstract class AbstractTemplateProcessor implements DOMElementVisitor, Pr
 
         // Can't insert before or after the root element...
         if(parent instanceof Document && (action == Action.INSERT_BEFORE || action == Action.INSERT_AFTER)) {
-            logger.debug("Insert before/after root element not allowed.  Consider using the replace action!!");
+            LOGGER.debug("Insert before/after root element not allowed.  Consider using the replace action!!");
             return;
         }
 

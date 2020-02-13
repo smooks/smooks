@@ -15,12 +15,15 @@
 */
 package org.milyn.ejc;
 
-import org.apache.commons.logging.Log;
 import org.milyn.edisax.model.internal.Edimap;
 import org.milyn.edisax.model.internal.MappingNode;
 import org.milyn.javabean.pojogen.JClass;
+import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ClassModel contains a Map of {@link org.milyn.javabean.pojogen.JClass} for easy lookup when
@@ -37,7 +40,7 @@ import java.util.*;
  */
 public class ClassModel {
 
-    private static Log LOG = EJCLogFactory.getLog(ClassModel.class);
+    private static final Logger LOGGER = EJCLoggerFactory.getLogger(ClassModel.class);
 
     private BindingConfig rootBeanConfig;
     private Edimap edimap;
@@ -79,7 +82,7 @@ public class ClassModel {
      */
     public void addCreatedClass(JClass jclass) {
         getCreatedClasses().add(jclass);
-        LOG.info("Added class " + jclass.getPackageName() + "." + jclass.getClassName() + " to model.");
+        LOGGER.info("Added class " + jclass.getPackageName() + "." + jclass.getClassName() + " to model.");
     }
 
     public void setClassesByNode(Map<MappingNode, JClass> classesBySegref) {

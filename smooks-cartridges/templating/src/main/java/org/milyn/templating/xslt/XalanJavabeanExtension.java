@@ -18,13 +18,13 @@ package org.milyn.templating.xslt;
 import ognl.MemberAccess;
 import ognl.Ognl;
 import ognl.OgnlException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xalan.extensions.XSLProcessorContext;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.ElemExtensionCall;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Filter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -60,7 +60,7 @@ import java.util.Map;
  */
 public class XalanJavabeanExtension {
 
-    private static final Log LOGGER = LogFactory.getLog(XalanJavabeanExtension.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XalanJavabeanExtension.class);
     private static final MemberAccess MEMBER_ACCESS = new DefaultMemberAccess();
 
     /**

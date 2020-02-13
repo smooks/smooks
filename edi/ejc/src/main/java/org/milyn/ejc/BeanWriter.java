@@ -15,17 +15,13 @@
 */
 package org.milyn.ejc;
 
-import org.apache.commons.logging.Log;
 import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.javabean.pojogen.JClass;
 import org.milyn.util.FreeMarkerTemplate;
+import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +31,7 @@ import java.util.Map;
  */
 public class BeanWriter {
 
-    private static Log LOG = EJCLogFactory.getLog(ClassModelCompiler.class);
+    private static final Logger LOGGER = EJCLoggerFactory.getLogger(ClassModelCompiler.class);
 
     private static boolean generateFromEDINR = false;
     private static FreeMarkerTemplate template = new FreeMarkerTemplate("templates/factoryClass.ftl.xml", BeanWriter.class);

@@ -15,11 +15,11 @@
 */
 package org.milyn.javabean;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.javabean.decoders.EnumDecoder;
 import org.milyn.javabean.decoders.StringDecoder;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -68,7 +68,7 @@ public interface DataDecoder extends Serializable {
      * Factory method for constructing decoders defined in the "decoders" package.
      */
     class Factory {
-        private static Log logger = LogFactory.getLog(DataDecoder.class);
+        private static final Logger LOGGER = LoggerFactory.getLogger(DataDecoder.class);
 
         private static Map<Class, Class<? extends DataDecoder>> installedDecoders;
 
@@ -114,7 +114,7 @@ public interface DataDecoder extends Serializable {
                     if (decodeType != null) {
                         for (final Class type : decodeType.value()) {
                             if (loadedDecoders.containsKey(type)) {
-                                logger.warn("More than one DataDecoder for type '" + type.getName() + "' is installed on the classpath.  You must manually configure decoding of this type, where required.");
+                                LOGGER.warn("More than one DataDecoder for type '" + type.getName() + "' is installed on the classpath.  You must manually configure decoding of this type, where required.");
                                 loadedDecoders.put(type, null); // We don't remove, because we need to maintain a record of this!
                             } else {
                                 loadedDecoders.put(type, decoder);

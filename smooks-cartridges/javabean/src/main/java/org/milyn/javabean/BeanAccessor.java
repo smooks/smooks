@@ -16,19 +16,17 @@
 
 package org.milyn.javabean;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.container.ExecutionContext;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.javabean.context.BeanIdStore;
-import org.milyn.javabean.lifecycle.BeanContextLifecycleEvent;
-import org.milyn.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.milyn.javabean.lifecycle.BeanLifecycle;
 import org.milyn.javabean.repository.BeanId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Bean Accessor.
@@ -41,7 +39,7 @@ import org.milyn.javabean.repository.BeanId;
 @Deprecated
 public class BeanAccessor {
 
-	private static final Log log = LogFactory.getLog(BeanAccessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BeanAccessor.class);
 
 	private static boolean WARNED_USING_DEPRECATED_CLASS = false;
 
@@ -183,11 +181,11 @@ public class BeanAccessor {
 	}
 
 	private static void warnUsingDeprecatedMethod() {
-		if(log.isWarnEnabled()) {
+		if(LOGGER.isWarnEnabled()) {
 			if(!WARNED_USING_DEPRECATED_CLASS) {
 				WARNED_USING_DEPRECATED_CLASS = true;
 
-				log.warn("The deprecated class BeanAccessor is being used! It is strongly advised to switch to the new BeanRepository class. " +
+				LOGGER.warn("The deprecated class BeanAccessor is being used! It is strongly advised to switch to the new BeanRepository class. " +
 						"The BeanAccessor is much slower then the BeanRepository. This class will be removed in a future release!");
 			}
 		}

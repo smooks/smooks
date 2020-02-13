@@ -16,11 +16,11 @@
 
 package org.milyn.xml;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.io.StreamUtils;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -53,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EclipseFragmentXMLValidator extends XsdValidator {
 
-    private static final Log logger = LogFactory.getLog(EclipseFragmentXMLValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(EclipseFragmentXMLValidator.class);
 
     public EclipseFragmentXMLValidator() throws IOException, SAXException {
         super.setSchemaSourceResolver(new SchemaResolver());

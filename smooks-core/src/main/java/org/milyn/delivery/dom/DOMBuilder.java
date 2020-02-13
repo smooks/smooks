@@ -15,8 +15,6 @@
 */
 package org.milyn.delivery.dom;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.ParameterAccessor;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.Filter;
@@ -25,6 +23,8 @@ import org.milyn.delivery.replay.EndElementEvent;
 import org.milyn.delivery.replay.StartElementEvent;
 import org.milyn.dtd.DTDStore;
 import org.milyn.xml.DocType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -46,7 +46,7 @@ import java.util.Stack;
 @SuppressWarnings("unchecked")
 public class DOMBuilder extends SmooksContentHandler {
 
-    private static Log logger = LogFactory.getLog(DOMBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DOMBuilder.class);
     private static DocumentBuilder documentBuilder;
 
     private ExecutionContext execContext;
@@ -143,7 +143,7 @@ public class DOMBuilder extends SmooksContentHandler {
                 nodeStack.push(newElement);
             }
         } catch(DOMException e) {
-            logger.error("DOMException creating start element: namespaceURI=" + startEvent.uri + ", localName=" + startEvent.localName, e);
+            LOGGER.error("DOMException creating start element: namespaceURI=" + startEvent.uri + ", localName=" + startEvent.localName, e);
             throw e;
         }
 
@@ -167,7 +167,7 @@ public class DOMBuilder extends SmooksContentHandler {
                     newElement.setAttribute(attLocalName.intern(), attValue);
                 }
             } catch(DOMException e) {
-                logger.error("DOMException setting element attribute " + attLocalName + "=" + attValue + "[namespaceURI=" + startEvent.uri + ", localName=" + startEvent.localName + "].", e);
+                LOGGER.error("DOMException setting element attribute " + attLocalName + "=" + attValue + "[namespaceURI=" + startEvent.uri + ", localName=" + startEvent.localName + "].", e);
                 throw e;
             }
         }
@@ -188,7 +188,7 @@ public class DOMBuilder extends SmooksContentHandler {
             if(index != -1) {
                 nodeStack.setSize(index);
             } else {
-                logger.debug("Ignoring unexpected end [" + endEvent.localName + "] element event. Request: [" + execContext.getDocumentSource() + "] - document location: [" + getCurPath() + "]");
+                LOGGER.debug("Ignoring unexpected end [" + endEvent.localName + "] element event. Request: [" + execContext.getDocumentSource() + "] - document location: [" + getCurPath() + "]");
             }
         }
     }
@@ -245,7 +245,7 @@ public class DOMBuilder extends SmooksContentHandler {
                 break;
             }
         } catch(DOMException e) {
-            logger.error("DOMException appending character data [" + new String(ch, start, length) + "]", e);
+            LOGGER.error("DOMException appending character data [" + new String(ch, start, length) + "]", e);
             throw e;
         }
     }
@@ -282,7 +282,7 @@ public class DOMBuilder extends SmooksContentHandler {
 
             currentNode.appendChild(newComment);
         } catch(DOMException e) {
-            logger.error("DOMException comment data [" + new String(ch, start, length) + "]", e);
+            LOGGER.error("DOMException comment data [" + new String(ch, start, length) + "]", e);
             throw e;
         }
     }

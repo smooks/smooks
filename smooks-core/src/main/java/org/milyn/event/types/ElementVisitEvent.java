@@ -15,8 +15,6 @@
 */
 package org.milyn.event.types;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.annotation.AnnotationConstants;
 import org.milyn.container.ExecutionContext;
@@ -31,6 +29,8 @@ import org.milyn.event.report.annotation.VisitBeforeReport;
 import org.milyn.expression.MVELExpressionEvaluator;
 import org.milyn.util.FreeMarkerTemplate;
 import org.milyn.util.MultiLineToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -44,7 +44,7 @@ import java.util.Map;
  */
 public class ElementVisitEvent extends ElementProcessingEvent implements ResourceBasedEvent {
 
-    private static Log logger = LogFactory.getLog(ElementVisitEvent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElementVisitEvent.class);
 
     private ContentHandlerConfigMap configMapping;
     private VisitSequence sequence;
@@ -141,7 +141,7 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
                 reportSummary = template.apply(templateParams);
             } catch (Exception e) {
                 reportSummary = "Report Template Summary Error: " + e.getMessage();
-                logger.debug("Failed to apply Summary Template.", e);
+                LOGGER.debug("Failed to apply Summary Template.", e);
             }
         }
 
@@ -151,7 +151,7 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
                 reportDetail = template.apply(templateParams);
             } catch (Exception e) {
                 reportSummary = "Report Template Detail Error: " + e.getMessage();
-                logger.debug("Failed to apply Detail Template.", e);
+                LOGGER.debug("Failed to apply Detail Template.", e);
             }
         }
     }

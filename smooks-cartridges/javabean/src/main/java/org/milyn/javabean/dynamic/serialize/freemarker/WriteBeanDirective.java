@@ -18,19 +18,20 @@ package org.milyn.javabean.dynamic.serialize.freemarker;
 
 import freemarker.core.Environment;
 import freemarker.ext.beans.BeanModel;
-import freemarker.ext.beans.StringModel;
-import freemarker.template.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import freemarker.template.SimpleScalar;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
 import org.milyn.javabean.dynamic.BeanMetadata;
 import org.milyn.javabean.dynamic.BeanRegistrationException;
 import org.milyn.javabean.dynamic.Model;
 import org.milyn.javabean.dynamic.serialize.BeanWriter;
 import org.milyn.xml.XmlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -39,7 +40,7 @@ import java.util.Map;
  */
 public class WriteBeanDirective extends AbstractBeanDirective {
 
-    private static Log logger = LogFactory.getLog(WriteBeanDirective.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WriteBeanDirective.class);
 
     public void execute(Environment environment, Map params, TemplateModel[] templateModels, TemplateDirectiveBody templateDirectiveBody) throws TemplateException, IOException {
         Object bean = getBeanObject(environment, params, "writeBean");
@@ -52,7 +53,7 @@ public class WriteBeanDirective extends AbstractBeanDirective {
                 indent = Integer.parseInt(indentParamVal);
                 indent = Math.min(indent, 100);
             } catch(NumberFormatException e) {
-                logger.debug("Invalid <@writeNamespaces> 'indent' parameter value '" + indentParamVal + "'.  Must be a valid integer (<= 100).");
+                LOGGER.debug("Invalid <@writeNamespaces> 'indent' parameter value '" + indentParamVal + "'.  Must be a valid integer (<= 100).");
             }
         }
 

@@ -15,16 +15,7 @@
 */
 package org.milyn.ejc;
 
-import org.apache.commons.logging.Log;
-import org.milyn.edisax.model.internal.Component;
-import org.milyn.edisax.model.internal.DelimiterType;
-import org.milyn.edisax.model.internal.Edimap;
-import org.milyn.edisax.model.internal.Field;
-import org.milyn.edisax.model.internal.MappingNode;
-import org.milyn.edisax.model.internal.Segment;
-import org.milyn.edisax.model.internal.SegmentGroup;
-import org.milyn.edisax.model.internal.SubComponent;
-import org.milyn.edisax.model.internal.ValueNode;
+import org.milyn.edisax.model.internal.*;
 import org.milyn.edisax.util.EDIUtils;
 import org.milyn.edisax.util.IllegalNameException;
 import org.milyn.javabean.pojogen.JClass;
@@ -32,6 +23,7 @@ import org.milyn.javabean.pojogen.JMethod;
 import org.milyn.javabean.pojogen.JNamedType;
 import org.milyn.javabean.pojogen.JType;
 import org.milyn.smooks.edi.EDIMessage;
+import org.slf4j.Logger;
 
 import java.util.*;
 
@@ -42,7 +34,7 @@ import java.util.*;
  */
 public class ClassModelCompiler {
 
-    private static Log LOG = EJCLogFactory.getLog(ClassModelCompiler.class);
+    private static final Logger LOGGER = EJCLoggerFactory.getLogger(ClassModelCompiler.class);
 
     private Map<MappingNode, JClass> injectedCommonTypes = new HashMap<MappingNode, JClass>();
     private Map<MappingNode, JClass> createdClassesByNode = new HashMap<MappingNode, JClass>();
@@ -74,13 +66,13 @@ public class ClassModelCompiler {
         model.addCreatedClass(rootClass);
         model.setRootBeanConfig(rootBeanConfig);
 
-        LOG.debug("Added root class [" + rootClass + "] to ClassModel.");
+        LOGGER.debug("Added root class [" + rootClass + "] to ClassModel.");
 
         addWriteMethod(rootBeanConfig);
         processSegmentGroups(segmentGroup.getSegments(), rootBeanConfig);
 
-        LOG.debug("Finished parsing edi-configuration. All segments are added to ClassModel.");
-        LOG.debug("ClassModel contains " + model.getCreatedClasses().size() + " classes.");
+        LOGGER.debug("Finished parsing edi-configuration. All segments are added to ClassModel.");
+        LOGGER.debug("ClassModel contains " + model.getCreatedClasses().size() + " classes.");
 
         // Attach the createdClassesByNode map... so we can use them if they
         // are common classes in a model set...
@@ -146,7 +138,7 @@ public class ClassModelCompiler {
      * @throws IllegalNameException when name found in a xmltag-attribute is a java keyword.
      */
     private BindingConfig processSegmentGroup(SegmentGroup segmentGroup, BindingConfig parent) throws IllegalNameException {
-        LOG.debug("Parsing SegmentGroup " + segmentGroup.getXmltag());
+        LOGGER.debug("Parsing SegmentGroup " + segmentGroup.getXmltag());
 
         if(segmentGroup.getJavaName() == null) {
             throw new EJCException("The <segmentGroup> element can optionally omit the 'xmltag' attribute.  However, this attribute must be present for EJC to work properly.  It is omitted from one of the <segmentGroup> elements in this configuration.");
@@ -176,7 +168,7 @@ public class ClassModelCompiler {
      */
     private void processFields(List<Field> fields, BindingConfig parent) throws IllegalNameException {
         for (Field field : fields) {
-            LOG.debug("Parsing field " + field.getXmltag());
+            LOGGER.debug("Parsing field " + field.getXmltag());
 
             pushNode(field);
 
@@ -339,7 +331,7 @@ public class ClassModelCompiler {
 
             child = new JClass(packageName, className, getCurrentClassId()).setSerializable();
             addClassToModel = true;
-            LOG.debug("Created class " + child.getClassName() + ".");
+            LOGGER.debug("Created class " + child.getClassName() + ".");
         }
 
         JType jtype;

@@ -15,15 +15,6 @@
 */
 package org.milyn.routing.db;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.cdr.SmooksConfigurationException;
@@ -41,7 +32,6 @@ import org.milyn.delivery.dom.DOMElementVisitor;
 import org.milyn.delivery.ordering.Consumer;
 import org.milyn.delivery.ordering.Producer;
 import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXUtil;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
 import org.milyn.expression.ExpressionEvaluator;
@@ -52,9 +42,12 @@ import org.milyn.javabean.decoders.MVELExpressionEvaluatorDecoder;
 import org.milyn.javabean.repository.BeanId;
 import org.milyn.util.CollectionsUtil;
 import org.milyn.util.FreeMarkerTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -63,7 +56,7 @@ import javax.xml.namespace.QName;
 @VisitAfterIf(	condition = "parameters.containsKey('executeBefore') && parameters.executeBefore.value != 'true'")
 public class ResultsetRowSelector implements SmooksResourceConfigurationFactory, SAXVisitBefore, SAXVisitAfter, DOMElementVisitor, Producer, Consumer {
 
-    private static Log logger = LogFactory.getLog(ResultsetRowSelector.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResultsetRowSelector.class);
 
     @ConfigParam
     private String resultSetName;
@@ -218,8 +211,8 @@ public class ResultsetRowSelector implements SmooksResourceConfigurationFactory,
                     throw new DataSelectionException(failedSelectError.apply(beanRepository.getBeanMap()));
                 }
 
-                if(logger.isDebugEnabled()) {
-                    logger.debug("Selected resultset where '" + whereEvaluator.getExpression() + "': [" + selectedRow + "].");
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Selected resultset where '" + whereEvaluator.getExpression() + "': [" + selectedRow + "].");
                 }
             } catch(ClassCastException e) {
                 throw new SmooksException("Bean '" + resultSetName + "' cannot be used as a Reference Data resultset.  The resultset List must contain entries of type Map<String, Object>.");

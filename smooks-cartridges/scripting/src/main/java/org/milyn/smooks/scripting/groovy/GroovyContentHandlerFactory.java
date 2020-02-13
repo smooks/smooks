@@ -17,8 +17,6 @@
 package org.milyn.smooks.scripting.groovy;
 
 import groovy.lang.GroovyClassLoader;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -34,6 +32,8 @@ import org.milyn.io.StreamUtils;
 import org.milyn.javabean.context.BeanContext;
 import org.milyn.util.FreeMarkerTemplate;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -149,7 +149,7 @@ import java.util.Map;
 @Resource(type="groovy")
 public class GroovyContentHandlerFactory implements ContentHandlerFactory {
 
-    private static Log logger = LogFactory.getLog(GroovyContentHandlerFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroovyContentHandlerFactory.class);
 
     private FreeMarkerTemplate classTemplate;
     private volatile int classGenCount = 1;
@@ -177,7 +177,7 @@ public class GroovyContentHandlerFactory implements ContentHandlerFactory {
                 Class groovyClass = groovyClassLoader.parseClass(groovyScript);
                 groovyObject = groovyClass.newInstance();
             } catch(CompilationFailedException e) {
-                logger.debug("Failed to create Visitor class instance directly from script:\n==========================\n" + groovyScript + "\n==========================\n Will try applying Visitor template to script.", e);
+                LOGGER.debug("Failed to create Visitor class instance directly from script:\n==========================\n" + groovyScript + "\n==========================\n Will try applying Visitor template to script.", e);
                 groovyObject = null;
             }
 

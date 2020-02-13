@@ -14,8 +14,6 @@
  */
 package org.milyn.validation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.SmooksConfigurationException;
 import org.milyn.cdr.SmooksResourceConfiguration;
@@ -39,6 +37,8 @@ import org.milyn.rules.RuleProvider;
 import org.milyn.rules.RuleProviderAccessor;
 import org.milyn.util.FreeMarkerTemplate;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.io.File;
@@ -88,7 +88,7 @@ import java.util.*;
 @VisitAfterReport(summary = "Applied validation rule '${resource.parameters.name}'.")
 public final class Validator implements SAXVisitBefore, SAXVisitAfter, DOMVisitAfter
 {
-    private static Log logger = LogFactory.getLog(Validator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Validator.class);
 
     /**
      * The name of the rule that will be used by this validator.
@@ -249,8 +249,8 @@ public final class Validator implements SAXVisitBefore, SAXVisitAfter, DOMVisitA
 
         final RuleEvalResult result = ruleProvider.evaluate(ruleName, text, executionContext);
 
-        if(logger.isDebugEnabled()) {
-            logger.debug(result);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug(result.toString());
         }
 
         if (!result.matched())
@@ -436,7 +436,7 @@ public final class Validator implements SAXVisitBefore, SAXVisitAfter, DOMVisitA
             try {
                 return ResourceBundle.getBundle(messageBundleBaseName, locale, new ResourceBundleClassLoader());
             } catch (final MissingResourceException e) {
-                logger.warn("Failed to load Validation rule message bundle '" + messageBundleBaseName + "'.  This resource must be on the classpath!", e);
+                LOGGER.warn("Failed to load Validation rule message bundle '" + messageBundleBaseName + "'.  This resource must be on the classpath!", e);
             }
 
             return null;

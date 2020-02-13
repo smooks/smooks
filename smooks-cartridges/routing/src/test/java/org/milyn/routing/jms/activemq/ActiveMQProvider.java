@@ -17,25 +17,25 @@ package org.milyn.routing.jms.activemq;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.util.JNDIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.jms.*;
-import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.File;
 import java.lang.IllegalStateException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:dbevenius@jboss.com">Daniel Bevenius</a>
  */
 public class ActiveMQProvider {
 
-    private static Log logger = LogFactory.getLog(ActiveMQProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActiveMQProvider.class);
 
     public static final String DEFAULT_PROVIDER_URL = "tcp://localhost:61717";
 
@@ -88,7 +88,7 @@ public class ActiveMQProvider {
                 try {
                     consumer.close();
                 } catch (Exception e) {
-                    logger.debug("Failed to close consumer.", e);
+                    LOGGER.debug("Failed to close consumer.", e);
                 }
             }
 
@@ -219,21 +219,21 @@ public class ActiveMQProvider {
         try {
             if (conn != null) {
                 conn.stop();
-                logger.debug("Stopping JMS Connection for connected session.");
+                LOGGER.debug("Stopping JMS Connection for connected session.");
             }
         }
         catch (Throwable e) {
-            logger.debug("Failed to stop JMS connection.", e);
+            LOGGER.debug("Failed to stop JMS connection.", e);
             conn = null;
         }
         try {
             if (session != null) {
                 session.close();
-                logger.debug("Closing JMS Session.");
+                LOGGER.debug("Closing JMS Session.");
             }
         }
         catch (Throwable e) {
-            logger.debug("Failed to close JMS session.", e);
+            LOGGER.debug("Failed to close JMS session.", e);
         }
         finally {
             session = null;
@@ -241,11 +241,11 @@ public class ActiveMQProvider {
         try {
             if (conn != null) {
                 conn.close();
-                logger.debug("Closing JMS Connection for connected session.");
+                LOGGER.debug("Closing JMS Connection for connected session.");
             }
         }
         catch (Throwable e) {
-            logger.debug("Failed to close JMS connection.", e);
+            LOGGER.debug("Failed to close JMS connection.", e);
         }
         finally {
             conn = null;

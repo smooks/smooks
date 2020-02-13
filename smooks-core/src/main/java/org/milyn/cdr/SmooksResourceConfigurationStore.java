@@ -16,8 +16,6 @@
 
 package org.milyn.cdr;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jaxen.saxpath.SAXPathException;
 import org.milyn.Smooks;
 import org.milyn.assertion.AssertArgument;
@@ -37,6 +35,8 @@ import org.milyn.profile.ProfileStore;
 import org.milyn.resource.ContainerResourceLocator;
 import org.milyn.util.ClassUtil;
 import org.milyn.xml.NamespaceMappings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
@@ -63,7 +63,7 @@ public class SmooksResourceConfigurationStore {
 	/**
 	 * Logger.
 	 */
-	private static Log logger = LogFactory.getLog(SmooksResourceConfigurationStore.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SmooksResourceConfigurationStore.class);
 	/**
 	 * Table of loaded SmooksResourceConfigurationList objects.
 	 */
@@ -190,17 +190,17 @@ public class SmooksResourceConfigurationStore {
 			try {
 				InputStream resource = resLocator.getResource(uri);
 
-				logger.info("Loading Smooks Resources from uri [" + uri + "].");
+				LOGGER.info("Loading Smooks Resources from uri [" + uri + "].");
                 registerResources(uri, resource);
-				logger.debug("[" + uri + "] Loaded.");
+				LOGGER.debug("[" + uri + "] Loaded.");
 			} catch (IllegalArgumentException e) {
-				logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
+				LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
 			} catch (IOException e) {
-				logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
+				LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
 			} catch (SAXException e) {
-				logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
+				LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
 			} catch (URISyntaxException e) {
-                logger.error("[" + uri + "] Load failure. " + e.getMessage(), e);
+                LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
             }
         }
 	}
@@ -442,15 +442,15 @@ public class SmooksResourceConfigurationStore {
      */
     public void close() {
         if(initializedObjects != null) {
-            logger.debug("Uninitializing all ContentHandler instances allocated through this store.");
+            LOGGER.debug("Uninitializing all ContentHandler instances allocated through this store.");
             // We uninitialize in reverse order...
             for(int i = initializedObjects.size() - 1; i >= 0; i--) {
                 Object object = initializedObjects.get(i);
                 try {
-                    logger.debug("Uninitializing ContentHandler instance: " + object.getClass().getName());
+                    LOGGER.debug("Uninitializing ContentHandler instance: " + object.getClass().getName());
                     Configurator.uninitialise(object);
                 } catch (Throwable throwable) {
-                    logger.error("Error uninitializing " + object.getClass().getName() + ".", throwable);
+                    LOGGER.error("Error uninitializing " + object.getClass().getName() + ".", throwable);
                 }
             }
             initializedObjects = null;

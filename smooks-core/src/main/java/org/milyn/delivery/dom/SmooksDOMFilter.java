@@ -16,8 +16,6 @@
 
 package org.milyn.delivery.dom;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.cdr.ParameterAccessor;
 import org.milyn.cdr.ResourceConfigurationNotFoundException;
@@ -35,6 +33,8 @@ import org.milyn.payload.FilterResult;
 import org.milyn.payload.FilterSource;
 import org.milyn.payload.JavaSource;
 import org.milyn.xml.DomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -137,7 +137,7 @@ public class SmooksDOMFilter extends Filter {
     /**
      * Logger.
      */
-    private Log logger = LogFactory.getLog(SmooksDOMFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SmooksDOMFilter.class);
     /**
      * Container request for this Smooks content delivery instance.
      */
@@ -253,7 +253,7 @@ public class SmooksDOMFilter extends Filter {
                     serialize(resultNode, writer);
                     writer.flush();
                 } catch (IOException e) {
-                    logger.debug("Error writing result to output stream.", e);
+                    LOGGER.debug("Error writing result to output stream.", e);
                 }
             } else if (result instanceof DOMResult) {
                 ((DOMResult) result).setNode(resultNode);
@@ -310,7 +310,7 @@ public class SmooksDOMFilter extends Filter {
 
         // Apply assembly phase...
         if (doc.getDocumentElement() == null) {
-            logger.debug("Empty Document [" + executionContext.getDocumentSource() + "].  Not performaing any processing.");
+            LOGGER.debug("Empty Document [" + executionContext.getDocumentSource() + "].  Not performaing any processing.");
             return doc;
         }
 
@@ -346,13 +346,13 @@ public class SmooksDOMFilter extends Filter {
         // Apply assembly phase, skipping it if there are no configured assembly units...
         if (applyAssembly(visitBefores, visitAfters)) {
             // Assemble
-            if (logger.isDebugEnabled()) {
-                logger.debug("Starting assembly phase [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Starting assembly phase [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
             }
             assemble(element, true);
         } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No assembly units configured for device [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No assembly units configured for device [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
             }
         }
 
@@ -362,8 +362,8 @@ public class SmooksDOMFilter extends Filter {
         }
 
         // Apply processing phase...
-        if (logger.isDebugEnabled()) {
-            logger.debug("Starting processing phase [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Starting processing phase [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
         }
 
         globalProcessingBefores = deliveryConfig.getProcessingVisitBefores().getMappings(GLOBAL_SELECTORS);
@@ -472,9 +472,9 @@ public class SmooksDOMFilter extends Filter {
             DOMVisitBefore assemblyUnit = configMap.getContentHandler();
             try
             {
-                if (logger.isDebugEnabled())
+                if (LOGGER.isDebugEnabled())
                 {
-                    logger.debug("(Assembly) Calling visitBefore on element [" + DomUtils.getXPath(element) + "]. Config [" + config + "]");
+                    LOGGER.debug("(Assembly) Calling visitBefore on element [" + DomUtils.getXPath(element) + "]. Config [" + config + "]");
                 }
                 assemblyUnit.visitBefore(element, executionContext);
                 if (eventListener != null)
@@ -516,8 +516,8 @@ public class SmooksDOMFilter extends Filter {
 
         DOMVisitAfter visitAfter = configMap.getContentHandler();
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("(Assembly) Calling visitAfter on element [" + DomUtils.getXPath(element) + "]. Config [" + config + "]");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("(Assembly) Calling visitAfter on element [" + DomUtils.getXPath(element) + "]. Config [" + config + "]");
             }
             visitAfter.visitAfter(element, executionContext);
             if (eventListener != null) {
@@ -624,8 +624,8 @@ public class SmooksDOMFilter extends Filter {
             throw new IllegalArgumentException("null 'writer' arg passed in method call.");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Starting serialization phase [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Starting serialization phase [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
         }
         serializer = new Serializer(node, executionContext);
         try {
@@ -754,8 +754,8 @@ public class SmooksDOMFilter extends Filter {
 
                 DOMVisitBefore visitor = (DOMVisitBefore) configMap.getContentHandler();
                 try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Applying processing resource [" + config + "] to element [" + DomUtils.getXPath(element) + "] before applying resources to its child elements.");
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Applying processing resource [" + config + "] to element [" + DomUtils.getXPath(element) + "] before applying resources to its child elements.");
                     }
                     visitor.visitBefore(element, executionContext);
                     if (eventListener != null) {
@@ -773,8 +773,8 @@ public class SmooksDOMFilter extends Filter {
 
                 DOMVisitAfter visitor = (DOMVisitAfter) configMap.getContentHandler();
                 try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Applying processing resource [" + config + "] to element [" + DomUtils.getXPath(element) + "] after applying resources to its child elements.");
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Applying processing resource [" + config + "] to element [" + DomUtils.getXPath(element) + "] after applying resources to its child elements.");
                     }
                     visitor.visitAfter(element, executionContext);
                     if (eventListener != null) {
@@ -794,8 +794,8 @@ public class SmooksDOMFilter extends Filter {
                 if(contentHandler instanceof VisitLifecycleCleanable) {
                     VisitLifecycleCleanable visitor = (VisitLifecycleCleanable) contentHandler;
                     try {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Cleaning up processing resource [" + config + "] that was targeted to element [" + DomUtils.getXPath(element) + "].");
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Cleaning up processing resource [" + config + "] that was targeted to element [" + DomUtils.getXPath(element) + "].");
                         }
                         visitor.executeVisitLifecycleCleanup(new Fragment(element), executionContext);
                         if (eventListener != null) {
@@ -824,7 +824,7 @@ public class SmooksDOMFilter extends Filter {
                 throw new SmooksException(errorMsg, error);
             }
         } else {
-            logger.debug(errorMsg, error);
+            LOGGER.debug(errorMsg, error);
         }
     }
 }

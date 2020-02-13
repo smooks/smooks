@@ -15,8 +15,6 @@
 */
 package org.milyn.delivery.dom.serialize;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.sax.SAXElement;
@@ -24,6 +22,8 @@ import org.milyn.delivery.sax.SAXElementVisitor;
 import org.milyn.delivery.sax.SAXText;
 import org.milyn.xml.DomUtils;
 import org.milyn.xml.Namespace;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ import java.io.Writer;
  */
 public class ContextObjectSerializationUnit implements SerializationUnit, SAXElementVisitor {
 
-    private static Log logger = LogFactory.getLog(ContextObjectSerializationUnit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContextObjectSerializationUnit.class);
 
     public void writeElementStart(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
         String key = getContextKey(element);
@@ -50,10 +50,10 @@ public class ContextObjectSerializationUnit implements SerializationUnit, SAXEle
             if(object != null) {
                 writer.write(object.toString());
             } else {
-                logger.debug("Invalid <context-object> specification at '" + DomUtils.getXPath(element) + "'. No Object instance found on context at '" + key + "'.");
+                LOGGER.debug("Invalid <context-object> specification at '" + DomUtils.getXPath(element) + "'. No Object instance found on context at '" + key + "'.");
             }
         } else {
-            logger.warn("Invalid <context-object> specification at '" + DomUtils.getXPath(element) + "'. 'key' attribute not specified.");
+            LOGGER.warn("Invalid <context-object> specification at '" + DomUtils.getXPath(element) + "'. 'key' attribute not specified.");
         }
     }
 

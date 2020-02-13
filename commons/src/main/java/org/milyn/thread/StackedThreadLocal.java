@@ -15,8 +15,8 @@
 */
 package org.milyn.thread;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.EmptyStackException;
 import java.util.Stack;
@@ -27,7 +27,7 @@ import java.util.Stack;
  */
 public class StackedThreadLocal<T> {
 
-    private static Log logger = LogFactory.getLog(StackedThreadLocal.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StackedThreadLocal.class);
 
     private String resourceName;
     private ThreadLocal<Stack<T>> stackTL = new ThreadLocal<Stack<T>>();
@@ -41,8 +41,8 @@ public class StackedThreadLocal<T> {
         try {
             return execContextStack.peek();
         } catch (EmptyStackException e) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("No currently stacked '" + resourceName + "' instance on active Thread.", e);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No currently stacked '" + resourceName + "' instance on active Thread.", e);
             }
             return null;
         }
@@ -58,8 +58,8 @@ public class StackedThreadLocal<T> {
         try {
             execContextStack.pop();
         } catch (EmptyStackException e) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("No currently stacked '" + resourceName + "' instance on active Thread.", e);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No currently stacked '" + resourceName + "' instance on active Thread.", e);
             }
         }
     }

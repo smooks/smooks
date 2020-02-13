@@ -1,25 +1,22 @@
 package org.milyn.javabean.context;
 
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.junit.Test;
+import org.milyn.container.MockApplicationContext;
+import org.milyn.container.MockExecutionContext;
+import org.milyn.javabean.repository.BeanId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.container.MockApplicationContext;
-import org.milyn.container.MockExecutionContext;
-import org.milyn.javabean.repository.BeanId;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 
 public class MultiThreadedBeanIdStoreTest  {
 
-	private static final Log log = LogFactory.getLog(MultiThreadedBeanIdStoreTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MultiThreadedBeanIdStoreTest.class);
 
 	@Test
 	public void test_multi_threaded() throws InterruptedException {
@@ -59,7 +56,7 @@ public class MultiThreadedBeanIdStoreTest  {
 
 					}
 				} catch (Exception e) {
-					log.error("Exception thrown", e);
+					LOGGER.error("Exception thrown", e);
 
 					exceptionsThrown.set(true);
 				} finally {

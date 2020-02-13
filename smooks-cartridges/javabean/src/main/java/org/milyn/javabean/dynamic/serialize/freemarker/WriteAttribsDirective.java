@@ -20,18 +20,10 @@ import freemarker.core.Environment;
 import freemarker.ext.beans.BeanModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.milyn.javabean.BeanUtils;
-import org.milyn.javabean.dynamic.BeanMetadata;
-import org.milyn.javabean.dynamic.BeanRegistrationException;
-import org.milyn.javabean.dynamic.Model;
-import org.milyn.javabean.dynamic.serialize.BeanWriter;
 import org.milyn.util.ClassUtil;
 import org.milyn.xml.XmlUtil;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;

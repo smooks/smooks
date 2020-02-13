@@ -15,16 +15,16 @@
 */
 package org.milyn.javabean.dynamic;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.milyn.assertion.AssertArgument;
 import org.milyn.javabean.dynamic.serialize.BeanWriter;
 import org.milyn.javabean.dynamic.serialize.DefaultNamespace;
 import org.milyn.payload.JavaResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * Model container.
@@ -39,7 +39,7 @@ import org.milyn.payload.JavaResult;
  */
 public class Model<T> {
 
-    private static Log logger = LogFactory.getLog(Model.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Model.class);
 
 	private T modelRoot;
 	private List<BeanMetadata> modelMetadata;

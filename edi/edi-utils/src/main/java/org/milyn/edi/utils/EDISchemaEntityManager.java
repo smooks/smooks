@@ -15,8 +15,6 @@
  */
 package org.milyn.edi.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.impl.XMLEntityManager;
 import org.apache.xerces.xni.XMLResourceIdentifier;
 import org.apache.xerces.xni.XNIException;
@@ -28,6 +26,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
 import org.milyn.util.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ public class EDISchemaEntityManager extends XMLEntityManager {
 
     private final Map<String, String> catalog;
 
-    private static final Log log = LogFactory.getLog(EDISchemaEntityManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EDISchemaEntityManager.class);
 
     /**
      * Factory method to create a new instance
@@ -60,7 +60,7 @@ public class EDISchemaEntityManager extends XMLEntityManager {
         List<URL> urnFiles = ClassUtil.getResources("/fragment.xml",
                 EDISchemaEntityManager.class);
         Map<String, String> catalog = new HashMap<String, String>();
-        log.debug("Loading XML schemas information from " + urnFiles);
+        LOGGER.debug("Loading XML schemas information from " + urnFiles);
         for (URL url : urnFiles) {
             InputStream in = url.openStream();
             try {
@@ -94,7 +94,7 @@ public class EDISchemaEntityManager extends XMLEntityManager {
         // One resource we have to add manually
         catalog.put("urn:org.milyn.edi.unedifact.v41",
                 "/META-INF/schema/v41-segments.xsd");
-        log.debug("Loaded " + catalog.size() + " entries");
+        LOGGER.debug("Loaded " + catalog.size() + " entries");
         return new EDISchemaEntityManager(catalog);
     }
 
@@ -118,7 +118,7 @@ public class EDISchemaEntityManager extends XMLEntityManager {
                 && result.getByteStream() == null) {
             String ns = resourceIdentifier.getNamespace();
             if (ns != null) {
-                log.debug("Resolving schema to namespace: " + ns);
+                LOGGER.debug("Resolving schema to namespace: " + ns);
                 if (catalog.containsKey(ns)) {
                     result = new XMLInputSource(resourceIdentifier);
                     String location = catalog.get(ns);

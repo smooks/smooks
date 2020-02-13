@@ -49,7 +49,6 @@
 
     <camel.version>3.0.1</camel.version>
     <commons-lang.version>2.6</commons-lang.version>
-    <commons-logging.version>1.2</commons-logging.version>
 
     <drools.version>7.32.0.Final</drools.version>
     <dtdparser.version>1.21</dtdparser.version>
@@ -296,12 +295,6 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>${commons-logging.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
@@ -335,7 +328,6 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
         <version>${log4j2.version}</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -886,6 +878,11 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

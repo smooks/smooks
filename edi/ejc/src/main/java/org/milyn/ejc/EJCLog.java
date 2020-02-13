@@ -15,100 +15,303 @@
 */
 package org.milyn.ejc;
 
-import org.apache.commons.logging.Log;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.IOException;
-import static org.milyn.ejc.EJCLogFactory.Level;
+import org.slf4j.Logger;
+import org.slf4j.Marker;
 
-public class EJCLog implements Log {
+import static org.milyn.ejc.EJCLoggerFactory.Level;
 
-        private EJCLogFactory.Level level;
+public class EJCLog implements Logger {
 
-        public EJCLog(Level level) {
-            this.level = level;
-        }
+    private EJCLoggerFactory.Level level;
 
-        public void setLevel(Level level) {
-            this.level = level;
-        }
-
-        public void debug(Object object) {
-            write(Level.DEBUG, object);
-        }
-
-        public void debug(Object object, Throwable throwable) {
-            write(Level.DEBUG, object);
-        }
-
-        public void error(Object object) {
-            write(Level.ERROR, object);
-        }
-
-        public void error(Object object, Throwable throwable) {
-            write(Level.ERROR, object);
-        }
-
-        public void fatal(Object object) {
-            write(Level.FATAL, object);
-        }
-
-        public void fatal(Object object, Throwable throwable) {
-            write(Level.FATAL, object);
-        }
-
-        public void info(Object object) {
-            write(Level.INFO, object);
-        }
-
-        public void info(Object object, Throwable throwable) {
-            write(Level.INFO, object);
-        }
-
-        public boolean isDebugEnabled() {
-            return this.level == Level.DEBUG;
-        }
-
-        public boolean isErrorEnabled() {
-            return true;
-        }
-
-        public boolean isFatalEnabled() {
-            return true;
-        }
-
-        public boolean isInfoEnabled() {
-            return true;
-        }
-
-        public boolean isTraceEnabled() {
-            return false;
-        }
-
-        public boolean isWarnEnabled() {
-            return true;
-        }
-
-        public void trace(Object object) {
-        }
-
-        public void trace(Object object, Throwable throwable) {
-        }
-
-        public void warn(Object object) {
-            write(Level.WARN, object);
-        }
-
-        public void warn(Object object, Throwable throwable) {
-            write(Level.WARN, object);
-        }
-
-        private void write(EJCLogFactory.Level level, Object object) {            
-            if (this.level.getValue() > level.getValue()) {
-                return;
-            }
-
-            System.out.println("[" + level + "] " + object);
-
-        }
+    public EJCLog(Level level) {
+        this.level = level;
     }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public boolean isDebugEnabled() {
+        return this.level == Level.DEBUG;
+    }
+
+    @Override
+    public void debug(String msg) {
+        write(Level.DEBUG, msg);
+    }
+
+    @Override
+    public void debug(String format, Object arg) {
+    }
+
+    @Override
+    public void debug(String format, Object arg1, Object arg2) {
+    }
+
+    @Override
+    public void debug(String format, Object... arguments) {
+    }
+
+    @Override
+    public void debug(String msg, Throwable t) {
+        write(Level.DEBUG, msg);
+    }
+
+    @Override
+    public boolean isDebugEnabled(Marker marker) {
+        return this.level == Level.DEBUG;
+    }
+
+    @Override
+    public void debug(Marker marker, String msg) {
+        write(Level.DEBUG, msg);
+    }
+
+    @Override
+    public void debug(Marker marker, String format, Object arg) {
+    }
+
+    @Override
+    public void debug(Marker marker, String format, Object arg1, Object arg2) {
+    }
+
+    @Override
+    public void debug(Marker marker, String format, Object... arguments) {
+    }
+
+    @Override
+    public void debug(Marker marker, String msg, Throwable t) {
+        write(Level.DEBUG, msg);
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return this.level == Level.INFO;
+    }
+
+    public boolean isErrorEnabled() {
+        return this.level == Level.ERROR;
+    }
+
+    @Override
+    public void error(String msg) {
+        write(Level.ERROR, msg);
+    }
+
+    @Override
+    public void error(String format, Object arg) {
+    }
+
+    @Override
+    public void error(String format, Object arg1, Object arg2) {
+    }
+
+    @Override
+    public void error(String format, Object... arguments) {
+    }
+
+    @Override
+    public void error(String msg, Throwable t) {
+        write(Level.ERROR, msg);
+    }
+
+    @Override
+    public boolean isErrorEnabled(Marker marker) {
+        return this.level == Level.ERROR;
+    }
+
+    @Override
+    public void error(Marker marker, String msg) {
+        write(Level.ERROR, msg);
+    }
+
+    @Override
+    public void error(Marker marker, String format, Object arg) {
+    }
+
+    @Override
+    public void error(Marker marker, String format, Object arg1, Object arg2) {
+    }
+
+    @Override
+    public void error(Marker marker, String format, Object... arguments) {
+    }
+
+    @Override
+    public void error(Marker marker, String msg, Throwable t) {
+        write(Level.ERROR, msg);
+    }
+
+    @Override
+    public void info(String msg) {
+        write(Level.INFO, msg);
+    }
+
+    @Override
+    public void info(String format, Object arg) {
+    }
+
+    @Override
+    public void info(String format, Object arg1, Object arg2) {
+    }
+
+    @Override
+    public void info(String format, Object... arguments) {
+    }
+
+    @Override
+    public void info(String msg, Throwable t) {
+        write(Level.INFO, msg);
+    }
+
+    @Override
+    public boolean isInfoEnabled(Marker marker) {
+        return this.level == Level.INFO;
+    }
+
+    @Override
+    public void info(Marker marker, String msg) {
+        write(Level.INFO, msg);
+    }
+
+    @Override
+    public void info(Marker marker, String format, Object arg) {
+    }
+
+    @Override
+    public void info(Marker marker, String format, Object arg1, Object arg2) {
+    }
+
+    @Override
+    public void info(Marker marker, String format, Object... arguments) {
+    }
+
+    @Override
+    public void info(Marker marker, String msg, Throwable t) {
+        write(Level.INFO, msg);
+    }
+
+    @Override
+    public String getName() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isTraceEnabled() {
+        return false;
+    }
+
+    @Override
+    public void trace(String msg) {
+    }
+
+    @Override
+    public void trace(String format, Object arg) {
+    }
+
+    @Override
+    public void trace(String format, Object arg1, Object arg2) {
+    }
+
+    @Override
+    public void trace(String format, Object... arguments) {
+    }
+
+    @Override
+    public void trace(String msg, Throwable t) {
+    }
+
+    @Override
+    public boolean isTraceEnabled(Marker marker) {
+        return false;
+    }
+
+    @Override
+    public void trace(Marker marker, String msg) {
+    }
+
+    @Override
+    public void trace(Marker marker, String format, Object arg) {
+    }
+
+    @Override
+    public void trace(Marker marker, String format, Object arg1, Object arg2) {
+    }
+
+    @Override
+    public void trace(Marker marker, String format, Object... argArray) {
+    }
+
+    @Override
+    public void trace(Marker marker, String msg, Throwable t) {
+    }
+
+    @Override
+    public boolean isWarnEnabled() {
+        return true;
+    }
+
+    @Override
+    public void warn(String msg) {
+        write(Level.WARN, msg);
+    }
+
+    @Override
+    public void warn(String format, Object arg) {
+
+    }
+
+    @Override
+    public void warn(String format, Object... arguments) {
+
+    }
+
+    @Override
+    public void warn(String format, Object arg1, Object arg2) {
+
+    }
+
+    @Override
+    public void warn(String msg, Throwable t) {
+        write(Level.WARN, msg);
+    }
+
+    @Override
+    public boolean isWarnEnabled(Marker marker) {
+        return this.level == Level.WARN;
+    }
+
+    @Override
+    public void warn(Marker marker, String msg) {
+        write(Level.WARN, msg);
+    }
+
+    @Override
+    public void warn(Marker marker, String format, Object arg) {
+
+    }
+
+    @Override
+    public void warn(Marker marker, String format, Object arg1, Object arg2) {
+
+    }
+
+    @Override
+    public void warn(Marker marker, String format, Object... arguments) {
+
+    }
+
+    @Override
+    public void warn(Marker marker, String msg, Throwable t) {
+        write(Level.WARN, msg);
+    }
+
+    private void write(EJCLoggerFactory.Level level, Object object) {
+        if (this.level.getValue() > level.getValue()) {
+            return;
+        }
+
+        System.out.println("[" + level + "] " + object);
+    }
+}
