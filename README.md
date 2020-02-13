@@ -2,10 +2,6 @@
 
 This is the git source code repository for the [Smooks][1] Project.
 
-> __THIS PROJECT IS NO LONGER UNDER ACTIVE DEVELOPMENT__.
-
-> Please contact the [Mailing list](http://www.smooks.org/community) if you wish to adopt the project and continue it's evolution.
-
 
 ## Build Status
 
