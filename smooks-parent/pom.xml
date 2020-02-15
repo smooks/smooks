@@ -1055,11 +1055,11 @@
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
       <!--
-       Signs Maven artifacts. This is a mandatory requirement for
-       publishing Maven artifacts to Maven Central using the open-source
-       Nexus repository operated by Sonatype.
+          Signs Maven artifacts. This is a mandatory requirement for
+          publishing Maven artifacts to Maven Central using the open-source
+          Nexus repository operated by Sonatype.
 
-       See details for the Nexus Staging plugin below.
+          See details for the Nexus Staging plugin below.
       -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1073,6 +1073,67 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <!--
+          Generates a JAR file containing Javadocs for the generated classes.
+          This is a mandatory requirement for publishing Maven artifacts to
+          Maven Central using the open-source Nexus repository operated by
+          Sonatype.
+
+          See details for the Nexus Staging plugin below.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+          Generates a JAR file containing source code for the generated
+          classes. This is a mandatory requirement for publishing Maven
+          artifacts to Maven Central using the open-source Nexus repository
+          operated by Sonatype.
+
+          See details for the Nexus Staging plugin below.
+        -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+          Uploads Maven artifacts to the open-source Nexus repository
+          operated by Sonatype. Artifacts are uploaded to a staging area on
+          the Sonatype Nexus repository, where they need to be reviewed for
+          completeness and correctness through the Nexus web interface. Once
+          artifacts have been reviewed and found to be accurate, they can be
+          approved for deployment to Maven Central. Sonatype automatically
+          uploads approved artifacts to Maven Central (usually within a few
+          hours).
+        -->
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.8</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -1124,48 +1185,6 @@
       <build>
         <plugins>
           <!--
-            Generates a JAR file containing Javadocs for the generated classes.
-            This is a mandatory requirement for publishing Maven artifacts to
-            Maven Central using the open-source Nexus repository operated by
-            Sonatype.
-
-            See details for the Nexus Staging plugin below.
-          -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.1.1</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!--
-            Generates a JAR file containing source code for the generated
-            classes. This is a mandatory requirement for publishing Maven
-            artifacts to Maven Central using the open-source Nexus repository
-            operated by Sonatype.
-
-            See details for the Nexus Staging plugin below.
-          -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>3.2.1</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!--
             Skips running tests as part of the deployment process.
           -->
           <plugin>
@@ -1174,28 +1193,6 @@
             <version>2.22.2</version>
             <configuration>
               <skip>true</skip>
-            </configuration>
-          </plugin>
-
-          <!--
-            Uploads Maven artifacts to the open-source Nexus repository
-            operated by Sonatype. Artifacts are uploaded to a staging area on
-            the Sonatype Nexus repository, where they need to be reviewed for
-            completeness and correctness through the Nexus web interface. Once
-            artifacts have been reviewed and found to be accurate, they can be
-            approved for deployment to Maven Central. Sonatype automatically
-            uploads approved artifacts to Maven Central (usually within a few
-            hours).
-          -->
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.8</version>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
             </configuration>
           </plugin>
         </plugins>
