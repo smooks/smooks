@@ -1114,27 +1114,6 @@
           </execution>
         </executions>
       </plugin>
-      <!--
-          Uploads Maven artifacts to the open-source Nexus repository
-          operated by Sonatype. Artifacts are uploaded to a staging area on
-          the Sonatype Nexus repository, where they need to be reviewed for
-          completeness and correctness through the Nexus web interface. Once
-          artifacts have been reviewed and found to be accurate, they can be
-          approved for deployment to Maven Central. Sonatype automatically
-          uploads approved artifacts to Maven Central (usually within a few
-          hours).
-        -->
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.8</version>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -1193,6 +1172,28 @@
             <version>2.22.2</version>
             <configuration>
               <skip>true</skip>
+            </configuration>
+          </plugin>
+
+          <!--
+            Uploads Maven artifacts to the open-source Nexus repository
+            operated by Sonatype. Artifacts are uploaded to a staging area on
+            the Sonatype Nexus repository, where they need to be reviewed for
+            completeness and correctness through the Nexus web interface. Once
+            artifacts have been reviewed and found to be accurate, they can be
+            approved for deployment to Maven Central. Sonatype automatically
+            uploads approved artifacts to Maven Central (usually within a few
+            hours).
+          -->
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.8</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
             </configuration>
           </plugin>
         </plugins>
