@@ -1,9 +1,0 @@
-<settings>
-    <servers>
-        <server>
-            <id>ossrh</id>
-            <username>${env.REPO_UN}</username>
-            <password>${env.REPO_PW}</password>
-        </server>
-    </servers>
-</settings>
