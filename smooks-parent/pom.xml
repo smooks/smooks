@@ -59,7 +59,7 @@
     <groovy.version>2.4.18</groovy.version>
 
     <hamcrest-all.version>1.3</hamcrest-all.version>
-    <hibernate-core.version>5.4.11.Final</hibernate-core.version>
+    <hibernate-core.version>5.4.12.Final</hibernate-core.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
 
     <ibatis-sqlmap.version>2.3.4.726</ibatis-sqlmap.version>
