@@ -51,7 +51,7 @@
     <camel.version>3.0.1</camel.version>
     <commons-lang.version>2.6</commons-lang.version>
 
-    <drools.version>7.32.0.Final</drools.version>
+    <drools.version>7.33.0.Final</drools.version>
     <dtdparser.version>1.21</dtdparser.version>
 
     <freemarker.version>2.3.29</freemarker.version>
