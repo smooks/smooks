@@ -82,7 +82,7 @@
     <mockito.version>1.10.19</mockito.version>
     <mockobjects-core.version>0.09</mockobjects-core.version>
     <mockobjects-j1.4-j2ee1.3.version>0.07</mockobjects-j1.4-j2ee1.3.version>
-    <mvel.version>2.4.5.Final</mvel.version>
+    <mvel.version>2.4.7.Final</mvel.version>
 
     <ognl.version>3.2.13</ognl.version>
     <opencsv.version>2.3</opencsv.version>
