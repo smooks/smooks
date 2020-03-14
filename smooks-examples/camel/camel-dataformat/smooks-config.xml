@@ -8,7 +8,7 @@
     <edi:reader mappingModel="edi-to-xml-order-mapping.xml" />
     
     <core:exports>
-        <core:result type="org.milyn.payload.StringResult"/>
+        <core:result type="org.smooks.payload.StringResult"/>
     </core:exports>
 
 </smooks-resource-list>

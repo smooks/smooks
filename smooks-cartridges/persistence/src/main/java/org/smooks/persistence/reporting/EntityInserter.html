@@ -1,0 +1,4 @@
+Inserting the bean under the beanId <b>'${resource.parameters.beanId}'</b>
+ using the <#if resource.parameters.dao??><b>'${resource.parameters.dao}'</b><#else>default</#if> DAO
+ and the <#if resource.parameters.name??><b>'${resource.parameters.name}'</b><#else>default</#if> insert method.
+<#if resource.parameters.insertedBeanId??> The result is put under the beanId <b>'${resource.parameters.insertedBeanId}'</b>.</#if>

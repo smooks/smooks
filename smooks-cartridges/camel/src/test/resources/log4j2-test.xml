@@ -10,7 +10,7 @@
     </Appenders>
     <Loggers>
 <!--        <Logger name="org.apache.camel" level="debug"/>-->
-<!--        <Logger name="org.milyn" level="debug"/>-->
+<!--        <Logger name="org.smooks" level="debug"/>-->
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>

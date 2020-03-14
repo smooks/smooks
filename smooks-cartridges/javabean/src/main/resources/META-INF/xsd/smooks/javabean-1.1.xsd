@@ -177,15 +177,15 @@
                         Data Decoder.
                         <p/>
                         This attribute specifies the
-                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/milyn/javabean/DataDecoder.html">DataDecoder</a>
+                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/smooks/javabean/DataDecoder.html">DataDecoder</a>
                         to be used to decode the data (see "data" attribute) before setting it on the target bean
                         property(see "property" attribute).
                         <p/>
                         Smooks contains decoders for all of the main data types (Long, Integer etc). In these cases,
                         just specify the decoder as being "Long", "Integer", "Date" etc i.e. no need to specify the fully qualified
-                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/milyn/javabean/DataDecoder.html">DataDecoder</a>
+                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/smooks/javabean/DataDecoder.html">DataDecoder</a>
                         class name. The fully qualified class name is only required for custom
-                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/milyn/javabean/DataDecoder.html">DataDecoder</a>
+                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/smooks/javabean/DataDecoder.html">DataDecoder</a>
                         implementations.
 
                         <h3>Primitive Types</h3>
@@ -195,13 +195,13 @@
 
                         <h3>Decode Parameters</h3>
                         Some decoders may require parameters in order to complete the decoding process e.g. the
-                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/milyn/javabean/decoders/DateDecoder.html">DateDecoder</a>.
+                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/smooks/javabean/decoders/DateDecoder.html">DateDecoder</a>.
                         These parameters can be specified by adding &lt;decodeParam&gt; sub-elements to the &lt;value&gt;
                         binding element. Review the Decoder's Javadoc for details of the custom parameters.
                         <p/>
                         <u>Example:</u>
 <pre>
-    &lt;jb:value property="date" data="header/date" decoder="<a href="http://milyn.codehaus.org/javadoc/smooks/org/milyn/javabean/decoders/DateDecoder.html">Date</a>"&gt;
+    &lt;jb:value property="date" data="header/date" decoder="<a href="http://milyn.codehaus.org/javadoc/smooks/org/smooks/javabean/decoders/DateDecoder.html">Date</a>"&gt;
         &lt;jb:decodeParam name="format"&gt;EEE MMM dd HH:mm:ss z yyyy&lt;/jb:decodeParam&gt;
         &lt;jb:decodeParam name="locale-language"&gt;en&lt;/jb:decodeParam&gt;
         &lt;jb:decodeParam name="locale-country"&gt;IE&lt;/jb:decodeParam&gt;
@@ -210,7 +210,7 @@
 
                         <h3>Custom Data Decoding</h3>
                         For custom data decoding, implement the
-                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/milyn/javabean/DataDecoder.html">
+                        <a href="http://milyn.codehaus.org/javadoc/smooks/org/smooks/javabean/DataDecoder.html">
                             DataDecoder
                         </a>
                         interface and specify the decoder using the fully qualified class name of the new
@@ -365,13 +365,13 @@
                  Data Decode Parameter.
                  <p/>
                  Some decoders may require parameters in order to complete the decoding process e.g. the
-                 <a href="http://milyn.codehaus.org/javadoc/smooks/org/milyn/javabean/decoders/DateDecoder.html">DateDecoder</a>.
+                 <a href="http://milyn.codehaus.org/javadoc/smooks/org/smooks/javabean/decoders/DateDecoder.html">DateDecoder</a>.
                  These parameters can be specified by adding &lt;decodeParam&gt; sub-elements to the &lt;value&gt;
                  binding element. Review the Decoder's Javadoc for details of the custom parameters.
                  <p/>
                  <u>Example:</u>
 <pre>
-&lt;jb:value property="date" data="header/date" decoder="<a href="http://milyn.codehaus.org/javadoc/smooks/org/milyn/javabean/decoders/DateDecoder.html">Date</a>"&gt;
+&lt;jb:value property="date" data="header/date" decoder="<a href="http://milyn.codehaus.org/javadoc/smooks/org/smooks/javabean/decoders/DateDecoder.html">Date</a>"&gt;
     &lt;jb:decodeParam name="format"&gt;EEE MMM dd HH:mm:ss z yyyy&lt;/jb:decodeParam&gt;
     &lt;jb:decodeParam name="locale-language"&gt;en&lt;/jb:decodeParam&gt;
     &lt;jb:decodeParam name="locale-country"&gt;IE&lt;/jb:decodeParam&gt;

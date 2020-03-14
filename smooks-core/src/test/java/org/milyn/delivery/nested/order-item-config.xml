@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
-
-    <resource-config selector="order-item">
-        <resource>org.milyn.delivery.nested.OrderItemVisitor</resource>
-        <param name="beanId">orderItem</param>
-    </resource-config>
-
-</smooks-resource-list>

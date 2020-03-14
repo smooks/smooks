@@ -65,7 +65,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.milyn.ect.EdiSpecificationReader</mainClass>
+              <mainClass>org.smooks.ect.EdiSpecificationReader</mainClass>
               <addClasspath>true</addClasspath>
             </manifest>
           </archive>

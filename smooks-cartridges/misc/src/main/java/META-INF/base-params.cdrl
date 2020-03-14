@@ -16,7 +16,7 @@
 	<smooks-resource useragent="html4">
 		<!--
 			blockLevelElements are defined as a param because
-			the org.milyn.dtd classes don't support access to DTD
+			the org.smooks.dtd classes don't support access to DTD
 			attribute data.
 		-->
 		<param name="blockLevelElements" type="string-hashset">

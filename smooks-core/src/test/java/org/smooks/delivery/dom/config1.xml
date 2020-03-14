@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
+
+<smooks-resource-list default-selector="a">
+    <smooks-resource path="org.smooks.delivery.dom.AssemblyVisitor1"/>
+    <smooks-resource path="org.smooks.delivery.dom.ProcessorVisitor1"/>
+    <smooks-resource path="org.smooks.delivery.dom.ConfigurableVisitor"/>
+	<smooks-resource path="org.smooks.delivery.dom.ConfigurableVisitor">
+        <param name="VisitPhase">ASSEMBLY</param>
+    </smooks-resource>
+</smooks-resource-list>

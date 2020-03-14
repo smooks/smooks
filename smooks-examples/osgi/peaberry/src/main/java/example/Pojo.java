@@ -14,7 +14,7 @@
  */
 package example;
 
-import org.milyn.Smooks;
+import org.smooks.Smooks;
 
 import com.google.inject.Inject;
 

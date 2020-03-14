@@ -1,0 +1,4 @@
+SEG*1*2**4*5
+XXX*6*7
+YYY*Tom^Fennelly*Ireland
+BOO*1

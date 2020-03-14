@@ -15,10 +15,10 @@
  */
 package example;
 
-import org.milyn.SmooksException;
-import org.milyn.javabean.binding.xml.XMLBinding;
-import org.milyn.io.StreamUtils;
-import org.milyn.payload.StringSource;
+import org.smooks.SmooksException;
+import org.smooks.javabean.binding.xml.XMLBinding;
+import org.smooks.io.StreamUtils;
+import org.smooks.payload.StringSource;
 import org.xml.sax.SAXException;
 
 import example.model.Order;

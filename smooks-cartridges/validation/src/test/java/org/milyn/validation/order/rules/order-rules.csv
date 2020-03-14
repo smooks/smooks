@@ -1,6 +1,0 @@
-"# Rule Name","MVEL Expression ('Ctrl+CR' for Carriage Return)"
-"valid_product_222_Qauntity","if (orderItem.product == 222 && orderItem.quantity > 5) {
-    return false;
-} else {
-    return true;
-}"

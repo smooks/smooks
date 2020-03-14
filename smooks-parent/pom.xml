@@ -953,7 +953,7 @@
           <version>2.22.2</version>
           <configuration>
             <environmentVariables>
-              <org.milyn.xml.XsdValidator.SchemaFactory>org.apache.xerces.jaxp.validation.XMLSchemaFactory</org.milyn.xml.XsdValidator.SchemaFactory>
+              <org.smooks.xml.XsdValidator.SchemaFactory>org.apache.xerces.jaxp.validation.XMLSchemaFactory</org.smooks.xml.XsdValidator.SchemaFactory>
             </environmentVariables>
             <excludes>
               <exclude>**/Test*.java</exclude>

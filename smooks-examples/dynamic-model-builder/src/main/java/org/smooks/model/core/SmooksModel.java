@@ -16,7 +16,7 @@
 
 package org.smooks.model.core;
 
-import org.milyn.javabean.dynamic.serialize.DefaultNamespace;
+import org.smooks.javabean.dynamic.serialize.DefaultNamespace;
 import org.smooks.model.javabean.Bean;
 
 import java.util.ArrayList;

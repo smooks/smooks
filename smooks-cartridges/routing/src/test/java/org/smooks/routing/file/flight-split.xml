@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:ftl="https://www.smooks.org/xsd/smooks/freemarker-1.2.xsd"
+                      xmlns:file="https://www.smooks.org/xsd/smooks/file-routing-1.3.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+
+    <!--
+    Filter the message using the SAX Filter i.e. not DOM, so no
+    intermediate DOM for the "complete" message - there are "mini" DOMs
+    for Flight the NodeModels below....
+    -->
+    <params>
+        <param name="stream.filter.type">SAX</param>
+    </params>
+
+    <resource-config selector="Flight">
+        <resource>org.smooks.delivery.DomModelCreator</resource>
+    </resource-config>
+
+    <!-- Apply a template to each "Flight" NodeModel (captured above), outputting to the file stream (below) -->
+    <ftl:freemarker applyOnElement="Flight">
+        <ftl:template><!--<?xml version="1.0" encoding="utf-8"?>
+<COMP_FIDS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.comp.aero/fids">
+    <@serialize nodeModel=Flight format=true />    
+</COMP_FIDS>--></ftl:template>
+        <ftl:use>
+            <ftl:outputTo outputStreamResource="flightSplitStream" />
+        </ftl:use>
+    </ftl:freemarker>
+
+    <!-- Capture all the flight identification info into a Map - used to name the split files (below) -->
+    <jb:bean beanId="flightIdent" class="java.util.HashMap" createOnElement="Identification">
+        <jb:value data="Identification/*" />
+    </jb:bean>
+
+    <!-- Open a file output stream for each Flight.  This is writen to by the freemarker template (above).. -->
+    <file:outputStream resourceName="flightSplitStream" openOnElement="Flight">
+        <!-- Name the files using the "flightIdent" info captured above -->
+        <file:fileNamePattern>${flightIdent.AirlineCode}-${flightIdent.FlightNumber}.xml</file:fileNamePattern>
+        <file:destinationDirectoryPattern>target/flights</file:destinationDirectoryPattern>
+
+        <!-- Throttle file generation so as not to flood the output directory -->
+        <file:highWaterMark mark="10"/>
+    </file:outputStream>
+
+</smooks-resource-list>

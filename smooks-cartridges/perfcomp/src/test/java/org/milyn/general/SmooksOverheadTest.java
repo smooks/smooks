@@ -13,7 +13,7 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.milyn.general;
+package org.smooks.general;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,8 +24,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.milyn.Smooks;
-import org.milyn.payload.JavaResult;
+import org.smooks.Smooks;
+import org.smooks.payload.JavaResult;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -33,7 +33,6 @@ import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 

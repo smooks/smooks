@@ -16,11 +16,8 @@
 
 package org.smooks.model.csv;
 
-import org.milyn.javabean.dynamic.serialize.DefaultNamespace;
+import org.smooks.javabean.dynamic.serialize.DefaultNamespace;
 import org.smooks.model.core.Reader;
-import org.smooks.model.csv.ListBinding;
-import org.smooks.model.csv.MapBinding;
-import org.smooks.model.csv.SingleBinding;
 
 /**
  * CSV Reader component.

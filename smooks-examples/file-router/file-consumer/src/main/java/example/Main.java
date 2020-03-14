@@ -15,7 +15,7 @@
 */
 package example;
 
-import org.milyn.io.FileUtils;
+import org.smooks.io.FileUtils;
 
 import java.io.File;
 import java.io.FileFilter;

@@ -6,49 +6,49 @@
     -->
 
     <resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.db.DirectDataSource</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.db.DirectDataSource</param>
     </resource-config>
 
     <resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">bindOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">bindOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">datasource</param>
     </resource-config>
 
 	<resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">autoCommit</param>
     </resource-config>
 
 	<resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">driver</param>
     </resource-config>
 
 	<resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">url</param>
     </resource-config>
 
 	<resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">username</param>
     </resource-config>
 
     <resource-config selector="direct">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">password</param>
     </resource-config>
 
@@ -57,23 +57,23 @@
     -->
 
     <resource-config selector="JNDI">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.db.JndiDataSource</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.db.JndiDataSource</param>
     </resource-config>
 
     <resource-config selector="JNDI">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">bindOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="JNDI">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">datasource</param>
     </resource-config>
 
 	<resource-config selector="JNDI">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">autoCommit</param>
     </resource-config>
 

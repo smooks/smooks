@@ -7,7 +7,7 @@
     <unedifact:reader mappingModel="urn:org.milyn.edi.unedifact:d96a-mapping:1.4" ignoreNewLines="true" />
 
     <core:exports>
-        <core:result type="org.milyn.payload.StringResult"/>
+        <core:result type="org.smooks.payload.StringResult"/>
     </core:exports>
 
 </smooks-resource-list>

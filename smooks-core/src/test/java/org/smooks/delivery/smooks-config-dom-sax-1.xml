@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <resource-config selector="d">
+        <resource>org.smooks.delivery.SAXAndDOMVisitor</resource>
+    </resource-config>
+
+    <resource-config selector="e">
+        <resource>org.smooks.delivery.SAXAndDOMVisitor</resource>
+    </resource-config>
+
+    <resource-config selector="f">
+        <resource>org.smooks.delivery.SAXAndDOMVisitor</resource>
+    </resource-config>
+
+</smooks-resource-list>

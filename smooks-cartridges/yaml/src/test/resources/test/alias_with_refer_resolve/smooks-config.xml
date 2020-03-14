@@ -5,7 +5,7 @@
     Configure the Yaml Reader to read the message into a stream of SAX events.
     -->
     <resource-config selector="org.xml.sax.driver">
-	    <resource>org.milyn.yaml.YamlReader</resource>
+	    <resource>org.smooks.yaml.YamlReader</resource>
 	    <param name="aliasStrategy">REFER_RESOLVE</param>
 	</resource-config>
 

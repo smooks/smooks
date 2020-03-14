@@ -6,24 +6,24 @@
     -->
 
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.smooks.edi.EDIReader</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.edi.EDIReader</param>
     </resource-config>
 
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">org.xml.sax.driver</param>
     </resource-config>
 
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">mappingModel</param>
         <param name="mapTo">mapping-model</param>
     </resource-config>
 
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">encoding</param>
     </resource-config>
 

@@ -1,8 +1,8 @@
 package example.groovy;
 
-import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.sax.SAXVisitAfter;
-import org.milyn.delivery.sax.SAXElement;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.sax.SAXVisitAfter;
+import org.smooks.delivery.sax.SAXElement;
 
 public class Test implements SAXVisitAfter {
 

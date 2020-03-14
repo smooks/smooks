@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:ftl="https://www.smooks.org/xsd/smooks/freemarker-1.2.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+
+    <ftl:freemarker applyOnElement="c">
+        <ftl:template>/org/smooks/templating/freemarker/test-template.ftl</ftl:template>
+        <ftl:use>
+            <ftl:inline directive="addto" />
+        </ftl:use>
+    </ftl:freemarker>
+
+    <jb:bean createOnElement="b" class="org.smooks.templating.MyBean" beanId="myBeanData">
+        <jb:value property="x" data="b/@x" />
+    </jb:bean>
+
+</smooks-resource-list>

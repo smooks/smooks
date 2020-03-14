@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.UNE41" beanId="uneSegment" createOnElement="group">
+    	<jb:value property="controlCount" data="UNE/controlCount" />
+    	<jb:value property="groupRef" data="UNE/groupRef" />
+    </jb:bean>
+
+</smooks-resource-list>

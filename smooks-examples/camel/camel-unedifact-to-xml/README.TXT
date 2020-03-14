@@ -31,14 +31,14 @@ Install and configure Servicemix 4.x
 Deploy Smooks OSGi Bundle
 -------------------------
 1. Deploy Smooks OSGi bundle
-    karaf@root> features:addUrl mvn:org.milyn/milyn-smooks-all/1.5-SNAPSHOT/xml/features
+    karaf@root> features:addUrl mvn:org.smooks/milyn-smooks-all/1.5-SNAPSHOT/xml/features
     karaf@root> features:install smooks
 2. Deploy the mapping and bindings for d96a
-    karaf@root osgi:install mvn:org.milyn.edi.unedifact/d96a-binding/1.4
-    karaf@root osgi:install mvn:org.milyn.edi.unedifact/d96a-mapping/1.4
+    karaf@root osgi:install mvn:org.smooks.edi.unedifact/d96a-binding/1.4
+    karaf@root osgi:install mvn:org.smooks.edi.unedifact/d96a-mapping/1.4
 
 3. Deploy the example
-    osgi:install -s mvn:org.milyn/milyn-smooks-example-camel-unedifact-to-xml/1.0
+    osgi:install -s mvn:org.smooks/milyn-smooks-example-camel-unedifact-to-xml/1.0
 
 Run the example
 ---------------

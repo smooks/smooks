@@ -3,7 +3,7 @@
 
 <smooks-resource-list> 
 
-	<smooks-resource useragent="msie6" selector="xxx" path="org.milyn.RenameElementTrans">
+	<smooks-resource useragent="msie6" selector="xxx" path="org.smooks.RenameElementTrans">
 		<param name="new-name">yyy</param>
 	</smooks-resource>
 

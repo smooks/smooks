@@ -1,1 +1,1 @@
-class=org.milyn.smooks.camel.component.SmooksComponent
+class=org.smooks.camel.component.SmooksComponent

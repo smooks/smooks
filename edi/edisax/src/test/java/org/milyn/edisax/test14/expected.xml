@@ -1,1 +1,0 @@
-org.milyn.edisax.EDIParseException:EDI message processing failed [Test Message][1.0].  Segment [SEG], field 1 (name), component 1 (firstname) expected to contain 2 sub-components.  Actually contains 1 sub-components.  Currently at segment number 1.

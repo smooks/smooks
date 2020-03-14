@@ -4,7 +4,7 @@
 	<!--
 		The order-item java transforms...
 	-->
-    <jb:bean beanId="order-item" class="org.milyn.templating.xslt.OrderItem" createOnElement="order-item">
+    <jb:bean beanId="order-item" class="org.smooks.templating.xslt.OrderItem" createOnElement="order-item">
        <jb:value property="price" data="order-item/price"/>
        <jb:value property="quantity" data="order-item/quantity"/>
        <jb:value property="product" data="order-item/product-id"/>
@@ -17,7 +17,7 @@
         The xslt
     -->
     <xsl:xsl applyOnElement="Order">
-       <xsl:template>org/milyn/templating/xslt/xsl_java_01/transform-order.xsl</xsl:template>
+       <xsl:template>org/smooks/templating/xslt/xsl_java_01/transform-order.xsl</xsl:template>
     </xsl:xsl>
 
 </smooks-resource-list>

@@ -69,7 +69,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.milyn.ejc.EJC</mainClass>
+              <mainClass>org.smooks.ejc.EJC</mainClass>
               <addClasspath>true</addClasspath>
             </manifest>
           </archive>

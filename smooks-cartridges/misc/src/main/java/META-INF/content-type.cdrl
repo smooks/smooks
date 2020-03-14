@@ -10,7 +10,7 @@
 	NB: See device-profile.xml
 -->
 
-<smooks-resource-list default-selector="http-response-header" default-path="org.milyn.delivery.http.HeaderAction"> 
+<smooks-resource-list default-selector="http-response-header" default-path="org.smooks.delivery.http.HeaderAction">
 
 	<!--
 		HTML 4 browser response: 

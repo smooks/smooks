@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:t01="http://www.milyn.org/xsd/smooks/test-xsd-01.xsd"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd
+                                        http://www.milyn.org/xsd/smooks-1.1.xsd http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <conditions>
+        <condition id="condition1" evaluator="org.smooks.cdr.xsd11.conditiontests.TestExpressionEvaluator">false</condition>
+        <condition id="condition2" evaluator="org.smooks.cdr.xsd11.conditiontests.TestExpressionEvaluator">false</condition>
+    </conditions>
+
+    <t01:renameElement name="b" newName="c" />
+    <t01:renameElement name="c" newName="b">
+        <t01:conditionRef>condition1</t01:conditionRef>
+    </t01:renameElement>
+    <t01:renameElement name="d" newName="e">
+        <condition idRef="condition2" />
+    </t01:renameElement>
+</smooks-resource-list>

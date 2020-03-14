@@ -4,6 +4,6 @@
     <!--
     Configure the JSON Reader to read the message into a stream of SAX events.
     -->
-    <reader class="org.milyn.json.JSONReader" />
+    <reader class="org.smooks.json.JSONReader" />
 
 </smooks-resource-list>

@@ -4,7 +4,7 @@
     <!--
     Configure the Yaml Reader to read the message into a stream of SAX events.
     -->
-    <reader class="org.milyn.yaml.YamlReader">
+    <reader class="org.smooks.yaml.YamlReader">
     	<params>
     		<param name="indent">true</param>
     	</params>

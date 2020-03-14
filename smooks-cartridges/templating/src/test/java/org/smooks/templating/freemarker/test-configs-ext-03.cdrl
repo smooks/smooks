@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:ftl="https://www.smooks.org/xsd/smooks/freemarker-1.2.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+
+    <ftl:freemarker applyOnElement="$document">
+        <ftl:template><!--<mybean>${myBeanData.x}</mybean>--></ftl:template>
+    </ftl:freemarker>
+
+</smooks-resource-list>

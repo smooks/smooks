@@ -6,51 +6,51 @@
     -->
 
     <resource-config selector="executor">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.routing.db.SQLExecutor</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.routing.db.SQLExecutor</param>
     </resource-config>
 
     <resource-config selector="executor">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">executeOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
 	<resource-config selector="executor">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">executeOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="executor">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">datasource</param>
     </resource-config>
 
 	<resource-config selector="executor">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">executeBefore</param>
     </resource-config>
 
     <resource-config selector="executor/statement">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapTo">statement</param>
     </resource-config>
 
     <resource-config selector="executor/resultSet">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
         <param name="mapTo">resultSetName</param>
     </resource-config>
 
     <resource-config selector="executor/resultSet">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">scope</param>
         <param name="mapTo">resultSetScope</param>
     </resource-config>
 
     <resource-config selector="executor/resultSet">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">timeToLive</param>
         <param name="mapTo">resultSetTTL</param>
     </resource-config>
@@ -59,38 +59,38 @@
         ResultsetRowSelector Resource
     -->
 	<resource-config selector="resultSetRowSelector">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.routing.db.ResultsetRowSelector</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.routing.db.ResultsetRowSelector</param>
     </resource-config>
 
     <resource-config selector="resultSetRowSelector">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">selectRowOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="resultSetRowSelector">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">resultSetName</param>
     </resource-config>
 
 	<resource-config selector="resultSetRowSelector">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanId</param>
     </resource-config>
 
 	<resource-config selector="resultSetRowSelector">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">executeBefore</param>
     </resource-config>
 
     <resource-config selector="resultSetRowSelector/where">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapTo">where</param>
     </resource-config>
 
     <resource-config selector="resultSetRowSelector/failedSelectError">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapTo">failedSelectError</param>
     </resource-config>
 

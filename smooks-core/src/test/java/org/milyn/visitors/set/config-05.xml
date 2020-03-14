@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
-                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd">
-
-    <core:setElementData onElement="a">
-        <core:attribute name="xxx" value="${injectedVal}" />
-    </core:setElementData>
-
-</smooks-resource-list>

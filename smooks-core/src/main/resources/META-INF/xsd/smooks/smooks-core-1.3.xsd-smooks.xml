@@ -5,53 +5,53 @@
         Filter settings...
     -->
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">global-parameters</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">type</param>
         <param name="mapTo">stream.filter.type</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">defaultSerialization</param>
         <param name="mapTo">default.serialization.on</param>
     </resource-config>
 
 	<resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">terminateOnException</param>
         <param name="mapTo">terminate.on.visitor.exception</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">closeSource</param>
         <param name="mapTo">close.source</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">closeResult</param>
         <param name="mapTo">close.result</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">rewriteEntities</param>
         <param name="mapTo">entities.rewrite</param>
     </resource-config>
 
 	<resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">readerPoolSize</param>
         <param name="mapTo">reader.pool.size</param>
     </resource-config>
@@ -60,12 +60,12 @@
         Namespace settings...
     -->
     <resource-config selector="namespaces">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.xml.NamespaceMappings</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.xml.NamespaceMappings</param>
     </resource-config>
 
     <resource-config selector="namespace">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">uri</param>
         <param name="mapToSpecifier">prefix</param>
     </resource-config>
@@ -74,18 +74,18 @@
         Terminate settings...
     -->
     <resource-config selector="terminate">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.delivery.sax.terminate.TerminateVisitor</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.delivery.sax.terminate.TerminateVisitor</param>
     </resource-config>
 
     <resource-config selector="terminate">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">onElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="terminate">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">terminateBefore</param>
     </resource-config>
 

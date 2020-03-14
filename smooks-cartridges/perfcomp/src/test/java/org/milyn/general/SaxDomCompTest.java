@@ -13,7 +13,7 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.milyn.general;
+package org.smooks.general;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -25,9 +25,9 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.milyn.Smooks;
-import org.milyn.container.ExecutionContext;
-import org.milyn.io.NullWriter;
+import org.smooks.Smooks;
+import org.smooks.container.ExecutionContext;
+import org.smooks.io.NullWriter;
 import org.xml.sax.SAXException;
 
 /**

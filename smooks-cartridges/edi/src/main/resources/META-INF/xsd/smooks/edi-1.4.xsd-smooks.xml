@@ -2,29 +2,29 @@
 <smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/edi-1.4.xsd">
 
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.smooks.edi.EDIReader</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.edi.EDIReader</param>
     </resource-config>
 
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">org.xml.sax.driver</param>
     </resource-config>
 
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">mappingModel</param>
         <param name="mapTo">mapping-model</param>
     </resource-config>
     
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">ignoreNewLines</param>
     </resource-config>
     
     <resource-config selector="reader">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">validate</param>
     </resource-config>
 

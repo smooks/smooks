@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd">
+
+	<profiles>
+		<profile base-profile="A" />
+		<profile base-profile="B" />
+	</profiles>
+
+    <jb:bindings beanId="order" class="org.smooks.javabean.extendedconfig.ExtendedOrder" createOnElement="order" targetProfile="A">
+        <jb:expression property="total" execOnElement="order-item" >1.0 + 1.0</jb:expression>
+    </jb:bindings>
+
+	<jb:bindings beanId="order" class="org.smooks.javabean.extendedconfig.ExtendedOrder" createOnElement="order" targetProfile="B">
+        <jb:expression property="total" execOnElement="order-item" >2.0 + 2.0</jb:expression>
+    </jb:bindings>
+
+
+</smooks-resource-list>

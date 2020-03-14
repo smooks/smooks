@@ -1,0 +1,19 @@
+<ord num="3122" state="finished" date="16-12-08">
+    <customer>
+        <user>HenkJansen</user>
+        <fname>John<x/></fname>
+        <lname>Weston</lname>
+    </customer>
+    <items>
+        <item code="8655">
+            <units>1</units>
+            <name>Something about Mary</name>
+            <price>18.99</price>
+        </item>
+        <item code="3276">
+            <units>2</units>
+            <name>Falco DVD RW</name>
+            <price>6.50</price>
+        </item>
+    </items>
+</ord>

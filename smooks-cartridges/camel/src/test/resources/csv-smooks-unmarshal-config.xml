@@ -4,11 +4,11 @@
 	xmlns:csv="https://www.smooks.org/xsd/smooks/csv-1.7.xsd">
 
 	<csv:reader fields="firstName,lastName,gender,age,country">
-		<csv:listBinding beanId="result" class="org.milyn.smooks.camel.dataformat.Customer" />
+		<csv:listBinding beanId="result" class="org.smooks.camel.dataformat.Customer" />
 	</csv:reader>
 	
     <core:exports>
-        <core:result type="org.milyn.payload.JavaResult" extract="result"/>
+        <core:result type="org.smooks.payload.JavaResult" extract="result"/>
     </core:exports>
 	
 </smooks-resource-list>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.UNG41" beanId="ungSegment" createOnElement="group">
+    	<jb:value property="groupId" data="UNG/groupId" />
+    	<jb:wiring property="senderApp" beanIdRef="ungSenderApp" />
+    	<jb:wiring property="recipientApp" beanIdRef="ungRecipientApp" />
+    	<jb:wiring property="date" beanIdRef="ungDateTime" />
+    	<jb:value property="groupRef" data="UNG/groupRef" />
+    	<jb:value property="controllingAgencyCode" data="UNG/controllingAgencyCode" />
+    	<jb:wiring property="messageVersion" beanIdRef="ungMessageVersion" />
+    	<jb:value property="applicationPassword" data="UNG/applicationPassword" />
+    </jb:bean>
+    
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.Application" beanId="ungSenderApp" createOnElement="group/UNG/senderApp">
+    	<jb:value property="id" data="UNG/senderApp/id" />
+    	<jb:value property="codeQualifier" data="UNG/senderApp/codeQualifier" />
+    </jb:bean>
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.Application" beanId="ungRecipientApp" createOnElement="group/UNG/recipientApp">
+    	<jb:value property="id" data="UNG/recipientApp/id" />
+    	<jb:value property="codeQualifier" data="UNG/recipientApp/codeQualifier" />
+    </jb:bean>
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.MessageVersion" beanId="ungMessageVersion" createOnElement="group/UNG/messageVersion">
+    	<jb:value property="versionNum" data="UNG/messageVersion/versionNum" />
+    	<jb:value property="releaseNum" data="UNG/messageVersion/releaseNum" />
+    	<jb:value property="associationCode" data="UNG/messageVersion/associationCode" />
+    </jb:bean>
+    
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.DateTime" beanId="ungDateTime" createOnElement="group/UNG/dateTime">
+    	<jb:value property="date" data="UNG/dateTime/date" />
+    	<jb:value property="time" data="UNG/dateTime/time" />
+    </jb:bean>
+
+</smooks-resource-list>

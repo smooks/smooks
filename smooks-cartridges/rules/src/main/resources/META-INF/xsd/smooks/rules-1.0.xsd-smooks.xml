@@ -2,24 +2,24 @@
 <smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/rules-1.0.xsd">
 
     <resource-config selector="ruleBases/ruleBase">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.rules.RulesProviderFactory</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.rules.RulesProviderFactory</param>
     </resource-config>
     
     <resource-config selector="ruleBases/ruleBase">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
         <param name="mapTo">name</param>
     </resource-config>
     
     <resource-config selector="ruleBases/ruleBase">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">src</param>
         <param name="mapTo">src</param>
     </resource-config>
 
     <resource-config selector="ruleBases/ruleBase">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">provider</param>
         <param name="mapTo">provider</param>
     </resource-config>

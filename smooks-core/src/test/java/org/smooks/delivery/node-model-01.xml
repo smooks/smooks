@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.4.xsd">
+
+    <core:filterSettings type="DOM" />
+
+    <resource-config selector="order,order-item">
+        <resource>org.smooks.delivery.DomModelCreator</resource>
+    </resource-config>
+
+    <resource-config selector="order-item">
+        <resource>org.smooks.delivery.ModelCatcher</resource>
+    </resource-config>
+
+</smooks-resource-list>

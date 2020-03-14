@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <resource-config selector="$document">
+        <resource>org.smooks.delivery.DomModelCreator</resource>
+    </resource-config>
+
+    <resource-config selector="$document">
+        <resource type="ftl"><!--<#foreach c in a.b.c>'${c}'</#foreach> javaVal=${x.val}--></resource>
+    </resource-config>
+
+    <jb:bean beanId="x" class="java.util.HashMap" createOnElement="b">
+        <jb:value property="val" data="b/@javabind" />
+    </jb:bean>
+
+</smooks-resource-list>

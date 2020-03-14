@@ -13,12 +13,12 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.milyn.general;
+package org.smooks.general;
 
-import org.milyn.container.ExecutionContext;
-import org.milyn.xml.SmooksXMLReader;
-import org.milyn.delivery.sax.SAXContentDeliveryConfig;
-import org.milyn.delivery.sax.SAXElementVisitorMap;
+import org.smooks.container.ExecutionContext;
+import org.smooks.xml.SmooksXMLReader;
+import org.smooks.delivery.sax.SAXContentDeliveryConfig;
+import org.smooks.delivery.sax.SAXElementVisitorMap;
 import org.xml.sax.*;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.ext.LexicalHandler;

@@ -14,18 +14,18 @@
 	http://www.gnu.org/licenses/lgpl.txt
 */
 
-package org.milyn.templating.xslt;
+package org.smooks.templating.xslt;
 
 import junit.framework.ComparisonFailure;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.milyn.Smooks;
-import org.milyn.container.ExecutionContext;
-import org.milyn.container.standalone.StandaloneExecutionContext;
-import org.milyn.io.StreamUtils;
-import org.milyn.xml.XmlUtil;
+import org.smooks.Smooks;
+import org.smooks.container.ExecutionContext;
+import org.smooks.container.standalone.StandaloneExecutionContext;
+import org.smooks.io.StreamUtils;
+import org.smooks.xml.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

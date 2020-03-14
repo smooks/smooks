@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.ByteArrayInputStream;
 
 import org.xml.sax.SAXException;
-import org.milyn.io.StreamUtils;
+import org.smooks.io.StreamUtils;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

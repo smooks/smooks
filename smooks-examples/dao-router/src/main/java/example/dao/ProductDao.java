@@ -17,10 +17,9 @@ package example.dao;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.annotations.NamedQuery;
-import org.milyn.scribe.annotation.Dao;
-import org.milyn.scribe.annotation.Lookup;
-import org.milyn.scribe.annotation.Param;
+import org.smooks.scribe.annotation.Dao;
+import org.smooks.scribe.annotation.Lookup;
+import org.smooks.scribe.annotation.Param;
 
 import example.jpa.entity.Product;
 

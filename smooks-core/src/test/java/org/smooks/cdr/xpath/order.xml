@@ -1,0 +1,19 @@
+<ord num="3122" state="finished" date="16-12-08" xmlns="http://a" xmlns:b="http://b" xmlns:c="http://c" xmlns:d="http://d">
+    <b:customer>
+        <user>HenkJansen</user>
+        <fname>John<x/></fname>
+        <lname>Weston</lname>
+    </b:customer>
+    <items>
+        <c:item c:code="8655">
+            <d:units>1</d:units>
+            <name>Something about Mary</name>
+            <price>18.99</price>
+        </c:item>
+        <item code="3276">
+            <units>2</units>
+            <name>Falco DVD RW</name>
+            <price>6.50</price>
+        </item>
+    </items>
+</ord>

@@ -17,14 +17,13 @@ package example;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import org.milyn.Smooks;
-import org.milyn.StreamFilterType;
-import org.milyn.FilterSettings;
-import org.milyn.container.ExecutionContext;
+import org.smooks.Smooks;
+import org.smooks.StreamFilterType;
+import org.smooks.FilterSettings;
+import org.smooks.container.ExecutionContext;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;

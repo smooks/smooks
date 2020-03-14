@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <resource-config selector="header">
+        <resource>org.smooks.delivery.nested.OrderItemVisitor</resource>
+        <param name="beanId">header</param>
+    </resource-config>
+
+    <resource-config selector="order-item">
+        <resource>org.smooks.delivery.nested.NestedExecutionVisitor</resource>
+        <param name="smooksConfig">/org/smooks/delivery/nested/order-item-config.xml</param>
+        <param name="mapBeans">orderItem</param>
+    </resource-config>
+
+    <resource-config selector="trailer">
+        <resource>org.smooks.delivery.nested.OrderItemVisitor</resource>
+        <param name="beanId">trailer</param>
+    </resource-config>
+
+</smooks-resource-list>

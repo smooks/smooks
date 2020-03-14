@@ -1,8 +1,8 @@
-package org.milyn.general;
+package org.smooks.general;
 
-import org.milyn.delivery.dom.DOMVisitAfter;
-import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
+import org.smooks.delivery.dom.DOMVisitAfter;
+import org.smooks.container.ExecutionContext;
+import org.smooks.SmooksException;
 import org.w3c.dom.Element;
 
 /**

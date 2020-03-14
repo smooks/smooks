@@ -16,7 +16,7 @@
 package example.activator;
 
 import example.ExampleUtil;
-import org.milyn.Smooks;
+import org.smooks.Smooks;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;

@@ -6,7 +6,7 @@
         <param name="maintain.element.stack">false</param>
     </params>
 
-    <jb:bean beanId="orderItem" class="org.milyn.general.OrderItem" createOnElement="order-item">
+    <jb:bean beanId="orderItem" class="org.smooks.general.OrderItem" createOnElement="order-item">
         <jb:value property="position" data="position" />
         <jb:value property="quantity" data="quantity" />
         <jb:value property="title" data="title" />

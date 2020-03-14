@@ -37,7 +37,7 @@
 
     <!-- Writers (marshal)... -->
 
-    <dmb:writer beanId="csvReader" class="org.milyn.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
+    <dmb:writer beanId="csvReader" class="org.smooks.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
         <param name="template">/org/smooks/model/csv/v1_3/v1.3.ftl</param>
     </dmb:writer>
 

@@ -16,11 +16,11 @@
 package example;
 
 import example.model.Order;
-import org.milyn.Smooks;
-import org.milyn.SmooksException;
-import org.milyn.event.report.HtmlReportGenerator;
-import org.milyn.container.ExecutionContext;
-import org.milyn.payload.JavaSource;
+import org.smooks.Smooks;
+import org.smooks.SmooksException;
+import org.smooks.event.report.HtmlReportGenerator;
+import org.smooks.container.ExecutionContext;
+import org.smooks.payload.JavaSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;

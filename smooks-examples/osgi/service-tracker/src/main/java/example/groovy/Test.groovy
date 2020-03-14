@@ -1,7 +1,7 @@
 package example.activator;
 
-import org.milyn.container.ExecutionContext;
-import org.milyn.delivery.dom.DOMVisitAfter;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.dom.DOMVisitAfter;
 
 public class Test implements DOMVisitAfter {
 

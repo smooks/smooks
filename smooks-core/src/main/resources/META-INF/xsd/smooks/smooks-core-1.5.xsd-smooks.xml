@@ -7,53 +7,53 @@
         Filter settings...
     -->
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">global-parameters</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">type</param>
         <param name="mapTo">stream.filter.type</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">defaultSerialization</param>
         <param name="mapTo">default.serialization.on</param>
     </resource-config>
 
 	<resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">terminateOnException</param>
         <param name="mapTo">terminate.on.visitor.exception</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">closeSource</param>
         <param name="mapTo">close.source</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">closeResult</param>
         <param name="mapTo">close.result</param>
     </resource-config>
 
     <resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">rewriteEntities</param>
         <param name="mapTo">entities.rewrite</param>
     </resource-config>
 
 	<resource-config selector="filterSettings">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">readerPoolSize</param>
         <param name="mapTo">reader.pool.size</param>
     </resource-config>
@@ -62,29 +62,29 @@
         Exports settings...
     -->
     <resource-config selector="exports">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.payload.Exports</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.payload.Exports</param>
     </resource-config>
     
     <resource-config selector="exports/result">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.payload.Export</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.payload.Export</param>
     </resource-config>
     
     <resource-config selector="exports/result">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">type</param>
         <param name="mapTo">type</param>
     </resource-config>
     
     <resource-config selector="exports/result">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
         <param name="mapTo">name</param>
     </resource-config>
     
     <resource-config selector="exports/result">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">extract</param>
         <param name="mapTo">extract</param>
     </resource-config>
@@ -93,12 +93,12 @@
         Namespace settings...
     -->
     <resource-config selector="namespaces">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.xml.NamespaceMappings</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.xml.NamespaceMappings</param>
     </resource-config>
 
     <resource-config selector="namespace">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">uri</param>
         <param name="mapToSpecifier">prefix</param>
     </resource-config>
@@ -107,18 +107,18 @@
         Terminate settings...
     -->
     <resource-config selector="terminate">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.delivery.sax.terminate.TerminateVisitor</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.delivery.sax.terminate.TerminateVisitor</param>
     </resource-config>
 
     <resource-config selector="terminate">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">onElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="terminate">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">terminateBefore</param>
     </resource-config>
 
@@ -126,46 +126,46 @@
         Set Element data...
     -->
     <resource-config selector="setElementData">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.visitors.set.SetElementData</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.visitors.set.SetElementData</param>
     </resource-config>
 
     <resource-config selector="setElementData">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">onElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="setElementData">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
     </resource-config>
 
     <resource-config selector="setElementData">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">namespace</param>
     </resource-config>
 
     <resource-config selector="setElementData/attribute">
-        <resource>org.milyn.visitors.set.SetElementDataConfigDigester</resource>
+        <resource>org.smooks.visitors.set.SetElementDataConfigDigester</resource>
     </resource-config>
 
     <!--
         Remove Element...
     -->
     <resource-config selector="remove">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.visitors.remove.RemoveElement</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.visitors.remove.RemoveElement</param>
     </resource-config>
 
     <resource-config selector="remove">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">element</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="remove">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">keepChildren</param>
     </resource-config>
 
@@ -173,23 +173,23 @@
         Remove Attribute...
     -->
     <resource-config selector="removeAttribute">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.visitors.remove.RemoveAttribute</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.visitors.remove.RemoveAttribute</param>
     </resource-config>
 
     <resource-config selector="removeAttribute">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">onElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="removeAttribute">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
     </resource-config>
 
     <resource-config selector="removeAttribute">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">namespace</param>
     </resource-config>
 

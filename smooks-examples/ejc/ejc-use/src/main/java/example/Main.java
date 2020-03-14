@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.xml.sax.SAXException;
-import org.milyn.io.FileUtils;
+import org.smooks.io.FileUtils;
 
 /**
  * Simple example of how to use an EJC generated Factory class.

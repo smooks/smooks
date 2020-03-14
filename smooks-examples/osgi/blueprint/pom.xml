@@ -90,10 +90,10 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-            <Import-Package>org.milyn.*;version="${project.version}",
-              javax.xml.transform.stream,
-              example.model;version="${project.version}",
-              *;-nouses:=true
+            <Import-Package>org.smooks.*;version="${project.version}",
+                javax.xml.transform.stream,
+                example.model;version="${project.version}",
+                *;-nouses:=true
             </Import-Package>
             <Export-Package>example.model.*;version="${project.version}"
             </Export-Package>

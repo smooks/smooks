@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
+                      xmlns:g="https://www.smooks.org/xsd/smooks/groovy-1.2.xsd">
+
+    <jb:bean beanId="orderItems" class="java.util.HashMap" createOnElement="order-items"/>
+
+    <jb:bean beanId="orderItem" class="java.util.HashMap" createOnElement="order-item">
+        <jb:value data="order-item/*"/>
+        <jb:value property="price" data="order-item/price"/> <!-- Required: http://jira.codehaus.org/browse/MILYN-271 -->
+    </jb:bean>
+
+    <g:groovy executeOnElement="order-item/price" executeBefore="true">
+        <g:script>
+            <!--
+            // Manually wire each orderItem into the orderItems Map...
+            Map orderItems = getBean("orderItems");
+            Map orderItem = getBean("orderItem");
+
+            orderItems.put(orderItem.product, orderItem);
+            -->
+        </g:script>
+    </g:groovy>
+
+</smooks-resource-list>

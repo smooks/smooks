@@ -21,8 +21,8 @@ import org.junit.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.milyn.javabean.dynamic.Model;
-import org.milyn.javabean.dynamic.ModelBuilder;
+import org.smooks.javabean.dynamic.Model;
+import org.smooks.javabean.dynamic.ModelBuilder;
 import org.smooks.model.core.SmooksModel;
 import org.xml.sax.SAXException;
 
