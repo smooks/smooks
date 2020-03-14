@@ -1,1 +1,0 @@
-org.milyn.edisax.EDIParseException:EDI message processing failed [Test Message][1.0].  Reached end of EDI message stream but there must be a minimum of 2 instances of segment [1A].  Currently at segment number 4.

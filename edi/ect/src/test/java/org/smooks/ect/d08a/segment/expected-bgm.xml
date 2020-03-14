@@ -1,0 +1,35 @@
+<medi:segment xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd" description=" To indicate the type and function of a messageand to transmit the identifying number." ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" name="BEGINNING OF MESSAGE" segcode="BGM" truncatable="true" xmltag="BEGINNING_OF_MESSAGE">
+  <medi:field name="DOCUMENT/MESSAGE NAME" nodeTypeRef="C002" required="false" truncatable="true" xmltag="DOCUMENT_MESSAGE_NAME">
+    <medi:documentation>Identification of a type of document/message by codeor name. Code preferred.</medi:documentation>
+    <medi:component dataType="String" maxLength="3" minLength="0" name="Document name code" required="false" truncatable="true" xmltag="Document_name_code">
+      <medi:documentation>Code specifying the document name.</medi:documentation>
+    </medi:component>
+    <medi:component dataType="String" maxLength="17" minLength="0" name="Code list identification code" required="false" truncatable="true" xmltag="Code_list_identification_code">
+      <medi:documentation>Code identifying a user or association maintained codelist.</medi:documentation>
+    </medi:component>
+    <medi:component dataType="String" maxLength="3" minLength="0" name="Code list responsible agency code" required="false" truncatable="true" xmltag="Code_list_responsible_agency_code">
+      <medi:documentation>Code specifying the agency responsible for a codelist.</medi:documentation>
+    </medi:component>
+    <medi:component dataType="String" maxLength="35" minLength="0" name="Document name" required="false" truncatable="true" xmltag="Document_name">
+      <medi:documentation>Name of a document.</medi:documentation>
+    </medi:component>
+  </medi:field>
+  <medi:field name="DOCUMENT/MESSAGE IDENTIFICATION" nodeTypeRef="C106" required="false" truncatable="true" xmltag="DOCUMENT_MESSAGE_IDENTIFICATION">
+    <medi:documentation>Identification of a document/message by its numberand eventually its version or revision.</medi:documentation>
+    <medi:component dataType="String" maxLength="35" minLength="0" name="Document identifier" required="false" truncatable="true" xmltag="Document_identifier">
+      <medi:documentation>To identify a document.</medi:documentation>
+    </medi:component>
+    <medi:component dataType="String" maxLength="9" minLength="0" name="Version identifier" required="false" truncatable="true" xmltag="Version_identifier">
+      <medi:documentation>To identify a version.</medi:documentation>
+    </medi:component>
+    <medi:component dataType="String" maxLength="6" minLength="0" name="Revision identifier" required="false" truncatable="true" xmltag="Revision_identifier">
+      <medi:documentation>To identify a revision.</medi:documentation>
+    </medi:component>
+  </medi:field>
+  <medi:field dataType="String" maxLength="3" minLength="0" name="Message function code" nodeTypeRef="1225" required="false" truncatable="true" xmltag="Message_function_code">
+    <medi:documentation>Code indicating the function of the message.</medi:documentation>
+  </medi:field>
+  <medi:field dataType="String" maxLength="3" minLength="0" name="Response type code" nodeTypeRef="4343" required="false" truncatable="true" xmltag="Response_type_code">
+    <medi:documentation>Code specifying the type of acknowledgment required ortransmitted.</medi:documentation>
+  </medi:field>
+</medi:segment>

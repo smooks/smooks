@@ -15,9 +15,9 @@
 
 package example.activator;
 
-import org.milyn.Smooks;
-import org.milyn.SmooksFactory;
-import org.milyn.SmooksOSGIFactory;
+import org.smooks.Smooks;
+import org.smooks.SmooksFactory;
+import org.smooks.SmooksOSGIFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

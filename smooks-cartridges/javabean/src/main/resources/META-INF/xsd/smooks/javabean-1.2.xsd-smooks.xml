@@ -6,12 +6,12 @@
     -->
 
     <resource-config selector="bean">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.BeanInstanceCreator</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.javabean.BeanInstanceCreator</param>
     </resource-config>
 
     <resource-config selector="bean">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">createOnElement</param>
         <param name="mapTo">selector</param>
 
@@ -23,24 +23,24 @@
     </resource-config>
 
     <resource-config selector="bean">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">createOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="bean">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanId</param>
     </resource-config>
 
     <resource-config selector="bean">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">class</param>
         <param name="mapTo">beanClass</param>
     </resource-config>
 
     <resource-config selector="bean">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">extendLifecycle</param>
     </resource-config>
 
@@ -50,55 +50,55 @@
 
     <resource-config selector="bean/value">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
-        <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.BeanInstancePopulator</param>
+        <resource>org.smooks.cdr.extension.CloneResourceConfig</resource>
+        <param name="resource">org.smooks.javabean.BeanInstancePopulator</param>
         <param name="unset">beanClass</param>
         <param name="unset">extendLifecycle</param>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">data</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">dataNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">property</param>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">setterMethod</param>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">decoder</param>
         <param name="mapTo">type</param>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">default</param>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.javabean.ext.SelectorPropertyResolver</resource>
+        <resource>org.smooks.javabean.ext.SelectorPropertyResolver</resource>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.javabean.ext.DecodeParamResolver</resource>
+        <resource>org.smooks.javabean.ext.DecodeParamResolver</resource>
     </resource-config>
 
     <resource-config selector="bean/value">
-        <resource>org.milyn.javabean.ext.InitValExpressionSetter</resource>
+        <resource>org.smooks.javabean.ext.InitValExpressionSetter</resource>
         <param name="initValAttrib">default</param>
     </resource-config>
 
@@ -108,47 +108,47 @@
 
     <resource-config selector="bean/wiring">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
-        <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.BeanInstancePopulator</param>
+        <resource>org.smooks.cdr.extension.CloneResourceConfig</resource>
+        <param name="resource">org.smooks.javabean.BeanInstancePopulator</param>
         <param name="unset">beanClass</param>
     </resource-config>
 
     <resource-config selector="bean/wiring">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">property</param>
     </resource-config>
 
     <resource-config selector="bean/wiring">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">setterMethod</param>
     </resource-config>
 
     <resource-config selector="bean/wiring">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanIdRef</param>
         <param name="mapTo">wireBeanId</param>
     </resource-config>
 
     <resource-config selector="bean/wiring">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">wireOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="bean/wiring">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">wireOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="bean/wiring">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">wireOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="bean/wiring">
-    	<resource>org.milyn.javabean.ext.WireOnElementChecker</resource>
+    	<resource>org.smooks.javabean.ext.WireOnElementChecker</resource>
     </resource-config>
 
     <!--
@@ -157,41 +157,41 @@
 
     <resource-config selector="bean/expression">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
-        <resource>org.milyn.cdr.extension.CloneResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.BeanInstancePopulator</param>
+        <resource>org.smooks.cdr.extension.CloneResourceConfig</resource>
+        <param name="resource">org.smooks.javabean.BeanInstancePopulator</param>
         <param name="unset">beanClass</param>
         <param name="unset">extendLifecycle</param>
     </resource-config>
 
     <resource-config selector="bean/expression">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">execOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="bean/expression">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">execOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="bean/expression">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">property</param>
     </resource-config>
 
     <resource-config selector="bean/expression">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">setterMethod</param>
     </resource-config>
 
     <resource-config selector="bean/expression">
-        <resource>org.milyn.javabean.ext.InitValExpressionSetter</resource>
+        <resource>org.smooks.javabean.ext.InitValExpressionSetter</resource>
         <param name="initValAttrib">initVal</param>
     </resource-config>
 
     <resource-config selector="bean/expression">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapTo">expression</param>
     </resource-config>
 
@@ -200,7 +200,7 @@
     -->
 
     <resource-config selector="bean/*">
-        <resource>org.milyn.javabean.ext.PropertyChecker</resource>
+        <resource>org.smooks.javabean.ext.PropertyChecker</resource>
     </resource-config>
 
     <!--
@@ -208,12 +208,12 @@
     -->
 
     <resource-config selector="result">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.lifecycle.BeanResultCleanup</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.javabean.lifecycle.BeanResultCleanup</param>
     </resource-config>
 
     <resource-config selector="result">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">retainBeans</param>
         <param name="mapTo">beanIDs</param>
     </resource-config>

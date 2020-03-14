@@ -11,5 +11,5 @@
 	<!--
 		Pass-Thru response filter configuration - this basically turns of Smooks filtering.
 	-->
-	<smooks-resource selector="passthru-smooksrw" path="org.milyn.delivery.response.PassThruServletResponseWrapper" />
+	<smooks-resource selector="passthru-smooksrw" path="org.smooks.delivery.response.PassThruServletResponseWrapper" />
 </cdres-list>

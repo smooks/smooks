@@ -1,0 +1,387 @@
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.4.xsd">
+    <medi:description name="TPFREP" version="D:08A:UN"/>
+    <medi:delimiters component=":" escape="?" field="+" segment="'!$" sub-component="~"/>
+    <medi:segments xmltag="TPFREP">
+        <medi:segment ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" segcode="BGM" truncatable="true" xmltag="Beginning_of_message">
+            <medi:documentation>BGM, Beginning of message
+       A segment to indicate the beginning of the message by
+       identifying the message by a message number.</medi:documentation>
+            <medi:field required="false" truncatable="true" xmltag="DOCUMENT_MESSAGE_NAME">
+                <medi:documentation> Identification of a type of document/message by codeor name. Code preferred.</medi:documentation>
+                <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Document_name_code">
+                    <medi:documentation> Code specifying the document name.</medi:documentation>
+                </medi:component>
+                <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                    <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                </medi:component>
+                <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                    <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                </medi:component>
+                <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Document_name">
+                    <medi:documentation> Name of a document.</medi:documentation>
+                </medi:component>
+            </medi:field>
+            <medi:field required="false" truncatable="true" xmltag="DOCUMENT_MESSAGE_IDENTIFICATION">
+                <medi:documentation> Identification of a document/message by its numberand eventually its version or revision.</medi:documentation>
+                <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Document_identifier">
+                    <medi:documentation> To identify a document.</medi:documentation>
+                </medi:component>
+                <medi:component maxLength="9" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Version_identifier">
+                    <medi:documentation> To identify a version.</medi:documentation>
+                </medi:component>
+                <medi:component maxLength="6" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Revision_identifier">
+                    <medi:documentation> To identify a revision.</medi:documentation>
+                </medi:component>
+            </medi:field>
+            <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Message_function_code">
+                <medi:documentation> Code indicating the function of the message.</medi:documentation>
+            </medi:field>
+            <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Response_type_code">
+                <medi:documentation> Code specifying the type of acknowledgment required ortransmitted.</medi:documentation>
+            </medi:field>
+        </medi:segment>
+        <medi:segment ignoreUnmappedFields="false" maxOccurs="1" minOccurs="0" segcode="DTM" truncatable="true" xmltag="Date_time_period">
+            <medi:documentation>DTM, Date/time/period
+       A segment to identify a date and time on which the message is
+       sent.</medi:documentation>
+            <medi:field required="true" truncatable="true" xmltag="DATE_TIME_PERIOD">
+                <medi:documentation> Date and/or time, or period relevant to thespecified date/time/period type.</medi:documentation>
+                <medi:component maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_function_code_qualifier">
+                    <medi:documentation> Code qualifying the function of a date, time orperiod.</medi:documentation>
+                </medi:component>
+                <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_text">
+                    <medi:documentation> The value of a date, a date and time, a time or of aperiod in a specified representation.</medi:documentation>
+                </medi:component>
+                <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_format_code">
+                    <medi:documentation> Code specifying the representation of a date, time orperiod.</medi:documentation>
+                </medi:component>
+            </medi:field>
+        </medi:segment>
+        <medi:segmentGroup maxOccurs="1" minOccurs="1" xmltag="Segment_group_1">
+            <medi:documentation>Segment group 1:  TDT-LOC-DTM-RFF
+       A group of segments to identify the means of transport handled
+       by the terminal operator.</medi:documentation>
+            <medi:segment ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" segcode="TDT" truncatable="true" xmltag="Transport_information">
+                <medi:documentation>TDT, Transport information
+          A segment to identify the means of transport.</medi:documentation>
+                <medi:field maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Transport_stage_code_qualifier">
+                    <medi:documentation> Code qualifying a specific stage of transport.</medi:documentation>
+                </medi:field>
+                <medi:field maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Means_of_transport_journey_identifier">
+                    <medi:documentation> To identify a journey of a means of transport.</medi:documentation>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="MODE_OF_TRANSPORT">
+                    <medi:documentation> Method of transport code or name. Code preferred.</medi:documentation>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transport_mode_name_code">
+                        <medi:documentation> Code specifying the name of a mode of transport.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transport_mode_name">
+                        <medi:documentation> Name of a mode of transport.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="TRANSPORT_MEANS">
+                    <medi:documentation> Code and/or name identifying the type of means oftransport.</medi:documentation>
+                    <medi:component maxLength="8" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transport_means_description_code">
+                        <medi:documentation> Code specifying the means of transport.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                        <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                        <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transport_means_description">
+                        <medi:documentation> Free form description of the means of transport.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="CARRIER">
+                    <medi:documentation> Identification of a carrier by code and/or by name.Code preferred.</medi:documentation>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Carrier_identifier">
+                        <medi:documentation> To identify a carrier.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                        <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                        <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Carrier_name">
+                        <medi:documentation> Name of a carrier.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transit_direction_indicator_code">
+                    <medi:documentation> Code specifying the direction of transport.</medi:documentation>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="EXCESS_TRANSPORTATION_INFORMATION">
+                    <medi:documentation> To provide details of reason for, and responsibilityfor, use of transportation other than normallyutilized.</medi:documentation>
+                    <medi:component maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Excess_transportation_reason_code">
+                        <medi:documentation> Code specifying the reason for excess transportation.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Excess_transportation_responsibility_code">
+                        <medi:documentation> Code specifying the responsibility for excesstransportation.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Customer_shipment_authorisation_identifier">
+                        <medi:documentation> To identify the authorisation to ship issued by thecustomer.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="TRANSPORT_IDENTIFICATION">
+                    <medi:documentation> Code and/or name identifying the means of transport.</medi:documentation>
+                    <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transport_means_identification_name_identifier">
+                        <medi:documentation> Identifies the name of the transport means.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                        <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                        <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="70" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transport_means_identification_name">
+                        <medi:documentation> Name identifying a means of transport.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transport_means_nationality_code">
+                        <medi:documentation> Code specifying the nationality of a means oftransport.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Transport_means_ownership_indicator_code">
+                    <medi:documentation> Code indicating the ownership of a means of transport.</medi:documentation>
+                </medi:field>
+            </medi:segment>
+            <medi:segment ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" segcode="LOC" truncatable="true" xmltag="Place_location_identification">
+                <medi:documentation>LOC, Place/location identification
+          A segment to identify the location where the means of
+          transport is handled.</medi:documentation>
+                <medi:field maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Location_function_code_qualifier">
+                    <medi:documentation> Code identifying the function of a location.</medi:documentation>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="LOCATION_IDENTIFICATION">
+                    <medi:documentation> Identification of a location by code or name.</medi:documentation>
+                    <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Location_identifier">
+                        <medi:documentation> To identify a location.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                        <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                        <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="256" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Location_name">
+                        <medi:documentation> Name of the location.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="RELATED_LOCATION_ONE_IDENTIFICATION">
+                    <medi:documentation> Identification the first related location by code orname.</medi:documentation>
+                    <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="First_related_location_identifier">
+                        <medi:documentation> To identify a first related location.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                        <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                        <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="70" minLength="0" required="false" truncatable="true" dataType="String" xmltag="First_related_location_name">
+                        <medi:documentation> Name of first related location.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="RELATED_LOCATION_TWO_IDENTIFICATION">
+                    <medi:documentation> Identification of second related location by code orname.</medi:documentation>
+                    <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Second_related_location_identifier">
+                        <medi:documentation> To identify a second related location.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                        <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                        <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="70" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Second_related_location_name">
+                        <medi:documentation> Name of the second related location.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Relation_code">
+                    <medi:documentation> Code specifying a relation.</medi:documentation>
+                </medi:field>
+            </medi:segment>
+            <medi:segment ignoreUnmappedFields="false" maxOccurs="9" minOccurs="0" segcode="DTM" truncatable="true" xmltag="Date_time_period">
+                <medi:documentation>DTM, Date/time/period
+          A segment to identify dates and times on which the means of
+          transport is handled.</medi:documentation>
+                <medi:field required="true" truncatable="true" xmltag="DATE_TIME_PERIOD">
+                    <medi:documentation> Date and/or time, or period relevant to thespecified date/time/period type.</medi:documentation>
+                    <medi:component maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_function_code_qualifier">
+                        <medi:documentation> Code qualifying the function of a date, time orperiod.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_text">
+                        <medi:documentation> The value of a date, a date and time, a time or of aperiod in a specified representation.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_format_code">
+                        <medi:documentation> Code specifying the representation of a date, time orperiod.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+            </medi:segment>
+            <medi:segment ignoreUnmappedFields="false" maxOccurs="9" minOccurs="0" segcode="RFF" truncatable="true" xmltag="Reference">
+                <medi:documentation>RFF, Reference
+          A segment to identify relevant reference numbers for the
+          means of transport and the operations.</medi:documentation>
+                <medi:field required="true" truncatable="true" xmltag="REFERENCE">
+                    <medi:documentation> Identification of a reference.</medi:documentation>
+                    <medi:component maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Reference_code_qualifier">
+                        <medi:documentation> Code qualifying a reference.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="70" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Reference_identifier">
+                        <medi:documentation> Identifies a reference.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="6" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Document_line_identifier">
+                        <medi:documentation> To identify a line of a document.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="9" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Version_identifier">
+                        <medi:documentation> To identify a version.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="6" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Revision_identifier">
+                        <medi:documentation> To identify a revision.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+            </medi:segment>
+        </medi:segmentGroup>
+        <medi:segmentGroup maxOccurs="99" minOccurs="0" xmltag="Segment_group_2">
+            <medi:documentation>Segment group 2:  EQD-CNT-SG3
+       A group of segments to specify the details of the equipment and
+       the operations performed.</medi:documentation>
+            <medi:segment ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" segcode="EQD" truncatable="true" xmltag="Equipment_details">
+                <medi:documentation>EQD, Equipment details
+          A segment to specify details of the equipment, such as the
+          equipment identification number.</medi:documentation>
+                <medi:field maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Equipment_type_code_qualifier">
+                    <medi:documentation> Code qualifying a type of equipment.</medi:documentation>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="EQUIPMENT_IDENTIFICATION">
+                    <medi:documentation> Marks (letters/numbers) identifying equipment.</medi:documentation>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Equipment_identifier">
+                        <medi:documentation> To identify equipment.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                        <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                        <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Country_identifier">
+                        <medi:documentation> Identification of the name of the country or othergeographical entity as defined in ISO 3166-1 andUN/ECE Recommendation 3.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field required="false" truncatable="true" xmltag="EQUIPMENT_SIZE_AND_TYPE">
+                    <medi:documentation> Code and or name identifying size and type ofequipment. Code preferred.</medi:documentation>
+                    <medi:component maxLength="10" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Equipment_size_and_type_description_code">
+                        <medi:documentation> Code specifying the size and type of equipment.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                        <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                        <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Equipment_size_and_type_description">
+                        <medi:documentation> Free form description of the size and type ofequipment.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+                <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Equipment_supplier_code">
+                    <medi:documentation> Code specifying the party that is the supplier of theequipment.</medi:documentation>
+                </medi:field>
+                <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Equipment_status_code">
+                    <medi:documentation> Code specifying the status of equipment.</medi:documentation>
+                </medi:field>
+                <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Full_or_empty_indicator_code">
+                    <medi:documentation> Code indicating whether an object is full or empty.</medi:documentation>
+                </medi:field>
+                <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Marking_instructions_code">
+                    <medi:documentation> Code specifying instructions for marking.</medi:documentation>
+                </medi:field>
+            </medi:segment>
+            <medi:segment ignoreUnmappedFields="false" maxOccurs="99" minOccurs="0" segcode="CNT" truncatable="true" xmltag="Control_total">
+                <medi:documentation>CNT, Control total
+          A segment to specify control totals.</medi:documentation>
+                <medi:field required="true" truncatable="true" xmltag="CONTROL">
+                    <medi:documentation> Control total for checking integrity of a message orpart of a message.</medi:documentation>
+                    <medi:component maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Control_total_type_code_qualifier">
+                        <medi:documentation> Code qualifying the type of control of hash total.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="18" minLength="0" required="true" truncatable="true" dataType="BigDecimal" xmltag="Control_total_quantity">
+                        <medi:documentation> To specify the value of a control quantity.</medi:documentation>
+                    </medi:component>
+                    <medi:component maxLength="8" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Measurement_unit_code">
+                        <medi:documentation> Code specifying the unit of measurement.</medi:documentation>
+                    </medi:component>
+                </medi:field>
+            </medi:segment>
+            <medi:segmentGroup maxOccurs="999" minOccurs="0" xmltag="Segment_group_3">
+                <medi:documentation>Segment group 3:  DTM-FTX
+          A group of segments to specify dates and times and other
+          details for the operations carried out.</medi:documentation>
+                <medi:segment ignoreUnmappedFields="false" maxOccurs="1" minOccurs="1" segcode="DTM" truncatable="true" xmltag="Date_time_period">
+                    <medi:documentation>DTM, Date/time/period
+             A segment to identify a date and time related to the
+             equipment operation.</medi:documentation>
+                    <medi:field required="true" truncatable="true" xmltag="DATE_TIME_PERIOD">
+                        <medi:documentation> Date and/or time, or period relevant to thespecified date/time/period type.</medi:documentation>
+                        <medi:component maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_function_code_qualifier">
+                            <medi:documentation> Code qualifying the function of a date, time orperiod.</medi:documentation>
+                        </medi:component>
+                        <medi:component maxLength="35" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_text">
+                            <medi:documentation> The value of a date, a date and time, a time or of aperiod in a specified representation.</medi:documentation>
+                        </medi:component>
+                        <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Date_or_time_or_period_format_code">
+                            <medi:documentation> Code specifying the representation of a date, time orperiod.</medi:documentation>
+                        </medi:component>
+                    </medi:field>
+                </medi:segment>
+                <medi:segment ignoreUnmappedFields="false" maxOccurs="9" minOccurs="0" segcode="FTX" truncatable="true" xmltag="Free_text">
+                    <medi:documentation>FTX, Free text
+             A segment to provide detailed information related to the
+             equipment operation.</medi:documentation>
+                    <medi:field maxLength="3" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Text_subject_code_qualifier">
+                        <medi:documentation> Code qualifying the subject of the text.</medi:documentation>
+                    </medi:field>
+                    <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Free_text_function_code">
+                        <medi:documentation> Code specifying the function of free text.</medi:documentation>
+                    </medi:field>
+                    <medi:field required="false" truncatable="true" xmltag="TEXT_REFERENCE">
+                        <medi:documentation> Coded reference to a standard text and its source.</medi:documentation>
+                        <medi:component maxLength="17" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Free_text_description_code">
+                            <medi:documentation> Code specifying free form text.</medi:documentation>
+                        </medi:component>
+                        <medi:component maxLength="17" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_identification_code">
+                            <medi:documentation> Code identifying a user or association maintained codelist.</medi:documentation>
+                        </medi:component>
+                        <medi:component maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Code_list_responsible_agency_code">
+                            <medi:documentation> Code specifying the agency responsible for a codelist.</medi:documentation>
+                        </medi:component>
+                    </medi:field>
+                    <medi:field required="false" truncatable="true" xmltag="TEXT_LITERAL">
+                        <medi:documentation> Free text; one to five lines.</medi:documentation>
+                        <medi:component maxLength="512" minLength="0" required="true" truncatable="true" dataType="String" xmltag="Free_text">
+                            <medi:documentation> Free form text.</medi:documentation>
+                        </medi:component>
+                        <medi:component maxLength="512" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Free_text">
+                            <medi:documentation> Free form text.</medi:documentation>
+                        </medi:component>
+                        <medi:component maxLength="512" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Free_text">
+                            <medi:documentation> Free form text.</medi:documentation>
+                        </medi:component>
+                        <medi:component maxLength="512" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Free_text">
+                            <medi:documentation> Free form text.</medi:documentation>
+                        </medi:component>
+                        <medi:component maxLength="512" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Free_text">
+                            <medi:documentation> Free form text.</medi:documentation>
+                        </medi:component>
+                    </medi:field>
+                    <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Language_name_code">
+                        <medi:documentation> Code specifying the language name.</medi:documentation>
+                    </medi:field>
+                    <medi:field maxLength="3" minLength="0" required="false" truncatable="true" dataType="String" xmltag="Free_text_format_code">
+                        <medi:documentation> Code specifying the format of free text.</medi:documentation>
+                    </medi:field>
+                </medi:segment>
+            </medi:segmentGroup>
+        </medi:segmentGroup>
+    </medi:segments>
+</medi:edimap>

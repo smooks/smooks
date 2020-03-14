@@ -1,4 +1,4 @@
-package org.milyn.general;
+package org.smooks.general;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -10,8 +10,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.milyn.Smooks;
-import org.milyn.container.ExecutionContext;
+import org.smooks.Smooks;
+import org.smooks.container.ExecutionContext;
 
 /**
  * @author

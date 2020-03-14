@@ -22,39 +22,39 @@
     -->
 
     <resource-config selector="serialize">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.routing.basic.FragmentSerializer</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.routing.basic.FragmentSerializer</param>
     </resource-config>
 
 	<resource-config selector="serialize">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">fragment</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
 	<resource-config selector="serialize">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">fragmentNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="serialize">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">bindTo</param>
     </resource-config>
 
 	<resource-config selector="serialize">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">omitXMLDeclaration</param>
     </resource-config>
 
    	<resource-config selector="serialize">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">childContentOnly</param>
     </resource-config>
 
     <resource-config selector="serialize">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">retain</param>
         <param name="defaultValue">false</param>
     </resource-config>

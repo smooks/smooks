@@ -15,13 +15,13 @@
 		Default config - see TokenizedStringParameterDecoder javadoc. 
 	-->
 	<smooks-resource selector="param-type:string-list" 
-		path="org.milyn.param.TokenizedStringParameterDecoder" />
+		path="org.smooks.param.TokenizedStringParameterDecoder" />
 
 	<!-- 
 		Tokenize parameter value into a {@link java.util.HashSet}. 
 		Default config - see TokenizedStringParameterDecoder javadoc. 
 	-->
 	<smooks-resource selector="param-type:string-hashset" 
-		path="org.milyn.param.TokenizedStringParameterDecoder" />
+		path="org.smooks.param.TokenizedStringParameterDecoder" />
 
 </cdres-list>

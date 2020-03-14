@@ -46,7 +46,7 @@
                     <xs:annotation>
                         <xs:documentation xml:lang="en">
                             The fully qualifed class name of the Rules Provider. This could be a concrete implementation
-                            of the org.milyn.validation.RuleProvider.
+                            of the org.smooks.validation.RuleProvider.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>

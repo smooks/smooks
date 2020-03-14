@@ -3,14 +3,14 @@ package example;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.milyn.delivery.dom.DOMElementVisitor;
-import org.milyn.container.ExecutionContext;
-import org.milyn.cdr.SmooksResourceConfiguration;
-import org.milyn.xml.DomUtils;
+import org.smooks.delivery.dom.DOMElementVisitor;
+import org.smooks.container.ExecutionContext;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.xml.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node
-import org.milyn.delivery.dom.DOMVisitAfter;
+import org.smooks.delivery.dom.DOMVisitAfter;
 
 /**
  * Date Formatting class.

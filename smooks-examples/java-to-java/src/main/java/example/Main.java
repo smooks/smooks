@@ -17,10 +17,10 @@ package example;
 
 import example.srcmodel.*;
 import example.trgmodel.*;
-import org.milyn.*;
-import org.milyn.container.*;
-import org.milyn.event.report.*;
-import org.milyn.payload.*;
+import org.smooks.*;
+import org.smooks.container.*;
+import org.smooks.event.report.*;
+import org.smooks.payload.*;
 import org.xml.sax.*;
 
 import java.io.*;

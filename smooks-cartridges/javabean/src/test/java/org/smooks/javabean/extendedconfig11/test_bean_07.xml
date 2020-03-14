@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd">
+
+    <jb:bindings beanId="root" class="java.util.ArrayList" createOnElement="root">
+        <jb:wiring beanIdRef="a"/>
+    </jb:bindings>
+
+    <jb:bindings beanId="a" class="java.util.ArrayList" createOnElement="a" extendLifecycle="true">
+    	<jb:wiring beanIdRef="b"/>
+	</jb:bindings>
+
+	<jb:bindings beanId="b" class="org.smooks.javabean.B" createOnElement="b">
+		<jb:value property="value" data="b" />
+	</jb:bindings>
+
+</smooks-resource-list>

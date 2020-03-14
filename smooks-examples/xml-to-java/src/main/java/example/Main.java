@@ -15,12 +15,12 @@
 */
 package example;
 
-import org.milyn.Smooks;
-import org.milyn.SmooksException;
-import org.milyn.event.report.HtmlReportGenerator;
-import org.milyn.payload.JavaResult;
-import org.milyn.io.StreamUtils;
-import org.milyn.container.ExecutionContext;
+import org.smooks.Smooks;
+import org.smooks.SmooksException;
+import org.smooks.event.report.HtmlReportGenerator;
+import org.smooks.payload.JavaResult;
+import org.smooks.io.StreamUtils;
+import org.smooks.container.ExecutionContext;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;

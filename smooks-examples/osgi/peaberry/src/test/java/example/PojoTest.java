@@ -21,10 +21,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import org.milyn.Smooks;
+import org.smooks.Smooks;
 import org.xml.sax.SAXException;
 
-import example.Pojo;
 import example.model.Order;
 import example.model.OrderItem;
 

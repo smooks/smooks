@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<simple:simple xmlns:simple="urn:simple"
-        xmlns:first="urn:first"
-        xmlns:second="urn:second">
-	<first:sample />
-	<second:sample />
-</simple:simple>

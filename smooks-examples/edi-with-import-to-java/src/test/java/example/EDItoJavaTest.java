@@ -28,17 +28,17 @@ public class EDItoJavaTest {
 
 	@Test
     public void test() throws IOException, SAXException {
-        String expected = org.milyn.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
+        String expected = org.smooks.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
         Main smooksMain = new Main();
 
-        org.milyn.payload.JavaResult result = smooksMain.runSmooksTransform();
+        org.smooks.payload.JavaResult result = smooksMain.runSmooksTransform();
 
         com.thoughtworks.xstream.XStream xstream = new com.thoughtworks.xstream.XStream();
         String actual = xstream.toXML(result.getBean("order"));
 
         actual = actual.replaceFirst("<date>.*</date>", "<date/>");
 
-        boolean matchesExpected = org.milyn.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(actual));
+        boolean matchesExpected = org.smooks.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(actual));
         if(!matchesExpected) {
             assertEquals("Actual does not match expected.", expected, actual);
         }

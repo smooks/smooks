@@ -1,0 +1,25 @@
+<?xml version='1.0'?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd" default-target-profile="shipping-request">
+
+	<!--
+		Use a FreeMarker template to perform the transformation.
+		We're transforming the "trackingNumber" element...
+	-->
+	<resource-config selector="trackingNumber">
+        <resource type="ftl">
+            <!--
+<trackingNumber>
+ ${trackingNumber}
+</trackingNumber>
+            -->
+        </resource>
+    </resource-config>
+
+    <!--
+		Configure the TrackingNumber bean creation and population...
+	-->
+    <jb:bean beanId="trackingNumber" class="org.smooks.templating.soapshipping.TrackingNumber" createOnElement="trackingNumber">
+      <jb:value property="shipperID" data="trackingNumber/shipperID" />
+      <jb:value property="shipmentNumber" data="trackingNumber/shipmentNumber" />
+    </jb:bean>	
+</smooks-resource-list>

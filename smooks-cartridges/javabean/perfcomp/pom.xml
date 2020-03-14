@@ -40,7 +40,7 @@
         <groupId>org.jibx</groupId>
         <artifactId>jibx-maven-plugin</artifactId>
         <configuration>
-          <directory>src/test/java/org/milyn/jibx</directory>
+          <directory>src/test/java/org/smooks/jibx</directory>
           <includes>
             <includes>binding.xml</includes>
           </includes>

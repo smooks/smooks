@@ -32,7 +32,7 @@ Deploy Smooks OSGi Bundle
 1. Deploy Smooks OSGi bundle
     
 2. Deploy the example
-    karaf@root> osgi:install -s mvn:org.milyn/milyn-smooks-example-camel-dataformat/1.0
+    karaf@root> osgi:install -s mvn:org.smooks/milyn-smooks-example-camel-dataformat/1.0
 
 Run the example
 ---------------

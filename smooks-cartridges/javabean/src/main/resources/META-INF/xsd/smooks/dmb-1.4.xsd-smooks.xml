@@ -22,32 +22,32 @@
     -->
 
     <resource-config selector="writer">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.milyn.javabean.dynamic.ext.BeanWriterFactory</param>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.javabean.dynamic.ext.BeanWriterFactory</param>
     </resource-config>
 
     <resource-config selector="writer">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanId</param>
     </resource-config>
 
     <resource-config selector="writer">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanClass</param>
     </resource-config>
 
     <resource-config selector="writer">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">class</param>
     </resource-config>
 
     <resource-config selector="writer/param" selector-namespace="http://www.milyn.org/xsd/smooks-1.1.xsd">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapToSpecifier">name</param>
     </resource-config>
 
     <resource-config selector="writer">
-        <resource>org.milyn.javabean.dynamic.ext.BeanClassLookup</resource>
+        <resource>org.smooks.javabean.dynamic.ext.BeanClassLookup</resource>
     </resource-config>
 
 </smooks-resource-list>

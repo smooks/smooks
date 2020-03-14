@@ -14,13 +14,13 @@
 		Default serializer for all elements is the "DefaultSerializationUnit".
 	-->
 	<smooks-resource 	useragent="*" selector="*" 
-			path="org/milyn/delivery/serialize/DefaultSerializationUnit" />
+			path="org/smooks/delivery/serialize/DefaultSerializationUnit" />
 
 	<!--
 		Print elements that are marked "EMPTY" in their DTD in the <xx /> format.
 	-->
 	<smooks-resource 	useragent="*" selector="xmldef:elcspec:empty" 
-			path="org/milyn/cdres/serialize/EmptyElementSU" />
+			path="org/smooks/cdres/serialize/EmptyElementSU" />
 		
 </cdres-list>
 

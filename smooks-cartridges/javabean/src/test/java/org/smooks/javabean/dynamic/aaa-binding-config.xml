@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
+                      xmlns:dmb="https://www.smooks.org/xsd/smooks/dmb-1.5.xsd"
+                      default-selector-namespace="http://www.acme.com/xsd/aaa.xsd">
+
+    <jb:bean beanId="aaa" class="org.smooks.javabean.dynamic.AAA" createOnElement="aaa">
+        <jb:value property="doubleProperty" data="aaa/value/@property1" />
+        <jb:value property="intProperty" data="aaa/value/@property2" />
+    </jb:bean>
+
+    <dmb:writer beanId="aaa" class="org.smooks.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
+        <param name="template">/org/smooks/javabean/dynamic/AAA-v11.ftl</param>
+    </dmb:writer>
+
+</smooks-resource-list>

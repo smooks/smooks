@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:frag="http://www.milyn.org/xsd/smooks/fragment-routing-1.2.xsd">
-
-	<frag:serialize fragment="Body" bindTo="soapBody" childContentOnly="true" omitXMLDeclaration="true"/>
-
-</smooks-resource-list>

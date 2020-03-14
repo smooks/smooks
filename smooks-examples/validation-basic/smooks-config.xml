@@ -12,11 +12,11 @@
     <!-- Define the ruleBases that are used by the validation rules... -->
     <rules:ruleBases>
         <!-- Field value rules using regex... -->
-        <rules:ruleBase name="customer" src="rules/customer.properties" provider="org.milyn.rules.regex.RegexProvider"/>
-        <rules:ruleBase name="product" src="rules/product.properties" provider="org.milyn.rules.regex.RegexProvider"/>
+        <rules:ruleBase name="customer" src="rules/customer.properties" provider="org.smooks.rules.regex.RegexProvider"/>
+        <rules:ruleBase name="product" src="rules/product.properties" provider="org.smooks.rules.regex.RegexProvider"/>
 
         <!-- Order business rules using MVEL expressions... -->
-        <rules:ruleBase name="order" src="rules/order-rules.csv" provider="org.milyn.rules.mvel.MVELProvider"/>
+        <rules:ruleBase name="order" src="rules/order-rules.csv" provider="org.smooks.rules.mvel.MVELProvider"/>
     </rules:ruleBases>
 
     <!-- Capture some order-item data into the bean context - required by the business rule validations... -->

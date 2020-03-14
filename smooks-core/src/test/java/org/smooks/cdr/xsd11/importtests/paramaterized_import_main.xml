@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+
+    <import file="paramaterized_import_importfile.xml">
+        <param name="selector">a</param>
+        <param name="resource">org.smooks.delivery.dom.serialize.SimpleDOMVisitor</param>
+    </import>
+
+</smooks-resource-list>

@@ -15,12 +15,12 @@
 */
 package example;
 
-import org.milyn.Smooks;
-import org.milyn.SmooksException;
-import org.milyn.container.ExecutionContext;
-import org.milyn.event.report.HtmlReportGenerator;
-import org.milyn.io.StreamUtils;
-import org.milyn.payload.JavaResult;
+import org.smooks.Smooks;
+import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
+import org.smooks.event.report.HtmlReportGenerator;
+import org.smooks.io.StreamUtils;
+import org.smooks.payload.JavaResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -71,7 +71,7 @@ public class Main {
 
         Main smooksMain = new Main();
         ExecutionContext executionContext = smooksMain.smooks.createExecutionContext();
-        org.milyn.payload.JavaResult result = smooksMain.runSmooksTransform(executionContext);
+        org.smooks.payload.JavaResult result = smooksMain.runSmooksTransform(executionContext);
 
 
         System.out.println("\n==============EDI as Java Object Graph=============");

@@ -1,1 +1,0 @@
-org.milyn.edisax.EDIParseException:EDI message processing failed [Test Message][1.0].  Reached end of mapping model but there are more EDI segments in the incoming message.  Read 2 segment(s). Current EDI segment is [SEG*1*2**4*5]

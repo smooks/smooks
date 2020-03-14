@@ -6,9 +6,9 @@
         <param name="maintain.element.stack">true</param>
     </resource-config>
 
-    <jb:bean beanId="orderItem" class="java.util.HashMap" createOnElement="org.milyn.general.OrderItem">
-        <jb:value property="position" data="org.milyn.general.OrderItem/position"/>
-        <jb:value property="quantity" data="org.milyn.general.OrderItem/quantity"/>
+    <jb:bean beanId="orderItem" class="java.util.HashMap" createOnElement="org.smooks.general.OrderItem">
+        <jb:value property="position" data="org.smooks.general.OrderItem/position"/>
+        <jb:value property="quantity" data="org.smooks.general.OrderItem/quantity"/>
     </jb:bean>
 
 </smooks-resource-list>

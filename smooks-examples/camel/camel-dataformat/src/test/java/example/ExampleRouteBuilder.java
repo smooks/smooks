@@ -15,7 +15,7 @@
 package example;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.milyn.smooks.camel.dataformat.SmooksDataFormat;
+import org.smooks.camel.dataformat.SmooksDataFormat;
 
 import java.io.File;
 

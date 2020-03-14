@@ -1,4 +1,4 @@
-package org.milyn;
+package org.smooks;
 
 import java.math.BigDecimal;
 

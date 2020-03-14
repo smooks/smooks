@@ -15,10 +15,10 @@
 */
 package example;
 
-import org.milyn.delivery.dom.DOMElementVisitor;
-import org.milyn.container.ExecutionContext;
-import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.xml.DomUtils;
+import org.smooks.delivery.dom.DOMElementVisitor;
+import org.smooks.container.ExecutionContext;
+import org.smooks.cdr.annotation.ConfigParam;
+import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
 
 /**

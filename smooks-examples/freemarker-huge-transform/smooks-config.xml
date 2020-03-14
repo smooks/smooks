@@ -23,7 +23,7 @@
     (i.e. there's max 1 order-item in memory at any one time).
     -->
     <resource-config selector="order,order-item">
-        <resource>org.milyn.delivery.DomModelCreator</resource>
+        <resource>org.smooks.delivery.DomModelCreator</resource>
     </resource-config>
 
     <!--

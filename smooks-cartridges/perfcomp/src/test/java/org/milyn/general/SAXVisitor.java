@@ -1,11 +1,11 @@
-package org.milyn.general;
+package org.smooks.general;
 
-import org.milyn.delivery.sax.SAXElementVisitor;
-import org.milyn.delivery.sax.SAXElement;
-import org.milyn.delivery.sax.SAXText;
-import org.milyn.delivery.sax.SAXVisitAfter;
-import org.milyn.container.ExecutionContext;
-import org.milyn.SmooksException;
+import org.smooks.delivery.sax.SAXElementVisitor;
+import org.smooks.delivery.sax.SAXElement;
+import org.smooks.delivery.sax.SAXText;
+import org.smooks.delivery.sax.SAXVisitAfter;
+import org.smooks.container.ExecutionContext;
+import org.smooks.SmooksException;
 
 import java.io.IOException;
 

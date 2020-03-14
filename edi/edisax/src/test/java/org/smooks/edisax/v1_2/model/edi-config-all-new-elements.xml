@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.3.xsd">
+
+    <medi:description name="Test Message" version="1.0" />       
+
+    <medi:delimiters segment="&#10;" field="*" component="^" sub-component="~" escape="?" />    
+
+    <medi:segments xmltag="test-message">
+        <medi:segmentGroup xmltag="message-group">
+            <medi:documentation>segmentGroup-documentation</medi:documentation>
+            <medi:segment segcode="SEG" xmltag="SEG" description="This segment is used for testing all new elements in v.1.2">
+                <medi:documentation>segment-documentation</medi:documentation>
+
+                <medi:field xmltag="aTime" type="Date" typeParameters="format=HHmm" minLength="0" maxLength="4">
+                    <medi:documentation>field1-documentation</medi:documentation>
+                </medi:field>
+                <medi:field xmltag="fieldParent" required="true">
+                    <medi:documentation>field2-documentation</medi:documentation>
+
+                    <medi:component xmltag="aBinary" required="true" type="Binary" minLength="0" maxLength="8">
+                        <medi:documentation>component-documentation</medi:documentation>
+                    </medi:component>
+                    <medi:component xmltag="componentParent" required="true">
+                        <medi:documentation>component-documentation</medi:documentation>
+                        <medi:sub-component xmltag="aNumeric" type="Double" typeParameters="format=#0.00" minLength="1" maxLength="4">
+                            <medi:documentation>subcomponent-documentation</medi:documentation>
+                        </medi:sub-component>
+                    </medi:component>
+                    <medi:component xmltag="aString" required="true" type="String" minLength="10" maxLength="20">
+                        <medi:documentation>component-documentation</medi:documentation>
+                    </medi:component>
+                    <medi:component xmltag="aDate" type="Date" typeParameters="format=yyyyMMdd" minLength="8" maxLength="8">
+                        <medi:documentation>component-documentation</medi:documentation>
+                    </medi:component>
+                </medi:field>
+            </medi:segment>
+        </medi:segmentGroup>
+    </medi:segments>
+	
+</medi:edimap>

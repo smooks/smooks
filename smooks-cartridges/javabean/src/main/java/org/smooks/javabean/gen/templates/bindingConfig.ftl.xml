@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.2.xsd">
+
+    <!-- TODO:
+            THIS IS A CONFIGURATION TEMPLATE!!  It is not the finished article.
+
+            1. For each <jb:bindings> element, set the createOnElement attribute to the event element that should
+               be used to create the bean instance.
+            2. Update the <jb:value data> attributes to select the event element/attribute supplying the binding
+               data for that bean property.
+            3. Check the <jb:value decoder> attributes.  Not all will be set, depending on the actual property type.
+               These must be configured by hand e.g. you may need to configure <jb:decodeParam>
+               sub-elements for the decoder on some of the bindings.  E.g. for a date field:
+                    <jb:value property="date" data="header/date" decoder="Date">
+                        <jb:decodeParam name="format">EEE MMM dd HH:mm:ss z yyyy</jb:decodeParam>
+                    </jb:value>
+            4. Double-check the binding config elements (<jb:value> and <jb:wiring>), making sure all Java properties
+               have been covered in the generated configuration.
+
+            Determining appropriate values for the <jb:bean createOnElement> and <jb:value data> attributes can
+            sometimes be difficult, especially for non XML Sources (Java etc).  The Html Reporting tool can be a great
+            help here because it helps you visualise the input message model (against which the selectors will be
+            applied) as seen by Smooks.  So, first off, generate a report using your Source data, but with an empty
+            transformation configuration.  In the report, you can see the model against which you need to add your
+            configurations.  Add the configurations one at a time, rerunning the report to check they are being applied.
+
+            For details on how to run a report, see the Smooks User Guide (http://milyn.codehaus.org/Smooks+User+Guide#SmooksUserGuide-CheckingtheSmooksExecutionProcess).
+    -->
+
+    <#list classConfigs as classConfig>
+
+    <jb:bean beanId="${classConfig.beanId}" class="${classConfig.beanClass.name}<#if classConfig.array>[]</#if>" createOnElement="$TODO$">
+    <#list classConfig.bindings as binding>
+        <#if binding.wiring>
+        <jb:wiring <#if binding.boundToProperty>property="${binding.property.name}" </#if>beanIdRef="${binding.selector}" />
+        <#else>
+        <jb:value <#if binding.boundToProperty>property="${binding.property.name}" </#if><#if !binding.wiring>decoder="${binding.type}" </#if>data="${binding.selector}" />
+        </#if>
+    </#list>
+    </jb:bean>
+    </#list>
+
+</smooks-resource-list>

@@ -2,45 +2,45 @@
 <smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/groovy-1.1.xsd">
 
     <resource-config selector="groovy">
-        <resource>org.milyn.cdr.extension.NewResourceConfig</resource>
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
     </resource-config>
 
     <resource-config selector="groovy">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">executeOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
 	<resource-config selector="groovy">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">executeOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="groovy">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">executeBefore</param>
         <param name="mapTo">executeBefore</param>
     </resource-config>
 
     <resource-config selector="groovy">
-        <resource>org.milyn.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
         <param name="setOn">resourceType</param>
         <param name="value">groovy</param>
     </resource-config>
 
     <resource-config selector="groovy/imports">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapTo">imports</param>
     </resource-config>
 
     <resource-config selector="groovy/script">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapTo">resource</param>
     </resource-config>
 
     <resource-config selector="groovy/param" selector-namespace="http://www.milyn.org/xsd/smooks-1.1.xsd">
-        <resource>org.milyn.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapToSpecifier">name</param>
     </resource-config>
 

@@ -1,0 +1,12 @@
+<items>
+        <item code="8655">
+            <units>1</units>
+            <name>Something about Mary</name>
+            <price>18.99</price>
+        </item>
+        <item code="3276">
+            <units>2</units>
+            <name>Falco DVD RW</name>
+            <price>6.50</price>
+        </item>
+    </items>

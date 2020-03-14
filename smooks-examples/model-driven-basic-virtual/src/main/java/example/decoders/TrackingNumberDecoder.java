@@ -15,8 +15,8 @@
 */
 package example.decoders;
 
-import org.milyn.javabean.DataDecodeException;
-import org.milyn.javabean.DataDecoder;
+import org.smooks.javabean.DataDecodeException;
+import org.smooks.javabean.DataDecoder;
 
 import java.util.HashMap;
 import java.util.List;

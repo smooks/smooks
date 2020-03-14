@@ -102,7 +102,7 @@
             </xs:annotation>
             <xs:simpleContent>
                 <xs:extension base="xs:string">
-                    <xs:attribute name="evaluator" type="xs:string" default="org.milyn.javabean.expression.BeanMapExpressionEvaluator" />
+                    <xs:attribute name="evaluator" type="xs:string" default="org.smooks.javabean.expression.BeanMapExpressionEvaluator" />
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>

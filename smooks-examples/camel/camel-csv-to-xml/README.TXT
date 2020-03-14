@@ -35,7 +35,7 @@ Deploy Smooks OSGi Bundle
     karaf@root> features:install smooks
 
 2. Deploy the example
-    osgi:install -s mvn:org.milyn/milyn-smooks-example-camel-csv-to-xml/1.6-SNAPSHOT
+    osgi:install -s mvn:org.smooks/milyn-smooks-example-camel-csv-to-xml/1.6-SNAPSHOT
 
 Run the example
 ---------------

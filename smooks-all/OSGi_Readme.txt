@@ -15,7 +15,7 @@ Deploying Smooks
 Apache Karaf/Apache ServiceMix 4.x
 ==================================
 You can install the target/test-classes/feature.xml file directly into Karaf by using:
-karaf@root> features:addUrl mvn:org.milyn/milyn-smooks-all/1.5-SNAPSHOT/xml/features
+karaf@root> features:addUrl mvn:org.smooks/milyn-smooks-all/1.5-SNAPSHOT/xml/features
 karaf@root> features:install smooks
 
 

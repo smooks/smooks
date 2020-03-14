@@ -4,7 +4,7 @@
     xmlns:validation="https://www.smooks.org/xsd/smooks/validation-1.1.xsd">
 
     <rules:ruleBases>
-        <rules:ruleBase name="test" src="/regex.properties" provider="org.milyn.rules.regex.RegexProvider" />
+        <rules:ruleBase name="test" src="/regex.properties" provider="org.smooks.rules.regex.RegexProvider" />
     </rules:ruleBases>
     
     <validation:rule executeOn="order/firstName" name="test.custom" onFail="WARN"/>

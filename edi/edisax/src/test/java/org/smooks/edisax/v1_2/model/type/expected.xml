@@ -1,0 +1,1 @@
+org.smooks.edisax.EDIParseException:EDI message processing failed [un-edifact][1.0].  Validation of expected type [Binary] failed for value [0101201]. Currently at segment number 1.

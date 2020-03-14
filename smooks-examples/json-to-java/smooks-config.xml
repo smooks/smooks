@@ -16,7 +16,7 @@
   	a character that is allowed. In this example however we solve it by mapping the "date&time" key
     to the "date-and-time" name.
 
-    There are more settings to for the org.milyn.json.JSONReader.
+    There are more settings to for the org.smooks.json.JSONReader.
     Take a look at the Javadoc of the class for alle the possible parameters.
     -->
     <json:reader rootName="order" keyWhitspaceReplacement="-">

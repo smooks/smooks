@@ -25,8 +25,8 @@ import java.io.StringWriter;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.milyn.javabean.binding.xml.XMLBinding;
-import org.milyn.payload.StringSource;
+import org.smooks.javabean.binding.xml.XMLBinding;
+import org.smooks.payload.StringSource;
 import org.xml.sax.SAXException;
 
 /**

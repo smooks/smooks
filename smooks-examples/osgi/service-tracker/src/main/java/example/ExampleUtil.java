@@ -6,10 +6,10 @@ import java.io.IOException;
 
 import javax.xml.transform.stream.StreamSource;
 
-import org.milyn.Smooks;
-import org.milyn.container.ExecutionContext;
-import org.milyn.io.StreamUtils;
-import org.milyn.payload.JavaResult;
+import org.smooks.Smooks;
+import org.smooks.container.ExecutionContext;
+import org.smooks.io.StreamUtils;
+import org.smooks.payload.JavaResult;
 
 import example.model.Order;
 import example.model.OrderItem;

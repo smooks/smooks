@@ -22,7 +22,7 @@ import example.model.OrderItem;
 
 import java.io.IOException;
 
-import org.milyn.Smooks;
+import org.smooks.Smooks;
 import org.xml.sax.SAXException;
 
 public class PojoTest {

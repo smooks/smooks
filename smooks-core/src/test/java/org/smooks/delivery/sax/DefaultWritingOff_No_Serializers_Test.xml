@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <resource-config selector="global-parameters">
+        <param name="default.serialization.on">false</param>
+    </resource-config>
+
+    <!--
+    The following visitors don't write/serialize anything to the result.
+    -->
+
+    <resource-config selector="a">
+        <resource>org.smooks.delivery.sax.SAXVisitBeforeVisitor</resource>
+        <param name="injectedParam">keepvisitorhappy</param>
+    </resource-config>
+
+    <resource-config selector="a">
+        <resource>org.smooks.delivery.sax.SAXVisitAfterVisitor</resource>
+    </resource-config>
+
+</smooks-resource-list>

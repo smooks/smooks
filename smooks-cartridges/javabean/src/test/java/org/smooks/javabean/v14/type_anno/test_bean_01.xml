@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <jb:bean beanId="order" class="org.smooks.javabean.extendedconfig.ExtendedOrder" createOnElement="order">
+        <jb:wiring property="orderItems" beanIdRef="orderItems" />
+    </jb:bean>
+
+    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="order-items">
+        <jb:wiring beanType="org.smooks.javabean.OrderItem" />
+    </jb:bean>
+
+    <jb:bean beanId="orderItem" class="org.smooks.javabean.OrderItem" createOnElement="order-item,end"> <!-- The instance created on "end" should not get wired into the list because the wiring should finish after the order-items element has passed -->
+        <jb:value property="productId" data="order-item/product" decoder="Long" />
+        <jb:value property="quantity" data="order-item/quantity" decoder="Integer" />
+        <jb:value property="price" data="order-item/price" decoder="Double" />
+    </jb:bean>
+    
+</smooks-resource-list>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <resource-config selector="$document">
+        <resource>org.smooks.db.DirectDataSource</resource>
+        <param name="datasource">OrdersDS</param>
+        <param name="driver">org.hsqldb.jdbcDriver</param>
+        <param name="url">jdbc:hsqldb:hsql://localhost:9992/milyn-hsql-9992</param>
+        <param name="username">sa</param>
+        <param name="password"></param>
+        <param name="autoCommit">false</param>
+    </resource-config>
+
+    <resource-config selector="$document">
+        <resource>org.smooks.routing.db.SQLExecutor</resource>
+        <param name="executeBefore">true</param>
+        <param name="datasource">OrdersDS</param>
+        <param name="statement">select * from ORDERS</param>
+        <param name="resultSetName">orders1</param>
+    </resource-config>
+
+    <resource-config selector="$document">
+        <resource>org.smooks.routing.db.ResultsetRowSelector</resource>
+        <param name="executeBefore">true</param>
+        <param name="resultSetName">orders1</param>
+        <param name="beanId">myOrder</param>
+        <param name="where">row.ORDERNUMBER == 9999999</param> <!-- Invalid order number, but no error message -->
+    </resource-config>
+
+</smooks-resource-list>

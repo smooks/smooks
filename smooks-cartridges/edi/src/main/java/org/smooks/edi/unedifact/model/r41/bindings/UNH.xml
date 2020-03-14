@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.UNH41" beanId="unhSegment" createOnElement="interchangeMessage/UNH">
+    	<jb:value property="messageRefNum" data="UNH/messageRefNum" />
+    	<jb:wiring property="messageIdentifier" beanIdRef="unhMessageIdentifier" />
+    	<jb:value property="commonAccessRef" data="UNH/commonAccessRef" />
+    	<jb:wiring property="transferStatus" beanIdRef="unhTransferStatus" />
+    	<jb:wiring property="subset" beanIdRef="unhSubset" />
+    	<jb:wiring property="implementationGuideline" beanIdRef="unhImplementationGuideline" />
+    	<jb:wiring property="scenario" beanIdRef="unhScenario" />
+    </jb:bean>
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.MessageIdentifier" beanId="unhMessageIdentifier" createOnElement="interchangeMessage/UNH/messageIdentifier">
+    	<jb:value property="id" data="UNH/messageIdentifier/id" />
+    	<jb:value property="versionNum" data="UNH/messageIdentifier/versionNum" />
+    	<jb:value property="releaseNum" data="UNH/messageIdentifier/releaseNum" />
+    	<jb:value property="controllingAgencyCode" data="UNH/messageIdentifier/controllingAgencyCode" />
+    	<jb:value property="associationAssignedCode" data="UNH/messageIdentifier/associationAssignedCode" />
+    	<jb:value property="codeListDirVersionNum" data="UNH/messageIdentifier/codeListDirVersionNum" />
+    	<jb:value property="typeSubFunctionId" data="UNH/messageIdentifier/typeSubFunctionId" />
+    </jb:bean>
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.TransferStatus" beanId="unhTransferStatus" createOnElement="interchangeMessage/UNH/transferStatus">
+    	<jb:value property="sequence" data="UNH/transferStatus/sequence" />
+    	<jb:value property="firstAndLast" data="UNH/transferStatus/firstAndLast" />
+    </jb:bean>
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.SourceIdentifier" beanId="unhSubset" createOnElement="interchangeMessage/UNH/subset">
+    	<jb:value property="id" data="UNH/subset/id" />
+    	<jb:value property="versionNum" data="UNH/subset/versionNum" />
+    	<jb:value property="releaseNum" data="UNH/subset/releaseNum" />
+    	<jb:value property="controllingAgencyCode" data="UNH/subset/controllingAgencyCode" />
+    </jb:bean>
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.SourceIdentifier" beanId="unhImplementationGuideline" createOnElement="interchangeMessage/UNH/implementationGuideline">
+    	<jb:value property="id" data="UNH/implementationGuideline/id" />
+    	<jb:value property="versionNum" data="UNH/implementationGuideline/versionNum" />
+    	<jb:value property="releaseNum" data="UNH/implementationGuideline/releaseNum" />
+    	<jb:value property="controllingAgencyCode" data="UNH/implementationGuideline/controllingAgencyCode" />
+    </jb:bean>
+
+    <jb:bean class="org.smooks.edi.unedifact.model.r41.types.SourceIdentifier" beanId="unhScenario" createOnElement="interchangeMessage/UNH/scenario">
+    	<jb:value property="id" data="UNH/scenario/id" />
+    	<jb:value property="versionNum" data="UNH/scenario/versionNum" />
+    	<jb:value property="releaseNum" data="UNH/scenario/releaseNum" />
+    	<jb:value property="controllingAgencyCode" data="UNH/scenario/controllingAgencyCode" />
+    </jb:bean>
+
+</smooks-resource-list>

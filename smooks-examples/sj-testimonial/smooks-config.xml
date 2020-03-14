@@ -106,12 +106,12 @@
 	</jb:bean>
 
     <resource-config selector="decoder:Time">
-        <resource>org.milyn.javabean.decoders.SqlTimeDecoder</resource>
+        <resource>org.smooks.javabean.decoders.SqlTimeDecoder</resource>
         <param name="format">HH:mm:ss</param>
     </resource-config>
 
     <resource-config selector="decoder:Date">
-        <resource>org.milyn.javabean.decoders.SqlDateDecoder</resource>
+        <resource>org.smooks.javabean.decoders.SqlDateDecoder</resource>
         <param name="format">yyyy-MM-dd</param>
     </resource-config>
 

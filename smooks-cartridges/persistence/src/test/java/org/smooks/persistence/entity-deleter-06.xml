@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+	xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd"
+	xmlns:dao="http://www.milyn.org/xsd/smooks/persistence-1.2.xsd">
+
+	<!-- The deleter is set first to see if Smooks gets the ordering right because it
+	     needs to instantiate the String first. -->
+
+	<dao:deleter beanId="toDelete" deleteOnElement="root" deleteBefore="true" />
+
+	<jb:bindings class="java.lang.String" beanId="toDelete" createOnElement="root" />
+
+</smooks-resource-list>

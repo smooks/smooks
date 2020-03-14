@@ -1,7 +1,7 @@
-package org.milyn.templating.xslt;
+package org.smooks.templating.xslt;
 
 import org.w3c.dom.Element;
-import org.milyn.xml.DomUtils;
+import org.smooks.xml.DomUtils;
 
 /**
  * order-item bean.

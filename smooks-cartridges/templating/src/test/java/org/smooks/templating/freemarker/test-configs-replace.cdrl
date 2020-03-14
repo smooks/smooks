@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+    <resource-config selector="c">
+        <resource>/org/smooks/templating/freemarker/test-template.ftl</resource>
+        <param name="action">replace</param>
+    </resource-config>
+
+    <jb:bean beanId="myBeanData" class="org.smooks.templating.MyBean" createOnElement="b">
+        <jb:value property="x" data="b/@x" />
+    </jb:bean>
+
+</smooks-resource-list>

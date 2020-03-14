@@ -60,7 +60,7 @@
 
     <!-- Writers (marshal)... -->
 
-    <dmb:writer beanId="javaBean" class="org.milyn.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
+    <dmb:writer beanId="javaBean" class="org.smooks.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
         <param name="template">/org/smooks/model/javabean/v1_3/v1.3.ftl</param>
     </dmb:writer>
 

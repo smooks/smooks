@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
+                      xmlns:json="https://www.smooks.org/xsd/smooks/json-1.3.xsd">
+
+    <json:reader rootName="order" keyWhitspaceReplacement="-" indent="true">
+        <json:keyMap>
+            <json:key from="date&amp;time" to="date-and-time"/>
+        </json:keyMap>
+    </json:reader>
+
+</smooks-resource-list>

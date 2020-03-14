@@ -7,11 +7,11 @@
     </resource-config>
 
     <resource-config selector="org.xml.sax.driver">
-        <resource>org.milyn.general.StAX2SAXReader</resource>
+        <resource>org.smooks.general.StAX2SAXReader</resource>
     </resource-config>
 
     <resource-config selector="global">
-        <resource>org.milyn.general.SAXVisitor</resource>
+        <resource>org.smooks.general.SAXVisitor</resource>
     </resource-config>
 
 </smooks-resource-list>

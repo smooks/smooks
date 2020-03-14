@@ -1,0 +1,47 @@
+Config Resource: [Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [http://milyn.codehaus.org/smooks], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]]
+Message: [Added as a SAX resource.]
+-----------------------------------------------------------------------------------
+Config Resource: [Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [http://milyn.codehaus.org/smooks], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]]
+Message: [Added as a DOM SerializationUnit resource.]
+-----------------------------------------------------------------------------------
+Config Resource: [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.AssemblyVisitor1], Num Params: [0]]
+Message: [Added as a DOM Assembly Phase resource.]
+-----------------------------------------------------------------------------------
+Config Resource: [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [a *], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ProcessorVisitor1], Num Params: [0]]
+Message: [Added as a DOM Processing Phase resource.]
+-----------------------------------------------------------------------------------
+Config Resource: [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ConfigurableVisitor], Num Params: [0]]
+Message: [Added as a DOM Processing Phase resource.]
+-----------------------------------------------------------------------------------
+Message: [SAX/DOM support characteristics of the Resource Configuration map:
+		DOM   SAX    Resource  ('x' equals supported)
+		---------------------------------------------------------------------
+		 x           Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.AssemblyVisitor1], Num Params: [0]
+		 x           Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [a *], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ProcessorVisitor1], Num Params: [0]
+		 x           Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ConfigurableVisitor], Num Params: [0]
+		 x     x     Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [http://milyn.codehaus.org/smooks], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]
+
+
+]
+-----------------------------------------------------------------------------------
+Message: [Using Stream Filter Type: DOM]
+-----------------------------------------------------------------------------------
+
+STARTED
+ASSEMBLY_STARTED
+<a visitedby-AssemblyVisitor1="true">	Visit Event (BEFORE): [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.AssemblyVisitor1], Num Params: [0]]
+
+	<b>
+	</b>
+</a>	Visit Event (AFTER): [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.AssemblyVisitor1], Num Params: [0]]
+
+PROCESSING_STARTED
+<a visitedby-AssemblyVisitor1="true" visitedby-ConfigurableVisitor="true">	Visit Event (BEFORE): [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ConfigurableVisitor], Num Params: [0]]
+
+	<b visitedby-ProcessorVisitor1="true">		Visit Event (BEFORE): [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [a *], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ProcessorVisitor1], Num Params: [0]]
+
+	</b>		Visit Event (AFTER): [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [a *], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ProcessorVisitor1], Num Params: [0]]
+
+</a>	Visit Event (AFTER): [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ConfigurableVisitor], Num Params: [0]]
+
+FINISHED

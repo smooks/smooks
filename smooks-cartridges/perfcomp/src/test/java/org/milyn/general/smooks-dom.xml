@@ -6,7 +6,7 @@
     </resource-config>
 
     <resource-config selector="customer-details">
-        <resource>org.milyn.general.DOMVisitor</resource>
+        <resource>org.smooks.general.DOMVisitor</resource>
     </resource-config>
 
 </smooks-resource-list>

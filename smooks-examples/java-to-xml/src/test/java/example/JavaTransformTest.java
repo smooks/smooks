@@ -18,7 +18,7 @@ package example;
 import example.model.Order;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.milyn.io.StreamUtils;
+import org.smooks.io.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;

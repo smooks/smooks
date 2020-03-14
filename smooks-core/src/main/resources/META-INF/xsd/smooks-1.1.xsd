@@ -225,7 +225,7 @@
                 <xs:extension base="xs:string">
                     <xs:attribute name="id" type="xs:string" />
                     <xs:attribute name="idRef" type="xs:string" />
-                    <xs:attribute name="evaluator" type="xs:string" default="org.milyn.javabean.expression.BeanMapExpressionEvaluator" />
+                    <xs:attribute name="evaluator" type="xs:string" default="org.smooks.javabean.expression.BeanMapExpressionEvaluator" />
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>

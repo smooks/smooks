@@ -111,10 +111,10 @@
     				<xs:element name="failedSelectError" type="xs:string"  minOccurs="0" maxOccurs="1" >
     					<xs:annotation>
 				    		<xs:documentation xml:lang="en">
-				    			The error message that is thrown in org.milyn.routing.db.DataSelectionException
-				    			exception when no row was found that matches the 'where' query.
-				    			If the error message is not set then no exception will be thrown.
-				    		</xs:documentation>
+                                The error message that is thrown in org.smooks.routing.db.DataSelectionException
+                                exception when no row was found that matches the 'where' query.
+                                If the error message is not set then no exception will be thrown.
+                            </xs:documentation>
 				    	</xs:annotation>
     				</xs:element>
     			</xs:sequence>

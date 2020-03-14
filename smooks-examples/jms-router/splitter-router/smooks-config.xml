@@ -12,7 +12,7 @@
 
     <!-- Capture the message data 2 seperate DOM model, for "order" and "order-item" fragments... -->
     <resource-config selector="order,order-item">
-        <resource>org.milyn.delivery.DomModelCreator</resource>
+        <resource>org.smooks.delivery.DomModelCreator</resource>
     </resource-config>
 
     <!-- At each "order-iteam", apply a template to the "order" and "order-item" DOM model... -->

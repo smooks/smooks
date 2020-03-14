@@ -5,7 +5,7 @@
     Configure the JSON Reader to read the message into a stream of SAX events.
     -->
     <resource-config selector="org.xml.sax.driver">
-	    <resource>org.milyn.json.JSONReader</resource>
+	    <resource>org.smooks.json.JSONReader</resource>
 	    <param name="keyMap">
 			<key from="some key">someKey</key>
 			<key from="some&amp;key" to="someAndKey" />

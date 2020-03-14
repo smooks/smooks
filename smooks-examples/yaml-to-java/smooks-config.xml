@@ -27,7 +27,7 @@
     The last strategy combines both strategies. The attributes are set and the data structure is resolved.
     This example demonstrates the 'REFER_RESOLVE' strategy.
 
-    There are more settings to for the org.milyn.yalm.YalmReader.
+    There are more settings to for the org.smooks.yalm.YalmReader.
     Take a look at the Javadoc of the class for all the possible parameters.
     -->
     <yalm:reader rootName="order" keyWhitspaceReplacement="-" aliasStrategy="REFER_RESOLVE">

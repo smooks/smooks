@@ -1,4 +1,4 @@
-org.milyn.templating.freemarker.FreeMarkerContentHandlerFactory
-org.milyn.templating.stringtemplate.v4.StringTemplateContentHandlerFactory
-org.milyn.templating.stringtemplate.StringTemplateContentHandlerFactory
-org.milyn.templating.xslt.XslContentHandlerFactory
+org.smooks.templating.freemarker.FreeMarkerContentHandlerFactory
+org.smooks.templating.stringtemplate.v4.StringTemplateContentHandlerFactory
+org.smooks.templating.stringtemplate.StringTemplateContentHandlerFactory
+org.smooks.templating.xslt.XslContentHandlerFactory

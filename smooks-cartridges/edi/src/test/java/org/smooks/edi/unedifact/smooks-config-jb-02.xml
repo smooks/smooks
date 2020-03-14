@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+                      xmlns:unedifact="http://www.milyn.org/xsd/smooks/unedifact-1.4.xsd"
+                      xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.4.xsd">
+
+	<unedifact:reader mappingModel="MSG1-model.xml,MSG2-model.xml,MSG3-model.xml" ignoreNewLines="true" />
+	
+	<import file="/org/smooks/edi/unedifact/model/r41/bindings/unedifact-interchange.xml" />
+	
+	<!-- The following beans will be wired into the UNEdifactMessage41 bean instances in the interchange because they have the @EDIMessage annotation. -->
+    <jb:bean beanId="MSG1" class="org.smooks.edi.unedifact.MSG1" createOnElement="interchangeMessage/message1" />
+    <jb:bean beanId="MSG2" class="org.smooks.edi.unedifact.MSG2" createOnElement="interchangeMessage/message2" />
+    <jb:bean beanId="MSG3" class="org.smooks.edi.unedifact.MSG3" createOnElement="interchangeMessage/message3" />
+
+</smooks-resource-list>

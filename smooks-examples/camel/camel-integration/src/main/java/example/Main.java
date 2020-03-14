@@ -17,7 +17,7 @@ package example;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.milyn.io.StreamUtils;
+import org.smooks.io.StreamUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

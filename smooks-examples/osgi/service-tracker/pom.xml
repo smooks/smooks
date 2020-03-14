@@ -64,11 +64,11 @@
             <Export-Package>example.model;version="${project.version}",
               example.activator;version="${project.version}"
             </Export-Package>
-            <Import-Package>org.milyn.*;version="${project.version}",
-              javax.xml.transform.stream,
-              example.model;version="${project.version}",
-              example.activator;version="${project.version}",
-              *;-nouses:=true
+            <Import-Package>org.smooks.*;version="${project.version}",
+                javax.xml.transform.stream,
+                example.model;version="${project.version}",
+                example.activator;version="${project.version}",
+                *;-nouses:=true
             </Import-Package>
             <Private-Package>example</Private-Package>
             <Smooks-Config>${basedir}/smooks-config.xml</Smooks-Config>

@@ -71,11 +71,11 @@
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>example.activator.PeaberryActivator</Bundle-Activator>
             <!--Bundle-Module>example.activator.SmooksModule</Bundle-Module-->
-            <Import-Package>org.milyn.*;version="${project.version}",
-              javax.xml.transform.stream,
-              example.model;version="${project.version}",
-              example.activator;version="${project.version}",
-              *;-nouses:=true
+            <Import-Package>org.smooks.*;version="${project.version}",
+                javax.xml.transform.stream,
+                example.model;version="${project.version}",
+                example.activator;version="${project.version}",
+                *;-nouses:=true
             </Import-Package>
             <Export-Package>example.model.*;version="${project.version}",
               example.activator;version="${project.version}"

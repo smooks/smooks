@@ -1,0 +1,1 @@
+org.smooks.edisax.EDIParseException:EDI message processing failed [Test Message][1.0].  Segment [SEG] expected to contain 5 fields.  Actually contains 4 fields (not including segment code).  Currently at segment number 1.

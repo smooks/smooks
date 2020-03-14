@@ -6,7 +6,7 @@
         </Console>
     </Appenders>
     <Loggers>
-<!--        <Logger name="org.milyn.cdr.xpath" level="debug"/>-->
+<!--        <Logger name="org.smooks.cdr.xpath" level="debug"/>-->
         <Logger name="org.apache.activemq" level="info"/>
 <!--        <Logger name="org.hsqldb" level="debug"/>-->
         <Logger name="org.apache.camel" level="info"/>

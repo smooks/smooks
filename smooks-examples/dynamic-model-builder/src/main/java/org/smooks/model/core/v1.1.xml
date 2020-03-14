@@ -20,7 +20,7 @@
     <!--
     Top level writer...
     -->
-    <dmb:writer beanId="smooksModel" class="org.milyn.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
+    <dmb:writer beanId="smooksModel" class="org.smooks.javabean.dynamic.serialize.freemarker.FreeMarkerBeanWriter">
         <param name="template">/org/smooks/model/core/v1.1.ftl</param>
     </dmb:writer>
 

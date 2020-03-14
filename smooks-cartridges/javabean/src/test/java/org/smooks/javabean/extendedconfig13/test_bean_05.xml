@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<smooks-resource-list
+	xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd"
+	xmlns:core="http://www.milyn.org/xsd/smooks/smooks-core-1.3.xsd"
+	xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.3.xsd">
+
+	<core:namespaces>
+		<core:namespace prefix="y" uri="http://y" />
+		<core:namespace prefix="x" uri="http://x" />
+	</core:namespaces>
+
+    <jb:bean beanId="order" class="org.smooks.javabean.extendedconfig.ExtendedOrder">
+        <jb:wiring property="header" beanIdRef="headerBean" wireOnElement="order" />
+        <jb:wiring property="orderItems" beanIdRef="orderItemList" wireOnElement="order" />
+        <jb:wiring property="orderItems" beanIdRef="orderItemArray" wireOnElement="order" />
+        <!-- Sum the order item totals into the order total as we pass each order-item -->
+        <jb:expression property="total" execOnElement="order-item" >
+            order.total + (orderItem.price * orderItem.quantity);
+        </jb:expression>
+    </jb:bean>
+
+    <jb:bean beanId="headerBean" class="org.smooks.javabean.Header">
+        <jb:wiring property="order" beanIdRef="order" wireOnElement="order" />
+        <jb:value property="date" data="x:header/y:date" decoder="Date">
+            <jb:decodeParam name="format">EEE MMM dd HH:mm:ss z yyyy</jb:decodeParam>
+            <jb:decodeParam name="locale-language">en</jb:decodeParam>
+            <jb:decodeParam name="locale-country">IE</jb:decodeParam>
+        </jb:value>
+        <jb:value property="customerNumber" data="header/customer/@number" decoder="Long" />
+        <jb:value property="customerName" data="header/customer" />
+        <jb:value property="privatePerson" data="header/privatePerson" decoder="Boolean" default="true" />
+    </jb:bean>
+
+    <jb:bean beanId="headerBeanHash" class="java.util.HashMap" createOnElement="x:header">
+        <jb:value data="header/*" />
+    </jb:bean>
+
+    <jb:bean beanId="orderItemList" class="java.util.ArrayList">
+        <jb:wiring beanIdRef="orderItem" wireOnElement="order" />
+    </jb:bean>
+
+    <jb:bean beanId="orderItem" class="org.smooks.javabean.OrderItem" createOnElement="order-item">
+        <jb:wiring property="order" beanIdRef="order" />
+        <jb:value property="productId" data="order-item/product" decoder="Long" />
+        <jb:value property="quantity" data="order-item/quantity" decoder="Integer" />
+        <jb:value property="price" data="order-item/price" decoder="Double" />
+    </jb:bean>
+</smooks-resource-list>

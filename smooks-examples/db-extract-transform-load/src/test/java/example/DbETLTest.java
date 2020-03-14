@@ -17,7 +17,7 @@ package example;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.milyn.Smooks;
+import org.smooks.Smooks;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
