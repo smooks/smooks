@@ -44,7 +44,7 @@
     <gpg.skip>true</gpg.skip>
 
     <activemq.plugin.version>5.7.0</activemq.plugin.version>
-    <activemq.version>5.15.11</activemq.version>
+    <activemq.version>5.15.12</activemq.version>
     <ant.version>1.10.7</ant.version>
     <antlr.version>3.5.2</antlr.version>
 
