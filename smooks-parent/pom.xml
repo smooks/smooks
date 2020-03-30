@@ -94,7 +94,7 @@
 
     <servlet-api.version>2.5</servlet-api.version>
     <slf4j-api.version>1.7.30</slf4j-api.version>
-    <spring.version>5.2.4.RELEASE</spring.version>
+    <spring.version>5.2.5.RELEASE</spring.version>
     <spring.antlr.version>2.7.7</spring.antlr.version>
     <spring.commons.logging.version>1.1.1</spring.commons.logging.version>
     <spring.groovy.version>1.8.8</spring.groovy.version>
