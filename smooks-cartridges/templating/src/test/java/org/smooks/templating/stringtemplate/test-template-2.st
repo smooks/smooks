@@ -1,1 +1,0 @@
-<mybean>$myBeanCData.x$</mybean>

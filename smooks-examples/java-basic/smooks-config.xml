@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
-
-    <resource-config selector="c b">
-	    <resource>example.BasicJavaTransformer</resource>
-		<param name="newName">xxx</param>
-	</resource-config>
-
-</smooks-resource-list>

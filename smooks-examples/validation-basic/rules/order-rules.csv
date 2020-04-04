@@ -1,2 +1,0 @@
-"# Rule Name","MVEL Expression ('Ctrl+CR' for Carriage Return)"
-"order_item_total","orderItem.quantity * orderItem.price < 50.00"

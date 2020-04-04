@@ -1,6 +1,0 @@
-keyWithAnchoredValue: &id1 value1
-keyWithAliasValue: *id1
-keyWithAnchorStruct: &id2
-   subKey1: subValue1
-   subKey2: subValue2
-keyWithAliasStruct: *id2

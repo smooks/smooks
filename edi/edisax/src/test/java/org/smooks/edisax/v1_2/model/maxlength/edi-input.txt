@@ -1,1 +1,0 @@
-SEG+1200+010101:1200:This text is too long for the maximum length set in the maxLength attribute:20090402'

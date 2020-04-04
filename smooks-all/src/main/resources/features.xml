@@ -2,16 +2,13 @@
 
 <features name="milyn-${project.version}">
   <feature name="smooks" version="${project.version}">
-    <bundle>mvn:org.antlr/com.springsource.antlr/${spring.antlr.version}</bundle>
     <bundle>mvn:org.freemarker/freemarker/${freemarker.version}</bundle>
-    <bundle>mvn:org.codehaus.groovy/com.springsource.org.codehaus.groovy/${spring.groovy.version}</bundle>
     <bundle>mvn:org.jaxen/com.springsource.org.jaxen/${spring.jaxen.version}</bundle>
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm/${spring.objectweb.version}</bundle>
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree/${spring.objectweb.version}</bundle>
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree.analysis/${spring.objectweb.version}</bundle>
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.util/${spring.objectweb.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons_lang.version}</bundle>
-    <bundle>mvn:org.ow2.bundles/ow2-bundles-externals-opencsv/${ow2.opencsv.version}</bundle>
     <bundle>mvn:org.milyn/milyn-smooks-all/${project.version}</bundle>
   </feature>
 </features>

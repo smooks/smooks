@@ -1,1 +1,0 @@
-org.smooks.edisax.EDIParseException:EDI message processing failed [Test Message][1.0].  Segment [YYY], field 1 (name), component 2 (lastname) expected to contain a value.  Currently at segment number 2.

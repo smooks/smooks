@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
-
-    <resource-config selector="global-parameters">
-        <param name="stream.filter.type">SAX</param>
-    </resource-config>
-
-</smooks-resource-list>

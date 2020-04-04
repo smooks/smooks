@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:jb="http://www.milyn.org/xsd/smooks/javabean-1.1.xsd">
-
-    <jb:bindings beanId="orderItemList" class="java.util.ArrayList" createOnElement="order">
-        <!-- Should get an error for specifying a wiring property when the class is a List -->
-        <jb:wiring property="x" beanIdRef="orderItem" />
-    </jb:bindings>
-
-</smooks-resource-list>

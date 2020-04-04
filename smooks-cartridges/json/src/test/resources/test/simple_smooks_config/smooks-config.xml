@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
-
-    <!--
-    Configure the JSON Reader to read the message into a stream of SAX events.
-    -->
-    <reader class="org.smooks.json.JSONReader" />
-
-</smooks-resource-list>

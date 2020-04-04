@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<order-item xmlns="http://order">
-            <product>111</product>
-            <quantity>2</quantity>
-            <price>8.90</price>
-        </order-item>

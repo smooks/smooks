@@ -26,70 +26,6 @@
     </dependency>
     <dependency>
       <groupId>org.milyn</groupId>
-      <artifactId>milyn-edisax-parser</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-calc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-camel</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-csv</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-edi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-fixed-length</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-javabean</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-json</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-misc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-persistence</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-routing</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-rules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-scripting</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-templating</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-validation</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-yaml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
       <artifactId>milyn-scribe-core</artifactId>
       <exclusions>
         <exclusion>
@@ -109,10 +45,6 @@
     <dependency>
       <groupId>org.milyn</groupId>
       <artifactId>milyn-scribe-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.milyn</groupId>
-      <artifactId>milyn-smooks-flatfile</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
@@ -171,18 +103,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>com.springsource.org.codehaus.groovy</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>com.springsource.antlr</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.objectweb.asm</groupId>
       <artifactId>com.springsource.org.objectweb.asm</artifactId>
       <scope>provided</scope>
@@ -206,11 +126,6 @@
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sf.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
     </dependency>
   </dependencies>
 
