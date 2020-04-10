@@ -1,4 +1,0 @@
-#This is a header line
-#This is a second header line
-aabbbcccc
-ddeeeffff

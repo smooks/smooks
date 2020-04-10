@@ -1,3 +1,0 @@
-<trackingNumber>
- $trackingNumber$
-</trackingNumber>

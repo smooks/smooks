@@ -43,68 +43,40 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gpg.skip>true</gpg.skip>
 
-    <activemq.plugin.version>5.7.0</activemq.plugin.version>
-    <activemq.version>5.15.12</activemq.version>
     <ant.version>1.10.7</ant.version>
-    <antlr.version>3.5.2</antlr.version>
-
-    <camel.version>3.0.1</camel.version>
     <commons-lang.version>2.6</commons-lang.version>
-
-    <drools.version>7.34.0.Final</drools.version>
     <dtdparser.version>1.21</dtdparser.version>
-
     <freemarker.version>2.3.30</freemarker.version>
-
-    <groovy.version>2.4.19</groovy.version>
-
     <hamcrest-all.version>1.3</hamcrest-all.version>
     <hibernate-core.version>5.4.12.Final</hibernate-core.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
-
     <ibatis-sqlmap.version>2.3.4.726</ibatis-sqlmap.version>
-
     <jackson-core-lgpl.version>1.9.11</jackson-core-lgpl.version>
     <javassist.version>3.12.1.GA</javassist.version>
     <javax.transaction.version>1.1</javax.transaction.version>
     <jaxen.version>1.2.0</jaxen.version>
     <jdom2.version>2.0.5</jdom2.version>
-    <jgoodies.forms.version>1.2.1</jgoodies.forms.version>
-    <jgoodies.looks.version>2.2.0</jgoodies.looks.version>
     <jibx.version>1.3.3</jibx.version>
     <jms.version>1.1-rev-1</jms.version>
     <junit.version>4.13</junit.version>
-
     <log4j2.version>2.13.1</log4j2.version>
-
     <maven.eclipse.plugin.version>2.10</maven.eclipse.plugin.version>
     <mockejb.version>0.6-beta2</mockejb.version>
     <mockito.version>1.10.19</mockito.version>
     <mockobjects-core.version>0.09</mockobjects-core.version>
     <mockobjects-j1.4-j2ee1.3.version>0.07</mockobjects-j1.4-j2ee1.3.version>
     <mvel.version>2.4.7.Final</mvel.version>
-
     <ognl.version>3.2.14</ognl.version>
-    <opencsv.version>2.3</opencsv.version>
     <org.osgi.core.version>1.4.0</org.osgi.core.version>
-    <ow2.opencsv.version>1.0.36</ow2.opencsv.version>
-
     <peaberry.version>1.3</peaberry.version>
     <persistence-api.version>1.0.2</persistence-api.version>
-
     <servlet-api.version>2.5</servlet-api.version>
     <slf4j-api.version>1.7.30</slf4j-api.version>
     <spring.version>5.2.4.RELEASE</spring.version>
-    <spring.antlr.version>2.7.7</spring.antlr.version>
     <spring.commons.logging.version>1.1.1</spring.commons.logging.version>
-    <spring.groovy.version>1.8.8</spring.groovy.version>
     <spring.jaxen.version>1.1.3</spring.jaxen.version>
     <spring.objectweb.version>3.2.0</spring.objectweb.version>
-    <stringtemplate.v4.version>4.3</stringtemplate.v4.version>
-    <stringtemplate.version>2.2</stringtemplate.version>
-
     <testng.version>7.1.0</testng.version>
-
     <xalan.version>2.7.2</xalan.version>
     <xerces.version>2.9.1</xerces.version>
     <xml_apis.version>1.3.02</xml_apis.version>
@@ -141,121 +113,7 @@
 
       <dependency>
         <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-javabean</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-templating</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
         <artifactId>milyn-scribe-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-edisax-parser</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-ect</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-ejc</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-rules</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-edi</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-routing</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-flatfile</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-calc</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-camel</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-csv</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-fixed-length</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-misc</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-json</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-persistence</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-scripting</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-validation</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-yaml</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -275,18 +133,6 @@
         <groupId>org.milyn</groupId>
         <artifactId>milyn-scribe-jpa</artifactId>
         <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-example-ejc-model-gen</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.sf.opencsv</groupId>
-        <artifactId>opencsv</artifactId>
-        <version>${opencsv.version}</version>
       </dependency>
 
       <dependency>
@@ -440,51 +286,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>antlr</groupId>
-        <artifactId>stringtemplate</artifactId>
-        <version>${stringtemplate.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.antlr</groupId>
-        <artifactId>ST4</artifactId>
-        <version>${stringtemplate.v4.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr</artifactId>
-        <version>${antlr.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>xalan</groupId>
         <artifactId>xalan</artifactId>
         <version>${xalan.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ognl</groupId>
-        <artifactId>ognl</artifactId>
-        <version>${ognl.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>jboss</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.jms</groupId>
-        <artifactId>jms-api</artifactId>
-        <version>${jms.version}</version>
       </dependency>
 
       <dependency>
@@ -509,19 +313,6 @@
         <groupId>org.apache.ibatis</groupId>
         <artifactId>ibatis-sqlmap</artifactId>
         <version>${ibatis-sqlmap.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>1.26</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jdt.core.compiler</groupId>
-        <artifactId>ecj</artifactId>
-        <version>4.6.1</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -586,19 +377,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>com.springsource.org.codehaus.groovy</artifactId>
-        <version>${spring.groovy.version}</version>
-        <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.antlr</groupId>
-        <artifactId>com.springsource.antlr</artifactId>
-        <version>${spring.antlr.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.objectweb.asm</groupId>
         <artifactId>com.springsource.org.objectweb.asm</artifactId>
         <version>${spring.objectweb.version}</version>
@@ -653,18 +431,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.activemq</groupId>
-        <artifactId>activemq-broker</artifactId>
-        <version>${activemq.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.derby</groupId>
-        <artifactId>derby</artifactId>
-        <version>10.15.2.0</version>
-      </dependency>
-
-      <dependency>
         <groupId>mx4j</groupId>
         <artifactId>mx4j</artifactId>
         <version>3.0.2</version>
@@ -695,42 +461,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-core</artifactId>
-        <version>${camel.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-attachments</artifactId>
-        <version>${camel.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-spring</artifactId>
-        <version>${camel.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>apt</artifactId>
-        <version>${camel.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-plugin-api</artifactId>
-        <version>3.6.3</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-project</artifactId>
-        <version>2.2.1</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.jibx</groupId>
         <artifactId>jibx-extras</artifactId>
         <version>${jibx.version}</version>
@@ -743,89 +473,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.eclipse.xsd</groupId>
-        <artifactId>org.eclipse.xsd</artifactId>
-        <version>2.12.0</version>
-        <type>jar</type>
-      </dependency>
-
-      <dependency>
         <groupId>org.jdom</groupId>
         <artifactId>jdom</artifactId>
         <version>${jdom2.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.emf</groupId>
-        <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-        <version>2.16.0</version>
-        <type>jar</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.emf</groupId>
-        <artifactId>org.eclipse.emf.ecore</artifactId>
-        <version>2.21.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.emf</groupId>
-        <artifactId>org.eclipse.emf.common</artifactId>
-        <version>2.18.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-core</artifactId>
-        <version>${drools.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-compiler</artifactId>
-        <version>${drools.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.jgoodies</groupId>
-        <artifactId>looks</artifactId>
-        <version>${jgoodies.looks.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.jgoodies</groupId>
-        <artifactId>forms</artifactId>
-        <version>${jgoodies.forms.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-core</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-aop</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-expression</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
       </dependency>
 
       <dependency>

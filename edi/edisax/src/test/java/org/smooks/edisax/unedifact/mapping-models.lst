@@ -1,7 +1,0 @@
-
-# Zipped Mapping Models for tests.
-# This file must be located in "META-INF/services/org/smooks/edi/mapping-models.lst" in the zip/jar file.
-
-/test/models/subs/MSG1-model.xml
-/test/models/subs/MSG2-model.xml
-/test/models/MSG3-model.xml

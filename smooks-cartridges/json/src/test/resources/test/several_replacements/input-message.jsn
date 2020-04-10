@@ -1,8 +1,0 @@
-{
-	"some key" : "value1",
-	"123Key" : "value2",
-	"some!key" : "value3",
-	"a\u00E3b" : "value4",
-	"someNull" : null,
-	"123\u00E3 Test" : null
-}

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<smooks-resource-list 
-	xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"
-	xmlns:csv="https://www.smooks.org/xsd/smooks/csv-1.7.xsd">
-	
-	<csv:reader fields="name,email" />
-	
-</smooks-resource-list>

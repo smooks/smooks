@@ -1,4 +1,0 @@
-org.smooks.templating.freemarker.FreeMarkerContentHandlerFactory
-org.smooks.templating.stringtemplate.v4.StringTemplateContentHandlerFactory
-org.smooks.templating.stringtemplate.StringTemplateContentHandlerFactory
-org.smooks.templating.xslt.XslContentHandlerFactory

@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:unedifact="https://www.smooks.org/xsd/smooks/unedifact-1.6.xsd">
-
-	<unedifact:reader mappingModel="MSG1-model.xml,MSG2-model.xml,MSG3-model.xml" />
-
-</smooks-resource-list>

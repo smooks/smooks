@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding="UTF-8"?>
-
-<!ELEMENT binding EMPTY>
-<!ATTLIST binding
-	property 	CDATA 	#REQUIRED
-	selector 	CDATA 	#REQUIRED
-	type 	    CDATA 	#IMPLIED
->
