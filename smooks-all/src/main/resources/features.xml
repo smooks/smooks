@@ -9,6 +9,6 @@
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree.analysis/${spring.objectweb.version}</bundle>
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.util/${spring.objectweb.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons_lang.version}</bundle>
-    <bundle>mvn:org.milyn/smooks-all/${project.version}</bundle>
+    <bundle>mvn:org.smooks/smooks-all/${project.version}</bundle>
   </feature>
 </features>
