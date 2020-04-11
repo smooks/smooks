@@ -5,11 +5,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.milyn</groupId>
+  <groupId>org.smooks</groupId>
   <artifactId>smooks-parent</artifactId>
   <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Milyn :: Smooks</name>
+  <name>Smooks</name>
   <url>http://www.smooks.org</url>
 
   <description>
@@ -87,51 +87,51 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.milyn</groupId>
+        <groupId>org.smooks</groupId>
         <artifactId>testres</artifactId>
         <version>${project.version}</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-all</artifactId>
+        <groupId>org.smooks</groupId>
+        <artifactId>smooks-all</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-commons</artifactId>
+        <groupId>org.smooks</groupId>
+        <artifactId>smooks-commons</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-smooks-core</artifactId>
+        <groupId>org.smooks</groupId>
+        <artifactId>smooks-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-scribe-core</artifactId>
+        <groupId>org.smooks</groupId>
+        <artifactId>smooks-scribe-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-scribe-hibernate</artifactId>
+        <groupId>org.smooks</groupId>
+        <artifactId>smooks-scribe-hibernate</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-scribe-ibatis</artifactId>
+        <groupId>org.smooks</groupId>
+        <artifactId>smooks-scribe-ibatis</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.milyn</groupId>
-        <artifactId>milyn-scribe-jpa</artifactId>
+        <groupId>org.smooks</groupId>
+        <artifactId>smooks-scribe-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
 

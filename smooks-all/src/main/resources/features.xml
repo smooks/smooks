@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<features name="milyn-${project.version}">
+<features name="smooks-${project.version}">
   <feature name="smooks" version="${project.version}">
     <bundle>mvn:org.freemarker/freemarker/${freemarker.version}</bundle>
     <bundle>mvn:org.jaxen/com.springsource.org.jaxen/${spring.jaxen.version}</bundle>
@@ -9,6 +9,6 @@
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree.analysis/${spring.objectweb.version}</bundle>
     <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.util/${spring.objectweb.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons_lang.version}</bundle>
-    <bundle>mvn:org.milyn/milyn-smooks-all/${project.version}</bundle>
+    <bundle>mvn:org.milyn/smooks-all/${project.version}</bundle>
   </feature>
 </features>

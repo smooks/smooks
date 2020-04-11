@@ -5,12 +5,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.milyn</groupId>
+    <groupId>org.smooks</groupId>
     <artifactId>testres</artifactId>
     <version>2.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <name>Milyn :: Test Resources</name>
+  <name>Test Resources</name>
   <artifactId>antrunner</artifactId>
   <packaging>jar</packaging>
 
