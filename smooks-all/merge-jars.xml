@@ -20,13 +20,13 @@
     <target name="assemble">
 		<taskdef name="merge" classname="org.smooks.ant.ResourceMergerTask" classpathref="task.classpath"/>
 
-		<merge jarName="${basedir}/target/milyn-smooks-all-${smooks.version}.jar" 
+		<merge jarName="${basedir}/target/smooks-all-${smooks.version}.jar"
 			manifest="${basedir}/target/classes/META-INF/MANIFEST.MF"
 			resources="META-INF/content-handlers.inf, META-INF/data-decoders.inf">
 			<fileset dir="${basedir}/target" includes="dependency/milyn*.jar"/>
 		</merge>
 
-        <jar destfile="./target/milyn-smooks-all-${smooks.version}-sources.jar">
+        <jar destfile="./target/smooks-all-${smooks.version}-sources.jar">
             <zipgroupfileset dir="./target/sources" includes="milyn*.jar"/>
         </jar>
 
