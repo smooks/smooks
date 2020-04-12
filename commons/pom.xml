@@ -11,7 +11,7 @@
     <relativePath>../testres/pom.xml</relativePath>
   </parent>
 
-  <name>Commons</name>
+  <name>Smooks Commons</name>
   <artifactId>smooks-commons</artifactId>
   <packaging>bundle</packaging>
 
