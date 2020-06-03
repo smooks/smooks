@@ -2,11 +2,9 @@
 
 This is the git source code repository for the [Smooks][1] Project.
 
-
 ## Build Status
 
 [![Build Status](https://travis-ci.org/smooks/smooks.svg?branch=master)](https://travis-ci.org/smooks/smooks)
-
 
 ## Building
 
@@ -40,15 +38,14 @@ You can join these groups and chats to discuss and ask Smooks related questions:
 - Chat room about using Smooks: [![gitter: smooks/smooks](https://img.shields.io/badge/gitter%3A-smooks%2Fsmooks-blue.svg?style=flat-square)](https://gitter.im/smooks/smooks)
 - Issue tracker: [![github: smooks/smooks](https://img.shields.io/badge/github%3A-issues-blue.svg?style=flat-square)](https://github.com/smooks/smooks/issues)
 
-
 ## Contributing
 
 If you'd like to contribute some code/fixes to Smooks, [please see the following guidelines][2].
 
-
 ## License
 
-Smooks is Open Source and available under the LGPL license, Version 3.0.
+Smooks is open source and licensed under the terms of the Apache License Version 2.0 or, the 
+GNU Lesser General Public License version 3.0 or later. You may use Smooks according to either of these licenses as is most appropriate  for your project.
 
 
 [1]: http://www.smooks.org

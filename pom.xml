@@ -3,47 +3,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.smooks</groupId>
-    <artifactId>smooks-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
-    <relativePath>smooks-parent/pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>org.smooks</groupId>
+        <artifactId>smooks-parent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>smooks-parent/pom.xml</relativePath>
+    </parent>
 
-  <artifactId>smooks-aggregator</artifactId>
-  <packaging>pom</packaging>
-  <name>Main Aggregator</name>
+    <artifactId>smooks-aggregator</artifactId>
+    <packaging>pom</packaging>
+    <name>Main Aggregator</name>
+  
+    <description>
+        Aggregates and builds all project modules. Maintains SCM information.
+    </description>
 
-  <description>
-    Aggregates and builds all project modules. Maintains SCM information.
-  </description>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!--
+                  Enabled updating version number in all POM files in one go. To update
+                  POM version numbers, use the following command:
+        
+                  mvn versions:set -DnewVersion=[new version number]
+                -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <!--
-          Enabled updating version number in all POM files in one go. To update
-          POM version numbers, use the following command:
-
-          mvn versions:set -DnewVersion=[new version number]
-        -->
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>versions-maven-plugin</artifactId>
-          <version>2.7</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-
-  <modules>
-    <module>smooks-parent</module>
-    <module>testres</module>
-    <module>commons</module>
-    <module>smooks-core</module>
-    <module>scribe</module>
-    <module>smooks-all</module>
-  </modules>
+    <modules>
+        <module>smooks-parent</module>
+        <module>testres</module>
+        <module>commons</module>
+        <module>smooks-core</module>
+        <module>scribe</module>
+        <module>smooks-all</module>
+    </modules>
 </project>
