@@ -44,9 +44,8 @@ If you'd like to contribute some code/fixes to Smooks, [please see the following
 
 ## License
 
-Smooks is open source and licensed under the terms of the Apache License Version 2.0 or, the 
-GNU Lesser General Public License version 3.0 or later. You may use Smooks according to either of these licenses as 
-is most appropriate for your project.
+Smooks is open source and licensed under the terms of the Apache License Version 2.0, or the GNU Lesser General Public 
+License version 3.0 or later. You may use Smooks according to either of these licenses as is most appropriate for your project.
 
 `SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later`
 
