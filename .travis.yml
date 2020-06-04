@@ -1,6 +1,9 @@
 language: java
 
 before_install:
+  - wget https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+  - tar xzvf apache-maven-3.6.3-bin.tar.gz
+  - export PATH=`pwd`/apache-maven-3.6.3/bin:$PATH
   - if [ ! -z "$GPG_SECRET_KEYS" ]; then echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import; fi
   - if [ ! -z "$GPG_OWNERTRUST" ]; then echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust; fi
 
