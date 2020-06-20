@@ -47,7 +47,6 @@ import org.smooks.util.FreeMarkerTemplate;
 import org.smooks.io.StreamUtils;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.io.Writer;
 import java.io.IOException;
