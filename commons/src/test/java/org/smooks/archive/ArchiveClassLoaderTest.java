@@ -70,7 +70,7 @@ public class ArchiveClassLoaderTest {
         // But should be the same class...
         assertEquals(Archive.class.getName(), clazzInst.getName());
 
-        String hiString = StreamUtils.readStreamAsString(classLoader.getResourceAsStream("my/resource.txt"));
+        String hiString = StreamUtils.readStreamAsString(classLoader.getResourceAsStream("my/resource.txt"), "UTF-8");
         assertEquals("Hi!!", hiString);
     }
 }

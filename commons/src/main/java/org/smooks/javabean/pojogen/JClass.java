@@ -81,7 +81,7 @@ public class JClass {
 
     static {
         try {
-            template = new FreeMarkerTemplate(StreamUtils.readStreamAsString(JClass.class.getResourceAsStream("JavaClass.ftl")));
+            template = new FreeMarkerTemplate(StreamUtils.readStreamAsString(JClass.class.getResourceAsStream("JavaClass.ftl"), "UTF-8"));
         } catch (IOException e) {
             throw new IllegalStateException("Failed to load JavaClass.ftl FreeMarker template.", e);
         }
