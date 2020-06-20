@@ -411,7 +411,7 @@ public final class XMLConfigDigester {
                     List<Element> importParams = DomUtils.getElements(importElement, "param", null);
                     if(!importParams.isEmpty()) {
                         // Inject parameters into import config...
-                        String importConfig = StreamUtils.readStreamAsString(resourceStream);
+                        String importConfig = StreamUtils.readStreamAsString(resourceStream, "UTF-8");
 
                         for (Element importParam : importParams) {
                             String paramName = DomUtils.getAttributeValue(importParam, "name");

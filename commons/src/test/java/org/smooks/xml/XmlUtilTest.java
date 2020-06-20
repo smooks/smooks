@@ -628,10 +628,10 @@ public class XmlUtilTest {
     }
 
     public void test_indent(String inXml) throws IOException {
-        String xmlString = StreamUtils.readStreamAsString(getClass().getResourceAsStream(inXml));
+        String xmlString = StreamUtils.readStreamAsString(getClass().getResourceAsStream(inXml), "UTF-8");
         String indentedXML = XmlUtil.indent(xmlString, 4);
 
-        String indentedXmlExpected = StreamUtils.readStreamAsString(getClass().getResourceAsStream(inXml + ".outexpected"));
+        String indentedXmlExpected = StreamUtils.readStreamAsString(getClass().getResourceAsStream(inXml + ".outexpected"), "UTF-8");
 
         assertEquals(StreamUtils.normalizeLines(indentedXmlExpected, false), StreamUtils.normalizeLines(indentedXML, false));
     }
