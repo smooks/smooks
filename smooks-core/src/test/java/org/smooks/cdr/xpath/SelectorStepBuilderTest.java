@@ -440,20 +440,6 @@ public class SelectorStepBuilderTest  {
     }
 
     @Test
-    public void test_26() throws SAXPathException {
-        SelectorStep[] steps = SelectorStepBuilder.buildSteps("$document", namespaces);
-        assertEquals("/#document", SelectorStepBuilder.toString(steps));
-        assertTrue(steps[0].isRooted());
-    }
-
-    @Test
-    public void test_27() throws SAXPathException {
-        SelectorStep[] steps = SelectorStepBuilder.buildSteps("$document/b[text() != 's']", namespaces);
-        assertEquals("/b(text() != 's')", SelectorStepBuilder.toString(steps));
-        assertTrue(steps[0].isRooted());
-    }
-
-    @Test
     public void test_28() throws SAXPathException {
         SelectorStep[] steps = SelectorStepBuilder.buildSteps("/b[text() != 's']", namespaces);
         assertEquals("/b(text() != 's')", SelectorStepBuilder.toString(steps));

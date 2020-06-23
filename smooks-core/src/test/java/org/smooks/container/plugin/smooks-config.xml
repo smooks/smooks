@@ -48,7 +48,7 @@
 		<param name="stream.filter.type">SAX</param>
 	</resource-config>
 
-    <resource-config selector="$document">
+    <resource-config selector="#document">
         <resource>org.smooks.container.plugin.JavaObjectSetter</resource>
     </resource-config>
 

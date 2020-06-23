@@ -209,7 +209,7 @@ public class SmooksResourceConfiguration {
      * A special selector for resource targeted at the document as a whole (the roor element).
      */
     public static final String DOCUMENT_FRAGMENT_SELECTOR = "#document";
-    public static final String LEGACY_DOCUMENT_FRAGMENT_SELECTOR = "$document";
+
     /**
      * A special selector for resource targeted at the document as a whole (the roor element).
      */
@@ -462,11 +462,7 @@ public class SmooksResourceConfiguration {
         if (selector == null || selector.trim().equals("")) {
             throw new IllegalArgumentException("null or empty 'selector' arg in constructor call.");
         }
-        if(selector.equals(LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
-            this.selector = DOCUMENT_FRAGMENT_SELECTOR;
-        } else {
-            this.selector = selector;
-        }
+        this.selector = selector;
 
         // If there's a "#document" token in the selector, but it's not at the very start,
         // then we have an invalid selector...
@@ -541,9 +537,6 @@ public class SmooksResourceConfiguration {
 
             if (!splitToken.startsWith("@")) {
                 splitTokens[i] = splitToken;
-            }
-            if (splitToken.equals(LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
-                splitTokens[i] = DOCUMENT_FRAGMENT_SELECTOR;
             }
         }
 
