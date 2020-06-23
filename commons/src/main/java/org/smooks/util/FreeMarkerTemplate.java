@@ -59,8 +59,8 @@ public class FreeMarkerTemplate {
 
     public static final String DEFAULT_MACHINE_READABLE_NUMBER_FORMAT = "#.##########";
 
-    private String templateText;
-    private Template template;
+    private final String templateText;
+    private final Template template;
 
     public FreeMarkerTemplate(final String templateText) {
         this(templateText, createDefaultConfiguration());
