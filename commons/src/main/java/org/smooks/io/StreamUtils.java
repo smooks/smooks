@@ -81,17 +81,17 @@ public abstract class StreamUtils {
      *
      * @param stream
      *            The stream to read.
-     * @param charsetName
-     *            The name of a supported {@linkplain java.nio.charset.Charset charset}.
+     * @param encoding
+     *            The encoding to use.
      * @return A String containing the Stream data.
      * @throws IOException
      *             Exception reading from the stream.
      */
-    public static String readStreamAsString(InputStream stream, String charsetName) throws IOException {
+    public static String readStreamAsString(final InputStream stream, final String encoding) throws IOException {
         AssertArgument.isNotNull(stream, "stream");
-        AssertArgument.isNotNull(charsetName, "charsetName");
+        AssertArgument.isNotNull(encoding, "charsetName");
 
-        return new String(readStream(stream), charsetName);
+        return new String(readStream(stream), encoding);
     }
 
     /**

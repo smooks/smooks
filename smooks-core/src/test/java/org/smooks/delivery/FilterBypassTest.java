@@ -83,7 +83,6 @@ public class FilterBypassTest {
 	public void test_dom_bypass_only() {
 		filterSettings = FilterSettings.DEFAULT_DOM;
 		test("#document", true);
-		test("$document", true);
 		test("/", true);
 		test("x", false);
 	}
@@ -94,7 +93,6 @@ public class FilterBypassTest {
 
 		filterSettings = FilterSettings.DEFAULT_DOM;
 		test("#document", false);
-		test("$document", false);
 		test("/", false);
 		test("x", false);		
 	}
@@ -103,7 +101,6 @@ public class FilterBypassTest {
 	public void test_sax_bypass_only() {
 		filterSettings = FilterSettings.DEFAULT_SAX;
 		test("#document", true);
-		test("$document", true);
 		test("/", true);
 		test("x", false);
 	}
@@ -114,7 +111,6 @@ public class FilterBypassTest {
 
 		filterSettings = FilterSettings.DEFAULT_SAX;
 		test("#document", false);
-		test("$document", false);
 		test("/", false);
 		test("x", false);		
 	}

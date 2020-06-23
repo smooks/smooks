@@ -194,7 +194,7 @@ public class SAXFilterTest {
     }
 
     @Test
-    public void test_$document() throws IOException, SAXException {
+    public void test_document() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-04.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
