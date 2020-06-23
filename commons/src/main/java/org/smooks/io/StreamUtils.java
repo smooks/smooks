@@ -89,7 +89,7 @@ public abstract class StreamUtils {
      */
     public static String readStreamAsString(final InputStream stream, final String encoding) throws IOException {
         AssertArgument.isNotNull(stream, "stream");
-        AssertArgument.isNotNull(encoding, "charsetName");
+        AssertArgument.isNotNull(encoding, "encoding");
 
         return new String(readStream(stream), encoding);
     }
