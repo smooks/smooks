@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
 
-<smooks-resource-list> 
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"> 
 
-	<smooks-resource useragent="msie6" selector="xxx" path="org.smooks.RenameElementTrans">
+	<resource-config target-profile="msie6" selector="xxx">
+	    <resource>org.smooks.RenameElementTrans</resource>
 		<param name="new-name">yyy</param>
-	</smooks-resource>
+	</resource-config>
 
 </smooks-resource-list>

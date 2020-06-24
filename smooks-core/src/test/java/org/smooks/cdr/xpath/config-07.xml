@@ -42,7 +42,7 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
 
     <resource-config selector="items/item[2]/units">
         <resource>org.smooks.cdr.xpath.XPathVisitor</resource>

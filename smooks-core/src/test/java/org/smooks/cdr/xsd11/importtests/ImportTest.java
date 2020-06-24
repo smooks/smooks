@@ -58,21 +58,6 @@ import java.io.IOException;
 public class ImportTest {
 
 	@Test
-    public void test_11_imports_10() throws IOException, SAXException {
-        testConfig("11_import_10.xml");
-    }
-
-	@Test
-    public void test_10_imports_11() throws IOException, SAXException {
-        try {
-            testConfig("10_import_11.xml");
-            fail("Expected SmooksConfigurationException.");
-        } catch(SmooksConfigurationException e) {
-            assertEquals("Unsupported import of a v1.1 configuration from inside a v1.0 configuration.  Path to configuration: '/[root-config]/[11Config.xml]'.", e.getMessage());
-        }
-    }
-
-	@Test
     public void test_paramaterized_import() throws IOException, SAXException {
         SimpleDOMVisitor.visited = false;
         testConfig("paramaterized_import_main.xml");
