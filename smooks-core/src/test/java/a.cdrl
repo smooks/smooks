@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
-
-<smooks-resource-list default-selector="a" default-path="/">
-	<smooks-resource selector="a" useragent="xxx,yyy,zzz" path="/"/>
-	<smooks-resource selector="a" useragent="fff" />
-	<smooks-resource useragent="fff" />
-</smooks-resource-list>

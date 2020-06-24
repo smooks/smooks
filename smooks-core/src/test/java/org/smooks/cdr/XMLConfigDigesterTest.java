@@ -59,15 +59,7 @@ import java.util.List;
  * @author tfennelly
  */
 public class XMLConfigDigesterTest {
-
-	@Test
-	public void test_digestConfig_v10() throws SAXException, IOException, URISyntaxException {
-		// Valid doc
-        SmooksResourceConfigurationList resList = XMLConfigDigester.digestConfig(getClass().getResourceAsStream("testconfig1.cdrl"), "test");
-        
-        assertResourceConfigOK(resList);
-	}
-
+    
 	@Test
     public void test_digestConfig_v20() throws SAXException, IOException, URISyntaxException {
         // Valid doc

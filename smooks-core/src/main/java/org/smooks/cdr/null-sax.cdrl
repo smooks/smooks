@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd" default-target-profile="null-sax">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile="null-sax">
 
     <!--
         This is a "Null" Smooks config for SAX.  It applies no transforms.

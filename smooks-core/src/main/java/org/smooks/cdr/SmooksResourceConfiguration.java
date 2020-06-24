@@ -98,7 +98,7 @@ import java.util.*;
  * <b>A basic sample</b>.  Note that it is not using any profiling.  The <b>resource-config</b> element maps directly to an instance of this class.
  * <pre>
  * <i>&lt;?xml version='1.0'?&gt;
- * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd"&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"&gt;
  *      <b>&lt;resource-config <a href="#selector">selector</a>="order/order-header"&gt;
  *          &lt;resource type="xsl"&gt;<a target="new" href="http://milyn.codehaus.org/Smooks#Smooks-smookscartridges">/com/acme/transform/OrderHeaderTransformer.xsl</a>&lt;/resource&gt;
  *      &lt;/resource-config&gt;</b>
@@ -111,7 +111,7 @@ import java.util.*;
  * whereas resource 2 is only targeted at "message-exchange-1" and resource 3 at "message-exchange-2" (see {@link org.smooks.Smooks#createExecutionContext(String)}).
  * <pre>
  * <i>&lt;?xml version='1.0'?&gt;
- * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd"&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"&gt;
  *      <b>&lt;profiles&gt;
  *          &lt;profile base-profile="message-exchange-1" sub-profiles="message-producer-A, message-consumer-B" /&gt;
  *          &lt;profile base-profile="message-exchange-2" sub-profiles="message-producer-A, message-consumer-C" /&gt;

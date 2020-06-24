@@ -43,7 +43,7 @@
   -->
 
 
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
     <resource-config selector="#document">
         <resource>org.smooks.delivery.dom.AssemblyVisitor1</resource>
     </resource-config>

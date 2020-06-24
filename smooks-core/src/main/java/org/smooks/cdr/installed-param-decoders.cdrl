@@ -4,7 +4,7 @@
 	This cdrl config defines some parameter decoder resources.
 -->
 
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd" default-target-profile="*"> 
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile="*"> 
 
 	<resource-config selector="param-type:string-list">
 	    <resource>org.smooks.cdr.TokenizedStringParameterDecoder</resource>

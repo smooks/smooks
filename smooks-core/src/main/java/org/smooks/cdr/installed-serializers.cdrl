@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd" default-target-profile="*">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile="*">
 
 	<resource-config selector="context-object" selector-namespace="http://milyn.codehaus.org/smooks">
 	    <resource>org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit</resource>
