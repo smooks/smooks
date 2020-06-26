@@ -86,23 +86,7 @@ public class OldBeanAccessor {
     	this.executionContext = executionContext;
         beans = resultMap;
     }
-
-    /**
-     * Get the current bean, specified by the supplied beanId, from the supplied request.
-     * <p/>
-     * If the specified beanId refers to a bean instance list, this method returns the
-     * last (current) bean from the list.
-     * @param beanId Bean Identifier.
-     * @param executionContext The request on which the bean instance is stored.
-     * @return The bean instance, or null if no such bean instance exists on the supplied
-     * request.
-     * @deprecated use the {@link #getBean(ExecutionContext, String)}
-     */
-    @Deprecated
-    public static Object getBean(String beanId, ExecutionContext executionContext) {
-        return getBean(executionContext, beanId);
-    }
-
+    
     /**
      * Get the current bean, specified by the supplied beanId, from the supplied request.
      * <p/>
@@ -121,17 +105,6 @@ public class OldBeanAccessor {
         Object bean = beans.get(beanId);
 
         return bean;
-    }
-
-    /**
-     * Get the bean map associated with the supplied request instance.
-     * @param executionContext The execution context.
-     * @return The bean map associated with the supplied request.
-     * @deprecated Use {@link #getBeanMap(org.smooks.container.ExecutionContext)}.
-     */
-    @Deprecated
-	public static HashMap<String, Object> getBeans(ExecutionContext executionContext) {
-        return (HashMap<String, Object>) getBeanMap(executionContext);
     }
 
     /**
@@ -167,31 +140,6 @@ public class OldBeanAccessor {
 
     	accessor.associateLifecycles(parentBean, childBean);
 
-    }
-
-    /**
-     * Associates the lifeCycle of the childBean with the parentBean. When the parentBean gets overwritten via the
-     * addBean method then the associated child beans will get removed from the bean map.
-     *
-     * @param executionContext The execution context within which the beans are located.
-     * @param parentBean The bean that controlles the lifecycle of its childs
-     * @param childBean The bean that will be associated to the parent
-     * @param addToList Is the child added to a bean list.
-     * @deprecated Because of the new bean binding system, adding to a list this way is deprecated.
-     * 			   Use the {@link #associateLifecycles(ExecutionContext, String, String)} method.
-     */
-    @Deprecated
-    public static void associateLifecycles(ExecutionContext executionContext, String parentBean, String childBean, boolean addToList) {
-    	AssertArgument.isNotNull(executionContext, "executionContext");
-    	AssertArgument.isNotNullAndNotEmpty(parentBean, "parentBean");
-    	AssertArgument.isNotNullAndNotEmpty(childBean, "childBean");
-
-
-    	if(addToList) {
-            childBean += "List";
-        }
-
-        associateLifecycles(executionContext, parentBean, childBean);
     }
 
     /*
