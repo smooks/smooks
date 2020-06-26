@@ -177,22 +177,7 @@ public class SmooksResourceConfiguration {
      * Logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(SmooksResourceConfiguration.class);
-    /**
-     * The resource type can be specified as a resource parameter.  This constant defines
-     * that parameter name.
-     *
-     * @deprecated Resource type now specified on "type" attribute of &lt;resource&gt; element.
-     *             Since <a href="http://milyn.codehaus.org/dtd/smooksres-list-2.0.dtd">Configuration DTD v2.0</a>.
-     */
-    public static final String PARAM_RESTYPE = "restype";
-    /**
-     * The resource data can be specified as a resource parameter.  This constant defines
-     * that parameter name.
-     *
-     * @deprecated Resource now specified on &lt;resource&gt; element.
-     *             Since <a href="http://milyn.codehaus.org/dtd/smooksres-list-2.0.dtd">Configuration DTD v2.0</a>.
-     */
-    public static final String PARAM_RESDATA = "resdata";
+    
     /**
      * XML selector type definition prefix
      */
@@ -654,19 +639,6 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Get the contextual selector definition for this SmooksResourceConfiguration.
-     * <p/>
-     * See details about the "selector" attribute in the
-     * <a href="#attribdefs">Attribute Definitions</a> section.
-     *
-     * @return The contextual selector definition.
-     * @deprecated Use {#link #getSelectorSteps}.
-     */
-    public String[] getContextualSelector() {
-        return SelectorStepBuilder.toContextualSelector(selectorSteps);
-    }
-
-    /**
      * Set the selector steps.
      * @param selectorSteps The selector steps.
      */
@@ -835,19 +807,12 @@ public class SmooksResourceConfiguration {
      * @return The resource type.
      */
     public String getResourceType() {
-        String restype;
-
         if (isJavaResource()) {
             return "class";
         }
 
-        restype = getStringParameter(PARAM_RESTYPE);
-        if (restype != null && !restype.trim().equals("")) {
-            // Ala DTD v1.0, where we weren't able to specify the type in any other way.
-            if (getParameter(PARAM_RESDATA) == null) {
-                LOGGER.debug("Resource configuration defined with '" + PARAM_RESTYPE + "' parameter but no '" + PARAM_RESDATA + "' parameter.");
-            }
-        } else if (resourceType != null) {
+        final String restype;
+        if (resourceType != null) {
             // Ala DTD v2.0, where the type is set through the "type" attribute on the <resource> element.
             restype = resourceType;
         } else {
@@ -1128,20 +1093,9 @@ public class SmooksResourceConfiguration {
      *         is null or the resource doesn't exist.
      */
     public byte[] getBytes() {
-
-        // This method supports 2 forms of resource config ala DTD 1.0 and DTD 2.0.
-        // * 1.0 defined the resource on a "path" attribute as well as via a "resdata" resource
-        //   parameter.
-        // * 2.0 defines the resource in a resource element, so it can be used to specify a path
-        //   or inlined resourcec data ala the "resdata" parameter in the 1.0 DTD.
-
-        String paramBasedData = getStringParameter(PARAM_RESDATA);
-
-        // If the resource data is specified as a parameter, return this.
-        if (paramBasedData != null) {
-            // Ala DTD v1.0, where we don't have the <resource> element.
-            return paramBasedData.getBytes();
-        }
+        // Defines the resource in a resource element, so it can be used to specify a path
+        // or inlined resourcec data ala the "resdata" parameter in the 1.0 DTD.
+        
         if (resource != null) {
             InputStream resStream;
             try {

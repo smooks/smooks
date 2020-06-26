@@ -135,16 +135,6 @@ public abstract class Filter {
     }
 
     /**
-     * Set the default stream filter type on the supplied Smooks instance.
-     * @param smooks The Smooks instance.
-     * @param filterType The filter type.
-     * @deprecated Use {@link #setFilterType(org.smooks.Smooks, org.smooks.StreamFilterType)}.
-     */
-    public static void setFilterType(Smooks smooks, StreamFilterType filterType) {
-        ParameterAccessor.setParameter(STREAM_FILTER_TYPE, filterType.toString(), smooks);
-    }
-
-    /**
      * Get the {@link Filter} instance for the current thread.
      *
      * @return The thread-bound {@link Filter} instance.

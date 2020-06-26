@@ -90,14 +90,6 @@ public class JavaSource extends FilterSource {
     private boolean eventStreamRequired = true;
 
     /**
-     * Default Constructor.
-     * @deprecated Use any of the other constructors.
-     */
-    public JavaSource() {
-        eventStreamRequired = false;
-    }
-
-    /**
      * Construct a JavaSource from the supplied source object.
      *
      * @param sourceObject The source object.
