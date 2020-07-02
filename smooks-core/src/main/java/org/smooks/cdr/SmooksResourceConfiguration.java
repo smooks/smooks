@@ -100,7 +100,7 @@ import java.util.*;
  * <i>&lt;?xml version='1.0'?&gt;
  * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"&gt;
  *      <b>&lt;resource-config <a href="#selector">selector</a>="order/order-header"&gt;
- *          &lt;resource type="xsl"&gt;<a target="new" href="http://milyn.codehaus.org/Smooks#Smooks-smookscartridges">/com/acme/transform/OrderHeaderTransformer.xsl</a>&lt;/resource&gt;
+ *          &lt;resource type="xsl"&gt;<a target="new" href="https://www.smooks.org#Smooks-smookscartridges">/com/acme/transform/OrderHeaderTransformer.xsl</a>&lt;/resource&gt;
  *      &lt;/resource-config&gt;</b>
  *      <b>&lt;resource-config <a href="#selector">selector</a>="order-items/order-item"&gt;
  *          &lt;resource&gt;{@link org.smooks.delivery.dom.DOMElementVisitor com.acme.transform.MyJavaOrderItemTransformer}&lt;/resource&gt;

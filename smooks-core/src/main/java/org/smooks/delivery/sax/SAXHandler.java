@@ -673,7 +673,7 @@ public class SAXHandler extends SmooksContentHandler {
         }
 
         private void throwSAXWriterAccessException(SAXVisitor visitor) {
-            throw new SAXWriterAccessException("Illegal access to the element writer for element '" + this + "' by SAX visitor '" + visitor.getClass().getName() + "'.  Writer already acquired by SAX visitor '" + writerOwner.getClass().getName() + "'.  See SAXElement javadocs (http://milyn.codehaus.org/Smooks).  Change Smooks visitor resource configuration.");
+            throw new SAXWriterAccessException("Illegal access to the element writer for element '" + this + "' by SAX visitor '" + visitor.getClass().getName() + "'.  Writer already acquired by SAX visitor '" + writerOwner.getClass().getName() + "'.  See SAXElement javadocs (https://www.smooks.org).  Change Smooks visitor resource configuration.");
         }
     }
 }

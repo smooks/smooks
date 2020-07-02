@@ -1,9 +1,9 @@
 <?xml version='1.0'?>
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile='yyy' default-selector='b' default-selector-namespace='http://milyn.codehaus.org/smooks-default'>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile='yyy' default-selector='b' default-selector-namespace='https://www.smooks.org-default'>
 
     <!-- Overriding the defaults -->
-    <resource-config target-profile='xxx' selector='a' selector-namespace='http://milyn.codehaus.org/smooks'>
+    <resource-config target-profile='xxx' selector='a' selector-namespace='https://www.smooks.org'>
         <resource>x.txt</resource>
     </resource-config>
 

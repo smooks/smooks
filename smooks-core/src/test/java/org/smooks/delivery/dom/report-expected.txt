@@ -1,7 +1,7 @@
-Config Resource: [Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [http://milyn.codehaus.org/smooks], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]]
+Config Resource: [Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [https://www.smooks.org], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]]
 Message: [Added as a SAX resource.]
 -----------------------------------------------------------------------------------
-Config Resource: [Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [http://milyn.codehaus.org/smooks], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]]
+Config Resource: [Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [https://www.smooks.org], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]]
 Message: [Added as a DOM SerializationUnit resource.]
 -----------------------------------------------------------------------------------
 Config Resource: [Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.AssemblyVisitor1], Num Params: [0]]
@@ -19,7 +19,7 @@ Message: [SAX/DOM support characteristics of the Resource Configuration map:
 		 x           Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.AssemblyVisitor1], Num Params: [0]
 		 x           Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [a *], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ProcessorVisitor1], Num Params: [0]
 		 x           Target Profile: [[org.smooks.profile.profile#default_profile]], Selector: [$document], Selector Namespace URI: [null], Resource: [org.smooks.delivery.dom.ConfigurableVisitor], Num Params: [0]
-		 x     x     Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [http://milyn.codehaus.org/smooks], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]
+		 x     x     Target Profile: [[*]], Selector: [context-object], Selector Namespace URI: [https://www.smooks.org], Resource: [org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit], Num Params: [0]
 
 
 ]

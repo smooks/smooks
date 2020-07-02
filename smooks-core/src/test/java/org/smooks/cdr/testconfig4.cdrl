@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile='yyy' default-selector='b' default-selector-namespace='http://milyn.codehaus.org/smooks-default'>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile='yyy' default-selector='b' default-selector-namespace='https://www.smooks.org-default'>
 
     <!-- Inheriting the defaults + inlining the resource data. -->
     <resource-config>

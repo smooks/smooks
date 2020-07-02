@@ -141,14 +141,14 @@ public class XMLConfigDigesterTest {
         assertEquals("a", resList.get(0).getSelector());
         assertEquals("xxx", resList.get(0).getProfileTargetingExpressions()[0].getExpression());
         assertEquals("x.txt", resList.get(0).getResource());
-        assertEquals("http://milyn.codehaus.org/smooks", resList.get(0).getSelectorNamespaceURI());
+        assertEquals("https://www.smooks.org", resList.get(0).getSelectorNamespaceURI());
 
         // Test the default inherited attribute values from the 2nd config entry.
         assertEquals("b", resList.get(1).getSelector());
         assertEquals("yyy", resList.get(1).getProfileTargetingExpressions()[0].getExpression());
         assertEquals("/org/smooks/cdr/test-resource.txt", resList.get(1).getResource());
         assertEquals("Hi there :-)", new String(resList.get(1).getBytes()));
-        assertEquals("http://milyn.codehaus.org/smooks-default", resList.get(1).getSelectorNamespaceURI());
+        assertEquals("https://www.smooks.org-default", resList.get(1).getSelectorNamespaceURI());
 
         // Test the parameters on the 2nd config entry.
         assertEquals("param1Val", resList.get(1).getStringParameter("param1"));

@@ -65,7 +65,7 @@ public class ElementWritingTest {
             smooks.filterSource(smooks.createExecutionContext(), new StringSource("<a/>"), null);
             fail("Expected SAXWriterAccessException");
         } catch(SmooksException e) {
-            assertEquals("Illegal access to the element writer for element 'a' by SAX visitor 'org.smooks.delivery.sax.SAXVisitorWriter02'.  Writer already acquired by SAX visitor 'org.smooks.delivery.sax.SAXVisitorWriter01'.  See SAXElement javadocs (http://milyn.codehaus.org/Smooks).  Change Smooks visitor resource configuration.", e.getCause().getMessage());
+            assertEquals("Illegal access to the element writer for element 'a' by SAX visitor 'org.smooks.delivery.sax.SAXVisitorWriter02'.  Writer already acquired by SAX visitor 'org.smooks.delivery.sax.SAXVisitorWriter01'.  See SAXElement javadocs (https://www.smooks.org).  Change Smooks visitor resource configuration.", e.getCause().getMessage());
         }
     }
 
