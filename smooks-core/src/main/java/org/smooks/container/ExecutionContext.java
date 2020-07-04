@@ -60,14 +60,14 @@ public interface ExecutionContext extends BoundAttributeStore {
      * Sometimes the document being transformed/analysed has a URI associated with it.
      * This can be bound to the execution context under this key.
      */
-    public static final URI DOCUMENT_URI = URI.create("org:milyn:smooks:unknowndoc");
+    URI DOCUMENT_URI = URI.create("org:smooks:unknowndoc");
 
     /**
      * Set the document source URI.
      *
      * @param docSource The document URI.
      */
-    public void setDocumentSource(URI docSource);
+    void setDocumentSource(URI docSource);
 
     /**
      * Get the document source URI.
@@ -77,14 +77,14 @@ public interface ExecutionContext extends BoundAttributeStore {
      *
      * @return The document URI.
      */
-    public URI getDocumentSource();
+    URI getDocumentSource();
 
     /**
      * Get the application context within which this execution context "lives".
      *
      * @return The ApplicationContext instance.
      */
-    public abstract ApplicationContext getContext();
+    ApplicationContext getContext();
 
     /**
      * Get the set of profiles at which this execution context is targeted.
@@ -94,7 +94,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      *
      * @return The target {@link org.smooks.profile.ProfileSet}.
      */
-    public abstract ProfileSet getTargetProfiles();
+    ProfileSet getTargetProfiles();
 
     /**
      * Get the content delivery configuration for the profile set at which this
@@ -102,7 +102,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      *
      * @return ContentDeliveryConfig instance.
      */
-	public abstract ContentDeliveryConfig getDeliveryConfig();
+	ContentDeliveryConfig getDeliveryConfig();
 
 
     /**
@@ -111,13 +111,13 @@ public interface ExecutionContext extends BoundAttributeStore {
      * defaults to "UTF-8".
      * @throws IllegalArgumentException Invalid encoding.
      */
-    public abstract void setContentEncoding(String contentEncoding) throws IllegalArgumentException;
+    void setContentEncoding(String contentEncoding) throws IllegalArgumentException;
 
     /**
      * Get the content encoding to be used when parsing content on this context.
      * @return Character encoding to be used when parsing content.  Defaults to "UTF-8".
      */
-    public abstract String getContentEncoding();
+    String getContentEncoding();
 
     /**
      * Set the ExecutionEventListener for the {@link ExecutionContext}.
@@ -133,14 +133,14 @@ public interface ExecutionContext extends BoundAttributeStore {
      * @param listener The listener instance.
      * @see org.smooks.event.BasicExecutionEventListener
      */
-    public abstract void setEventListener(ExecutionEventListener listener);
+    void setEventListener(ExecutionEventListener listener);
 
     /**
      * Get the ExecutionEventListener for the {@link ExecutionContext}.
      * @return The listener instance.
      * @see #setEventListener(ExecutionEventListener)
      */
-    public abstract ExecutionEventListener getEventListener();
+    ExecutionEventListener getEventListener();
 
     /**
      * Set the error/exception that caused the filter operation associated with
@@ -148,7 +148,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      *
      * @param terminationError The termination Error/Exception.
      */
-    public abstract void  setTerminationError(Throwable terminationError);
+    void  setTerminationError(Throwable terminationError);
 
 
     /**
@@ -158,7 +158,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      * @return The Error/Exception that caused the associated filter operation to
      * terminate (if it did terminate), otherwise null.
      */
-    public abstract Throwable getTerminationError();
+    Throwable getTerminationError();
 
     /**
      * Get a global configuration parameter associated with this execution context.
@@ -167,7 +167,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      * @param name The name of the parameter.
      * @return The parameter value, or null if the parameter is not configured.
      */
-    public abstract String getConfigParameter(String name);
+    String getConfigParameter(String name);
 
     /**
      * Get a global configuration parameter associated with this execution context.
@@ -177,7 +177,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      * @param defaultVal The default value to be returned if the configuration parameter is not set.
      * @return The parameter value, or "defaultVal" if the parameter is not configured.
      */
-    public abstract String getConfigParameter(String name, String defaultVal);
+    String getConfigParameter(String name, String defaultVal);
 
     /**
      * Is default serialization on for this execution context.
@@ -194,17 +194,17 @@ public interface ExecutionContext extends BoundAttributeStore {
      *
      * @return True if default serialization is on, otherwise false.
      */
-    public boolean isDefaultSerializationOn();
+    boolean isDefaultSerializationOn();
 
     /**
      * Get the BeanContext in use on this context instance.
      * @return The BeanContext.
      */
-    public BeanContext getBeanContext();
+    BeanContext getBeanContext();
 
     /**
      * Set the BeanContext to be use on this context instance.
      * @param beanContext The BeanContext.
      */
-    public void setBeanContext(BeanContext beanContext);
+    void setBeanContext(BeanContext beanContext);
 }
