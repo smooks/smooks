@@ -42,24 +42,16 @@
  */
 package org.smooks.payload;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.transform.Result;
-
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.annotation.AppContext;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.delivery.annotation.Initialize;
 import org.smooks.util.ClassUtil;
+
+import javax.inject.Inject;
+import javax.xml.transform.Result;
+import java.util.*;
 
 /**
  * An Exports instance holds a Map of {@link Export}s that Smooks
@@ -78,7 +70,7 @@ public class Exports implements ContentHandler<Exports>
     
     private Map<Class<?>, Export> exportsMap = new HashMap<Class<?>, Export>();
     
-    @AppContext
+    @Inject
     private ApplicationContext applicationContext;
     
     public Exports()

@@ -42,17 +42,16 @@
  */
 package org.smooks.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AppContext;
-import org.smooks.cdr.annotation.Config;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ApplicationContextInitializer;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.annotation.Initialize;
 import org.smooks.namespace.NamespaceDeclarationStack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.Properties;
 
 /**
@@ -69,10 +68,10 @@ public class NamespaceMappings implements ApplicationContextInitializer {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceMappings.class);
 	
-	@Config
+	@Inject
 	private SmooksResourceConfiguration config;
 	
-	@AppContext
+	@Inject
 	private ApplicationContext appContext;
 	
 	/**

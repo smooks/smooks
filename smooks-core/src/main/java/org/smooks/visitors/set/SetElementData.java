@@ -45,7 +45,6 @@ package org.smooks.visitors.set;
 import org.smooks.SmooksException;
 import org.smooks.cdr.Parameter;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.Config;
 import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Filter;
@@ -57,6 +56,7 @@ import org.smooks.util.FreeMarkerTemplate;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import javax.inject.Inject;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     private String elementNamespacePrefix;
     private Map<QName, FreeMarkerTemplate> attributes = new LinkedHashMap<QName, FreeMarkerTemplate>();
 
-    @Config
+    @Inject
     private SmooksResourceConfiguration resourceConfig;
 
     @Initialize

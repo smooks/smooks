@@ -42,6 +42,8 @@
  */
 package org.smooks.cdr.annotation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
@@ -57,9 +59,8 @@ import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.javabean.DataDecodeException;
 import org.smooks.javabean.DataDecoder;
 import org.smooks.util.ClassUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -91,7 +92,7 @@ public class Configurator {
     public static <U> U configure(U instance, SmooksResourceConfiguration config, ApplicationContext appContext) throws SmooksConfigurationException {
         AssertArgument.isNotNull(appContext, "appContext");
 
-        // process the field annotations (@AppContext)...
+        // process the field annotations (@Inject)...
         processFieldContextAnnotation(instance, appContext);
 
         // Attach global parameters...
@@ -145,8 +146,8 @@ public class Configurator {
         }    	
     	
     	for (Field field : fields) {
-            AppContext appContextAnnotation = field.getAnnotation(AppContext.class);
-            if(appContextAnnotation != null) {
+            Inject appContextAnnotation = field.getAnnotation(Inject.class);
+            if(appContextAnnotation != null && ApplicationContext.class.isAssignableFrom(field.getType())) {
                 try {
                     ClassUtil.setField(field, instance, appContext);
                 } catch (IllegalAccessException e) {
@@ -194,13 +195,9 @@ public class Configurator {
         }
 
         for (Field field : fields) {
-            ConfigParam configParamAnnotation = field.getAnnotation(ConfigParam.class);
-            Config configAnnotation = field.getAnnotation(Config.class);
-            
-            if(configAnnotation != null) {
-                if(configParamAnnotation != null) {
-                    throw new SmooksConfigurationException("Invalid Smooks configuration annotations on Field '" + getLongMemberName(field) + "'.  Field should not specify both @ConfigParam and @Config annotations.");
-                }
+            Inject injectAnnotation = field.getAnnotation(Inject.class);
+
+            if (injectAnnotation != null && SmooksResourceConfiguration.class.isAssignableFrom(field.getType())) {
                 applyConfig(field, instance, config);
             }
         }

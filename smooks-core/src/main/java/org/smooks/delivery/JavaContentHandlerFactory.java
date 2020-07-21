@@ -44,12 +44,12 @@ package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AppContext;
 import org.smooks.cdr.annotation.Configurator;
 import org.smooks.classpath.ClasspathUtils;
 import org.smooks.container.ApplicationContext;
 import org.smooks.util.ClassUtil;
 
+import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -62,7 +62,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class JavaContentHandlerFactory implements ContentHandlerFactory {
 
-    @AppContext
+    @Inject
     private ApplicationContext appContext;
 
     /**

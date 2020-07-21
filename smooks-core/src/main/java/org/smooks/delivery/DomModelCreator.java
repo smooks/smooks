@@ -44,7 +44,6 @@ package org.smooks.delivery;
 
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.Config;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.ordering.Producer;
@@ -55,6 +54,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -125,7 +125,7 @@ import java.util.Stack;
 public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisitAfter, Producer {
     private DocumentBuilder documentBuilder;
 
-    @Config
+    @Inject
     private SmooksResourceConfiguration config;
 
     public DomModelCreator() throws ParserConfigurationException {

@@ -43,17 +43,20 @@
 package org.smooks.cdr;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.smooks.cdr.annotation.ConfigParam;
+import org.smooks.cdr.annotation.Configurator;
+import org.smooks.container.ApplicationContext;
+import org.smooks.container.MockApplicationContext;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.delivery.annotation.Initialize;
 import org.smooks.delivery.annotation.Uninitialize;
-import org.smooks.cdr.annotation.*;
-import org.smooks.javabean.decoders.StringDecoder;
 import org.smooks.javabean.decoders.IntegerDecoder;
-import org.smooks.container.ApplicationContext;
-import org.smooks.container.MockApplicationContext;
+import org.smooks.javabean.decoders.StringDecoder;
 
+import javax.inject.Inject;
 import java.nio.charset.Charset;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -276,10 +279,10 @@ public class ConfiguratorTest {
 
     private class MyContentDeliveryUnit3 implements ContentHandler {
 
-        @AppContext
+        @Inject
         private ApplicationContext appContext;
 
-        @Config
+        @Inject
         private SmooksResourceConfiguration config;
     }
 
