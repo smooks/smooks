@@ -42,6 +42,8 @@
  */
 package org.smooks.cdr;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ExecutionContext;
@@ -53,8 +55,6 @@ import org.smooks.profile.DefaultProfileSet;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.util.ClassUtil;
 import org.smooks.xml.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -660,9 +660,8 @@ public final class XMLConfigDigester {
             String paramName = DomUtils.getAttributeValue(paramNode, "name");
             String paramType = DomUtils.getAttributeValue(paramNode, "type");
             String paramValue = DomUtils.getAllText(paramNode, true);
-            Parameter paramInstance;
 
-            paramInstance = resourceConfig.setParameter(paramName, paramType, paramValue);
+            Parameter<?> paramInstance = resourceConfig.setParameter(paramName, paramType, paramValue);
             paramInstance.setXML(paramNode);
         }
     }

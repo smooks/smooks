@@ -386,7 +386,7 @@ public class AbstractParser {
 
             handlers = saxDriverConfig.getParameters("sax-handler");
             if (handlers != null) {
-                for (Parameter handler : handlers) {
+                for (Parameter<String> handler : handlers) {
                     Object handlerObj = createHandler(handler.getValue());
 
                     if (handlerObj instanceof EntityResolver) {
@@ -436,14 +436,14 @@ public class AbstractParser {
 
             features = saxDriverConfig.getParameters(FEATURE_ON);
             if (features != null) {
-                for (Parameter feature : features) {
+                for (Parameter<String> feature : features) {
                     reader.setFeature(feature.getValue(), true);
                 }
             }
 
             features = saxDriverConfig.getParameters(FEATURE_OFF);
             if (features != null) {
-                for (Parameter feature : features) {
+                for (Parameter<String> feature : features) {
                     reader.setFeature(feature.getValue(), false);
                 }
             }

@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.StreamFilterType;
 import org.smooks.cdr.*;
@@ -52,8 +54,6 @@ import org.smooks.dtd.DTDStore;
 import org.smooks.dtd.DTDStore.DTDObjectContainer;
 import org.smooks.event.types.ConfigBuilderEvent;
 import org.smooks.profile.ProfileSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -168,7 +168,7 @@ public class ContentDeliveryConfigBuilder {
 	}
 
     private ContentDeliveryConfig createConfig(VisitorConfigMap extendedVisitorConfigMap) {
-        boolean sortVisitors = ParameterAccessor.getBoolParameter(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, true, resourceConfigTable);
+        boolean sortVisitors = ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable);
         StreamFilterType filterType;
 
         visitorConfig.addAll(extendedVisitorConfigMap);
@@ -244,7 +244,7 @@ public class ContentDeliveryConfigBuilder {
             LOGGER.debug("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics());
         }
 
-        String filterTypeParam = ParameterAccessor.getStringParameter(Filter.STREAM_FILTER_TYPE, resourceConfigTable);
+        String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
 
         if(visitorConfig.getSaxVisitorCount() == visitorConfig.getVisitorCount() && visitorConfig.getDomVisitorCount() == visitorConfig.getVisitorCount()) {
 
@@ -484,7 +484,7 @@ public class ContentDeliveryConfigBuilder {
 	 */
 	@SuppressWarnings("unchecked")
   private void sortSmooksResourceConfigurations(Map<String, List<SmooksResourceConfiguration>> table) {
-        Parameter sortParam = ParameterAccessor.getParameter("sort.resources", table);
+        Parameter<String> sortParam = ParameterAccessor.getParameter("sort.resources", String.class, table);
         if(sortParam != null && sortParam.getValue().trim().equalsIgnoreCase("true")) {
             if(!table.isEmpty()) {
 
@@ -659,12 +659,7 @@ public class ContentDeliveryConfigBuilder {
                 throw e;
             } catch(Throwable thrown) {
                 String message = "ContentHandlerFactory [" + handlerFactory.getClass().getName()  + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
-
-                if(LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(message, thrown);
-                } else {
-                    LOGGER.debug(message + thrown.getMessage());
-				}
+                LOGGER.warn(message + thrown.getMessage());
                 configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message, thrown));
 
                 return false;
@@ -736,12 +731,11 @@ public class ContentDeliveryConfigBuilder {
 		/**
 		 * Iterate over the table applying the strategy.
 		 */
-		private void iterate() {
-      for (final SmooksResourceConfiguration smooksResourceConfiguration : resourceConfigsList)
-      {
-        strategy.applyStrategy(smooksResourceConfiguration.getTargetElement(), smooksResourceConfiguration);
-      }
-		}
+        private void iterate() {
+            for (final SmooksResourceConfiguration smooksResourceConfiguration : resourceConfigsList) {
+                strategy.applyStrategy(smooksResourceConfiguration.getTargetElement(), smooksResourceConfiguration);
+            }
+        }
 	}
 
 	/**

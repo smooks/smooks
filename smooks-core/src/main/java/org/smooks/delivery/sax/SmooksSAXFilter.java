@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery.sax;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
@@ -52,8 +54,6 @@ import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
 import org.smooks.payload.StringSource;
 import org.smooks.xml.XmlUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -78,8 +78,8 @@ public class SmooksSAXFilter extends Filter {
 
     public SmooksSAXFilter(ExecutionContext executionContext) {
         this.executionContext = executionContext;
-        closeSource = ParameterAccessor.getBoolParameter(Filter.CLOSE_SOURCE, true, executionContext.getDeliveryConfig());
-        closeResult = ParameterAccessor.getBoolParameter(Filter.CLOSE_RESULT, true, executionContext.getDeliveryConfig());
+        closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", executionContext.getDeliveryConfig()));
+        closeResult = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, "true", executionContext.getDeliveryConfig()));
         parser = new SAXParser(executionContext);
     }
 

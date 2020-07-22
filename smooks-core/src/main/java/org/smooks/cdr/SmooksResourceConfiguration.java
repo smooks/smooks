@@ -45,6 +45,8 @@ package org.smooks.cdr;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import org.jaxen.saxpath.SAXPathException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.SelectorStepBuilder;
 import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
@@ -63,8 +65,6 @@ import org.smooks.resource.URIResourceLocator;
 import org.smooks.util.ClassUtil;
 import org.smooks.xml.DomUtils;
 import org.smooks.xml.XmlUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -874,8 +874,8 @@ public class SmooksResourceConfiguration {
      * @param value Parameter value.
      * @return The parameter instance.
      */
-    public Parameter setParameter(String name, String value) {
-        Parameter param = new Parameter(name, value);
+    public <T> Parameter<T> setParameter(String name, T value) {
+        Parameter<T> param = new Parameter(name, value);
         setParameter(param);
         return param;
     }
@@ -890,15 +890,15 @@ public class SmooksResourceConfiguration {
      * @param value Parameter value.
      * @return The parameter instance.
      */
-    public Parameter setParameter(String name, String type, String value) {
-        Parameter param = new Parameter(name, value, type);
+    public <T> Parameter<T> setParameter(String name, String type, T value) {
+        Parameter<T> param = new Parameter(name, value, type);
         setParameter(param);
         return param;
     }
 
-    public void setParameter(Parameter parameter) {
+    public <T> void setParameter(Parameter<T> parameter) {
         if (parameters == null) {
-            parameters = new LinkedHashMap<String, Object>();
+            parameters = new LinkedHashMap<>();
         }
         Object exists = parameters.get(parameter.getName());
 
@@ -924,20 +924,20 @@ public class SmooksResourceConfiguration {
      * @param name Name of parameter to get.
      * @return Parameter value, or null if not set.
      */
-    public Parameter getParameter(String name) {
+    public <T> Parameter<T> getParameter(String name, Class<T> valueClass) {
         if (parameters == null) {
             return null;
         }
         Object parameter = parameters.get(name);
 
         if (parameter instanceof List) {
-            return (Parameter) ((List) parameter).get(0);
+            return (Parameter<T>) ((List) parameter).get(0);
         } else if (parameter instanceof Parameter) {
-            return (Parameter) parameter;
+            return (Parameter<T>) parameter;
         }
 
         if(globalParams != null) {
-            return globalParams.getParameter(name);
+            return globalParams.getParameter(name, valueClass);
         }
 
         return null;
@@ -990,59 +990,35 @@ public class SmooksResourceConfiguration {
         return null;
     }
 
+
+    public Object getParameterValue(String name) {
+        Parameter<Object> parameter = getParameter(name, Object.class);
+        return (parameter != null ? parameter.getValue() : null);
+    }
+    
     /**
      * Get the named SmooksResourceConfiguration parameter.
      *
      * @param name Name of parameter to get.
      * @return Parameter value, or null if not set.
      */
-    public String getStringParameter(String name) {
-        Parameter parameter = getParameter(name);
-
-        return (parameter != null ? parameter.value : null);
+    public <T> T getParameterValue(String name, Class<T> valueClass) {
+        Parameter<T> parameter = getParameter(name, valueClass);
+        return (parameter != null ? parameter.getValue() : null);
     }
 
     /**
      * Get the named SmooksResourceConfiguration parameter.
      *
      * @param name       Name of parameter to get.
-     * @param defaultVal The default value to be returned if there are no
+     * @param defaultValue The default value to be returned if there are no
      *                   parameters on the this SmooksResourceConfiguration instance, or the parameter is not defined.
      * @return Parameter value, or defaultVal if not defined.
      */
-    public String getStringParameter(String name, String defaultVal) {
-        Parameter parameter = getParameter(name);
+    public <T> T getParameterValue(String name, Class<T> valueClass, T defaultValue) {
+        T value = getParameterValue(name, valueClass);
 
-        return (parameter != null ? parameter.value : defaultVal);
-    }
-
-    /**
-     * Get the named SmooksResourceConfiguration parameter as a boolean.
-     *
-     * @param name       Name of parameter to get.
-     * @param defaultVal The default value to be returned if there are no
-     *                   parameters on the this SmooksResourceConfiguration instance, or the parameter is not defined.
-     * @return true if the parameter is set to true, defaultVal if not defined, otherwise false.
-     */
-    public boolean getBoolParameter(String name, boolean defaultVal) {
-        String paramVal;
-
-        if (parameters == null) {
-            return defaultVal;
-        }
-
-        paramVal = getStringParameter(name);
-        if (paramVal == null) {
-            return defaultVal;
-        }
-        paramVal = paramVal.trim();
-        if (paramVal.equals("true")) {
-            return true;
-        } else if (paramVal.equals("false")) {
-            return false;
-        } else {
-            return defaultVal;
-        }
+        return (value != null ? value : defaultValue);
     }
 
     /**
@@ -1648,7 +1624,7 @@ public class SmooksResourceConfiguration {
                 List params = getParameters(paramName);
                 for (Object param : params) {
                     Element element = ((Parameter) param).getXml();
-                    String value;
+                    Object value;
 
                     if (element != null) {
                         value = XmlUtil.serialize(element.getChildNodes());
@@ -1684,7 +1660,7 @@ public class SmooksResourceConfiguration {
         Set<String> names = parameters.keySet();
 
         for(String name : names) {
-            properties.setProperty(name, getStringParameter(name));
+            properties.setProperty(name, getParameterValue(name).toString());
         }
 
         return properties;

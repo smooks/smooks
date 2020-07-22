@@ -159,7 +159,7 @@ public class MockExecutionContext implements ExecutionContext {
     }
 
     public String getConfigParameter(String name, String defaultVal) {
-        return ParameterAccessor.getStringParameter(name, defaultVal, deliveryConfig);
+        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, deliveryConfig);
     }
 
     public boolean isDefaultSerializationOn() {

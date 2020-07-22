@@ -42,9 +42,9 @@
  */
 package org.smooks.cdr;
 
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 /**
  * Configuration lookup metadata.
@@ -126,7 +126,7 @@ public class ConfigSearch {
 			Set<Entry<Object, Object>> entries = params.entrySet();
 			for(Entry<Object, Object> entry : entries) {
 				String expectedValue = (String) entry.getValue();
-				String actualValue = config.getStringParameter((String) entry.getKey());
+				String actualValue = config.getParameterValue((String) entry.getKey(), String.class);
 				
 				if(!expectedValue.equals(actualValue)) {
 					return false;

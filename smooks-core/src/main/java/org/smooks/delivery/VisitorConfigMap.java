@@ -273,7 +273,7 @@ public class VisitorConfigMap {
                 logExecutionEvent(resourceConfig, "Added as a DOM " + SerializationUnit.class.getSimpleName() + " resource.");
             } else {
                 Phase phaseAnnotation = visitor.getClass().getAnnotation(Phase.class);
-                String visitPhase = resourceConfig.getStringParameter("VisitPhase", VisitPhase.PROCESSING.toString());
+                String visitPhase = resourceConfig.getParameterValue("VisitPhase", String.class, VisitPhase.PROCESSING.toString());
 
                 if(phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
                     // It's an assembly unit...

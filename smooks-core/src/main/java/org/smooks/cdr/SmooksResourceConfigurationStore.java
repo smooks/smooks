@@ -443,7 +443,7 @@ public class SmooksResourceConfigurationStore {
           SmooksResourceConfiguration config = list.get(ii);
           String selector = config.getSelector();
 
-          if (CDU_CREATOR.equals(selector) && type.equalsIgnoreCase(config.getStringParameter(ContentHandlerFactory.PARAM_RESTYPE)))
+          if (CDU_CREATOR.equals(selector) && type.equalsIgnoreCase(config.getParameterValue(ContentHandlerFactory.PARAM_RESTYPE, String.class)))
           {
             return (ContentHandlerFactory) getObject(config);
           }
@@ -454,7 +454,7 @@ public class SmooksResourceConfigurationStore {
     }
 
     /**
-     * Close this resource configuration store, {@link org.smooks.delivery.annotation.Uninitialize uninitializing}
+     * Close this resource configuration store, {@link javax.annotation.PreDestroy uninitializing}
      * all {@link org.smooks.delivery.ContentHandler ContentHandlers} allocated from this store instance.
      */
     public void close() {

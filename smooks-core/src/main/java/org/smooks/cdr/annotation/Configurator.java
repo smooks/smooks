@@ -209,7 +209,7 @@ public class Configurator {
     	}
     	
     	List<Field> streamResFields = ClassUtil.getAnnotatedFields(instance.getClass(), StreamResultWriter.class);
-    	boolean encodeSpecialCharacters = config.getBoolParameter(Filter.ENTITIES_REWRITE, true);
+    	boolean encodeSpecialCharacters = Boolean.parseBoolean(config.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true"));
     	
     	for(Field streamResField : streamResFields) {
     		// If already initialized, ignore...
@@ -337,7 +337,7 @@ public class Configurator {
                 name = member.getName();
             }
         }
-        paramValue = config.getStringParameter(name);
+        paramValue = config.getParameterValue(name, String.class);
 
         if(paramValue == null) {
             paramValue = configParam.defaultVal();

@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery.dom;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Filter;
@@ -50,8 +52,6 @@ import org.smooks.delivery.replay.EndElementEvent;
 import org.smooks.delivery.replay.StartElementEvent;
 import org.smooks.dtd.DTDStore;
 import org.smooks.xml.DocType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -101,7 +101,7 @@ public class DOMBuilder extends SmooksContentHandler {
 
         this.execContext = execContext;
         initialiseEmptyElements();
-        rewriteEntities = ParameterAccessor.getBoolParameter(Filter.ENTITIES_REWRITE, true, execContext.getDeliveryConfig());
+        rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", execContext.getDeliveryConfig()));
     }
 
     private void initialiseEmptyElements() {

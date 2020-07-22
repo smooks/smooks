@@ -42,14 +42,14 @@
  */
 package org.smooks.delivery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.XMLReader;
 
 import java.util.*;
@@ -184,7 +184,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     public boolean isDefaultSerializationOn() {
         if(isDefaultSerializationOn == null) {
-            isDefaultSerializationOn = ParameterAccessor.getBoolParameter(Filter.DEFAULT_SERIALIZATION_ON, true, this);
+            isDefaultSerializationOn = ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, Boolean.class, true, this);
         }
 
         return isDefaultSerializationOn;
@@ -224,22 +224,21 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     public void initializeXMLReaderPool() {
     	try {
-	        readerPoolSize = Integer.parseInt(ParameterAccessor.getStringParameter(Filter.READER_POOL_SIZE, "0", this).trim());
+	        readerPoolSize = Integer.parseInt(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, "0", this));
     	} catch(NumberFormatException e) {
     		readerPoolSize = 0;
     	}
     }
 
-	public XMLReader getXMLReader()
-  {
-		synchronized(readerPool) {
-			if(!readerPool.isEmpty()) {
-				return readerPool.remove(0);
-			} else {
-				return null;
-			}
-		}
-	}
+    public XMLReader getXMLReader() {
+        synchronized (readerPool) {
+            if (!readerPool.isEmpty()) {
+                return readerPool.remove(0);
+            } else {
+                return null;
+            }
+        }
+    }
 
 	public void returnXMLReader(XMLReader reader) {
 		synchronized(readerPool) {

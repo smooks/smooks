@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery.dom;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfigurationNotFoundException;
@@ -59,8 +61,6 @@ import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
 import org.smooks.xml.DomUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -220,11 +220,11 @@ public class SmooksDOMFilter extends Filter {
         deliveryConfig = (DOMContentDeliveryConfig) executionContext.getDeliveryConfig();
         eventListener = executionContext.getEventListener();
 
-        closeSource = ParameterAccessor.getBoolParameter(Filter.CLOSE_SOURCE, true, executionContext.getDeliveryConfig());
-        closeResult = ParameterAccessor.getBoolParameter(Filter.CLOSE_RESULT, true, executionContext.getDeliveryConfig());
-        reverseVisitOrderOnVisitAfter = ParameterAccessor.getBoolParameter(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, true, executionContext.getDeliveryConfig());
+        closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", executionContext.getDeliveryConfig()));
+        closeResult = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, "true", executionContext.getDeliveryConfig()));
+        reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, String.class, "true", executionContext.getDeliveryConfig()));
         if(!(executionContext.getEventListener() instanceof AbstractReportGenerator)) {
-            terminateOnVisitorException = ParameterAccessor.getBoolParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, true, executionContext.getDeliveryConfig());
+            terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", executionContext.getDeliveryConfig()));
         } else {
             terminateOnVisitorException = false;
         }

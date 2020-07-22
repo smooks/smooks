@@ -115,7 +115,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 		setContentEncoding(contentEncoding);
         targetProfileSet = context.getProfileStore().getProfileSet(targetProfile);
         deliveryConfig = ContentDeliveryConfigBuilder.getConfig(targetProfileSet, context, extendedVisitorConfigMap);
-        isDefaultSerializationOn = ParameterAccessor.getBoolParameter(Filter.DEFAULT_SERIALIZATION_ON, true, deliveryConfig);
+        isDefaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", deliveryConfig));
     }
 
     public void setDocumentSource(URI docSource) {
@@ -189,7 +189,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
     }
 
     public String getConfigParameter(String name, String defaultVal) {
-        return ParameterAccessor.getStringParameter(name, defaultVal, deliveryConfig);
+        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, deliveryConfig);
     }
 
     public boolean isDefaultSerializationOn() {

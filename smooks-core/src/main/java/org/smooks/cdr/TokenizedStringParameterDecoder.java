@@ -75,7 +75,7 @@ import java.util.Vector;
  * <b>Usage</b>:<br/>
  * ... and "com.acme.XXXContentDeliveryUnit" accesses this parameter value as follows:
  * <pre>
- * {@link org.smooks.cdr.Parameter} param = {@link org.smooks.cdr.SmooksResourceConfiguration resourceConfig}.{@link org.smooks.cdr.SmooksResourceConfiguration#getParameter(String) getParameter("blockLevelElements")};
+ * {@link org.smooks.cdr.Parameter} param = {@link org.smooks.cdr.SmooksResourceConfiguration resourceConfig}.{@link org.smooks.cdr.SmooksResourceConfiguration#getParameter(String, Class) getParameter("blockLevelElements")};
  * {@link java.util.HashSet} blockLevelElements = (HashSet)param.{@link org.smooks.cdr.Parameter#getValue(ContentDeliveryConfig) getValue(ContentDeliveryConfig)};
  * </pre>
  * <p/>
@@ -85,7 +85,7 @@ import java.util.Vector;
  * See {@link org.smooks.cdr.SmooksResourceConfiguration}.
  * @author tfennelly
  */
-public class TokenizedStringParameterDecoder extends ParameterDecoder {
+public class TokenizedStringParameterDecoder extends ParameterDecoder<String> {
 	private Class   returnType;
 	private String  delims;
 	private boolean returnDelims;
@@ -96,11 +96,11 @@ public class TokenizedStringParameterDecoder extends ParameterDecoder {
 	 * @param resourceConfig Configuration.
 	 */
 	public void setConfiguration(SmooksResourceConfiguration resourceConfig) {
-		delims = resourceConfig.getStringParameter("delims", ",");
-		returnDelims = resourceConfig.getBoolParameter("returnDelims", false);
-		trimTokens = resourceConfig.getBoolParameter("trimTokens", true);
+		delims = resourceConfig.getParameterValue("delims", String.class, ",");
+		returnDelims = resourceConfig.getParameterValue("returnDelims", Boolean.class, false);
+		trimTokens = resourceConfig.getParameterValue("trimTokens", Boolean.class, true);
 
-		String paramType = resourceConfig.getStringParameter(Parameter.PARAM_TYPE_PREFIX, "string-list");
+		String paramType = resourceConfig.getParameterValue(Parameter.PARAM_TYPE_PREFIX, String.class, "string-list");
 		if(paramType.equals("string-list")) {
 			returnType = Vector.class;
 		} else if(paramType.equals("string-hashset")) {

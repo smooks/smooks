@@ -45,9 +45,9 @@ package org.smooks.xml;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 
-import java.util.List;
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
 
 /**
  * DOCTYPE utility class.
@@ -72,12 +72,12 @@ public abstract class DocType {
 
         // Only use the cdrdef if the override flag is set.  The override flag will
         // cause this DOCTYPE to override any DOCYTPE decl from the source doc.
-        if(docTypeSmooksResourceConfiguration != null && docTypeSmooksResourceConfiguration.getBoolParameter("override", true)) {
-            String name = docTypeSmooksResourceConfiguration.getStringParameter("name", "!!DOCTYPE name undefined - fix smooks-resource!!");
-            String publicId = docTypeSmooksResourceConfiguration.getStringParameter("publicId", "!!DOCTYPE publicId undefined - fix smooks-resource!!");
-            String systemId = docTypeSmooksResourceConfiguration.getStringParameter("systemId", "!!DOCTYPE systemId undefined - fix smooks-resource!!");
-            String xmlns = docTypeSmooksResourceConfiguration.getStringParameter("xmlns");
-            boolean omit = docTypeSmooksResourceConfiguration.getBoolParameter("omit", false);
+        if(docTypeSmooksResourceConfiguration != null && docTypeSmooksResourceConfiguration.getParameterValue("override", Boolean.class, true)) {
+            String name = docTypeSmooksResourceConfiguration.getParameterValue("name", String.class, "!!DOCTYPE name undefined - fix smooks-resource!!");
+            String publicId = docTypeSmooksResourceConfiguration.getParameterValue("publicId", String.class, "!!DOCTYPE publicId undefined - fix smooks-resource!!");
+            String systemId = docTypeSmooksResourceConfiguration.getParameterValue("systemId", String.class, "!!DOCTYPE systemId undefined - fix smooks-resource!!");
+            String xmlns = docTypeSmooksResourceConfiguration.getParameterValue("xmlns",String.class);
+            boolean omit = docTypeSmooksResourceConfiguration.getParameterValue("omit", Boolean.class, false);
 
             return new DocumentTypeData(name, publicId, systemId, xmlns, omit);
         }

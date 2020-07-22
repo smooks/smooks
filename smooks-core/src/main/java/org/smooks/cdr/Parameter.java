@@ -42,10 +42,10 @@
  */
 package org.smooks.cdr;
 
-import java.util.List;
-
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * SmooksResourceConfiguration Parameter.
@@ -53,21 +53,20 @@ import org.w3c.dom.Element;
  * Wrapper for a param.  Handles decoding.
  * @author tfennelly
  */
-public class Parameter {
+public class Parameter<T> {
 	public static final String PARAM_TYPE_PREFIX = "param-type:";
 	private final String name;
-	String value;
 	private String type;
-	private Object objValue;
+	private T value;
 
     private Element xml;
-
+    
     /**
 	 * Public constructor.
 	 * @param name Parameter name.
 	 * @param value Parameter value.
 	 */
-	public Parameter(String name, String value) {
+	public Parameter(String name, T value) {
 		if(name == null || (name = name.trim()).equals("")) {
 			throw new IllegalArgumentException("null or empty 'name' arg in constructor call.");
 		}
@@ -75,24 +74,7 @@ public class Parameter {
 			throw new IllegalArgumentException("null 'value' arg in constructor call.");
 		}
 		this.name = name;
-		this.value = value;
-	}
-
-    /**
-	 * Public constructor.
-	 * @param name Parameter name.
-	 * @param value Parameter value.
-	 */
-	public Parameter(String name, Object value) {
-		if(name == null || (name = name.trim()).equals("")) {
-			throw new IllegalArgumentException("null or empty 'name' arg in constructor call.");
-		}
-		if(value == null) {
-			throw new IllegalArgumentException("null 'value' arg in constructor call.");
-		}
-		this.name = name;
-        this.value = value.toString();
-		this.objValue = value;
+        this.value = value;
 	}
 
 	/**
@@ -102,7 +84,7 @@ public class Parameter {
 	 * @param type Parameter type.  This argument identifies the
 	 * {@link ParameterDecoder} to use for decoding the param value.
 	 */
-	public Parameter(String name, String value, String type) {
+	public Parameter(String name, T value, String type) {
 		this(name, value);
 
 		// null type attribute is OK - means no decoder is used on the value
@@ -129,7 +111,7 @@ public class Parameter {
 	 * Get the parameter value "undecoded".
 	 * @return Parameter value.
 	 */
-	public String getValue() {
+	public T getValue() {
 		return value;
 	}
 
@@ -144,45 +126,29 @@ public class Parameter {
 	 * @throws ParameterDecodeException Unable to decode parameter value.
 	 */
 	public Object getValue(ContentDeliveryConfig deliveryConfig) throws ParameterDecodeException {
-		if(objValue == null) {
-			synchronized (value) {
-				if(objValue == null) {
-					if(type == null) {
-						objValue = value;
-					} else {
-						List decoders = deliveryConfig.getObjects(PARAM_TYPE_PREFIX + type);
-						if(!decoders.isEmpty()) {
-							try {
-								ParameterDecoder paramDecoder = (ParameterDecoder)decoders.get(0);
-								objValue = paramDecoder.decodeValue(value);
-							} catch(ClassCastException cast) {
-								throw new ParameterDecodeException("Configured ParameterDecoder '" + PARAM_TYPE_PREFIX + type + "' for device must be of type " + ParameterDecoder.class);
-							}
-						} else {
-							throw new ParameterDecodeException("ParameterDecoder '" + PARAM_TYPE_PREFIX + type + "' not defined for requesting device.");
-						}
-					}
+		if (type != null && value != null) {
+			List decoders = deliveryConfig.getObjects(PARAM_TYPE_PREFIX + type);
+			if (!decoders.isEmpty()) {
+				try {
+					ParameterDecoder paramDecoder = (ParameterDecoder) decoders.get(0);
+					return paramDecoder.decodeValue(value);
+				} catch (ClassCastException cast) {
+					throw new ParameterDecodeException("Configured ParameterDecoder '" + PARAM_TYPE_PREFIX + type + "' for device must be of type " + ParameterDecoder.class);
 				}
+			} else {
+				throw new ParameterDecodeException("ParameterDecoder '" + PARAM_TYPE_PREFIX + type + "' not defined for requesting device.");
 			}
+		} else {
+			return value;
 		}
-
-		return objValue;
 	}
-
-    /**
-     * Get the object value associated with this parameter.
-     * @return The object value, or null if not set.
-     */
-    public Object getObjValue() {
-        return objValue;
-    }
 
     /* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return value;
+		return value.toString();
 	}
 
     /**

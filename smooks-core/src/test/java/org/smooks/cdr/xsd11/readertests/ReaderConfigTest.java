@@ -43,7 +43,6 @@
 package org.smooks.cdr.xsd11.readertests;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.delivery.AbstractParser;
@@ -51,6 +50,8 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -81,7 +82,7 @@ public class ReaderConfigTest {
         List featuresOff = readerConfig.getParameters("feature-off");
         assertEquals("[http://c, http://d]", featuresOff.toString());
 
-        assertEquals("val1", readerConfig.getStringParameter("param1"));
-        assertEquals("val2", readerConfig.getStringParameter("param2"));
+        assertEquals("val1", readerConfig.getParameterValue("param1", String.class));
+        assertEquals("val2", readerConfig.getParameterValue("param2", String.class));
     }
 }

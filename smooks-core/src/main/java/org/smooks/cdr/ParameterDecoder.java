@@ -59,5 +59,5 @@ public abstract class ParameterDecoder<T> implements ContentHandler {
 	 * @return The decode value Object.
 	 * @throws ParameterDecodeException Unable to decode parameter value.
 	 */
-	public abstract Object decodeValue(String value) throws ParameterDecodeException;
+	public abstract Object decodeValue(T value) throws ParameterDecodeException;
 }
