@@ -43,18 +43,18 @@
 package org.smooks.cdr;
 
 import org.junit.Test;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.cdr.annotation.Configurator;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.MockApplicationContext;
 import org.smooks.delivery.ContentHandler;
-import org.smooks.javabean.decoders.IntegerDecoder;
-import org.smooks.javabean.decoders.StringDecoder;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -71,12 +71,12 @@ public class ConfiguratorTest {
 
         config.setParameter("paramA", "A-Val");
         config.setParameter("param-b", "B-Val");
-        config.setParameter("paramC", "8");
+        config.setParameter("paramC", 8);
 
         Configurator.configure(cdu, config);
         assertEquals("A-Val", cdu.paramA);
         assertEquals("B-Val", cdu.paramB);
-        assertEquals(8, cdu.paramC);
+        assertEquals((Integer) 8, cdu.paramC);
     }
 
 	@Test
@@ -96,21 +96,41 @@ public class ConfiguratorTest {
             assertTrue(e.getMessage().startsWith("<param> 'paramC' not specified on resource configuration"));
         }
     }
-	
-	@Test
-    public void test_paramaterSetting_optional_default() {
+
+    @Test
+    public void test_parameterSetting_optional() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit2 cdu = new MyContentDeliveryUnit2();
 
         config.setParameter("paramA", "A-Val");
         config.setParameter("param-b", "B-Val");
+        config.setParameter("paramD", 8);
 
         // Don't add the optional paramC config
 
         Configurator.configure(cdu, config);
         assertEquals("A-Val", cdu.paramA);
         assertEquals("B-Val", cdu.paramB);
-        assertEquals(9, cdu.paramC);
+        assertEquals(Optional.empty(), cdu.paramC);
+        assertEquals((Integer) 8, cdu.paramD);
+    }
+    
+    @Test
+    public void test_parameterSetting_default() {
+        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        MyContentDeliveryUnit2 cdu = new MyContentDeliveryUnit2();
+
+        config.setParameter("paramA", "A-Val");
+        config.setParameter("param-b", "B-Val");
+        config.setParameter("paramC", 8);
+
+        // Don't add the optional paramD config
+
+        Configurator.configure(cdu, config);
+        assertEquals("A-Val", cdu.paramA);
+        assertEquals("B-Val", cdu.paramB);
+        assertEquals((Integer) 8, cdu.paramC.get());
+        assertEquals((Integer) 9, cdu.paramD);
     }
 
 	@Test
@@ -170,7 +190,7 @@ public class ConfiguratorTest {
             Configurator.configure(cdu, config);
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Value 'X' for paramater 'paramA' is invalid.  Valid choices for this paramater are: [A, B, C]", e.getMessage());
+            assertEquals("Value 'X' for parameter 'paramA' is invalid.  Valid choices for this parameter are: [A, B, C]", e.getMessage());
         }
     }
 
@@ -185,8 +205,8 @@ public class ConfiguratorTest {
             Configurator.configure(cdu, config);
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Failed to set paramater configuration value on 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit7#encoding'.", e.getMessage());
-            assertEquals("Unsupported character set 'XXXX'.", e.getCause().getMessage());
+            assertEquals("Failed to set parameter configuration value on 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit7#encoding'.", e.getMessage());
+            assertEquals("Can not set java.nio.charset.Charset field org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit7.encoding to java.lang.String", e.getCause().getMessage());
         }
     }
 
@@ -195,12 +215,12 @@ public class ConfiguratorTest {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit8 cdu1 = new MyContentDeliveryUnit8();
 
-        config.setParameter("encoding", "UTF-8");
+        config.setParameter("encoding", StandardCharsets.UTF_8);
         Configurator.configure(cdu1, config);
         assertEquals("UTF-8", cdu1.getEncoding().displayName());
 
         MyContentDeliveryUnit9 cdu2 = new MyContentDeliveryUnit9();
-        config.setParameter("encoding", "UTF-8");
+        config.setParameter("encoding", StandardCharsets.UTF_8);
         try {
             Configurator.configure(cdu2, config);
             fail("Expected SmooksConfigurationException.");
@@ -255,26 +275,31 @@ public class ConfiguratorTest {
 
     private class MyContentDeliveryUnit1 implements ContentHandler {
 
-        @ConfigParam
+        @Inject
         private String paramA;
 
-        @ConfigParam(name="param-b")
+        @Inject
+        @Named("param-b")
         private String paramB;
 
-        @ConfigParam
-        private int paramC;
+        @Inject
+        private Integer paramC;
     }
 
     private class MyContentDeliveryUnit2 implements ContentHandler {
 
-        @ConfigParam(decoder=StringDecoder.class)
+        @Inject
         private String paramA;
 
-        @ConfigParam(name="param-b", decoder=StringDecoder.class)
+        @Inject
+        @Named("param-b")
         private String paramB;
 
-        @ConfigParam(decoder=IntegerDecoder.class, use=ConfigParam.Use.OPTIONAL, defaultVal ="9")
-        private int paramC;
+        @Inject
+        private Optional<Integer> paramC;
+
+        @Inject
+        private Integer paramD = 9;
     }
 
     private class MyContentDeliveryUnit3 implements ContentHandler {
@@ -295,15 +320,19 @@ public class ConfiguratorTest {
         }
     }
 
-    private class MyContentDeliveryUnit6 implements ContentHandler {
+    private static class MyContentDeliveryUnit6 implements ContentHandler {
 
-        @ConfigParam(choice = {"A", "B", "C"})
-        private String paramA;
+	    public enum  paramAEnum {
+	        A, B, C
+        }
+	    
+        @Inject
+        private paramAEnum paramA;
     }
 
     private class MyContentDeliveryUnit7 implements ContentHandler {
 
-        @ConfigParam
+        @Inject
         private Charset encoding;
     }
 
@@ -315,7 +344,7 @@ public class ConfiguratorTest {
             return encoding;
         }
 
-        @ConfigParam        
+        @Inject        
         public void setEncoding(Charset encoding) {
             this.encoding = encoding;
         }
@@ -329,7 +358,7 @@ public class ConfiguratorTest {
             return encoding;
         }
 
-        @ConfigParam
+        @Inject
         public void encoding(Charset encoding) {
             this.encoding = encoding;
         }
@@ -343,8 +372,8 @@ public class ConfiguratorTest {
             return encoding;
         }
 
-        @ConfigParam(name = "encoding")
-        public void encoding(Charset encoding) {
+        @Inject
+        public void encoding(@Named("encoding") Charset encoding) {
             this.encoding = encoding;
         }
     }
