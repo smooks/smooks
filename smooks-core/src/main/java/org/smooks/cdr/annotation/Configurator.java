@@ -51,8 +51,6 @@ import org.smooks.config.Configurable;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.delivery.Filter;
-import org.smooks.delivery.annotation.Initialize;
-import org.smooks.delivery.annotation.Uninitialize;
 import org.smooks.delivery.sax.SAXToXMLWriter;
 import org.smooks.delivery.sax.SAXVisitor;
 import org.smooks.delivery.sax.annotation.StreamResultWriter;
@@ -60,6 +58,8 @@ import org.smooks.javabean.DataDecodeException;
 import org.smooks.javabean.DataDecoder;
 import org.smooks.util.ClassUtil;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -125,7 +125,7 @@ public class Configurator {
         setConfiguration(instance, config);
 
         // process the @Initialise annotations...
-        initialise(instance);
+        postConstruct(instance);
 
         return instance;
     }
@@ -467,13 +467,13 @@ public class Configurator {
         method.invoke(instance, value);
     }
 
-    public static <U> void initialise(U instance) {
+    public static <U> void postConstruct(U instance) {
         checkPropertiesConfigured(instance.getClass(), instance);
-        invoke(instance, Initialize.class);
+        invoke(instance, PostConstruct.class);
     }
 
-    public static <U> void uninitialise(U instance) {
-        invoke(instance, Uninitialize.class);
+    public static <U> void preDestroy(U instance) {
+        invoke(instance, PreDestroy.class);
     }
 
     private static <U> void invoke(U instance, Class<? extends Annotation> annotation) {

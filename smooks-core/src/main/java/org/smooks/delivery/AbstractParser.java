@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.Parameter;
@@ -60,8 +62,6 @@ import org.smooks.util.ClassUtil;
 import org.smooks.xml.NamespaceMappings;
 import org.smooks.xml.NullSourceXMLReader;
 import org.smooks.xml.SmooksXMLReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.*;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -334,7 +334,7 @@ public class AbstractParser {
         	if(saxDriverConfig != null) {
         		Configurator.configure(reader, saxDriverConfig, execContext.getContext());
         	} else {
-        		Configurator.initialise(reader);
+        		Configurator.postConstruct(reader);
         	}
         }
 

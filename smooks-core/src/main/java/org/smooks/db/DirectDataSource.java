@@ -42,12 +42,12 @@
  */
 package org.smooks.db;
 
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.delivery.annotation.Initialize;
-import org.smooks.event.report.annotation.VisitBeforeReport;
-import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.cdr.annotation.ConfigParam;
+import org.smooks.event.report.annotation.VisitAfterReport;
+import org.smooks.event.report.annotation.VisitBeforeReport;
 
+import javax.annotation.PostConstruct;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -121,7 +121,7 @@ public class DirectDataSource extends AbstractDataSource {
         return this;
     }
 
-    @Initialize
+    @PostConstruct
     public void registerDriver() throws SQLException {
         Driver driverInstance;
 

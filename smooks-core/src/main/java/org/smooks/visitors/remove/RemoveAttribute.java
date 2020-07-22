@@ -45,12 +45,12 @@ package org.smooks.visitors.remove;
 import org.smooks.SmooksException;
 import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
 import org.w3c.dom.Element;
 
+import javax.annotation.PostConstruct;
 import javax.xml.XMLConstants;
 import java.io.IOException;
 
@@ -64,7 +64,7 @@ public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
     private String localPart;
     private String namespace;
 
-    @Initialize
+    @PostConstruct
     public void init() {
         int prefixQualifier = qName.indexOf(':');
         if(prefixQualifier != -1) {

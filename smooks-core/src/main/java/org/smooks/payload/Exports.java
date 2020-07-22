@@ -46,9 +46,9 @@ import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.util.ClassUtil;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.xml.transform.Result;
 import java.util.*;
@@ -114,7 +114,7 @@ public class Exports implements ContentHandler<Exports>
         }
     }
 
-    @Initialize
+    @PostConstruct
     public void setExportsInAppContext()
     {
         Exports.setExportsInApplicationContext(applicationContext, this);

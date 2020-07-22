@@ -51,8 +51,6 @@ import org.smooks.delivery.AbstractParser;
 import org.smooks.delivery.Fragment;
 import org.smooks.delivery.SmooksContentHandler;
 import org.smooks.delivery.VisitLifecycleCleanable;
-import org.smooks.delivery.annotation.Initialize;
-import org.smooks.delivery.annotation.Uninitialize;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.DynamicSAXElementVisitorList;
 import org.smooks.delivery.sax.SAXElement;
@@ -67,6 +65,8 @@ import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.NamespaceMappings;
 import org.xml.sax.XMLReader;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,14 +103,14 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         this.smooksInstance = smooksInstance;
     }
 
-    @Initialize
+    @PostConstruct
     public void preRegBeanIds() {
         for(String preRegBeanId : mapBeans) {
             mapBeanIds.add(applicationContext.getBeanIdStore().register(preRegBeanId));
         }
     }
 
-    @Uninitialize
+    @PreDestroy
     public void closeSmooksInstance() {
         if(smooksInstance != null) {
             smooksInstance.close();

@@ -43,7 +43,8 @@
 package org.smooks.cdr;
 
 import org.jaxen.saxpath.SAXPathException;
-import org.smooks.Smooks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.annotation.Configurator;
 import org.smooks.cdr.xpath.SelectorStep;
@@ -61,8 +62,6 @@ import org.smooks.profile.ProfileStore;
 import org.smooks.resource.ContainerResourceLocator;
 import org.smooks.util.ClassUtil;
 import org.smooks.xml.NamespaceMappings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
@@ -466,7 +465,7 @@ public class SmooksResourceConfigurationStore {
                 Object object = initializedObjects.get(i);
                 try {
                     LOGGER.debug("Uninitializing ContentHandler instance: " + object.getClass().getName());
-                    Configurator.uninitialise(object);
+                    Configurator.preDestroy(object);
                 } catch (Throwable throwable) {
                     LOGGER.error("Error uninitializing " + object.getClass().getName() + ".", throwable);
                 }

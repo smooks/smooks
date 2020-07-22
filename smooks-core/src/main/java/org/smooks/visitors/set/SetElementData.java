@@ -48,7 +48,6 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Filter;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.sax.DefaultSAXElementSerializer;
 import org.smooks.delivery.sax.SAXElement;
@@ -56,6 +55,7 @@ import org.smooks.util.FreeMarkerTemplate;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -82,7 +82,7 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     @Inject
     private SmooksResourceConfiguration resourceConfig;
 
-    @Initialize
+    @PostConstruct
     public void init() {
         if(elementQName != null) {
             int nsPrefixIdx = elementQName.indexOf(":");

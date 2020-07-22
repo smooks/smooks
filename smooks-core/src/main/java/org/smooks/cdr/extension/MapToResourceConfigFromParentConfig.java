@@ -42,6 +42,8 @@
  */
 package org.smooks.cdr.extension;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
@@ -49,12 +51,10 @@ import org.smooks.cdr.annotation.AnnotationConstants;
 import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.cdr.annotation.ConfigParam.Use;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.delivery.dom.DOMVisitBefore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import javax.annotation.PostConstruct;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -83,7 +83,7 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
     @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
     private String defaultValue;
 
-    @Initialize
+    @PostConstruct
     public void initialize() throws SmooksConfigurationException {
         if(parentRelIndex >= 0) {
             throw new SmooksConfigurationException("param 'parentRelIndex' value must be negative.  Value is '" + parentRelIndex + "'.");

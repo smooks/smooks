@@ -43,20 +43,19 @@
 package org.smooks.db;
 
 import org.smooks.SmooksException;
+import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.cdr.annotation.ConfigParam.Use;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.event.report.annotation.VisitBeforeReport;
-import org.smooks.assertion.AssertArgument;
 
+import javax.annotation.PostConstruct;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -106,7 +105,7 @@ public class JndiDataSource extends AbstractDataSource {
         return name;
     }
 
-    @Initialize
+    @PostConstruct
     public void intitialize() {
         if(datasourceJndi == null) {
         	datasourceJndi = name;

@@ -43,6 +43,8 @@
 package org.smooks.delivery;
 
 import org.jaxen.saxpath.SAXPathException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
@@ -62,8 +64,6 @@ import org.smooks.delivery.sax.SAXVisitBefore;
 import org.smooks.event.types.ConfigBuilderEvent;
 import org.smooks.expression.MVELExpressionEvaluator;
 import org.smooks.xml.NamespaceMappings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -246,7 +246,7 @@ public class VisitorConfigMap {
             // And configure/initialize the instance...
             Configurator.processFieldContextAnnotation(visitor, applicationContext);
             Configurator.processFieldConfigAnnotations(visitor, resourceConfig, false);
-            Configurator.initialise(visitor);
+            Configurator.postConstruct(visitor);
             applicationContext.getStore().getInitializedObjects().add(visitor);
         }
 

@@ -46,9 +46,9 @@ import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.cdr.annotation.ConfigParam.Use;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.util.CollectionsUtil;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Set;
 
@@ -108,7 +108,7 @@ public class Export implements ContentHandler<Export>
         initExtractSet();
     }
     
-    @Initialize
+    @PostConstruct
     public void addToExportsInApplicationContext()
     {
         initExtractSet();

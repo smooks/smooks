@@ -48,11 +48,11 @@ import org.smooks.cdr.annotation.Configurator;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.MockApplicationContext;
 import org.smooks.delivery.ContentHandler;
-import org.smooks.delivery.annotation.Initialize;
-import org.smooks.delivery.annotation.Uninitialize;
 import org.smooks.javabean.decoders.IntegerDecoder;
 import org.smooks.javabean.decoders.StringDecoder;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.nio.charset.Charset;
 
@@ -229,7 +229,7 @@ public class ConfiguratorTest {
         // Uninitialize....
         assertTrue(cdu1.initialised);
         assertFalse(cdu1.uninitialised);
-        Configurator.uninitialise(cdu1);
+        Configurator.preDestroy(cdu1);
         assertTrue(cdu1.initialised);
         assertTrue(cdu1.uninitialised);
 
@@ -239,15 +239,15 @@ public class ConfiguratorTest {
             Configurator.configure(cdu2, config);
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Error invoking @Initialize method 'init' on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());
+            assertEquals("Error invoking @PostConstruct method 'init' on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());
         }
 
         // Uninitialize - exception....
         try {
-            Configurator.uninitialise(cdu2);
+            Configurator.preDestroy(cdu2);
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Error invoking @Uninitialize method 'uninit' on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());
+            assertEquals("Error invoking @PreDestroy method 'uninit' on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());
         }
     }
 
@@ -354,12 +354,12 @@ public class ConfiguratorTest {
         private boolean initialised;
         private boolean uninitialised;
 
-        @Initialize
+        @PostConstruct
         public void init() {
             initialised = true;
         }
 
-        @Uninitialize
+        @PreDestroy
         public void uninit() {
             uninitialised = true;
         }
@@ -367,12 +367,12 @@ public class ConfiguratorTest {
 
     public class MyContentDeliveryUnit12 implements ContentHandler {
 
-        @Initialize
+        @PostConstruct
         public void init() {
             throw new RuntimeException("An initialise error....");
         }
 
-        @Uninitialize
+        @PreDestroy
         public void uninit() {
             throw new RuntimeException("An uninitialise error....");
         }

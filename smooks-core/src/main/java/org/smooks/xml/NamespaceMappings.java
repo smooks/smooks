@@ -48,9 +48,9 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ApplicationContextInitializer;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.namespace.NamespaceDeclarationStack;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Properties;
 
@@ -77,7 +77,7 @@ public class NamespaceMappings implements ApplicationContextInitializer {
 	/**
 	 * Load the namespace prefix-to-uri mappings into the {@link ApplicationContext}.
 	 */
-	@Initialize
+	@PostConstruct
 	public void loadNamespaces() {
 		Properties namespaces = getMappings(appContext);
 		Properties namespacesToAdd = config.toProperties();
