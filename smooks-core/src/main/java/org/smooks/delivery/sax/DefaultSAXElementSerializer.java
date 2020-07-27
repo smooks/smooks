@@ -42,12 +42,14 @@
  */
 package org.smooks.delivery.sax;
 
-import org.smooks.container.ExecutionContext;
 import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Filter;
-import org.smooks.cdr.annotation.ConfigParam;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Default Serializer for SAX Filtering.
@@ -63,9 +65,9 @@ public class DefaultSAXElementSerializer implements SAXElementVisitor {
         this.writerOwner = writerOwner;
     }
 
-    @ConfigParam(name = Filter.ENTITIES_REWRITE, defaultVal = "true")
-    public void setRewriteEntities(boolean rewriteEntities) {
-        this.rewriteEntities = rewriteEntities;
+    @Inject
+    public void setRewriteEntities(@Named(Filter.ENTITIES_REWRITE) Optional<Boolean> rewriteEntities) {
+        this.rewriteEntities = rewriteEntities.orElse(this.rewriteEntities);
     }
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {

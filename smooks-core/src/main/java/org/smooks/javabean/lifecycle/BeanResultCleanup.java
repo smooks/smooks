@@ -42,13 +42,13 @@
  */
 package org.smooks.javabean.lifecycle;
 
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ExecutionLifecycleCleanable;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.util.CollectionsUtil;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -61,7 +61,7 @@ import java.util.Set;
  */
 public class BeanResultCleanup implements ExecutionLifecycleCleanable {
 
-    @ConfigParam
+    @Inject
     private String[] beanIDs;
     private Set<String> beanIDSet;
 

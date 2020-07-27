@@ -42,12 +42,12 @@
  */
 package org.smooks.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.classpath.InstanceOfFilter;
 import org.smooks.classpath.IsAnnotationPresentFilter;
 import org.smooks.classpath.Scanner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -400,7 +400,7 @@ public class ClassUtil {
 	public static boolean containsAssignableClass(final Class<?> toFind, final Class<?> ... classes) {
 		return indexOfFirstAssignableClass(toFind, classes) != -1;
 	}
-
+	
     public static <U> void setField(Field field, U instance, Object value) throws IllegalAccessException {
         boolean isAccessible = field.isAccessible();
 

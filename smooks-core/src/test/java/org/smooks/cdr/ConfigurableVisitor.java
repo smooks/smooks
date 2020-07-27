@@ -42,13 +42,14 @@
  */
 package org.smooks.cdr;
 
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.delivery.sax.SAXVisitBefore;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.container.ExecutionContext;
 import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.sax.SAXElement;
+import org.smooks.delivery.sax.SAXVisitBefore;
 
+import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * @author
@@ -56,24 +57,24 @@ import java.io.IOException;
 public class ConfigurableVisitor implements SAXVisitBefore {
 
     private String stringParam;
-    private Integer intParam;
-    private String optionalStringParam;
-    private int otherIntProp;
+    private Integer intParam = 5;
+    private Optional<String> optionalStringParam = Optional.empty();
+    private Integer otherIntProp;
 
-    @ConfigParam
+    @Inject
     public ConfigurableVisitor setStringParam(String stringParam) {
         this.stringParam = stringParam;
         return this;
     }
 
-    @ConfigParam(defaultVal = "5")
-    public ConfigurableVisitor setIntParam(Integer intParam) {
-        this.intParam = intParam;
+    @Inject
+    public ConfigurableVisitor setIntParam(Optional<Integer> intParam) {
+        this.intParam = intParam.orElse(this.intParam);
         return this;
     }
 
-    @ConfigParam(use = ConfigParam.Use.OPTIONAL)
-    public ConfigurableVisitor setOptionalStringParam(String stringParam) {
+    @Inject
+    public ConfigurableVisitor setOptionalStringParam(Optional<String> stringParam) {
         this.optionalStringParam = stringParam;
         return this;
     }
@@ -82,12 +83,12 @@ public class ConfigurableVisitor implements SAXVisitBefore {
         return stringParam;
     }
 
-    public int getIntParam() {
+    public Integer getIntParam() {
         return intParam;
     }
 
     public String getOptionalStringParam() {
-        return optionalStringParam;
+        return optionalStringParam.orElse(null);
     }
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {

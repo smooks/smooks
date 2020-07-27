@@ -43,8 +43,6 @@
 package org.smooks.delivery.sax.terminate;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.cdr.annotation.ConfigParam.Use;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.SAXElement;
@@ -52,7 +50,9 @@ import org.smooks.delivery.sax.SAXVisitAfter;
 import org.smooks.delivery.sax.SAXVisitBefore;
 import org.smooks.util.CollectionsUtil;
 
+import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -86,9 +86,9 @@ public class TerminateVisitor implements SAXVisitBefore, SAXVisitAfter, Producer
 	 * @param terminateBefore the terminateBefore to set
 	 */
 	@SuppressWarnings("WeakerAccess")
-	@ConfigParam(use = Use.OPTIONAL)
-	public TerminateVisitor setTerminateBefore(boolean terminateBefore) {
-		this.terminateBefore = terminateBefore;
+	@Inject
+	public TerminateVisitor setTerminateBefore(Optional<Boolean> terminateBefore) {
+		this.terminateBefore = terminateBefore.orElse(this.terminateBefore);
 		return this;
 	}
 

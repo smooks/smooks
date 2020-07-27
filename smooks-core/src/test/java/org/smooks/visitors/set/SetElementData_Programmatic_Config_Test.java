@@ -42,9 +42,9 @@
  */
 package org.smooks.visitors.set;
 
-import org.junit.Test;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.container.ExecutionContext;
@@ -57,6 +57,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -78,8 +79,8 @@ public class SetElementData_Programmatic_Config_Test {
         StringResult result = new StringResult();
 
         smooks.setFilterSettings(filterSettings);
-        smooks.addVisitor(new SetElementData().setElementName("c"), "b");
-        smooks.addVisitor(new SetElementData().setElementName("z"), "e");
+        smooks.addVisitor(new SetElementData().setElementName(Optional.of("c")), "b");
+        smooks.addVisitor(new SetElementData().setElementName(Optional.of("z")), "e");
 
         smooks.filterSource(new StringSource("<a><b><d><e>some text</e></d></b></a>"), result);
 
@@ -102,8 +103,8 @@ public class SetElementData_Programmatic_Config_Test {
         StringResult result = new StringResult();
 
         smooks.setFilterSettings(filterSettings);
-        smooks.addVisitor(new SetElementData().setElementName("c"), "b");
-        smooks.addVisitor(new SetElementData().setElementName("xxx:z").
+        smooks.addVisitor(new SetElementData().setElementName(Optional.of("c")), "b");
+        smooks.addVisitor(new SetElementData().setElementName(Optional.of("xxx:z")).
                                setAttribute(new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xxx", "xmlns"), "http://xxx"), "e");
 
         smooks.filterSource(new StringSource("<a><b><d><e>some text</e></d></b></a>"), result);
@@ -127,9 +128,9 @@ public class SetElementData_Programmatic_Config_Test {
         StringResult result = new StringResult();
 
         smooks.setFilterSettings(filterSettings);
-        smooks.addVisitor(new SetElementData().setElementName("c"), "b");
-        smooks.addVisitor(new RemoveAttribute().setName("xmlns:xxx").setNamespace(XMLConstants.XMLNS_ATTRIBUTE_NS_URI), "z");
-        smooks.addVisitor(new SetElementData().setElementNamespace("http://yyy").setElementName("yyy:z").
+        smooks.addVisitor(new SetElementData().setElementName(Optional.of("c")), "b");
+        smooks.addVisitor(new RemoveAttribute().setName("xmlns:xxx").setNamespace(Optional.of(XMLConstants.XMLNS_ATTRIBUTE_NS_URI)), "z");
+        smooks.addVisitor(new SetElementData().setElementNamespace(Optional.of("http://yyy")).setElementName(Optional.of("yyy:z")).
                                setAttribute(new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "yyy", "xmlns"), "http://yyy"), "z");
 
         smooks.filterSource(new StringSource("<a><c><d><xxx:z xmlns:xxx=\"http://xxx\">some text</xxx:z></d></c></a>"), result);
@@ -153,7 +154,7 @@ public class SetElementData_Programmatic_Config_Test {
         StringResult result = new StringResult();
 
         smooks.setFilterSettings(filterSettings);
-        smooks.addVisitor(new SetElementData().setElementName("c"), "b");
+        smooks.addVisitor(new SetElementData().setElementName(Optional.of("c")), "b");
         smooks.addVisitor(new SetElementData().setAttribute(new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xxx", "xmlns"), "http://yyy"), "z");
 
         smooks.filterSource(new StringSource("<a><c><d><xxx:z xmlns:xxx=\"http://xxx\">some text</xxx:z></d></c></a>"), result);

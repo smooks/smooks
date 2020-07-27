@@ -47,8 +47,8 @@ import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
+import org.smooks.datatype.factory.DataTypeProviderFactory;
 import org.smooks.delivery.sax.SAXElement;
-import org.smooks.javabean.DataDecoder;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public abstract class Value {
     public abstract Object getValue(Element element);
 
     @SuppressWarnings("unchecked")
-    public static Value getValue(Expr expr, DataDecoder decoder, Properties namespaces) throws SAXPathException {
+    public static Value getValue(Expr expr, DataTypeProviderFactory<String, ?> dataTypeProviderFactory, Properties namespaces) throws SAXPathException {
         AssertArgument.isNotNull(expr, "expr");
 
         if(expr instanceof LocationPath) {
@@ -76,15 +76,15 @@ public abstract class Value {
                 Step step = steps.get(0);
 
                 if(step.getAxis() == Axis.CHILD && step instanceof TextNodeStep) {
-                    return new TextValue(decoder);
+                    return new TextValue(dataTypeProviderFactory);
                 } else if(step.getAxis() == Axis.ATTRIBUTE && step instanceof NameStep) {
                     String nsPrefix = ((NameStep)step).getPrefix();
                     String localPart = ((NameStep)step).getLocalName();
 
                     if(nsPrefix != null && !nsPrefix.trim().equals("")) {
-                        return new AttributeValue(PredicatesEvaluatorBuilder.getNamespace(nsPrefix, namespaces), localPart, decoder);
+                        return new AttributeValue(PredicatesEvaluatorBuilder.getNamespace(nsPrefix, namespaces), localPart, dataTypeProviderFactory);
                     } else {
-                        return new AttributeValue(null, localPart, decoder);
+                        return new AttributeValue(null, localPart, dataTypeProviderFactory);
                     }
                 }
             }

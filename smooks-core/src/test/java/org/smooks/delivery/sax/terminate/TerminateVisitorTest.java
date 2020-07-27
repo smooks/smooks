@@ -42,17 +42,18 @@
  */
 package org.smooks.delivery.sax.terminate;
 
-import java.io.IOException;
-
-import javax.xml.transform.stream.StreamSource;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.delivery.sax.SAXVisitBeforeVisitor;
 import org.xml.sax.SAXException;
-import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.util.Optional;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -80,7 +81,7 @@ public class TerminateVisitorTest {
 	public void test_terminate_prog_before() {
 		Smooks smooks = new Smooks();
 		
-		smooks.addVisitor(new TerminateVisitor().setTerminateBefore(true), "customer");
+		smooks.addVisitor(new TerminateVisitor().setTerminateBefore(Optional.of(true)), "customer");
 		smooks.addVisitor(new SAXVisitBeforeVisitor().setInjectedParam("blah"), "user");
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));

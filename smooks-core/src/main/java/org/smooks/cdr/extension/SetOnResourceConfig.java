@@ -42,15 +42,15 @@
  */
 package org.smooks.cdr.extension;
 
-import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.SmooksException;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
 
+import javax.inject.Inject;
 import java.util.EmptyStackException;
 
 /**
@@ -65,10 +65,10 @@ public class SetOnResourceConfig implements DOMVisitBefore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromText.class);
 
-    @ConfigParam
+    @Inject
     private String setOn;
 
-    @ConfigParam
+    @Inject
     private String value;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {

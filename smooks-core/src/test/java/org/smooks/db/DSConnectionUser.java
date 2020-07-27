@@ -42,13 +42,13 @@
  */
 package org.smooks.db;
 
-import org.smooks.delivery.sax.SAXVisitAfter;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.ordering.Consumer;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.container.ExecutionContext;
 import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.ordering.Consumer;
+import org.smooks.delivery.sax.SAXElement;
+import org.smooks.delivery.sax.SAXVisitAfter;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -56,8 +56,8 @@ import java.io.IOException;
  */
 public class DSConnectionUser implements SAXVisitAfter, Consumer {
 
-	@ConfigParam(defaultVal = MockDatasource.MOCK_DS_NAME)
-	private String datasource;
+	@Inject
+	private String datasource = MockDatasource.MOCK_DS_NAME;
 
 	public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         AbstractDataSource.getConnection(datasource, executionContext);

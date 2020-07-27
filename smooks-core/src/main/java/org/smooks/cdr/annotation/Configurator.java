@@ -49,6 +49,8 @@ import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.config.Configurable;
 import org.smooks.container.ApplicationContext;
+import org.smooks.datatype.DataTypeProviderFactoryLoader;
+import org.smooks.datatype.factory.DataTypeProviderFactory;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.sax.SAXToXMLWriter;
@@ -63,10 +65,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -120,10 +119,10 @@ public class Configurator {
         AssertArgument.isNotNull(instance, "instance");
         AssertArgument.isNotNull(config, "config");
 
-        // process the field annotations (@ConfigParam and @Config)...
+        // process the field annotations (@Inject)...
         processFieldConfigAnnotations(instance, config, true);
 
-        // process the method annotations (@ConfigParam)...
+        // process the method annotations (@Inject)...
         processMethodConfigAnnotations(instance, config);
 
         // reflectively call the "setConfiguration" method, if defined...
@@ -162,22 +161,22 @@ public class Configurator {
         }
     }
 
-    public static <U> void processFieldConfigAnnotations(U instance, SmooksResourceConfiguration config, boolean includeConfigParams) {
+    public static <U> void processFieldConfigAnnotations(U instance, SmooksResourceConfiguration config, boolean includeInjectAnnotation) {
         Class contentHandlerClass = instance.getClass();
         processFieldConfigAnnotations(contentHandlerClass, instance, config);
-        if (includeConfigParams) {
-            processFieldConfigParamAnnotations(contentHandlerClass, instance, config);
+        if (includeInjectAnnotation) {
+            processFieldInjectAnnotations(contentHandlerClass, instance, config);
         }
         processStreamResultWriterAnnotations(instance, config);
     }
 
-    private static <U> void processFieldConfigParamAnnotations(Class contentHandlerClass, U instance, SmooksResourceConfiguration config) {
+    private static <U> void processFieldInjectAnnotations(Class contentHandlerClass, U instance, SmooksResourceConfiguration config) {
         Field[] fields = contentHandlerClass.getDeclaredFields();
 
         // Work back up the Inheritance tree first...
         Class superClass = contentHandlerClass.getSuperclass();
         if (superClass != null) {
-            processFieldConfigParamAnnotations(superClass, instance, config);
+            processFieldInjectAnnotations(superClass, instance, config);
         }
 
         for (Field field : fields) {
@@ -185,7 +184,7 @@ public class Configurator {
 
             injectAnnotation = field.getAnnotation(Inject.class);
             if (injectAnnotation != null) {
-                inject(field.getAnnotation(Named.class), field, field.getType(), instance, config);
+                inject(field.getAnnotation(Named.class), field, instance, config);
             }
         }
     }
@@ -262,45 +261,20 @@ public class Configurator {
                 continue;
             }
 
-            ConfigParam configParamAnnotation = field.getAnnotation(ConfigParam.class);
-            if (configParamAnnotation == null) {
+            Inject injectAnnotation = field.getAnnotation(Inject.class);
+            if (injectAnnotation == null) {
                 // Check is there's a setter method for this property, with the @ConfigParam annotation
                 // configured on it...
                 String setterName = ClassUtil.toSetterName(fieldName);
                 Method setterMethod = ClassUtil.getSetterMethod(setterName, contentHandlerClass, field.getType());
 
                 if (setterMethod != null) {
-                    configParamAnnotation = setterMethod.getAnnotation(ConfigParam.class);
+                    injectAnnotation = setterMethod.getAnnotation(Inject.class);
                 }
             }
 
-            if (configParamAnnotation != null) {
-                // If it's required and not configured with a default value of AnnotationConstants.NULL_STRING, error... 
-                if (configParamAnnotation.use() == ConfigParam.Use.REQUIRED) {
-                    // Property configured and it's required....
-
-                    String defaultVal = configParamAnnotation.defaultVal();
-
-                    // If there is no default (i.e. it's "UNASSIGNED"), we have an error...
-                    if (defaultVal.equals(AnnotationConstants.UNASSIGNED)) {
-                        throw new SmooksConfigurationException("Property '" + fieldName + "' not configured on class " + instance.getClass().getName() + "'.");
-                    }
-
-                    // If the default is "NULL", just continue...
-                    if (defaultVal.equals(AnnotationConstants.NULL_STRING)) {
-                        continue;
-                    }
-
-                    // Decode the default and set it on the property...
-                    Class<? extends DataDecoder> decoderClass = configParamAnnotation.decoder();
-                    DataDecoder decoder = createDecoder(field, field.getType(), decoderClass);
-
-                    try {
-                        ClassUtil.setField(field, instance, decoder.decode(defaultVal));
-                    } catch (IllegalAccessException e) {
-                        throw new SmooksConfigurationException("Unable to set property field value for '" + getLongMemberName(field) + "'.", e);
-                    }
-                }
+            if (injectAnnotation != null) {
+                throw new SmooksConfigurationException("Property '" + fieldName + "' not configured on class " + instance.getClass().getName() + "'.");
             }
         }
     }
@@ -309,20 +283,20 @@ public class Configurator {
         Method[] methods = instance.getClass().getMethods();
 
         for (Method method : methods) {
-            Inject configParamAnnotation = method.getAnnotation(Inject.class);
-            if (configParamAnnotation != null) {
+            Inject injectAnnotation = method.getAnnotation(Inject.class);
+            if (injectAnnotation != null) {
                 Class params[] = method.getParameterTypes();
 
                 if (params.length == 1) {
                     inject(method.getParameters()[0].getAnnotation(Named.class), method, params[0], instance, config);
                 } else {
-                    throw new SmooksConfigurationException("Method '" + getLongMemberName(method) + "' defines a @ConfigParam, yet it specifies more than a single paramater.");
+                    throw new SmooksConfigurationException("Method '" + getLongMemberName(method) + "' defines a @Inject, yet it specifies more than a single paramater.");
                 }
             }
         }
     }
 
-    private static <U> void inject(Named namedAnnotation, Field field, Class type, U instance, SmooksResourceConfiguration config) throws SmooksConfigurationException {
+    private static <U> void inject(Named namedAnnotation, Field field, U instance, SmooksResourceConfiguration config) throws SmooksConfigurationException {
         String name;
         Object paramValue;
 
@@ -338,9 +312,7 @@ public class Configurator {
 
         if (paramValue == null) {
             try {
-                field.setAccessible(true);
-                paramValue = field.get(instance);
-                field.setAccessible(false);
+                paramValue = ClassUtil.getField(field, instance);
             } catch (IllegalAccessException e) {
                 throw new SmooksConfigurationException(e);
             }
@@ -348,12 +320,13 @@ public class Configurator {
 
         if (paramValue != null) {
             try {
+                Object providedParamValue = createDecoder(paramValue.getClass(), field.getType(), null).createProvider(paramValue).get();
                 if (field.getType().equals(Optional.class) && !(paramValue instanceof Optional)) {
-                    setMember(field, instance, Optional.of(paramValue), name);
+                    setMember(field, instance, Optional.of(providedParamValue), name);
                 } else {
-                    setMember(field, instance, paramValue, name);
+                    setMember(field, instance, providedParamValue, name);
                 }
-            } catch (IllegalArgumentException e) {
+            } catch (DataDecodeException e) {
                 throw new SmooksConfigurationException("Failed to set parameter configuration value on '" + getLongMemberName(field) + "'.", e);
             }
         } else {
@@ -376,9 +349,9 @@ public class Configurator {
             if (name == null) {
                 throw new SmooksConfigurationException("Unable to determine the property name associated with '" +
                         getLongMemberName(method) + "'. " +
-                        "Setter methods that specify the @ConfigParam annotation " +
-                        "must either follow the Javabean naming convention ('setX' for propert 'x'), or specify the " +
-                        "propery name via the 'name' parameter on the @ConfigParam annotation.");
+                        "Setter methods that specify the @Inject annotation " +
+                        "must either follow the Javabean naming convention ('setX' for property 'x'), or specify the " +
+                        "property name via the 'name' parameter on the @Inject annotation.");
             }
         } else {
             name = namedAnnotation.value();
@@ -388,9 +361,11 @@ public class Configurator {
         if (paramValue != null) {
             try {
                 if (type.equals(Optional.class) && !(paramValue instanceof Optional)) {
-                    setMember(method, instance, Optional.of(paramValue), name);
+                    Object providedParamValue = createDecoder(paramValue.getClass(), (Class<?>) ((ParameterizedType) method.getGenericParameterTypes()[0]).getActualTypeArguments()[0], null).createProvider(paramValue).get();
+                    setMember(method, instance, Optional.of(providedParamValue), name);
                 } else {
-                    setMember(method, instance, paramValue, name);
+                    Object providedParamValue = createDecoder(paramValue.getClass(), type, null).createProvider(paramValue).get();
+                    setMember(method, instance, providedParamValue, name);
                 }
             } catch (DataDecodeException e) {
                 throw new SmooksConfigurationException("Failed to set parameter configuration value on '" + getLongMemberName(method) + "'.", e);
@@ -404,45 +379,28 @@ public class Configurator {
         }
     }
 
-    private static <U> DataDecoder createDecoder(Member member, Class type, Class<? extends DataDecoder> decoderClass) {
-        DataDecoder decoder;
-        if (decoderClass.isAssignableFrom(DataDecoder.class)) {
-            // No decoder specified via annotation.  Infer from the field type...
-            decoder = DataDecoder.Factory.create(type);
-            if (decoder == null) {
-                throw new SmooksConfigurationException("ContentHandler class member '" + getLongMemberName(member) + "' must define a decoder through it's @ConfigParam annotation.  Unable to automatically determine DataDecoder from member type.");
-            }
-        } else {
-            // Decoder specified on annotation...
-            try {
-                decoder = decoderClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new SmooksConfigurationException("Failed to create DataDecoder instance from class '" + decoderClass.getName() + "'.  Make sure the DataDecoder implementation has a public default constructor.", e);
-            } catch (IllegalAccessException e) {
-                throw new SmooksConfigurationException("Failed to create DataDecoder instance from class '" + decoderClass.getName() + "'.  Make sure the DataDecoder implementation has a public default constructor.", e);
-            }
-        }
-        return decoder;
+    private static DataTypeProviderFactory createDecoder(Class sourceClass, Class targetClass, Class<? extends DataDecoder> decoderClass) {
+        return DataTypeProviderFactoryLoader.getInstance().get(sourceClass, targetClass);
+//        DataDecoder decoder;
+//        if (decoderClass.isAssignableFrom(DataDecoder.class)) {
+//            // No decoder specified via annotation.  Infer from the field type...
+//            decoder = DataDecoder.Factory.create(type);
+//            if (decoder == null) {
+//                throw new SmooksConfigurationException("ContentHandler class member '" + getLongMemberName(member) + "' must define a decoder through it's @ConfigParam annotation.  Unable to automatically determine DataDecoder from member type.");
+//            }
+//        } else {
+//            // Decoder specified on annotation...
+//            try {
+//                decoder = decoderClass.newInstance();
+//            } catch (InstantiationException e) {
+//                throw new SmooksConfigurationException("Failed to create DataDecoder instance from class '" + decoderClass.getName() + "'.  Make sure the DataDecoder implementation has a public default constructor.", e);
+//            } catch (IllegalAccessException e) {
+//                throw new SmooksConfigurationException("Failed to create DataDecoder instance from class '" + decoderClass.getName() + "'.  Make sure the DataDecoder implementation has a public default constructor.", e);
+//            }
+//        }
+//        return decoder;
     }
-
-    private static void assertValidChoice(String[] choices, String name, String paramValue) throws SmooksConfigurationException {
-        if (choices == null || choices.length == 0) {
-            throw new RuntimeException("Unexpected annotation default choice value.  Should not be null or empty.  Code may have changed incompatibly.");
-        } else if (choices.length == 1 && AnnotationConstants.NULL_STRING.equals(choices[0])) {
-            // A choice wasn't specified on the paramater config.
-            return;
-        } else {
-            // A choice was specified. Check it against the value...
-            for (String choice : choices) {
-                if (paramValue.equals(choice)) {
-                    return;
-                }
-            }
-        }
-
-        throw new SmooksConfigurationException("Value '" + paramValue + "' for paramater '" + name + "' is invalid.  Valid choices for this paramater are: " + Arrays.asList(choices));
-    }
-
+    
     private static <U> void applyConfig(Field field, U instance, SmooksResourceConfiguration config) {
         try {
             ClassUtil.setField(field, instance, config);
@@ -495,7 +453,7 @@ public class Configurator {
                 }
             } else {
                 try {
-                    setMethod((Method) member, instance, value);
+                    ((Method) member).invoke(instance, value);
                 } catch (InvocationTargetException e) {
                     throw new SmooksConfigurationException("Failed to set paramater configuration value on '" + getLongMemberName(member) + "'.", e.getTargetException());
                 }
@@ -503,10 +461,6 @@ public class Configurator {
         } catch (IllegalAccessException e) {
             throw new SmooksConfigurationException("Failed to set paramater configuration value on '" + getLongMemberName(member) + "'.", e);
         }
-    }
-
-    private static <U> void setMethod(Method method, U instance, Object value) throws IllegalAccessException, InvocationTargetException {
-        method.invoke(instance, value);
     }
 
     public static <U> void postConstruct(U instance) {

@@ -42,17 +42,13 @@
  */
 package org.smooks.delivery.dom.serialize;
 
+import org.smooks.container.ExecutionContext;
+import org.w3c.dom.*;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.io.Writer;
-
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.container.ExecutionContext;
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Element;
-import org.w3c.dom.EntityReference;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
 
 /**
  * 
@@ -60,8 +56,9 @@ import org.w3c.dom.Text;
  */
 public class EmptyElTestSerializationUnit extends DefaultSerializationUnit {
 
-    @ConfigParam(name="wellformed", use=ConfigParam.Use.OPTIONAL, defaultVal ="true")
-    private boolean wellFormed = true;
+    @Inject
+	@Named("wellformed")
+    private Boolean wellFormed = true;
 
 	/* (non-Javadoc)
 	 * @see org.smooks.serialize.SerializationUnit#writeElementStart(org.w3c.dom.Element, java.io.Writer, org.smooks.device.UAContext)

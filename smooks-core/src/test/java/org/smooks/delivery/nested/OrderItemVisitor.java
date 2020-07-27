@@ -43,11 +43,11 @@
 package org.smooks.delivery.nested;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -55,7 +55,7 @@ import java.io.IOException;
  */
 public class OrderItemVisitor implements SAXVisitBefore {
 
-    @ConfigParam
+    @Inject
     private String beanId;
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {

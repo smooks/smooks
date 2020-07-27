@@ -45,12 +45,12 @@ package org.smooks.db;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.cdr.annotation.ConfigParam.Use;
 import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.event.report.annotation.VisitBeforeReport;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -58,6 +58,7 @@ import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * Jndi based DataSource.
@@ -71,23 +72,25 @@ import java.sql.SQLException;
 @VisitAfterReport(summary = "Cleaning up JndiDataSource <b>${resource.parameters.datasource}</b>. Includes performing commit/rollback etc.", detailTemplate = "reporting/JndiDataSource_after.html")
 public class JndiDataSource extends AbstractDataSource {
 
-    @ConfigParam(name = "datasource")
+    @Inject
+    @Named("datasource")
     private String name;
 
-    @ConfigParam(use=Use.OPTIONAL)
-    private String datasourceJndi;
+    @Inject
+    private Optional<String> datasourceJndi;
 
-    @ConfigParam(use=Use.OPTIONAL)
-    private String transactionJndi;
+    @Inject
+    private Optional<String> transactionJndi;
 
-    @ConfigParam(defaultVal="false")
-    private boolean autoCommit;
+    @Inject
+    private Boolean autoCommit = false;
 
-    @ConfigParam(defaultVal = "true")
-    private boolean setAutoCommitAllowed;
+    @Inject
+    private Boolean setAutoCommitAllowed = true;
 
-    @ConfigParam(name = "transactionManager", defaultVal = TransactionManagerType.JDBC_STRING, decoder = TransactionManagerType.DataDecoder.class)
-    private TransactionManagerType transactionManagerType;
+    @Inject
+    @Named("transactionManager")
+    private TransactionManagerType transactionManagerType = TransactionManagerType.JDBC;
 
     private DataSource datasource;
 
@@ -107,14 +110,14 @@ public class JndiDataSource extends AbstractDataSource {
 
     @PostConstruct
     public void intitialize() {
-        if(datasourceJndi == null) {
-        	datasourceJndi = name;
+        if(!datasourceJndi.isPresent()) {
+        	datasourceJndi = Optional.of(name);
         }
 
-        datasource = (DataSource) lookup(datasourceJndi);
+        datasource = (DataSource) lookup(datasourceJndi.orElse(null));
 
         if(transactionManagerType == TransactionManagerType.JTA) {
-        	if(transactionJndi == null || transactionJndi.length() == 0) {
+        	if(!transactionJndi.isPresent() || transactionJndi.get().length() == 0) {
         		throw new SmooksConfigurationException("The transactionJndi attribute must be set when the JTA transaction manager is set.");
         	}
 
@@ -157,7 +160,7 @@ public class JndiDataSource extends AbstractDataSource {
 	    	case JDBC:
 	    		return new JdbcTransactionManager(connection, isAutoCommit());
 	    	case JTA:
-	    		return new JtaTransactionManager(connection, (UserTransaction)lookup(transactionJndi), setAutoCommitAllowed);
+	    		return new JtaTransactionManager(connection, (UserTransaction)lookup(transactionJndi.orElse(null)), setAutoCommitAllowed);
 	    	case EXTERNAL:
 	    		return new ExternalTransactionManager(connection, isAutoCommit(), setAutoCommitAllowed);
 	    	default:

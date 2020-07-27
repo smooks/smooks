@@ -43,7 +43,6 @@
 package org.smooks.visitors.remove;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.sax.SAXElement;
@@ -53,8 +52,10 @@ import org.smooks.io.NullWriter;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Optional;
 
 /**
  * Remove Element.
@@ -62,11 +63,11 @@ import java.io.Writer;
  */
 public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAfter {
 
-    private boolean keepChildren;
+    private boolean keepChildren = false;
 
-    @ConfigParam(defaultVal = "false")
-    public RemoveElement setKeepChildren(boolean keepChildren) {
-        this.keepChildren = keepChildren;
+    @Inject
+    public RemoveElement setKeepChildren(Optional<Boolean> keepChildren) {
+        this.keepChildren = keepChildren.orElse(this.keepChildren);
         return this;
     }
 

@@ -42,14 +42,14 @@
  */
 package org.smooks.payload;
 
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.cdr.annotation.ConfigParam.Use;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.util.CollectionsUtil;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -71,69 +71,60 @@ import java.util.Set;
  * @author Daniel Bevenius
  * @since 1.4
  */
-public class Export implements ContentHandler<Export>
-{
-    @ConfigParam (use = Use.OPTIONAL)
-    private String name;
-    
-    @ConfigParam
+public class Export implements ContentHandler<Export> {
+    @Inject
+    private Optional<String> name;
+
+    @Inject
     private Class<?> type;
-    
-    @ConfigParam (use = Use.OPTIONAL)
-    private String extract;
+
+    @Inject
+    private Optional<String> extract;
     private Set<String> extractSet;
 
     @Inject
     private ApplicationContext applicationContext;
 
-    public Export()
-    {
+    public Export() {
     }
-    
-    public Export(final Class<?> type)
-    {
+
+    public Export(final Class<?> type) {
         this.type = type;
     }
-    
-    public Export(final Class<?> type, final String name)
-    {
+
+    public Export(final Class<?> type, final String name) {
         this(type);
-        this.name = name;
+        this.name = Optional.ofNullable(name);
     }
-    
-    public Export(final Class<?> type, final String name, final String extract)
-    {
+
+    public Export(final Class<?> type, final String name, final String extract) {
         this(type, name);
-        this.extract = extract;
+        this.extract = Optional.ofNullable(extract);
         initExtractSet();
     }
-    
+
     @PostConstruct
-    public void addToExportsInApplicationContext()
-    {
+    public void addToExportsInApplicationContext() {
         initExtractSet();
         Exports.addExport(applicationContext, this);
     }
 
     private void initExtractSet() {
-        if(extract != null) {
-            extractSet = CollectionsUtil.toSet(extract.split(","));
+        if (extract.isPresent()) {
+            extractSet = CollectionsUtil.toSet(extract.get().split(","));
         }
     }
 
-    public String getName()
-    {
-        return name;
+    public String getName() {
+        return name.get();
     }
 
-    public Class<?> getType()
-    {
+    public Class<?> getType() {
         return type;
     }
 
-    public String getExtract()
-    {
-        return extract;
+    public String getExtract() {
+        return extract.get();
     }
 
     public Set<String> getExtractSet() {
@@ -141,8 +132,7 @@ public class Export implements ContentHandler<Export>
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((extract == null) ? 0 : extract.hashCode());
@@ -152,25 +142,22 @@ public class Export implements ContentHandler<Export>
     }
 
     @Override
-    public boolean equals(final Object obj)
-    {
+    public boolean equals(final Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
-        
+
         if (!(obj instanceof Export))
             return false;
-        
+
         final Export other = (Export) obj;
-        return (type == other.type || (type != null && type.equals(other.type))) &&
-	        (extract == other.extract || (extract != null && extract.equals(other.extract))) &&
-	        (name == other.name || (name != null && name.equals(other.name)));
+        return (Objects.equals(type, other.type)) &&
+                (extract == other.extract || (extract != null && extract.isPresent() && extract.get().equals(other.extract == null ? null : other.extract.orElse(null)))) &&
+                (name == other.name || (name != null && name.isPresent() && name.get().equals(other.name == null ? null : other.name.orElse(null))));
     }
 
-    public String toString()
-    {
+    public String toString() {
         return "Export [type=" + type.getName() + ", name=" + name + ", extract=" + extract + "]";
     }
-    
 }

@@ -206,7 +206,7 @@ public class ConfiguratorTest {
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
             assertEquals("Failed to set parameter configuration value on 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit7#encoding'.", e.getMessage());
-            assertEquals("Can not set java.nio.charset.Charset field org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit7.encoding to java.lang.String", e.getCause().getMessage());
+            assertEquals("Unsupported character set 'XXXX'.", e.getCause().getMessage());
         }
     }
 
@@ -226,8 +226,8 @@ public class ConfiguratorTest {
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
             assertEquals("Unable to determine the property name associated with 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit9#encoding'. " +
-                    "Setter methods that specify the @ConfigParam annotation must either follow the Javabean naming convention ('setX' for propert 'x'), " +
-                    "or specify the propery name via the 'name' parameter on the @ConfigParam annotation.", e.getMessage());
+                    "Setter methods that specify the @Inject annotation must either follow the Javabean naming convention ('setX' for property 'x'), " +
+                    "or specify the property name via the 'name' parameter on the @Inject annotation.", e.getMessage());
         }
 
         MyContentDeliveryUnit10 cdu3 = new MyContentDeliveryUnit10();

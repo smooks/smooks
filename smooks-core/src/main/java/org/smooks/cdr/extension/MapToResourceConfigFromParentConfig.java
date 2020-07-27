@@ -47,15 +47,14 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AnnotationConstants;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.cdr.annotation.ConfigParam.Use;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import java.util.EmptyStackException;
+import java.util.Optional;
 import java.util.Stack;
 
 /**
@@ -71,17 +70,17 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromText.class);
 
-    @ConfigParam(defaultVal = "-1")
-    private int parentRelIndex;
+    @Inject
+    private int parentRelIndex = -1;
 
-    @ConfigParam
+    @Inject
     private String mapFrom;
 
-    @ConfigParam(use = Use.OPTIONAL)
-    private String mapTo;
+    @Inject
+    private Optional<String> mapTo;
 
-    @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
-    private String defaultValue;
+    @Inject
+    private Optional<String> defaultValue;
 
     @PostConstruct
     public void initialize() throws SmooksConfigurationException {
@@ -96,7 +95,7 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
         SmooksResourceConfiguration parentConfig;
         String value;
 
-        String actualMapTo = mapTo;
+        String actualMapTo = mapTo.orElse(null);
 
         //If no mapTo is set then the mapFrom value becomes the mapTo value
         if(actualMapTo == null) {
@@ -120,6 +119,6 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
         if(LOGGER.isDebugEnabled()) {
         	LOGGER.debug("Mapping property '" + mapFrom + "' on parent resource configuration to property'" + actualMapTo + "'.");
         }
-        ResourceConfigUtil.mapProperty(parentConfig, mapFrom, currentConfig, actualMapTo, defaultValue, executionContext);
+        ResourceConfigUtil.mapProperty(parentConfig, mapFrom, currentConfig, actualMapTo, defaultValue.orElse(null), executionContext);
     }
 }

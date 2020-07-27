@@ -42,18 +42,18 @@
  */
 package org.smooks.cdr.extension;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AnnotationConstants;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.xml.DomUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import javax.inject.Inject;
 import java.util.EmptyStackException;
+import java.util.Optional;
 
 /**
  * Map a property value onto the current {@link org.smooks.cdr.SmooksResourceConfiguration} based on an
@@ -68,25 +68,25 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromText.class);
 
-    @ConfigParam(use = ConfigParam.Use.OPTIONAL)
-    private String mapTo;
+    @Inject
+    private Optional<String> mapTo;
 
-    @ConfigParam(use = ConfigParam.Use.OPTIONAL)
-    private String mapToSpecifier;
+    @Inject
+    private Optional<String> mapToSpecifier;
 
-    @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
-    private String defaultValue;
+    @Inject
+    private Optional<String> defaultValue;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         SmooksResourceConfiguration config;
         String value = DomUtils.getAllText(element, false);
-        String mapToPropertyName = mapTo;
+        String mapToPropertyName = mapTo.orElse(null);
 
         if(mapToPropertyName == null) {
-            if(mapToSpecifier == null) {
+            if(!mapToSpecifier.isPresent()) {
                 throw new SmooksException("One of attributes 'mapTo' or 'mapToSpecifier' must be specified.");
             }
-            mapToPropertyName = DomUtils.getAttributeValue(element, mapToSpecifier);
+            mapToPropertyName = DomUtils.getAttributeValue(element, mapToSpecifier.get());
         }
 
         try {
@@ -96,7 +96,7 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
         }
 
         if (value == null) {
-            value = defaultValue;
+            value = defaultValue.orElse(null);
         }
 
         if (value == null) {

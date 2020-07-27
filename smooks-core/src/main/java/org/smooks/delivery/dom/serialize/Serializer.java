@@ -64,6 +64,7 @@ import org.w3c.dom.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Node serializer.
@@ -137,7 +138,7 @@ public class Serializer {
         if(defaultSerializationOn) {
             defaultSerializationUnit = new DefaultSerializationUnit();
             boolean rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", executionContext.getDeliveryConfig()));
-            defaultSerializationUnit.setRewriteEntities(rewriteEntities);
+            defaultSerializationUnit.setRewriteEntities(Optional.of(rewriteEntities));
         }
         terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", executionContext.getDeliveryConfig()));
 	}
@@ -324,8 +325,9 @@ public class Serializer {
 	}
 
     private static DefaultSerializationUnit defaultSerializer = new DefaultSerializationUnit();
+
     static {
-        defaultSerializer.setCloseEmptyElements(true);
+        defaultSerializer.setCloseEmptyElements(Optional.of(true));
     }
 
     /**

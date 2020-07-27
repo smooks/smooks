@@ -659,7 +659,7 @@ public class ContentDeliveryConfigBuilder {
                 throw e;
             } catch(Throwable thrown) {
                 String message = "ContentHandlerFactory [" + handlerFactory.getClass().getName()  + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
-                LOGGER.warn(message + thrown.getMessage());
+                LOGGER.error(message + thrown.getMessage(), thrown);
                 configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message, thrown));
 
                 return false;

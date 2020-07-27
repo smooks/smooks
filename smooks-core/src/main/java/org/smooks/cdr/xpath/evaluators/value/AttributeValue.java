@@ -42,11 +42,11 @@
  */
 package org.smooks.cdr.xpath.evaluators.value;
 
+import org.smooks.datatype.factory.DataTypeProviderFactory;
 import org.smooks.delivery.sax.SAXElement;
-import org.smooks.javabean.DataDecoder;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Attr;
 
 /**
  * Element text value getter.
@@ -54,15 +54,16 @@ import org.w3c.dom.Attr;
  */
 public class AttributeValue extends Value {
 
-    private String namespaceURI;
-    private String localPart;
-    private DataDecoder decoder;
     private static final String EMPTY_STRING = "";
 
-    public AttributeValue(String namespaceURI, String localPart, DataDecoder decoder) {
+    private final String namespaceURI;
+    private final String localPart;
+    private final DataTypeProviderFactory<String, ?> dataTypeProviderFactory;
+
+    public AttributeValue(String namespaceURI, String localPart, DataTypeProviderFactory<String, ?> dataTypeProviderFactory) {
         this.namespaceURI = namespaceURI;
         this.localPart = localPart;
-        this.decoder = decoder;
+        this.dataTypeProviderFactory = dataTypeProviderFactory;
     }
 
     public Object getValue(SAXElement element) {
@@ -72,7 +73,7 @@ public class AttributeValue extends Value {
         } else {
             attribValue = element.getAttribute(localPart);
         }
-        return decoder.decode(attribValue);
+        return dataTypeProviderFactory.createProvider(attribValue).get();
     }
 
     public Object getValue(Element element) {
@@ -99,7 +100,7 @@ public class AttributeValue extends Value {
             }
         }
 
-        return decoder.decode(attribValue);
+        return dataTypeProviderFactory.createProvider(attribValue).get();
     }
 
     public String toString() {

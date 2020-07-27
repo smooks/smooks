@@ -44,7 +44,6 @@ package org.smooks.delivery.nested;
 
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.AbstractParser;
@@ -80,15 +79,15 @@ import java.util.Set;
  */
 public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCleanable, Producer {
 
-    @ConfigParam
+    @Inject
     private String smooksConfig;
 
-    @ConfigParam
+    @Inject
     private String[] mapBeans;
     private List<BeanId> mapBeanIds = new ArrayList<BeanId>();
 
-    @ConfigParam(defaultVal = "true")
-    private boolean inheritBeanContext;
+    @Inject
+    private boolean inheritBeanContext = true;
 
     @Inject
     private ApplicationContext applicationContext;

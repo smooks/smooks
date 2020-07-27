@@ -43,13 +43,14 @@
 package org.smooks.cdr.extension;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.cdr.annotation.AnnotationConstants;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Create a new {@link SmooksResourceConfiguration}.
@@ -62,18 +63,18 @@ public class NewResourceConfig implements DOMElementVisitor {
 
 	public static final String PARAMETER_TARGET_PROFILE = "targetProfile";
 
-    @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
-    private String resource;
+    @Inject
+    private Optional<String> resource;
 
-    @ConfigParam(defaultVal = "false")
-    private boolean isTemplate;
+    @Inject
+    private Boolean isTemplate = false;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
 
         config.setExtendedConfigNS(element.getNamespaceURI());
-        config.setResource(resource);
+        config.setResource(resource.orElse(null));
 
         // Set the defaults...
         if(extensionContext.getDefaultSelector() != null) {

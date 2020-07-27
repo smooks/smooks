@@ -43,14 +43,15 @@
 package org.smooks.visitors.ctrl;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitAfter;
 import org.w3c.dom.Element;
 
+import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Pause Smooks processing for a period.
@@ -59,11 +60,11 @@ import java.io.IOException;
  */
 public class Pause implements SAXVisitAfter, DOMVisitAfter {
 
-    private long period;
+    private long period = 1000;
 
-    @ConfigParam(defaultVal = "1000") // Default pause of 1 second
-    public Pause setPeriod(long period) {
-        this.period = period;
+    @Inject // Default pause of 1 second
+    public Pause setPeriod(Optional<Long> period) {
+        this.period = period.orElse(this.period);
         return this;
     }
 
