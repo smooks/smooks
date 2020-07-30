@@ -98,9 +98,9 @@ import java.util.*;
  * <b>A basic sample</b>.  Note that it is not using any profiling.  The <b>resource-config</b> element maps directly to an instance of this class.
  * <pre>
  * <i>&lt;?xml version='1.0'?&gt;
- * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd"&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"&gt;
  *      <b>&lt;resource-config <a href="#selector">selector</a>="order/order-header"&gt;
- *          &lt;resource type="xsl"&gt;<a target="new" href="http://milyn.codehaus.org/Smooks#Smooks-smookscartridges">/com/acme/transform/OrderHeaderTransformer.xsl</a>&lt;/resource&gt;
+ *          &lt;resource type="xsl"&gt;<a target="new" href="https://www.smooks.org#Smooks-smookscartridges">/com/acme/transform/OrderHeaderTransformer.xsl</a>&lt;/resource&gt;
  *      &lt;/resource-config&gt;</b>
  *      <b>&lt;resource-config <a href="#selector">selector</a>="order-items/order-item"&gt;
  *          &lt;resource&gt;{@link org.smooks.delivery.dom.DOMElementVisitor com.acme.transform.MyJavaOrderItemTransformer}&lt;/resource&gt;
@@ -111,7 +111,7 @@ import java.util.*;
  * whereas resource 2 is only targeted at "message-exchange-1" and resource 3 at "message-exchange-2" (see {@link org.smooks.Smooks#createExecutionContext(String)}).
  * <pre>
  * <i>&lt;?xml version='1.0'?&gt;
- * &lt;smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd"&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"&gt;
  *      <b>&lt;profiles&gt;
  *          &lt;profile base-profile="message-exchange-1" sub-profiles="message-producer-A, message-consumer-B" /&gt;
  *          &lt;profile base-profile="message-exchange-2" sub-profiles="message-producer-A, message-consumer-C" /&gt;
@@ -177,22 +177,7 @@ public class SmooksResourceConfiguration {
      * Logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(SmooksResourceConfiguration.class);
-    /**
-     * The resource type can be specified as a resource parameter.  This constant defines
-     * that parameter name.
-     *
-     * @deprecated Resource type now specified on "type" attribute of &lt;resource&gt; element.
-     *             Since <a href="http://milyn.codehaus.org/dtd/smooksres-list-2.0.dtd">Configuration DTD v2.0</a>.
-     */
-    public static final String PARAM_RESTYPE = "restype";
-    /**
-     * The resource data can be specified as a resource parameter.  This constant defines
-     * that parameter name.
-     *
-     * @deprecated Resource now specified on &lt;resource&gt; element.
-     *             Since <a href="http://milyn.codehaus.org/dtd/smooksres-list-2.0.dtd">Configuration DTD v2.0</a>.
-     */
-    public static final String PARAM_RESDATA = "resdata";
+    
     /**
      * XML selector type definition prefix
      */
@@ -209,7 +194,7 @@ public class SmooksResourceConfiguration {
      * A special selector for resource targeted at the document as a whole (the roor element).
      */
     public static final String DOCUMENT_FRAGMENT_SELECTOR = "#document";
-    public static final String LEGACY_DOCUMENT_FRAGMENT_SELECTOR = "$document";
+
     /**
      * A special selector for resource targeted at the document as a whole (the roor element).
      */
@@ -462,11 +447,7 @@ public class SmooksResourceConfiguration {
         if (selector == null || selector.trim().equals("")) {
             throw new IllegalArgumentException("null or empty 'selector' arg in constructor call.");
         }
-        if(selector.equals(LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
-            this.selector = DOCUMENT_FRAGMENT_SELECTOR;
-        } else {
-            this.selector = selector;
-        }
+        this.selector = selector;
 
         // If there's a "#document" token in the selector, but it's not at the very start,
         // then we have an invalid selector...
@@ -541,9 +522,6 @@ public class SmooksResourceConfiguration {
 
             if (!splitToken.startsWith("@")) {
                 splitTokens[i] = splitToken;
-            }
-            if (splitToken.equals(LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
-                splitTokens[i] = DOCUMENT_FRAGMENT_SELECTOR;
             }
         }
 
@@ -658,19 +636,6 @@ public class SmooksResourceConfiguration {
      */
     public String getSelector() {
         return selector;
-    }
-
-    /**
-     * Get the contextual selector definition for this SmooksResourceConfiguration.
-     * <p/>
-     * See details about the "selector" attribute in the
-     * <a href="#attribdefs">Attribute Definitions</a> section.
-     *
-     * @return The contextual selector definition.
-     * @deprecated Use {#link #getSelectorSteps}.
-     */
-    public String[] getContextualSelector() {
-        return SelectorStepBuilder.toContextualSelector(selectorSteps);
     }
 
     /**
@@ -842,19 +807,12 @@ public class SmooksResourceConfiguration {
      * @return The resource type.
      */
     public String getResourceType() {
-        String restype;
-
         if (isJavaResource()) {
             return "class";
         }
 
-        restype = getStringParameter(PARAM_RESTYPE);
-        if (restype != null && !restype.trim().equals("")) {
-            // Ala DTD v1.0, where we weren't able to specify the type in any other way.
-            if (getParameter(PARAM_RESDATA) == null) {
-                LOGGER.debug("Resource configuration defined with '" + PARAM_RESTYPE + "' parameter but no '" + PARAM_RESDATA + "' parameter.");
-            }
-        } else if (resourceType != null) {
+        final String restype;
+        if (resourceType != null) {
             // Ala DTD v2.0, where the type is set through the "type" attribute on the <resource> element.
             restype = resourceType;
         } else {
@@ -1135,20 +1093,9 @@ public class SmooksResourceConfiguration {
      *         is null or the resource doesn't exist.
      */
     public byte[] getBytes() {
-
-        // This method supports 2 forms of resource config ala DTD 1.0 and DTD 2.0.
-        // * 1.0 defined the resource on a "path" attribute as well as via a "resdata" resource
-        //   parameter.
-        // * 2.0 defines the resource in a resource element, so it can be used to specify a path
-        //   or inlined resourcec data ala the "resdata" parameter in the 1.0 DTD.
-
-        String paramBasedData = getStringParameter(PARAM_RESDATA);
-
-        // If the resource data is specified as a parameter, return this.
-        if (paramBasedData != null) {
-            // Ala DTD v1.0, where we don't have the <resource> element.
-            return paramBasedData.getBytes();
-        }
+        // Defines the resource in a resource element, so it can be used to specify a path
+        // or inlined resourcec data ala the "resdata" parameter in the 1.0 DTD.
+        
         if (resource != null) {
             InputStream resStream;
             try {

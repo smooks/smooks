@@ -399,18 +399,6 @@ public class SAXElement {
     }
 
     /**
-     * Get the named attribute from this element.
-     * @param namespaceURI The namespace URI of the required attribute.
-     * @param attribute The attribute name.
-     * @return The attribute value, or an empty string if the attribute is not specified.
-     * @deprecated Use {@link #getAttributeNS(String, String)}.
-     */
-    public String getAttribute(String namespaceURI, String attribute) {
-        return getAttributeNS(namespaceURI, attribute);
-    }
-
-
-    /**
      * Set the named attribute on this element.
      * @param attribute The attribute name.
      * @param value The attribute value.
@@ -462,27 +450,6 @@ public class SAXElement {
                 }
             }
         }
-    }
-
-
-    /**
-     * Get the <a href="#element_cache_object">element cache object</a>.
-     *
-     * @return The element cache Object.
-     * @deprecated Use {@link #getCache(SAXVisitor)}.
-     */
-    public Object getCache() {
-        return l1Cache;
-    }
-
-    /**
-     * Set the <a href="#element_cache_object">element cache object</a>.
-     *
-     * @param cache The element cache Object.
-     * @deprecated Use {@link #setCache(SAXVisitor, Object)}.
-     */
-    public void setCache(Object cache) {
-        this.l1Cache = cache;
     }
 
     /**

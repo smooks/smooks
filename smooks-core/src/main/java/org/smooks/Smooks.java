@@ -94,7 +94,7 @@ import java.util.Properties;
  * <li>Develop (or reuse) an implementation of {@link org.smooks.delivery.dom.DOMElementVisitor}/{@link org.smooks.delivery.sax.SAXElementVisitor} to
  * perform some transformation/analysis operation on a message.  There are a number of prebuilt
  * and reuseable implemntations available as
- * "<a target="new" href="http://milyn.codehaus.org/Smooks#Smooks-smookscartridges">Smooks Cartridges</a>".</li>
+ * "<a target="new" href="https://www.smooks.org#Smooks-smookscartridges">Smooks Cartridges</a>".</li>
  * <li>Write a {@link org.smooks.cdr.SmooksResourceConfiguration resource configuration} to target the {@link org.smooks.delivery.dom.DOMElementVisitor}/{@link org.smooks.delivery.sax.SAXElementVisitor}
  * implementation at the target fragment of the message being processed.</li>
  * <li>Apply the logic as follows:

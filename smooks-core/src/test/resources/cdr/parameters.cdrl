@@ -1,20 +1,18 @@
 <?xml version="1.0"?>
-<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
+<smooks-resource-list default-selector="device-parameters" xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"> 
 
-<smooks-resource-list default-selector="device-parameters"> 
-
-	<smooks-resource useragent="msie6">
+	<resource-config target-profile="msie6">
 		<param name="friendly-name">Internet Explorer 6</param>
-	</smooks-resource>
-	<smooks-resource useragent="msie6w">
+	</resource-config>
+	<resource-config target-profile="msie6w">
 		<param name="friendly-name">Internet Explorer 6 (Windows)</param>
-	</smooks-resource>
-	<smooks-resource useragent="msie6m">
+	</resource-config>
+	<resource-config target-profile="msie6m">
 		<param name="friendly-name">Internet Explorer 6 (Mac)</param>
-	</smooks-resource>
+	</resource-config>
 
-	<smooks-resource useragent="firefox">
+	<resource-config target-profile="firefox">
 		<param name="friendly-name">Mozilla Firefox</param>
-	</smooks-resource>
+	</resource-config>
 
 </smooks-resource-list>

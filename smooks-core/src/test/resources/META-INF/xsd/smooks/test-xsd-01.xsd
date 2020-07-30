@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:smooks="http://www.milyn.org/xsd/smooks-1.1.xsd"
+           xmlns:smooks="https://www.smooks.org/xsd/smooks-1.2.xsd"
            xmlns:smooks-test01="http://www.milyn.org/xsd/smooks/test-xsd-01.xsd"
            targetNamespace="http://www.milyn.org/xsd/smooks/test-xsd-01.xsd"
            elementFormDefault="qualified">
 
-    <xs:import namespace="http://www.milyn.org/xsd/smooks-1.1.xsd" />
+    <xs:import namespace="https://www.smooks.org/xsd/smooks-1.2.xsd" />
 
     <xs:element name="renameElement" substitutionGroup="smooks:abstract-resource-config">
         <xs:complexType>

@@ -42,13 +42,18 @@
   =========================LICENSE_END==================================
   -->
 
-<!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
-
-<smooks-resource-list default-selector="a">
-    <smooks-resource path="org.smooks.delivery.dom.AssemblyVisitor1"/>
-    <smooks-resource path="org.smooks.delivery.dom.ProcessorVisitor1"/>
-    <smooks-resource path="org.smooks.delivery.dom.ConfigurableVisitor"/>
-	<smooks-resource path="org.smooks.delivery.dom.ConfigurableVisitor">
+<smooks-resource-list default-selector="a" xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
+    <resource-config>
+        <resource>org.smooks.delivery.dom.AssemblyVisitor1</resource>
+    </resource-config>
+    <resource-config>
+        <resource>org.smooks.delivery.dom.ProcessorVisitor1</resource>
+    </resource-config>
+    <resource-config>
+        <resource>org.smooks.delivery.dom.ConfigurableVisitor</resource>
+    </resource-config>
+	<resource-config>
+        <resource>org.smooks.delivery.dom.ConfigurableVisitor</resource>
         <param name="VisitPhase">ASSEMBLY</param>
-    </smooks-resource>
+    </resource-config>
 </smooks-resource-list>

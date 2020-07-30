@@ -203,7 +203,7 @@ public class SelectorStepBuilder {
             return true;
         }
 
-        return xpathExpression.startsWith("$") && !xpathExpression.startsWith(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR);
+        return xpathExpression.startsWith("$");
     }
 
     /**
@@ -276,10 +276,10 @@ public class SelectorStepBuilder {
         String xpathExpression = xpathExpressionBuilder.toString();
 
         // Handle the #document token. Just replace it with a leading slash..
-        xpathExpression = xpathExpression.replace(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR);
-        if(xpathExpression.equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+        if (xpathExpression.equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
             xpathExpression = "/";
-        } if(xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR + "/")) {
+        }
+        if (xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR + "/")) {
             xpathExpression = xpathExpression.substring(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR.length());
         }
 

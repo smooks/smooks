@@ -78,10 +78,7 @@ import java.util.Stack;
  */
 @SuppressWarnings("WeakerAccess")
 public final class XMLConfigDigester {
-
-    public static final String DTD_V10 = "http://www.milyn.org/dtd/smooksres-list-1.0.dtd";
-    public static final String XSD_V10 = "http://www.milyn.org/xsd/smooks-1.0.xsd";
-    public static final String XSD_V11 = "http://www.milyn.org/xsd/smooks-1.1.xsd";
+    
     public static final String XSD_V12 = "https://www.smooks.org/xsd/smooks-1.2.xsd";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigDigester.class);
@@ -219,34 +216,21 @@ public final class XMLConfigDigester {
         String streamData = StreamUtils.readStream(stream);
 
         try {
-            configDoc = XmlUtil.parseStream(new StringReader(streamData), getDTDEntityResolver(), XmlUtil.VALIDATION_TYPE.DTD, true);
-            LOGGER.debug("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
-            digestV10DTDValidatedConfig(configDoc);
-            LOGGER.debug("Using a deprecated Smooks configuration DTD '" + DTD_V10 + "'.  Update configuration to use XSD '" + XSD_V10 + "'.");
-        } catch (Exception e) {
-            // Must be an XSD based config...
-            try {
-                configDoc = XmlUtil.parseStream(new StringReader(streamData));
-            } catch (ParserConfigurationException ee) {
-                throw new SAXException("Unable to parse Smooks configuration.", ee);
-            }
+            configDoc = XmlUtil.parseStream(new StringReader(streamData));
+        } catch (ParserConfigurationException ee) {
+            throw new SAXException("Unable to parse Smooks configuration.", ee);
+        }
 
-            XsdDOMValidator validator = new XsdDOMValidator(configDoc);
-            String defaultNS = validator.getDefaultNamespace().toString();
+        XsdDOMValidator validator = new XsdDOMValidator(configDoc);
+        String defaultNS = validator.getDefaultNamespace().toString();
 
-            validator.validate();
+        validator.validate();
 
-            configStack.peek().defaultNS = defaultNS;
-            if(XSD_V10.equals(defaultNS)) {
-                if(validator.getNamespaces().size() > 1) {
-                    throw new SmooksConfigurationException("Unsupported use of multiple configuration namespaces from inside a v1.0 Smooks configuration. Configuration extension not supported from a v1.0 configuration.  Use the v1.1 configuration namespace.");
-                }
-                digestV10XSDValidatedConfig(baseURI, configDoc);
-            } else if(XSD_V11.equals(defaultNS) || XSD_V12.equals(defaultNS)) {
-                digestV11XSDValidatedConfig(baseURI, configDoc);
-            } else {
-                throw new SAXException("Cannot parse Smooks configuration.  Unsupported default Namespace '" + defaultNS + "'.");
-            }
+        configStack.peek().defaultNS = defaultNS;
+        if (XSD_V12.equals(defaultNS)) {
+            digestV12XSDValidatedConfig(baseURI, configDoc);
+        } else {
+            throw new SAXException("Cannot parse Smooks configuration.  Unsupported default Namespace '" + defaultNS + "'.");
         }
 
         if (resourcelist.isEmpty()) {
@@ -254,75 +238,7 @@ public final class XMLConfigDigester {
         }
     }
 
-    private void digestV10DTDValidatedConfig(Document configDoc) throws SAXException {
-        int cdrIndex = 1;
-        Element currentElement;
-        String resourceSelector;
-
-        currentElement = (Element) XmlUtil.getNode(configDoc, "/smooks-resource-list");
-        String defaultSelector = DomUtils.getAttributeValue(currentElement, "default-selector");
-        String defaultNamespace = DomUtils.getAttributeValue(currentElement, "default-namespace");
-        String defaultUseragent = DomUtils.getAttributeValue(currentElement, "default-useragent");
-        String defaultPath = DomUtils.getAttributeValue(currentElement, "default-path");
-
-        resourceSelector = "/smooks-resource-list/smooks-resource[" + cdrIndex + "]";
-        while ((currentElement = (Element) XmlUtil.getNode(configDoc, resourceSelector)) != null) {
-            String selector = DomUtils.getAttributeValue(currentElement, "selector");
-            String namespace = DomUtils.getAttributeValue(currentElement, "namespace");
-            String useragents = DomUtils.getAttributeValue(currentElement, "useragent");
-            String path = DomUtils.getAttributeValue(currentElement, "path");
-            SmooksResourceConfiguration resourceConfig;
-
-            try {
-                resourceConfig = new SmooksResourceConfiguration((selector != null ? selector : defaultSelector),
-                        (namespace != null ? namespace : defaultNamespace),
-                        (useragents != null ? useragents : defaultUseragent),
-                        (path != null ? path : defaultPath));
-            } catch (IllegalArgumentException e) {
-                throw new SAXException("Invalid unit definition.", e);
-            }
-
-            // Add the parameters...
-            digestParameters(currentElement, resourceConfig);
-
-            resourcelist.add(resourceConfig);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Adding smooks-resource config from [" + resourcelist.getName() + "]: " + resourceConfig);
-            }
-
-            cdrIndex++;
-            resourceSelector = "/smooks-resource-list/smooks-resource[" + cdrIndex + "]";
-        }
-    }
-
-    private void digestV10XSDValidatedConfig(String baseURI, Document configDoc) throws SAXException, URISyntaxException, SmooksConfigurationException {
-        Element currentElement = configDoc.getDocumentElement();
-
-        String defaultSelector = DomUtils.getAttributeValue(currentElement, "default-selector");
-        String defaultNamespace = DomUtils.getAttributeValue(currentElement, "default-selector-namespace");
-        String defaultProfile = DomUtils.getAttributeValue(currentElement, "default-target-profile");
-
-        NodeList configNodes = currentElement.getChildNodes();
-
-        for (int i = 0; i < configNodes.getLength(); i++) {
-            if(configNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element configElement = (Element) configNodes.item(i);
-
-                // Make sure the element is permitted...
-                assertElementPermitted(configElement);
-
-                if (DomUtils.getName(configElement).equals("profiles")) {
-                    digestProfiles(configElement);
-                } else if (DomUtils.getName(configElement).equals("import")) {
-                    digestImport(configElement, new URI(baseURI));
-                } else if (DomUtils.getName(configElement).equals("resource-config")) {
-                    digestResourceConfig(configElement, defaultSelector, defaultNamespace, defaultProfile, null);
-                }
-            }
-        }
-    }
-
-    private void digestV11XSDValidatedConfig(String baseURI, Document configDoc) throws SAXException, URISyntaxException, SmooksConfigurationException {
+    private void digestV12XSDValidatedConfig(String baseURI, Document configDoc) throws SAXException, URISyntaxException, SmooksConfigurationException {
         Element currentElement = configDoc.getDocumentElement();
 
         String defaultSelector = DomUtils.getAttributeValue(currentElement, "default-selector");
@@ -341,7 +257,7 @@ public final class XMLConfigDigester {
 
                 String elementName = DomUtils.getName(configElement);
                 String namespaceURI = configElement.getNamespaceURI();
-                if(namespaceURI == null || namespaceURI.equals(XSD_V11) || namespaceURI.equals(XSD_V12)) {
+                if(namespaceURI == null || namespaceURI.equals(XSD_V12)) {
 	                if (elementName.equals("params")) {
 	                    digestParams(configElement);
 	                } else if (elementName.equals("conditions")) {
@@ -411,7 +327,7 @@ public final class XMLConfigDigester {
                     List<Element> importParams = DomUtils.getElements(importElement, "param", null);
                     if(!importParams.isEmpty()) {
                         // Inject parameters into import config...
-                        String importConfig = StreamUtils.readStreamAsString(resourceStream);
+                        String importConfig = StreamUtils.readStreamAsString(resourceStream, "UTF-8");
 
                         for (Element importParam : importParams) {
                             String paramName = DomUtils.getAttributeValue(importParam, "name");
@@ -564,7 +480,7 @@ public final class XMLConfigDigester {
         Element conditionElement = DomUtils.getElement(configElement, "condition", 1);
 
         // Create the ExtenstionContext and set it on the ExecutionContext...
-        if(conditionElement != null && (conditionElement.getNamespaceURI().equals(XSD_V10) || conditionElement.getNamespaceURI().equals(XSD_V11) || conditionElement.getNamespaceURI().equals(XSD_V12))) {
+        if(conditionElement != null && conditionElement.getNamespaceURI().equals(XSD_V12)) {
             extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, digestCondition(conditionElement));
         } else if(defaultConditionRef != null) {
             extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, getConditionEvaluator(defaultConditionRef));
@@ -653,7 +569,7 @@ public final class XMLConfigDigester {
         }
 
         String defaultNS = validator.getDefaultNamespace().toString();
-        if (!XSD_V10.equals(defaultNS) && !XSD_V11.equals(defaultNS) && !XSD_V12.equals(defaultNS)) {
+        if (!XSD_V12.equals(defaultNS)) {
             throw new SmooksConfigurationException("Extended resource configuration '" + resourcePath + "' default namespace must be a valid Smooks configuration namespace.");
         }
         if(validator.getNamespaces().size() > 1) {
@@ -783,18 +699,6 @@ public final class XMLConfigDigester {
 
     private void popConfig() {
         SmooksConfig currentConfig = configStack.pop();
-
-        // Make sure we don't have a v1.1 imported from config within a v1.0...
-        if((XSD_V11.equals(currentConfig.defaultNS) || XSD_V12.equals(currentConfig.defaultNS)) && !configStack.isEmpty()) {
-            SmooksConfig parentConfig = configStack.peek();
-
-            if(parentConfig.defaultNS.equals(XSD_V10)) {
-                // This must be an import of a v1.1 schema based config from inside a v1.0 schema config.  Not allowed!!
-                // Push the current config back onto the stack so as to get the correct config path inserted into the exception...
-                configStack.push(currentConfig);
-                throw new SmooksConfigurationException("Unsupported import of a v1.1 configuration from inside a v1.0 configuration.  Path to configuration: '" + getCurrentPath() + "'.");
-            }
-        }
     }
 
     public void addConditionEvaluator(String id, ExpressionEvaluator evaluator) {

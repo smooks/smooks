@@ -143,14 +143,6 @@ public class SmooksResourceConfigurationStore {
         }
     }
 
-    /**
-     * Remove the shutdown hook associated with this store instance.
-     * @deprecated Smooks no longer uses shutdown hooks.  The containing application
-     * is responsible for calling {@link Smooks#close()}.
-     */
-    public void removeShutdownHook() {
-    }
-
     private void registerInstalledHandlerFactories() {
         for (Class<ContentHandlerFactory> handlerFactory : handlerFactories) {
             Resource resourceAnnotation = handlerFactory.getAnnotation(Resource.class);

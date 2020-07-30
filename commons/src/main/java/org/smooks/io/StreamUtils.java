@@ -81,25 +81,17 @@ public abstract class StreamUtils {
      *
      * @param stream
      *            The stream to read.
+     * @param encoding
+     *            The encoding to use.
      * @return A String containing the Stream data.
      * @throws IOException
      *             Exception reading from the stream.
      */
-    public static String readStreamAsString(InputStream stream) throws IOException {
+    public static String readStreamAsString(final InputStream stream, final String encoding) throws IOException {
         AssertArgument.isNotNull(stream, "stream");
+        AssertArgument.isNotNull(encoding, "encoding");
 
-        return new String(readStream(stream));
-    }
-
-    /**
-     * Read the contents of the specified file.
-     * @param file The file to read.
-     * @return The file contents.
-     * @throws IOException Error readiong file.
-     * @deprecated Use {@link org.smooks.io.FileUtils#readFile(java.io.File)}.
-     */
-    public static byte[] readFile(File file) throws IOException {
-        return FileUtils.readFile(file);
+        return new String(readStream(stream), encoding);
     }
 
     public static void writeFile(File file, byte[] data) throws IOException {

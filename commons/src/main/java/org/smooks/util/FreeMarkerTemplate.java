@@ -58,18 +58,18 @@ import java.io.*;
 public class FreeMarkerTemplate {
 
     public static final String DEFAULT_MACHINE_READABLE_NUMBER_FORMAT = "#.##########";
-    
-    private String templateText;
-    private Template template;
 
-    public FreeMarkerTemplate(String templateText) {
+    private final String templateText;
+    private final Template template;
+
+    public FreeMarkerTemplate(final String templateText) {
         this(templateText, createDefaultConfiguration());
     }
 
-    public FreeMarkerTemplate(String templateText, Configuration config) {
+    public FreeMarkerTemplate(final String templateText, final Configuration config) {
         AssertArgument.isNotNullAndNotEmpty(templateText, "templateText");
         this.templateText = templateText;
-        Reader templateReader = new StringReader(templateText);
+        final Reader templateReader = new StringReader(templateText);
 
         try {
             try {
@@ -82,16 +82,16 @@ public class FreeMarkerTemplate {
         }
     }
 
-    public FreeMarkerTemplate(String templatePath, Class basePath) {
-        this(templatePath, basePath, createDefaultConfiguration());        
+    public FreeMarkerTemplate(final String templatePath, final Class basePath) {
+        this(templatePath, basePath, createDefaultConfiguration());
     }
 
-    public FreeMarkerTemplate(String templatePath, Class basePath, Configuration config) {
+    public FreeMarkerTemplate(final String templatePath, Class basePath, final Configuration config) {
         AssertArgument.isNotNullAndNotEmpty(templatePath, "templatePath");
         this.templateText = templatePath;
 
         try {
-            if(basePath != null) {
+            if (basePath != null) {
                 config.setClassForTemplateLoading(basePath, "");
             }
             template = config.getTemplate(templatePath);
@@ -104,13 +104,13 @@ public class FreeMarkerTemplate {
         return templateText;
     }
 
-    public String apply(Object contextObject) {
-        StringWriter outputWriter = new StringWriter();
+    public String apply(final Object contextObject) {
+        final StringWriter outputWriter = new StringWriter();
         apply(contextObject, outputWriter);
         return outputWriter.toString();
     }
 
-    public void apply(Object contextObject, Writer outputWriter) {
+    public void apply(final Object contextObject, final Writer outputWriter) {
         try {
             template.process(contextObject, outputWriter);
         } catch (TemplateException e) {
@@ -121,7 +121,7 @@ public class FreeMarkerTemplate {
     }
 
     private static Configuration createDefaultConfiguration() {
-        Configuration config = new Configuration(Configuration.VERSION_2_3_21);
+        final Configuration config = new Configuration(Configuration.VERSION_2_3_30);
         config.setNumberFormat(DEFAULT_MACHINE_READABLE_NUMBER_FORMAT);
         return config;
     }

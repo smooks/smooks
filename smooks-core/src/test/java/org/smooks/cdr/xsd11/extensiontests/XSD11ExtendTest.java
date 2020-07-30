@@ -70,8 +70,8 @@ public class XSD11ExtendTest {
         Document configDoc = XmlUtil.parseStream(getClass().getResourceAsStream("config_01.xml"));
         XsdDOMValidator validator = new XsdDOMValidator(configDoc);
 
-        assertEquals("http://www.milyn.org/xsd/smooks-1.1.xsd", validator.getDefaultNamespace().toString());
-        assertEquals("[http://www.milyn.org/xsd/smooks-1.1.xsd, http://www.milyn.org/xsd/smooks/test-xsd-01.xsd, http://www.w3.org/2001/XMLSchema-instance]", validator.getNamespaces().toString());
+        assertEquals("https://www.smooks.org/xsd/smooks-1.2.xsd", validator.getDefaultNamespace().toString());
+        assertEquals("[https://www.smooks.org/xsd/smooks-1.2.xsd, http://www.milyn.org/xsd/smooks/test-xsd-01.xsd, http://www.w3.org/2001/XMLSchema-instance]", validator.getNamespaces().toString());
 
         validator.validate();
     }

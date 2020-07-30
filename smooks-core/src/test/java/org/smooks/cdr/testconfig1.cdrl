@@ -1,10 +1,10 @@
 <?xml version='1.0'?>
 <!DOCTYPE smooks-resource-list PUBLIC "-//MILYN//DTD SMOOKS 1.0//EN" "http://www.milyn.org/dtd/smooksres-list-1.0.dtd">
 
-<smooks-resource-list default-selector='b' default-useragent='yyy' default-path='/org/smooks/cdr/test-resource.txt' default-namespace='http://milyn.codehaus.org/smooks-default'>
+<smooks-resource-list default-selector='b' default-useragent='yyy' default-path='/org/smooks/cdr/test-resource.txt' default-namespace='https://www.smooks.org-default'>
 
 	<!-- Overriding the defaults -->
-	<smooks-resource selector='a' useragent='xxx' path='x.txt' namespace='http://milyn.codehaus.org/smooks'/>
+	<smooks-resource selector='a' useragent='xxx' path='x.txt' namespace='https://www.smooks.org'/>
 
 	<!-- Inheriting the defaults -->
 	<smooks-resource>

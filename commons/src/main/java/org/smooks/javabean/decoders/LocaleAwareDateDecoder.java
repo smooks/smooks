@@ -77,27 +77,6 @@ public abstract class LocaleAwareDateDecoder extends LocaleAwareDecoder
      */
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
-    /**
-     * ISO Language Code. Lower case two-letter code defined by ISO-639
-     * @deprecated Use {@link LocaleAwareDecoder}.
-     */
-    public static final String LOCALE_LANGUAGE_CODE = "locale-language";
-
-    /**
-     * ISO Country Code. Upper case two-letter code defined by ISO-3166
-     * @deprecated Use {@link LocaleAwareDecoder}.
-     */
-    public static final String LOCALE_COUNTRY_CODE = "locale-country";
-
-    /**
-     * True or false(default).
-     * Whether or not a check should be performed to verify that
-     * the specified locale is installed. This operation can take some
-     * time and should be turned off in a production evironment
-     * @deprecated Use {@link LocaleAwareDecoder}.
-     */
-    public static final String VERIFY_LOCALE = "verify-locale";
-
     protected String format;
 
     /*
