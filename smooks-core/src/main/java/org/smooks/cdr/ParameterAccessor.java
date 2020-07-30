@@ -45,6 +45,8 @@ package org.smooks.cdr;
 import org.smooks.Smooks;
 import org.smooks.SmooksUtil;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.delivery.ContentDeliveryConfig;
 
 import java.util.Iterator;
@@ -191,8 +193,8 @@ public abstract class ParameterAccessor {
     }
 
     public static void removeParameter(String name, Smooks smooks) {
-    	SmooksResourceConfigurationStore configStore = smooks.getApplicationContext().getStore();
-    	Iterator<SmooksResourceConfigurationList> configLists = configStore.getSmooksResourceConfigurationLists();
+    	Registry registry = smooks.getApplicationContext().getRegistry();
+    	Iterator<SmooksResourceConfigurationList> configLists = registry.lookup(new SmooksResourceConfigurationListsLookup()).iterator();
 
     	while(configLists.hasNext()) {
             SmooksResourceConfigurationList list = configLists.next();

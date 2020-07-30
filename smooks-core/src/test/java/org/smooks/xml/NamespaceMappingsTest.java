@@ -42,16 +42,17 @@
  */
 package org.smooks.xml;
 
-import java.io.IOException;
-import java.util.Properties;
-
+import org.junit.Test;
 import org.smooks.Smooks;
+import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.xml.sax.SAXException;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.io.IOException;
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -62,8 +63,8 @@ public class NamespaceMappingsTest {
 	public void test_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));		
 		ExecutionContext execContext = smooks.createExecutionContext();
-		ApplicationContext appContext = execContext.getContext();
-		Properties mappings = NamespaceMappings.getMappings(appContext);
+		ApplicationContext appContext = execContext.getApplicationContext();
+		Properties mappings = appContext.getRegistry().lookup(new NamespaceMappingsLookup());
 
 		assertEquals("http://a", mappings.getProperty("a"));
 		assertEquals("http://b", mappings.getProperty("b"));

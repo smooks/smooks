@@ -42,14 +42,14 @@
  */
 package org.smooks;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.ProfileStore;
 import org.smooks.profile.UnknownProfileMemberException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -101,7 +101,7 @@ public abstract class SmooksUtil {
         if (resourceConfig == null) {
             throw new IllegalArgumentException("null 'resourceConfig' arg in method call.");
         }
-        smooks.getApplicationContext().getStore().registerResource(resourceConfig);
+        smooks.getApplicationContext().getRegistry().registerResource(resourceConfig);
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class SmooksUtil {
      * @throws SmooksException Excepting processing content stream.
      */
     public static String filterAndSerialize(ExecutionContext executionContext, InputStream stream, Smooks smooks) throws SmooksException {
-        String responseBuf = null;
+        String responseBuf;
         CharArrayWriter writer = new CharArrayWriter();
         try {
             smooks.filterSource(executionContext, new StreamSource(stream), new StreamResult(writer));

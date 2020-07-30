@@ -42,10 +42,9 @@
  */
 package org.smooks.delivery.sax;
 
-import org.smooks.assertion.AssertArgument;
-import org.smooks.delivery.sax.annotation.StreamResultWriter;
-import org.smooks.delivery.sax.annotation.TextConsumer;
 import org.smooks.SmooksException;
+import org.smooks.assertion.AssertArgument;
+import org.smooks.delivery.sax.annotation.TextConsumer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -53,10 +52,13 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import java.io.Writer;
-import java.io.StringWriter;
 import java.io.IOException;
-import java.util.*;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Element details as described by the SAX even model API.
@@ -84,7 +86,7 @@ import java.util.*;
  * will result in a {@link SAXWriterAccessException} being thrown.  In this situation,
  * you need to restructure the offending Smooks configuration and eliminate one of the
  * visitors attempting to gain access to the writer.  If developing a new Visitor,
- * you should annotate the new Visitor class with the {@link StreamResultWriter @StreamResultWriter}
+ * you should annotate the new Visitor class with the {@link javax.inject.Inject @Inject}
  * annotation.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -300,7 +302,7 @@ public class SAXElement {
      * @param visitor The visitor requesting access to element writer.
      * @return The element writer.
      * @throws SAXWriterAccessException Invalid access request for the element writer. See <a href="#element-writing">element writing</a>.
-     * @see StreamResultWriter
+     * @see javax.inject.Inject
      */
     public Writer getWriter(SAXVisitor visitor) throws SAXWriterAccessException {
         // This implementation doesn't actually enforce the "one writer per element" rule.  It's enforced from
@@ -316,7 +318,7 @@ public class SAXElement {
      * @param writer  The element writer.
      * @param visitor The visitor requesting to set the element writer.
      * @throws SAXWriterAccessException Invalid access request for the element writer. See <a href="#element-writing">element writing</a>.
-     * @see StreamResultWriter
+     * @see javax.inject.Inject
      */
     public void setWriter(Writer writer, SAXVisitor visitor) throws SAXWriterAccessException {
         // This implementation doesn't actually enforce the "one writer per element" rule.  It's enforced from
@@ -333,7 +335,7 @@ public class SAXElement {
      * @param visitor The visitor being checked.
      * @return True if the {@link SAXVisitor} owns the {@link Writer} associated
      * with this {@link SAXElement} instance, otherwise false.
-     * @see StreamResultWriter
+     * @see javax.inject.Inject
      */
     public boolean isWriterOwner(SAXVisitor visitor) {
         // This implementation doesn't actually enforce the "one writer per element" rule.  It's enforced from

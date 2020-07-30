@@ -42,17 +42,17 @@
  */
 package org.smooks.delivery.sax;
 
-import java.io.IOException;
-
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.delivery.sax.annotation.TextConsumer;
+
+import javax.inject.Inject;
+import java.io.IOException;
 
 @TextConsumer
 public class VisitAfterWrittingVisitor implements SAXVisitAfter {
 
-	@StreamResultWriter	
+	@Inject	
 	private SAXToXMLWriter writer;
 	
 	public static String elementText = null;

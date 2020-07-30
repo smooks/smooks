@@ -42,7 +42,7 @@
  */
 package org.smooks.cdr.xpath.evaluators.value;
 
-import org.smooks.datatype.factory.DataTypeProviderFactory;
+import org.smooks.converter.TypeConverter;
 import org.smooks.delivery.sax.SAXElement;
 import org.w3c.dom.Element;
 
@@ -52,18 +52,18 @@ import org.w3c.dom.Element;
  */
 public class TextValue extends Value {
 
-    private final DataTypeProviderFactory<String, ?> dataTypeProviderFactory;
+    private final TypeConverter<String, ?> typeConverter;
 
-    public TextValue(DataTypeProviderFactory<String, ?> dataTypeProviderFactory) {
-        this.dataTypeProviderFactory = dataTypeProviderFactory;
+    public TextValue(TypeConverter<String, ?> typeConverter) {
+        this.typeConverter = typeConverter;
     }
 
     public Object getValue(SAXElement element) {
-        return dataTypeProviderFactory.createProvider(element.getTextContent()).get();
+        return typeConverter.convert(element.getTextContent());
     }
 
     public Object getValue(Element element) {
-        return dataTypeProviderFactory.createProvider(element.getTextContent()).get();
+        return typeConverter.convert(element.getTextContent());
     }
 
     public String toString() {

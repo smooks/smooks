@@ -42,18 +42,19 @@
  */
 package org.smooks.delivery;
 
-import java.util.List;
-import java.util.Map;
-
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.dtd.DTDStore;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.Registry;
 import org.smooks.container.ExecutionContext;
-import org.smooks.event.types.ConfigBuilderEvent;
-import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.ordering.Consumer;
+import org.smooks.delivery.ordering.Producer;
+import org.smooks.dtd.DTDStore;
+import org.smooks.event.types.ConfigBuilderEvent;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Content delivery configuration.
@@ -70,7 +71,7 @@ public interface ContentDeliveryConfig {
      * what the Visitors {@link Producer produce} and {@link Consumer consume}.
      * Default value "true".
      */
-    public static final String SMOOKS_VISITORS_SORT = "smooks.visitors.sort";
+    String SMOOKS_VISITORS_SORT = "smooks.visitors.sort";
 
     /**
 	 * Get the list of {@link SmooksResourceConfiguration}s for the specified selector definition.
@@ -83,7 +84,7 @@ public interface ContentDeliveryConfig {
 	 * defined under that selector (for the device).
 	 * @see #getObjects(String)
 	 */
-	public abstract List<SmooksResourceConfiguration> getSmooksResourceConfigurations(String selector);
+	List<SmooksResourceConfiguration> getSmooksResourceConfigurations(String selector);
 
 	/**
 	 * Get the {@link SmooksResourceConfiguration} map for the target execution context.
@@ -95,7 +96,7 @@ public interface ContentDeliveryConfig {
 	 * {@link org.smooks.cdr.SmooksResourceConfiguration#getSelector() selector}, with each value being a
 	 * {@link List} of preordered {@link SmooksResourceConfiguration} instances.
 	 */
-	public abstract Map<String, List<SmooksResourceConfiguration>> getSmooksResourceConfigurations();
+	Map<String, List<SmooksResourceConfiguration>> getSmooksResourceConfigurations();
 	
 	/**
 	 * Get a list of {@link Object}s from the {@link SmooksResourceConfiguration}s specified by the selector.
@@ -103,42 +104,42 @@ public interface ContentDeliveryConfig {
 	 * Gets the {@link SmooksResourceConfiguration}s specified for the selector and attempts to instanciate
 	 * a Java class instance from the resource specified by each of the {@link SmooksResourceConfiguration}s.
 	 * <p/>
-	 * Implementations should use {@link org.smooks.cdr.SmooksResourceConfigurationStore#getObject(org.smooks.cdr.SmooksResourceConfiguration)} to
+	 * Implementations should use {@link Registry#getObject(org.smooks.cdr.SmooksResourceConfiguration)} to
 	 * construct each object.
 	 * @param selector selector attribute value from the .cdrl file in the .cdrar.  This 
 	 * parameter is treated case incensitively.
 	 * @return List of Object instances.  An empty list is returned where no 
 	 * selectors exist.
-	 * @see org.smooks.cdr.SmooksResourceConfigurationStore#getObject(org.smooks.cdr.SmooksResourceConfiguration)
+	 * @see Registry#getObject(org.smooks.cdr.SmooksResourceConfiguration)
 	 * @see #getSmooksResourceConfigurations(String)
 	 */
-	public abstract List getObjects(String selector);
+	List getObjects(String selector);
 
     /**
      * Get a new stream filter for the content delivery configuration.
      * @return The stream filter.
      * @param executionContext Execution context.
      */
-    public abstract Filter newFilter(ExecutionContext executionContext);
+    Filter newFilter(ExecutionContext executionContext);
 
     /**
 	 * Get the DTD ({@link org.smooks.dtd.DTDStore.DTDObjectContainer}) for this delivery context.
 	 * @return The DTD ({@link org.smooks.dtd.DTDStore.DTDObjectContainer}) for this delivery context.
 	 */
-	public abstract DTDStore.DTDObjectContainer getDTD();
+	DTDStore.DTDObjectContainer getDTD();
 
     /**
      * Get the list of Execution Events generated during the build of
      * the configuration.
      * @return The list of events.
      */
-    public abstract List<ConfigBuilderEvent> getConfigBuilderEvents();
+    List<ConfigBuilderEvent> getConfigBuilderEvents();
 
     /**
      * Is default serialization on..
      * @return True if default serialization is on, otherwise false.
      */
-    public abstract boolean isDefaultSerializationOn();
+    boolean isDefaultSerializationOn();
 
     /**
      * Sort the Visitors, targeted at each selector, based on the
@@ -146,33 +147,33 @@ public interface ContentDeliveryConfig {
      * @throws SmooksConfigurationException Sort failure.
      * @see #SMOOKS_VISITORS_SORT
      */
-    public void sort() throws SmooksConfigurationException;
+    void sort() throws SmooksConfigurationException;
 
     /**
      * Add the execution lifecycle sets for the configuration.
      * @throws SmooksConfigurationException Error resolving the handlers interested
      * in the Execution lifecycle.
      */
-    public void addToExecutionLifecycleSets() throws SmooksConfigurationException;
+    void addToExecutionLifecycleSets() throws SmooksConfigurationException;
 
     /**
      * Initialize execution context lifecycle aware handlers.
      * @param executionContext The execution context.
      */
-    public void executeHandlerInit(ExecutionContext executionContext);
+    void executeHandlerInit(ExecutionContext executionContext);
 
     /**
      * Cleanup execution context lifecycle aware handlers.
      * @param executionContext The execution context.
      */
-    public void executeHandlerCleanup(ExecutionContext executionContext);
+    void executeHandlerCleanup(ExecutionContext executionContext);
 
     /**
      * Get an {@link XMLReader} instance from the 
      * reader pool associated with this ContentDelivery config instance.
      * @return An XMLReader instance if the pool is not empty, otherwise null.
      */
-    public XMLReader getXMLReader() throws SAXException;
+    XMLReader getXMLReader() throws SAXException;
     
     /**
      * Return an {@link XMLReader} instance to the
@@ -180,12 +181,12 @@ public interface ContentDeliveryConfig {
      * @param reader The XMLReader instance to be returned.  If the pool is full, the instance
      * is left to the GC (i.e. lost).
      */
-    public void returnXMLReader(XMLReader reader);
+    void returnXMLReader(XMLReader reader);
     
     /**
      * Get the {@link FilterBypass} for this delivery configuration. 
      * @return The {@link FilterBypass} for this delivery configuration, or
      * null if non configured.
      */
-    public FilterBypass getFilterBypass();
+    FilterBypass getFilterBypass();
 }

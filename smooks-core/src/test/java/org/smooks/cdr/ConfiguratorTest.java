@@ -44,6 +44,7 @@ package org.smooks.cdr;
 
 import org.junit.Test;
 import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.annotation.Scope;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.MockApplicationContext;
 import org.smooks.delivery.ContentHandler;
@@ -73,7 +74,8 @@ public class ConfiguratorTest {
         config.setParameter("param-b", "B-Val");
         config.setParameter("paramC", 8);
 
-        Configurator.configure(cdu, config);
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
+        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
         assertEquals("A-Val", cdu.paramA);
         assertEquals("B-Val", cdu.paramB);
         assertEquals((Integer) 8, cdu.paramC);
@@ -89,8 +91,9 @@ public class ConfiguratorTest {
 
         // Don't add the required paramC config
 
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
         try {
-            Configurator.configure(cdu, config);
+            Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
             fail(" Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
             assertTrue(e.getMessage().startsWith("<param> 'paramC' not specified on resource configuration"));
@@ -108,7 +111,8 @@ public class ConfiguratorTest {
 
         // Don't add the optional paramC config
 
-        Configurator.configure(cdu, config);
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
+        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
         assertEquals("A-Val", cdu.paramA);
         assertEquals("B-Val", cdu.paramB);
         assertEquals(Optional.empty(), cdu.paramC);
@@ -126,7 +130,8 @@ public class ConfiguratorTest {
 
         // Don't add the optional paramD config
 
-        Configurator.configure(cdu, config);
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
+        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
         assertEquals("A-Val", cdu.paramA);
         assertEquals("B-Val", cdu.paramB);
         assertEquals((Integer) 8, cdu.paramC.get());
@@ -138,7 +143,8 @@ public class ConfiguratorTest {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit3 cdu = new MyContentDeliveryUnit3();
 
-        Configurator.configure(cdu, config, new MockApplicationContext());
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
+        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
         assertNotNull(cdu.config);
         assertNotNull(cdu.appContext);
     }
@@ -148,8 +154,9 @@ public class ConfiguratorTest {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit4 cdu = new MyContentDeliveryUnit4();
 
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
         try {
-            Configurator.configure(cdu, config);
+            Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
             assertEquals("Error invoking 'setConfiguration' method on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit4'.  This class must be public.  Alternatively, use the @Config annotation on a class field.", e.getMessage());
@@ -161,7 +168,8 @@ public class ConfiguratorTest {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit5 cdu = new MyContentDeliveryUnit5();
 
-        Configurator.configure(cdu, config);
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
+        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
         assertNotNull(cdu.config);
     }
 
@@ -170,24 +178,25 @@ public class ConfiguratorTest {
         SmooksResourceConfiguration config;
         MyContentDeliveryUnit6 cdu = new MyContentDeliveryUnit6();
 
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
         // Check that valid values are accepted....
         config = new SmooksResourceConfiguration();
         config.setParameter("paramA", "A");
-        Configurator.configure(cdu, config);
+        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
 
         config = new SmooksResourceConfiguration();
         config.setParameter("paramA", "B");
-        Configurator.configure(cdu, config);
+        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
 
         config = new SmooksResourceConfiguration();
         config.setParameter("paramA", "C");
-        Configurator.configure(cdu, config);
+        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
 
         // Check that invalid values are accepted....
         config = new SmooksResourceConfiguration();
         config.setParameter("paramA", "X");
         try {
-            Configurator.configure(cdu, config);
+            Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
             assertEquals("Value 'X' for parameter 'paramA' is invalid.  Valid choices for this parameter are: [A, B, C]", e.getMessage());
@@ -201,8 +210,9 @@ public class ConfiguratorTest {
 
         config = new SmooksResourceConfiguration();
         config.setParameter("encoding", "XXXX");
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
         try {
-            Configurator.configure(cdu, config);
+            Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
             assertEquals("Failed to set parameter configuration value on 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit7#encoding'.", e.getMessage());
@@ -214,15 +224,16 @@ public class ConfiguratorTest {
     public void test_paramaterSetting_setterMethod() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit8 cdu1 = new MyContentDeliveryUnit8();
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
 
         config.setParameter("encoding", StandardCharsets.UTF_8);
-        Configurator.configure(cdu1, config);
+        Configurator.configure(cdu1, new Scope(mockApplicationContext, config, cdu1), mockApplicationContext.getRegistry());
         assertEquals("UTF-8", cdu1.getEncoding().displayName());
 
         MyContentDeliveryUnit9 cdu2 = new MyContentDeliveryUnit9();
         config.setParameter("encoding", StandardCharsets.UTF_8);
         try {
-            Configurator.configure(cdu2, config);
+            Configurator.configure(cdu2, new Scope(mockApplicationContext, config, cdu2), mockApplicationContext.getRegistry());
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
             assertEquals("Unable to determine the property name associated with 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit9#encoding'. " +
@@ -232,7 +243,7 @@ public class ConfiguratorTest {
 
         MyContentDeliveryUnit10 cdu3 = new MyContentDeliveryUnit10();
         config.setParameter("encoding", "UTF-8");
-        Configurator.configure(cdu3, config);
+        Configurator.configure(cdu3, new Scope(mockApplicationContext, config, cdu3), mockApplicationContext.getRegistry());
         assertEquals("UTF-8", cdu3.getEncoding().displayName());
     }
 
@@ -240,11 +251,12 @@ public class ConfiguratorTest {
     public void test_Initialize_Uninitialize() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         MyContentDeliveryUnit11 cdu1 = new MyContentDeliveryUnit11();
+        MockApplicationContext mockApplicationContext = new MockApplicationContext();
 
         // Initialize....
         assertFalse(cdu1.initialised);
         assertFalse(cdu1.uninitialised);
-        Configurator.configure(cdu1, config);
+        Configurator.configure(cdu1, new Scope(mockApplicationContext, config, cdu1), mockApplicationContext.getRegistry());
 
         // Uninitialize....
         assertTrue(cdu1.initialised);
@@ -256,7 +268,7 @@ public class ConfiguratorTest {
         // Initialize - exception....
         MyContentDeliveryUnit12 cdu2 = new MyContentDeliveryUnit12();
         try {
-            Configurator.configure(cdu2, config);
+            Configurator.configure(cdu2, new Scope(mockApplicationContext, config, cdu2), mockApplicationContext.getRegistry());
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
             assertEquals("Error invoking @PostConstruct method 'init' on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());

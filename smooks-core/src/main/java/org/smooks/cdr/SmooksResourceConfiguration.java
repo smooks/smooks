@@ -47,6 +47,7 @@ import javassist.NotFoundException;
 import org.jaxen.saxpath.SAXPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.cdr.registry.lookup.GlobalParamsLookup;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.SelectorStepBuilder;
 import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
@@ -267,7 +268,7 @@ public class SmooksResourceConfiguration {
     /**
      * SmooksResourceConfiguration parameters - String name and String value.
      */
-    private LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+    private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
     private int parameterCount;
     /**
      * Global Parameters object.
@@ -406,7 +407,7 @@ public class SmooksResourceConfiguration {
 
 	public void attachGlobalParameters(ApplicationContext appContext) {
         if(globalParams == null) {
-            globalParams = appContext.getStore().getGlobalParams();
+            globalParams = appContext.getRegistry().lookup(new GlobalParamsLookup(appContext.getRegistry()));
         }
     }
 

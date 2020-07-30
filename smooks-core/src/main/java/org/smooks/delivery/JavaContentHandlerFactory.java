@@ -45,6 +45,7 @@ package org.smooks.delivery;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.annotation.Scope;
 import org.smooks.classpath.ClasspathUtils;
 import org.smooks.container.ApplicationContext;
 import org.smooks.util.ClassUtil;
@@ -91,7 +92,7 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
 			} catch (NoSuchMethodException e) {
 				contentHandler = classRuntime.newInstance();
 			}
-            Configurator.configure(contentHandler, resourceConfig, appContext);
+            Configurator.configure(contentHandler, new Scope(appContext, resourceConfig, contentHandler), appContext.getRegistry());
         } catch (InstantiationException e) {
             throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
                 , e);

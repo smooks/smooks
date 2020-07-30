@@ -44,9 +44,6 @@ package org.smooks.javabean.context;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.MockExecutionContext;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
@@ -55,6 +52,8 @@ import org.smooks.javabean.repository.BeanId;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  *	@author maurice_zeijen
@@ -225,7 +224,7 @@ public class BeanContextTest {
 	 *
 	 */
 	private BeanIdStore getBeanIdStore() {
-        return executionContext.getContext().getBeanIdStore();
+        return executionContext.getApplicationContext().getBeanIdStore();
 	}
 
 	/**

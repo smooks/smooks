@@ -44,6 +44,7 @@ package org.smooks.cdr;
 
 import org.junit.Test;
 import org.smooks.Smooks;
+import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.container.ExecutionContext;
 import org.smooks.profile.ProfileSet;
 import org.xml.sax.SAXException;
@@ -94,7 +95,7 @@ public class XMLConfigDigesterTest {
 	@Test
     public void test_import_filesys() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("src/test/java/org/smooks/cdr/testconfig3.cdrl");
-        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getStore().getSmooksResourceConfigurationLists();
+        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getRegistry().lookup(new SmooksResourceConfigurationListsLookup()).iterator();
         SmooksResourceConfigurationList list = null;
 
         while(listIt.hasNext()) {
@@ -107,7 +108,7 @@ public class XMLConfigDigesterTest {
 	@Test
     public void test_import_classpath() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("/org/smooks/cdr/testconfig3.cdrl");
-        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getStore().getSmooksResourceConfigurationLists();
+        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getRegistry().lookup(new SmooksResourceConfigurationListsLookup()).iterator();
         SmooksResourceConfigurationList list = null;
 
         while(listIt.hasNext()) {

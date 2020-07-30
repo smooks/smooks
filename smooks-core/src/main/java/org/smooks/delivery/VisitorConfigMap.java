@@ -50,6 +50,9 @@ import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationFactory;
 import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.annotation.Scope;
+import org.smooks.cdr.annotation.injector.FieldInjector;
+import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.annotation.VisitAfterIf;
@@ -63,7 +66,6 @@ import org.smooks.delivery.sax.SAXVisitAfter;
 import org.smooks.delivery.sax.SAXVisitBefore;
 import org.smooks.event.types.ConfigBuilderEvent;
 import org.smooks.expression.MVELExpressionEvaluator;
-import org.smooks.xml.NamespaceMappings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -237,17 +239,17 @@ public class VisitorConfigMap {
         String elementName = resourceConfig.getTargetElement();
 
         try {
-            SelectorStep.setNamespaces(resourceConfig.getSelectorSteps(), NamespaceMappings.getMappings(applicationContext));
+            SelectorStep.setNamespaces(resourceConfig.getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
         } catch (SAXPathException e) {
             throw new SmooksConfigurationException("Error configuring resource selector.", e);
         }
 
         if(configure) {
             // And configure/initialize the instance...
-            Configurator.processFieldContextAnnotation(visitor, applicationContext);
-            Configurator.processFieldConfigAnnotations(visitor, resourceConfig, false);
+            final FieldInjector fieldInjector = new FieldInjector(visitor, new Scope(applicationContext, resourceConfig, visitor), applicationContext.getRegistry());
+            fieldInjector.inject();
             Configurator.postConstruct(visitor);
-            applicationContext.getStore().getInitializedObjects().add(visitor);
+            applicationContext.getRegistry().registerObject(visitor);
         }
 
         if(isSAXVisitor(visitor) || isDOMVisitor(visitor)) {

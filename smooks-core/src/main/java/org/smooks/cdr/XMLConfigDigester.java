@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.cdr.extension.ExtensionContext;
+import org.smooks.cdr.registry.Registry;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.standalone.StandaloneApplicationContext;
 import org.smooks.expression.ExpressionEvaluator;
@@ -522,7 +523,7 @@ public final class XMLConfigDigester {
             smooks = new Smooks(StandaloneApplicationContext.createNewInstance(false));
             setExtentionDigestOn();
             try {
-                SmooksResourceConfigurationStore configStore = smooks.getApplicationContext().getStore();
+                Registry configStore = smooks.getApplicationContext().getRegistry();
                 SmooksResourceConfigurationList extConfigList = new SmooksResourceConfigurationList(baseURI);
 
                 XMLConfigDigester configDigester = new XMLConfigDigester(extConfigList);

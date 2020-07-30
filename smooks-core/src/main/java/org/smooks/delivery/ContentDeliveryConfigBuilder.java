@@ -47,6 +47,9 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.StreamFilterType;
 import org.smooks.cdr.*;
+import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.lookup.InstanceLookup;
+import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationsProfileSetLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.delivery.sax.SAXContentDeliveryConfig;
@@ -145,7 +148,7 @@ public class ContentDeliveryConfigBuilder {
                 configTable = getDeliveryConfigTable(applicationContext);
                 if(configTable == null) {
                     configTable = new LinkedHashMap<String, ContentDeliveryConfig>();
-                    applicationContext.setAttribute(DELIVERY_CONFIG_TABLE_CTX_KEY, configTable);
+                    applicationContext.getRegistry().registerObject(DELIVERY_CONFIG_TABLE_CTX_KEY, configTable);
                 }
             }
         }
@@ -334,7 +337,7 @@ public class ContentDeliveryConfigBuilder {
 
     @SuppressWarnings("unchecked")
     private static LinkedHashMap<String, ContentDeliveryConfig> getDeliveryConfigTable(ApplicationContext applicationContext) {
-        return (LinkedHashMap) applicationContext.getAttribute(DELIVERY_CONFIG_TABLE_CTX_KEY);
+        return (LinkedHashMap) applicationContext.getRegistry().lookup(DELIVERY_CONFIG_TABLE_CTX_KEY);
     }
 
     /**
@@ -345,7 +348,7 @@ public class ContentDeliveryConfigBuilder {
 	 */
 	private void load() {
         resourceConfigsList.clear();
-        resourceConfigsList.addAll(Arrays.asList(applicationContext.getStore().getSmooksResourceConfigurations(profileSet)));
+        resourceConfigsList.addAll(Arrays.asList(applicationContext.getRegistry().lookup(new SmooksResourceConfigurationsProfileSetLookup(applicationContext.getRegistry(), profileSet))));
 
 		// Build and sort the resourceConfigTable table - non-transforming elements.
 		buildSmooksResourceConfigurationTable(resourceConfigsList);
@@ -551,12 +554,8 @@ public class ContentDeliveryConfigBuilder {
     }
 
     private void fireEvent(ContentDeliveryConfigBuilderLifecycleEvent event) {
-        List<Object> initializedObjects = applicationContext.getStore().getInitializedObjects();
-
-        for(Object object : initializedObjects) {
-            if(object instanceof ContentDeliveryConfigBuilderLifecycleListener) {
-                ((ContentDeliveryConfigBuilderLifecycleListener) object).handle(event);
-            }
+        for(Object object : applicationContext.getRegistry().lookup(new InstanceLookup<>(ContentDeliveryConfigBuilderLifecycleListener.class)).values()) {
+            ((ContentDeliveryConfigBuilderLifecycleListener) object).handle(event);
         }
     }
 
@@ -566,10 +565,10 @@ public class ContentDeliveryConfigBuilder {
 	 */
 	private final class ContentHandlerExtractionStrategy implements SmooksResourceConfigurationStrategy {
 
-        private SmooksResourceConfigurationStore store;
+        private Registry registry;
 
         private ContentHandlerExtractionStrategy(ApplicationContext applicationContext) {
-            store = applicationContext.getStore();
+            registry = applicationContext.getRegistry();
         }
 
         public void applyStrategy(String elementName, SmooksResourceConfiguration resourceConfig) {
@@ -584,7 +583,7 @@ public class ContentDeliveryConfigBuilder {
 			// Java form e.g. java.lang.String Vs java/lang/String.class
             if(resourceConfig.isJavaContentHandler()) {
     			try {
-    				creator = store.getContentHandlerFactory("class");
+    				creator = registry.getContentHandlerFactory("class");
     				if(addCDU(resourceConfig, creator)) {
     					// Job done - it's a CDU and we've added it!
     					return true;
@@ -633,7 +632,7 @@ public class ContentDeliveryConfigBuilder {
 					LOGGER.debug("Request to attempt ContentHandlerFactory creation based on a null/empty resource type.");
 					return null;
 				}
-				creator = store.getContentHandlerFactory(restype);
+				creator = registry.getContentHandlerFactory(restype);
 			} catch (UnsupportedContentHandlerTypeException e) {
 				return null;
 			}
@@ -654,7 +653,7 @@ public class ContentDeliveryConfigBuilder {
 			// Create the ContentHandler.
 			try {
 				contentHandler = handlerFactory.create(resourceConfig);
-                store.getInitializedObjects().add(contentHandler);
+                registry.registerObject(contentHandler);
             } catch(SmooksConfigurationException e) {
                 throw e;
             } catch(Throwable thrown) {

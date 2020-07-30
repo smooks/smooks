@@ -42,7 +42,8 @@
  */
 package org.smooks.db;
 
-import org.smooks.javabean.DataDecodeException;
+import org.smooks.converter.TypeConverter;
+import org.smooks.converter.factory.TypeConverterFactory;
 
 public enum TransactionManagerType {
 	JDBC,
@@ -59,16 +60,14 @@ public enum TransactionManagerType {
 	 * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
 	 *
 	 */
-	public static class DataDecoder implements org.smooks.javabean.DataDecoder {
+	public static class DecoderConverter implements TypeConverterFactory<String, TransactionManagerType> {
 
 		/* (non-Javadoc)
 		 * @see org.smooks.javabean.DataDecoder#decode(java.lang.String)
 		 */
-		public Object decode(final String data) throws DataDecodeException {
-			final String value = data.toUpperCase();
-
-			return valueOf(value);
+		@Override
+		public TypeConverter<String, TransactionManagerType> createTypeConverter() {
+			return value -> valueOf(value.toUpperCase());
 		}
-
 	}
 }

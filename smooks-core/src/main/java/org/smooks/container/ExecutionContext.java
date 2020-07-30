@@ -84,7 +84,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      *
      * @return The ApplicationContext instance.
      */
-    ApplicationContext getContext();
+    ApplicationContext getApplicationContext();
 
     /**
      * Get the set of profiles at which this execution context is targeted.

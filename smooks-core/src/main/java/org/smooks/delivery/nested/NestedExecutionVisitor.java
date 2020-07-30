@@ -111,7 +111,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
 
     @PreDestroy
     public void closeSmooksInstance() {
-        if(smooksInstance != null) {
+        if (smooksInstance != null) {
             smooksInstance.close();
         }
     }

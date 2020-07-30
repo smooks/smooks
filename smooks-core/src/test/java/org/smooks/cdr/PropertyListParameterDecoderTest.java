@@ -42,18 +42,23 @@
  */
 package org.smooks.cdr;
 
+import org.junit.Test;
+import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.annotation.Scope;
+import org.smooks.container.MockApplicationContext;
+
 import java.util.Properties;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.smooks.cdr.annotation.Configurator;
+import static org.junit.Assert.assertEquals;
 
 public class PropertyListParameterDecoderTest {
 
 	@Test
 	public void test_decodeValue() {
 		SmooksResourceConfiguration config = new SmooksResourceConfiguration("x", "x");
-		PropertyListParameterDecoder propDecoder = (PropertyListParameterDecoder) Configurator.configure(new PropertyListParameterDecoder(), config);
+		MockApplicationContext mockApplicationContext = new MockApplicationContext();
+		PropertyListParameterDecoder propertyListParameterDecoder = new PropertyListParameterDecoder();
+		PropertyListParameterDecoder propDecoder = Configurator.configure(propertyListParameterDecoder, new Scope(mockApplicationContext, config, propertyListParameterDecoder), mockApplicationContext.getRegistry());
 		
 		Properties properties = (Properties) propDecoder.decodeValue("x=111\ny=222");
 		assertEquals(2, properties.size());

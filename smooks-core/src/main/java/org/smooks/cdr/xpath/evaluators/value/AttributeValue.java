@@ -42,7 +42,7 @@
  */
 package org.smooks.cdr.xpath.evaluators.value;
 
-import org.smooks.datatype.factory.DataTypeProviderFactory;
+import org.smooks.converter.TypeConverter;
 import org.smooks.delivery.sax.SAXElement;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -58,12 +58,12 @@ public class AttributeValue extends Value {
 
     private final String namespaceURI;
     private final String localPart;
-    private final DataTypeProviderFactory<String, ?> dataTypeProviderFactory;
+    private final TypeConverter<String, ?> typeConverter;
 
-    public AttributeValue(String namespaceURI, String localPart, DataTypeProviderFactory<String, ?> dataTypeProviderFactory) {
+    public AttributeValue(String namespaceURI, String localPart, TypeConverter<String, ?> typeConverter) {
         this.namespaceURI = namespaceURI;
         this.localPart = localPart;
-        this.dataTypeProviderFactory = dataTypeProviderFactory;
+        this.typeConverter = typeConverter;
     }
 
     public Object getValue(SAXElement element) {
@@ -73,7 +73,7 @@ public class AttributeValue extends Value {
         } else {
             attribValue = element.getAttribute(localPart);
         }
-        return dataTypeProviderFactory.createProvider(attribValue).get();
+        return typeConverter.convert(attribValue);
     }
 
     public Object getValue(Element element) {
@@ -100,7 +100,7 @@ public class AttributeValue extends Value {
             }
         }
 
-        return dataTypeProviderFactory.createProvider(attribValue).get();
+        return typeConverter.convert(attribValue);
     }
 
     public String toString() {

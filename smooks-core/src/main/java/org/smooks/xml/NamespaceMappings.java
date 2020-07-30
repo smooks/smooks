@@ -45,6 +45,7 @@ package org.smooks.xml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ApplicationContextInitializer;
 import org.smooks.container.ExecutionContext;
@@ -79,39 +80,16 @@ public class NamespaceMappings implements ApplicationContextInitializer {
 	 */
 	@PostConstruct
 	public void loadNamespaces() {
-		Properties namespaces = getMappings(appContext);
+		Properties namespaces = appContext.getRegistry().lookup(new NamespaceMappingsLookup());
 		Properties namespacesToAdd = config.toProperties();
 		
 		if(LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Adding namespace prefix-to-uri mappings: " + namespacesToAdd);
 		}
 		namespaces.putAll(namespacesToAdd);
-
-        setMappings(namespaces, appContext);
+		appContext.getRegistry().registerObject(NamespaceMappings.class, namespaces);
     }
-
-    /**
-     * Set the namespace prefix-to-uri mappings.
-     * @param namespaces The namespace mappings.
-     * @param appContext The application context.
-     */
-    public static void setMappings(Properties namespaces, ApplicationContext appContext) {
-        appContext.setAttribute(NamespaceMappings.class, namespaces);
-    }
-
-    /**
-	 * Get the prefix-to-namespace mannings from the {@link ApplicationContext}.
-	 * @param appContext The {@link ApplicationContext}.
-	 * @return The prefix-to-namespace mannings.
-	 */
-	public static Properties getMappings(ApplicationContext appContext) {
-		Properties properties = (Properties) appContext.getAttribute(NamespaceMappings.class);
-		if(properties == null) {
-			return new Properties();
-		}
-		return properties;
-	}
-
+    
     /**
      * Set the {@link NamespaceDeclarationStack} for the current message on the current {@link ExecutionContext}.
      * @param namespaceDeclarationStack The {@link NamespaceDeclarationStack} instance.

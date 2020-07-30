@@ -49,6 +49,7 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.Parameter;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.annotation.Scope;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.java.JavaXMLReader;
 import org.smooks.delivery.java.XStreamXMLReader;
@@ -332,7 +333,7 @@ public class AbstractParser {
 
         if (reader instanceof SmooksXMLReader) {
         	if(saxDriverConfig != null) {
-        		Configurator.configure(reader, saxDriverConfig, execContext.getContext());
+        		Configurator.configure(reader, new Scope(execContext.getApplicationContext(), saxDriverConfig, reader), execContext.getApplicationContext().getRegistry());
         	} else {
         		Configurator.postConstruct(reader);
         	}

@@ -129,7 +129,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 		return docSource;
 	}
 
-	public ApplicationContext getContext() {
+	public ApplicationContext getApplicationContext() {
 		return context;
 	}
 

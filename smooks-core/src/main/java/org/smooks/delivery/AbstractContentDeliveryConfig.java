@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.Registry;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.dtd.DTDStore;
@@ -133,7 +134,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     /**
      * Get a list {@link Object}s from the supplied {@link org.smooks.cdr.SmooksResourceConfiguration} selector value.
      * <p/>
-     * Uses {@link org.smooks.cdr.SmooksResourceConfigurationStore#getObject(org.smooks.cdr.SmooksResourceConfiguration)} to construct the object.
+     * Uses {@link Registry#getObject(org.smooks.cdr.SmooksResourceConfiguration)} to construct the object.
      * @param selector selector attribute value from the .cdrl file in the .cdrar.
      * @return List of Object instances.  An empty list is returned where no
      * selectors exist.
@@ -155,7 +156,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
               for (final Object unitDef : unitDefs)
               {
                 SmooksResourceConfiguration resConfig = (SmooksResourceConfiguration) unitDef;
-                objects.add(applicationContext.getStore().getObject(resConfig));
+                objects.add(applicationContext.getRegistry().getObject(resConfig));
               }
             } else {
                 objects = EMPTY_LIST;
@@ -184,7 +185,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     public boolean isDefaultSerializationOn() {
         if(isDefaultSerializationOn == null) {
-            isDefaultSerializationOn = ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, Boolean.class, true, this);
+            isDefaultSerializationOn = Boolean.valueOf(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", this));
         }
 
         return isDefaultSerializationOn;
