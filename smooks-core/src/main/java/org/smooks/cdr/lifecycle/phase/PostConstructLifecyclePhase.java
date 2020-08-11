@@ -40,69 +40,55 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.annotation;
+package org.smooks.cdr.lifecycle.phase;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.injector.FieldInjector;
-import org.smooks.cdr.annotation.injector.Injector;
-import org.smooks.cdr.annotation.injector.MethodInjector;
-import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.injector.FieldInjector;
+import org.smooks.cdr.injector.Injector;
+import org.smooks.cdr.injector.MethodInjector;
+import org.smooks.cdr.injector.Scope;
 import org.smooks.config.Configurable;
 import org.smooks.util.ClassUtil;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Utility class for processing Smooks configuration annotations on an
- * object instance and applying resource configurations from the
- * supplied {@link SmooksResourceConfiguration}.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public class Configurator {
+public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Configurator.class);
-    
-    /**
-     * Configure the supplied {@link org.smooks.delivery.ContentHandler} instance using the supplied
-     * {@link SmooksResourceConfiguration} instance.
-     *
-     * @param instance The instance to be configured.
-     * @param smooksResourceConfiguration   The configuration.
-     * @return The configured ContentHandler instance.
-     * @throws SmooksConfigurationException Invalid field annotations.
-     */
-    public static <U> U configure(U instance, Scope scope, Registry registry) throws SmooksConfigurationException {
-        AssertArgument.isNotNull(instance, "instance");
+    private final Scope scope;
+
+    public PostConstructLifecyclePhase(final Scope scope) {
         AssertArgument.isNotNull(scope, "scope");
-        AssertArgument.isNotNull(registry, "registry");
-
-        final Injector fieldInjector = new FieldInjector(instance, scope, registry);
-        fieldInjector.inject();
-
-        final Injector methodInjector = new MethodInjector(instance, scope, registry);
-        methodInjector.inject();
-
-        // reflectively call the "setConfiguration" method, if defined...
-        setConfiguration(instance, scope);
-
-        // process the @Initialise annotations...
-        postConstruct(instance);
-
-        return instance;
+        this.scope = scope;
     }
 
-    private static <U> void checkPropertiesConfigured(Class contentHandlerClass, U instance) {
+    public PostConstructLifecyclePhase() {
+        scope = null;
+    }
+
+    @Override
+    public void applyLifecycle(final Object o) {
+        if (scope != null) {
+            final Injector fieldInjector = new FieldInjector(o, scope);
+            fieldInjector.inject();
+
+            final Injector methodInjector = new MethodInjector(o, scope);
+            methodInjector.inject();
+            
+            // reflectively call the "setConfiguration" method, if defined...
+            setConfiguration(o, scope);
+        }
+        
+        checkPropertiesConfigured(o.getClass(), o);
+        invoke(o, PostConstruct.class);
+    }
+
+    protected <U> void checkPropertiesConfigured(Class contentHandlerClass, U instance) {
         Field[] fields = contentHandlerClass.getDeclaredFields();
 
         // Work back up the Inheritance tree first...
@@ -143,8 +129,8 @@ public class Configurator {
             }
         }
     }
-    
-    private static <U> void setConfiguration(U instance, Scope scope) {
+
+    private <U> void setConfiguration(U instance, Scope scope) {
         if (instance instanceof Configurable) {
             ((Configurable) instance).setConfiguration(((SmooksResourceConfiguration) scope.get(SmooksResourceConfiguration.class)).toProperties());
         } else {
@@ -164,51 +150,5 @@ public class Configurator {
                 }
             }
         }
-    }
-    
-    public static <U> void postConstruct(U instance) {
-        checkPropertiesConfigured(instance.getClass(), instance);
-        invoke(instance, PostConstruct.class);
-    }
-
-    public static <U> void preDestroy(U instance) {
-        invoke(instance, PreDestroy.class);
-    }
-
-    private static <U> void invoke(U instance, Class<? extends Annotation> annotation) {
-        Method[] methods = instance.getClass().getMethods();
-
-        for (Method method : methods) {
-            if (method.getAnnotation(annotation) != null) {
-                if (method.getParameterTypes().length == 0) {
-                    try {
-                        method.invoke(instance);
-                    } catch (IllegalAccessException e) {
-                        throw new SmooksConfigurationException("Error invoking @" + annotation.getSimpleName() + " method '" + method.getName() + "' on class '" + instance.getClass().getName() + "'.", e);
-                    } catch (InvocationTargetException e) {
-                        throw new SmooksConfigurationException("Error invoking @" + annotation.getSimpleName() + " method '" + method.getName() + "' on class '" + instance.getClass().getName() + "'.", e.getTargetException());
-                    }
-                } else {
-                    LOGGER.warn("Method '" + ClassUtil.getLongMemberName(method) + "' defines an @" + annotation.getSimpleName() + " annotation on a paramaterized method.  This is not allowed!");
-                }
-            }
-        }
-    }
-
-    private static String getPropertyName(Method method) {
-        if (!method.getName().startsWith("set")) {
-            return null;
-        }
-
-        StringBuffer methodName = new StringBuffer(method.getName());
-
-        if (methodName.length() < 4) {
-            return null;
-        }
-
-        methodName.delete(0, 3);
-        methodName.setCharAt(0, Character.toLowerCase(methodName.charAt(0)));
-
-        return methodName.toString();
     }
 }

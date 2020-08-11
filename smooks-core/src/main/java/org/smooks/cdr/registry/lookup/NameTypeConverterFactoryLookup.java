@@ -58,7 +58,7 @@ public class NameTypeConverterFactoryLookup implements Function<Map<Object, Obje
     @Override
     public TypeConverterFactory<?, ?> apply(final Map<Object, Object> registryEntries) {
         if (name != null) {
-            final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> typeConverterFactories = (Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory.class);
+            final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> typeConverterFactories = (Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class);
             return typeConverterFactories.entrySet().stream().filter(t -> name.equals(t.getKey().getName())).map(Map.Entry::getValue).findFirst().orElse(null);
         } else {
             return null;

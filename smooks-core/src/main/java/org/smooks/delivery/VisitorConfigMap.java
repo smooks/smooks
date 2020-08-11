@@ -49,9 +49,10 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationFactory;
-import org.smooks.cdr.annotation.Configurator;
-import org.smooks.cdr.annotation.Scope;
-import org.smooks.cdr.annotation.injector.FieldInjector;
+import org.smooks.cdr.injector.FieldInjector;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
@@ -246,9 +247,9 @@ public class VisitorConfigMap {
 
         if(configure) {
             // And configure/initialize the instance...
-            final FieldInjector fieldInjector = new FieldInjector(visitor, new Scope(applicationContext, resourceConfig, visitor), applicationContext.getRegistry());
+            final FieldInjector fieldInjector = new FieldInjector(visitor, new Scope(applicationContext.getRegistry(), resourceConfig, visitor));
             fieldInjector.inject();
-            Configurator.postConstruct(visitor);
+            applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitor, new PostConstructLifecyclePhase());
             applicationContext.getRegistry().registerObject(visitor);
         }
 

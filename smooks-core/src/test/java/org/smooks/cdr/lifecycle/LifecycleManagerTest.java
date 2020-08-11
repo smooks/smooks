@@ -40,11 +40,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr;
+package org.smooks.cdr.lifecycle;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.smooks.cdr.annotation.Configurator;
-import org.smooks.cdr.annotation.Scope;
+import org.smooks.cdr.MyContentDeliveryUnit5;
+import org.smooks.cdr.SmooksConfigurationException;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.lifecycle.phase.PreDestroyLifecyclePhase;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.MockApplicationContext;
 import org.smooks.delivery.ContentHandler;
@@ -63,8 +68,15 @@ import static org.junit.Assert.*;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ConfiguratorTest {
+public class LifecycleManagerTest {
 
+    private static LifecycleManager lifecycleManager;
+
+    @BeforeClass
+    public static void beforeClass() {
+        lifecycleManager = new DefaultLifecycleManager();
+    }
+    
 	@Test
     public void test_paramaterSetting_allok() {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration();
@@ -75,7 +87,7 @@ public class ConfiguratorTest {
         config.setParameter("paramC", 8);
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
-        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
         assertEquals("A-Val", cdu.paramA);
         assertEquals("B-Val", cdu.paramB);
         assertEquals((Integer) 8, cdu.paramC);
@@ -93,7 +105,7 @@ public class ConfiguratorTest {
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
         try {
-            Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+            lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
             fail(" Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
             assertTrue(e.getMessage().startsWith("<param> 'paramC' not specified on resource configuration"));
@@ -112,7 +124,7 @@ public class ConfiguratorTest {
         // Don't add the optional paramC config
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
-        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
         assertEquals("A-Val", cdu.paramA);
         assertEquals("B-Val", cdu.paramB);
         assertEquals(Optional.empty(), cdu.paramC);
@@ -131,7 +143,7 @@ public class ConfiguratorTest {
         // Don't add the optional paramD config
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
-        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
         assertEquals("A-Val", cdu.paramA);
         assertEquals("B-Val", cdu.paramB);
         assertEquals((Integer) 8, cdu.paramC.get());
@@ -144,7 +156,7 @@ public class ConfiguratorTest {
         MyContentDeliveryUnit3 cdu = new MyContentDeliveryUnit3();
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
-        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
         assertNotNull(cdu.config);
         assertNotNull(cdu.appContext);
     }
@@ -156,10 +168,10 @@ public class ConfiguratorTest {
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
         try {
-            Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+            lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Error invoking 'setConfiguration' method on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit4'.  This class must be public.  Alternatively, use the @Config annotation on a class field.", e.getMessage());
+            assertEquals("Error invoking 'setConfiguration' method on class 'org.smooks.cdr.lifecycle.LifecycleManagerTest$MyContentDeliveryUnit4'.  This class must be public.  Alternatively, use the @Config annotation on a class field.", e.getMessage());
         }
     }
 
@@ -169,7 +181,7 @@ public class ConfiguratorTest {
         MyContentDeliveryUnit5 cdu = new MyContentDeliveryUnit5();
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
-        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
         assertNotNull(cdu.config);
     }
 
@@ -182,21 +194,21 @@ public class ConfiguratorTest {
         // Check that valid values are accepted....
         config = new SmooksResourceConfiguration();
         config.setParameter("paramA", "A");
-        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
 
         config = new SmooksResourceConfiguration();
         config.setParameter("paramA", "B");
-        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
 
         config = new SmooksResourceConfiguration();
         config.setParameter("paramA", "C");
-        Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
 
         // Check that invalid values are accepted....
         config = new SmooksResourceConfiguration();
         config.setParameter("paramA", "X");
         try {
-            Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+            lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
             assertEquals("Value 'X' for parameter 'paramA' is invalid.  Valid choices for this parameter are: [A, B, C]", e.getMessage());
@@ -212,10 +224,10 @@ public class ConfiguratorTest {
         config.setParameter("encoding", "XXXX");
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
         try {
-            Configurator.configure(cdu, new Scope(mockApplicationContext, config, cdu), mockApplicationContext.getRegistry());
+            lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Failed to set parameter configuration value on 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit7#encoding'.", e.getMessage());
+            assertEquals("Failed to set parameter configuration value on 'org.smooks.cdr.lifecycle.LifecycleManagerTest$MyContentDeliveryUnit7#encoding'.", e.getMessage());
             assertEquals("Unsupported character set 'XXXX'.", e.getCause().getMessage());
         }
     }
@@ -227,23 +239,23 @@ public class ConfiguratorTest {
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
 
         config.setParameter("encoding", StandardCharsets.UTF_8);
-        Configurator.configure(cdu1, new Scope(mockApplicationContext, config, cdu1), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu1, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu1)));
         assertEquals("UTF-8", cdu1.getEncoding().displayName());
 
         MyContentDeliveryUnit9 cdu2 = new MyContentDeliveryUnit9();
         config.setParameter("encoding", StandardCharsets.UTF_8);
         try {
-            Configurator.configure(cdu2, new Scope(mockApplicationContext, config, cdu2), mockApplicationContext.getRegistry());
+            lifecycleManager.applyPhase(cdu2, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu2)));
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Unable to determine the property name associated with 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit9#encoding'. " +
+            assertEquals("Unable to determine the property name associated with 'org.smooks.cdr.lifecycle.LifecycleManagerTest$MyContentDeliveryUnit9#encoding'. " +
                     "Setter methods that specify the @Inject annotation must either follow the Javabean naming convention ('setX' for property 'x'), " +
                     "or specify the property name via the 'name' parameter on the @Inject annotation.", e.getMessage());
         }
 
         MyContentDeliveryUnit10 cdu3 = new MyContentDeliveryUnit10();
         config.setParameter("encoding", "UTF-8");
-        Configurator.configure(cdu3, new Scope(mockApplicationContext, config, cdu3), mockApplicationContext.getRegistry());
+        lifecycleManager.applyPhase(cdu3, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu3)));
         assertEquals("UTF-8", cdu3.getEncoding().displayName());
     }
 
@@ -256,30 +268,30 @@ public class ConfiguratorTest {
         // Initialize....
         assertFalse(cdu1.initialised);
         assertFalse(cdu1.uninitialised);
-        Configurator.configure(cdu1, new Scope(mockApplicationContext, config, cdu1), mockApplicationContext.getRegistry());
-
+        lifecycleManager.applyPhase(cdu1, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu1)));
+        
         // Uninitialize....
         assertTrue(cdu1.initialised);
         assertFalse(cdu1.uninitialised);
-        Configurator.preDestroy(cdu1);
+        lifecycleManager.applyPhase(cdu1, new PreDestroyLifecyclePhase());
         assertTrue(cdu1.initialised);
         assertTrue(cdu1.uninitialised);
 
         // Initialize - exception....
         MyContentDeliveryUnit12 cdu2 = new MyContentDeliveryUnit12();
         try {
-            Configurator.configure(cdu2, new Scope(mockApplicationContext, config, cdu2), mockApplicationContext.getRegistry());
+            lifecycleManager.applyPhase(cdu2, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu2)));
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Error invoking @PostConstruct method 'init' on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());
+            assertEquals("Error invoking @PostConstruct method 'init' on class 'org.smooks.cdr.lifecycle.LifecycleManagerTest$MyContentDeliveryUnit12'.", e.getMessage());
         }
 
         // Uninitialize - exception....
         try {
-            Configurator.preDestroy(cdu2);
+            lifecycleManager.applyPhase(cdu2, new PreDestroyLifecyclePhase());
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Error invoking @PreDestroy method 'uninit' on class 'org.smooks.cdr.ConfiguratorTest$MyContentDeliveryUnit12'.", e.getMessage());
+            assertEquals("Error invoking @PreDestroy method 'uninit' on class 'org.smooks.cdr.lifecycle.LifecycleManagerTest$MyContentDeliveryUnit12'.", e.getMessage());
         }
     }
 

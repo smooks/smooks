@@ -43,6 +43,7 @@
 package org.smooks.container;
 
 import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.RegistryFactory;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.DefaultProfileStore;
@@ -77,7 +78,8 @@ public class MockApplicationContext implements ApplicationContext {
 	 */
 	public Registry getRegistry() {
 		if (registry == null) {
-			registry = new Registry(this);
+			RegistryFactory registryFactory = new RegistryFactory(this);
+			registry = registryFactory.createRegistry();
 		}
 
 		return registry;

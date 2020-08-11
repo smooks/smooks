@@ -40,12 +40,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.annotation.injector;
+package org.smooks.cdr.injector;
 
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.annotation.Configurator;
-import org.smooks.cdr.annotation.Scope;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
 import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterException;
@@ -71,7 +71,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
         }
     }
 
-    protected TypeConverter<?, ?> lookupTypeConverter(final Class<?> sourceType, final M member, final Registry registry) {
+    protected TypeConverter<?, ?> createTypeConverter(final Class<?> sourceType, final M member, final Registry registry) {
         final TypeConverterFactory<?, ?> typeConverterFactory;
         final Class<?> targetType = getType(member);
         if (targetType.equals(Optional.class)) {
@@ -103,7 +103,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
         }
     }
     
-    protected void inject(final Named namedAnnotation, final M member, final Object instance, final Scope scope, final Registry registry) throws SmooksConfigurationException {
+    protected void inject(final Named namedAnnotation, final M member, final Object instance, final Scope scope) throws SmooksConfigurationException {
         final String name = getName(namedAnnotation, member);
         Object valueInject = scope.getOrDefault(name, getDefaultParamValue(instance, member));
         final Type realType = getRealType(member);
@@ -114,8 +114,8 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
         
         if (valueInject != null) {
             try {
-                final TypeConverter<?, ?> typeConverter = lookupTypeConverter(valueInject.getClass(), member, registry);
-                Configurator.configure(typeConverter, scope, registry);
+                final TypeConverter<?, ?> typeConverter = createTypeConverter(valueInject.getClass(), member, scope.getRegistry());
+                scope.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(typeConverter, new PostConstructLifecyclePhase(scope));
                 Object convertedValueInject = ((TypeConverter) typeConverter).convert(valueInject);
 
                 if (isEnum(realType)) {
@@ -127,8 +127,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
                     }
                 }
 
-                final Class<?> targetType = getType(member);
-                if (targetType.equals(Optional.class) && !(valueInject instanceof Optional)) {
+                if (getType(member).equals(Optional.class) && !(valueInject instanceof Optional)) {
                     setMember(member, instance, Optional.of(convertedValueInject), name);
                 } else {
                     setMember(member, instance, convertedValueInject, name);

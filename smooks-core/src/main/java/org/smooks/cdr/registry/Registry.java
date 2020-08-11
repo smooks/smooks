@@ -49,13 +49,17 @@ import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.XMLConfigDigester;
-import org.smooks.cdr.annotation.Configurator;
-import org.smooks.cdr.annotation.Scope;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.DefaultLifecycleManager;
+import org.smooks.cdr.lifecycle.LifecycleManager;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.lifecycle.phase.PreDestroyLifecyclePhase;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.cdr.registry.lookup.SystemSmooksResourceConfigurationListLookup;
 import org.smooks.classpath.ClasspathUtils;
-import org.smooks.container.ApplicationContext;
 import org.smooks.container.ApplicationContextInitializer;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.delivery.ContentHandler;
@@ -64,6 +68,7 @@ import org.smooks.delivery.JavaContentHandlerFactory;
 import org.smooks.delivery.UnsupportedContentHandlerTypeException;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.ProfileStore;
+import org.smooks.resource.ContainerResourceLocator;
 import org.smooks.util.ClassUtil;
 import org.xml.sax.SAXException;
 
@@ -91,27 +96,21 @@ public class Registry {
 
     private static final List<Class<ContentHandlerFactory>> HANDLER_FACTORIES = ClassUtil.getClasses("META-INF/content-handlers.inf", ContentHandlerFactory.class);
     private static final Logger LOGGER = LoggerFactory.getLogger(Registry.class);
-    
-    private final Map<Object, Object> registry = new ConcurrentHashMap<>();
-
-    /**
-     * Container context in which this store lives.
-     */
-    private ApplicationContext applicationContext;
     private static final String CDU_CREATOR = "cdu-creator";
+   
+    private final Map<Object, Object> registry = new ConcurrentHashMap<>();
+    private final ContainerResourceLocator containerResourceLocator;
+    private final ClassLoader classLoader;
+    private final ProfileStore profileStore;
 
-    /**
-     * Public constructor.
-     *
-     * @param applicationContext Container context in which this store lives.
-     */
-    public Registry(ApplicationContext applicationContext) {
-        this(applicationContext, true);
-    }
+    public Registry(ClassLoader classLoader, ContainerResourceLocator containerResourceLocator, Boolean registerInstalledResources, ProfileStore profileStore) {
+        AssertArgument.isNotNull(containerResourceLocator, "containerResourceLocator");
+        AssertArgument.isNotNull(registerInstalledResources, "registerInstalledResources");
+        AssertArgument.isNotNull(profileStore, "profileStore");
 
-    public Registry(ApplicationContext applicationContext, boolean registerInstalledResources) {
-        AssertArgument.isNotNull(applicationContext, "applicationContext");
-        this.applicationContext = applicationContext;
+        this.containerResourceLocator = containerResourceLocator;
+        this.classLoader = classLoader;
+        this.profileStore = profileStore;
 
         // add the default list to the list.
         final SmooksResourceConfigurationList systemSmooksResourceConfigurationList = new SmooksResourceConfigurationList("default");
@@ -131,7 +130,9 @@ public class Registry {
             registerInstalledResources("/installed-serializers.cdrl");
         }
 
-        registry.put(TypeConverterFactory.class, new TypeConverterFactoryLoader().load());
+        final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
+        registry.put(TypeConverterFactory[].class, typeConverterFactories);
+        registry.put(LifecycleManager.class, new DefaultLifecycleManager());
     }
 
     public void registerObject(Object value) {
@@ -224,7 +225,7 @@ public class Registry {
             }
 
             try {
-                InputStream resource = applicationContext.getResourceLocator().getResource(uri);
+                InputStream resource = containerResourceLocator.getResource(uri);
 
                 LOGGER.info("Loading Smooks Resources from uri [" + uri + "].");
                 registerResources(uri, resource);
@@ -262,7 +263,7 @@ public class Registry {
             throw new IllegalArgumentException("null 'resourceConfigStream' arg in method call.");
         }
 
-        configList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, applicationContext.getClassLoader());
+        configList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
         addSmooksResourceConfigurationList(configList);
 
         return configList;
@@ -281,8 +282,8 @@ public class Registry {
                 } catch (Exception e) {
                     throw new SmooksConfigurationException("Failed to create an instance of the '" + javaClass.getName() + "' ApplicationContextInitializer class.", e);
                 }
-
-                Configurator.configure(initializer, new Scope(applicationContext, resourceConfig, initializer), this);
+                
+                lookup(new LifecycleManagerLookup()).applyPhase(initializer, new PostConstructLifecyclePhase(new Scope(this, resourceConfig, initializer)));
                 registerObject(initializer);
             }
         }
@@ -293,14 +294,9 @@ public class Registry {
         if (profileSets == null) {
             return;
         }
-
-        // TODO Sort out the other app context impls such that we can get the profile store from them too
-        if (applicationContext instanceof ApplicationContext) {
-            ProfileStore profileStore = applicationContext.getProfileStore();
-
-            for (ProfileSet profileSet : profileSets) {
-                profileStore.addProfileSet(profileSet);
-            }
+        
+        for (ProfileSet profileSet : profileSets) {
+            profileStore.addProfileSet(profileSet);
         }
     }
 
@@ -376,7 +372,7 @@ public class Registry {
             }
 
             if (object instanceof ContentHandler || object instanceof TypeConverterFactory) {
-                Configurator.configure(object, new Scope(applicationContext, resourceConfig, object), this);
+                lookup(new LifecycleManagerLookup()).applyPhase(object, new PostConstructLifecyclePhase(new Scope(this, resourceConfig, object)));
                 this.registerObject(object);
             }
 
@@ -425,7 +421,7 @@ public class Registry {
         for (Object registeredObject : registry.values()) {
             LOGGER.debug("Un-initializing ContentHandler instance: " + registeredObject.getClass().getName());
             try {
-                Configurator.preDestroy(registeredObject);
+                lookup(new LifecycleManagerLookup()).applyPhase(registeredObject, new PreDestroyLifecyclePhase());
             } catch (Throwable throwable) {
                 LOGGER.error("Error un-initializing " + registeredObject.getClass().getName() + ".", throwable);
             }

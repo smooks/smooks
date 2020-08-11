@@ -46,8 +46,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.Configurator;
-import org.smooks.cdr.annotation.Scope;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.LifecycleManager;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.container.MockExecutionContext;
 import org.smooks.delivery.dom.MockContentDeliveryConfig;
 import org.smooks.util.CharUtils;
@@ -72,29 +74,36 @@ public class SerializerTest {
 	@Test
 	public void testSerialize() {
 		MockExecutionContext executionContext = new MockExecutionContext();
-
-        // Target a resource at the "document fragment" i.e. the root..
+		LifecycleManager lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
+		// Target a resource at the "document fragment" i.e. the root..
 
         // Don't write xxx but write its child elements
 		SmooksResourceConfiguration configuration = new SmooksResourceConfiguration(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, "deviceX", "....");
 		AddAttributeSerializer addAttributeSerializer = new AddAttributeSerializer();
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, configuration, Configurator.configure(addAttributeSerializer, new Scope(executionContext.getApplicationContext(), configuration, addAttributeSerializer), executionContext.getApplicationContext().getRegistry()));
+		lifecycleManager.applyPhase(addAttributeSerializer, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, addAttributeSerializer)));
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, configuration, addAttributeSerializer);
 
         // Don't write xxx but write its child elements
 		configuration = new SmooksResourceConfiguration("xxx", "deviceX", "....");
 		RemoveTestSerializationUnit removeTestSerializationUnit = new RemoveTestSerializationUnit();
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("xxx", configuration, Configurator.configure(removeTestSerializationUnit, new Scope(executionContext.getApplicationContext(), configuration, removeTestSerializationUnit), executionContext.getApplicationContext().getRegistry()));
+		lifecycleManager.applyPhase(removeTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, removeTestSerializationUnit)));
+
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("xxx", configuration, removeTestSerializationUnit);
 
 		// write yyyy as a badly-formed empty element
 		configuration = new SmooksResourceConfiguration("yyyy", "deviceX", "....");
 		configuration.setParameter("wellformed", "false");
 		EmptyElTestSerializationUnit emptyElTestSerializationUnit = new EmptyElTestSerializationUnit();
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("yyyy", configuration, Configurator.configure(emptyElTestSerializationUnit, new Scope(executionContext.getApplicationContext(), configuration, emptyElTestSerializationUnit), executionContext.getApplicationContext().getRegistry()));
+		lifecycleManager.applyPhase(emptyElTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, emptyElTestSerializationUnit)));
+		
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("yyyy", configuration, emptyElTestSerializationUnit);
 
 		/// write zzz as a well-formed empty element
 		configuration = new SmooksResourceConfiguration("zzz", "deviceX", "....");
 		EmptyElTestSerializationUnit otherEmptyElTestSerializationUnit = new EmptyElTestSerializationUnit();
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("zzz", configuration, Configurator.configure(otherEmptyElTestSerializationUnit, new Scope(executionContext.getApplicationContext(), configuration, otherEmptyElTestSerializationUnit), executionContext.getApplicationContext().getRegistry()));
+		lifecycleManager.applyPhase(otherEmptyElTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, otherEmptyElTestSerializationUnit)));
+
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addMapping("zzz", configuration, otherEmptyElTestSerializationUnit);
 
 		try {
 			Document doc = XmlUtil.parseStream(getClass().getResourceAsStream("testmarkup.xxml"), XmlUtil.VALIDATION_TYPE.NONE, true);

@@ -40,11 +40,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.annotation.injector;
+package org.smooks.cdr.injector;
 
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.annotation.Scope;
-import org.smooks.cdr.registry.Registry;
 import org.smooks.util.ClassUtil;
 
 import javax.inject.Inject;
@@ -54,12 +52,10 @@ import java.lang.reflect.*;
 public class MethodInjector extends AbstractInjector<Method> {
     private final Object instance;
     private final Scope scope;
-    private final Registry registry;
 
-    public MethodInjector(Object instance, Scope scope, Registry registry) {
+    public MethodInjector(Object instance, Scope scope) {
         this.instance = instance;
         this.scope = scope;
-        this.registry = registry;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class MethodInjector extends AbstractInjector<Method> {
                 Class params[] = method.getParameterTypes();
 
                 if (params.length == 1) {
-                    inject(method.getParameters()[0].getAnnotation(Named.class), method, instance, scope, registry);
+                    inject(method.getParameters()[0].getAnnotation(Named.class), method, instance, scope);
                 } else {
                     throw new SmooksConfigurationException("Method '" + ClassUtil.getLongMemberName(method) + "' defines a @Inject, yet it specifies more than a single paramater.");
                 }

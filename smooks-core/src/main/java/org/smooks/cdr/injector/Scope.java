@@ -40,11 +40,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.annotation;
+package org.smooks.cdr.injector;
 
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.Registry;
 import org.smooks.cdr.registry.lookup.GlobalParamsLookup;
-import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.sax.SAXToXMLWriter;
 import org.smooks.delivery.sax.SAXVisitor;
@@ -57,16 +57,17 @@ import java.util.Set;
 public class Scope implements Map<Object, Object> {
 
     private final Map<Object, Object> scope = new HashMap<>();
+    private final Registry registry;
     
-    public Scope(final ApplicationContext applicationContext, final SmooksResourceConfiguration smooksResourceConfiguration, final Object instance) {
-        scope.put(ApplicationContext.class, applicationContext);
+    public Scope(final Registry registry, final SmooksResourceConfiguration smooksResourceConfiguration, final Object instance) {
+        this.registry = registry;
+        scope.putAll(registry.lookup(registryEntries -> registryEntries));
         scope.put(SmooksResourceConfiguration.class, smooksResourceConfiguration);
-
-        final SmooksResourceConfiguration globalParams = applicationContext.getRegistry().lookup(new GlobalParamsLookup(applicationContext.getRegistry()));
+        final SmooksResourceConfiguration globalParams = registry.lookup(new GlobalParamsLookup(registry));
         for (String parameterName : globalParams.getParameters().keySet()) {
             scope.put(parameterName, globalParams.getParameterValue(parameterName));
         }
-
+     
         for (String parameterName : smooksResourceConfiguration.getParameters().keySet()) {
             scope.put(parameterName, smooksResourceConfiguration.getParameterValue(parameterName));
         }
@@ -75,6 +76,10 @@ public class Scope implements Map<Object, Object> {
             final boolean encodeSpecialCharacters = Boolean.parseBoolean(smooksResourceConfiguration.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true"));
             scope.put(SAXToXMLWriter.class, new SAXToXMLWriter((SAXVisitor) instance, encodeSpecialCharacters));
         }
+    }
+
+    public Registry getRegistry() {
+        return registry;
     }
 
     @Override

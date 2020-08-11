@@ -40,31 +40,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr;
+package org.smooks.cdr.lifecycle.phase;
 
-import org.junit.Test;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
-import org.smooks.container.MockApplicationContext;
+import javax.annotation.PreDestroy;
 
-import java.util.Properties;
-
-import static org.junit.Assert.assertEquals;
-
-public class PropertyListParameterDecoderTest {
-
-	@Test
-	public void test_decodeValue() {
-		SmooksResourceConfiguration config = new SmooksResourceConfiguration("x", "x");
-		MockApplicationContext mockApplicationContext = new MockApplicationContext();
-		PropertyListParameterDecoder propertyListParameterDecoder = new PropertyListParameterDecoder();
-		mockApplicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(propertyListParameterDecoder, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, propertyListParameterDecoder)));
-		
-		Properties properties = (Properties) propertyListParameterDecoder.decodeValue("x=111\ny=222");
-		assertEquals(2, properties.size());
-		assertEquals("111", properties.getProperty("x"));
-		assertEquals("222", properties.getProperty("y"));
-	}
-
+public class PreDestroyLifecyclePhase extends AbstractLifecyclePhase {
+    @Override
+    public void applyLifecycle(Object o) {
+        invoke(o, PreDestroy.class);
+    }
 }

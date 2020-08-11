@@ -40,31 +40,38 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr;
+package org.smooks.cdr.lifecycle.phase;
 
-import org.junit.Test;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
-import org.smooks.container.MockApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.smooks.cdr.SmooksConfigurationException;
+import org.smooks.util.ClassUtil;
 
-import java.util.Properties;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
+public abstract class AbstractLifecyclePhase implements LifecyclePhase {
 
-public class PropertyListParameterDecoderTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLifecyclePhase.class);
+    
+    protected <U> void invoke(U instance, Class<? extends Annotation> annotation) {
+        Method[] methods = instance.getClass().getMethods();
 
-	@Test
-	public void test_decodeValue() {
-		SmooksResourceConfiguration config = new SmooksResourceConfiguration("x", "x");
-		MockApplicationContext mockApplicationContext = new MockApplicationContext();
-		PropertyListParameterDecoder propertyListParameterDecoder = new PropertyListParameterDecoder();
-		mockApplicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(propertyListParameterDecoder, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, propertyListParameterDecoder)));
-		
-		Properties properties = (Properties) propertyListParameterDecoder.decodeValue("x=111\ny=222");
-		assertEquals(2, properties.size());
-		assertEquals("111", properties.getProperty("x"));
-		assertEquals("222", properties.getProperty("y"));
-	}
-
+        for (Method method : methods) {
+            if (method.getAnnotation(annotation) != null) {
+                if (method.getParameterTypes().length == 0) {
+                    try {
+                        method.invoke(instance);
+                    } catch (IllegalAccessException e) {
+                        throw new SmooksConfigurationException("Error invoking @" + annotation.getSimpleName() + " method '" + method.getName() + "' on class '" + instance.getClass().getName() + "'.", e);
+                    } catch (InvocationTargetException e) {
+                        throw new SmooksConfigurationException("Error invoking @" + annotation.getSimpleName() + " method '" + method.getName() + "' on class '" + instance.getClass().getName() + "'.", e.getTargetException());
+                    }
+                } else {
+                    LOGGER.warn("Method '" + ClassUtil.getLongMemberName(method) + "' defines an @" + annotation.getSimpleName() + " annotation on a paramaterized method.  This is not allowed!");
+                }
+            }
+        }
+    }
 }

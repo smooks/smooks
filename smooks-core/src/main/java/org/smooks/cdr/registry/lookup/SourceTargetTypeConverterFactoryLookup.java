@@ -58,7 +58,7 @@ public class SourceTargetTypeConverterFactoryLookup<S, T> implements Function<Ma
 
     @Override
     public TypeConverterFactory<S, T> apply(final Map<Object, Object> registryEntries) {
-        final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> typeConverterFactories = (Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory.class);
+        final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> typeConverterFactories = (Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class);
         final TypeConverterFactory<?, ?> typeConverterFactory = typeConverterFactories.get(typeConverterDescriptor);
         
         return (TypeConverterFactory<S, T>) typeConverterFactory;

@@ -40,11 +40,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.annotation.injector;
+package org.smooks.cdr.injector;
 
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.annotation.Scope;
-import org.smooks.cdr.registry.Registry;
 import org.smooks.util.ClassUtil;
 
 import javax.inject.Inject;
@@ -58,26 +56,24 @@ public class FieldInjector extends AbstractInjector<Field> {
 
     private final Object instance;
     private final Scope scope;
-    private final Registry registry;
 
-    public FieldInjector(Object instance, Scope scope, Registry registry) {
+    public FieldInjector(Object instance, Scope scope) {
         this.instance = instance;
         this.scope = scope;
-        this.registry = registry;
     }
     
     @Override
     public void inject() {
-        inject(instance.getClass(), instance, scope, registry);
+        inject(instance.getClass(), instance, scope);
     }
 
-    private void inject(Class<?> instanceClass, Object instance, Scope scope, Registry registry) {
+    private void inject(Class<?> instanceClass, Object instance, Scope scope) {
         Field[] fields = instanceClass.getDeclaredFields();
 
         // Work back up the Inheritance tree first...
         Class superClass = instanceClass.getSuperclass();
         if (superClass != null) {
-            inject(superClass, instance, scope, registry);
+            inject(superClass, instance, scope);
         }
 
         for (Field field : fields) {
@@ -85,7 +81,7 @@ public class FieldInjector extends AbstractInjector<Field> {
 
             injectAnnotation = field.getAnnotation(Inject.class);
             if (injectAnnotation != null) {
-                inject(field.getAnnotation(Named.class), field, instance, scope, registry);
+                inject(field.getAnnotation(Named.class), field, instance, scope);
             }
         }
     }
