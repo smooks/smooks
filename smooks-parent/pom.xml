@@ -7,7 +7,7 @@
 
     <groupId>org.smooks</groupId>
     <artifactId>smooks-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0-M1</version>
     <packaging>pom</packaging>
     <name>Smooks</name>
     <url>https://www.smooks.org</url>
@@ -688,6 +688,17 @@
 
         <plugins>
             <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>2.0.0</version>
@@ -827,63 +838,15 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-
-            <properties>
-                <gpg.skip>false</gpg.skip>
-            </properties>
-
-            <build>
-                <plugins>
-                    <!--
-                      Skips running tests as part of the deployment process.
-                    -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.22.2</version>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-
-                    <!--
-                      Uploads Maven artifacts to the open-source Nexus repository
-                      operated by Sonatype. Artifacts are uploaded to a staging area on
-                      the Sonatype Nexus repository, where they need to be reviewed for
-                      completeness and correctness through the Nexus web interface. Once
-                      artifacts have been reviewed and found to be accurate, they can be
-                      approved for deployment to Maven Central. Sonatype automatically
-                      uploads approved artifacts to Maven Central (usually within a few
-                      hours).
-                    -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.8</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
+    
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 </project>
