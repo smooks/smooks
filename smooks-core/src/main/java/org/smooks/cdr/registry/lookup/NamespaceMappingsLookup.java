@@ -55,11 +55,21 @@ import java.util.function.Function;
  * @return The prefix-to-namespace mannings.
  */
 public class NamespaceMappingsLookup implements Function<Map<Object, Object>, Properties> {
+
+    private final boolean initialise;
+
+    public NamespaceMappingsLookup(boolean initialise) {
+        this.initialise = initialise;
+    }
+    
+    public NamespaceMappingsLookup() {
+        this(true);
+    }
     
     @Override
     public Properties apply(final Map<Object, Object> registryEntries) {
         final Properties properties = (Properties) registryEntries.get(NamespaceMappings.class);
-        if (properties == null) {
+        if (properties == null && initialise) {
             return new Properties();
         } else {
             return properties;

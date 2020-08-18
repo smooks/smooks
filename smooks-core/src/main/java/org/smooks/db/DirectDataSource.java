@@ -70,7 +70,7 @@ public class DirectDataSource extends AbstractDataSource {
     private String name;
 
     @Inject
-    private boolean autoCommit;
+    private Boolean autoCommit;
 
     @Inject
     private Class driver;

@@ -43,11 +43,11 @@
 package org.smooks.delivery.sax;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
-import org.smooks.SmooksUtil;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.payload.StringSource;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -59,7 +59,7 @@ public class DynamicVisitorTest {
         Smooks smooks = new Smooks();
         StringSource source = new StringSource("<a><b><c>c1</c><d>c2</d><e>c3</e></b></a>");
 
-        SmooksUtil.registerResource(new SmooksResourceConfiguration("b", DynamicVisitorLoader.class.getName()), smooks);
+        smooks.getApplicationContext().getRegistry().registerResource(new SmooksResourceConfiguration("b", DynamicVisitorLoader.class.getName()));
         smooks.filterSource(source);
 
         assertEquals("<b><c>c1</c><d>c2</d><e>c3</e></b>", DynamicVisitorLoader.visitor.stuff.toString());

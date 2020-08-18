@@ -72,7 +72,7 @@ public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
     }
 
     @Override
-    public void applyLifecycle(final Object o) {
+    public void doApplyLifecycle(final Object o) {
         if (scope != null) {
             final Injector fieldInjector = new FieldInjector(o, scope);
             fieldInjector.inject();

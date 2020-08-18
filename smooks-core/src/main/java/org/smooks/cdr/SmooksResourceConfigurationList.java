@@ -42,10 +42,10 @@
  */
 package org.smooks.cdr;
 
-import org.smooks.assertion.AssertArgument;
-import org.smooks.profile.ProfileSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.assertion.AssertArgument;
+import org.smooks.profile.ProfileSet;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class SmooksResourceConfigurationList {
     /**
      * {@link org.smooks.cdr.SmooksResourceConfiguration} list.
      */
-    private List<SmooksResourceConfiguration> list = new ArrayList<SmooksResourceConfiguration>();
+    private List<SmooksResourceConfiguration> smooksResourceConfigurations = new ArrayList<SmooksResourceConfiguration>();
     /**
      * List of loaded resource URIs.
      */
@@ -107,7 +107,7 @@ public class SmooksResourceConfigurationList {
             SmooksResourceConfiguration clone = (SmooksResourceConfiguration) config.clone();
 
             clone.setSelector(selector.trim());
-            list.add(clone);
+            smooksResourceConfigurations.add(clone);
             LOGGER.debug("Smooks ResourceConfiguration [" + clone + "] added to list [" + name + "].");
         }
     }
@@ -119,7 +119,7 @@ public class SmooksResourceConfigurationList {
      * @param configList {@link SmooksResourceConfigurationList} instance to add.
      */
     public void addAll(SmooksResourceConfigurationList configList) {
-        list.addAll(configList.list);
+        smooksResourceConfigurations.addAll(configList.smooksResourceConfigurations);
     }
 
     /**
@@ -161,7 +161,7 @@ public class SmooksResourceConfigurationList {
      * @return True if this list instance is empty, otherwise false.
      */
     public boolean isEmpty() {
-        return list.isEmpty();
+        return smooksResourceConfigurations.isEmpty();
     }
 
     /**
@@ -169,7 +169,7 @@ public class SmooksResourceConfigurationList {
      * @return The size of te list i.e. number of entries.
      */
     public int size() {
-        return list.size();
+        return smooksResourceConfigurations.size();
     }
 
     /**
@@ -179,7 +179,7 @@ public class SmooksResourceConfigurationList {
      * @throws ArrayIndexOutOfBoundsException The specified index is out of bounds.
      */
     public SmooksResourceConfiguration get(int index) throws ArrayIndexOutOfBoundsException {
-        return list.get(index);
+        return smooksResourceConfigurations.get(index);
     }
     
     /**
@@ -249,7 +249,7 @@ public class SmooksResourceConfigurationList {
 	public List<SmooksResourceConfiguration> lookupResource(ConfigSearch searchCriteria) {
 		List<SmooksResourceConfiguration> results = new ArrayList<SmooksResourceConfiguration>();
 		
-		for(SmooksResourceConfiguration config : list) {
+		for(SmooksResourceConfiguration config : smooksResourceConfigurations) {
 			if(searchCriteria.matches(config)) {
 				results.add(config);
 			}

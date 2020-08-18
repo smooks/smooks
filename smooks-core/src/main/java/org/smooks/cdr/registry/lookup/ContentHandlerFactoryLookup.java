@@ -40,13 +40,29 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.lifecycle.phase;
+package org.smooks.cdr.registry.lookup;
 
-import javax.annotation.PreDestroy;
+import org.smooks.delivery.ContentHandlerFactory;
+import org.smooks.delivery.UnsupportedContentHandlerTypeException;
 
-public class PreDestroyLifecyclePhase extends AbstractLifecyclePhase {
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+
+public class ContentHandlerFactoryLookup implements Function<Map<Object, Object>, ContentHandlerFactory<?>> {
+    private final String type;
+
+    public ContentHandlerFactoryLookup(final String type) {
+        this.type = type;
+    }
+
     @Override
-    public void doApplyLifecycle(Object o) {
-        invoke(o, PreDestroy.class);
+    public ContentHandlerFactory<?> apply(final Map<Object, Object> registryEntries) {
+        final Optional<Object> optionalContentHandlerFactory = registryEntries.values().stream().filter(v -> v instanceof ContentHandlerFactory && ((ContentHandlerFactory<?>) v).getType().equals(type)).findFirst();
+        if (optionalContentHandlerFactory.isPresent()) {
+            return (ContentHandlerFactory<?>) optionalContentHandlerFactory.get();
+        } else {
+            throw new UnsupportedContentHandlerTypeException(type);
+        }
     }
 }

@@ -44,15 +44,12 @@ package org.smooks.container.standalone;
 
 import org.smooks.SmooksException;
 import org.smooks.cdr.registry.Registry;
-import org.smooks.cdr.registry.RegistryFactory;
 import org.smooks.classpath.IsAnnotationPresentFilter;
 import org.smooks.classpath.Scanner;
 import org.smooks.container.ApplicationContext;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.profile.DefaultProfileSet;
 import org.smooks.profile.DefaultProfileStore;
-import org.smooks.profile.Profile;
 import org.smooks.profile.ProfileStore;
 import org.smooks.resource.ContainerResourceLocator;
 import org.smooks.resource.URIResourceLocator;
@@ -80,26 +77,11 @@ public class StandaloneApplicationContext implements ApplicationContext {
 	private BeanIdStore beanIdStore = new BeanIdStore();
     private List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
     private ClassLoader classLoader;
-
-    /**
-     * create a new context
-     * @return the StandaloneApplicationContext instance
-     */
-    public static StandaloneApplicationContext createNewInstance(boolean registerInstalledResources) {
-        StandaloneApplicationContext sac = new StandaloneApplicationContext();
-        RegistryFactory registryFactory = new RegistryFactory(sac);
-        registryFactory.setRegisterInstalledResources(registerInstalledResources);
-        sac.registry = registryFactory.createRegistry();
-        // Add the open profile...
-        sac.profileStore.addProfileSet(new DefaultProfileSet(Profile.DEFAULT_PROFILE));
-
-        return sac;
-    }
-
+    
     /**
      * Private constructor.
      */
-    private StandaloneApplicationContext() {
+    StandaloneApplicationContext() {
 		IsAnnotationPresentFilter isAnnotationPresentFilter = new IsAnnotationPresentFilter(Resource.class);
 		Scanner scanner = new Scanner(isAnnotationPresentFilter);
 		try {
@@ -150,5 +132,9 @@ public class StandaloneApplicationContext implements ApplicationContext {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    void setRegistry(Registry registry) {
+        this.registry = registry;
     }
 }

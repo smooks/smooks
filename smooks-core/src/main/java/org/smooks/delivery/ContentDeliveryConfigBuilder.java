@@ -48,6 +48,7 @@ import org.smooks.SmooksException;
 import org.smooks.StreamFilterType;
 import org.smooks.cdr.*;
 import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.cdr.registry.lookup.InstanceLookup;
 import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationsProfileSetLookup;
 import org.smooks.container.ApplicationContext;
@@ -460,26 +461,26 @@ public class ContentDeliveryConfigBuilder {
 	 * <p/>
 	 * Expand the XmlDef entries to the target elements etc.
 	 */
-	private void expandSmooksResourceConfigurationTable() {
-		class ExpansionSmooksResourceConfigurationStrategy implements SmooksResourceConfigurationStrategy {
-			private ExpansionSmooksResourceConfigurationStrategy() {
-			}
-			public void applyStrategy(String elementName, SmooksResourceConfiguration resourceConfig) {
-				// Expand XmlDef entries.
-				if(resourceConfig.isXmlDef()) {
-					String[] elements = getDTDElements(resourceConfig.getSelector().substring(SmooksResourceConfiguration.XML_DEF_PREFIX.length()));
-          for (final String element : elements)
-          {
-            addResourceConfiguration(element, resourceConfig);
-          }
-				}
+    private void expandSmooksResourceConfigurationTable() {
+        class ExpansionSmooksResourceConfigurationStrategy implements SmooksResourceConfigurationStrategy {
+            private ExpansionSmooksResourceConfigurationStrategy() {
+            }
 
-				// Add code to expand other expandable entry types here.
-			}
-		}
-		SmooksResourceConfigurationTableIterator tableIterator = new SmooksResourceConfigurationTableIterator(new ExpansionSmooksResourceConfigurationStrategy());
-		tableIterator.iterate();
-	}
+            public void applyStrategy(String elementName, SmooksResourceConfiguration resourceConfig) {
+                // Expand XmlDef entries.
+                if (resourceConfig.isXmlDef()) {
+                    String[] elements = getDTDElements(resourceConfig.getSelector().substring(SmooksResourceConfiguration.XML_DEF_PREFIX.length()));
+                    for (final String element : elements) {
+                        addResourceConfiguration(element, resourceConfig);
+                    }
+                }
+
+                // Add code to expand other expandable entry types here.
+            }
+        }
+        SmooksResourceConfigurationTableIterator tableIterator = new SmooksResourceConfigurationTableIterator(new ExpansionSmooksResourceConfigurationStrategy());
+        tableIterator.iterate();
+    }
 
     /**
 	 * Iterate over the table smooks-resource instances and sort the SmooksResourceConfigurations
@@ -581,16 +582,17 @@ public class ContentDeliveryConfigBuilder {
 			// Try it as a Java class before trying anything else.  This is to
 			// accomodate specification of the class in the standard
 			// Java form e.g. java.lang.String Vs java/lang/String.class
-            if(resourceConfig.isJavaContentHandler()) {
-    			try {
-    				creator = registry.getContentHandlerFactory("class");
-    				if(addCDU(resourceConfig, creator)) {
-    					// Job done - it's a CDU and we've added it!
-    					return true;
-    				}
-    			} catch (UnsupportedContentHandlerTypeException e) {
-    				throw new IllegalStateException("No ContentHandlerFactory configured (IoC) for type 'class' (Java).");
-    			}
+            if(resourceConfig.isJavaResource()) {
+                try {
+                    creator = registry.lookup(new ContentHandlerFactoryLookup("class"));
+                } catch (UnsupportedContentHandlerTypeException e) {
+                    throw new IllegalStateException("No ContentHandlerFactory configured (IoC) for type 'class' (Java).");
+                }
+                if (addCDU(resourceConfig, creator)) {
+                    // Job done - it's a CDU and we've added it!
+                    return true;
+                }
+
             }
 
             // Get the resource type and "try" creating a ContentHandlerFactory for that resource
@@ -625,17 +627,17 @@ public class ContentDeliveryConfigBuilder {
          * @return The appropriate CDU creator instance, or null if there is none.
          */
         private ContentHandlerFactory tryCreateCreator(String restype) {
-			ContentHandlerFactory creator;
+            ContentHandlerFactory creator;
 
-			try {
-				if(restype == null || restype.trim().equals("")) {
-					LOGGER.debug("Request to attempt ContentHandlerFactory creation based on a null/empty resource type.");
-					return null;
-				}
-				creator = registry.getContentHandlerFactory(restype);
-			} catch (UnsupportedContentHandlerTypeException e) {
-				return null;
-			}
+            if (restype == null || restype.trim().equals("")) {
+                LOGGER.debug("Request to attempt ContentHandlerFactory creation based on a null/empty resource type.");
+                return null;
+            }
+            try {
+                creator = registry.lookup(new ContentHandlerFactoryLookup(restype));
+            } catch (UnsupportedContentHandlerTypeException e) {
+                return null;
+            }
 
 			return creator;
         }
@@ -646,35 +648,33 @@ public class ContentDeliveryConfigBuilder {
 		 * @param handlerFactory CDU Creator class.
 		 * @return True if the CDU was added, otherwise false.
 		 */
-		private boolean addCDU(SmooksResourceConfiguration resourceConfig, ContentHandlerFactory handlerFactory)
-    {
-			Object contentHandler;
+        private boolean addCDU(SmooksResourceConfiguration resourceConfig, ContentHandlerFactory handlerFactory) {
+            Object contentHandler;
 
-			// Create the ContentHandler.
-			try {
-				contentHandler = handlerFactory.create(resourceConfig);
-                registry.registerObject(contentHandler);
-            } catch(SmooksConfigurationException e) {
+            // Create the ContentHandler.
+            try {
+                contentHandler = handlerFactory.create(resourceConfig);
+            } catch (SmooksConfigurationException e) {
                 throw e;
-            } catch(Throwable thrown) {
-                String message = "ContentHandlerFactory [" + handlerFactory.getClass().getName()  + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
+            } catch (Throwable thrown) {
+                String message = "ContentHandlerFactory [" + handlerFactory.getClass().getName() + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
                 LOGGER.error(message + thrown.getMessage(), thrown);
                 configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message, thrown));
 
                 return false;
-			}
+            }
 
-            if(contentHandler instanceof Visitor) {
+            if (contentHandler instanceof Visitor) {
                 // Add the visitor.  No need to configure it as that should have been done by
                 // creator...
                 visitorConfig.addVisitor((Visitor) contentHandler, resourceConfig, false);
             }
 
             // Content delivery units are allowed to dynamically add new configurations...
-            if(contentHandler instanceof ConfigurationExpander) {
-                List<SmooksResourceConfiguration> additionalConfigs = ((ConfigurationExpander)contentHandler).expandConfigurations();
-                if(additionalConfigs != null && !additionalConfigs.isEmpty()) {
-                    if(LOGGER.isDebugEnabled()) {
+            if (contentHandler instanceof ConfigurationExpander) {
+                List<SmooksResourceConfiguration> additionalConfigs = ((ConfigurationExpander) contentHandler).expandConfigurations();
+                if (additionalConfigs != null && !additionalConfigs.isEmpty()) {
+                    if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Adding expansion resource configurations created by: " + resourceConfig);
                         for (SmooksResourceConfiguration additionalConfig : additionalConfigs) {
                             LOGGER.debug("\tAdding expansion resource configuration: " + additionalConfig);
@@ -684,23 +684,24 @@ public class ContentDeliveryConfigBuilder {
                 }
             }
 
-            if(contentHandler instanceof VisitorAppender) {
-                ((VisitorAppender)contentHandler).addVisitors(visitorConfig);
+            if (contentHandler instanceof VisitorAppender) {
+                ((VisitorAppender) contentHandler).addVisitors(visitorConfig);
             }
 
             return true;
-		}
+        }
 
         /**
          * Process the supplied expansion configurations.
          * @param additionalConfigs Expansion configs.
          */
         private void processExpansionConfigurations(List<SmooksResourceConfiguration> additionalConfigs) {
-            for(final SmooksResourceConfiguration config : additionalConfigs) {
-              // Try adding it as a ContentHandler instance...
-                if(!applyCDUStrategy(config)) {
+            for (final SmooksResourceConfiguration smooksResourceConfiguration : additionalConfigs) {
+                applicationContext.getRegistry().registerResource(smooksResourceConfiguration);
+                // Try adding it as a ContentHandler instance...
+                if (!applyCDUStrategy(smooksResourceConfiguration)) {
                     // Else just add it to the main list...
-                    addResourceConfiguration(config);
+                    addResourceConfiguration(smooksResourceConfiguration);
                 }
             }
         }

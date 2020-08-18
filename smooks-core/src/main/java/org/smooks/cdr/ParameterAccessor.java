@@ -43,7 +43,6 @@
 package org.smooks.cdr;
 
 import org.smooks.Smooks;
-import org.smooks.SmooksUtil;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.registry.Registry;
 import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
@@ -189,7 +188,7 @@ public abstract class ParameterAccessor {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration(ParameterAccessor.GLOBAL_PARAMETERS);
 
         config.setParameter(name, value);
-        SmooksUtil.registerResource(config, smooks);
+        smooks.getApplicationContext().getRegistry().registerResource(config);
     }
 
     public static void removeParameter(String name, Smooks smooks) {

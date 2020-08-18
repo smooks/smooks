@@ -40,13 +40,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.lifecycle.phase;
+package org.smooks.cdr;
 
-import javax.annotation.PreDestroy;
+/**
+ * SmooksResourceConfiguration Factory.
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public interface SmooksResourceConfigurationListFactory {
 
-public class PreDestroyLifecyclePhase extends AbstractLifecyclePhase {
-    @Override
-    public void doApplyLifecycle(Object o) {
-        invoke(o, PreDestroy.class);
-    }
+    /**
+     * Create the configuration instance.
+     * @return The configuration instance.
+     */
+    SmooksResourceConfigurationList create();
 }

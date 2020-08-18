@@ -42,19 +42,14 @@
  */
 package org.smooks;
 
-import org.jaxen.saxpath.SAXPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
-import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
-import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
-import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.classpath.CascadingClassLoaderSet;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.container.standalone.StandaloneApplicationContext;
 import org.smooks.container.standalone.StandaloneExecutionContext;
 import org.smooks.delivery.*;
@@ -143,7 +138,7 @@ public class Smooks {
      * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
      */
     public Smooks() {
-        applicationContext = StandaloneApplicationContext.createNewInstance(true);
+        applicationContext = new DefaultApplicationContextBuilder().create();
         visitorConfigMap = new VisitorConfigMap(applicationContext);
     }
 
@@ -433,7 +428,7 @@ public class Smooks {
             Thread.currentThread().setContextClassLoader(newTCCL);
             try {
                 if(isConfigurable) {
-                    initializeResourceConfigurations();
+                    setNotConfigurable();
                 }
                 return new StandaloneExecutionContext(targetProfile, applicationContext, visitorConfigMap);
             } finally {
@@ -441,32 +436,17 @@ public class Smooks {
             }
         } else {
             if(isConfigurable) {
-                initializeResourceConfigurations();
+                setNotConfigurable();
             }
             return new StandaloneExecutionContext(targetProfile, applicationContext, visitorConfigMap);
         }
     }
 
-    private synchronized void initializeResourceConfigurations() {
+    private synchronized void setNotConfigurable() {
         if(!isConfigurable) {
             return;
         }
         isConfigurable = false;
-        setNamespaces();
-    }
-
-    private void setNamespaces() {
-        try {
-            final Properties namespaces = applicationContext.getRegistry().lookup(new NamespaceMappingsLookup());
-
-            for (SmooksResourceConfigurationList resourceConfigList : applicationContext.getRegistry().lookup(new SmooksResourceConfigurationListsLookup())) {
-                for (int i = 0; i < resourceConfigList.size(); i++) {
-                    SelectorStep.setNamespaces(resourceConfigList.get(i).getSelectorSteps(), namespaces);
-                }
-            }
-        } catch (SAXPathException e) {
-            throw new SmooksConfigurationException("Error configuring namespaces", e);
-        }
     }
     
     /**

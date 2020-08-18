@@ -44,9 +44,18 @@ package org.smooks.cdr.lifecycle;
 
 import org.smooks.cdr.lifecycle.phase.LifecyclePhase;
 
+import java.util.Collection;
+
 public class DefaultLifecycleManager implements LifecycleManager {
     @Override
     public void applyPhase(Object o, LifecyclePhase lifecyclePhase) {
         lifecyclePhase.applyLifecycle(o);
+    }
+
+    @Override
+    public void applyPhase(Collection<?> objects, LifecyclePhase lifecyclePhase) {
+        for (Object o : objects) {
+            lifecyclePhase.applyLifecycle(o);
+        }
     }
 }

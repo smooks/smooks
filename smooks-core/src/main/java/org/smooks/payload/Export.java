@@ -71,7 +71,7 @@ import java.util.Set;
  * @author Daniel Bevenius
  * @since 1.4
  */
-public class Export implements ContentHandler<Export> {
+public class Export implements ContentHandler {
     @Inject
     private Optional<String> name;
 

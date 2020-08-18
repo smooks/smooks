@@ -57,17 +57,10 @@ import java.util.Set;
 public class Scope implements Map<Object, Object> {
 
     private final Map<Object, Object> scope = new HashMap<>();
-    private final Registry registry;
     
     public Scope(final Registry registry, final SmooksResourceConfiguration smooksResourceConfiguration, final Object instance) {
-        this.registry = registry;
-        scope.putAll(registry.lookup(registryEntries -> registryEntries));
+        this(registry);
         scope.put(SmooksResourceConfiguration.class, smooksResourceConfiguration);
-        final SmooksResourceConfiguration globalParams = registry.lookup(new GlobalParamsLookup(registry));
-        for (String parameterName : globalParams.getParameters().keySet()) {
-            scope.put(parameterName, globalParams.getParameterValue(parameterName));
-        }
-     
         for (String parameterName : smooksResourceConfiguration.getParameters().keySet()) {
             scope.put(parameterName, smooksResourceConfiguration.getParameterValue(parameterName));
         }
@@ -77,9 +70,19 @@ public class Scope implements Map<Object, Object> {
             scope.put(SAXToXMLWriter.class, new SAXToXMLWriter((SAXVisitor) instance, encodeSpecialCharacters));
         }
     }
+    
+    public Scope(final Registry registry) {
+        scope.put(Registry.class, registry);
+        scope.putAll(registry.lookup(registryEntries -> registryEntries));
+
+        final SmooksResourceConfiguration globalParams = registry.lookup(new GlobalParamsLookup(registry));
+        for (String parameterName : globalParams.getParameters().keySet()) {
+            scope.put(parameterName, globalParams.getParameterValue(parameterName));
+        }
+    }
 
     public Registry getRegistry() {
-        return registry;
+        return (Registry) scope.get(Registry.class);
     }
 
     @Override

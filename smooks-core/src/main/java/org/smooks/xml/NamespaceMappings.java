@@ -42,12 +42,15 @@
  */
 package org.smooks.xml;
 
+import org.jaxen.saxpath.SAXPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
+import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
-import org.smooks.container.ApplicationContextInitializer;
 import org.smooks.container.ExecutionContext;
 import org.smooks.namespace.NamespaceDeclarationStack;
 
@@ -62,7 +65,7 @@ import java.util.Properties;
  * 
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class NamespaceMappings implements ApplicationContextInitializer {
+public class NamespaceMappings {
 
     /**
      * Logger.
@@ -70,25 +73,32 @@ public class NamespaceMappings implements ApplicationContextInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceMappings.class);
 	
 	@Inject
-	private SmooksResourceConfiguration config;
+	private SmooksResourceConfiguration smooksResourceConfiguration;
 	
 	@Inject
-	private ApplicationContext appContext;
+	private ApplicationContext applicationContext;
 	
 	/**
 	 * Load the namespace prefix-to-uri mappings into the {@link ApplicationContext}.
 	 */
 	@PostConstruct
-	public void loadNamespaces() {
-		Properties namespaces = appContext.getRegistry().lookup(new NamespaceMappingsLookup());
-		Properties namespacesToAdd = config.toProperties();
-		
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Adding namespace prefix-to-uri mappings: " + namespacesToAdd);
+	public void postConstruct() throws SAXPathException {
+		final Properties newNamespaces = smooksResourceConfiguration.toProperties();
+
+		for (SmooksResourceConfigurationList smooksResourceConfigurationList : applicationContext.getRegistry().lookup(new SmooksResourceConfigurationListsLookup())) {
+			for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
+				SelectorStep.setNamespaces(smooksResourceConfigurationList.get(i).getSelectorSteps(), newNamespaces);
+			}
 		}
-		namespaces.putAll(namespacesToAdd);
-		appContext.getRegistry().registerObject(NamespaceMappings.class, namespaces);
-    }
+		
+        LOGGER.debug("Adding namespace prefix-to-uri mappings: " + newNamespaces);
+		final Properties currentNamespaces = applicationContext.getRegistry().lookup(new NamespaceMappingsLookup(false));
+		if (currentNamespaces != null) {
+			currentNamespaces.putAll(newNamespaces);
+		} else {
+			applicationContext.getRegistry().registerObject(NamespaceMappings.class, newNamespaces);
+		}
+	}
     
     /**
      * Set the {@link NamespaceDeclarationStack} for the current message on the current {@link ExecutionContext}.

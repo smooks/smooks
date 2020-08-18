@@ -63,7 +63,8 @@ import java.util.*;
  * @author Daniel Bevenius
  * @since 1.4
  */
-public class Exports implements ContentHandler<Exports> {
+public class Exports implements ContentHandler {
+    
     private static final Exports NULL_EXPORTS = new Exports();
 
     private Map<Class<?>, Export> exportsMap = new HashMap<Class<?>, Export>();

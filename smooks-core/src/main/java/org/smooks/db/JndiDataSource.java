@@ -94,7 +94,7 @@ public class JndiDataSource extends AbstractDataSource {
 
     private DataSource datasource;
 
-    public JndiDataSource(){
+    public JndiDataSource() {
     }
 
     public JndiDataSource(String name, boolean autoCommit) {
@@ -109,45 +109,45 @@ public class JndiDataSource extends AbstractDataSource {
     }
 
     @PostConstruct
-    public void intitialize() {
-        if(!datasourceJndi.isPresent()) {
-        	datasourceJndi = Optional.of(name);
+    public void postConstruct() {
+        if (!datasourceJndi.isPresent()) {
+            datasourceJndi = Optional.of(name);
         }
 
         datasource = (DataSource) lookup(datasourceJndi.orElse(null));
 
-        if(transactionManagerType == TransactionManagerType.JTA) {
-        	if(!transactionJndi.isPresent() || transactionJndi.get().length() == 0) {
-        		throw new SmooksConfigurationException("The transactionJndi attribute must be set when the JTA transaction manager is set.");
-        	}
+        if (transactionManagerType == TransactionManagerType.JTA) {
+            if (!transactionJndi.isPresent() || transactionJndi.get().length() == 0) {
+                throw new SmooksConfigurationException("The transactionJndi attribute must be set when the JTA transaction manager is set.");
+            }
 
-        	//On JTA transaction manager then the autoCommit is always false
-        	autoCommit = false;
+            //On JTA transaction manager then the autoCommit is always false
+            autoCommit = false;
         }
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-    	return datasource.getConnection();
+        return datasource.getConnection();
     }
 
-	private Object lookup(String jndi) {
-		Context context = null;
-		try {
-			context = new InitialContext();
-		    return context.lookup(jndi);
-		} catch (NamingException e) {
-		    throw new SmooksConfigurationException("JNDI Context lookup failed for '" + jndi + "'.", e);
-		} finally {
-		    if(context != null) {
-		        try {
-		            context.close();
-		        } catch (NamingException e) {
-		            throw new SmooksConfigurationException("Error closing Naming Context after looking up DataSource JNDI '" + datasourceJndi + "'.", e);
-		        }
-		    }
-		}
-	}
+    private Object lookup(String jndi) {
+        Context context = null;
+        try {
+            context = new InitialContext();
+            return context.lookup(jndi);
+        } catch (NamingException e) {
+            throw new SmooksConfigurationException("JNDI Context lookup failed for '" + jndi + "'.", e);
+        } finally {
+            if (context != null) {
+                try {
+                    context.close();
+                } catch (NamingException e) {
+                    throw new SmooksConfigurationException("Error closing Naming Context after looking up DataSource JNDI '" + datasourceJndi + "'.", e);
+                }
+            }
+        }
+    }
 
     @Override
     public boolean isAutoCommit() {
@@ -156,15 +156,15 @@ public class JndiDataSource extends AbstractDataSource {
 
     @Override
     public TransactionManager createTransactionManager(Connection connection) {
-    	switch(transactionManagerType) {
-	    	case JDBC:
-	    		return new JdbcTransactionManager(connection, isAutoCommit());
-	    	case JTA:
-	    		return new JtaTransactionManager(connection, (UserTransaction)lookup(transactionJndi.orElse(null)), setAutoCommitAllowed);
-	    	case EXTERNAL:
-	    		return new ExternalTransactionManager(connection, isAutoCommit(), setAutoCommitAllowed);
-	    	default:
-	    		throw new SmooksException("The TransactionManager type '" + transactionManagerType + "' is unknown. This is probably a bug!");
-    	}
+        switch (transactionManagerType) {
+            case JDBC:
+                return new JdbcTransactionManager(connection, isAutoCommit());
+            case JTA:
+                return new JtaTransactionManager(connection, (UserTransaction) lookup(transactionJndi.orElse(null)), setAutoCommitAllowed);
+            case EXTERNAL:
+                return new ExternalTransactionManager(connection, isAutoCommit(), setAutoCommitAllowed);
+            default:
+                throw new SmooksException("The TransactionManager type '" + transactionManagerType + "' is unknown. This is probably a bug!");
+        }
     }
 }

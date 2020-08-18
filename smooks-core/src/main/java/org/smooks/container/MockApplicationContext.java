@@ -43,29 +43,27 @@
 package org.smooks.container;
 
 import org.smooks.cdr.registry.Registry;
-import org.smooks.cdr.registry.RegistryFactory;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
+import org.smooks.container.standalone.StandaloneApplicationContext;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.profile.DefaultProfileStore;
 import org.smooks.profile.ProfileStore;
 import org.smooks.resource.ContainerResourceLocator;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author tfennelly
  */
 public class MockApplicationContext implements ApplicationContext {
 
+	private final StandaloneApplicationContext standaloneApplicationContext;
 	public MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
-	public ProfileStore profileStore = new DefaultProfileStore();
-	private BeanIdStore beanIdStore = new BeanIdStore();
-	private List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
-	private Registry registry;
 
+	public MockApplicationContext() {
+		this.standaloneApplicationContext = new DefaultApplicationContextBuilder().create();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.smooks.container.ApplicationContext#getResourceLocator()
 	 */
@@ -77,16 +75,11 @@ public class MockApplicationContext implements ApplicationContext {
 	 * @see org.smooks.container.ApplicationContext#getCdrarStore()
 	 */
 	public Registry getRegistry() {
-		if (registry == null) {
-			RegistryFactory registryFactory = new RegistryFactory(this);
-			registry = registryFactory.createRegistry();
-		}
-
-		return registry;
+		return standaloneApplicationContext.getRegistry();
 	}
 
 	public ProfileStore getProfileStore() {
-		return profileStore;
+		return standaloneApplicationContext.getProfileStore();
 	}
 
 	public void setResourceLocator(ContainerResourceLocator resourceLocator) {
@@ -94,18 +87,18 @@ public class MockApplicationContext implements ApplicationContext {
 	}
 
 	public BeanIdStore getBeanIdStore() {
-		return beanIdStore;
+		return standaloneApplicationContext.getBeanIdStore();
 	}
 
 	public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
-		beanContextObservers.add(observer);
+		standaloneApplicationContext.addBeanContextLifecycleObserver(observer);
 	}
 
 	public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
-		return Collections.unmodifiableCollection(beanContextObservers);
+		return standaloneApplicationContext.getBeanContextLifecycleObservers();
 	}
 
 	public ClassLoader getClassLoader() {
-		return getClass().getClassLoader();
+		return standaloneApplicationContext.getClassLoader();
 	}
 }

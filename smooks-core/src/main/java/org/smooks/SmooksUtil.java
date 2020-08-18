@@ -45,7 +45,6 @@ package org.smooks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.ProfileStore;
@@ -62,7 +61,7 @@ import java.io.InputStream;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public abstract class SmooksUtil {
+public final class SmooksUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Smooks.class);
 
@@ -92,23 +91,10 @@ public abstract class SmooksUtil {
     }
 
     /**
-     * Register a {@link org.smooks.cdr.SmooksResourceConfiguration} on the supplied {@link Smooks} instance.
-     *
-     * @param resourceConfig The Resource Configuration to be  registered.
-     * @param smooks         The {@link org.smooks.Smooks} instance on which to perform the configuration operation.
-     */
-    public static void registerResource(SmooksResourceConfiguration resourceConfig, Smooks smooks) {
-        if (resourceConfig == null) {
-            throw new IllegalArgumentException("null 'resourceConfig' arg in method call.");
-        }
-        smooks.getApplicationContext().getRegistry().registerResource(resourceConfig);
-    }
-
-    /**
      * Utility method to filter the content in the specified {@link InputStream} for the specified {@link org.smooks.container.ExecutionContext}.
      * <p/>
      * Useful for testing purposes.  In a real scenario, use
-     * {@link Smooks#filter(org.smooks.container.ExecutionContext,javax.xml.transform.Source,javax.xml.transform.Result)}.
+     * {@link Smooks#filter(org.smooks.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result)}.
      * <p/>
      * The content of the returned String is totally dependent on the configured
      * {@link org.smooks.delivery.dom.DOMElementVisitor} and {@link org.smooks.delivery.dom.serialize.SerializationUnit}
@@ -132,7 +118,7 @@ public abstract class SmooksUtil {
                 try {
                     stream.close();
                 } catch (IOException e) {
-                    new SmooksException("Failed to close stream...", e);
+                    throw new SmooksException("Failed to close stream...", e);
                 }
             }
             writer.close();

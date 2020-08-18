@@ -40,27 +40,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.registry;
+package org.smooks.container;
 
-import org.smooks.container.ApplicationContext;
-
-public class RegistryFactory {
-    private final ApplicationContext applicationContext;
-    private boolean registerInstalledResources = true;
+public interface ApplicationContextBuilder {
     
-    public RegistryFactory(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
-    public void setRegisterInstalledResources(boolean registerInstalledResources) {
-        this.registerInstalledResources = registerInstalledResources;
-    }
+    ApplicationContext create();
     
-    public Registry createRegistry() {
-        Registry registry = new Registry(applicationContext.getClassLoader(), applicationContext.getResourceLocator(), registerInstalledResources, applicationContext.getProfileStore());
-        registry.registerObject(ApplicationContext.class, applicationContext);
-
-        return registry;
-    }
-
 }

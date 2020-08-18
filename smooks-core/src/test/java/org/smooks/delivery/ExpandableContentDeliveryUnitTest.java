@@ -70,9 +70,9 @@ public class ExpandableContentDeliveryUnitTest {
         Smooks smooks = new Smooks();
 
         smooks.addConfigurations("expansion-config.xml", getClass().getResourceAsStream("expansion-config.xml"));
-        ExecutionContext context = smooks.createExecutionContext();
+        ExecutionContext executionContext = smooks.createExecutionContext();
 
-        DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) context.getDeliveryConfig();
+        DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) executionContext.getDeliveryConfig();
         ContentHandlerConfigMapTable<DOMVisitBefore> assemblyVisitBefores = config.getAssemblyVisitBefores();
         ContentHandlerConfigMapTable<DOMVisitAfter> assemblyVisitAfters = config.getAssemblyVisitAfters();
         ContentHandlerConfigMapTable<DOMVisitBefore> processingVisitBefores = config.getProcessingVisitBefores();

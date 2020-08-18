@@ -44,8 +44,11 @@ package org.smooks.cdr.lifecycle;
 
 import org.smooks.cdr.lifecycle.phase.LifecyclePhase;
 
+import java.util.Collection;
+
 public interface LifecycleManager {
     
     void applyPhase(final Object o, final LifecyclePhase lifecyclePhase);
-    
+
+    void applyPhase(final Collection<?> objects, final LifecyclePhase lifecyclePhase);
 }

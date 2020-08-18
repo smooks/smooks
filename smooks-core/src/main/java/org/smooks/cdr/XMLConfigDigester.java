@@ -48,7 +48,7 @@ import org.smooks.Smooks;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.cdr.registry.Registry;
 import org.smooks.container.ExecutionContext;
-import org.smooks.container.standalone.StandaloneApplicationContext;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.expression.ExpressionEvaluator;
 import org.smooks.io.StreamUtils;
 import org.smooks.net.URIUtil;
@@ -520,7 +520,7 @@ public final class XMLConfigDigester {
             assertExtendedConfigOK(configNamespace, resourcePath);
 
             // Construct the Smooks instance for processing this config namespace...
-            smooks = new Smooks(StandaloneApplicationContext.createNewInstance(false));
+            smooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterInstalledResources(false).create());
             setExtentionDigestOn();
             try {
                 Registry configStore = smooks.getApplicationContext().getRegistry();

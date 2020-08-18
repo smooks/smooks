@@ -40,12 +40,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.container;
+package org.smooks.cdr;
 
-/**
- * Marker interface for an {@link ApplicationContext} initializer class.
- *
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public interface ApplicationContextInitializer {
+import java.io.InputStream;
+
+public class SystemSmooksResourceConfigurationListFactory implements SmooksResourceConfigurationListFactory {
+
+    private final ClassLoader classLoader;
+    private final String resourceFile;
+
+    public SystemSmooksResourceConfigurationListFactory(String resourceFile, ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        this.resourceFile = resourceFile;
+    }
+    
+    @Override
+    public SmooksResourceConfigurationList create() {
+        InputStream resource = getClass().getResourceAsStream(resourceFile);
+
+        if (resource == null) {
+            throw new IllegalStateException("Failed to load " + resourceFile);
+        }
+        try {
+            SmooksResourceConfigurationList smooksResourceConfigurationList = XMLConfigDigester.digestConfig(resource, resourceFile, classLoader);
+            for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
+                smooksResourceConfigurationList.get(i).setDefaultResource(true);
+            }
+            smooksResourceConfigurationList.setSystemConfigList(true);
+
+            return smooksResourceConfigurationList;
+        } catch (Exception e) {
+            throw new IllegalStateException("Error processing resource file '" + resourceFile + "'.", e);
+        }
+    }
 }

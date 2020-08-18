@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.dtd.DTDStore;
@@ -142,22 +143,21 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     public List getObjects(String selector) {
         Vector objects;
 
-        objects = (Vector)objectsTable.get(selector);
-        if(objects == null) {
+        objects = (Vector) objectsTable.get(selector);
+        if (objects == null) {
             List unitDefs = resourceConfigTable.get(selector);
 
-            if(unitDefs != null && unitDefs.size() > 0) {
+            if (unitDefs != null && unitDefs.size() > 0) {
                 objects = new Vector(unitDefs.size());
 
-                if(applicationContext == null) {
+                if (applicationContext == null) {
                     throw new IllegalStateException("Call to getObjects() before the setApplicationContext() was called.");
                 }
 
-              for (final Object unitDef : unitDefs)
-              {
-                SmooksResourceConfiguration resConfig = (SmooksResourceConfiguration) unitDef;
-                objects.add(applicationContext.getRegistry().getObject(resConfig));
-              }
+                for (final Object unitDef : unitDefs) {
+                    SmooksResourceConfiguration resConfig = (SmooksResourceConfiguration) unitDef;
+                    objects.add(applicationContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(resConfig));
+                }
             } else {
                 objects = EMPTY_LIST;
             }

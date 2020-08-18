@@ -54,6 +54,15 @@ import java.lang.reflect.Method;
 public abstract class AbstractLifecyclePhase implements LifecyclePhase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLifecyclePhase.class);
+
+    @Override
+    public void applyLifecycle(Object o) {
+        doApplyLifecycle(o);
+    }
+
+    public void doApplyLifecycle(Object o) {
+        
+    }
     
     protected <U> void invoke(U instance, Class<? extends Annotation> annotation) {
         Method[] methods = instance.getClass().getMethods();

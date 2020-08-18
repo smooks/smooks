@@ -43,6 +43,7 @@
 package org.smooks.converter.factory;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.expression.ExpressionEvaluator;
 import org.smooks.expression.MVELExpressionEvaluator;
 
 /**
@@ -50,10 +51,10 @@ import org.smooks.expression.MVELExpressionEvaluator;
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MvelExpressionEvaluatorConverterFactory implements TypeConverterFactory<String, MVELExpressionEvaluator> {
+public class MvelExpressionEvaluatorConverterFactory implements TypeConverterFactory<String, ExpressionEvaluator> {
     
     @Override
-    public TypeConverter<String, MVELExpressionEvaluator> createTypeConverter() {
+    public TypeConverter<String, ExpressionEvaluator> createTypeConverter() {
         return value -> {
             final MVELExpressionEvaluator expressionEvaluator = new MVELExpressionEvaluator();
             expressionEvaluator.setExpression(value);

@@ -244,10 +244,7 @@ public class SmooksResourceConfiguration {
      * The resource.
      */
     private String resource;
-    /**
-     * Java resource object instance.
-     */
-    private Object javaResourceObject;
+
     /**
      * Is this resource defined inline in the configuration, or is it
      * referenced through a URI.
@@ -564,25 +561,7 @@ public class SmooksResourceConfiguration {
         }
         fireChangedEvent();
     }
-
-    /**
-     * Get the Java resource object instance associated with this resource, if one exists and
-     * it has been create.
-     * @return The Java resource object instance associated with this resource, if one exists and
-     * it has been create, otherwise null.
-     */
-    public Object getJavaResourceObject() {
-        return javaResourceObject;
-    }
-
-    /**
-     * Set the Java resource object instance associated with this resource.
-     * @param javaResourceObject The Java resource object instance associated with this resource.
-     */
-    public void setJavaResourceObject(Object javaResourceObject) {
-        this.javaResourceObject = javaResourceObject;
-    }
-
+    
     /**
      * Is this resource defined inline in the configuration, or is it
      * referenced through a URI.
@@ -1151,17 +1130,6 @@ public class SmooksResourceConfiguration {
      */
     public boolean isJavaResource() {
         return (toJavaResource() != null);
-    }
-
-    /**
-     * Is this resource a Java Class.
-     *
-     * @return True if this resource is a Java class, otherwise false.
-     */
-    public boolean isJavaContentHandler() {
-        Class runtimeClass = toJavaResource();
-
-        return (runtimeClass != null);
     }
 
     /**
