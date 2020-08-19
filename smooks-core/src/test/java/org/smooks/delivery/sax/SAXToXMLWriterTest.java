@@ -42,19 +42,19 @@
  */
 package org.smooks.delivery.sax;
 
-import java.io.IOException;
-
+import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.lang.LangUtil;
 import org.smooks.payload.StringResult;
 import org.smooks.payload.StringSource;
 import org.xml.sax.SAXException;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import javax.inject.Inject;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -92,7 +92,7 @@ public class SAXToXMLWriterTest {
 	
 	private class AllWrittingVisitor implements SAXElementVisitor {
 
-		@StreamResultWriter	
+		@Inject	
 		private SAXToXMLWriter writer;
 		private String leftWrapping;
 		private String rightWrapping;

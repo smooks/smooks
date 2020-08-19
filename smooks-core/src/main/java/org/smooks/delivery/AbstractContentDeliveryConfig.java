@@ -42,14 +42,16 @@
  */
 package org.smooks.delivery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.XMLReader;
 
 import java.util.*;
@@ -133,7 +135,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     /**
      * Get a list {@link Object}s from the supplied {@link org.smooks.cdr.SmooksResourceConfiguration} selector value.
      * <p/>
-     * Uses {@link org.smooks.cdr.SmooksResourceConfigurationStore#getObject(org.smooks.cdr.SmooksResourceConfiguration)} to construct the object.
+     * Uses {@link Registry#getObject(org.smooks.cdr.SmooksResourceConfiguration)} to construct the object.
      * @param selector selector attribute value from the .cdrl file in the .cdrar.
      * @return List of Object instances.  An empty list is returned where no
      * selectors exist.
@@ -141,22 +143,21 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     public List getObjects(String selector) {
         Vector objects;
 
-        objects = (Vector)objectsTable.get(selector);
-        if(objects == null) {
+        objects = (Vector) objectsTable.get(selector);
+        if (objects == null) {
             List unitDefs = resourceConfigTable.get(selector);
 
-            if(unitDefs != null && unitDefs.size() > 0) {
+            if (unitDefs != null && unitDefs.size() > 0) {
                 objects = new Vector(unitDefs.size());
 
-                if(applicationContext == null) {
+                if (applicationContext == null) {
                     throw new IllegalStateException("Call to getObjects() before the setApplicationContext() was called.");
                 }
 
-              for (final Object unitDef : unitDefs)
-              {
-                SmooksResourceConfiguration resConfig = (SmooksResourceConfiguration) unitDef;
-                objects.add(applicationContext.getStore().getObject(resConfig));
-              }
+                for (final Object unitDef : unitDefs) {
+                    SmooksResourceConfiguration resConfig = (SmooksResourceConfiguration) unitDef;
+                    objects.add(applicationContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(resConfig));
+                }
             } else {
                 objects = EMPTY_LIST;
             }
@@ -184,7 +185,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     public boolean isDefaultSerializationOn() {
         if(isDefaultSerializationOn == null) {
-            isDefaultSerializationOn = ParameterAccessor.getBoolParameter(Filter.DEFAULT_SERIALIZATION_ON, true, this);
+            isDefaultSerializationOn = Boolean.valueOf(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", this));
         }
 
         return isDefaultSerializationOn;
@@ -224,22 +225,21 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     public void initializeXMLReaderPool() {
     	try {
-	        readerPoolSize = Integer.parseInt(ParameterAccessor.getStringParameter(Filter.READER_POOL_SIZE, "0", this).trim());
+	        readerPoolSize = Integer.parseInt(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, "0", this));
     	} catch(NumberFormatException e) {
     		readerPoolSize = 0;
     	}
     }
 
-	public XMLReader getXMLReader()
-  {
-		synchronized(readerPool) {
-			if(!readerPool.isEmpty()) {
-				return readerPool.remove(0);
-			} else {
-				return null;
-			}
-		}
-	}
+    public XMLReader getXMLReader() {
+        synchronized (readerPool) {
+            if (!readerPool.isEmpty()) {
+                return readerPool.remove(0);
+            } else {
+                return null;
+            }
+        }
+    }
 
 	public void returnXMLReader(XMLReader reader) {
 		synchronized(readerPool) {

@@ -62,10 +62,10 @@ public class SmooksResourceConfigurationTest {
 		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
 
 		resourceConfig.setParameter("x", "val x");
-		assertEquals("Expected x to be 'val x'", "val x", resourceConfig.getParameter("x").getValue());
+		assertEquals("Expected x to be 'val x'", "val x", resourceConfig.getParameter("x", String.class).getValue());
 		resourceConfig.setParameter("y", "val y 1");
 		resourceConfig.setParameter("y", "val y 2");
-		assertEquals("Expected y to be 'val y 1'", "val y 1", resourceConfig.getParameter("y").getValue());
+		assertEquals("Expected y to be 'val y 1'", "val y 1", resourceConfig.getParameter("y", String.class).getValue());
 
 		List yParams = resourceConfig.getParameters("y");
 		assertEquals("val y 1", ((Parameter)yParams.get(0)).getValue());
@@ -80,10 +80,10 @@ public class SmooksResourceConfigurationTest {
 	@Test
 	public void test_getBoolParameter() {
 		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
-		resourceConfig.setParameter("x", "true");
+		resourceConfig.setParameter("x", true);
 
-		assertTrue("Expected x to be true", resourceConfig.getBoolParameter("x", false));
-		assertFalse("Expected y to be false", resourceConfig.getBoolParameter("y", false));
+		assertTrue("Expected x to be true", resourceConfig.getParameterValue("x", Boolean.class, false));
+		assertFalse("Expected y to be false", resourceConfig.getParameterValue("y", Boolean.class, false));
 	}
 
 	@Test
@@ -91,8 +91,8 @@ public class SmooksResourceConfigurationTest {
 		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
 		resourceConfig.setParameter("x", "xxxx");
 
-		assertEquals("Expected x to be xxxx", "xxxx", resourceConfig.getStringParameter("x", "yyyy"));
-		assertEquals("Expected y to be yyyy", "yyyy", resourceConfig.getStringParameter("y", "yyyy"));
+		assertEquals("Expected x to be xxxx", "xxxx", resourceConfig.getParameterValue("x", String.class, "yyyy"));
+		assertEquals("Expected y to be yyyy", "yyyy", resourceConfig.getParameterValue("y", String.class, "yyyy"));
 	}
 
 	@Test

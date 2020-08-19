@@ -53,9 +53,4 @@ public abstract class AnnotationConstants {
      * "null" default annotation value.
      */
     public static final String NULL_STRING = "##NULL";
-
-    /**
-     * Unassigned default.
-     */
-    public static final String UNASSIGNED = "org.smooks.cdr.annotation.AnnotationConstants##UNASSIGNED";
 }

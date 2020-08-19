@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery.dom;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.AbstractParser;
@@ -50,8 +52,6 @@ import org.smooks.delivery.XMLReaderHierarchyChangeListener;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.xml.NamespaceMappings;
 import org.smooks.xml.hierarchy.HierarchyChangeReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -69,7 +69,7 @@ import java.nio.charset.Charset;
  * as an XML data stream, even when the stream is non-XML.
  * <p/>
  * If the configured parser implements the {@link org.smooks.xml.SmooksXMLReader}, the configuration will be
- * passed to the parser via {@link org.smooks.cdr.annotation.ConfigParam} annotaions on config properties
+ * passed to the parser via {@link javax.inject.Inject} annotations on config properties
  * defined on the implementation.
  *
  * <h3 id="parserconfig">.cdrl Configuration</h3>

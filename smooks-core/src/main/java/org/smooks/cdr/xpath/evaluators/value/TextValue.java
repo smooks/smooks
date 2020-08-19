@@ -42,8 +42,8 @@
  */
 package org.smooks.cdr.xpath.evaluators.value;
 
+import org.smooks.converter.TypeConverter;
 import org.smooks.delivery.sax.SAXElement;
-import org.smooks.javabean.DataDecoder;
 import org.w3c.dom.Element;
 
 /**
@@ -52,18 +52,18 @@ import org.w3c.dom.Element;
  */
 public class TextValue extends Value {
 
-    private DataDecoder decoder;
+    private final TypeConverter<String, ?> typeConverter;
 
-    public TextValue(DataDecoder decoder) {
-        this.decoder = decoder;
+    public TextValue(TypeConverter<String, ?> typeConverter) {
+        this.typeConverter = typeConverter;
     }
 
     public Object getValue(SAXElement element) {
-        return decoder.decode(element.getTextContent());
+        return typeConverter.convert(element.getTextContent());
     }
 
     public Object getValue(Element element) {
-        return decoder.decode(element.getTextContent());
+        return typeConverter.convert(element.getTextContent());
     }
 
     public String toString() {

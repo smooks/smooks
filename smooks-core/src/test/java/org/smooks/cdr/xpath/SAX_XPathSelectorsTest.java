@@ -44,18 +44,16 @@ package org.smooks.cdr.xpath;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import org.smooks.Smooks;
 import org.smooks.FilterSettings;
+import org.smooks.Smooks;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.IOException;
 import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -99,7 +97,6 @@ public class SAX_XPathSelectorsTest {
             smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
-
             assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.smooks.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Selector Namespace URI: [null], Resource: [org.smooks.cdr.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.smooks.delivery.sax.SAXVisitAfter interface only.  Class 'org.smooks.cdr.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
         }
     }

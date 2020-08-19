@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery.dom.serialize;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfigurationNotFoundException;
@@ -57,13 +59,12 @@ import org.smooks.event.types.ElementPresentEvent;
 import org.smooks.event.types.ResourceTargetingEvent;
 import org.smooks.xml.DocType;
 import org.smooks.xml.DomUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Node serializer.
@@ -133,13 +134,13 @@ public class Serializer {
     /*
       Turn default serialization on/off.  Default is "true".
      */
-    boolean defaultSerializationOn = ParameterAccessor.getBoolParameter(Filter.DEFAULT_SERIALIZATION_ON, true, executionContext.getDeliveryConfig());
+    boolean defaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", executionContext.getDeliveryConfig()));
         if(defaultSerializationOn) {
             defaultSerializationUnit = new DefaultSerializationUnit();
-            boolean rewriteEntities = ParameterAccessor.getBoolParameter(Filter.ENTITIES_REWRITE, true, executionContext.getDeliveryConfig());
-            defaultSerializationUnit.setRewriteEntities(rewriteEntities);
+            boolean rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", executionContext.getDeliveryConfig()));
+            defaultSerializationUnit.setRewriteEntities(Optional.of(rewriteEntities));
         }
-        terminateOnVisitorException = ParameterAccessor.getBoolParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, true, executionContext.getDeliveryConfig());
+        terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", executionContext.getDeliveryConfig()));
 	}
 
 	/**
@@ -324,8 +325,9 @@ public class Serializer {
 	}
 
     private static DefaultSerializationUnit defaultSerializer = new DefaultSerializationUnit();
+
     static {
-        defaultSerializer.setCloseEmptyElements(true);
+        defaultSerializer.setCloseEmptyElements(Optional.of(true));
     }
 
     /**

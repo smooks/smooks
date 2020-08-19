@@ -42,15 +42,15 @@
  */
 package org.smooks.javabean.lifecycle;
 
-import org.smooks.delivery.ExecutionLifecycleCleanable;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.container.ExecutionContext;
-import org.smooks.cdr.annotation.ConfigParam;
+import org.smooks.delivery.ExecutionLifecycleCleanable;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.util.CollectionsUtil;
 
-import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Bean Result Cleanup resource.
@@ -61,11 +61,11 @@ import java.util.Map.Entry;
  */
 public class BeanResultCleanup implements ExecutionLifecycleCleanable {
 
-    @ConfigParam
+    @Inject
     private String[] beanIDs;
     private Set<String> beanIDSet;
 
-    @Initialize
+    @PostConstruct
     public void initialize() {
         beanIDSet = CollectionsUtil.toSet(beanIDs);
     }

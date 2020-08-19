@@ -42,10 +42,13 @@
  */
 package org.smooks.cdr;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.cdr.extension.ExtensionContext;
+import org.smooks.cdr.registry.Registry;
 import org.smooks.container.ExecutionContext;
-import org.smooks.container.standalone.StandaloneApplicationContext;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.expression.ExpressionEvaluator;
 import org.smooks.io.StreamUtils;
 import org.smooks.net.URIUtil;
@@ -53,8 +56,6 @@ import org.smooks.profile.DefaultProfileSet;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.util.ClassUtil;
 import org.smooks.xml.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -519,10 +520,10 @@ public final class XMLConfigDigester {
             assertExtendedConfigOK(configNamespace, resourcePath);
 
             // Construct the Smooks instance for processing this config namespace...
-            smooks = new Smooks(StandaloneApplicationContext.createNewInstance(false));
+            smooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterInstalledResources(false).create());
             setExtentionDigestOn();
             try {
-                SmooksResourceConfigurationStore configStore = smooks.getApplicationContext().getStore();
+                Registry configStore = smooks.getApplicationContext().getRegistry();
                 SmooksResourceConfigurationList extConfigList = new SmooksResourceConfigurationList(baseURI);
 
                 XMLConfigDigester configDigester = new XMLConfigDigester(extConfigList);
@@ -660,9 +661,8 @@ public final class XMLConfigDigester {
             String paramName = DomUtils.getAttributeValue(paramNode, "name");
             String paramType = DomUtils.getAttributeValue(paramNode, "type");
             String paramValue = DomUtils.getAllText(paramNode, true);
-            Parameter paramInstance;
 
-            paramInstance = resourceConfig.setParameter(paramName, paramType, paramValue);
+            Parameter<?> paramInstance = resourceConfig.setParameter(paramName, paramType, paramValue);
             paramInstance.setXML(paramNode);
         }
     }

@@ -43,8 +43,8 @@
 package org.smooks.cdr;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
+import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.container.ExecutionContext;
 import org.smooks.profile.ProfileSet;
 import org.xml.sax.SAXException;
@@ -53,6 +53,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for the ArciveDef class.
@@ -92,7 +95,7 @@ public class XMLConfigDigesterTest {
 	@Test
     public void test_import_filesys() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("src/test/java/org/smooks/cdr/testconfig3.cdrl");
-        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getStore().getSmooksResourceConfigurationLists();
+        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getRegistry().lookup(new SmooksResourceConfigurationListsLookup()).iterator();
         SmooksResourceConfigurationList list = null;
 
         while(listIt.hasNext()) {
@@ -105,7 +108,7 @@ public class XMLConfigDigesterTest {
 	@Test
     public void test_import_classpath() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("/org/smooks/cdr/testconfig3.cdrl");
-        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getStore().getSmooksResourceConfigurationLists();
+        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getRegistry().lookup(new SmooksResourceConfigurationListsLookup()).iterator();
         SmooksResourceConfigurationList list = null;
 
         while(listIt.hasNext()) {
@@ -151,10 +154,10 @@ public class XMLConfigDigesterTest {
         assertEquals("https://www.smooks.org-default", resList.get(1).getSelectorNamespaceURI());
 
         // Test the parameters on the 2nd config entry.
-        assertEquals("param1Val", resList.get(1).getStringParameter("param1"));
-        assertEquals(true, resList.get(1).getBoolParameter("param2", false));
-        assertEquals(false, resList.get(1).getBoolParameter("param3", true));
-        assertEquals(false, resList.get(1).getBoolParameter("param4", false));
+        assertEquals("param1Val", resList.get(1).getParameterValue("param1", String.class));
+        assertEquals("true", resList.get(1).getParameterValue("param2", String.class, "false"));
+        assertEquals("false", resList.get(1).getParameterValue("param3", String.class, "true"));
+        assertEquals("false", resList.get(1).getParameterValue("param4", String.class, "false"));
 
         // Test the 3rd config entry.
         assertEquals("abc", resList.get(2).getResourceType());

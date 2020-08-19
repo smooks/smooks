@@ -42,11 +42,13 @@
  */
 package org.smooks.delivery;
 
+import org.smooks.SmooksException;
+
 /**
  * Unsupported {@link ContentHandler} type exception.
  * @author tfennelly
  */
-public class UnsupportedContentHandlerTypeException extends Exception {
+public class UnsupportedContentHandlerTypeException extends SmooksException {
 
 	/**
      * Serial UID.

@@ -42,10 +42,11 @@
  */
 package org.smooks.delivery.dom;
 
-import org.w3c.dom.Element;
-import org.smooks.container.ExecutionContext;
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
+import org.smooks.container.ExecutionContext;
+import org.w3c.dom.Element;
+
+import javax.inject.Inject;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -55,7 +56,7 @@ public class VisitAfterDOMVisitor implements DOMVisitAfter {
     public static boolean visited = false;
     public static String staticInjectedParam;
 
-    @ConfigParam
+    @Inject
     private String injectedParam;
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {

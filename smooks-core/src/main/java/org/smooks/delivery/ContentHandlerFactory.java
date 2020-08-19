@@ -42,8 +42,8 @@
  */
 package org.smooks.delivery;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksConfigurationException;
+import org.smooks.cdr.SmooksResourceConfiguration;
 
 
 /**
@@ -51,7 +51,7 @@ import org.smooks.cdr.SmooksConfigurationException;
  *
  * @author tfennelly
  */
-public interface ContentHandlerFactory extends ContentHandler {
+public interface ContentHandlerFactory<T> extends ContentHandler {
 
     /**
      * Name of the param used on a ContentHandlerFactory config that specifies
@@ -61,15 +61,17 @@ public interface ContentHandlerFactory extends ContentHandler {
      * support for something else (e.g. "xsl").  This is why we can't use the type attribute for this
      * purpose.
      */
-    public static final String PARAM_RESTYPE = "restype";
+    String PARAM_RESTYPE = "restype";
 
 	/**
 	 * Create the content handler instance.
-	 * @param resourceConfig The SmooksResourceConfiguration for the {@link ContentHandler}
+	 * @param smooksResourceConfiguration The SmooksResourceConfiguration for the {@link ContentHandler}
      * to be created.
 	 * @return Content handler instance.
      * @throws SmooksConfigurationException Successfully created ContentHandler, but an error occured during configuration.
 	 * @throws InstantiationException Unable to create ContentHandler instance.
 	 */
-	public Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException, InstantiationException;
+	T create(SmooksResourceConfiguration smooksResourceConfiguration);
+	
+	String getType();
 }

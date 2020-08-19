@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery.sax;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
@@ -57,8 +59,6 @@ import org.smooks.event.types.ElementVisitEvent;
 import org.smooks.event.types.ResourceTargetingEvent;
 import org.smooks.io.NullWriter;
 import org.smooks.xml.DocType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * SAX Handler.
@@ -128,7 +129,7 @@ public class SAXHandler extends SmooksContentHandler {
         }
 
         rewriteEntities = contentDeliveryConfig.isRewriteEntities();
-        defaultSerializer.setRewriteEntities(rewriteEntities);
+        defaultSerializer.setRewriteEntities(Optional.of(rewriteEntities));
 
         defaultSerializationOn = executionContext.isDefaultSerializationOn();
         if(defaultSerializationOn) {

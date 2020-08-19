@@ -42,9 +42,9 @@
  */
 package org.smooks.visitors.remove;
 
-import org.junit.Test;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.payload.StringResult;
@@ -53,6 +53,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -84,7 +85,7 @@ public class RemoveTest {
         StringResult result = new StringResult();
 
         smooks.setFilterSettings(filterSettings);
-        smooks.addVisitor(new RemoveElement().setKeepChildren(keepChildren), "b");
+        smooks.addVisitor(new RemoveElement().setKeepChildren(Optional.of(keepChildren)), "b");
 
         smooks.filterSource(new StringSource("<a><b><d><e>some text</e></d></b><something/></a>"), result);
 

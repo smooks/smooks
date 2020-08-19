@@ -43,11 +43,13 @@
 package org.smooks.cdr;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.smooks.delivery.java.JavaXMLReader;
-import org.smooks.delivery.AbstractParser;
 import org.smooks.GenericReaderConfigurator;
+import org.smooks.delivery.AbstractParser;
+import org.smooks.delivery.java.JavaXMLReader;
 import org.xml.sax.SAXException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author
@@ -78,8 +80,8 @@ public class GenericReaderConfiguratorTest {
         SmooksResourceConfiguration config = configurator.toConfig().get(0);
         assertConfigOK(config, JavaXMLReader.class.getName(), 8, 3, 3);
 
-        assertEquals("1", config.getStringParameter("a"));
-        assertEquals("2", config.getStringParameter("b"));
+        assertEquals("1", config.getParameterValue("a", String.class));
+        assertEquals("2", config.getParameterValue("b", String.class));
 
         assertTrue(AbstractParser.isFeatureOn("http://a", config));
         assertTrue(AbstractParser.isFeatureOn("http://b", config));
@@ -99,7 +101,7 @@ public class GenericReaderConfiguratorTest {
         SmooksResourceConfiguration config = configurator.toConfig().get(0);
         assertConfigOK(config, null, 2, 1, 0);
 
-        assertEquals("1", config.getStringParameter("a"));
+        assertEquals("1", config.getParameterValue("a", String.class));
 
         assertTrue(AbstractParser.isFeatureOn("http://a", config));
     }

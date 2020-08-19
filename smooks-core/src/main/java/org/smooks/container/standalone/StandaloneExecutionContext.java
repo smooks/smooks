@@ -98,24 +98,24 @@ public class StandaloneExecutionContext implements ExecutionContext {
      * application context.
 	 * @param targetProfile The target profile (base profile) for this context.
 	 * These parameters are not appended to the supplied requestURI.  This arg must be supplied, even if it's empty.
-     * @param context The application context.
+     * @param applicationContext The application context.
 	 * @param contentEncoding Character encoding to be used when parsing content.  Null
 	 * defaults to "UTF-8".
      * @param extendedVisitorConfigMap Preconfigured/extended Visitor Configuration Map.
      * @throws UnknownProfileMemberException Unknown target profile.
 	 */
-	public StandaloneExecutionContext(String targetProfile, ApplicationContext context, String contentEncoding, VisitorConfigMap extendedVisitorConfigMap) throws UnknownProfileMemberException {
+	public StandaloneExecutionContext(String targetProfile, ApplicationContext applicationContext, String contentEncoding, VisitorConfigMap extendedVisitorConfigMap) throws UnknownProfileMemberException {
         if(targetProfile == null) {
             throw new IllegalArgumentException("null 'targetProfile' arg in constructor call.");
         }
-        if(context == null) {
+        if(applicationContext == null) {
             throw new IllegalArgumentException("null 'context' arg in constructor call.");
         }
-		this.context = context;
+		this.context = applicationContext;
 		setContentEncoding(contentEncoding);
-        targetProfileSet = context.getProfileStore().getProfileSet(targetProfile);
-        deliveryConfig = ContentDeliveryConfigBuilder.getConfig(targetProfileSet, context, extendedVisitorConfigMap);
-        isDefaultSerializationOn = ParameterAccessor.getBoolParameter(Filter.DEFAULT_SERIALIZATION_ON, true, deliveryConfig);
+        targetProfileSet = applicationContext.getProfileStore().getProfileSet(targetProfile);
+        deliveryConfig = ContentDeliveryConfigBuilder.getConfig(targetProfileSet, applicationContext, extendedVisitorConfigMap);
+        isDefaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", deliveryConfig));
     }
 
     public void setDocumentSource(URI docSource) {
@@ -129,7 +129,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 		return docSource;
 	}
 
-	public ApplicationContext getContext() {
+	public ApplicationContext getApplicationContext() {
 		return context;
 	}
 
@@ -189,7 +189,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
     }
 
     public String getConfigParameter(String name, String defaultVal) {
-        return ParameterAccessor.getStringParameter(name, defaultVal, deliveryConfig);
+        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, deliveryConfig);
     }
 
     public boolean isDefaultSerializationOn() {

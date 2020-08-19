@@ -43,18 +43,19 @@
 package org.smooks.javabean.pojogen;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import java.io.StringWriter;
-import java.io.IOException;
-import java.util.List;
-
+import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.io.NullWriter;
 import org.smooks.io.StreamUtils;
-import org.smooks.javabean.DataDecoder;
-import org.smooks.javabean.DecodeType;
 import org.smooks.profile.BasicProfile;
 import org.smooks.profile.Profile;
+
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -74,13 +75,13 @@ public class PojoGenTest {
         aClass.addBeanProperty(new JNamedType(new JType(BBBClass.class), "objVar"));
         aClass.addBeanProperty(new JNamedType(new JType(List.class, BBBClass.class), "genericVar"));
 
-        aClass.getImplementTypes().add(new JType(DataDecoder.class));
+        aClass.getImplementTypes().add(new JType(TypeConverterFactory.class));
         aClass.getImplementTypes().add(new JType(Profile.class));
 
         aClass.getExtendTypes().add(new JType(NullWriter.class));
         aClass.getExtendTypes().add(new JType(BasicProfile.class));
 
-        aClass.getAnnotationTypes().add(new JType(DecodeType.class));
+        aClass.getAnnotationTypes().add(new JType(Resource.class));
 
         // Wire AClass into BClass...
         bClass.addBeanProperty(new JNamedType(new JType(BBBClass.class), "bbbVar"));
@@ -116,16 +117,16 @@ public class PojoGenTest {
             " */\n" +
             "package com.acme;\n" +
             "\n" +
-            "import org.smooks.javabean.DataDecoder;    \n" +
+            "import org.smooks.converter.factory.TypeConverterFactory;    \n" +
             "import org.smooks.profile.Profile;    \n" +
             "import org.smooks.io.NullWriter;    \n" +
             "import org.smooks.profile.BasicProfile;    \n" +
-            "import org.smooks.javabean.DecodeType;     \n" +
+            "import javax.annotation.Resource;     \n" +
             "import org.smooks.javabean.pojogen.BBBClass;    \n" +
             "import java.util.List;    \n" +
             "\n" +
-            "@DecodeType" +
-            "public class AClass implements DataDecoder, Profile extends NullWriter, BasicProfile {\n" +
+            "@Resource" +
+            "public class AClass implements TypeConverterFactory, Profile extends NullWriter, BasicProfile {\n" +
             "\n" +
             "    private int primVar;\n" +
             "    private Double doubleVar;\n" +

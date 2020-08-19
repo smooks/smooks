@@ -43,9 +43,9 @@
 package org.smooks.delivery.sax;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -56,7 +56,7 @@ public class SAXVisitBeforeVisitor implements SAXVisitBefore {
     public static boolean visited = false;
     public static String staticInjectedParam;
 
-    @ConfigParam
+    @Inject
     private String injectedParam;
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {

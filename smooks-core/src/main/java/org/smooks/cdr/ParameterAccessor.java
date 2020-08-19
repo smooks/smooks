@@ -42,14 +42,15 @@
  */
 package org.smooks.cdr;
 
+import org.smooks.Smooks;
+import org.smooks.assertion.AssertArgument;
+import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
+import org.smooks.delivery.ContentDeliveryConfig;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.assertion.AssertArgument;
-import org.smooks.Smooks;
-import org.smooks.SmooksUtil;
 
 /**
  * Accessor class for looking up global parameters.
@@ -73,32 +74,15 @@ public abstract class ParameterAccessor {
 	 * Device parameters .cdrl lookup string.
 	 */
 	public static final String GLOBAL_PARAMETERS = "global-parameters";
-
-	/**
-	 * Get the named parameter instance (decode).
-	 * @param name Parameter name.
-	 * @param config Device Delivery Configuration.
-	 * @return The Parameter instance for the named parameter (<a href="#decode">decoded to an Object</a>), 
-	 * or null if not defined.
-	 */
-	public static Object getParameterObject(String name, ContentDeliveryConfig config) {
-		Parameter param = getParamter(name, config);
-		
-		if(param != null) {
-			return param.getValue(config);
-		}
-		
-		return null;
-	}
-
+	
 	/**
 	 * Get the named parameter String value.
 	 * @param name Name of parameter to get. 
 	 * @param config The {@link ContentDeliveryConfig} for the requesting device.
 	 * @return Parameter value, or null if not set.
 	 */
-	public static String getStringParameter(String name, ContentDeliveryConfig config) {
-		Parameter param = getParamter(name, config);
+	public static <T> T getParameterValue(String name, Class<T> valueClass, ContentDeliveryConfig config) {
+		Parameter<T> param = getParameter(name, valueClass, config);
 		
 		if(param != null) {
 			return param.getValue();
@@ -114,8 +98,8 @@ public abstract class ParameterAccessor {
 	 * @param config The {@link ContentDeliveryConfig} for the requesting device.
 	 * @return Parameter value, or null if not set.
 	 */
-	public static String getStringParameter(String name, String defaultVal, ContentDeliveryConfig config) {
-		Parameter param = getParamter(name, config);
+	public static <T> T getParameterValue(String name,  Class<T> valueClass, T defaultVal, ContentDeliveryConfig config) {
+		Parameter<T> param = getParameter(name, valueClass, config);
 		
 		if(param != null) {
 			return param.getValue();
@@ -123,70 +107,23 @@ public abstract class ParameterAccessor {
 		
 		return defaultVal;
 	}
-
-	/**
-	 * Get the named SmooksResourceConfiguration parameter as a boolean.
-	 * @param name Name of parameter to get. 
-	 * @param defaultVal The default value to be returned if there are no 
-	 * parameters on the this SmooksResourceConfiguration instance, or the parameter is not defined.
-	 * @param config The {@link ContentDeliveryConfig} for the requesting device.
-	 * @return true if the parameter is set to true, defaultVal if not defined, otherwise false.
-	 */
-	public static boolean getBoolParameter(String name, boolean defaultVal, ContentDeliveryConfig config) {
-		Parameter param = getParamter(name, config);
-        return toBoolean(param, defaultVal);
-	}
-
-    /**
-     * Get the named SmooksResourceConfiguration parameter as a boolean.
-     * @param name Name of parameter to get.
-     * @param defaultVal The default value to be returned if there are no
-     * parameters on the this SmooksResourceConfiguration instance, or the parameter is not defined.
-     * @param config The config map.
-     * @return true if the parameter is set to true, defaultVal if not defined, otherwise false.
-     */
-    public static boolean getBoolParameter(String name, boolean defaultVal, Map<String, List<SmooksResourceConfiguration>> config) {
-        Parameter param = getParameter(name, config);
-        return toBoolean(param, defaultVal);
-    }
-
-    private static boolean toBoolean(Parameter param, boolean defaultVal) {
-        String paramVal;
-
-        if(param == null) {
-            return defaultVal;
-        }
-
-        paramVal = param.getValue();
-        if(paramVal == null) {
-            return defaultVal;
-        }
-        paramVal = paramVal.trim();
-        if(paramVal.equals("true")) {
-            return true;
-        } else if(paramVal.equals("false")) {
-            return false;
-        } else {
-            return defaultVal;
-        }
-    }
-
+	
     /**
 	 * Get the named parameter.
      * <p/>
      * Calls {@link org.smooks.delivery.ContentDeliveryConfig#getSmooksResourceConfigurations()}
      * to get the configurations map and then passes that to
-     * {@link #getParameter(String, java.util.Map)}, returning its return value.
+     * {@link #getParameter(String, Class valueType, java.util.Map)}, returning its return value.
      *
 	 * @param name Parameter name.
 	 * @param config Device Delivery Configuration.
 	 * @return The Parameter instance for the named parameter, or null if not defined.
 	 */
-	public static Parameter getParamter(String name, ContentDeliveryConfig config) {
+	public static <T> Parameter<T> getParameter(String name, Class<T> valueType, ContentDeliveryConfig config) {
         AssertArgument.isNotNullAndNotEmpty(name, "name");
         AssertArgument.isNotNull(config, "config");
 
-        return getParameter(name, config.getSmooksResourceConfigurations());
+        return getParameter(name, valueType, config.getSmooksResourceConfigurations());
 	}
 
     /**
@@ -196,20 +133,14 @@ public abstract class ParameterAccessor {
      * @param resourceConfigurations The resource configuration map.
      * @return The parameter value, or null if not found.
      */
-    public static Parameter getParameter(String name, Map<String, List<SmooksResourceConfiguration>> resourceConfigurations) {
+    public static <T> Parameter<T> getParameter(String name, Class<T> valueType, Map<String, List<SmooksResourceConfiguration>> resourceConfigurations) {
         AssertArgument.isNotNullAndNotEmpty(name, "name");
         AssertArgument.isNotNull(resourceConfigurations, "resourceConfigurations");
         List<SmooksResourceConfiguration> configList = resourceConfigurations.get(GLOBAL_PARAMETERS);
 
         if(configList != null) {
-            // Backward compatibility...
-            List<SmooksResourceConfiguration> cbConfigList = resourceConfigurations.get("device-parameters");
-            if(cbConfigList != null) {
-                configList.addAll(cbConfigList);
-            }
-
             for (SmooksResourceConfiguration resourceConfig : configList) {
-                Parameter param = resourceConfig.getParameter(name);
+                Parameter<T> param = resourceConfig.getParameter(name, valueType);
                 if(param != null) {
                     return param;
                 }
@@ -225,6 +156,16 @@ public abstract class ParameterAccessor {
         return null;
     }
 
+    public static <T> T getParameterValue(String name, Class<T> valueType, T defaultVal, Map<String, List<SmooksResourceConfiguration>> config) {
+        Parameter<T> param = getParameter(name, valueType, config);
+
+        if(param != null) {
+            return param.getValue();
+        }
+
+        return defaultVal;
+    }
+    
     /**
      * Get the named parameter from the supplied resource config map.
      *
@@ -232,8 +173,9 @@ public abstract class ParameterAccessor {
      * @param resourceConfigurations The resource configuration map.
      * @return The parameter value, or null if not found.
      */
-    public static String getStringParameter(String name, Map<String, List<SmooksResourceConfiguration>> resourceConfigurations) {
-        Parameter parameter = getParameter(name, resourceConfigurations);
+ 
+     public static <T> T getParameterValue(String name, Class<T> valueType, Map<String, List<SmooksResourceConfiguration>> resourceConfigurations) {
+        Parameter<T> parameter = getParameter(name, valueType, resourceConfigurations);
 
         if(parameter != null) {
             return parameter.getValue();
@@ -242,16 +184,16 @@ public abstract class ParameterAccessor {
         return null;
     }
 
-    public static void setParameter(String name, String value, Smooks smooks) {
+    public static void setParameter(String name, Object value, Smooks smooks) {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration(ParameterAccessor.GLOBAL_PARAMETERS);
 
         config.setParameter(name, value);
-        SmooksUtil.registerResource(config, smooks);
+        smooks.getApplicationContext().getRegistry().registerResource(config);
     }
 
     public static void removeParameter(String name, Smooks smooks) {
-    	SmooksResourceConfigurationStore configStore = smooks.getApplicationContext().getStore();
-    	Iterator<SmooksResourceConfigurationList> configLists = configStore.getSmooksResourceConfigurationLists();
+    	Registry registry = smooks.getApplicationContext().getRegistry();
+    	Iterator<SmooksResourceConfigurationList> configLists = registry.lookup(new SmooksResourceConfigurationListsLookup()).iterator();
 
     	while(configLists.hasNext()) {
             SmooksResourceConfigurationList list = configLists.next();

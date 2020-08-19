@@ -42,14 +42,18 @@
  */
 package org.smooks.cdr;
 
+import org.junit.Test;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
+import org.smooks.container.MockApplicationContext;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import org.smooks.cdr.annotation.Configurator;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TokenizedStringParameterDecoderTest {
 
@@ -89,9 +93,11 @@ public class TokenizedStringParameterDecoderTest {
 		
         decoderConfig = new SmooksResourceConfiguration(Parameter.PARAM_TYPE_PREFIX + type, "org.smooks.cdr.TokenizedStringParameterDecoder");
         decoderConfig.setParameter(Parameter.PARAM_TYPE_PREFIX, type);
-        decoder = Configurator.configure(new TokenizedStringParameterDecoder(), decoderConfig);
+		TokenizedStringParameterDecoder tokenizedStringParameterDecoder = new TokenizedStringParameterDecoder();
+		MockApplicationContext mockApplicationContext = new MockApplicationContext();
+		mockApplicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(tokenizedStringParameterDecoder, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), decoderConfig, tokenizedStringParameterDecoder)));
         
-		return (Collection)decoder.decodeValue(value);
+		return (Collection)tokenizedStringParameterDecoder.decodeValue(value);
 	}
 
 }

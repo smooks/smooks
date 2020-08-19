@@ -45,7 +45,6 @@ package org.smooks;
 import org.junit.Before;
 import org.junit.Test;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.JavaContentHandlerFactory;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.sax.SAXElement;
@@ -87,7 +86,6 @@ public class SmooksTest {
         smooks.setClassLoader(classLoader);
 
         ExecutionContext execCtx = smooks.createExecutionContext();
-        assertTrue(classLoader.requests.contains(JavaContentHandlerFactory.class.getName()));
         assertTrue(contextClassLoader == Thread.currentThread().getContextClassLoader());
 
         classLoader.requests.clear();

@@ -42,12 +42,12 @@
  */
 package org.smooks.cdr;
 
+import org.smooks.delivery.ContentDeliveryConfig;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
-
-import org.smooks.delivery.ContentDeliveryConfig;
 
 /**
  * {@link ParameterDecoder} used to convert a parameter String value to a
@@ -76,7 +76,7 @@ import org.smooks.delivery.ContentDeliveryConfig;
  * @see org.smooks.cdr.SmooksResourceConfiguration
  * @author tfennelly
  */
-public class PropertyListParameterDecoder extends ParameterDecoder {
+public class PropertyListParameterDecoder extends ParameterDecoder<String> {
 
 	public Object decodeValue(String value) throws ParameterDecodeException {
 		Properties properties = new Properties();

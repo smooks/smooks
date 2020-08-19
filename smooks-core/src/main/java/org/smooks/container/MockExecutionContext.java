@@ -103,7 +103,7 @@ public class MockExecutionContext implements ExecutionContext {
 	/* (non-Javadoc)
 	 * @see org.smooks.container.ExecutionContext#getApplicationContext()
 	 */
-	public ApplicationContext getContext() {
+	public ApplicationContext getApplicationContext() {
 		if(context == null) {
 			throw new IllegalStateException("Call to getApplicationContext before context member has been initialised.  Set the 'context' member variable.");
 		}
@@ -159,7 +159,7 @@ public class MockExecutionContext implements ExecutionContext {
     }
 
     public String getConfigParameter(String name, String defaultVal) {
-        return ParameterAccessor.getStringParameter(name, defaultVal, deliveryConfig);
+        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, deliveryConfig);
     }
 
     public boolean isDefaultSerializationOn() {

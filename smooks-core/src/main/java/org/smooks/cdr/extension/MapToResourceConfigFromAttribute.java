@@ -42,19 +42,18 @@
  */
 package org.smooks.cdr.extension;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AnnotationConstants;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.cdr.annotation.ConfigParam.Use;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.xml.DomUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import javax.inject.Inject;
 import java.util.EmptyStackException;
+import java.util.Optional;
 
 /**
  * Map a property value onto the current {@link SmooksResourceConfiguration} based on an
@@ -69,26 +68,26 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromAttribute.class);
 
-    @ConfigParam(use=Use.OPTIONAL)
-    private String mapTo;
+    @Inject
+    private Optional<String> mapTo;
 
-    @ConfigParam(use = ConfigParam.Use.OPTIONAL)
-    private String mapToSpecifier;
+    @Inject
+    private Optional<String> mapToSpecifier;
 
-    @ConfigParam
+    @Inject
     private String attribute;
 
-    @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
-    private String defaultValue;
+    @Inject
+    private Optional<String> defaultValue;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         SmooksResourceConfiguration config;
         String value = DomUtils.getAttributeValue(element, attribute);
 
-        String actualMapTo = mapTo;
+        String actualMapTo = mapTo.orElse(null);
 
-        if(actualMapTo == null && mapToSpecifier != null) {
-        	actualMapTo = DomUtils.getAttributeValue(element, mapToSpecifier);
+        if(actualMapTo == null && mapToSpecifier.isPresent()) {
+        	actualMapTo = DomUtils.getAttributeValue(element, mapToSpecifier.get());
         }
         
         //If no mapTo is set then the attribute value becomes the mapTo value
@@ -103,7 +102,7 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
         }
 
         if (value == null) {
-            value = defaultValue;
+            value = defaultValue.orElse(null);
         }
 
         if (value == null) {

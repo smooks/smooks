@@ -43,11 +43,11 @@
 package org.smooks.cdr.xsd11.conditiontests;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ import java.util.List;
  */
 public class ConditionTestVisitor implements SAXVisitBefore {
 
-    @ConfigParam
+    @Inject
     private String message;
 
     public static List<String> messagesUsed = new ArrayList<String>();

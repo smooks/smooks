@@ -43,11 +43,17 @@
 package org.smooks.delivery;
 
 import org.jaxen.saxpath.SAXPathException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationFactory;
-import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.injector.FieldInjector;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
+import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.annotation.VisitAfterIf;
@@ -61,9 +67,6 @@ import org.smooks.delivery.sax.SAXVisitAfter;
 import org.smooks.delivery.sax.SAXVisitBefore;
 import org.smooks.event.types.ConfigBuilderEvent;
 import org.smooks.expression.MVELExpressionEvaluator;
-import org.smooks.xml.NamespaceMappings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -237,17 +240,17 @@ public class VisitorConfigMap {
         String elementName = resourceConfig.getTargetElement();
 
         try {
-            SelectorStep.setNamespaces(resourceConfig.getSelectorSteps(), NamespaceMappings.getMappings(applicationContext));
+            SelectorStep.setNamespaces(resourceConfig.getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
         } catch (SAXPathException e) {
             throw new SmooksConfigurationException("Error configuring resource selector.", e);
         }
 
         if(configure) {
             // And configure/initialize the instance...
-            Configurator.processFieldContextAnnotation(visitor, applicationContext);
-            Configurator.processFieldConfigAnnotations(visitor, resourceConfig, false);
-            Configurator.initialise(visitor);
-            applicationContext.getStore().getInitializedObjects().add(visitor);
+            final FieldInjector fieldInjector = new FieldInjector(visitor, new Scope(applicationContext.getRegistry(), resourceConfig, visitor));
+            fieldInjector.inject();
+            applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitor, new PostConstructLifecyclePhase());
+            applicationContext.getRegistry().registerObject(visitor);
         }
 
         if(isSAXVisitor(visitor) || isDOMVisitor(visitor)) {
@@ -273,7 +276,7 @@ public class VisitorConfigMap {
                 logExecutionEvent(resourceConfig, "Added as a DOM " + SerializationUnit.class.getSimpleName() + " resource.");
             } else {
                 Phase phaseAnnotation = visitor.getClass().getAnnotation(Phase.class);
-                String visitPhase = resourceConfig.getStringParameter("VisitPhase", VisitPhase.PROCESSING.toString());
+                String visitPhase = resourceConfig.getParameterValue("VisitPhase", String.class, VisitPhase.PROCESSING.toString());
 
                 if(phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
                     // It's an assembly unit...

@@ -43,13 +43,13 @@
 package org.smooks.delivery.java;
 
 import com.thoughtworks.xstream.io.xml.SaxWriter;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.payload.JavaSource;
 import org.xml.sax.*;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
@@ -62,12 +62,12 @@ import java.util.List;
  */
 public class XStreamXMLReader implements JavaXMLReader {
 
-    @ConfigParam(defaultVal = "true")
-    private boolean includeEnclosingDocument = true;
+    @Inject
+    private Boolean includeEnclosingDocument = true;
 
     private SaxWriter xstreamReader;
     
-    @Initialize
+    @PostConstruct
     public void intialize() {
         xstreamReader = new SaxWriter(includeEnclosingDocument);
     }

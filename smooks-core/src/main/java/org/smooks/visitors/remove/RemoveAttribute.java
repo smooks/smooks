@@ -43,16 +43,17 @@
 package org.smooks.visitors.remove;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
 import org.w3c.dom.Element;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.xml.XMLConstants;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Remove attribute.
@@ -62,51 +63,51 @@ public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
 
     private String qName;
     private String localPart;
-    private String namespace;
+    private Optional<String> namespace;
 
-    @Initialize
+    @PostConstruct
     public void init() {
         int prefixQualifier = qName.indexOf(':');
         if(prefixQualifier != -1) {
             localPart = qName.substring(prefixQualifier + 1);
 
             // Default the namespace to xmlns if undefined and the prefix is "xmlns"...
-            if(namespace == null && qName.substring(0, prefixQualifier).equals(XMLConstants.XMLNS_ATTRIBUTE)) {
-                namespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+            if(!namespace.isPresent() && qName.substring(0, prefixQualifier).equals(XMLConstants.XMLNS_ATTRIBUTE)) {
+                namespace = Optional.of(XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
             }
         } else {
             localPart = qName;
 
             // Default the namespace to xmlns if undefined and the localPart is "xmlns"...
-            if(namespace == null && localPart.equals(XMLConstants.XMLNS_ATTRIBUTE)) {
-                namespace = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+            if(!namespace.isPresent() && localPart.equals(XMLConstants.XMLNS_ATTRIBUTE)) {
+                namespace = Optional.of(XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
             }
         }
     }
 
-    @ConfigParam
+    @Inject
     public RemoveAttribute setName(String attributeName) {
         this.qName = attributeName;
         return this;
     }
 
-    @ConfigParam (use = ConfigParam.Use.OPTIONAL)
-    public RemoveAttribute setNamespace(String attributeNamespace) {
+    @Inject
+    public RemoveAttribute setNamespace(Optional<String> attributeNamespace) {
         this.namespace = attributeNamespace;
         return this;
     }
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(namespace != null) {
-            element.removeAttributeNS(namespace, qName);
+        if(namespace .isPresent()) {
+            element.removeAttributeNS(namespace.orElse(null), qName);
         } else {
             element.removeAttribute(qName);
         }
     }
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(namespace != null) {
-            element.removeAttributeNS(namespace, localPart);
+        if(namespace .isPresent()) {
+            element.removeAttributeNS(namespace.orElse(null), localPart);
         } else {
             element.removeAttribute(localPart);
         }

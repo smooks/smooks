@@ -44,14 +44,19 @@ package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AppContext;
-import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.classpath.ClasspathUtils;
 import org.smooks.container.ApplicationContext;
 import org.smooks.util.ClassUtil;
 
+import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * Java ContentHandler instance creator.
@@ -62,52 +67,48 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class JavaContentHandlerFactory implements ContentHandlerFactory {
 
-    @AppContext
+    @Inject
     private ApplicationContext appContext;
+    
+    private Map<SmooksResourceConfiguration, Object> javaContentHandlers = new ConcurrentHashMap<>();
 
     /**
-	 * Create a Java based ContentHandler instance.
-     * @param resourceConfig The SmooksResourceConfiguration for the Java {@link ContentHandler}
-     * to be created.
+     * Create a Java based ContentHandler instance.
+     *
+     * @param smooksResourceConfiguration The SmooksResourceConfiguration for the Java {@link ContentHandler}
+     *                                    to be created.
      * @return Java {@link ContentHandler} instance.
-	 */
-	@SuppressWarnings("unchecked")
-  public synchronized Object create(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException {
-        Object javaResource = resourceConfig.getJavaResourceObject();
+     */
+    @SuppressWarnings("unchecked")
+    public Object create(final SmooksResourceConfiguration smooksResourceConfiguration) throws SmooksConfigurationException {
+        return javaContentHandlers.computeIfAbsent(smooksResourceConfiguration, new Function<SmooksResourceConfiguration, Object>() {
+            @Override
+            public Object apply(final SmooksResourceConfiguration smooksResourceConfiguration) {
+                Object contentHandler;
+                try {
+                    final String className = ClasspathUtils.toClassName(smooksResourceConfiguration.getResource());
+                    final Class<?> classRuntime = ClassUtil.forName(className, getClass());
+                    final Constructor<?> constructor;
+                    try {
+                        constructor = classRuntime.getConstructor(SmooksResourceConfiguration.class);
+                        contentHandler = constructor.newInstance(smooksResourceConfiguration);
+                    } catch (NoSuchMethodException e) {
+                        contentHandler = classRuntime.newInstance();
+                    }
+                    appContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase(new Scope(appContext.getRegistry(), smooksResourceConfiguration, contentHandler)));
+                    appContext.getRegistry().registerObject(contentHandler);
 
-        if(javaResource != null) {
-            return javaResource;
-        }
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+                    throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + smooksResourceConfiguration.getResource() + "].  See exception cause...", e);
+                }
 
-		Object contentHandler;
+                return contentHandler;
+            }
+        });
+    }
 
-		try {
-			String className = ClasspathUtils.toClassName(resourceConfig.getResource());
-			Class classRuntime = ClassUtil.forName(className, getClass());
-			Constructor constructor;
-			try {
-				constructor = classRuntime.getConstructor(SmooksResourceConfiguration.class);
-				contentHandler = constructor.newInstance(resourceConfig);
-			} catch (NoSuchMethodException e) {
-				contentHandler = classRuntime.newInstance();
-			}
-            Configurator.configure(contentHandler, resourceConfig, appContext);
-        } catch (InstantiationException e) {
-            throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
-                , e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
-                , e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
-                , e);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause..."
-                , e);
-        }
-
-        resourceConfig.setJavaResourceObject(contentHandler);
-
-		return contentHandler;
-	}
+    @Override
+    public String getType() {
+        return "class";
+    }
 }

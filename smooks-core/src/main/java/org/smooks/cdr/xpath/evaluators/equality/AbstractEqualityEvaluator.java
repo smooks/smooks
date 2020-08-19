@@ -42,16 +42,17 @@
  */
 package org.smooks.cdr.xpath.evaluators.equality;
 
+import org.jaxen.expr.BinaryExpr;
+import org.jaxen.expr.Expr;
+import org.jaxen.expr.NumberExpr;
+import org.jaxen.saxpath.SAXPathException;
 import org.smooks.cdr.xpath.evaluators.XPathExpressionEvaluator;
 import org.smooks.cdr.xpath.evaluators.value.Value;
-import org.smooks.javabean.DataDecoder;
-import org.smooks.javabean.DataDecodeException;
-import org.smooks.javabean.decoders.StringDecoder;
-import org.smooks.javabean.decoders.DoubleDecoder;
-import org.jaxen.expr.NumberExpr;
-import org.jaxen.expr.Expr;
-import org.jaxen.expr.BinaryExpr;
-import org.jaxen.saxpath.SAXPathException;
+import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterException;
+import org.smooks.converter.factory.TypeConverterFactory;
+import org.smooks.converter.factory.system.StringConverterFactory;
+import org.smooks.converter.factory.system.StringToDoubleConverterFactory;
 
 import java.util.Properties;
 
@@ -64,8 +65,8 @@ import java.util.Properties;
  */
 public abstract class AbstractEqualityEvaluator extends XPathExpressionEvaluator {
 
-    private static final DataDecoder STRING_DECODER = new StringDecoder();
-    private static final DataDecoder NUMBER_DECODER = new XPathNumberDecoder();
+    private static final TypeConverter<String, String> STRING_CONVERTER_FACTORY = new StringConverterFactory().createTypeConverter();
+    private static final TypeConverter<String, Object> NUMBER_CONVERTER_FACTORY = new XPathNumberConverterFactory().createTypeConverter();
 
     protected Value lhs;
     private String op;
@@ -76,11 +77,11 @@ public abstract class AbstractEqualityEvaluator extends XPathExpressionEvaluator
         Expr rhsExpr = expr.getRHS();
 
         if(lhsExpr instanceof NumberExpr || rhsExpr instanceof NumberExpr) {
-            lhs = Value.getValue(lhsExpr, NUMBER_DECODER, namespaces);
-            rhs = Value.getValue(rhsExpr, NUMBER_DECODER, namespaces);
+            lhs = Value.getValue(lhsExpr, NUMBER_CONVERTER_FACTORY, namespaces);
+            rhs = Value.getValue(rhsExpr, NUMBER_CONVERTER_FACTORY, namespaces);
         } else {
-            lhs = Value.getValue(lhsExpr, STRING_DECODER, namespaces);
-            rhs = Value.getValue(rhsExpr, STRING_DECODER, namespaces);
+            lhs = Value.getValue(lhsExpr, STRING_CONVERTER_FACTORY, namespaces);
+            rhs = Value.getValue(rhsExpr, STRING_CONVERTER_FACTORY, namespaces);
         }
         op = expr.getOperator();
     }
@@ -97,19 +98,22 @@ public abstract class AbstractEqualityEvaluator extends XPathExpressionEvaluator
         return "(" + lhs + " " + op + " " +  rhs + ")";
     }
 
-    private static class XPathNumberDecoder extends DoubleDecoder {
-        public Object decode(String data) throws DataDecodeException {
-            if(data.length() == 0) {
-                // This will force the equals op to fail...
-                return FailEquals.INSTANCE;
-            } else {
-                try {
-                    return super.decode(data);
-                } catch(DataDecodeException e) {
+    private static class XPathNumberConverterFactory implements TypeConverterFactory<String, Object> {
+        @Override
+        public TypeConverter<String, Object> createTypeConverter() {
+            return value -> {
+                if (value.length() == 0) {
                     // This will force the equals op to fail...
                     return FailEquals.INSTANCE;
+                } else {
+                    try {
+                        return new StringToDoubleConverterFactory().createTypeConverter().convert(value);
+                    } catch (TypeConverterException e) {
+                        // This will force the equals op to fail...
+                        return FailEquals.INSTANCE;
+                    }
                 }
-            }
+            };
         }
     }
 

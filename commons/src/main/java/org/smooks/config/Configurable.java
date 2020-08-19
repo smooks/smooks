@@ -54,10 +54,10 @@ public interface Configurable {
 
     /**
      * Set the component configuration.
-     * @param config The component configuration properties.
+     * @param properties The component configuration properties.
      * @throws SmooksConfigurationException Bad component configuration.
      */
-    void setConfiguration(Properties config) throws SmooksConfigurationException;
+    void setConfiguration(Properties properties) throws SmooksConfigurationException;
 
     /**
      * Get the component configuration.

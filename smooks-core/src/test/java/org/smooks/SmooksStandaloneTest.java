@@ -43,14 +43,14 @@
 package org.smooks;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.standalone.PreconfiguredSmooks;
 import org.smooks.profile.DefaultProfileSet;
 import org.smooks.util.DomUtil;
 import org.smooks.xml.XmlUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -95,10 +95,10 @@ public class SmooksStandaloneTest {
         // Create CDU configs and target them at the profiles...
         SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "xxx");
-        SmooksUtil.registerResource(resourceConfig, smooks);
+        smooks.getApplicationContext().getRegistry().registerResource(resourceConfig);
         resourceConfig = new SmooksResourceConfiguration("aaa", "profile2", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "zzz");
-        SmooksUtil.registerResource(resourceConfig, smooks);
+        smooks.getApplicationContext().getRegistry().registerResource(resourceConfig);
 
         // Transform the same message for each useragent...
         String message = "<aaa><bbb>888</bbb><ccc>999</ccc></aaa>";
@@ -123,10 +123,10 @@ public class SmooksStandaloneTest {
         // Create CDU configs and target them at the profiles...
         SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "xxx");
-        SmooksUtil.registerResource(resourceConfig, smooks);
+        smooks.getApplicationContext().getRegistry().registerResource(resourceConfig);
         resourceConfig = new SmooksResourceConfiguration("aaa", "profile2", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "zzz");
-        SmooksUtil.registerResource(resourceConfig, smooks);
+        smooks.getApplicationContext().getRegistry().registerResource(resourceConfig);
 
         // Transform the same message for each useragent...
         String message = "<aaa><bbb>888</bbb><ccc>999</ccc></aaa>";

@@ -42,12 +42,12 @@
  */
 package org.smooks.container;
 
-import org.smooks.cdr.SmooksResourceConfigurationStore;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.resource.ContainerResourceLocator;
+import org.smooks.cdr.registry.Registry;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.context.BeanIdStore;
+import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.ProfileStore;
+import org.smooks.resource.ContainerResourceLocator;
 
 import java.util.Collection;
 
@@ -55,37 +55,37 @@ import java.util.Collection;
  * Smooks Application context interface definition.
  * @author tfennelly
  */
-public interface ApplicationContext extends BoundAttributeStore {
+public interface ApplicationContext {
 
     /**
 	 * Get the container resource locator for the context.
 	 * @return ContainerResourceLocator for the context.
 	 */
-	public abstract ContainerResourceLocator getResourceLocator();
+	ContainerResourceLocator getResourceLocator();
 
     /**
      * Set the resource locator for this Smooks application context.
      * @param resourceLocator The Resource locator.
      */
-    public void setResourceLocator(ContainerResourceLocator resourceLocator);
+    void setResourceLocator(ContainerResourceLocator resourceLocator);
 
     /**
-	 * Get the Store for from the container application context.
-	 * @return SmooksResourceConfigurationStore instance.
+	 * Get the registry for from the container application context.
+	 * @return Registry instance.
 	 */
-	public abstract SmooksResourceConfigurationStore getStore();
+	Registry getRegistry();
 
     /**
 	 * Get the ProfileStore in use within this Context.
 	 * @return The ProfileStore.
 	 */
-    public ProfileStore getProfileStore();
+    ProfileStore getProfileStore();
 
     /**
      * Get the BeanIdStore in use within this Context
      * @return The BeanIdStore
      */
-    public BeanIdStore getBeanIdStore();
+    BeanIdStore getBeanIdStore();
 
     /**
      * Registers a bean context observer.
@@ -96,7 +96,7 @@ public interface ApplicationContext extends BoundAttributeStore {
      *
      * @param observer The actual BeanObserver instance.
      */
-    public abstract void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer);
+    void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer);
 
     /**
      * Get bean context observers.
@@ -108,12 +108,12 @@ public interface ApplicationContext extends BoundAttributeStore {
      * @return The collection of BeanObserver instance.
      * @see #addBeanContextLifecycleObserver(org.smooks.javabean.lifecycle.BeanContextLifecycleObserver)
      */
-    public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers();
+    Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers();
 
     /**
      * Get the {@link ClassLoader} to be used by the associated Smooks instance
      *
      * @return The ClassLoader.
      */
-    public ClassLoader getClassLoader();
+    ClassLoader getClassLoader();
 }

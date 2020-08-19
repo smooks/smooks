@@ -42,19 +42,16 @@
  */
 package org.smooks.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.classpath.InstanceOfFilter;
 import org.smooks.classpath.IsAnnotationPresentFilter;
 import org.smooks.classpath.Scanner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
@@ -400,7 +397,7 @@ public class ClassUtil {
 	public static boolean containsAssignableClass(final Class<?> toFind, final Class<?> ... classes) {
 		return indexOfFirstAssignableClass(toFind, classes) != -1;
 	}
-
+	
     public static <U> void setField(Field field, U instance, Object value) throws IllegalAccessException {
         boolean isAccessible = field.isAccessible();
 
@@ -428,7 +425,7 @@ public class ClassUtil {
             field.setAccessible(isAccessible);
         }
     }
-
+    
     public static List<Field> getAnnotatedFields(Class runtimeClass, Class<? extends Annotation> annotationClass) {
     	List<Field> streamWriterFields = new ArrayList<Field>();
     	getAnnotatedFields(runtimeClass, streamWriterFields, annotationClass);
@@ -565,5 +562,9 @@ public class ClassUtil {
             getter = getGetterMethod(toIsGetterName(propertyName), beanClass, returnType);
         }
         return getter;
+    }
+
+    public static String getLongMemberName(Member field) {
+        return field.getDeclaringClass().getName() + "#" + field.getName();
     }
 }

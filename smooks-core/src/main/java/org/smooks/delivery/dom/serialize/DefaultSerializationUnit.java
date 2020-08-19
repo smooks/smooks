@@ -42,21 +42,16 @@
  */
 package org.smooks.delivery.dom.serialize;
 
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Filter;
 import org.smooks.xml.XmlUtil;
-import org.w3c.dom.Attr;
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Element;
-import org.w3c.dom.EntityReference;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Optional;
 
 /**
  * Default SerializationUnit implementation.
@@ -66,17 +61,17 @@ import java.io.Writer;
  */
 public class DefaultSerializationUnit implements SerializationUnit {
 
-    private boolean closeEmptyElements = false;
-    private boolean rewriteEntities;
+    private Boolean closeEmptyElements = false;
+    private Boolean rewriteEntities = true;
 
-    @ConfigParam(defaultVal = "false")
-    public void setCloseEmptyElements(boolean closeEmptyElements) {
-        this.closeEmptyElements = closeEmptyElements;
+    @Inject
+    public void setCloseEmptyElements(Optional<Boolean> closeEmptyElements) {
+        this.closeEmptyElements = closeEmptyElements.orElse(this.closeEmptyElements);
     }
 
-    @ConfigParam(name = Filter.ENTITIES_REWRITE, defaultVal = "true")
-    public void setRewriteEntities(boolean rewriteEntities) {
-        this.rewriteEntities = rewriteEntities;
+    @Inject
+    public void setRewriteEntities(@Named(Filter.ENTITIES_REWRITE) Optional<Boolean> rewriteEntities) {
+        this.rewriteEntities = rewriteEntities.orElse(this.rewriteEntities);
     }
 
     public boolean isRewriteEntities() {

@@ -50,5 +50,5 @@ package org.smooks.delivery;
  * 
  * @author tfennelly
  */
-public interface ContentHandler<T> {
+public interface ContentHandler {
 }

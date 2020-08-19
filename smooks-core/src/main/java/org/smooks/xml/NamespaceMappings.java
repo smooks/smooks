@@ -42,17 +42,20 @@
  */
 package org.smooks.xml;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AppContext;
-import org.smooks.cdr.annotation.Config;
-import org.smooks.container.ApplicationContext;
-import org.smooks.container.ApplicationContextInitializer;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.annotation.Initialize;
-import org.smooks.namespace.NamespaceDeclarationStack;
+import org.jaxen.saxpath.SAXPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
+import org.smooks.cdr.xpath.SelectorStep;
+import org.smooks.container.ApplicationContext;
+import org.smooks.container.ExecutionContext;
+import org.smooks.namespace.NamespaceDeclarationStack;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import java.util.Properties;
 
 /**
@@ -62,57 +65,41 @@ import java.util.Properties;
  * 
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class NamespaceMappings implements ApplicationContextInitializer {
+public class NamespaceMappings {
 
     /**
      * Logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceMappings.class);
 	
-	@Config
-	private SmooksResourceConfiguration config;
+	@Inject
+	private SmooksResourceConfiguration smooksResourceConfiguration;
 	
-	@AppContext
-	private ApplicationContext appContext;
+	@Inject
+	private ApplicationContext applicationContext;
 	
 	/**
 	 * Load the namespace prefix-to-uri mappings into the {@link ApplicationContext}.
 	 */
-	@Initialize
-	public void loadNamespaces() {
-		Properties namespaces = getMappings(appContext);
-		Properties namespacesToAdd = config.toProperties();
+	@PostConstruct
+	public void postConstruct() throws SAXPathException {
+		final Properties newNamespaces = smooksResourceConfiguration.toProperties();
+
+		for (SmooksResourceConfigurationList smooksResourceConfigurationList : applicationContext.getRegistry().lookup(new SmooksResourceConfigurationListsLookup())) {
+			for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
+				SelectorStep.setNamespaces(smooksResourceConfigurationList.get(i).getSelectorSteps(), newNamespaces);
+			}
+		}
 		
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Adding namespace prefix-to-uri mappings: " + namespacesToAdd);
+        LOGGER.debug("Adding namespace prefix-to-uri mappings: " + newNamespaces);
+		final Properties currentNamespaces = applicationContext.getRegistry().lookup(new NamespaceMappingsLookup(false));
+		if (currentNamespaces != null) {
+			currentNamespaces.putAll(newNamespaces);
+		} else {
+			applicationContext.getRegistry().registerObject(NamespaceMappings.class, newNamespaces);
 		}
-		namespaces.putAll(namespacesToAdd);
-
-        setMappings(namespaces, appContext);
-    }
-
-    /**
-     * Set the namespace prefix-to-uri mappings.
-     * @param namespaces The namespace mappings.
-     * @param appContext The application context.
-     */
-    public static void setMappings(Properties namespaces, ApplicationContext appContext) {
-        appContext.setAttribute(NamespaceMappings.class, namespaces);
-    }
-
-    /**
-	 * Get the prefix-to-namespace mannings from the {@link ApplicationContext}.
-	 * @param appContext The {@link ApplicationContext}.
-	 * @return The prefix-to-namespace mannings.
-	 */
-	public static Properties getMappings(ApplicationContext appContext) {
-		Properties properties = (Properties) appContext.getAttribute(NamespaceMappings.class);
-		if(properties == null) {
-			return new Properties();
-		}
-		return properties;
 	}
-
+    
     /**
      * Set the {@link NamespaceDeclarationStack} for the current message on the current {@link ExecutionContext}.
      * @param namespaceDeclarationStack The {@link NamespaceDeclarationStack} instance.

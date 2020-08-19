@@ -42,11 +42,16 @@
  */
 package org.smooks.delivery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.Parameter;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.LifecycleManager;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.java.JavaXMLReader;
 import org.smooks.delivery.java.XStreamXMLReader;
@@ -60,8 +65,6 @@ import org.smooks.util.ClassUtil;
 import org.smooks.xml.NamespaceMappings;
 import org.smooks.xml.NullSourceXMLReader;
 import org.smooks.xml.SmooksXMLReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.*;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -331,10 +334,11 @@ public class AbstractParser {
         }
 
         if (reader instanceof SmooksXMLReader) {
-        	if(saxDriverConfig != null) {
-        		Configurator.configure(reader, saxDriverConfig, execContext.getContext());
+            final LifecycleManager lifecycleManager = execContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
+            if(saxDriverConfig != null) {
+                lifecycleManager.applyPhase(reader, new PostConstructLifecyclePhase(new Scope(execContext.getApplicationContext().getRegistry(), saxDriverConfig, reader)));
         	} else {
-        		Configurator.initialise(reader);
+                lifecycleManager.applyPhase(reader, new PostConstructLifecyclePhase());
         	}
         }
 
@@ -386,7 +390,7 @@ public class AbstractParser {
 
             handlers = saxDriverConfig.getParameters("sax-handler");
             if (handlers != null) {
-                for (Parameter handler : handlers) {
+                for (Parameter<String> handler : handlers) {
                     Object handlerObj = createHandler(handler.getValue());
 
                     if (handlerObj instanceof EntityResolver) {
@@ -436,14 +440,14 @@ public class AbstractParser {
 
             features = saxDriverConfig.getParameters(FEATURE_ON);
             if (features != null) {
-                for (Parameter feature : features) {
+                for (Parameter<String> feature : features) {
                     reader.setFeature(feature.getValue(), true);
                 }
             }
 
             features = saxDriverConfig.getParameters(FEATURE_OFF);
             if (features != null) {
-                for (Parameter feature : features) {
+                for (Parameter<String> feature : features) {
                     reader.setFeature(feature.getValue(), false);
                 }
             }

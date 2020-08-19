@@ -42,101 +42,63 @@
  */
 package org.smooks.container;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
-import org.smooks.cdr.SmooksResourceConfigurationStore;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.resource.ContainerResourceLocator;
+import org.smooks.cdr.registry.Registry;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
+import org.smooks.container.standalone.StandaloneApplicationContext;
 import org.smooks.javabean.context.BeanIdStore;
+import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.ProfileStore;
-import org.smooks.profile.DefaultProfileStore;
+import org.smooks.resource.ContainerResourceLocator;
+
+import java.util.Collection;
 
 /**
- *
  * @author tfennelly
  */
 public class MockApplicationContext implements ApplicationContext {
 
-    public MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
-    public ProfileStore profileStore = new DefaultProfileStore();
-    private Hashtable<Object, Object> attributes = new Hashtable<Object, Object>();
-    private BeanIdStore beanIdStore = new BeanIdStore();
-    private List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
+	private final StandaloneApplicationContext standaloneApplicationContext;
+	public MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
 
-    /* (non-Javadoc)
-      * @see org.smooks.container.ApplicationContext#getResourceLocator()
-      */
+	public MockApplicationContext() {
+		this.standaloneApplicationContext = new DefaultApplicationContextBuilder().create();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.smooks.container.ApplicationContext#getResourceLocator()
+	 */
 	public ContainerResourceLocator getResourceLocator() {
 		return containerResourceLocator;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#setAttribute(java.lang.Object, java.lang.Object)
-	 */
-	public void setAttribute(Object key, Object value) {
-		attributes.put(key, value);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#getAttribute(java.lang.Object)
-	 */
-	public Object getAttribute(Object key) {
-		return attributes.get(key);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#removeAttribute(java.lang.Object)
-	 */
-	public void removeAttribute(Object key) {
-		attributes.remove(key);
-	}
-
-	private static String STORE_KEY = MockApplicationContext.class.getName() + "#CDRStore";
-	/* (non-Javadoc)
 	 * @see org.smooks.container.ApplicationContext#getCdrarStore()
 	 */
-	public SmooksResourceConfigurationStore getStore() {
-        SmooksResourceConfigurationStore cdrarStore = (SmooksResourceConfigurationStore)getAttribute(STORE_KEY);
-
-		if(cdrarStore == null) {
-			cdrarStore = new SmooksResourceConfigurationStore(this);
-			setAttribute(STORE_KEY, cdrarStore);
-		}
-
-		return cdrarStore;
+	public Registry getRegistry() {
+		return standaloneApplicationContext.getRegistry();
 	}
 
-    public ProfileStore getProfileStore() {
-        return profileStore;
-    }
+	public ProfileStore getProfileStore() {
+		return standaloneApplicationContext.getProfileStore();
+	}
 
-    public void setResourceLocator(ContainerResourceLocator resourceLocator) {
-        throw new UnsupportedOperationException("Can't set the locator on the Mock using this method.  Set it through the publicly accessible  property.");
-    }
-
-    public Map<Object, Object> getAttributes()
-    {
-    	return attributes;
-    }
+	public void setResourceLocator(ContainerResourceLocator resourceLocator) {
+		throw new UnsupportedOperationException("Can't set the locator on the Mock using this method.  Set it through the publicly accessible  property.");
+	}
 
 	public BeanIdStore getBeanIdStore() {
-		return beanIdStore;
+		return standaloneApplicationContext.getBeanIdStore();
 	}
 
-    public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
-        beanContextObservers.add(observer);
-    }
+	public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
+		standaloneApplicationContext.addBeanContextLifecycleObserver(observer);
+	}
 
-    public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
-        return Collections.unmodifiableCollection(beanContextObservers);
-    }
+	public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
+		return standaloneApplicationContext.getBeanContextLifecycleObservers();
+	}
 
-    public ClassLoader getClassLoader() {
-        return getClass().getClassLoader();
-    }
+	public ClassLoader getClassLoader() {
+		return standaloneApplicationContext.getClassLoader();
+	}
 }

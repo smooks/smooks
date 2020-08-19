@@ -42,12 +42,13 @@
  */
 package org.smooks.db;
 
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.delivery.annotation.Initialize;
-import org.smooks.event.report.annotation.VisitBeforeReport;
-import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.event.report.annotation.VisitAfterReport;
+import org.smooks.event.report.annotation.VisitBeforeReport;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -64,22 +65,23 @@ import java.sql.SQLException;
 @VisitAfterReport(summary = "Cleaning up DirectDataSource <b>${resource.parameters.datasource}</b>. Includes performing commit/rollback etc.", detailTemplate = "reporting/DirectDataSource_after.html")
 public class DirectDataSource extends AbstractDataSource {
 
-    @ConfigParam(name = "datasource")
+    @Inject
+    @Named("datasource")
     private String name;
 
-    @ConfigParam
-    private boolean autoCommit;
+    @Inject
+    private Boolean autoCommit;
 
-    @ConfigParam
+    @Inject
     private Class driver;
 
-    @ConfigParam
+    @Inject
     private String url;
 
-    @ConfigParam
+    @Inject
     private String username;
 
-    @ConfigParam
+    @Inject
     private String password;
 
     public String getName() {
@@ -121,7 +123,7 @@ public class DirectDataSource extends AbstractDataSource {
         return this;
     }
 
-    @Initialize
+    @PostConstruct
     public void registerDriver() throws SQLException {
         Driver driverInstance;
 

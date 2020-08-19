@@ -42,18 +42,17 @@
  */
 package org.smooks.javabean.context;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-
 import org.smooks.container.ExecutionContext;
 import org.smooks.javabean.repository.BeanId;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaResult;
 import org.smooks.payload.JavaSource;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Bean Context Manager
@@ -73,7 +72,7 @@ public class StandaloneBeanContextFactory  {
 	public static StandaloneBeanContext create(ExecutionContext executionContext) {
 		StandaloneBeanContext beanContext;
 
-		BeanIdStore beanIdStore = executionContext.getContext().getBeanIdStore();
+		BeanIdStore beanIdStore = executionContext.getApplicationContext().getBeanIdStore();
 		Map<String, Object> beanMap = createBeanMap(executionContext, beanIdStore);
 
 		beanContext = new StandaloneBeanContext(executionContext, beanIdStore, beanMap);

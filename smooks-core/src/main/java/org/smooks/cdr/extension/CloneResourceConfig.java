@@ -43,12 +43,13 @@
 package org.smooks.cdr.extension;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.cdr.annotation.AnnotationConstants;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.w3c.dom.Element;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Create a new {@link org.smooks.cdr.SmooksResourceConfiguration} by cloning the current resource.
@@ -59,24 +60,24 @@ import org.w3c.dom.Element;
  */
 public class CloneResourceConfig implements DOMElementVisitor {
 
-    @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
-    private String resource;
+    @Inject
+    private Optional<String> resource;
 
-    @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
-    private String[] unset;
+    @Inject
+    private Optional<String[]> unset;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
         SmooksResourceConfiguration config = (SmooksResourceConfiguration) extensionContext.getResourceStack().peek().clone();
 
-        if(unset != null) {
-	        for(String property : unset) {
+        if(unset.isPresent()) {
+	        for(String property : unset.get()) {
 	            ResourceConfigUtil.unsetProperty(config, property);
 	        }
         }
 
-        if(resource != null) {
-        	config.setResource(resource);
+        if(resource.isPresent()) {
+        	config.setResource(resource.get());
         }
 
         extensionContext.addResource(config);

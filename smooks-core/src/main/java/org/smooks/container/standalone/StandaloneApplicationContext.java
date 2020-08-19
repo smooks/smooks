@@ -42,19 +42,25 @@
  */
 package org.smooks.container.standalone;
 
-import org.smooks.cdr.SmooksResourceConfigurationStore;
+import org.smooks.SmooksException;
+import org.smooks.cdr.registry.Registry;
+import org.smooks.classpath.IsAnnotationPresentFilter;
+import org.smooks.classpath.Scanner;
 import org.smooks.container.ApplicationContext;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.profile.DefaultProfileSet;
 import org.smooks.profile.DefaultProfileStore;
-import org.smooks.profile.Profile;
 import org.smooks.profile.ProfileStore;
 import org.smooks.resource.ContainerResourceLocator;
 import org.smooks.resource.URIResourceLocator;
 
+import javax.annotation.Resource;
+import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Standalone container execution context for Smooks.
@@ -65,55 +71,28 @@ import java.util.*;
  */
 public class StandaloneApplicationContext implements ApplicationContext {
 
-    private Hashtable<Object, Object> attributes = new Hashtable<Object, Object>();
 	private ContainerResourceLocator resourceLocator;
-	private SmooksResourceConfigurationStore resStore;
+	private Registry registry;
 	private DefaultProfileStore profileStore = new DefaultProfileStore();
 	private BeanIdStore beanIdStore = new BeanIdStore();
     private List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
     private ClassLoader classLoader;
-
-    /**
-     * create a new context
-     * @return the StandaloneApplicationContext instance
-     */
-    public static StandaloneApplicationContext createNewInstance(boolean registerInstalledResources) {
-        StandaloneApplicationContext sac = new StandaloneApplicationContext();
-        sac.resStore = new SmooksResourceConfigurationStore(sac, registerInstalledResources);
-        // Add the open profile...
-        sac.profileStore.addProfileSet(new DefaultProfileSet(Profile.DEFAULT_PROFILE));
-
-        return sac;
-    }
-
+    
     /**
      * Private constructor.
      */
-    private StandaloneApplicationContext() {
-        resourceLocator = new URIResourceLocator();
+    StandaloneApplicationContext() {
+		IsAnnotationPresentFilter isAnnotationPresentFilter = new IsAnnotationPresentFilter(Resource.class);
+		Scanner scanner = new Scanner(isAnnotationPresentFilter);
+		try {
+			scanner.scanClasspath(this.getClass().getClassLoader());
+		} catch (IOException e) {
+			throw new SmooksException(e.getMessage(), e);
+		}
+		List<Class> classes = isAnnotationPresentFilter.getClasses();
+		resourceLocator = new URIResourceLocator();
         ((URIResourceLocator)resourceLocator).setBaseURI(URI.create(URIResourceLocator.SCHEME_CLASSPATH + ":/"));
     }
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#setAttribute(java.lang.Object, java.lang.Object)
-	 */
-	public void setAttribute(Object key, Object value) {
-		attributes.put(key, value);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#getAttribute(java.lang.Object)
-	 */
-	public Object getAttribute(Object key) {
-		return attributes.get(key);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#removeAttribute(java.lang.Object)
-	 */
-	public void removeAttribute(Object key) {
-		attributes.remove(key);
-	}
 
 	public ContainerResourceLocator getResourceLocator() {
 		return resourceLocator;
@@ -123,8 +102,8 @@ public class StandaloneApplicationContext implements ApplicationContext {
         this.resourceLocator = resourceLocator;
     }
 
-	public SmooksResourceConfigurationStore getStore() {
-		return resStore;
+	public Registry getRegistry() {
+		return registry;
 	}
 
     /**
@@ -134,12 +113,7 @@ public class StandaloneApplicationContext implements ApplicationContext {
 	public ProfileStore getProfileStore() {
 		return profileStore;
 	}
-
-	public Map<Object, Object> getAttributes()
-	{
-		return attributes;
-	}
-
+	
 	public BeanIdStore getBeanIdStore() {
 		return beanIdStore;
 	}
@@ -158,5 +132,9 @@ public class StandaloneApplicationContext implements ApplicationContext {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    void setRegistry(Registry registry) {
+        this.registry = registry;
     }
 }

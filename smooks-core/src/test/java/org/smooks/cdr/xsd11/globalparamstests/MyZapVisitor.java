@@ -42,12 +42,12 @@
  */
 package org.smooks.cdr.xsd11.globalparamstests;
 
-import org.smooks.delivery.sax.SAXVisitBefore;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.container.ExecutionContext;
 import org.smooks.SmooksException;
-import org.smooks.cdr.annotation.ConfigParam;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.sax.SAXElement;
+import org.smooks.delivery.sax.SAXVisitBefore;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -55,11 +55,11 @@ import java.io.IOException;
  */
 public class MyZapVisitor implements SAXVisitBefore {
 
-    @ConfigParam
+    @Inject
     private String xp;
 
-    @ConfigParam
-    private int zapCount;
+    @Inject
+    private Integer zapCount;
 
     public static String configuredXP;
     public static int configuredZapCount;

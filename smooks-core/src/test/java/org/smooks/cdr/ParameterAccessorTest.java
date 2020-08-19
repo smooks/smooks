@@ -44,11 +44,10 @@ package org.smooks.cdr;
 
 import org.junit.After;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.smooks.Smooks;
 import org.smooks.delivery.ContentDeliveryConfig;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -65,9 +64,9 @@ public class ParameterAccessorTest {
         Smooks smooks = new Smooks();
         ContentDeliveryConfig deliveryConfig = smooks.createExecutionContext().getDeliveryConfig();
 
-        assertEquals(null, ParameterAccessor.getStringParameter("test.parameter", deliveryConfig));
+        assertEquals(null, ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
 
         System.setProperty("test.parameter", "xxxxxxx");
-        assertEquals("xxxxxxx", ParameterAccessor.getStringParameter("test.parameter", deliveryConfig));
+        assertEquals("xxxxxxx", ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
     }
 }

@@ -42,9 +42,10 @@
  */
 package org.smooks.io;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ExecutionLifecycleCleanable;
 import org.smooks.delivery.Fragment;
@@ -53,12 +54,12 @@ import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import javax.inject.Inject;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * AbstractOuputStreamResource is the base class for handling output stream
@@ -94,11 +95,11 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
 
     private static final String OUTPUTSTREAM_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputstream:";
 
-    @ConfigParam
+    @Inject
     private String resourceName;
 
-    @ConfigParam(defaultVal = "UTF-8")
-    private Charset writerEncoding = Charset.forName("UTF-8");
+    @Inject
+    private Charset writerEncoding = StandardCharsets.UTF_8;
 
     //	public
 

@@ -42,13 +42,14 @@
  */
 package org.smooks;
 
-import org.jaxen.saxpath.SAXPathException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.classpath.CascadingClassLoaderSet;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.container.standalone.StandaloneApplicationContext;
 import org.smooks.container.standalone.StandaloneExecutionContext;
 import org.smooks.delivery.*;
@@ -68,8 +69,6 @@ import org.smooks.profile.ProfileSet;
 import org.smooks.profile.UnknownProfileMemberException;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.xml.NamespaceMappings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.Result;
@@ -119,7 +118,7 @@ import java.util.Properties;
 public class Smooks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Smooks.class);
-    private StandaloneApplicationContext context;
+    private StandaloneApplicationContext applicationContext;
     private ClassLoader classLoader;
     /**
      * Manually added visitors.  In contract to those that are constructed and configured dynamically from
@@ -139,8 +138,8 @@ public class Smooks {
      * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
      */
     public Smooks() {
-        context = StandaloneApplicationContext.createNewInstance(true);
-        visitorConfigMap = new VisitorConfigMap(context);
+        applicationContext = new DefaultApplicationContextBuilder().create();
+        visitorConfigMap = new VisitorConfigMap(applicationContext);
     }
 
     /**
@@ -149,9 +148,9 @@ public class Smooks {
      * Resource configurations can be added through calls to
      * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
      */
-    public Smooks(StandaloneApplicationContext context) {
-        this.context = context;
-        visitorConfigMap = new VisitorConfigMap(context);
+    public Smooks(StandaloneApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+        visitorConfigMap = new VisitorConfigMap(applicationContext);
     }
 
     /**
@@ -173,7 +172,7 @@ public class Smooks {
         URIResourceLocator resourceLocator = new URIResourceLocator();
         
         resourceLocator.setBaseURI(URIResourceLocator.extractBaseURI(resourceURI));
-        context.setResourceLocator(resourceLocator);
+        applicationContext.setResourceLocator(resourceLocator);
         addConfigurations(resourceURI);
     }
 
@@ -192,7 +191,7 @@ public class Smooks {
      */
     public Smooks(InputStream resourceConfigStream) throws IOException, SAXException {
         this();
-        context.setResourceLocator(new URIResourceLocator());
+        applicationContext.setResourceLocator(new URIResourceLocator());
         addConfigurations(resourceConfigStream);
     }
 
@@ -201,7 +200,7 @@ public class Smooks {
      * @return The ClassLoader instance.
      */
     public ClassLoader getClassLoader() {
-        return context.getClassLoader();
+        return applicationContext.getClassLoader();
     }
 
     /**
@@ -210,7 +209,7 @@ public class Smooks {
      */
     public void setClassLoader(ClassLoader classLoader) {        
         this.classLoader = classLoader;
-        context.setClassLoader(classLoader);
+        applicationContext.setClassLoader(classLoader);
     }
 
     /**
@@ -251,7 +250,7 @@ public class Smooks {
     public void setNamespaces(Properties namespaces) {
         AssertArgument.isNotNull(namespaces, "namespaces");
         assertIsConfigurable();
-        NamespaceMappings.setMappings(namespaces, context);
+        applicationContext.getRegistry().registerObject(NamespaceMappings.class, namespaces);
     }
 
     /**
@@ -308,7 +307,7 @@ public class Smooks {
     public void addConfiguration(SmooksResourceConfiguration resourceConfig) {
         AssertArgument.isNotNull(resourceConfig, "resourceConfig");
         assertIsConfigurable();
-        context.getStore().registerResource(resourceConfig);
+        applicationContext.getRegistry().registerResource(resourceConfig);
     }
 
     /**
@@ -361,7 +360,7 @@ public class Smooks {
         AssertArgument.isNotNullAndNotEmpty(baseURI, "baseURI");
         AssertArgument.isNotNull(resourceConfigStream, "resourceConfigStream");
         try {
-            context.getStore().registerResources(baseURI, resourceConfigStream);
+            applicationContext.getRegistry().registerResources(baseURI, resourceConfigStream);
         } catch (URISyntaxException e) {
             throw new IOException("Failed to read resource configuration. Invalid 'baseURI'.");
         }
@@ -429,33 +428,27 @@ public class Smooks {
             Thread.currentThread().setContextClassLoader(newTCCL);
             try {
                 if(isConfigurable) {
-                    initializeResourceConfigurations();
+                    setNotConfigurable();
                 }
-                return new StandaloneExecutionContext(targetProfile, context, visitorConfigMap);
+                return new StandaloneExecutionContext(targetProfile, applicationContext, visitorConfigMap);
             } finally {
                 Thread.currentThread().setContextClassLoader(originalTCCL);
             }
         } else {
             if(isConfigurable) {
-                initializeResourceConfigurations();
+                setNotConfigurable();
             }
-            return new StandaloneExecutionContext(targetProfile, context, visitorConfigMap);
+            return new StandaloneExecutionContext(targetProfile, applicationContext, visitorConfigMap);
         }
     }
 
-    private synchronized void initializeResourceConfigurations() {
+    private synchronized void setNotConfigurable() {
         if(!isConfigurable) {
             return;
         }
         isConfigurable = false;
-
-        try {
-            context.getStore().setNamespaces();
-        } catch (SAXPathException e) {
-            throw new SmooksConfigurationException("Error configuring namespaces", e);
-        }
     }
-
+    
     /**
      * Filter the content in the supplied {@link Source} instance.
      * <p/>
@@ -541,7 +534,7 @@ public class Smooks {
                     BeanContext beanContext = executionContext.getBeanContext();
                     beanContext.addBean(Time.BEAN_ID, new Time());
                     beanContext.addBean(UniqueID.BEAN_ID, new UniqueID());
-                    for(BeanContextLifecycleObserver observer : context.getBeanContextLifecycleObservers()) {
+                    for(BeanContextLifecycleObserver observer : applicationContext.getBeanContextLifecycleObservers()) {
                         beanContext.addObserver(observer);
                     }
 
@@ -591,7 +584,7 @@ public class Smooks {
      * @return The Smooks {@link org.smooks.container.ApplicationContext}.
      */
     public ApplicationContext getApplicationContext() {
-        return context;
+        return applicationContext;
     }
 
     /**
@@ -601,7 +594,7 @@ public class Smooks {
      * of all allocated {@link org.smooks.delivery.ContentHandler} instances.
      */
     public void close() {
-        context.getStore().close();
+        applicationContext.getRegistry().close();
     }
 
     /**
