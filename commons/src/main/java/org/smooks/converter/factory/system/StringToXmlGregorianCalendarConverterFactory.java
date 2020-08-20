@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -74,7 +75,12 @@ public class StringToXmlGregorianCalendarConverterFactory implements TypeConvert
     public TypeConverter<String, XMLGregorianCalendar> createTypeConverter() {
         return new StringToXmlGregorianCalendarConverter();
     }
-    
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<XMLGregorianCalendar>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, XMLGregorianCalendar.class);
+    }
+
     public static class StringToXmlGregorianCalendarConverter extends StringToDateLocaleAwareConverter<XMLGregorianCalendar> {
 
         public StringToXmlGregorianCalendarConverter() {

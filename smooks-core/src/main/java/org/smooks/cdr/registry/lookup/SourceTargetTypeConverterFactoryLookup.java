@@ -45,7 +45,9 @@ package org.smooks.cdr.registry.lookup;
 import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
+import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class SourceTargetTypeConverterFactoryLookup<S, T> implements Function<Map<Object, Object>, TypeConverterFactory<S, T>> {
@@ -58,9 +60,13 @@ public class SourceTargetTypeConverterFactoryLookup<S, T> implements Function<Ma
 
     @Override
     public TypeConverterFactory<S, T> apply(final Map<Object, Object> registryEntries) {
-        final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> typeConverterFactories = (Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class);
-        final TypeConverterFactory<?, ?> typeConverterFactory = typeConverterFactories.get(typeConverterDescriptor);
-        
-        return (TypeConverterFactory<S, T>) typeConverterFactory;
+        final Set<TypeConverterFactory<?, ?>> typeConverterFactories = (Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class);
+        return lookup(typeConverterFactories);
+    }
+    
+    public TypeConverterFactory<S, T> lookup(final Set<TypeConverterFactory<?, ?>> typeConverterFactories) {
+        return (TypeConverterFactory<S, T>) typeConverterFactories.stream().
+                filter(t -> t.getTypeConverterDescriptor().getSourceType().equals(typeConverterDescriptor.getSourceType()) && t.getTypeConverterDescriptor().getTargetType().equals(typeConverterDescriptor.getTargetType())).
+                sorted((Comparator<TypeConverterFactory<?, ?>>) (o1, o2) -> o2.getTypeConverterDescriptor().getPriority().compareTo(o1.getTypeConverterDescriptor().getPriority())).findFirst().orElse(null);
     }
 }

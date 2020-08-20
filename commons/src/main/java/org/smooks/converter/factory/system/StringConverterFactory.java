@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import javax.annotation.Resource;
@@ -52,5 +53,10 @@ public class StringConverterFactory implements TypeConverterFactory<String, Stri
     @Override
     public TypeConverter<String, String> createTypeConverter() {
         return value -> value;
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<String>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, String.class);
     }
 }

@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import java.sql.Timestamp;
@@ -66,6 +67,11 @@ public class SqlTimestampConverterFactory implements TypeConverterFactory<String
 				return new Timestamp(date.getTime());
 			}
 		};
+	}
+
+	@Override
+	public TypeConverterDescriptor<Class<String>, Class<Timestamp>> getTypeConverterDescriptor() {
+		return new TypeConverterDescriptor<>(String.class, Timestamp.class);
 	}
 }
 

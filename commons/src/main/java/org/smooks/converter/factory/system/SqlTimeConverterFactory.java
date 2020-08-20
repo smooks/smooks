@@ -43,8 +43,10 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
+import javax.annotation.Resource;
 import java.sql.Time;
 import java.util.Date;
 
@@ -57,15 +59,23 @@ import java.util.Date;
  *
  * @author <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a>
  */
+@Resource(name = "Time")
 public class SqlTimeConverterFactory implements TypeConverterFactory<String, Time> {
 
     @Override
     public TypeConverter<String, Time> createTypeConverter() {
-        return new StringToDateLocaleAwareConverter<Time>() {
-            @Override
-            protected Time doConvert(Date date) {
-                return new Time(date.getTime());
-            }
-        };
+        return new SqlTimeTypeConverter();
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Time>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Time.class);
+    }
+    
+    public static class SqlTimeTypeConverter extends StringToDateLocaleAwareConverter<Time> {
+        @Override
+        protected Time doConvert(final Date date) {
+            return new Time(date.getTime());
+        }
     }
 }

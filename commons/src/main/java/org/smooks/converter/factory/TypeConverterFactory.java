@@ -43,9 +43,11 @@
 package org.smooks.converter.factory;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 
 public interface TypeConverterFactory<S, T> {
     
     TypeConverter<S, T> createTypeConverter();
     
+    TypeConverterDescriptor<Class<S>, Class<T>> getTypeConverterDescriptor();
 }

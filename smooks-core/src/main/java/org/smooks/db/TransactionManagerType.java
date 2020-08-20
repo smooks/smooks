@@ -42,32 +42,8 @@
  */
 package org.smooks.db;
 
-import org.smooks.converter.TypeConverter;
-import org.smooks.converter.factory.TypeConverterFactory;
-
 public enum TransactionManagerType {
 	JDBC,
 	JTA,
-	EXTERNAL;
-
-	public static final String JDBC_STRING = "JDBC";
-	public static final String JTA_STRING = "JTA";
-	public static final String EXTERNAL_STRING = "EXTERNAL";
-
-	/**
-	 * A Data decoder for this Enum
-	 *
-	 * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
-	 *
-	 */
-	public static class DecoderConverter implements TypeConverterFactory<String, TransactionManagerType> {
-
-		/* (non-Javadoc)
-		 * @see org.smooks.javabean.DataDecoder#decode(java.lang.String)
-		 */
-		@Override
-		public TypeConverter<String, TransactionManagerType> createTypeConverter() {
-			return value -> valueOf(value.toUpperCase());
-		}
-	}
+	EXTERNAL
 }

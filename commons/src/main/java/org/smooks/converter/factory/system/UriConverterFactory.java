@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -65,5 +66,10 @@ public class UriConverterFactory implements TypeConverterFactory<String, URI> {
                 throw new TypeConverterException("Failed to decode URI value '" + value + "'.", e);
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<URI>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, URI.class);
     }
 }

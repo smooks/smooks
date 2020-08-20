@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 public class CsvConverterFactory implements TypeConverterFactory<String, String[]> {
@@ -58,5 +59,10 @@ public class CsvConverterFactory implements TypeConverterFactory<String, String[
 
             return values;
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<String[]>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, String[].class);
     }
 }

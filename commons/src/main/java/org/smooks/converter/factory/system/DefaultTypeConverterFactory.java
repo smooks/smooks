@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 public class DefaultTypeConverterFactory implements TypeConverterFactory<Object, Object> {
@@ -50,5 +51,10 @@ public class DefaultTypeConverterFactory implements TypeConverterFactory<Object,
     @Override
     public TypeConverter<Object, Object> createTypeConverter() {
         return value -> value;
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<Object>, Class<Object>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(Object.class, Object.class);
     }
 }

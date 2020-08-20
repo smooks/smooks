@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 /**
@@ -55,5 +56,10 @@ public class IntegerToStringConverterFactory implements TypeConverterFactory<Int
     @Override
     public TypeConverter<Integer, String> createTypeConverter() {
         return new NumberToStringConverter<>();
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<Integer>, Class<String>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(Integer.class, String.class);
     }
 }

@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -66,5 +67,10 @@ public class CharsetConverterFactory implements TypeConverterFactory<String, Cha
                 throw new TypeConverterException("Unsupported character set '" + value + "'.");
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Charset>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Charset.class);
     }
 }

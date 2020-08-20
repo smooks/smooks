@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -72,5 +73,10 @@ public class XmlGregorianCalendarToStringConverterFactory implements TypeConvert
                 return value;
             }
         }.convert(value.toGregorianCalendar().getTime());
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<XMLGregorianCalendar>, Class<String>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(XMLGregorianCalendar.class, String.class);
     }
 }

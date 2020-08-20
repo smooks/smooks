@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
-import javax.annotation.Resource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -55,9 +54,9 @@ import java.util.*;
 public class TypeConverterFactoryLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeConverterFactoryLoader.class);
 
-    public Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> load() {
+    public Set<TypeConverterFactory<?, ?>> load() {
         final Iterator<TypeConverterFactory> typeConverterFactoryIterator = ServiceLoader.load(TypeConverterFactory.class).iterator();
-        final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> typeConverterFactories = new HashMap<>();
+        final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new HashSet<>();
 
         while (typeConverterFactoryIterator.hasNext()) {
             final TypeConverterFactory<?, ?> typeConverterFactory = typeConverterFactoryIterator.next();
@@ -67,17 +66,12 @@ public class TypeConverterFactoryLoader {
             final Type targetType = ((ParameterizedType) typeConverterFactory.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1];
 
             final TypeConverterDescriptor<?, ?> typeConverterDescriptor;
-            if (typeConverterFactory.getClass().isAnnotationPresent(Resource.class) && !typeConverterFactory.getClass().getAnnotation(Resource.class).name().equals("")) {
-                typeConverterDescriptor = new TypeConverterDescriptor<>(sourceType, targetType, typeConverterFactory.getClass().getAnnotation(Resource.class).name());
-            } else {
-                typeConverterDescriptor = new TypeConverterDescriptor<>(sourceType, targetType);
-            }
-            if (typeConverterFactories.containsKey(typeConverterDescriptor)) {
+ 
+            if (typeConverterFactories.contains(typeConverterFactory.getTypeConverterDescriptor())) {
                 LOGGER.warn("More than one TypeConverter for type '" + targetType.getTypeName() + "' is installed on the classpath.  You must manually configure decoding of this type, where required.");
-                typeConverterFactories.put(typeConverterDescriptor , null); // We don't remove, because we need to maintain a record of this!
-
+                typeConverterFactories.add(null); // We don't remove, because we need to maintain a record of this!
             } else {
-                typeConverterFactories.put(typeConverterDescriptor, typeConverterFactory);
+                typeConverterFactories.add(typeConverterFactory);
             }
         }
         
