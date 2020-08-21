@@ -42,12 +42,14 @@
  */
 package org.smooks.converter.factory.system;
 
+import org.smooks.cdr.SmooksConfigurationException;
+import org.smooks.config.Configurable;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Date;
+import java.util.Properties;
 
 /**
  * {@link XMLGregorianCalendar} data decoder.
@@ -67,16 +69,36 @@ public class XmlGregorianCalendarToStringConverterFactory implements TypeConvert
     
     @Override
     public TypeConverter<XMLGregorianCalendar, String> createTypeConverter() {
-        return value -> new DateToStringLocaleAwareConverter<Date>() {
-            @Override
-            protected String doConvert(String value) {
-                return value;
-            }
-        }.convert(value.toGregorianCalendar().getTime());
+        return new XmlGregorianCalendarToStringTypeConverter();
     }
 
     @Override
     public TypeConverterDescriptor<Class<XMLGregorianCalendar>, Class<String>> getTypeConverterDescriptor() {
         return new TypeConverterDescriptor<>(XMLGregorianCalendar.class, String.class);
+    }
+
+    private class XmlGregorianCalendarToStringTypeConverter implements TypeConverter<XMLGregorianCalendar, String>, Configurable {
+
+        private DateToStringLocaleAwareConverter dateToStringLocaleAwareConverter = new DateToStringLocaleAwareConverter() {
+            @Override
+            protected String doConvert(String value) {
+                return value;
+            }
+        };
+        
+        @Override
+        public String convert(XMLGregorianCalendar value) {
+            return dateToStringLocaleAwareConverter.convert(value.toGregorianCalendar().getTime());
+        }
+
+        @Override
+        public void setConfiguration(final Properties properties) throws SmooksConfigurationException {
+            dateToStringLocaleAwareConverter.setConfiguration(properties);
+        }
+
+        @Override
+        public Properties getConfiguration() {
+            return dateToStringLocaleAwareConverter.getConfiguration();
+        }
     }
 }
