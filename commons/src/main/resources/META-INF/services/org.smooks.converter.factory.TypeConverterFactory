@@ -5,6 +5,7 @@ org.smooks.converter.factory.system.ByteConverterFactory
 org.smooks.converter.factory.system.DateToStringConverterFactory
 org.smooks.converter.factory.system.DefaultTypeConverterFactory
 org.smooks.converter.factory.system.DoubleToStringConverterFactory
+org.smooks.converter.factory.system.EnumTypeConverterFactory
 org.smooks.converter.factory.system.CalendarConverterFactory
 org.smooks.converter.factory.system.CharacterConverterFactory
 org.smooks.converter.factory.system.CharsetConverterFactory
@@ -14,6 +15,7 @@ org.smooks.converter.factory.system.FileConverterFactory
 org.smooks.converter.factory.system.FloatToStringConverterFactory
 org.smooks.converter.factory.system.IntegerToStringConverterFactory
 org.smooks.converter.factory.system.LongToStringConverterFactory
+org.smooks.converter.factory.system.MappingTypeConverterFactory
 org.smooks.converter.factory.system.ShortToStringConverterFactory
 org.smooks.converter.factory.system.StringConverterFactory
 org.smooks.converter.factory.system.StringToBigDecimalConverterFactory
