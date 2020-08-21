@@ -44,8 +44,8 @@ package org.smooks.converter.factory.system;
 
 import org.smooks.cdr.SmooksConfigurationException;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 /**
@@ -72,6 +72,9 @@ public abstract class DateLocaleAwareTypeConverter<S, T> extends LocaleAwareType
      */
     public static final String FORMAT = "format";
 
+    public static final String ZONE_ID = "zoneId";
+
+
     /**
      * Default date format string.
      */
@@ -79,12 +82,14 @@ public abstract class DateLocaleAwareTypeConverter<S, T> extends LocaleAwareType
 
     protected String format;
 
+    protected ZoneId zoneId = ZoneId.systemDefault();
+
     /*
      * 	Need to initialize a default decoder as not calls can be make
      * 	directly to decode without calling setConfigurtion.
      */
-    protected SimpleDateFormat decoder = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
-    
+    protected DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
+
     public void setConfiguration(Properties properties) throws SmooksConfigurationException {
         super.setConfiguration(properties);
 
@@ -94,12 +99,21 @@ public abstract class DateLocaleAwareTypeConverter<S, T> extends LocaleAwareType
                 throw new SmooksConfigurationException("Decoder must specify a 'format' parameter.");
             }
 
-            Locale configuredLocale = getLocale();
-            if (configuredLocale != null) {
-                decoder = new SimpleDateFormat(format.trim(), configuredLocale);
-            } else {
-                decoder = new SimpleDateFormat(format.trim());
+            if (properties.getProperty(ZONE_ID) != null) {
+                zoneId = ZoneId.of(properties.getProperty(ZONE_ID));
             }
+
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format.trim());
+
+            if (getLocale() != null) {
+                dateTimeFormatter = dateTimeFormatter.withLocale(getLocale());
+            }
+
+            if (zoneId != null) {
+                dateTimeFormatter = dateTimeFormatter.withZone(zoneId);
+            }
+
+            this.dateTimeFormatter = dateTimeFormatter;
         }
     }
 }
