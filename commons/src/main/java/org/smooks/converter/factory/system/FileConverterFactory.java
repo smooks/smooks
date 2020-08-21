@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -63,5 +64,10 @@ public class FileConverterFactory implements TypeConverterFactory<String, File> 
                 throw new TypeConverterException("Unable to decode '" + value + "' as a " + File.class.getName() + " instance.", e);
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<File>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, File.class);
     }
 }

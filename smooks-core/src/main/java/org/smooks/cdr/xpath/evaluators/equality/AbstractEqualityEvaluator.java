@@ -49,6 +49,7 @@ import org.jaxen.saxpath.SAXPathException;
 import org.smooks.cdr.xpath.evaluators.XPathExpressionEvaluator;
 import org.smooks.cdr.xpath.evaluators.value.Value;
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.converter.factory.system.StringConverterFactory;
@@ -114,6 +115,11 @@ public abstract class AbstractEqualityEvaluator extends XPathExpressionEvaluator
                     }
                 }
             };
+        }
+
+        @Override
+        public TypeConverterDescriptor<Class<String>, Class<Object>> getTypeConverterDescriptor() {
+            return new TypeConverterDescriptor<>(String.class, Object.class);
         }
     }
 

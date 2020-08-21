@@ -618,7 +618,7 @@ public class SAXHandler extends SmooksContentHandler {
                 throw new SmooksException(errorMsg, error);
             }
         } else {
-            LOGGER.debug(errorMsg, error);
+            LOGGER.error(errorMsg, error);
         }
     }
 

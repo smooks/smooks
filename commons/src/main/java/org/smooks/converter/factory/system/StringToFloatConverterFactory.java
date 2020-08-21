@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -76,5 +77,10 @@ public class StringToFloatConverterFactory implements TypeConverterFactory<Strin
                 }
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Float>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Float.class);
     }
 }

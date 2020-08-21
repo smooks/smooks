@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.util.ClassUtil;
@@ -65,5 +66,10 @@ public class ClassConverterFactory implements TypeConverterFactory<String, Class
                 throw new TypeConverterException("Failed to decode '" + value + "' as a Java Class.", e);
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Class>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Class.class);
     }
 }

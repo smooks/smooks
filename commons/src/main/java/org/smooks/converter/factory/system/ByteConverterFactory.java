@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -63,5 +64,10 @@ public class ByteConverterFactory implements TypeConverterFactory<String, Byte> 
                 throw new TypeConverterException("Failed to decode Byte value '" + value + "'.", e);
             }   
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Byte>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Byte.class);
     }
 }

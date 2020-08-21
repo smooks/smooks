@@ -49,18 +49,15 @@ public class TypeConverterDescriptor<S extends Type, T extends Type> {
 
     private final S sourceType;
     private final T targetType;
-    private final String name;
+    private final Short priority;
 
-    public TypeConverterDescriptor(final S sourceType, final T targetType, final String name) {
-        this.name = name;
+    public TypeConverterDescriptor(final S sourceType, final T targetType, final Short priority) {
         this.sourceType = sourceType;
         this.targetType = targetType;
+        this.priority = priority;
     }
-    
     public TypeConverterDescriptor(final S sourceType, final T targetType) {
-        this.sourceType = sourceType;
-        this.targetType = targetType;
-        this.name = null;
+        this(sourceType, targetType, (short) 1);
     }
 
     public S getSourceType() {
@@ -69,10 +66,6 @@ public class TypeConverterDescriptor<S extends Type, T extends Type> {
 
     public T getTargetType() {
         return targetType;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -85,7 +78,11 @@ public class TypeConverterDescriptor<S extends Type, T extends Type> {
         }
         final TypeConverterDescriptor<?, ?> that = (TypeConverterDescriptor<?, ?>) o;
         return Objects.equals(sourceType, that.sourceType) &&
-                Objects.equals(targetType, that.targetType);
+                Objects.equals(targetType, that.targetType) && Objects.equals(priority, that.priority);
+    }
+
+    public Short getPriority() {
+        return priority;
     }
 
     @Override

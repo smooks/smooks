@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import java.util.Date;
@@ -60,12 +61,19 @@ public class SqlDateConverterFactory implements TypeConverterFactory<String, jav
 	
 	@Override
 	public TypeConverter<String, java.sql.Date> createTypeConverter() {
-		return new StringToDateLocaleAwareConverter<java.sql.Date>() {
-			@Override
-			protected java.sql.Date doConvert(Date date) {
-				return new java.sql.Date(date.getTime());
-			}
-		};
+		return new SqlDateTypeConverter();
+	}
+
+	@Override
+	public TypeConverterDescriptor<Class<String>, Class<java.sql.Date>> getTypeConverterDescriptor() {
+		return new TypeConverterDescriptor<>(String.class, java.sql.Date.class);
+	}
+
+	public static class SqlDateTypeConverter extends StringToDateLocaleAwareConverter<java.sql.Date> {
+		@Override
+		protected java.sql.Date doConvert(final Date date) {
+			return new java.sql.Date(date.getTime());
+		}
 	}
 }
 

@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 /**
@@ -55,5 +56,10 @@ public class ShortToStringConverterFactory implements TypeConverterFactory<Short
     @Override
     public TypeConverter<Short, String> createTypeConverter() {
         return new NumberToStringConverter<>();
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<Short>, Class<String>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(Short.class, String.class);
     }
 }

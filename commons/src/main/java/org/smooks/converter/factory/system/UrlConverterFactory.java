@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -65,5 +66,10 @@ public class UrlConverterFactory implements TypeConverterFactory<String, URL> {
                 throw new TypeConverterException("Failed to decode URL value '" + value + "'.", e);
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<URL>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, URL.class);
     }
 }

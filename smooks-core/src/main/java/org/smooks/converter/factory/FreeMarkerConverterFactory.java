@@ -43,6 +43,7 @@
 package org.smooks.converter.factory;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.util.FreeMarkerTemplate;
 
 /**
@@ -56,4 +57,9 @@ public class FreeMarkerConverterFactory implements TypeConverterFactory<String, 
     public TypeConverter<String, FreeMarkerTemplate> createTypeConverter() {
         return value -> new FreeMarkerTemplate(value);
     }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<FreeMarkerTemplate>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, FreeMarkerTemplate.class);
+    }   
 }

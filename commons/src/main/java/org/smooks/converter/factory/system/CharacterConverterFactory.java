@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 /**
@@ -61,5 +62,10 @@ public class CharacterConverterFactory implements TypeConverterFactory<String, C
                 return null;
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Character>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Character.class);
     }
 }

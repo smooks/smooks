@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import java.text.SimpleDateFormat;
@@ -73,5 +74,10 @@ public class DateToStringConverterFactory implements TypeConverterFactory<Date, 
                 return value;
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<Date>, Class<String>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(Date.class, String.class);
     }
 }

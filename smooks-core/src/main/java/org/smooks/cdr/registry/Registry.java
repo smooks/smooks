@@ -57,7 +57,6 @@ import org.smooks.cdr.lifecycle.phase.PreDestroyLifecyclePhase;
 import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.cdr.registry.lookup.SystemSmooksResourceConfigurationListLookup;
-import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.profile.ProfileSet;
@@ -101,7 +100,7 @@ public class Registry {
         this.classLoader = classLoader;
         this.profileStore = profileStore;
 
-        final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
+        final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
         registerObject(TypeConverterFactory[].class, typeConverterFactories);
         registerObject(LifecycleManager.class, new DefaultLifecycleManager());
  

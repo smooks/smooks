@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import java.math.BigDecimal;
@@ -57,5 +58,10 @@ public class BigIntegerToStringConverterFactory implements TypeConverterFactory<
     @Override
     public TypeConverter<BigInteger, String> createTypeConverter() {
         return new NumberToStringConverter<>();
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<BigInteger>, Class<String>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(BigInteger.class, String.class);
     }
 }

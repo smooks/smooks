@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 /**
@@ -55,5 +56,10 @@ public class DoubleToStringConverterFactory implements TypeConverterFactory<Doub
     @Override
     public TypeConverter<Double, String> createTypeConverter() {
         return new NumberToStringConverter<>();
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<Double>, Class<String>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(Double.class, String.class);
     }
 }

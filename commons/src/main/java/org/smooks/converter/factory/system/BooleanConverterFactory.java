@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -70,5 +71,10 @@ public class BooleanConverterFactory implements TypeConverterFactory<String, Boo
                 throw new TypeConverterException("Failed to decode Boolean value '" + value + "'.", e);
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Boolean>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Boolean.class);
     }
 }

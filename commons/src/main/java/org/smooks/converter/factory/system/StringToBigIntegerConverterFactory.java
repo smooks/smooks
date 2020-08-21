@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -85,5 +86,10 @@ public class StringToBigIntegerConverterFactory implements TypeConverterFactory<
                 }
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<BigInteger>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, BigInteger.class);
     }
 }

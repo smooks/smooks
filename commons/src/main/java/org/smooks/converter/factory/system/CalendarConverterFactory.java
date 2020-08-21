@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import java.text.SimpleDateFormat;
@@ -74,5 +75,10 @@ public class CalendarConverterFactory implements TypeConverterFactory<String, Ca
                 return (Calendar) decoder.getCalendar().clone();
             }
         };
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Calendar>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Calendar.class);
     }
 }

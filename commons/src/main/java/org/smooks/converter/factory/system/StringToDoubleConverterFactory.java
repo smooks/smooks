@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -56,27 +57,35 @@ import java.text.ParseException;
  */
 @Resource(name = "Double")
 public class StringToDoubleConverterFactory implements TypeConverterFactory<String, Double> {
-
+    
     @Override
     public TypeConverter<String, Double> createTypeConverter() {
-        return new NumberTypeConverter<String, Double>() {
-            @Override
-            protected Double doConvert(final String value) {
-                if (numberFormat != null) {
-                    try {
-                        Number number = numberFormat.parse(value.trim());
-                        return number.doubleValue();
-                    } catch (ParseException e) {
-                        throw new TypeConverterException("Failed to decode Double value '" + value + "' using NumberFormat instance " + numberFormat + ".", e);
-                    }
-                } else {
-                    try {
-                        return Double.parseDouble(value.trim());
-                    } catch (NumberFormatException e) {
-                        throw new TypeConverterException("Failed to decode Double value '" + value + "'.", e);
-                    }
+        return new StringToDoubleTypeConverter();
+    }
+
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Double>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Double.class);
+    }
+    
+    public static class StringToDoubleTypeConverter extends NumberTypeConverter<String, Double> {
+
+        @Override
+        protected Double doConvert(final String value) {
+            if (numberFormat != null) {
+                try {
+                    final Number number = numberFormat.parse(value.trim());
+                    return number.doubleValue();
+                } catch (ParseException e) {
+                    throw new TypeConverterException("Failed to decode Double value '" + value + "' using NumberFormat instance " + numberFormat + ".", e);
+                }
+            } else {
+                try {
+                    return Double.parseDouble(value.trim());
+                } catch (NumberFormatException e) {
+                    throw new TypeConverterException("Failed to decode Double value '" + value + "'.", e);
                 }
             }
-        };
+        }
     }
 }

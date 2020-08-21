@@ -43,6 +43,7 @@
 package org.smooks.converter.factory.system;
 
 import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import javax.annotation.Resource;
@@ -71,12 +72,13 @@ public class StringToDateConverterFactory implements TypeConverterFactory<String
     public TypeConverter<String, Date> createTypeConverter() {
         return new StringToDateConverter();
     }
-    
-    public static class StringToDateConverter extends StringToDateLocaleAwareConverter<Date> {
 
-        public StringToDateConverter() {
-            
-        }
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<Date>> getTypeConverterDescriptor() {
+        return new TypeConverterDescriptor<>(String.class, Date.class);
+    }
+
+    public static class StringToDateConverter extends StringToDateLocaleAwareConverter<Date> {
         
         @Override
         protected Date doConvert(Date date) {
