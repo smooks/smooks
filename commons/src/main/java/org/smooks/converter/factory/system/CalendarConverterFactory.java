@@ -49,6 +49,7 @@ import org.smooks.converter.factory.TypeConverterFactory;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * {@link Calendar} data decoder.
@@ -72,7 +73,11 @@ public class CalendarConverterFactory implements TypeConverterFactory<String, Ca
         return new StringToDateLocaleAwareConverter<Calendar>() {
             @Override
             protected Calendar doConvert(Date date) {
-                return (Calendar) decoder.getCalendar().clone();
+                final Calendar calendar = Calendar.getInstance(getLocale());
+                calendar.setTime(date);
+                calendar.setTimeZone(TimeZone.getTimeZone(zoneId));
+                
+                return calendar;
             }
         };
     }

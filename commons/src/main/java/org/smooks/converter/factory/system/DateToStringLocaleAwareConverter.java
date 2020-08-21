@@ -48,7 +48,7 @@ import java.util.Date;
 public abstract class DateToStringLocaleAwareConverter<S extends Date> extends DateLocaleAwareTypeConverter<S, String> {
     @Override
     public String convert(final Date value) {
-        return doConvert(decoder.format(value));
+        return doConvert(dateTimeFormatter.format(value.toInstant()));
     }
 
     protected abstract String doConvert(String value);

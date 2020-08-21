@@ -42,21 +42,34 @@
  */
 package org.smooks.converter.factory.system;
 
-import org.smooks.converter.TypeConverterException;
-
-import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
 import java.util.Date;
 
 public abstract class StringToDateLocaleAwareConverter<T> extends DateLocaleAwareTypeConverter<String, T> {
     
     @Override
     public T convert(final String value) {
+        final TemporalAccessor temporalAccessor = dateTimeFormatter.parse(value.trim());
         final Date date;
-        try {
-            date = decoder.parse(value.trim());
-        } catch (ParseException e) {
-            throw new TypeConverterException("Error decoding Date data value '" + value + "' with decode format '" + format + "'.", e);
+        if (temporalAccessor.query(TemporalQueries.localDate()) != null && temporalAccessor.query(TemporalQueries.localTime()) != null && temporalAccessor.query(TemporalQueries.zoneId()) != null) {
+            date = Date.from(LocalDateTime.from(temporalAccessor).atZone(temporalAccessor.query(TemporalQueries.zoneId())).toInstant());
+        } else if (temporalAccessor.query(TemporalQueries.localDate()) != null && temporalAccessor.query(TemporalQueries.localTime()) != null) {
+            date = Date.from(LocalDateTime.from(temporalAccessor).atZone(zoneId).toInstant());
+        } else if (temporalAccessor.query(TemporalQueries.localDate()) != null) {
+            date = Date.from(LocalDate.from(temporalAccessor).atStartOfDay(zoneId).toInstant());
+        } else if (temporalAccessor.query(TemporalQueries.localTime()) != null && temporalAccessor.query(TemporalQueries.zoneId()) != null) {
+            date = Date.from(LocalTime.from(temporalAccessor).atDate(Instant.ofEpochMilli(0L).atZone(temporalAccessor.query(TemporalQueries.zoneId())).toLocalDate()).atZone(temporalAccessor.query(TemporalQueries.zoneId())).toInstant());
+        } else if (temporalAccessor.query(TemporalQueries.localTime()) != null) {
+            date = Date.from(LocalTime.from(temporalAccessor).atDate(Instant.ofEpochMilli(0L).atZone(zoneId).toLocalDate()).atZone(zoneId).toInstant());
+        } else {
+            date = null;
         }
+        
         return doConvert(date);
     }
 

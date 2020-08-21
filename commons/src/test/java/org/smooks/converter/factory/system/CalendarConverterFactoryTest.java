@@ -73,6 +73,7 @@ public class CalendarConverterFactoryTest {
 		CalendarConverterFactory calendarConverterFactory = new CalendarConverterFactory();
 	    config.setProperty(DateLocaleAwareTypeConverter.LOCALE_LANGUAGE_CODE, "en");
 	    config.setProperty(DateLocaleAwareTypeConverter.LOCALE_COUNTRY_CODE, "IE");
+		config.setProperty(DateLocaleAwareTypeConverter.ZONE_ID, "America/New_York");
 
 		TypeConverter<String, Calendar> typeConverter = calendarConverterFactory.createTypeConverter();
 		((Configurable) typeConverter).setConfiguration(config);
