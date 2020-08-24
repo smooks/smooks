@@ -43,7 +43,6 @@
 package org.smooks.cdr.registry.lookup;
 
 import org.smooks.delivery.ContentHandlerFactory;
-import org.smooks.delivery.UnsupportedContentHandlerTypeException;
 
 import java.util.Map;
 import java.util.Optional;
@@ -58,11 +57,9 @@ public class ContentHandlerFactoryLookup implements Function<Map<Object, Object>
 
     @Override
     public ContentHandlerFactory<?> apply(final Map<Object, Object> registryEntries) {
-        final Optional<Object> optionalContentHandlerFactory = registryEntries.values().stream().filter(v -> v instanceof ContentHandlerFactory && ((ContentHandlerFactory<?>) v).getType().equals(type)).findFirst();
-        if (optionalContentHandlerFactory.isPresent()) {
-            return (ContentHandlerFactory<?>) optionalContentHandlerFactory.get();
-        } else {
-            throw new UnsupportedContentHandlerTypeException(type);
-        }
+        final Optional<Object> optionalContentHandlerFactory = registryEntries.values().stream().
+                filter(v -> v instanceof ContentHandlerFactory && ((ContentHandlerFactory<?>) v).getType().equals(type)).
+                findFirst();
+        return (ContentHandlerFactory<?>) optionalContentHandlerFactory.orElse(null);
     }
 }
