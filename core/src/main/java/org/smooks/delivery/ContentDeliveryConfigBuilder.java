@@ -576,43 +576,40 @@ public class ContentDeliveryConfigBuilder {
             applyCDUStrategy(resourceConfig);
         }
 
-        private boolean applyCDUStrategy(SmooksResourceConfiguration resourceConfig) {
-			ContentHandlerFactory creator;
-
-			// Try it as a Java class before trying anything else.  This is to
-			// accomodate specification of the class in the standard
-			// Java form e.g. java.lang.String Vs java/lang/String.class
-            if(resourceConfig.isJavaResource()) {
-                try {
-                    creator = registry.lookup(new ContentHandlerFactoryLookup("class"));
-                } catch (UnsupportedContentHandlerTypeException e) {
-                    throw new IllegalStateException("No ContentHandlerFactory configured (IoC) for type 'class' (Java).");
+        private boolean applyCDUStrategy(final SmooksResourceConfiguration resourceConfig) {
+            // Try it as a Java class before trying anything else.  This is to
+            // accomodate specification of the class in the standard
+            // Java form e.g. java.lang.String Vs java/lang/String.class
+            if (resourceConfig.isJavaResource()) {
+                final ContentHandlerFactory<?> contentHandlerFactory = registry.lookup(new ContentHandlerFactoryLookup("class"));
+                if (contentHandlerFactory == null) {
+                    throw new SmooksException("No ContentHandlerFactory configured (IoC) for type 'class' (Java).");
                 }
-                if (addCDU(resourceConfig, creator)) {
+                if (addCDU(resourceConfig, contentHandlerFactory)) {
                     // Job done - it's a CDU and we've added it!
                     return true;
                 }
 
-            }
-
-            // Get the resource type and "try" creating a ContentHandlerFactory for that resource
-            // type.
-            String restype = resourceConfig.getResourceType();
-            creator = tryCreateCreator(restype);
-
-            // If we have a creator but it's the JavaContentHandlerFactory we ignore it because
-            // we know the class in question does not implement ContentHandler.  We know because
-            // we tried this above.
-            if(creator != null) {
-                if(!(creator instanceof JavaContentHandlerFactory)) {
-                    return addCDU(resourceConfig, creator);
-                }
             } else {
-				// Just ignore it - something else will use it (hopefully)
-                if(restype != null) {
-                    logExecutionEvent(resourceConfig, "Unable to create ContentHandler class instance for resource.  " +
-                            "This is probably because there's no " + ContentHandlerFactory.class.getSimpleName()  + " implementation for resource " +
-                            "type '" + restype + "' available on the classpath.");
+                // Get the resource type and "try" creating a ContentHandlerFactory for that resource
+                // type.
+                final String resourceType = resourceConfig.getResourceType();
+                final ContentHandlerFactory<?> contentHandlerFactory = tryCreateCreator(resourceType);
+
+                // If we have a creator but it's the JavaContentHandlerFactory we ignore it because
+                // we know the class in question does not implement ContentHandler.  We know because
+                // we tried this above.
+                if (contentHandlerFactory != null) {
+                    if (!(contentHandlerFactory instanceof JavaContentHandlerFactory)) {
+                        return addCDU(resourceConfig, contentHandlerFactory);
+                    }
+                } else {
+                    // Just ignore it - something else will use it (hopefully)
+                    if (resourceType != null) {
+                        logExecutionEvent(resourceConfig, "Unable to create ContentHandler class instance for resource.  " +
+                                "This is probably because there's no " + ContentHandlerFactory.class.getSimpleName() + " implementation for resource " +
+                                "type '" + resourceType + "' available on the classpath.");
+                    }
                 }
             }
 
@@ -627,19 +624,13 @@ public class ContentDeliveryConfigBuilder {
          * @return The appropriate CDU creator instance, or null if there is none.
          */
         private ContentHandlerFactory tryCreateCreator(String restype) {
-            ContentHandlerFactory creator;
-
             if (restype == null || restype.trim().equals("")) {
                 LOGGER.debug("Request to attempt ContentHandlerFactory creation based on a null/empty resource type.");
                 return null;
             }
-            try {
-                creator = registry.lookup(new ContentHandlerFactoryLookup(restype));
-            } catch (UnsupportedContentHandlerTypeException e) {
-                return null;
-            }
 
-			return creator;
+            return registry.lookup(new ContentHandlerFactoryLookup(restype));
+
         }
 
         /**
