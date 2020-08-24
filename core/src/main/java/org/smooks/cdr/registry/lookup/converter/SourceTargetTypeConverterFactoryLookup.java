@@ -40,17 +40,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.registry.lookup;
+package org.smooks.cdr.registry.lookup.converter;
 
 import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
-public class SourceTargetTypeConverterFactoryLookup<S, T> implements Function<Map<Object, Object>, TypeConverterFactory<S, T>> {
+public class SourceTargetTypeConverterFactoryLookup<S, T> implements TypeConverterFactoryLookup<S, T> {
 
     private final TypeConverterDescriptor<Class<S>, Class<T>> typeConverterDescriptor;
 
@@ -60,13 +58,15 @@ public class SourceTargetTypeConverterFactoryLookup<S, T> implements Function<Ma
 
     @Override
     public TypeConverterFactory<S, T> apply(final Map<Object, Object> registryEntries) {
-        final Set<TypeConverterFactory<?, ?>> typeConverterFactories = (Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class);
+        final Set<TypeConverterFactory<?, ?>> typeConverterFactories = (Set<TypeConverterFactory<?, ?>>) registryEntries.get(TYPE_CONVERTER_FACTORY_REGISTRY_KEY);
         return lookup(typeConverterFactories);
     }
     
     public TypeConverterFactory<S, T> lookup(final Set<TypeConverterFactory<?, ?>> typeConverterFactories) {
         return (TypeConverterFactory<S, T>) typeConverterFactories.stream().
                 filter(t -> t.getTypeConverterDescriptor().getSourceType().equals(typeConverterDescriptor.getSourceType()) && t.getTypeConverterDescriptor().getTargetType().equals(typeConverterDescriptor.getTargetType())).
-                sorted((Comparator<TypeConverterFactory<?, ?>>) (o1, o2) -> o2.getTypeConverterDescriptor().getPriority().compareTo(o1.getTypeConverterDescriptor().getPriority())).findFirst().orElse(null);
+                sorted((o1, o2) -> o2.getTypeConverterDescriptor().getPriority().compareTo(o1.getTypeConverterDescriptor().getPriority())).
+                findFirst().
+                orElse(null);
     }
 }

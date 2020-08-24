@@ -40,18 +40,39 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.registry.lookup;
+package org.smooks.cdr.registry.lookup.converter;
 
-import com.fasterxml.classmate.TypeResolver;
-import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.converter.factory.TypeConverterFactory;
+import org.smooks.util.ClassUtil;
 
-import java.util.List;
+import javax.annotation.Resource;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Set;
 
-public class SmooksResourceConfigurationListsLookup implements Function<Map<Object, Object>, List<SmooksResourceConfigurationList>> {
+public class NameTypeConverterFactoryLookup<S, T> implements TypeConverterFactoryLookup<S, T> {
+    private final String name;
+
+    public NameTypeConverterFactoryLookup(final String name) {
+        this.name = name;
+    }
+
     @Override
-    public List<SmooksResourceConfigurationList> apply(final Map<Object, Object> registryEntries) {
-        return (List<SmooksResourceConfigurationList>) registryEntries.get(new TypeResolver().resolve(List.class, SmooksResourceConfigurationList.class));
+    public TypeConverterFactory<S, T> apply(final Map<Object, Object> registryEntries) {
+        TypeConverterFactory<?, ?> typeConverterFactory = null;
+        if (name != null) {
+            final Set<TypeConverterFactory<?, ?>> typeConverterFactories = (Set<TypeConverterFactory<?, ?>>) registryEntries.get(TYPE_CONVERTER_FACTORY_REGISTRY_KEY);
+            typeConverterFactory = typeConverterFactories.stream().filter(t -> t.getClass().isAnnotationPresent(Resource.class) && t.getClass().getAnnotation(Resource.class).name().equals(name)).findFirst().orElse(null);
+            if (typeConverterFactory == null) {
+                final Class typeConverterFactoryClass;
+                try {
+                    typeConverterFactoryClass = ClassUtil.forName(name, NameTypeConverterFactoryLookup.class);
+                    typeConverterFactory = typeConverterFactories.stream().filter(t -> t.getClass().equals(typeConverterFactoryClass)).findFirst().orElse(null);
+                } catch (ClassNotFoundException e) {
+                    typeConverterFactory = null;
+                }
+            }
+        }
+
+        return (TypeConverterFactory<S, T>) typeConverterFactory;
     }
 }

@@ -43,6 +43,8 @@
 package org.smooks.cdr.registry.lookup;
 
 import org.junit.Test;
+import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
@@ -55,11 +57,11 @@ import java.util.Set;
 import static org.junit.Assert.assertNotNull;
 
 public class SourceTargetTypeConverterFactoryLookupTest {
-
+    
     @Test
     public void testApply() {
         Map<Object, Object> registryEntries = new HashMap<>();
-        registryEntries.put(TypeConverterFactory[].class, new HashSet() {{
+        registryEntries.put(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY, new HashSet() {{
             this.add(new TypeConverterFactory<String, Integer>() {
                 @Override
                 public TypeConverter<String, Integer> createTypeConverter() {
@@ -94,7 +96,7 @@ public class SourceTargetTypeConverterFactoryLookupTest {
     @Test
     public void testApplyGivenTypeConverterFactoriesWithMatchingSourceAndTargetTypesButDifferentPriorities() {
         Map<Object, Object> registryEntries = new HashMap<>();
-        registryEntries.put(TypeConverterFactory[].class, new HashSet<>());
+        registryEntries.put(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY, new HashSet<>());
 
         TypeConverterFactory<String, Integer> lowPriorityTypeConverterFactory = new TypeConverterFactory<String, Integer>() {
             @Override
@@ -132,9 +134,9 @@ public class SourceTargetTypeConverterFactoryLookupTest {
             }
         };
 
-        ((Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class)).add(lowPriorityTypeConverterFactory);
-        ((Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class)).add(highPriorityTypeConverterFactory);
-        ((Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class)).add(mediumPriorityTypeConverterFactory);
+        ((Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY)).add(lowPriorityTypeConverterFactory);
+        ((Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY)).add(highPriorityTypeConverterFactory);
+        ((Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY)).add(mediumPriorityTypeConverterFactory);
 
         SourceTargetTypeConverterFactoryLookup<String, Integer> sourceTargetTypeConverterFactoryLookup = new SourceTargetTypeConverterFactoryLookup<>(String.class, Integer.class);
         TypeConverter<String, Integer> typeConverter = sourceTargetTypeConverterFactoryLookup.apply(registryEntries).createTypeConverter();

@@ -46,7 +46,7 @@ import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
 import org.smooks.cdr.registry.Registry;
 import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
-import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.converter.factory.TypeConverterFactory;

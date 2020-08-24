@@ -40,41 +40,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.registry.lookup;
+package org.smooks.cdr.registry.lookup.converter;
 
+import com.fasterxml.classmate.TypeResolver;
 import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.util.ClassUtil;
 
-import javax.annotation.Resource;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-public class NameTypeConverterFactoryLookup implements Function<Map<Object, Object>, TypeConverterFactory<?, ?>> {
-    private final String name;
-
-    public NameTypeConverterFactoryLookup(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public TypeConverterFactory<?, ?> apply(final Map<Object, Object> registryEntries) {
-        TypeConverterFactory<?, ?> typeConverterFactory = null;
-        if (name != null) {
-            final Set<TypeConverterFactory<?, ?>> typeConverterFactories = (Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactory[].class);
-            typeConverterFactory = typeConverterFactories.stream().filter(t -> t.getClass().isAnnotationPresent(Resource.class) && t.getClass().getAnnotation(Resource.class).name().equals(name)).findFirst().orElse(null);
-            if (typeConverterFactory == null) {
-                final Class typeConverterFactoryClass;
-                try {
-                    typeConverterFactoryClass = ClassUtil.forName(name, NameTypeConverterFactoryLookup.class);
-                    typeConverterFactory = typeConverterFactories.stream().filter(t -> t.getClass().equals(typeConverterFactoryClass)).findFirst().orElse(null);
-                } catch (ClassNotFoundException e) {
-                    typeConverterFactory = null;
-                }
-            }
-        }
-
-        return typeConverterFactory;
-
-    }
+public interface TypeConverterFactoryLookup<S, T> extends Function<Map<Object, Object>, TypeConverterFactory<S, T>> {
+    Type TYPE_CONVERTER_FACTORY_REGISTRY_KEY = new TypeResolver().resolve(Set.class, TypeConverterFactory.class);
 }

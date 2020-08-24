@@ -43,7 +43,7 @@
 package org.smooks.converter.factory;
 
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.registry.lookup.NameTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.config.Configurable;
 import org.smooks.container.ApplicationContext;
 import org.smooks.converter.TypeConverter;
