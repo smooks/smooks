@@ -61,7 +61,7 @@ public class MockApplicationContext implements ApplicationContext {
 	public MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
 
 	public MockApplicationContext() {
-		this.standaloneApplicationContext = new DefaultApplicationContextBuilder().create();
+		this.standaloneApplicationContext = new DefaultApplicationContextBuilder().build();
 	}
 	
 	/* (non-Javadoc)

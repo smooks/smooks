@@ -138,7 +138,7 @@ public class Smooks {
      * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
      */
     public Smooks() {
-        applicationContext = new DefaultApplicationContextBuilder().create();
+        applicationContext = new DefaultApplicationContextBuilder().build();
         visitorConfigMap = new VisitorConfigMap(applicationContext);
     }
 
