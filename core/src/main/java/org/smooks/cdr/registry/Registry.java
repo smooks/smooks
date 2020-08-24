@@ -42,6 +42,7 @@
  */
 package org.smooks.cdr.registry;
 
+import com.fasterxml.classmate.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
@@ -57,6 +58,7 @@ import org.smooks.cdr.lifecycle.phase.PreDestroyLifecyclePhase;
 import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.cdr.registry.lookup.SystemSmooksResourceConfigurationListLookup;
+import org.smooks.cdr.registry.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.profile.ProfileSet;
@@ -101,7 +103,7 @@ public class Registry {
         this.profileStore = profileStore;
 
         final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
-        registerObject(TypeConverterFactory[].class, typeConverterFactories);
+        registerObject(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY, typeConverterFactories);
         registerObject(LifecycleManager.class, new DefaultLifecycleManager());
  
         // add the default list to the list.
@@ -112,7 +114,7 @@ public class Registry {
 
         final List<SmooksResourceConfigurationList> smooksResourceConfigurationLists = new ArrayList<>();
         smooksResourceConfigurationLists.add(systemSmooksResourceConfigurationList);
-        registerObject(SmooksResourceConfigurationList[].class, smooksResourceConfigurationLists);
+        registerObject(new TypeResolver().resolve(List.class, SmooksResourceConfigurationList.class), smooksResourceConfigurationLists);
     }
 
     public void registerObject(Object value) {
