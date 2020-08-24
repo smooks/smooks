@@ -72,7 +72,7 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     }
     
     @Override
-    public StandaloneApplicationContext create() {
+    public StandaloneApplicationContext build() {
         final StandaloneApplicationContext standaloneApplicationContext = new StandaloneApplicationContext();
         
         final Registry registry = new Registry(standaloneApplicationContext.getClassLoader(), standaloneApplicationContext.getResourceLocator(), standaloneApplicationContext.getProfileStore());

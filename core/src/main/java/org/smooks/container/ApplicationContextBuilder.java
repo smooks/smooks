@@ -44,6 +44,6 @@ package org.smooks.container;
 
 public interface ApplicationContextBuilder {
     
-    ApplicationContext create();
+    ApplicationContext build();
     
 }
