@@ -54,10 +54,10 @@ import org.smooks.cdr.SmooksResourceConfiguration;
  */
 public class ContentHandlerConfigMap<T extends ContentHandler> {
 
-    private T contentHandler;
-    private boolean isLifecycleInitializable;
-    private boolean isLifecycleCleanable;
-    private SmooksResourceConfiguration resourceConfig;
+    private final T contentHandler;
+    private final boolean isLifecycleInitializable;
+    private final boolean isLifecycleCleanable;
+    private final SmooksResourceConfiguration resourceConfig;
 
     /**
      * Public constructor.

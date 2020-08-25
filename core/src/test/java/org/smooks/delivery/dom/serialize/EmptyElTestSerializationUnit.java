@@ -64,7 +64,7 @@ public class EmptyElTestSerializationUnit extends DefaultSerializationUnit {
 	 * @see org.smooks.serialize.SerializationUnit#writeElementStart(org.w3c.dom.Element, java.io.Writer, org.smooks.device.UAContext)
 	 */
 	public void writeElementStart(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-		writer.write((int)'<');
+		writer.write('<');
 		writer.write(element.getTagName());
 		
 		writeAttributes(element.getAttributes(), writer);
@@ -77,7 +77,7 @@ public class EmptyElTestSerializationUnit extends DefaultSerializationUnit {
 		if(wellFormed) {
 			writer.write("/>");
 		} else {
-			writer.write((int)'>');
+			writer.write('>');
 		}
 	}
 

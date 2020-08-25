@@ -42,25 +42,14 @@
  */
 package org.smooks;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.jar.JarInputStream;
-import java.util.zip.ZipInputStream;
-
 import org.smooks.archive.Archive;
 import org.smooks.assertion.AssertArgument;
+
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.jar.JarInputStream;
+import java.util.zip.ZipInputStream;
 
 /**
  * ResourceMerger is able to merge java archives (jars) and in the process merge
@@ -80,7 +69,7 @@ import org.smooks.assertion.AssertArgument;
 public class ResourceMerger
 {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private List<String> resourcePaths = new ArrayList<String>();
+    private final List<String> resourcePaths = new ArrayList<String>();
 
     /**
      * @param resourcePath
@@ -168,7 +157,7 @@ public class ResourceMerger
         return mergeResources(pathToBytesMap, all);
     }
 
-    private Archive getOrCreateArchive(final String jarname) throws FileNotFoundException, IOException
+    private Archive getOrCreateArchive(final String jarname) throws IOException
     {
         final File jarfile = new File(jarname);
         if (jarfile.exists())

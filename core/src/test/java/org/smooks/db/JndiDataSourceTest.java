@@ -42,34 +42,28 @@
  */
 package org.smooks.db;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.mockejb.jndi.MockContextFactory;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.smooks.Smooks;
 import org.smooks.container.ExecutionContext;
 import org.smooks.event.report.HtmlReportGenerator;
 import org.smooks.payload.StringSource;
-import org.mockejb.jndi.MockContextFactory;
-import org.mockito.Mock;
-
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.mockito.MockitoAnnotations;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 import javax.xml.transform.Source;
-
 import java.sql.Connection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test for {@link JndiDataSource}.
@@ -89,7 +83,7 @@ public class JndiDataSourceTest {
     @Mock
     private Connection connection;
 
-    private static boolean REPORT = false;
+    private static final boolean REPORT = false;
 
 
     @Test
@@ -128,7 +122,7 @@ public class JndiDataSourceTest {
 
         when(connection.getAutoCommit()).thenReturn(false);
 
-        executeSmooksWithException("jndi_exception", "test_jndi_exception", REPORT);
+        executeSmooksWithException("jndi_exception", "test_jndi_exception");
 
         verify(dataSource).getConnection();
         verify(connection).rollback();
@@ -184,7 +178,7 @@ public class JndiDataSourceTest {
         when(connection.getAutoCommit()).thenReturn(false);
         when(transaction.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
 
-        executeSmooksWithException("jta_exception", "test_jta_exception", REPORT);
+        executeSmooksWithException("jta_exception", "test_jta_exception");
 
         verify(dataSource, atLeastOnce()).getConnection();
         verify(transaction).begin();
@@ -205,7 +199,7 @@ public class JndiDataSourceTest {
         when(connection.getAutoCommit()).thenReturn(false);
         when(transaction.getStatus()).thenReturn(Status.STATUS_ACTIVE);
 
-        executeSmooksWithException("jta_exception", "test_jta_existing_transaction_exception", REPORT);
+        executeSmooksWithException("jta_exception", "test_jta_existing_transaction_exception");
 
         verify(dataSource, atLeastOnce()).getConnection();
         verify(transaction).setRollbackOnly();
@@ -295,7 +289,7 @@ public class JndiDataSourceTest {
 
         when(connection.getAutoCommit()).thenReturn(false);
 
-        executeSmooksWithException("external_exception", "test_external_exception", REPORT);
+        executeSmooksWithException("external_exception", "test_external_exception");
 
         verify(dataSource).getConnection();
         verify(connection).close();
@@ -318,12 +312,11 @@ public class JndiDataSourceTest {
         smooks.filterSource(ec, source);
     }
 
-    private void executeSmooksWithException(String profile, String testName, boolean report) throws Exception {
+    private void executeSmooksWithException(String profile, String testName) throws Exception {
         try {
-            executeSmooks(profile, testName, report);
+            executeSmooks(profile, testName, JndiDataSourceTest.REPORT);
         } catch (Exception e) {
         }
-        return;
     }
 
     @Before

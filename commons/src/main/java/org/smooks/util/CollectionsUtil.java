@@ -93,8 +93,6 @@ public class CollectionsUtil {
     }
 
     private static <T> void addToCollection(Collection<T> theCollection, T... objects) {
-        for(T object : objects) {
-            theCollection.add(object);
-        }
+        theCollection.addAll(Arrays.asList(objects));
     }
 }

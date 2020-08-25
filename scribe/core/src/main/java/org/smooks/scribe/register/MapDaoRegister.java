@@ -42,11 +42,11 @@
  */
 package org.smooks.scribe.register;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.smooks.assertion.AssertArgument;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -162,7 +162,7 @@ public class MapDaoRegister<T> extends AbstractDaoRegister<T> {
 		if(obj == null) {
 			return false;
 		}
-		if(obj instanceof MapDaoRegister == false) {
+		if(!(obj instanceof MapDaoRegister)) {
 			return false;
 		}
 

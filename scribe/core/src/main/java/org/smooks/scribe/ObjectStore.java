@@ -62,7 +62,7 @@ public interface ObjectStore {
 	 * @param key The key against which the object is bound; cannot be null.
 	 * @param value The object to be bound; cannot be null.
 	 */
-	public abstract void set(Object key, Object value);
+    void set(Object key, Object value);
 
 	/**
 	 * Returns the object bound with the specified name in this {@link ObjectStore}
@@ -71,13 +71,13 @@ public interface ObjectStore {
 	 * @return The object bound with the specified name in this {@link ObjectStore}
 	 * implementation, or null if no object is bound under the name.
 	 */
-	public abstract Object get(Object key);
+    Object get(Object key);
 
 	/**
 	 * Returns the Map of attributes bound in this {@link ObjectStore}
 	 * @return Map of all objects bound in this {@link ObjectStore}
 	 */
-	public abstract Map<Object, Object> getAll();
+    Map<Object, Object> getAll();
 
 	/**
 	 * Removes the object bound with the specified name from this {@link ObjectStore}
@@ -85,5 +85,5 @@ public interface ObjectStore {
 	 * not have an object bound with the specified name, this method does nothing.
      * @param key The key against which the object is bound; cannot be null.
 	 */
-	public abstract void remove(Object key);
+    void remove(Object key);
 }

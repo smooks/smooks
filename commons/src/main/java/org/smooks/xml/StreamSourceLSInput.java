@@ -55,7 +55,7 @@ import java.io.Reader;
  */
 public class StreamSourceLSInput implements LSInput {
 
-    private StreamSource input;
+    private final StreamSource input;
 
     public StreamSourceLSInput(StreamSource input) {
         this.input = input;

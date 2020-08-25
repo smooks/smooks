@@ -61,14 +61,14 @@ import org.xml.sax.ext.DefaultHandler2;
  */
 public abstract class SmooksContentHandler extends DefaultHandler2 implements SAXEventReplay {
 
-    private ExecutionContext executionContext;
-    private SmooksContentHandler parentContentHandler;
+    private final ExecutionContext executionContext;
+    private final SmooksContentHandler parentContentHandler;
     private SmooksContentHandler nestedContentHandler;
     private NamespaceDeclarationStack namespaceDeclarationStack;
     private boolean endReplayed = false;
     private SAXEventReplay lastEvent = null;
-    private StartElementEvent startEvent = new StartElementEvent();
-    private EndElementEvent endEvent = new EndElementEvent();
+    private final StartElementEvent startEvent = new StartElementEvent();
+    private final EndElementEvent endEvent = new EndElementEvent();
     private int depth = 0;
 
     public SmooksContentHandler(ExecutionContext executionContext, SmooksContentHandler parentContentHandler) {

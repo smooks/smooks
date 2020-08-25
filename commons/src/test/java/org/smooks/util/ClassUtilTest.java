@@ -101,10 +101,10 @@ public class ClassUtilTest extends TestCase
 
 	public void test_containsAssignableClass() {
 
-		assertEquals(true, ClassUtil.containsAssignableClass(ArrayList.class, List.class)) ;
-		assertEquals(true, ClassUtil.containsAssignableClass(ArrayList.class, String.class, List.class)) ;
-		assertEquals(true, ClassUtil.containsAssignableClass(ArrayList.class, String.class, List.class, List.class)) ;
-		assertEquals(false, ClassUtil.containsAssignableClass(ArrayList.class, String.class, String.class, String.class)) ;
+		assertTrue(ClassUtil.containsAssignableClass(ArrayList.class, List.class));
+		assertTrue(ClassUtil.containsAssignableClass(ArrayList.class, String.class, List.class));
+		assertTrue(ClassUtil.containsAssignableClass(ArrayList.class, String.class, List.class, List.class));
+		assertFalse(ClassUtil.containsAssignableClass(ArrayList.class, String.class, String.class, String.class));
 
 	}
 

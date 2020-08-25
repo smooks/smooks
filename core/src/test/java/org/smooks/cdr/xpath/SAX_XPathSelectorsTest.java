@@ -160,7 +160,7 @@ public class SAX_XPathSelectorsTest {
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
-        assertEquals(null, XPathAfterVisitor.saxVisitedAfterElement);
+        assertNull(XPathAfterVisitor.saxVisitedAfterElement);
     }
 
     @Test
@@ -190,9 +190,9 @@ public class SAX_XPathSelectorsTest {
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
-        
-        assertTrue(XPathVisitor.saxVisitedBeforeElementStatic != null);
-        assertTrue(XPathVisitor.saxVisitedAfterElementStatic != null);
+
+        assertNotNull(XPathVisitor.saxVisitedBeforeElementStatic);
+        assertNotNull(XPathVisitor.saxVisitedAfterElementStatic);
     }
 
     @Test
@@ -203,8 +203,8 @@ public class SAX_XPathSelectorsTest {
         smooks.addVisitor(new XPathVisitor(), "items/item[2]/units");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 
-        assertTrue(XPathVisitor.saxVisitedBeforeElementStatic != null);
-        assertTrue(XPathVisitor.saxVisitedAfterElementStatic != null);
+        assertNotNull(XPathVisitor.saxVisitedBeforeElementStatic);
+        assertNotNull(XPathVisitor.saxVisitedAfterElementStatic);
     }
 
     @Test
@@ -214,8 +214,8 @@ public class SAX_XPathSelectorsTest {
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 
-        assertTrue(XPathVisitor.saxVisitedBeforeElementStatic == null);
-        assertTrue(XPathVisitor.saxVisitedAfterElementStatic == null);
+        assertNull(XPathVisitor.saxVisitedBeforeElementStatic);
+        assertNull(XPathVisitor.saxVisitedAfterElementStatic);
     }
 
     @Test
@@ -226,8 +226,8 @@ public class SAX_XPathSelectorsTest {
         smooks.addVisitor(new XPathVisitor(), "items/item[3]/units");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 
-        assertTrue(XPathVisitor.saxVisitedBeforeElementStatic == null);
-        assertTrue(XPathVisitor.saxVisitedAfterElementStatic == null);
+        assertNull(XPathVisitor.saxVisitedBeforeElementStatic);
+        assertNull(XPathVisitor.saxVisitedAfterElementStatic);
     }
 
     @Test
@@ -280,8 +280,8 @@ public class SAX_XPathSelectorsTest {
 
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
 
-        assertEquals(null, visitor1.getSaxVisitedAfterElement());
-        assertEquals(null, visitor2.getSaxVisitedAfterElement());
+        assertNull(visitor1.getSaxVisitedAfterElement());
+        assertNull(visitor2.getSaxVisitedAfterElement());
     }
 
     @Test
@@ -291,8 +291,8 @@ public class SAX_XPathSelectorsTest {
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 
-        assertTrue(XPathVisitor.domVisitedBeforeElementStatic != null);
-        assertTrue(XPathVisitor.domVisitedAfterElementStatic != null);
+        assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
     }
 
     @Test
@@ -303,8 +303,8 @@ public class SAX_XPathSelectorsTest {
         smooks.addVisitor(new XPathVisitor(), "items/item[2]/units");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 
-        assertTrue(XPathVisitor.domVisitedBeforeElementStatic != null);
-        assertTrue(XPathVisitor.domVisitedAfterElementStatic != null);
+        assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
     }
 
     @Test
@@ -314,8 +314,8 @@ public class SAX_XPathSelectorsTest {
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 
-        assertTrue(XPathVisitor.domVisitedBeforeElementStatic == null);
-        assertTrue(XPathVisitor.domVisitedAfterElementStatic == null);
+        assertNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNull(XPathVisitor.domVisitedAfterElementStatic);
     }
 
     @Test
@@ -326,8 +326,8 @@ public class SAX_XPathSelectorsTest {
         smooks.addVisitor(new XPathVisitor(), "items/item[3]/units");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 
-        assertTrue(XPathVisitor.domVisitedBeforeElementStatic == null);
-        assertTrue(XPathVisitor.domVisitedAfterElementStatic == null);
+        assertNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNull(XPathVisitor.domVisitedAfterElementStatic);
     }
 
     @Test
@@ -380,7 +380,7 @@ public class SAX_XPathSelectorsTest {
 
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
 
-        assertEquals(null, visitor1.getDomVisitedAfterElement());
-        assertEquals(null, visitor2.getDomVisitedAfterElement());
+        assertNull(visitor1.getDomVisitedAfterElement());
+        assertNull(visitor2.getDomVisitedAfterElement());
     }
 }

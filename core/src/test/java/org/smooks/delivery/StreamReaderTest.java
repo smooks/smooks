@@ -43,30 +43,22 @@
 package org.smooks.delivery;
 
 
-import static org.junit.Assert.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-
-import javax.xml.transform.stream.StreamSource;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.io.StreamUtils;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
+import org.smooks.io.StreamUtils;
 import org.smooks.xml.SmooksXMLReader;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.*;
+
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.assertArrayEquals;
 
 /**
  * Test for JIRA: http://jira.codehaus.org/browse/MILYN-291,
@@ -90,7 +82,7 @@ public class StreamReaderTest
     @Test public void verifyByteStream()
     {
         smooks.filterSource(new StreamSource(new ByteArrayInputStream(bytes)));
-        assertTrue(Arrays.equals(bytes, MockReader.readBytes));
+        assertArrayEquals(bytes, MockReader.readBytes);
     }
 
     public static class MockReader implements SmooksXMLReader

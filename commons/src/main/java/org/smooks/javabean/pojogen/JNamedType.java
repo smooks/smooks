@@ -51,8 +51,8 @@ import org.smooks.assertion.AssertArgument;
  */
 public class JNamedType {
     
-    private JType type;
-    private String name;
+    private final JType type;
+    private final String name;
 
     public JNamedType(JType type, String name) {
         AssertArgument.isNotNull(type, "type");
@@ -79,9 +79,7 @@ public class JNamedType {
         if(obj instanceof JNamedType) {
             JNamedType namedTypeObj = (JNamedType) obj;
 
-            if(namedTypeObj.getName().equals(name) && namedTypeObj.getType().equals(type)) {
-                return true;
-            }
+            return namedTypeObj.getName().equals(name) && namedTypeObj.getType().equals(type);
         }
 
         return false;

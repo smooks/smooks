@@ -217,9 +217,9 @@ public class Sorter {
 
     private static class DependencySpec<T extends ContentHandler>  {
 
-        private ContentHandlerConfigMap<T> visitor;
+        private final ContentHandlerConfigMap<T> visitor;
 
-        private List<DependencySpec> dependants = new ArrayList<DependencySpec>();
+        private final List<DependencySpec> dependants = new ArrayList<DependencySpec>();
 
         private DependencySpec(ContentHandlerConfigMap<T> visitor) {
             AssertArgument.isNotNull(visitor, "visitor");

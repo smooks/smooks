@@ -52,8 +52,8 @@ import java.util.List;
  */
 public class Report {
 
-    private List<ReportInfoNode> configurations = new ArrayList<ReportInfoNode>();
-    private List<MessageNode> processings = new ArrayList<MessageNode>();
+    private final List<ReportInfoNode> configurations = new ArrayList<ReportInfoNode>();
+    private final List<MessageNode> processings = new ArrayList<MessageNode>();
     private List<ResultNode> results;
 
     public List<ReportInfoNode> getConfigurations() {

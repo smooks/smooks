@@ -64,9 +64,9 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class MethodInvocationProxyHandler<T> implements InvocationHandler {
 
-    private T object;
-    private List<MethodCall> callList = new ArrayList<MethodCall>();
-    private Map<String, List<MethodCall>> callMap = new LinkedHashMap<String, List<MethodCall>>();
+    private final T object;
+    private final List<MethodCall> callList = new ArrayList<MethodCall>();
+    private final Map<String, List<MethodCall>> callMap = new LinkedHashMap<String, List<MethodCall>>();
 
     @SuppressWarnings("unused")
     public MethodInvocationProxyHandler(T object) {

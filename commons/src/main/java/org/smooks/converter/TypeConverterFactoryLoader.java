@@ -49,7 +49,10 @@ import org.smooks.converter.factory.TypeConverterFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 public class TypeConverterFactoryLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeConverterFactoryLoader.class);
@@ -82,7 +85,7 @@ public class TypeConverterFactoryLoader {
         Type[] genericInterfaces = typeConverterFactory.getClass().getGenericInterfaces();
         boolean assertion = false;
         if (genericInterfaces.length >= 1) {
-            for (Type type : Arrays.asList(genericInterfaces)) {
+            for (Type type : genericInterfaces) {
                 if ((type instanceof ParameterizedType) && ((ParameterizedType) type).getRawType().equals(TypeConverterFactory.class)) {
                     assertion = true;
                 }

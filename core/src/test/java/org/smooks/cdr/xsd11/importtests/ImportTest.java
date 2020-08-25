@@ -43,14 +43,14 @@
 package org.smooks.cdr.xsd11.importtests;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.delivery.dom.serialize.SimpleDOMVisitor;
 import org.smooks.payload.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -60,12 +60,12 @@ public class ImportTest {
 	@Test
     public void test_paramaterized_import() throws IOException, SAXException {
         SimpleDOMVisitor.visited = false;
-        testConfig("paramaterized_import_main.xml");
+        testConfig();
         assertTrue("Parameters not properly injected into import.", SimpleDOMVisitor.visited);
     }
 
-    private void testConfig(String config) throws IOException, SAXException {
-        Smooks smooks = new Smooks("/org/smooks/cdr/xsd11/importtests/" + config);
+    private void testConfig() throws IOException, SAXException {
+        Smooks smooks = new Smooks("/org/smooks/cdr/xsd11/importtests/" + "paramaterized_import_main.xml");
         smooks.filterSource(new StringSource("<a/>"), null);
     }
 }

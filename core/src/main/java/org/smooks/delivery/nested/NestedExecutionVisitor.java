@@ -84,7 +84,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
 
     @Inject
     private String[] mapBeans;
-    private List<BeanId> mapBeanIds = new ArrayList<BeanId>();
+    private final List<BeanId> mapBeanIds = new ArrayList<BeanId>();
 
     @Inject
     private boolean inheritBeanContext = true;

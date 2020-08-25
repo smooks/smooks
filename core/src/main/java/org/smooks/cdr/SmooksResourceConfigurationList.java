@@ -65,7 +65,7 @@ public class SmooksResourceConfigurationList {
     /**
      * List name.
      */
-    private String name;
+    private final String name;
     /**
      * Is the config list one of the "system" installed config lists.
      */
@@ -73,15 +73,15 @@ public class SmooksResourceConfigurationList {
     /**
      * {@link ProfileSet} list.
      */
-    private List<ProfileSet> profiles = new Vector<ProfileSet>();
+    private final List<ProfileSet> profiles = new Vector<ProfileSet>();
     /**
      * {@link org.smooks.cdr.SmooksResourceConfiguration} list.
      */
-    private List<SmooksResourceConfiguration> smooksResourceConfigurations = new ArrayList<SmooksResourceConfiguration>();
+    private final List<SmooksResourceConfiguration> smooksResourceConfigurations = new ArrayList<SmooksResourceConfiguration>();
     /**
      * List of loaded resource URIs.
      */
-    private List<URI> loadedResources = new ArrayList<URI>();
+    private final List<URI> loadedResources = new ArrayList<URI>();
 
     /**
      * Public constructor.

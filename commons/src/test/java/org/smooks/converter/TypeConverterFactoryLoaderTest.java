@@ -60,7 +60,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class TypeConverterFactoryLoaderTest {
 
-    private Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
+    private final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
 
     @Test
     public void testLoad() {

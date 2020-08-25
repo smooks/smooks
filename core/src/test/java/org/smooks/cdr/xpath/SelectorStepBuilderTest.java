@@ -42,22 +42,22 @@
  */
 package org.smooks.cdr.xpath;
 
-import java.util.Properties;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.jaxen.saxpath.SAXPathException;
+import org.junit.Test;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.xml.XmlUtil;
 import org.w3c.dom.Element;
+
+import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class SelectorStepBuilderTest  {
 
-    private static Properties namespaces = new Properties();
+    private static final Properties namespaces = new Properties();
 
     static {
         namespaces.put("a", "http://a");
@@ -70,7 +70,7 @@ public class SelectorStepBuilderTest  {
     public void test_1() throws SAXPathException {
         SelectorStep[] steps = SelectorStepBuilder.buildSteps("x/y[text() = '23']", namespaces);
         assertEquals("x/y(text() = '23')", SelectorStepBuilder.toString(steps));
-        assertTrue(!steps[0].isRooted());
+        assertFalse(steps[0].isRooted());
 
         assertFalse(steps[0].accessesText());
         assertTrue(steps[1].accessesText());

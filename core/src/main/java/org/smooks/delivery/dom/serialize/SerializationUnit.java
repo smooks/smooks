@@ -84,7 +84,7 @@ public interface SerializationUnit extends Visitor {
 	 * @param executionContext ExecutionContext instance for the delivery context.
 	 * @throws IOException Exception writing output.
 	 */
-	public abstract void writeElementStart(Element element, Writer writer, ExecutionContext executionContext) throws IOException;
+    void writeElementStart(Element element, Writer writer, ExecutionContext executionContext) throws IOException;
 
 	/**
 	 * Write the element end portion; close the element.
@@ -95,7 +95,7 @@ public interface SerializationUnit extends Visitor {
 	 * @param executionContext ExecutionContext instance for the delivery context.
 	 * @throws IOException Exception writing output.
 	 */
-	public abstract void writeElementEnd(Element element, Writer writer, ExecutionContext executionContext) throws IOException;
+    void writeElementEnd(Element element, Writer writer, ExecutionContext executionContext) throws IOException;
 
 	/**
 	 * Write element text.
@@ -104,7 +104,7 @@ public interface SerializationUnit extends Visitor {
 	 * @param executionContext ExecutionContext instance for the delivery context.
 	 * @throws IOException Exception writing output.
 	 */
-	public abstract void writeElementText(Text text, Writer writer, ExecutionContext executionContext) throws IOException;
+    void writeElementText(Text text, Writer writer, ExecutionContext executionContext) throws IOException;
 	
 	/**
 	 * Write element comment.
@@ -113,7 +113,7 @@ public interface SerializationUnit extends Visitor {
 	 * @param executionContext ExecutionContext instance for the delivery context.
 	 * @throws IOException Exception writing output.
 	 */
-	public abstract void writeElementComment(Comment comment, Writer writer, ExecutionContext executionContext) throws IOException;
+    void writeElementComment(Comment comment, Writer writer, ExecutionContext executionContext) throws IOException;
 
 	/**
 	 * Write element entity reference object.
@@ -122,7 +122,7 @@ public interface SerializationUnit extends Visitor {
 	 * @param executionContext ExecutionContext instance for the delivery context.
 	 * @throws IOException Exception writing output.
 	 */
-	public abstract void writeElementEntityRef(EntityReference entityRef, Writer writer, ExecutionContext executionContext) throws IOException;
+    void writeElementEntityRef(EntityReference entityRef, Writer writer, ExecutionContext executionContext) throws IOException;
 	
 	/**
 	 * Write element CDATA section.
@@ -131,7 +131,7 @@ public interface SerializationUnit extends Visitor {
 	 * @param executionContext ExecutionContext instance for the delivery context.
 	 * @throws IOException Exception writing output.
 	 */
-	public abstract void writeElementCDATA(CDATASection cdata, Writer writer, ExecutionContext executionContext) throws IOException;
+    void writeElementCDATA(CDATASection cdata, Writer writer, ExecutionContext executionContext) throws IOException;
 
 	/**
 	 * Write element Node object.
@@ -143,11 +143,11 @@ public interface SerializationUnit extends Visitor {
 	 * @param executionContext ExecutionContext instance for the delivery context.
 	 * @throws IOException Exception writing output.
 	 */
-	public abstract void writeElementNode(Node node, Writer writer, ExecutionContext executionContext) throws IOException;
+    void writeElementNode(Node node, Writer writer, ExecutionContext executionContext) throws IOException;
 	
 	/**
 	 * Write the child elements of the element this SerializationUnit is being applied to.
 	 * @return True if the child elements are to be writen, otherwise false.
 	 */
-	public abstract boolean writeChildElements();
+    boolean writeChildElements();
 }

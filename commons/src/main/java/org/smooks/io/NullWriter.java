@@ -42,8 +42,8 @@
  */
 package org.smooks.io;
 
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
 
 /**
  * Null writer implementation.
@@ -76,7 +76,7 @@ public class NullWriter extends Writer {
     public void write(int c) throws IOException {
     }
 
-    public void write(char cbuf[]) throws IOException {
+    public void write(char[] cbuf) throws IOException {
     }
 
     public void write(String str) throws IOException {
@@ -97,7 +97,7 @@ public class NullWriter extends Writer {
         return this;
     }
 
-    public void write(char cbuf[], int off, int len) throws IOException {
+    public void write(char[] cbuf, int off, int len) throws IOException {
     }
 
     public void flush() throws IOException {

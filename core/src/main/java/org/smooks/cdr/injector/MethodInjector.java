@@ -65,7 +65,7 @@ public class MethodInjector extends AbstractInjector<Method> {
         for (Method method : methods) {
             Inject injectAnnotation = method.getAnnotation(Inject.class);
             if (injectAnnotation != null) {
-                Class params[] = method.getParameterTypes();
+                Class[] params = method.getParameterTypes();
 
                 if (params.length == 1) {
                     inject(method.getParameters()[0].getAnnotation(Named.class), method, instance, scope);

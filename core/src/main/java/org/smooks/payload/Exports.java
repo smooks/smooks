@@ -67,7 +67,7 @@ public class Exports implements ContentHandler {
     
     private static final Exports NULL_EXPORTS = new Exports();
 
-    private Map<Class<?>, Export> exportsMap = new HashMap<Class<?>, Export>();
+    private final Map<Class<?>, Export> exportsMap = new HashMap<Class<?>, Export>();
 
     @Inject
     private ApplicationContext applicationContext;

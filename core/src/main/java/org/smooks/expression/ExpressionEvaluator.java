@@ -58,13 +58,13 @@ public interface ExpressionEvaluator {
      * @param expression The expression to be evaluated by the evaluator implementation.
      * @throws SmooksConfigurationException Invalid expression configuration.
      */
-    public ExpressionEvaluator setExpression(String expression) throws SmooksConfigurationException;
+    ExpressionEvaluator setExpression(String expression) throws SmooksConfigurationException;
 
     /**
      * Get the String representation of the active expression on the evaluator instance.
      * @return The active expression String representation.
      */
-    public String getExpression();
+    String getExpression();
 
     /**
      * Evaluate a conditional expression against the supplied object (can be a Map).
@@ -72,7 +72,7 @@ public interface ExpressionEvaluator {
      * @return True if the expression evaluates to true, otherwise false.
      * @throws ExpressionEvaluationException Invalid expression evaluation condition (implementation specific).
      */
-    public boolean eval(Object contextObject) throws ExpressionEvaluationException;
+    boolean eval(Object contextObject) throws ExpressionEvaluationException;
 
     /**
      * Evaluate an expression against the supplied Map variable, returning the eval result.
@@ -80,12 +80,12 @@ public interface ExpressionEvaluator {
      * @return Expression evaluation result.
      * @throws ExpressionEvaluationException Invalid expression evaluation (implementation specific).
      */
-    public Object getValue(Object contextObject) throws ExpressionEvaluationException;
+    Object getValue(Object contextObject) throws ExpressionEvaluationException;
 
     /**
      * Factory method for creating ExpressionEvaluator instances.
      */
-    public static class Factory {
+    class Factory {
 
         public static ExpressionEvaluator createInstance(String className, String conditionExpression) {
             try {

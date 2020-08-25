@@ -57,7 +57,7 @@ import java.util.List;
  */
 public class CascadingClassLoaderSet extends ClassLoader {
 
-    List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
+    final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
     private int classLoaderCount;
 
     public CascadingClassLoaderSet addClassLoader(ClassLoader classLoader) {

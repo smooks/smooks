@@ -59,6 +59,6 @@ public interface Flushable {
 	 *
 	 * @throws UnsupportedOperationException if the operation is not supported
 	 */
-	public void flush();
+    void flush();
 
 }

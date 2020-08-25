@@ -65,15 +65,15 @@ import java.util.Hashtable;
  */
 public class StandaloneExecutionContext implements ExecutionContext {
 
-    private ProfileSet targetProfileSet;
-    private Hashtable<Object, Object> attributes = new Hashtable<Object, Object>();
-    private ContentDeliveryConfig deliveryConfig;
+    private final ProfileSet targetProfileSet;
+    private final Hashtable<Object, Object> attributes = new Hashtable<Object, Object>();
+    private final ContentDeliveryConfig deliveryConfig;
     private URI docSource;
 	private String contentEncoding;
-    private ApplicationContext context;
+    private final ApplicationContext context;
     private ExecutionEventListener executionListener;
     private Throwable terminationError;
-    private boolean isDefaultSerializationOn;
+    private final boolean isDefaultSerializationOn;
     private BeanContext beanContext;
 
     /**
@@ -153,9 +153,8 @@ public class StandaloneExecutionContext implements ExecutionContext {
 			// Make sure the encoding is supported....
 			"".getBytes(contentEncoding);
 		} catch (UnsupportedEncodingException e) {
-			IllegalArgumentException argE = new IllegalArgumentException("Invalid 'contentEncoding' arg [" + contentEncoding + "].  This encoding is not supported.");
-			argE.initCause(e);
-			throw argE;
+			IllegalArgumentException argE = new IllegalArgumentException("Invalid 'contentEncoding' arg [" + contentEncoding + "].  This encoding is not supported.", e);
+            throw argE;
 		}
 		this.contentEncoding = contentEncoding;
 	}

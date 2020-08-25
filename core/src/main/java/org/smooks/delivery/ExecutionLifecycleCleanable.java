@@ -58,5 +58,5 @@ public interface ExecutionLifecycleCleanable extends Visitor {
      *
      * @param executionContext The ExecutionContext.
      */
-    public abstract void executeExecutionLifecycleCleanup(ExecutionContext executionContext);
+    void executeExecutionLifecycleCleanup(ExecutionContext executionContext);
 }

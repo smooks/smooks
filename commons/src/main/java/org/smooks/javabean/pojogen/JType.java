@@ -42,8 +42,8 @@
  */
 package org.smooks.javabean.pojogen;
 
-import org.smooks.assertion.AssertArgument;
 import org.apache.commons.lang.ArrayUtils;
+import org.smooks.assertion.AssertArgument;
 
 import java.util.Set;
 
@@ -57,7 +57,7 @@ import java.util.Set;
  */
 public class JType {
 
-    private Class<?> type;
+    private final Class<?> type;
     private Class<?> genericType;
 
     public JType(Class<?> type) {
@@ -119,9 +119,7 @@ public class JType {
 
             if(typeObj.getType().getName().equals(type.getName())) {
                 if(genericType != null && typeObj.genericType != null) {
-                    if(!typeObj.genericType.getName().equals(genericType.getName())) {
-                        return false;
-                    }
+                    return typeObj.genericType.getName().equals(genericType.getName());
                 }
                 return true;
             }

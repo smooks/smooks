@@ -42,11 +42,7 @@
  */
 package org.smooks.namespace;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.*;
 import org.xml.sax.ext.DefaultHandler2;
 
 import java.io.IOException;
@@ -58,8 +54,8 @@ import java.io.IOException;
  */
 public class NamespaceAwareHandler extends DefaultHandler2 {
 
-    private DefaultHandler2 baseHandler;
-    private NamespaceDeclarationStack namespaceDeclarationStack;
+    private final DefaultHandler2 baseHandler;
+    private final NamespaceDeclarationStack namespaceDeclarationStack;
 
     public NamespaceAwareHandler(DefaultHandler2 baseHandler, NamespaceDeclarationStack namespaceDeclarationStack) {
         this.baseHandler = baseHandler;

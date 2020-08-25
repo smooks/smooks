@@ -42,18 +42,18 @@
  */
 package org.smooks.cdr.xsd11.conditiontests;
 
+import org.smooks.cdr.SmooksConfigurationException;
+import org.smooks.container.ExecutionContext;
 import org.smooks.expression.ExecutionContextExpressionEvaluator;
 import org.smooks.expression.ExpressionEvaluationException;
 import org.smooks.expression.ExpressionEvaluator;
-import org.smooks.container.ExecutionContext;
-import org.smooks.cdr.SmooksConfigurationException;
 
 /**
  * @author
  */
 public class TestExpressionEvaluator implements ExecutionContextExpressionEvaluator {
 
-    public static Object valVal = null;
+    public static final Object valVal = null;
     private String expression;
 
     public boolean eval(ExecutionContext context) throws ExpressionEvaluationException {

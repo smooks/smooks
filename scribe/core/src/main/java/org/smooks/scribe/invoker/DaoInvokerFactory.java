@@ -45,12 +45,7 @@ package org.smooks.scribe.invoker;
 import org.smooks.annotation.AnnotatedClass;
 import org.smooks.annotation.AnnotationManager;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.scribe.Dao;
-import org.smooks.scribe.Flushable;
-import org.smooks.scribe.Locator;
-import org.smooks.scribe.MappingDao;
-import org.smooks.scribe.ObjectStore;
-import org.smooks.scribe.Queryable;
+import org.smooks.scribe.*;
 import org.smooks.scribe.reflection.AnnotatedDaoRuntimeInfoFactory;
 
 /**
@@ -70,7 +65,7 @@ public class DaoInvokerFactory {
 	 *
 	 * @return the DaoInvokerFactory instance
 	 */
-	public static final DaoInvokerFactory getInstance() {
+	public static DaoInvokerFactory getInstance() {
 		return instance;
 	}
 

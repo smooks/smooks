@@ -67,7 +67,7 @@ public class ExecutionEventListenerTest {
     public void test_01_dom() throws IOException, SAXException {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
-        testListener(eventListener, "smooks-config-dom.xml", "test-data-01.xml");
+        testListener(eventListener, "smooks-config-dom.xml");
         assertEquals(38, eventListener.getEvents().size());
     }
 
@@ -75,7 +75,7 @@ public class ExecutionEventListenerTest {
     public void test_01_sax() throws IOException, SAXException {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
-        testListener(eventListener, "smooks-config-sax.xml", "test-data-01.xml");
+        testListener(eventListener, "smooks-config-sax.xml");
         assertEquals(23, eventListener.getEvents().size());
     }
 
@@ -84,7 +84,7 @@ public class ExecutionEventListenerTest {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
         eventListener.setFilterEvents(FilterLifecycleEvent.class);
-        testListener(eventListener, "smooks-config-dom.xml", "test-data-01.xml");
+        testListener(eventListener, "smooks-config-dom.xml");
         assertEquals(23, eventListener.getEvents().size());
     }
 
@@ -93,7 +93,7 @@ public class ExecutionEventListenerTest {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
         eventListener.setFilterEvents(ResourceTargetingEvent.class);
-        testListener(eventListener, "smooks-config-dom.xml", "test-data-01.xml");
+        testListener(eventListener, "smooks-config-dom.xml");
         assertEquals(30, eventListener.getEvents().size());
     }
 
@@ -102,14 +102,14 @@ public class ExecutionEventListenerTest {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
         eventListener.setFilterEvents(FilterLifecycleEvent.class, ResourceTargetingEvent.class);
-        testListener(eventListener, "smooks-config-dom.xml", "test-data-01.xml");
+        testListener(eventListener, "smooks-config-dom.xml");
         assertEquals(30, eventListener.getEvents().size());
     }
 
-    private void testListener(BasicExecutionEventListener eventListener, String config, String sourceFile) throws IOException, SAXException {
+    private void testListener(BasicExecutionEventListener eventListener, String config) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
         ExecutionContext execContext = smooks.createExecutionContext();
-        StreamSource source = new StreamSource(getClass().getResourceAsStream(sourceFile));
+        StreamSource source = new StreamSource(getClass().getResourceAsStream("test-data-01.xml"));
 
         execContext.setEventListener(eventListener);
         smooks.filterSource(execContext, source, new StreamResult(new NullWriter()));

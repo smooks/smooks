@@ -65,7 +65,7 @@ import java.util.*;
 public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
     private ContentHandlerConfigMapTable<SAXVisitBefore> visitBefores;
-    private ContentHandlerConfigMapTable<SAXVisitChildren> childVisitors = new ContentHandlerConfigMapTable<SAXVisitChildren>();
+    private final ContentHandlerConfigMapTable<SAXVisitChildren> childVisitors = new ContentHandlerConfigMapTable<SAXVisitChildren>();
     private ContentHandlerConfigMapTable<SAXVisitAfter> visitAfters;
     private ContentHandlerConfigMapTable<VisitLifecycleCleanable> visitCleanables;
     private boolean rewriteEntities;
@@ -74,7 +74,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
     private boolean terminateOnVisitorException;
     private FilterBypass filterBypass;
 
-    private Map<String, SAXElementVisitorMap> optimizedVisitorConfig = new HashMap<String, SAXElementVisitorMap>();
+    private final Map<String, SAXElementVisitorMap> optimizedVisitorConfig = new HashMap<String, SAXElementVisitorMap>();
 
     public ContentHandlerConfigMapTable<SAXVisitBefore> getVisitBefores() {
         return visitBefores;

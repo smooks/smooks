@@ -44,7 +44,10 @@ package org.smooks.javabean.pojogen;
 
 import org.smooks.assertion.AssertArgument;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Method model.
@@ -53,10 +56,10 @@ import java.util.*;
  */
 public class JMethod {
 
-    private JType returnType;
-    private String methodName;
-    private List<JNamedType> parameters = new ArrayList<JNamedType>();
-    private Set<JType> exceptions = new LinkedHashSet<JType>();
+    private final JType returnType;
+    private final String methodName;
+    private final List<JNamedType> parameters = new ArrayList<JNamedType>();
+    private final Set<JType> exceptions = new LinkedHashSet<JType>();
     private StringBuilder bodyBuilder = new StringBuilder();
 
     public JMethod(String methodName) {

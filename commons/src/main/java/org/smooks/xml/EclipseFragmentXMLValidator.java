@@ -42,11 +42,11 @@
  */
 package org.smooks.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.io.StreamUtils;
 import org.smooks.util.ClassUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -104,8 +104,8 @@ public class EclipseFragmentXMLValidator extends XsdValidator {
 
         private static final String PLATFORM_FRAGMENT = "platform:/fragment/";
 
-        private Map<String, String> catalog = new ConcurrentHashMap<String, String>();
-        private Map<String, ByteArrayInputStream> schemaCache = new ConcurrentHashMap<String, ByteArrayInputStream>();
+        private final Map<String, String> catalog = new ConcurrentHashMap<String, String>();
+        private final Map<String, ByteArrayInputStream> schemaCache = new ConcurrentHashMap<String, ByteArrayInputStream>();
 
         private SchemaResolver() throws IOException {
             List<URL> urnFiles = ClassUtil.getResources("/fragment.xml", EclipseFragmentXMLValidator.class);
@@ -142,8 +142,7 @@ public class EclipseFragmentXMLValidator extends XsdValidator {
                         }
                     }
                 } catch (Exception e) {
-                    IOException ioE = new IOException("Error reading Schema resource '" + url + "'.");
-                    ioE.initCause(e);
+                    IOException ioE = new IOException("Error reading Schema resource '" + url + "'.", e);
                     throw ioE;
                 } finally {
                     if (in != null) {

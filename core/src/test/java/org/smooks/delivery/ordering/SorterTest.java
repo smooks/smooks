@@ -44,28 +44,28 @@ package org.smooks.delivery.ordering;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import org.smooks.delivery.Visitor;
-import org.smooks.delivery.ContentHandlerConfigMap;
-import org.smooks.delivery.ordering.testvisitors.TestProducer;
-import org.smooks.delivery.ordering.testvisitors.TestVisitor;
-import org.smooks.delivery.ordering.testvisitors.TestConsumer;
-import org.smooks.delivery.ordering.testvisitors.TestProducerConsumer;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksConfigurationException;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.delivery.ContentHandlerConfigMap;
+import org.smooks.delivery.Visitor;
+import org.smooks.delivery.ordering.testvisitors.TestConsumer;
+import org.smooks.delivery.ordering.testvisitors.TestProducer;
+import org.smooks.delivery.ordering.testvisitors.TestProducerConsumer;
+import org.smooks.delivery.ordering.testvisitors.TestVisitor;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class SorterTest {
 
-    private List<ContentHandlerConfigMap<Visitor>> sortList = new ArrayList<ContentHandlerConfigMap<Visitor>>();
-    private List<ContentHandlerConfigMap<Visitor>> originalList = new ArrayList<ContentHandlerConfigMap<Visitor>>();
+    private final List<ContentHandlerConfigMap<Visitor>> sortList = new ArrayList<ContentHandlerConfigMap<Visitor>>();
+    private final List<ContentHandlerConfigMap<Visitor>> originalList = new ArrayList<ContentHandlerConfigMap<Visitor>>();
 
     @Before
     public void setUp() throws Exception {

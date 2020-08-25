@@ -42,8 +42,8 @@
  */
 package org.smooks.event.types;
 
-import org.smooks.event.ExecutionEvent;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.event.ExecutionEvent;
 
 /**
  * Configuration Builder Event.
@@ -53,7 +53,7 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 public class ConfigBuilderEvent implements ExecutionEvent {
 
     private SmooksResourceConfiguration resourceConfig;
-    private String message;
+    private final String message;
     private Throwable thrown;
 
     public ConfigBuilderEvent(String message) {

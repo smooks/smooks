@@ -42,10 +42,10 @@
  */
 package org.smooks.profile;
 
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.xml.sax.SAXException;
 
 /**
  * Stream based profile configuration digester interface. <p/> Construct a
@@ -65,6 +65,6 @@ public interface ProfileConfigDigester {
 	 *            The input stream instance.
 	 * @return ProfileStore instance.
 	 */
-	public abstract ProfileStore parse(InputStream input) throws SAXException,
+    ProfileStore parse(InputStream input) throws SAXException,
 			IOException;
 }

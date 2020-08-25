@@ -85,7 +85,7 @@ public class JavaSource extends FilterSource {
      */
     public static final String FEATURE_GENERATE_EVENT_STREAM = "http://www.smooks.org/sax/features/generate-java-event-stream";
 
-    private List<Object> sourceObjects;
+    private final List<Object> sourceObjects;
     private Map<String, Object> beans;
     private boolean eventStreamRequired = true;
 

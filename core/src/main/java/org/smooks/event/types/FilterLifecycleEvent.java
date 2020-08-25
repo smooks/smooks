@@ -52,7 +52,7 @@ import org.smooks.event.ExecutionEvent;
  */
 public class FilterLifecycleEvent implements ExecutionEvent {
 
-    public static enum EventType {
+    public enum EventType {
         /**
          * The filtering process has started.
          */

@@ -60,10 +60,10 @@ import java.util.Properties;
  */
 public class PredicatesEvaluatorBuilder {
 
-    private Step step;
-    private Step attributeStep;
-    private SelectorStep selectorStep;
-    private Properties namespaces;
+    private final Step step;
+    private final Step attributeStep;
+    private final SelectorStep selectorStep;
+    private final Properties namespaces;
 
     public PredicatesEvaluatorBuilder(Step step, Step attributeStep, SelectorStep selectorStep, Properties namespaces) {
         this.step = step;

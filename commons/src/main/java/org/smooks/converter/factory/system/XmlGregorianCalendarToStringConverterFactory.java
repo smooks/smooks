@@ -79,7 +79,7 @@ public class XmlGregorianCalendarToStringConverterFactory implements TypeConvert
 
     private class XmlGregorianCalendarToStringTypeConverter implements TypeConverter<XMLGregorianCalendar, String>, Configurable {
 
-        private DateToStringLocaleAwareConverter dateToStringLocaleAwareConverter = new DateToStringLocaleAwareConverter() {
+        private final DateToStringLocaleAwareConverter dateToStringLocaleAwareConverter = new DateToStringLocaleAwareConverter() {
             @Override
             protected String doConvert(String value) {
                 return value;

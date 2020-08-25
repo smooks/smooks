@@ -55,8 +55,8 @@ public class Time {
 
     public static final String BEAN_ID = "PTIME";
     
-    private long startMillis = System.currentTimeMillis();
-    private long startNanos = System.nanoTime();
+    private final long startMillis = System.currentTimeMillis();
+    private final long startNanos = System.nanoTime();
     private Date startDate;
 
     /**

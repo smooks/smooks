@@ -51,8 +51,8 @@ import org.smooks.delivery.sax.SAXElement;
  */
 public class TerminateException extends RuntimeException {
 	
-	private SAXElement element;
-	private boolean terminateBefore;
+	private final SAXElement element;
+	private final boolean terminateBefore;
 
 	/**
 	 * Public constructor.

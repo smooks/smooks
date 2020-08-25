@@ -121,10 +121,7 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
     }
 
     public boolean consumes(Object object) {
-        if(object.equals(resourceName)) {
-            return true;
-        }
-        return false;
+        return object.equals(resourceName);
     }
 
     /**

@@ -43,6 +43,7 @@
 package org.smooks.profile;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -87,11 +88,11 @@ public class DefaultProfileSetTest {
 	public void testIsMember() {
 		DefaultProfileSet set = new DefaultProfileSet("baseProfile");
 
-		assertTrue(!set.isMember("xxx"));
+		assertFalse(set.isMember("xxx"));
 		set.addProfile("xxx");
 		assertTrue(set.isMember("xxx"));
 
-		assertTrue(!set.isMember("yyy"));
+		assertFalse(set.isMember("yyy"));
 		set.addProfile(" YYY");
 		assertTrue(set.isMember("YYY"));
 		assertTrue(set.isMember(" YYY"));

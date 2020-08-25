@@ -42,6 +42,8 @@
  */
 package org.smooks.event;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.delivery.VisitSequence;
 import org.smooks.event.report.annotation.VisitAfterReport;
@@ -50,8 +52,6 @@ import org.smooks.event.types.ElementPresentEvent;
 import org.smooks.event.types.ElementVisitEvent;
 import org.smooks.event.types.FilterLifecycleEvent;
 import org.smooks.expression.MVELExpressionEvaluator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +76,7 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicExecutionEventListener.class);
     
-    private List<ExecutionEvent> events = new ArrayList<ExecutionEvent>();
+    private final List<ExecutionEvent> events = new ArrayList<ExecutionEvent>();
     private List<? extends Class<? extends ExecutionEvent>> filterEvents;
 
     /**

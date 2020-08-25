@@ -74,15 +74,15 @@ import java.util.Stack;
 public class DOMBuilder extends SmooksContentHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DOMBuilder.class);
-    private static DocumentBuilder documentBuilder;
+    private static final DocumentBuilder documentBuilder;
 
-    private ExecutionContext execContext;
+    private final ExecutionContext execContext;
     private Document ownerDocument;
-    private Stack nodeStack = new Stack();
+    private final Stack nodeStack = new Stack();
     private boolean inEntity = false;
-    private HashSet emptyElements = new HashSet();
-    private StringBuilder cdataNodeBuilder = new StringBuilder();
-    private boolean rewriteEntities;
+    private final HashSet emptyElements = new HashSet();
+    private final StringBuilder cdataNodeBuilder = new StringBuilder();
+    private final boolean rewriteEntities;
 
     static {
     	try {

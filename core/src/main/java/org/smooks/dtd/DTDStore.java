@@ -101,7 +101,7 @@ public class DTDStore {
 	/**
 	 * Loaded DTDs
 	 */
-	private static Hashtable<ProfileSet, DTD> dtds = new Hashtable<ProfileSet, DTD>();
+	private static final Hashtable<ProfileSet, DTD> dtds = new Hashtable<ProfileSet, DTD>();
 
 	/**
 	 * Add the DTD for the profileSet device
@@ -160,19 +160,19 @@ public class DTDStore {
 		/**
 		 * DTD Object ref.
 		 */
-		private DTD wutkaDTDObject;
+		private final DTD wutkaDTDObject;
 		/**
 		 * DTD Element child element names. An optimization to save iterating over
 		 * the DTD element contents (DTDItem etc).
 		 * <p/>
 		 * "*" for PC Data.
 		 */
-		private Hashtable elementElements = new Hashtable();
+		private final Hashtable elementElements = new Hashtable();
 		/**
 		 * DTD Element attribute names. An optimization to save iterating over
 		 * the DTD element contents (DTDItem etc).
 		 */
-		private Hashtable elementAttributes = new Hashtable();
+		private final Hashtable elementAttributes = new Hashtable();
 
 		/**
 		 * Private Constructor.

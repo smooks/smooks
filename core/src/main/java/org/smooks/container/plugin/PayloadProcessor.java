@@ -79,8 +79,8 @@ import javax.xml.transform.Source;
  */
 public class PayloadProcessor {
 
-    private Smooks smooks;
-    private ResultType resultType;
+    private final Smooks smooks;
+    private final ResultType resultType;
     private String javaResultBeanId;
 
     /**

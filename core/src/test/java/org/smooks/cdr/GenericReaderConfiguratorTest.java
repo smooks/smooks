@@ -48,8 +48,7 @@ import org.smooks.delivery.AbstractParser;
 import org.smooks.delivery.java.JavaXMLReader;
 import org.xml.sax.SAXException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author
@@ -112,12 +111,12 @@ public class GenericReaderConfiguratorTest {
         if(numFeaturesOn != 0) {
             assertEquals(numFeaturesOn, config.getParameters(AbstractParser.FEATURE_ON).size());
         } else {
-            assertEquals(null, config.getParameters(AbstractParser.FEATURE_ON));
+            assertNull(config.getParameters(AbstractParser.FEATURE_ON));
         }
         if(numFeaturesOff != 0) {
             assertEquals(numFeaturesOff, config.getParameters(AbstractParser.FEATURE_OFF).size());
         } else {
-            assertEquals(null, config.getParameters(AbstractParser.FEATURE_OFF));
+            assertNull(config.getParameters(AbstractParser.FEATURE_OFF));
         }
     }
 }

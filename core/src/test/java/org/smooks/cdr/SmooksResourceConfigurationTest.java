@@ -110,9 +110,9 @@ public class SmooksResourceConfigurationTest {
         assertTrue(rc1.isTargetedAtElement(e, null));
         assertTrue(rc2.isTargetedAtElement(e, null));
         assertTrue(rc3.isTargetedAtElement(e, null));
-        assertTrue(!rc4.isTargetedAtElement(e, null));
-        assertTrue(!rc5.isTargetedAtElement(e, null));
-        assertTrue(!rc7.isTargetedAtElement(e, null));
+        assertFalse(rc4.isTargetedAtElement(e, null));
+        assertFalse(rc5.isTargetedAtElement(e, null));
+        assertFalse(rc7.isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -135,7 +135,7 @@ public class SmooksResourceConfigurationTest {
 
         assertEquals("e", rc10.getTargetElement());
         assertEquals("attrib1", rc10.getTargetAttribute());
-        assertTrue(!rc10.isTargetedAtElement(e, null));
+        assertFalse(rc10.isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -171,8 +171,8 @@ public class SmooksResourceConfigurationTest {
         assertTrue(rc2.isTargetedAtElement(e, null));
         assertTrue(rc3.isTargetedAtElement(e, null));
 
-        assertTrue(!rc4.isTargetedAtElement(e, null));
-        assertTrue(!rc5.isTargetedAtElement(e, null));
+        assertFalse(rc4.isTargetedAtElement(e, null));
+        assertFalse(rc5.isTargetedAtElement(e, null));
 
         assertTrue(rc6.isTargetedAtElement(e, null));
         assertTrue(rc7.isTargetedAtElement(e, null));
@@ -186,15 +186,15 @@ public class SmooksResourceConfigurationTest {
         assertTrue(rc15.isTargetedAtElement(e, null));
         assertTrue(rc16.isTargetedAtElement(e, null));
 
-        assertTrue(!rc17.isTargetedAtElement(e, null));
-        assertTrue(!rc18.isTargetedAtElement(e, null));
-        assertTrue(!rc19.isTargetedAtElement(e, null));
+        assertFalse(rc17.isTargetedAtElement(e, null));
+        assertFalse(rc18.isTargetedAtElement(e, null));
+        assertFalse(rc19.isTargetedAtElement(e, null));
 
         assertTrue(rc20.isTargetedAtElement(e, null));
         assertTrue(rc21.isTargetedAtElement(e, null));
         assertTrue(rc22.isTargetedAtElement(e, null));
 
-        assertTrue(!rc23.isTargetedAtElement(e, null));
+        assertFalse(rc23.isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -216,10 +216,10 @@ public class SmooksResourceConfigurationTest {
         }
 
         assertTrue(rc1.isTargetedAtElement(e, null));
-        assertTrue(!rc2.isTargetedAtElement(e, null));
+        assertFalse(rc2.isTargetedAtElement(e, null));
         assertTrue(rc3.isTargetedAtElement(e, null));
         assertTrue(rc4.isTargetedAtElement(e, null));
-        assertTrue(!rc5.isTargetedAtElement(e, null));
+        assertFalse(rc5.isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -235,8 +235,8 @@ public class SmooksResourceConfigurationTest {
         assertTrue(rc1.isTargetedAtElement(e, null));
         assertTrue(rc2.isTargetedAtElement(e, null));
         assertTrue(rc3.isTargetedAtElement(e, null));
-        assertTrue(!rc4.isTargetedAtElement(e, null));
-        assertTrue(!rc5.isTargetedAtElement(e, null));
+        assertFalse(rc4.isTargetedAtElement(e, null));
+        assertFalse(rc5.isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -273,8 +273,8 @@ public class SmooksResourceConfigurationTest {
         assertTrue(rc2.isTargetedAtElement(e, null));
         assertTrue(rc3.isTargetedAtElement(e, null));
 
-        assertTrue(!rc4.isTargetedAtElement(e, null));
-        assertTrue(!rc5.isTargetedAtElement(e, null));
+        assertFalse(rc4.isTargetedAtElement(e, null));
+        assertFalse(rc5.isTargetedAtElement(e, null));
 
         assertTrue(rc6.isTargetedAtElement(e, null));
         assertTrue(rc7.isTargetedAtElement(e, null));
@@ -290,15 +290,15 @@ public class SmooksResourceConfigurationTest {
         assertTrue(rc15_1.isTargetedAtElement(e, null));
         assertTrue(rc16_1.isTargetedAtElement(e, null));
 
-        assertTrue(!rc17.isTargetedAtElement(e, null));
-        assertTrue(!rc18.isTargetedAtElement(e, null));
-        assertTrue(!rc19.isTargetedAtElement(e, null));
+        assertFalse(rc17.isTargetedAtElement(e, null));
+        assertFalse(rc18.isTargetedAtElement(e, null));
+        assertFalse(rc19.isTargetedAtElement(e, null));
 
         assertTrue(rc20.isTargetedAtElement(e, null));
         assertTrue(rc21.isTargetedAtElement(e, null));
         assertTrue(rc22.isTargetedAtElement(e, null));
 
-        assertTrue(!rc23.isTargetedAtElement(e, null));
+        assertFalse(rc23.isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -319,10 +319,10 @@ public class SmooksResourceConfigurationTest {
         SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("/a/b/*/d/e", "blah");
 
         assertTrue(rc1.isTargetedAtElement(e, null));
-        assertTrue(!rc2.isTargetedAtElement(e, null));
+        assertFalse(rc2.isTargetedAtElement(e, null));
         assertTrue(rc3.isTargetedAtElement(e, null));
         assertTrue(rc4.isTargetedAtElement(e, null));
-        assertTrue(!rc5.isTargetedAtElement(e, null));
+        assertFalse(rc5.isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -330,7 +330,7 @@ public class SmooksResourceConfigurationTest {
         SAXElement e = buildE_rooted();
 
         SmooksResourceConfiguration noAtt = new SmooksResourceConfiguration("e", "blah");
-        assertEquals(null, noAtt.getTargetAttribute());
+        assertNull(noAtt.getTargetAttribute());
 
         // Check with an attribute on the selector....
         SmooksResourceConfiguration rc8 = new SmooksResourceConfiguration("e/@attrib1", "blah");
@@ -347,7 +347,7 @@ public class SmooksResourceConfigurationTest {
 
         assertEquals("e", rc10.getTargetElement());
         assertEquals("attrib1", rc10.getTargetAttribute());
-        assertTrue(!rc10.isTargetedAtElement(e, null));
+        assertFalse(rc10.isTargetedAtElement(e, null));
     }
 
     private SAXElement buildE() {

@@ -54,5 +54,5 @@ public interface ExecutionEventListener {
      * Receive execution event.
      * @param event Execution event.
      */
-    public void onEvent(ExecutionEvent event);
+    void onEvent(ExecutionEvent event);
 }

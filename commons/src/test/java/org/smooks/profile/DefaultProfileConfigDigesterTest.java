@@ -42,12 +42,12 @@
  */
 package org.smooks.profile;
 
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.xml.sax.SAXException;
-
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -212,7 +212,7 @@ public class DefaultProfileConfigDigesterTest {
 		try {
 			ProfileSet device = store.getProfileSet("MSIE5");
 			assertTrue(device.isMember("html"));
-			assertTrue(!device.isMember("wml"));
+            assertFalse(device.isMember("wml"));
 		} catch (UnknownProfileMemberException e) {
 			e.printStackTrace();
 			fail("Unexpected Exception: " + e.getMessage());
@@ -220,7 +220,7 @@ public class DefaultProfileConfigDigesterTest {
 		try {
 			ProfileSet device = store.getProfileSet("EricssonA2618");
 			assertTrue(device.isMember("wml"));
-			assertTrue(!device.isMember("html"));
+            assertFalse(device.isMember("html"));
 		} catch (UnknownProfileMemberException e) {
 			e.printStackTrace();
 			fail("Unexpected Exception: " + e.getMessage());
@@ -244,7 +244,7 @@ public class DefaultProfileConfigDigesterTest {
 		try {
 			ProfileSet MSIE5 = store.getProfileSet("MSIE5");
 			assertTrue(MSIE5.isMember("html"));
-			assertTrue(!MSIE5.isMember("wml"));
+            assertFalse(MSIE5.isMember("wml"));
 		} catch (UnknownProfileMemberException e) {
 			e.printStackTrace();
 			fail("Unexpected Exception: " + e.getMessage());
@@ -272,9 +272,9 @@ public class DefaultProfileConfigDigesterTest {
 			assertTrue(MSIE5.isMember("msie"));
 			assertTrue(MSIE5.isMember("large"));
 			assertTrue(MSIE5.isMember("html4"));
-			assertTrue(!MSIE5.isMember("wml"));
-			assertTrue(!MSIE5.isMember("wml"));
-			assertTrue(!MSIE5.isMember("PDA"));
+            assertFalse(MSIE5.isMember("wml"));
+            assertFalse(MSIE5.isMember("wml"));
+            assertFalse(MSIE5.isMember("PDA"));
 		} catch (UnknownProfileMemberException e) {
 			e.printStackTrace();
 			fail("Unexpected Exception: " + e.getMessage());

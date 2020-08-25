@@ -42,16 +42,16 @@
  */
 package org.smooks.resource;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -60,7 +60,7 @@ import static org.junit.Assert.*;
  */
 public class URIResourceLocatorTest {
 
-	private File file = new File("testfilex.zap");
+	private final File file = new File("testfilex.zap");
 
 	@Before
 	public void setUp() throws Exception {

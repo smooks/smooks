@@ -42,15 +42,16 @@
  */
 package org.smooks.resource;
 
+import com.mockobjects.servlet.MockServletConfig;
+import com.mockobjects.servlet.MockServletContext;
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.mockobjects.servlet.MockServletConfig;
-import com.mockobjects.servlet.MockServletContext;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Test that the getResource method tries to load based on the rules in the
@@ -228,7 +229,7 @@ public class ServletResourceLocatorTest {
 
 	class MockExternalResourceLocator implements ExternalResourceLocator {
 
-		InputStream stream = new ByteArrayInputStream(new byte[] {});
+		final InputStream stream = new ByteArrayInputStream(new byte[] {});
 
 		/*
 		 * (non-Javadoc)

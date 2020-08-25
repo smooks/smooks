@@ -63,6 +63,6 @@ public interface ExternalResourceLocator {
 	 * @throws IOException
 	 *             Unable to get the org.smooks.resource stream.
 	 */
-	public InputStream getResource(String uri) throws IllegalArgumentException,
+    InputStream getResource(String uri) throws IllegalArgumentException,
 			IOException;
 }

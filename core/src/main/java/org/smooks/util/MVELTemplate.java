@@ -55,8 +55,8 @@ import org.smooks.assertion.AssertArgument;
 */
 public class MVELTemplate {
 
-    private String template;
-    private CompiledTemplate compiledTemplate;
+    private final String template;
+    private final CompiledTemplate compiledTemplate;
 
     public MVELTemplate(String template) {
         AssertArgument.isNotNullAndNotEmpty(template, "template");

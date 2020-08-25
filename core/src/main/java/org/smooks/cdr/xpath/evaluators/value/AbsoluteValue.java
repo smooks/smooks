@@ -53,7 +53,7 @@ import org.w3c.dom.Element;
  */
 public class AbsoluteValue extends Value {
 
-    private Object value;
+    private final Object value;
 
     public AbsoluteValue(LiteralExpr literal) {
         value = literal.getLiteral();

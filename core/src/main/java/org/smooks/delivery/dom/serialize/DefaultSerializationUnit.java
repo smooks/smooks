@@ -89,13 +89,13 @@ public class DefaultSerializationUnit implements SerializationUnit {
 	 * @see org.smooks.serialize.SerializationUnit#writeElementStart(org.w3c.dom.Element, java.io.Writer)
 	 */
 	public void writeElementStart(Element element, Writer writer) throws IOException {
-		writer.write((int)'<');
+		writer.write('<');
         writer.write(element.getTagName());
         writeAttributes(element.getAttributes(), writer);
         if(closeEmptyElements && !element.hasChildNodes()) {
             // Do nothing.  We'll close it "short-hand" in writeElementEnd below...
         } else {
-            writer.write((int)'>');
+            writer.write('>');
         }
     }
 
@@ -111,19 +111,19 @@ public class DefaultSerializationUnit implements SerializationUnit {
 		for(int i = 0; i < attribCount; i++) {
 			Attr attribute = (Attr)attributes.item(i);
 			String attribValue = attribute.getValue();
-			int enclosingChar = (int)'"';
+			int enclosingChar = '"';
 
-            writer.write((int)' ');
+            writer.write(' ');
             writer.write(attribute.getName());
-            writer.write((int)'=');
+            writer.write('=');
 
             if(rewriteEntities) {
                 writer.write('\"');
                 XmlUtil.encodeAttributeValue(attribValue.toCharArray(), 0, attribValue.length(), writer);
                 writer.write('\"');
             } else {
-                if(attribValue.indexOf((int)'"') != -1) {
-                    enclosingChar = (int)'\'';
+                if(attribValue.indexOf('"') != -1) {
+                    enclosingChar = '\'';
                 }
                 writer.write(enclosingChar);
                 writer.write(attribValue);
@@ -148,7 +148,7 @@ public class DefaultSerializationUnit implements SerializationUnit {
         } else {
             writer.write("</");
             writer.write(element.getTagName());
-            writer.write((int)'>');
+            writer.write('>');
         }
     }
 

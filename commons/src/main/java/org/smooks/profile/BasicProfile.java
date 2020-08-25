@@ -51,7 +51,7 @@ public class BasicProfile implements Profile {
 
 	private static final long serialVersionUID = 1L;
 
-	private String name;
+	private final String name;
 
 	/**
 	 * Public constructor.

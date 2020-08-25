@@ -42,10 +42,10 @@
  */
 package org.smooks.event;
 
-import org.w3c.dom.Element;
-import org.smooks.xml.DomUtils;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXUtil;
+import org.smooks.xml.DomUtils;
+import org.w3c.dom.Element;
 
 /**
  * An element processing related event.
@@ -54,7 +54,7 @@ import org.smooks.delivery.sax.SAXUtil;
  */
 public abstract class ElementProcessingEvent implements ExecutionEvent {
 
-    private Object element;
+    private final Object element;
 
     public ElementProcessingEvent(Object element) {
         this.element = element;

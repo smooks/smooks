@@ -42,16 +42,17 @@
  */
 package org.smooks.archive;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.io.FileUtils;
 import org.smooks.io.StreamUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -69,9 +70,9 @@ public class Archive {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Archive.class);
 
-	private String archiveName;
+	private final String archiveName;
     private File tmpDir;
-    private LinkedHashMap<String, File> entries = new LinkedHashMap<String, File>();
+    private final LinkedHashMap<String, File> entries = new LinkedHashMap<String, File>();
 
     /**
      * Public constructor.
@@ -251,11 +252,7 @@ public class Archive {
         AssertArgument.isNotNullAndNotEmpty(path, "path");
         AssertArgument.isNotNull(data, "data");
 
-        try {
-            addEntry(trimLeadingSlash(path.trim()), data.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Unexpected UnsupportedEncodingException exception for encoding 'UTF-8' when writing Archive entry from a StringBuilder instance.", e);
-        }
+        addEntry(trimLeadingSlash(path.trim()), data.getBytes(StandardCharsets.UTF_8));
 
         return this;
     }
@@ -543,7 +540,7 @@ public class Archive {
             }
             archiveStream.closeEntry();
         } catch (Exception e) {
-            throw (IOException) new IOException("Unable to create archive entry '" + entryName + "'.").initCause(e);
+            throw new IOException("Unable to create archive entry '" + entryName + "'.", e);
         }
     }
 

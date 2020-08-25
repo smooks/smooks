@@ -53,7 +53,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Inherited
-public abstract @interface VisitAfterIf {
+public @interface VisitAfterIf {
 
     /**
      * The {@link org.smooks.cdr.SmooksResourceConfiguration} condition that
@@ -62,5 +62,5 @@ public abstract @interface VisitAfterIf {
      * @return An inline <a href="http://mvel.codehaus.org/">MVEL</a> expression,
      * or a reference to a file resource on the classpath.
      */
-    public abstract String condition();
+    String condition();
 }

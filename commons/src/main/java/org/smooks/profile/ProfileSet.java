@@ -59,7 +59,7 @@ public interface ProfileSet extends Serializable {
      * Get the name of the base profile for this profile set.
      * @return The base profile name.
      */
-    public String getBaseProfile();
+    String getBaseProfile();
 
     /**
 	 * Is the specified profile a member of this profile set.
@@ -72,7 +72,7 @@ public interface ProfileSet extends Serializable {
 	 * @return True if the associated device a member of the specified profile,
 	 *         otherwise false.
 	 */
-	public boolean isMember(String profile);
+    boolean isMember(String profile);
 
 	/**
 	 * Add a profile to the ProfileSet.
@@ -80,7 +80,7 @@ public interface ProfileSet extends Serializable {
 	 * @param profile
 	 *            The profile to add.
 	 */
-	public abstract void addProfile(Profile profile);
+    void addProfile(Profile profile);
 
 	/**
 	 * Get a profile from the {@link ProfileSet}.
@@ -90,7 +90,7 @@ public interface ProfileSet extends Serializable {
 	 * @return The requested Profile, or null if the profile is not a member of
 	 *         the {@link ProfileSet}.
 	 */
-	public abstract Profile getProfile(String profile);
+    Profile getProfile(String profile);
 
 	/**
 	 * Get an {@link Iterator} to allow iteration over the
@@ -99,5 +99,5 @@ public interface ProfileSet extends Serializable {
 	 * @return An {@link Iterator} that allows iteration over the
 	 *         {@link Profile Profiles}in this {@link ProfileSet}.
 	 */
-	public abstract Iterator iterator();
+    Iterator iterator();
 }

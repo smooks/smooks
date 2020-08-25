@@ -71,10 +71,10 @@ public class SmooksSAXFilter extends Filter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SmooksSAXFilter.class);
 	
-    private ExecutionContext executionContext;
-    private SAXParser parser;
-    private boolean closeSource;
-    private boolean closeResult;
+    private final ExecutionContext executionContext;
+    private final SAXParser parser;
+    private final boolean closeSource;
+    private final boolean closeResult;
 
     public SmooksSAXFilter(ExecutionContext executionContext) {
         this.executionContext = executionContext;

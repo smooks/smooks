@@ -42,14 +42,7 @@
  */
 package org.smooks.scribe.invoker;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.mockito.Mock;
 import org.smooks.scribe.NoMethodWithAnnotationFoundException;
 import org.smooks.scribe.reflection.AnnotatedDaoRuntimeInfo;
 import org.smooks.scribe.reflection.AnnotatedDaoRuntimeInfoFactory;
@@ -58,8 +51,18 @@ import org.smooks.scribe.test.dao.FullAnnotatedDao;
 import org.smooks.scribe.test.dao.MinimumAnnotatedDao;
 import org.smooks.scribe.test.dao.OnlyDefaultAnnotatedDao;
 import org.smooks.scribe.test.util.BaseTestCase;
-import org.mockito.Mock;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -80,13 +83,13 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 	@Mock
 	MinimumAnnotatedDao minimumDao;
 
-	AnnotatedDaoRuntimeInfoFactory runtimeInfoFactory = new AnnotatedDaoRuntimeInfoFactory();
+	final AnnotatedDaoRuntimeInfoFactory runtimeInfoFactory = new AnnotatedDaoRuntimeInfoFactory();
 
-	AnnotatedDaoRuntimeInfo fullDaoRuntimeInfo = runtimeInfoFactory.create(FullAnnotatedDao.class);
+	final AnnotatedDaoRuntimeInfo fullDaoRuntimeInfo = runtimeInfoFactory.create(FullAnnotatedDao.class);
 
-	AnnotatedDaoRuntimeInfo daoNoEntityReturnedRuntimeInfo = runtimeInfoFactory.create(AnnotatedDaoNoEntityReturned.class);
+	final AnnotatedDaoRuntimeInfo daoNoEntityReturnedRuntimeInfo = runtimeInfoFactory.create(AnnotatedDaoNoEntityReturned.class);
 
-	AnnotatedDaoRuntimeInfo minimumDaoRuntimeInfo = runtimeInfoFactory.create(MinimumAnnotatedDao.class);
+	final AnnotatedDaoRuntimeInfo minimumDaoRuntimeInfo = runtimeInfoFactory.create(MinimumAnnotatedDao.class);
 
 	@Test
 	public void test_insert_with_entity_return() {

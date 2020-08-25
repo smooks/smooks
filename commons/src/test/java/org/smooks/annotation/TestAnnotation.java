@@ -1,26 +1,27 @@
 // Copyright 2007 Fusionsoft, Inc. All rights reserved.
 package org.smooks.annotation;
 
-import static org.junit.Assert.*;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 public class TestAnnotation  {
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.RUNTIME)
-	static public @interface A {}
+	public @interface A {}
 
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)
-	static public @interface B {}
+	public @interface B {}
 
 	@A
-	static public interface BaseInterface {
+	public interface BaseInterface {
 		@B
-		public void method1();
+		void method1();
 	}
 
 	static public class BaseClass {

@@ -69,8 +69,8 @@ import org.smooks.profile.ProfileSet;
  */
 public class ProfileTargetingExpression {
 	
-	private String expression;
-	private ExpressionToken[] expressionTokens;
+	private final String expression;
+	private final ExpressionToken[] expressionTokens;
 	
 	public ProfileTargetingExpression(String expression) {
 		if(expression == null || expression.trim().equals("")) {
@@ -152,8 +152,8 @@ public class ProfileTargetingExpression {
 	 */
 	public class ExpressionToken {
 		
-		private String expressionToken;
-		private boolean negated;
+		private final String expressionToken;
+		private final boolean negated;
 
 		/**
 		 * Private constructor.

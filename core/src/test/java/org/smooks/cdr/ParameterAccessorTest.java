@@ -48,6 +48,7 @@ import org.smooks.Smooks;
 import org.smooks.delivery.ContentDeliveryConfig;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -64,7 +65,7 @@ public class ParameterAccessorTest {
         Smooks smooks = new Smooks();
         ContentDeliveryConfig deliveryConfig = smooks.createExecutionContext().getDeliveryConfig();
 
-        assertEquals(null, ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
+        assertNull(ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
 
         System.setProperty("test.parameter", "xxxxxxx");
         assertEquals("xxxxxxx", ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));

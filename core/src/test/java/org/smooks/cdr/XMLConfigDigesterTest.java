@@ -54,8 +54,7 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for the ArciveDef class.
@@ -77,11 +76,11 @@ public class XMLConfigDigesterTest {
         assertTrue(profiles.get(0).isMember("profileA"));
         assertTrue(profiles.get(0).isMember("profile1"));
         assertTrue(profiles.get(0).isMember("profile2"));
-        assertTrue(!profiles.get(0).isMember("profile100"));
+        assertFalse(profiles.get(0).isMember("profile100"));
         assertEquals("profileB", profiles.get(1).getBaseProfile());
         assertTrue(profiles.get(1).isMember("profile3"));
         assertTrue(profiles.get(1).isMember("profileA"));
-        assertTrue(!profiles.get(1).isMember("profile1")); // not expanded
+        assertFalse(profiles.get(1).isMember("profile1")); // not expanded
     }
 
 	@Test
@@ -125,8 +124,8 @@ public class XMLConfigDigesterTest {
         assertTrue(profileA.isMember("profileA"));
         assertTrue(profileA.isMember("profile1"));
         assertTrue(profileA.isMember("profile2"));
-        assertTrue(!profileA.isMember("profileB"));
-        assertTrue(!profileA.isMember("profile3"));
+        assertFalse(profileA.isMember("profileB"));
+        assertFalse(profileA.isMember("profile3"));
 
         execContext = smooks.createExecutionContext("profileB");
         ProfileSet profileB = execContext.getTargetProfiles();

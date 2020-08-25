@@ -45,9 +45,9 @@ package org.smooks.util;
 import org.hsqldb.Server;
 import org.hsqldb.ServerConstants;
 import org.hsqldb.jdbcDriver;
-import org.smooks.io.StreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.io.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,11 +68,11 @@ public class HsqlServer {
 
     private Server hsqlServer;
 
-    private String url;
-    private String username = "sa";
-    private String password = "";
+    private final String url;
+    private final String username = "sa";
+    private final String password = "";
 
-    private Connection connection;
+    private final Connection connection;
     
     private final CountDownLatch startGate = new CountDownLatch(1);
     

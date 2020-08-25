@@ -72,7 +72,7 @@ public class StdoutToLog4jFilter extends FilterWriter
     /**
      * string "buffer"
      */
-    protected StringBuilder sb = new StringBuilder(); 
+    protected final StringBuilder sb = new StringBuilder(); 
     
     /**
      * Carrage Return
@@ -109,7 +109,7 @@ public class StdoutToLog4jFilter extends FilterWriter
     @Override
 	public synchronized void  write(String str, int off, int len) throws IOException 
     { 
-        sb.append( str.substring(off, off+len)); 
+        sb.append(str, off, off+len); 
     } 
 
     @Override

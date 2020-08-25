@@ -79,7 +79,7 @@ public class SingleDaoRegister<T> extends AbstractDaoRegister<T> {
 			return true;
 		}
 
-		if(obj instanceof SingleDaoRegister == false) {
+		if(!(obj instanceof SingleDaoRegister)) {
 			return false;
 		}
 

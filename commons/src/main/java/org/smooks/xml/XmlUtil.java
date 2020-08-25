@@ -42,13 +42,9 @@
  */
 package org.smooks.xml;
 
-import org.w3c.dom.*;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.smooks.io.StreamUtils;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -67,13 +63,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -89,7 +79,7 @@ public class XmlUtil {
     /**
      * Document validation types.
      */
-    public static enum VALIDATION_TYPE {
+    public enum VALIDATION_TYPE {
         /**
          * No validation.
          */
@@ -114,7 +104,7 @@ public class XmlUtil {
         }
     }
 
-    private static Set<String> xmlReservedNamespaces = new HashSet<String>();
+    private static final Set<String> xmlReservedNamespaces = new HashSet<String>();
     
     static {
     	xmlReservedNamespaces.add(XMLConstants.NULL_NS_URI);
@@ -453,9 +443,9 @@ public class XmlUtil {
         return schemaFactory.newSchema(new StreamSource(entityResolver.resolveEntity("default", "default").getByteStream()));
     }
 
-    private static String ELEMENT_NAME_FUNC = "/name()";
+    private static final String ELEMENT_NAME_FUNC = "/name()";
 
-    private static XPathFactory xPathFactory = XPathFactory.newInstance();
+    private static final XPathFactory xPathFactory = XPathFactory.newInstance();
 
     /**
      * Get the W3C NodeList instance associated with the XPath selection
@@ -814,7 +804,7 @@ public class XmlUtil {
         /**
          * Singleton instance reference of this class.
          */
-        private static XMLParseErrorHandler singleton = new XMLParseErrorHandler();
+        private static final XMLParseErrorHandler singleton = new XMLParseErrorHandler();
 
         /**
          * Private constructor.

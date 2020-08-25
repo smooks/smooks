@@ -53,7 +53,7 @@ import java.util.Set;
  */
 public class TestProducer implements Producer {
 
-    private Set<String> products = new HashSet<String>();
+    private final Set<String> products = new HashSet<String>();
 
     public TestProducer(String... products) {
         this.products.addAll(Arrays.asList(products));

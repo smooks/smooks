@@ -84,7 +84,6 @@ public class StringToLongConverterFactory implements TypeConverterFactory<String
                 }
             }
 
-            ;
         };
     }
 

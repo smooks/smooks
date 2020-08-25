@@ -42,8 +42,8 @@
  */
 package org.smooks.xml;
 
-import org.junit.Test;
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -109,7 +109,7 @@ public class XsdValidatorTest {
 
     public class MyLSResourceResolver implements LSResourceResolver {
 
-        private Map<String, StreamSourceLSInput> resources = new HashMap<String, StreamSourceLSInput>();
+        private final Map<String, StreamSourceLSInput> resources = new HashMap<String, StreamSourceLSInput>();
 
         public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
             return resources.get(namespaceURI);

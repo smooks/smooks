@@ -89,7 +89,7 @@ public final class XMLConfigDigester {
     private ClassLoader classLoader;
 
     private Map<String, Smooks> extendedConfigDigesters = new HashMap<String, Smooks>();
-    private static ThreadLocal<Boolean> extentionDigestOn = new ThreadLocal<Boolean>();
+    private static final ThreadLocal<Boolean> extentionDigestOn = new ThreadLocal<Boolean>();
 
     /**
      * Private constructor.

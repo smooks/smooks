@@ -46,7 +46,10 @@ import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * AntRunner test utility.
@@ -55,7 +58,7 @@ import java.io.*;
  */
 public class AntRunner {
 
-    private Project project = new Project();
+    private final Project project = new Project();
 
     /**
      * Public constructor.
@@ -163,7 +166,7 @@ public class AntRunner {
                     }
 
                     String key = property.substring(0, eqIndex);
-                    String value = property.substring(eqIndex + 1, property.length());
+                    String value = property.substring(eqIndex + 1);
 
                     project.setProperty(key, value);
                 }

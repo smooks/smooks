@@ -116,7 +116,7 @@ public class NullSourceXMLReader implements SmooksXMLReader {
         return null;
     }
 
-    private static Attributes EMPTY_ATTRIBS = new AttributesImpl();
+    private static final Attributes EMPTY_ATTRIBS = new AttributesImpl();
 
     public void parse(String systemId) throws IOException, SAXException {
     }

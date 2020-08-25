@@ -54,7 +54,7 @@ import org.mvel2.integration.VariableResolverFactory;
  */
 public class MVELVariables {
 
-	private VariableResolverFactory variableResolverFactory;
+	private final VariableResolverFactory variableResolverFactory;
 
 	public MVELVariables(VariableResolverFactory variableResolverFactory) {
 

@@ -53,7 +53,7 @@ import java.io.OutputStream;
  */
 public class ByteResult extends StreamResult {
 
-    private ByteArrayOutputStream result = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream result = new ByteArrayOutputStream();
 
     public ByteResult() {
         super();

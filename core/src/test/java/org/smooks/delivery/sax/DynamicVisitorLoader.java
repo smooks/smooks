@@ -52,7 +52,7 @@ import java.io.IOException;
  */
 public class DynamicVisitorLoader implements SAXVisitBefore, SAXVisitAfter {
 
-    public static DynamicVisitor visitor = new DynamicVisitor();
+    public static final DynamicVisitor visitor = new DynamicVisitor();
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         visitor.stuff.setLength(0);
@@ -65,10 +65,10 @@ public class DynamicVisitorLoader implements SAXVisitBefore, SAXVisitAfter {
 
     public static class DynamicVisitor implements SAXElementVisitor {
 
-        public StringBuilder stuff = new StringBuilder();
+        public final StringBuilder stuff = new StringBuilder();
 
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-            stuff.append("<" + element.getName() + ">");
+            stuff.append("<").append(element.getName()).append(">");
         }
 
         public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
@@ -79,7 +79,7 @@ public class DynamicVisitorLoader implements SAXVisitBefore, SAXVisitAfter {
         }
 
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-            stuff.append("</" + element.getName() + ">");
+            stuff.append("</").append(element.getName()).append(">");
         }
     }
 }

@@ -79,7 +79,7 @@ public class BooleanConverterFactoryTest {
         
         data = "true";
         result = booleanConverterFactory.createTypeConverter().convert(data);
-        assertTrue(result != null);
+        assertNotNull(result);
         assertTrue(result);
         
         data = "1";

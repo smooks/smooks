@@ -167,11 +167,11 @@ public class SmooksDOMFilter extends Filter {
     /**
      * Container request for this Smooks content delivery instance.
      */
-    private ExecutionContext executionContext;
+    private final ExecutionContext executionContext;
     /**
      * Accessor to the ExecutionContext delivery config.
      */
-    private DOMContentDeliveryConfig deliveryConfig;
+    private final DOMContentDeliveryConfig deliveryConfig;
     /**
      * Key under which a non-document content delivery node can be set in the
      * request.  This is needed because Xerces doesn't allow "overwriting" of
@@ -181,11 +181,11 @@ public class SmooksDOMFilter extends Filter {
     /**
      * Event Listener.
      */
-    private ExecutionEventListener eventListener;
-    private boolean closeSource;
-    private boolean closeResult;
-    private boolean reverseVisitOrderOnVisitAfter;
-    private boolean terminateOnVisitorException;
+    private final ExecutionEventListener eventListener;
+    private final boolean closeSource;
+    private final boolean closeResult;
+    private final boolean reverseVisitOrderOnVisitAfter;
+    private final boolean terminateOnVisitorException;
 
     /**
      * Global assembly befores.
@@ -348,7 +348,7 @@ public class SmooksDOMFilter extends Filter {
         return deliveryNode;
     }
 
-    private static String[] GLOBAL_SELECTORS = new String[] {"*", "**"};
+    private static final String[] GLOBAL_SELECTORS = new String[] {"*", "**"};
 
     /**
      * Filter the supplied W3C Element.
@@ -696,7 +696,7 @@ public class SmooksDOMFilter extends Filter {
         /**
          * The Element instance to be processed.
          */
-        private Element element;
+        private final Element element;
 
         private List<ContentHandlerConfigMap<DOMVisitBefore>> visitBefores;
         private List<ContentHandlerConfigMap<DOMVisitAfter>> visitAfters;

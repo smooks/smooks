@@ -73,8 +73,8 @@ import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -190,7 +190,7 @@ public class SmooksResourceConfiguration {
     /**
      * URI resource locator.
      */
-    private static URIResourceLocator uriResourceLocator = new URIResourceLocator();
+    private static final URIResourceLocator uriResourceLocator = new URIResourceLocator();
     /**
      * A special selector for resource targeted at the document as a whole (the roor element).
      */
@@ -289,7 +289,7 @@ public class SmooksResourceConfiguration {
     /**
      * Change listeners.
      */
-    private Set<SmooksResourceConfigurationChangeListener> changeListeners = new HashSet<SmooksResourceConfigurationChangeListener>();
+    private final Set<SmooksResourceConfigurationChangeListener> changeListeners = new HashSet<SmooksResourceConfigurationChangeListener>();
 
     /**
      * Public default constructor.
@@ -450,7 +450,7 @@ public class SmooksResourceConfiguration {
         // If there's a "#document" token in the selector, but it's not at the very start,
         // then we have an invalid selector...
         int docSelectorIndex = selector.trim().indexOf(DOCUMENT_FRAGMENT_SELECTOR);
-        if(docSelectorIndex != -1 && docSelectorIndex > 0) {
+        if(docSelectorIndex > 0) {
             throw new SmooksConfigurationException("Invalid selector '" + selector + "'.  '" + DOCUMENT_FRAGMENT_SELECTOR + "' token can only exist at the start of the selector.");
         }
 
@@ -1083,12 +1083,8 @@ public class SmooksResourceConfiguration {
     }
 
     private byte[] getInlineResourceBytes() {
-        try {
-            // Ala DTD v2.0, where the <resource> element can carry the inlined resource data.
-            return resource.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            return resource.getBytes();
-        }
+        // Ala DTD v2.0, where the <resource> element can carry the inlined resource data.
+        return resource.getBytes(StandardCharsets.UTF_8);
     }
 
     /**
@@ -1667,7 +1663,7 @@ public class SmooksResourceConfiguration {
 
     private class ContextIndex {
         private int i;
-        private ExecutionContext executionContext;
+        private final ExecutionContext executionContext;
 
         public ContextIndex(ExecutionContext executionContext) {
             this.executionContext = executionContext;

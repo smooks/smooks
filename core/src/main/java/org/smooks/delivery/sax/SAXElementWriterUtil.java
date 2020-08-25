@@ -170,7 +170,7 @@ public class SAXElementWriterUtil {
                     writer.write('\"');
                 } else {
                     if(attValue.indexOf('"') != -1) {
-                        writer.write("=\'");
+                        writer.write("='");
                         writer.write(attValue);
                         writer.write('\'');
                     } else {

@@ -43,9 +43,10 @@
 package org.smooks.delivery.sax;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.SmooksException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import static org.junit.Assert.*;
 
 
 /**
@@ -128,7 +129,7 @@ public class SAXElementTest {
 
         saxElement1.getText().add(new SAXText("Text1", TextType.TEXT));
         assertEquals("Text1", saxElement1.getTextContent());
-        assertTrue(saxElement1.getTextContent() == saxElement1.getTextContent());
+        assertSame(saxElement1.getTextContent(), saxElement1.getTextContent());
         saxElement1.getText().add(new SAXText("Text2", TextType.CDATA));
         assertEquals("Text1<![CDATA[Text2]]>", saxElement1.getTextContent());
 

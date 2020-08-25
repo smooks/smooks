@@ -42,9 +42,9 @@
  */
 package org.smooks.xml;
 
-import org.smooks.assertion.AssertArgument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.assertion.AssertArgument;
 import org.w3c.dom.*;
 
 import javax.xml.XMLConstants;
@@ -402,7 +402,7 @@ public abstract class DomUtils {
 
 		String attribVal = element.getAttribute(attribName);
 		
-		return (attribVal != null?attribVal.equalsIgnoreCase("true"):false);
+		return (attribVal != null && attribVal.equalsIgnoreCase("true"));
 	}
 	
 	/**
@@ -419,7 +419,7 @@ public abstract class DomUtils {
 
 		String attribVal = element.getAttributeNS(namespaceURI, attribName);
 		
-		return (attribVal != null?attribVal.equalsIgnoreCase("true"):false);
+		return (attribVal != null && attribVal.equalsIgnoreCase("true"));
 	}
 	
 	/**
@@ -860,11 +860,11 @@ public abstract class DomUtils {
 			break;
 		case Node.COMMENT_NODE:
 			int commentNum = DomUtils.countNodesBefore(node, Node.COMMENT_NODE);
-			xpath.append("/{COMMENT}[" + commentNum + 1 + "]");
+			xpath.append("/{COMMENT}[").append(commentNum).append(1).append("]");
 			break;
 		case Node.CDATA_SECTION_NODE:
 			int cdataNum = DomUtils.countNodesBefore(node, Node.CDATA_SECTION_NODE);
-			xpath.append("/{CDATA}[" + cdataNum + 1 + "]");
+			xpath.append("/{CDATA}[").append(cdataNum).append(1).append("]");
 			break;
 		default:
 			throw new UnsupportedOperationException("XPath generation for supplied DOM Node type not supported.  Only supports element, comment and cdata section DOM nodes.");

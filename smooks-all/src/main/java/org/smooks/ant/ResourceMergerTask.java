@@ -42,6 +42,15 @@
  */
 package org.smooks.ant;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Resource;
+import org.apache.tools.ant.types.resources.FileResource;
+import org.smooks.ResourceMerger;
+import org.smooks.archive.Archive;
+import org.smooks.io.FileUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,15 +59,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarFile;
-
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.resources.FileResource;
-import org.apache.tools.ant.types.Resource;
-import org.smooks.ResourceMerger;
-import org.smooks.archive.Archive;
-import org.smooks.io.FileUtils;
 
 /**
  * ResourceMergerTask is an ANT task that delegate to {@link ResourceMerger}
@@ -79,12 +79,12 @@ public class ResourceMergerTask extends Task
 	/**
 	 * List of resource paths that should be merge into one. 
 	 */
-	private List<String> resourcesPaths = new ArrayList<String>();
+	private final List<String> resourcesPaths = new ArrayList<String>();
 	
 	/**
 	 * List of classes that should be included in the produced jar. This is in addition to the classes in the specified jars.
 	 */
-	private List<String> classes = new ArrayList<String>();
+	private final List<String> classes = new ArrayList<String>();
 	
 	/**
 	 * The jar files that are to be merged together.

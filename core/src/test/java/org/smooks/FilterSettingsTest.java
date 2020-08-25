@@ -51,6 +51,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -62,12 +63,12 @@ public class FilterSettingsTest {
 		ExecutionContext execContext = smooks.createExecutionContext();
 		
 		assertEquals("DOM", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getDeliveryConfig()));
-		assertEquals(null, ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getDeliveryConfig()));
-		assertEquals(null, ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getDeliveryConfig()));
-		assertEquals(null, ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, Boolean.class, execContext.getDeliveryConfig()));
-		assertEquals(null, ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, Integer.class, execContext.getDeliveryConfig()));
-		assertEquals(null, ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, execContext.getDeliveryConfig()));
-		assertEquals(null, ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.class, execContext.getDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, Boolean.class, execContext.getDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, Integer.class, execContext.getDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, execContext.getDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.class, execContext.getDeliveryConfig()));
 	}
 
 	@Test

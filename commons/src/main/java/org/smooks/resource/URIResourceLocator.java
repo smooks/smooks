@@ -42,9 +42,9 @@
  */
 package org.smooks.resource;
 
-import org.smooks.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.util.ClassUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,7 +84,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
     /**
      * Scheme name for classpath based resources.
      */
-    public static String SCHEME_CLASSPATH = "classpath";
+    public static final String SCHEME_CLASSPATH = "classpath";
 
     /**
      * System property key for the base URI. Defaults to "./".
@@ -118,10 +118,10 @@ public class URIResourceLocator implements ContainerResourceLocator {
         File fileResolved = null;
         StringBuilder errorBuilder = new StringBuilder();
 
-        errorBuilder.append("\tFile System: " + fileUnresolved.getAbsolutePath() + "\n");
+        errorBuilder.append("\tFile System: ").append(fileUnresolved.getAbsolutePath()).append("\n");
         if(scheme == null) {
             fileResolved = new File(uri.resolvedURI.getPath());
-            errorBuilder.append("\tFile System: " + fileResolved.getAbsolutePath() + "\n");
+            errorBuilder.append("\tFile System: ").append(fileResolved.getAbsolutePath()).append("\n");
         }
         
         boolean unresolvedExists = false;
@@ -150,13 +150,13 @@ public class URIResourceLocator implements ContainerResourceLocator {
             if (path.charAt(0) != '/') {
                 path = "/" + path;
             }
-            errorBuilder.append("\tClasspath: " + path + "\n");
+            errorBuilder.append("\tClasspath: ").append(path).append("\n");
             stream = ClassUtil.getResourceAsStream(path, getClass());
         } else {
             boolean isHttp = ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme));
             url = uri.resolvedURI.toURL();
             URLConnection connection = url.openConnection();
-            errorBuilder.append("\tURL: " + url + "\n");
+            errorBuilder.append("\tURL: ").append(url).append("\n");
 
             if (isHttp) {
                 ((HttpURLConnection)connection).setInstanceFollowRedirects(false);
@@ -286,8 +286,8 @@ public class URIResourceLocator implements ContainerResourceLocator {
 	}
 
     private static class ResolvedURI {
-        private String inputURI;
-        private URI resolvedURI;
+        private final String inputURI;
+        private final URI resolvedURI;
 
         private ResolvedURI(String inputURI, URI resolvedURI) {
             this.inputURI = inputURI;

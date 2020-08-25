@@ -62,7 +62,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 /**
  *
@@ -86,13 +86,13 @@ public class SmooksTest {
         smooks.setClassLoader(classLoader);
 
         ExecutionContext execCtx = smooks.createExecutionContext();
-        assertTrue(contextClassLoader == Thread.currentThread().getContextClassLoader());
+        assertSame(contextClassLoader, Thread.currentThread().getContextClassLoader());
 
         classLoader.requests.clear();
         smooks.filterSource(execCtx, new StringSource("<a/>"), result);
         assertEquals("<b></b>", result.getResult());
         //assertTrue(classLoader.requests.contains(XIncludeParserConfiguration.class.getName()));
-        assertTrue(contextClassLoader == Thread.currentThread().getContextClassLoader());
+        assertSame(contextClassLoader, Thread.currentThread().getContextClassLoader());
     }
 
 	@Test
@@ -166,7 +166,7 @@ public class SmooksTest {
 
     private class TestClassLoader extends ClassLoader {
 
-        private Set<String> requests = new HashSet<String>();
+        private final Set<String> requests = new HashSet<String>();
 
         public TestClassLoader(ClassLoader contextClassLoader) {
             super(contextClassLoader);

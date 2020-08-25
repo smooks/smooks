@@ -43,7 +43,6 @@
 package org.smooks.delivery;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
 import org.smooks.container.ExecutionContext;
 import org.xml.sax.SAXException;
@@ -51,6 +50,8 @@ import org.xml.sax.SAXException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -88,7 +89,7 @@ public class FilterCloseTest {
 
     private class TestInputStream extends ByteArrayInputStream {
         private int closeCallCount = 0;
-        private int expectedCloseCallCount;
+        private final int expectedCloseCallCount;
 
         public TestInputStream(byte[] buf, int expectedCloseCallCount) {
             super(buf);
@@ -105,7 +106,7 @@ public class FilterCloseTest {
 
     private class TestOutputStream extends ByteArrayOutputStream {
         private int closeCallCount = 0;
-        private int expectedCloseCallCount;
+        private final int expectedCloseCallCount;
         public TestOutputStream(int expectedCloseCallCount) {
             this.expectedCloseCallCount = expectedCloseCallCount;
         }
@@ -120,7 +121,7 @@ public class FilterCloseTest {
 
     private class TestReader extends StringReader {
         private int closeCallCount = 0;
-        private int expectedCloseCallCount;
+        private final int expectedCloseCallCount;
         public TestReader(String s, int expectedCloseCallCount) {
             super(s);
             this.expectedCloseCallCount = expectedCloseCallCount;
@@ -136,7 +137,7 @@ public class FilterCloseTest {
 
     private class TestWriter extends StringWriter {
         private int closeCallCount = 0;
-        private int expectedCloseCallCount;
+        private final int expectedCloseCallCount;
 
         public TestWriter(int expectedCloseCallCount) {
             this.expectedCloseCallCount = expectedCloseCallCount;

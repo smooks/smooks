@@ -42,33 +42,24 @@
  */
 package org.smooks.namespace;
 
+import org.junit.Test;
+import org.xml.sax.*;
+import org.xml.sax.helpers.AttributesImpl;
+import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.XMLConstants;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.AttributesImpl;
-import org.xml.sax.helpers.DefaultHandler;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class NamespaceDeclarationStackTest {
 
 	public static final class MockContentHandler extends DefaultHandler {
 	
-		public List<String> history = new ArrayList<String>();
+		public final List<String> history = new ArrayList<String>();
 		
 		@Override
 		public void startPrefixMapping(String prefix, String uri)

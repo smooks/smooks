@@ -74,7 +74,7 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     private String elementName;
     private Optional<String> elementNamespace = Optional.empty();
     private String elementNamespacePrefix;
-    private Map<QName, FreeMarkerTemplate> attributes = new LinkedHashMap<QName, FreeMarkerTemplate>();
+    private final Map<QName, FreeMarkerTemplate> attributes = new LinkedHashMap<QName, FreeMarkerTemplate>();
 
     @Inject
     private SmooksResourceConfiguration resourceConfig;

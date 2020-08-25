@@ -66,11 +66,11 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class MockExecutionContext implements ExecutionContext {
 	private URI                    docSource;
-	public  ProfileSet             profileSet = new DefaultProfileSet(Profile.DEFAULT_PROFILE);
-	public  ContentDeliveryConfig  deliveryConfig = new MockContentDeliveryConfig();
+	public final ProfileSet             profileSet = new DefaultProfileSet(Profile.DEFAULT_PROFILE);
+	public final ContentDeliveryConfig  deliveryConfig = new MockContentDeliveryConfig();
 	public  MockApplicationContext context = new MockApplicationContext();
-	private Hashtable              attributes = new Hashtable();
-	public  LinkedHashMap          parameters = new LinkedHashMap();
+	private final Hashtable              attributes = new Hashtable();
+	public final LinkedHashMap          parameters = new LinkedHashMap();
 	private String                 contentEncoding;
 	private ExecutionEventListener executionListener;
     private Throwable terminationError;

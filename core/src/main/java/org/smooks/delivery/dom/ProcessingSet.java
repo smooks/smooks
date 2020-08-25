@@ -60,7 +60,7 @@ public class ProcessingSet {
 	/**
 	 * ProcessingUnit instances.
 	 */
-	private List<ContentHandlerConfigMap> processingUnits = new ArrayList<ContentHandlerConfigMap>();
+	private final List<ContentHandlerConfigMap> processingUnits = new ArrayList<ContentHandlerConfigMap>();
 
 	/**
 	 * Add to the ProcessingSet.

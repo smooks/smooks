@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
 import org.smooks.cdr.ParameterAccessor;
@@ -51,14 +53,13 @@ import org.smooks.io.NullWriter;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.thread.StackedThreadLocal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Content filter.
@@ -77,9 +78,9 @@ public abstract class Filter {
     /**
      * Filter type enumeration.
      */
-    public static enum StreamFilterType {
+    public enum StreamFilterType {
         SAX,
-        DOM;
+        DOM
 
     }
 
@@ -198,7 +199,7 @@ public abstract class Filter {
                     if(executionContext instanceof ExecutionContext) {
                         return new InputStreamReader(streamSource.getInputStream(), executionContext.getContentEncoding());
                     } else {
-                        return new InputStreamReader(streamSource.getInputStream(), "UTF-8");
+                        return new InputStreamReader(streamSource.getInputStream(), StandardCharsets.UTF_8);
                     }
                 } catch(UnsupportedEncodingException e) {
                     throw new SmooksException("Unable to decode input stream.", e);
@@ -224,7 +225,7 @@ public abstract class Filter {
                 if(executionContext instanceof ExecutionContext) {
                     return new OutputStreamWriter(streamResult.getOutputStream(), executionContext.getContentEncoding());
                 } else {
-                    return new OutputStreamWriter(streamResult.getOutputStream(), "UTF-8");
+                    return new OutputStreamWriter(streamResult.getOutputStream(), StandardCharsets.UTF_8);
                 }
             } catch(UnsupportedEncodingException e) {
                 throw new SmooksException("Unable to encode output stream.", e);

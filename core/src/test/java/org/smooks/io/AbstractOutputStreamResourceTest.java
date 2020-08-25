@@ -42,7 +42,6 @@
  */
 package org.smooks.io;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
@@ -52,6 +51,9 @@ import org.w3c.dom.Element;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for AbstractOutputStreamResouce 
@@ -148,7 +150,7 @@ public class AbstractOutputStreamResourceTest
 		}
 
         public Charset getWriterEncoding() {
-            return Charset.forName("UTF-8");
+            return StandardCharsets.UTF_8;
         }
     }
 

@@ -53,7 +53,7 @@ import java.util.LinkedHashMap;
 public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 
 	private static final long serialVersionUID = 1L;
-    private String baseProfile;
+    private final String baseProfile;
 
     /**
      * Public constructor.

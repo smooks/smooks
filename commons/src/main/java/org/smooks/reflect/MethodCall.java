@@ -49,9 +49,9 @@ package org.smooks.reflect;
  */
 public class MethodCall {
     
-    private int callIndex;
-    private Exception callStack;
-    private Object[] callArgs;
+    private final int callIndex;
+    private final Exception callStack;
+    private final Object[] callArgs;
 
     /**
      * Public constructor.

@@ -43,12 +43,12 @@
 package org.smooks.event.report;
 
 import org.smooks.SmooksException;
-import org.smooks.payload.JavaResult;
-import org.smooks.payload.StringResult;
-import org.smooks.payload.FilterResult;
-import org.smooks.container.ExecutionContext;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.delivery.*;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.delivery.ContentHandlerConfigMap;
+import org.smooks.delivery.Filter;
+import org.smooks.delivery.VisitSequence;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.delivery.dom.serialize.DefaultSerializationUnit;
 import org.smooks.delivery.sax.SAXElement;
@@ -58,6 +58,9 @@ import org.smooks.event.ExecutionEvent;
 import org.smooks.event.ResourceBasedEvent;
 import org.smooks.event.report.model.*;
 import org.smooks.event.types.*;
+import org.smooks.payload.FilterResult;
+import org.smooks.payload.JavaResult;
+import org.smooks.payload.StringResult;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
 
@@ -75,17 +78,17 @@ import java.util.Stack;
  */
 public abstract class AbstractReportGenerator extends BasicExecutionEventListener {
 
-    private ReportConfiguration reportConfiguration;
+    private final ReportConfiguration reportConfiguration;
 
     private Report report;
 
     private ExecutionContext executionContext;
     private int messageNodeCounter = 0;
     private int reportInfoNodeCounter = 0;
-    private List<ExecutionEvent> preProcessingEvents = new ArrayList<ExecutionEvent>();
-    private List<ExecutionEvent> processingEvents = new ArrayList<ExecutionEvent>();
-    private Stack<ReportNode> reportNodeStack = new Stack<ReportNode>();
-    private List<ReportNode> allNodes = new ArrayList<ReportNode>();
+    private final List<ExecutionEvent> preProcessingEvents = new ArrayList<ExecutionEvent>();
+    private final List<ExecutionEvent> processingEvents = new ArrayList<ExecutionEvent>();
+    private final Stack<ReportNode> reportNodeStack = new Stack<ReportNode>();
+    private final List<ReportNode> allNodes = new ArrayList<ReportNode>();
     protected static final DefaultSerializationUnit domSerializer = new DefaultSerializationUnit();
 
     protected AbstractReportGenerator(ReportConfiguration reportConfiguration) {
@@ -342,10 +345,10 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     public class ReportNode {
 
         private ReportNode parent;
-        private List<ReportNode> children = new ArrayList<ReportNode>();
-        private Object element;
-        private int depth;
-        private List<ExecutionEvent> elementProcessingEvents = new ArrayList<ExecutionEvent>();
+        private final List<ReportNode> children = new ArrayList<ReportNode>();
+        private final Object element;
+        private final int depth;
+        private final List<ExecutionEvent> elementProcessingEvents = new ArrayList<ExecutionEvent>();
 
         public ReportNode(ElementPresentEvent eventPresentEvent) {
             this.element = eventPresentEvent.getElement();

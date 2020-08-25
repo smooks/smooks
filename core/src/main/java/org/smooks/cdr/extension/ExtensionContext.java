@@ -58,11 +58,11 @@ public class ExtensionContext {
 
     private static final String EXEC_CONTEXT_KEY = ExtensionContext.class.getName() + "#EXEC_CONTEXT_KEY";
 
-    private XMLConfigDigester xmlConfigDigester;
-    private String defaultSelector;
-    private String defaultNamespace;
-    private String defaultProfile;
-    private ExpressionEvaluator defaultConditionEvaluator;
+    private final XMLConfigDigester xmlConfigDigester;
+    private final String defaultSelector;
+    private final String defaultNamespace;
+    private final String defaultProfile;
+    private final ExpressionEvaluator defaultConditionEvaluator;
 
     private final Stack<SmooksResourceConfiguration> resourceStack = new Stack<SmooksResourceConfiguration>() {
         @Override
@@ -82,7 +82,7 @@ public class ExtensionContext {
             return smooksResourceConfiguration;
         }
     };
-    private SmooksResourceConfigurationChangeListener resChangeListener = new SmooksResourceConfigurationChangeListener() {
+    private final SmooksResourceConfigurationChangeListener resChangeListener = new SmooksResourceConfigurationChangeListener() {
         public void changed(SmooksResourceConfiguration configuration) {
             String selector = configuration.getSelector();
             if(selector != null && selector.startsWith("#/")) {
@@ -91,7 +91,7 @@ public class ExtensionContext {
             }
         }
     };
-    private List<SmooksResourceConfiguration> resources = new ArrayList<SmooksResourceConfiguration>();
+    private final List<SmooksResourceConfiguration> resources = new ArrayList<SmooksResourceConfiguration>();
 
     /**
      * Public constructor.

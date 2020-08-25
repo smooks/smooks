@@ -42,12 +42,12 @@
  */
 package org.smooks.scribe.register;
 
-import static org.junit.Assert.*;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -138,7 +138,7 @@ public class MultiDaoRegisterTest {
 
 		MultiDaoRegister<Object> multiRegister3 = MultiDaoRegister.builder().put("3", register3).build();
 
-		assertTrue(multiRegister1.equals(multiRegister2));
-		assertFalse(multiRegister1.equals(multiRegister3));
+		assertEquals(multiRegister1, multiRegister2);
+		assertNotEquals(multiRegister1, multiRegister3);
 	}
 }

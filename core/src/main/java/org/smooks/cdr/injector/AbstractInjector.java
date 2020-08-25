@@ -96,11 +96,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
     }
     
     protected boolean isEnum(final Type type) {
-        if (type instanceof Class && ((Class<?>) type).isEnum()) {
-            return true;
-        } else {
-            return false;
-        }
+        return type instanceof Class && ((Class<?>) type).isEnum();
     }
     
     protected void inject(final Named namedAnnotation, final M member, final Object instance, final Scope scope) throws SmooksConfigurationException {

@@ -42,15 +42,9 @@
  */
 package org.smooks.JIRAs.MILYN_367;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-
-import javax.xml.transform.stream.StreamSource;
-
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
@@ -64,8 +58,13 @@ import org.smooks.payload.StringResult;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -200,19 +199,19 @@ public class MILYN_367_Test {
 	
 	private class DOMVBefore implements DOMVisitBefore {
 		
-		private StringBuilder stringBuilder = new StringBuilder();
+		private final StringBuilder stringBuilder = new StringBuilder();
 		
 		public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-			stringBuilder.append(element.getLocalName() + "-");		
+			stringBuilder.append(element.getLocalName()).append("-");		
 		}		
 	}
 	
 	private class DOMVAfter implements DOMVisitAfter {
 		
-		private StringBuilder stringBuilder = new StringBuilder();
+		private final StringBuilder stringBuilder = new StringBuilder();
 		
 		public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-			stringBuilder.append(element.getLocalName() + "-");		
+			stringBuilder.append(element.getLocalName()).append("-");		
 		}		
 	}
 }

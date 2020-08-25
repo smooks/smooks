@@ -42,9 +42,9 @@
  */
 package org.smooks.classpath;
 
-import org.smooks.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.util.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,10 +58,10 @@ abstract class AbstractFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InstanceOfFilter.class);
 
-    private List<Class> classes = new ArrayList<Class>();
+    private final List<Class> classes = new ArrayList<Class>();
     private String[] includeList = null;
     private String[] igrnoreList = defaultIgnoreList;
-    private static String[] defaultIgnoreList = new String[] {
+    private static final String[] defaultIgnoreList = new String[] {
             "charsets.jar", "javaws.jar", "jce.jar", "jsse.jar", "rt.jar", "dnsns.jar", "sunjce_provider.jar", "sunpkcs11.jar", "junit-", "servlet-api-", "idea_rt.jar",
             "java/", "javax/", "netscape/", "sun/", "com/sun", "org/omg", "org/xml", "org/w3c", "junit/", "org/apache/commons", "org/apache/log4j",
     };
