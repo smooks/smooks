@@ -42,17 +42,11 @@
  */
 package org.smooks.dom;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.TypeInfo;
-import org.w3c.dom.UserDataHandler;
+import org.w3c.dom.*;
 
 public class MockElement extends MockNode implements Element {
 	
-	private String tagName;
+	private final String tagName;
 
 	public MockElement(String tagName) {
 		this.tagName = tagName;

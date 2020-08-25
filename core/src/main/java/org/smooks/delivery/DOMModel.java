@@ -55,7 +55,7 @@ import java.util.Map;
  */
 public class DOMModel {
 
-    private Map<String, Element> models = new LinkedHashMap<String, Element>();
+    private final Map<String, Element> models = new LinkedHashMap<String, Element>();
 
     public Map<String, Element> getModels() {
         return models;

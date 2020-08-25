@@ -80,11 +80,7 @@ public class TextSerializationUnit extends DefaultSerializationUnit implements S
     }
 
     public static boolean isTextElement(Element element) {
-        if(DomUtils.getName(element).equals("text") && Namespace.SMOOKS_URI.equals(element.getNamespaceURI())) {
-            return true;
-        }
-
-        return false;
+        return DomUtils.getName(element).equals("text") && Namespace.SMOOKS_URI.equals(element.getNamespaceURI());
     }
 
     public static String getText(Element element) {

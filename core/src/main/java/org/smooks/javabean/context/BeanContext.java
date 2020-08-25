@@ -42,14 +42,14 @@
  */
 package org.smooks.javabean.context;
 
-import java.util.Map;
-
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Fragment;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.javabean.repository.BeanId;
+
+import java.util.Map;
 
 /**
  * Bean Context
@@ -79,7 +79,7 @@ public interface BeanContext {
 	 * @param beanId The {@link org.smooks.javabean.repository.BeanId} under which the bean is to be stored.
      * @param bean The bean instance to be stored.
      */
-	public abstract void addBean(BeanId beanId, Object bean);
+    void addBean(BeanId beanId, Object bean);
 
     /**
      * Add a bean instance under the specified beanId string.
@@ -90,7 +90,7 @@ public interface BeanContext {
      * @param bean The bean instance to be stored.
      * @param source Source fragment.
      */
-    public abstract void addBean(BeanId beanId, Object bean, Fragment source);
+    void addBean(BeanId beanId, Object bean, Fragment source);
 
 	/**
 	 * Add a bean instance under the specified beanId.
@@ -101,7 +101,7 @@ public interface BeanContext {
 	 * @param beanId The beanId under which the bean is to be stored.
      * @param bean The bean instance to be stored.
      */
-	public abstract void addBean(String beanId, Object bean);
+    void addBean(String beanId, Object bean);
 
     /**
      * Add a bean instance under the specified beanId.
@@ -113,7 +113,7 @@ public interface BeanContext {
      * @param bean The bean instance to be stored.
      * @param source Source fragment.
      */
-    public abstract void addBean(String beanId, Object bean, Fragment source);
+    void addBean(String beanId, Object bean, Fragment source);
 
 	/**
 	 * Get the {@link BeanId} instance for the specified beanId String.
@@ -123,14 +123,14 @@ public interface BeanContext {
 	 * @param beanId The beanId String.
 	 * @return The associated {@link BeanId} instance.
 	 */
-	public abstract BeanId getBeanId(String beanId);
+    BeanId getBeanId(String beanId);
 
 	/**
 	 * Looks if a bean instance is set under the {@link BeanId}
 	 *
 	 * @param beanId The {@link BeanId} under which is looked.
 	 */
-	public abstract boolean containsBean(BeanId beanId);
+    boolean containsBean(BeanId beanId);
 
 	/**
 	 * Get the current bean, specified by the supplied {@link BeanId}.
@@ -138,7 +138,7 @@ public interface BeanContext {
 	 * @param beanId The {@link BeanId} of the bean to be returned.
 	 * @return The bean instance, otherwise <code>null</code>.
 	 */
-	public abstract Object getBean(BeanId beanId);
+    Object getBean(BeanId beanId);
 
 	/**
 	 * Returns the bean by it's beanId name.
@@ -148,7 +148,7 @@ public interface BeanContext {
 	 * @param beanId The type of the bean to be returned.
 	 * @return The bean instance, otherwise <code>null</code>.
 	 */
-	public abstract Object getBean(String beanId);
+    Object getBean(String beanId);
 
 	/**
 	 * Returns the bean by it's beanId name.
@@ -158,7 +158,7 @@ public interface BeanContext {
 	 * @param beanType The type of the bean to be returned.
 	 * @return The bean instance, otherwise <code>null</code>.
 	 */
-	public abstract <T> T getBean(Class<T> beanType);
+    <T> T getBean(Class<T> beanType);
 
 	/**
 	 * Changes a bean instance of the given {@link BeanId}. The difference to {@link #addBean(BeanId, Object)}
@@ -169,7 +169,7 @@ public interface BeanContext {
      * @param bean The bean instance to be stored.
      * @param source Source fragment.
      */
-	public abstract void changeBean(BeanId beanId, Object bean, Fragment source);
+    void changeBean(BeanId beanId, Object bean, Fragment source);
 
 	/**
 	 * Removes a bean and all its associated lifecycle beans from the bean map
@@ -177,7 +177,7 @@ public interface BeanContext {
 	 * @param beanId The beanId to remove the beans from.
      * @param source Source fragment.
      */
-	public abstract Object removeBean(BeanId beanId, Fragment source);
+    Object removeBean(BeanId beanId, Fragment source);
 
 	/**
 	 * Removes a bean and all its associated lifecycle beans from the bean map
@@ -185,33 +185,33 @@ public interface BeanContext {
 	 * @param beanId The beanId to remove the beans from.
      * @param source Source fragment.
      */
-	public abstract Object removeBean(String beanId, Fragment source);
+    Object removeBean(String beanId, Fragment source);
 
 	/**
 	 * Removes all the beans from the bean map
 	 */
-	public abstract void clear();
+    void clear();
 
 	/**
 	 * Registers a bean context observer.
 	 *
 	 * @param observer The actual BeanObserver instance.
 	 */
-	public abstract void addObserver(BeanContextLifecycleObserver observer);
+    void addObserver(BeanContextLifecycleObserver observer);
 
 	/**
 	 * Notify all observers of a specific bean lifecycle event.
 	 *
 	 * @param event The event.
 	 */
-	public abstract void notifyObservers(BeanContextLifecycleEvent event);
+    void notifyObservers(BeanContextLifecycleEvent event);
 
 	/**
 	 * Unregisters a bean observer.
 	 *
 	 * @param observer The actual BeanObserver instance.
 	 */
-	public abstract void removeObserver(BeanContextLifecycleObserver observer);
+    void removeObserver(BeanContextLifecycleObserver observer);
 
 	/**
 	 * This returns a map which is backed by this repository. Changes made in the map
@@ -231,7 +231,7 @@ public interface BeanContext {
 	 *
 	 * Only use the Map if you absolutely needed it else you should use the BeanRepository.
 	 */
-	public abstract Map<String, Object> getBeanMap();
+    Map<String, Object> getBeanMap();
 
 	/**
 	 * Mark the bean as being in context.
@@ -242,12 +242,12 @@ public interface BeanContext {
 	 * @param beanId The bean ID.
 	 * @param inContext True if the bean is in context, otherwise false.
 	 */
-	public abstract void setBeanInContext(BeanId beanId, boolean inContext);
+    void setBeanInContext(BeanId beanId, boolean inContext);
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
-	public abstract String toString();
+    String toString();
 
     /**
      * Create a sub-{@link BeanContext} of this {@link BeanContext}, associated

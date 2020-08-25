@@ -53,5 +53,5 @@ public enum BeanLifecycle {
     POPULATE,
 	CHANGE,
     END_FRAGMENT,
-    REMOVE;
+    REMOVE
 }

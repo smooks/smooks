@@ -44,15 +44,15 @@ package org.smooks.delivery.ordering.testvisitors;
 
 import org.smooks.delivery.ordering.Consumer;
 
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class TestConsumer implements Consumer {
 
-    private List<String> consumes;
+    private final List<String> consumes;
 
     public TestConsumer(String... consumes) {
         this.consumes = Arrays.asList(consumes);

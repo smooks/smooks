@@ -51,5 +51,5 @@ import org.smooks.cdr.SmooksResourceConfiguration;
  */
 public interface ResourceBasedEvent {
 
-    public SmooksResourceConfiguration getResourceConfig();
+    SmooksResourceConfiguration getResourceConfig();
 }

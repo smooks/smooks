@@ -73,9 +73,9 @@ public class StandaloneApplicationContext implements ApplicationContext {
 
 	private ContainerResourceLocator resourceLocator;
 	private Registry registry;
-	private DefaultProfileStore profileStore = new DefaultProfileStore();
-	private BeanIdStore beanIdStore = new BeanIdStore();
-    private List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
+	private final DefaultProfileStore profileStore = new DefaultProfileStore();
+	private final BeanIdStore beanIdStore = new BeanIdStore();
+    private final List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
     private ClassLoader classLoader;
     
     /**

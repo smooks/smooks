@@ -356,7 +356,7 @@ public class StandaloneBeanContext implements BeanContext {
 		}
 		if(largestBeanIdIndex >= 0) {
 			int newEntries = (largestBeanIdIndex - entries.size()) + 1;
-			entries.addAll(Collections.nCopies(newEntries, (ContextEntry) null));
+			entries.addAll(Collections.nCopies(newEntries, null));
 
 			for (Entry<String, Object> beanMapEntry : beanMap.entrySet()) {
 
@@ -660,7 +660,7 @@ public class StandaloneBeanContext implements BeanContext {
 		public Object remove(Object key) {
 			AssertArgument.isNotNull(key, "key");
 
-			if (key instanceof String == false) {
+			if (!(key instanceof String)) {
 				return null;
 			}
 			BeanId beanId = beanIdStore.getBeanId((String) key);

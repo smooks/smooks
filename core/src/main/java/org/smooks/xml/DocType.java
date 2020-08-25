@@ -108,9 +108,9 @@ public abstract class DocType {
 
     public static class DocumentTypeData {
         
-        private String name;
-        private String publicId;
-        private String systemId;
+        private final String name;
+        private final String publicId;
+        private final String systemId;
         private String xmlns;
         private boolean omit = false;
 

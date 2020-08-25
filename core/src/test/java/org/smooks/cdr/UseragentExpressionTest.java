@@ -42,9 +42,9 @@
  */
 package org.smooks.cdr;
 
+import org.junit.Test;
 import org.smooks.profile.DefaultProfileSet;
 
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class UseragentExpressionTest {
@@ -64,7 +64,7 @@ public class UseragentExpressionTest {
 		// Match against exact device name
 		expression = new ProfileTargetingExpression("device1");
 		assertTrue(expression.isMatch(profileSet1));
-		assertTrue(!expression.isMatch(profileSet2));
+		assertFalse(expression.isMatch(profileSet2));
 		assertEquals(new Double(100.0), new Double(expression.getSpecificity(profileSet1)));
 		assertEquals(new Double(0), new Double(expression.getSpecificity(profileSet2)));
 		
@@ -78,34 +78,34 @@ public class UseragentExpressionTest {
 		// Match against a profile
 		expression = new ProfileTargetingExpression("profile1");
 		assertTrue(expression.isMatch(profileSet1));
-		assertTrue(!expression.isMatch(profileSet2));
+		assertFalse(expression.isMatch(profileSet2));
 		assertEquals(new Double(10), new Double(expression.getSpecificity(profileSet1)));
 		assertEquals(new Double(0), new Double(expression.getSpecificity(profileSet2)));
 
 		// Match against a profile and the device name
 		expression = new ProfileTargetingExpression("profile1 AND device1");
 		assertTrue(expression.isMatch(profileSet1));
-		assertTrue(!expression.isMatch(profileSet2));
+		assertFalse(expression.isMatch(profileSet2));
 		assertEquals(new Double(110), new Double(expression.getSpecificity(profileSet1)));
 		assertEquals(new Double(0), new Double(expression.getSpecificity(profileSet2)));
 
 		// Match against 2 profiles
 		expression = new ProfileTargetingExpression("profile1 AND profile2");
 		assertTrue(expression.isMatch(profileSet1));
-		assertTrue(!expression.isMatch(profileSet2));
+		assertFalse(expression.isMatch(profileSet2));
 		assertEquals(new Double(20), new Double(expression.getSpecificity(profileSet1)));
 		assertEquals(new Double(0), new Double(expression.getSpecificity(profileSet2)));
 
 		// Match against 1 profile and "not" a device.
 		expression = new ProfileTargetingExpression("profile2 AND not:device1");
-		assertTrue(!expression.isMatch(profileSet1));
+		assertFalse(expression.isMatch(profileSet1));
 		assertTrue(expression.isMatch(profileSet2));
 		assertEquals(new Double(0), new Double(expression.getSpecificity(profileSet1)));
 		assertEquals(new Double(11), new Double(expression.getSpecificity(profileSet2)));
 
 		// Match against 1 profile and "not" a profile.
 		expression = new ProfileTargetingExpression("accept:application/xhtml+xml AND not:profile1");
-		assertTrue(!expression.isMatch(profileSet1));
+		assertFalse(expression.isMatch(profileSet1));
 		assertTrue(expression.isMatch(profileSet2));
 		assertEquals(new Double(0), new Double(expression.getSpecificity(profileSet1)));
 		assertEquals(new Double(11), new Double(expression.getSpecificity(profileSet2)));

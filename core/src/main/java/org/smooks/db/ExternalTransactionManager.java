@@ -49,11 +49,11 @@ import java.sql.SQLException;
 
 public class ExternalTransactionManager implements TransactionManager {
 
-    private Connection connection;
+    private final Connection connection;
 
-    private boolean isSetAutoCommitAllowed;
+    private final boolean isSetAutoCommitAllowed;
 
-	private boolean autoCommit;
+	private final boolean autoCommit;
 
     /**
      * @param connection

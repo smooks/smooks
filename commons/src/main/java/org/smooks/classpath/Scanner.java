@@ -42,9 +42,9 @@
  */
 package org.smooks.classpath;
 
-import org.smooks.assertion.AssertArgument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.assertion.AssertArgument;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +65,7 @@ import java.util.zip.ZipFile;
 public class Scanner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scanner.class);
-    private Filter filter;
+    private final Filter filter;
 
     public Scanner(Filter filter) {
         AssertArgument.isNotNull(filter, "filter");

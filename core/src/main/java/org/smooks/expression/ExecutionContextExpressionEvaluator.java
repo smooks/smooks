@@ -58,7 +58,7 @@ public interface ExecutionContextExpressionEvaluator extends ExpressionEvaluator
      * @return True if the condition evaluates successfully, otherwise false.
      * @throws ExpressionEvaluationException Invalid expression evaluation (implementation specific).
      */
-    public boolean eval(ExecutionContext context) throws ExpressionEvaluationException;
+    boolean eval(ExecutionContext context) throws ExpressionEvaluationException;
 
     /**
      * Evaluate an expression based on the supplied {@link org.smooks.container.ExecutionContext}
@@ -67,5 +67,5 @@ public interface ExecutionContextExpressionEvaluator extends ExpressionEvaluator
      * @return Expression evaluation result.
      * @throws ExpressionEvaluationException Invalid expression evaluation (implementation specific).
      */
-    public Object getValue(ExecutionContext context) throws ExpressionEvaluationException;
+    Object getValue(ExecutionContext context) throws ExpressionEvaluationException;
 }

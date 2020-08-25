@@ -70,6 +70,6 @@ public abstract class AbstractDaoRegister<D> implements DaoRegister<D> {
 		throw new UnsupportedOperationException("The getDao(String) method is not supported by this '" + this.getClass().getName() + "' DaoRegister.");
 	}
 
-	public void returnDao(D dao) {};
+	public void returnDao(D dao) {}
 
 }

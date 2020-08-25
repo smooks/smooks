@@ -42,8 +42,8 @@
  */
 package org.smooks.io;
 
-import java.io.Reader;
 import java.io.IOException;
+import java.io.Reader;
 
 /**
  * Null Reader.
@@ -52,7 +52,7 @@ import java.io.IOException;
  */
 public class NullReader extends Reader {
     
-    public int read(char cbuf[], int off, int len) throws IOException {
+    public int read(char[] cbuf, int off, int len) throws IOException {
         return 0;
     }
 

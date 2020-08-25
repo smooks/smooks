@@ -92,7 +92,7 @@ public class XsdValidator {
         assertSchemaNotInitialized();
 
         AssertArgument.isNotNullAndNotEmpty(xsdSources, "xsdSources");
-        Source[] xsdSourcesArray = xsdSources.toArray(new Source[xsdSources.size()]);
+        Source[] xsdSourcesArray = xsdSources.toArray(new Source[0]);
         SchemaFactory schemaFactory = newSchemaFactory();
 
         this.schema = schemaFactory.newSchema(xsdSourcesArray);

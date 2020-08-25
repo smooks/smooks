@@ -44,7 +44,10 @@ package org.smooks.event.report.annotation;
 
 import org.smooks.cdr.annotation.AnnotationConstants;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Visit after report annotation.
@@ -53,11 +56,11 @@ import java.lang.annotation.*;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public abstract @interface VisitAfterReport {
+public @interface VisitAfterReport {
 
-    public abstract String condition() default "true";
+    String condition() default "true";
 
-    public abstract String summary() default AnnotationConstants.NULL_STRING;
+    String summary() default AnnotationConstants.NULL_STRING;
 
-    public abstract String detailTemplate() default AnnotationConstants.NULL_STRING;
+    String detailTemplate() default AnnotationConstants.NULL_STRING;
 }

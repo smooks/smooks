@@ -51,7 +51,7 @@ import java.util.Iterator;
  * @author tfennelly
  */
 public class IteratorEnumeration implements Enumeration {
-	private Iterator iterator;
+	private final Iterator iterator;
 
 	public IteratorEnumeration(Iterator iterator) {
 		this.iterator = iterator;

@@ -50,12 +50,12 @@ import java.util.Properties;
  */
 public interface Namespace {
 
-    public static final Properties SMOOKS_PREFIX_MAPPINGS = new SmooksNamespaceMappings();
+    Properties SMOOKS_PREFIX_MAPPINGS = new SmooksNamespaceMappings();
 
-    public static final String SMOOKS_URI = SmooksNamespaceMappings.SMOOKS_URI;
+    String SMOOKS_URI = SmooksNamespaceMappings.SMOOKS_URI;
 
-    static class SmooksNamespaceMappings extends Properties {
-        private static final String SMOOKS_URI = "https://www.smooks.org".intern();
+    class SmooksNamespaceMappings extends Properties {
+        private static final String SMOOKS_URI = "https://www.smooks.org";
         private SmooksNamespaceMappings() {
             setProperty("param-type", SMOOKS_URI + "/param-type");
             setProperty("decoder", SMOOKS_URI + "/decoder");

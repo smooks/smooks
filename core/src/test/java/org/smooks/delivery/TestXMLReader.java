@@ -54,7 +54,7 @@ import java.util.Map;
  */
 public class TestXMLReader implements XMLReader {
 
-    public Map<String, Boolean> features = new HashMap<String, Boolean>();
+    public final Map<String, Boolean> features = new HashMap<String, Boolean>();
     public DTDHandler dtdHandler;
     public ErrorHandler errorHandler;
     public EntityResolver entityResolver;

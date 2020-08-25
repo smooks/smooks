@@ -66,7 +66,7 @@ import java.util.Properties;
  */
 public class SelectorStepBuilder {
 
-    private static SelectorStep[] SELECTOR_NONE_STEP;
+    private static final SelectorStep[] SELECTOR_NONE_STEP;
 
     static {
         try {

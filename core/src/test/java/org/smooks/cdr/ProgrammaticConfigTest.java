@@ -45,8 +45,7 @@ package org.smooks.cdr;
 import org.junit.Test;
 import org.smooks.Smooks;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -62,7 +61,7 @@ public class ProgrammaticConfigTest {
 
         assertEquals("hi", visitor.getStringParam());
         assertEquals(Integer.valueOf(5), visitor.getIntParam());
-        assertEquals(null, visitor.getOptionalStringParam());
+        assertNull(visitor.getOptionalStringParam());
     }
 
 	@Test

@@ -118,13 +118,13 @@ import java.util.Properties;
 public class Smooks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Smooks.class);
-    private StandaloneApplicationContext applicationContext;
+    private final StandaloneApplicationContext applicationContext;
     private ClassLoader classLoader;
     /**
      * Manually added visitors.  In contract to those that are constructed and configured dynamically from
      * an XML configuration stream.
      */
-    private VisitorConfigMap visitorConfigMap;
+    private final VisitorConfigMap visitorConfigMap;
     /**
      * Flag indicating whether or not the Smooks instance is configurable.  It becomes unconfigurable
      * after the first execution context has been created.

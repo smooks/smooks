@@ -61,7 +61,7 @@ public interface BoundAttributeStore {
 	 * @param key The key against which the object is bound; cannot be null.
 	 * @param value The object to be bound; cannot be null.
 	 */
-	public abstract void setAttribute(Object key, Object value);
+    void setAttribute(Object key, Object value);
 
 	/**
 	 * Returns the object bound with the specified name in this {@link org.smooks.container.BoundAttributeStore}
@@ -70,13 +70,13 @@ public interface BoundAttributeStore {
 	 * @return The object bound with the specified name in this {@link org.smooks.container.BoundAttributeStore}
 	 * implementation, or null if no object is bound under the name.
 	 */
-	public abstract Object getAttribute(Object key);
+    Object getAttribute(Object key);
 
 	/**
 	 * Returns the Map of attributes bound in this {@link org.smooks.container.BoundAttributeStore}
 	 * @return Map of all objects bound in this {@link org.smooks.container.BoundAttributeStore}
 	 */
-	public abstract Map<Object, Object> getAttributes();
+    Map<Object, Object> getAttributes();
 
 	/**
 	 * Removes the object bound with the specified name from this {@link org.smooks.container.BoundAttributeStore}
@@ -84,5 +84,5 @@ public interface BoundAttributeStore {
 	 * not have an object bound with the specified name, this method does nothing.
      * @param key The key against which the object is bound; cannot be null.
 	 */
-	public abstract void removeAttribute(Object key);
+    void removeAttribute(Object key);
 }

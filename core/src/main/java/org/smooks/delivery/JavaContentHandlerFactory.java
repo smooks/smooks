@@ -70,7 +70,7 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
     @Inject
     private ApplicationContext appContext;
     
-    private Map<SmooksResourceConfiguration, Object> javaContentHandlers = new ConcurrentHashMap<>();
+    private final Map<SmooksResourceConfiguration, Object> javaContentHandlers = new ConcurrentHashMap<>();
 
     /**
      * Create a Java based ContentHandler instance.

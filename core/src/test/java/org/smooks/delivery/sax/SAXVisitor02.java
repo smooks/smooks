@@ -42,7 +42,6 @@
  */
 package org.smooks.delivery.sax;
 
-import static org.junit.Assert.*;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 
@@ -50,14 +49,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class SAXVisitor02 implements SAXElementVisitor {
 
     public static SAXElement element;
-    public static List<SAXElement> children = new ArrayList<SAXElement>();
-    public static List<String> childText = new ArrayList<String>();
+    public static final List<SAXElement> children = new ArrayList<SAXElement>();
+    public static final List<String> childText = new ArrayList<String>();
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         SAXVisitor02.element = element;

@@ -61,5 +61,5 @@ public interface JavaXMLReader extends SmooksXMLReader {
      * @param sourceObjects Java source Object list.
      * @throws SmooksConfigurationException Unable to set source Java Objects.
      */
-    public void setSourceObjects(List<Object> sourceObjects) throws SmooksConfigurationException;
+    void setSourceObjects(List<Object> sourceObjects) throws SmooksConfigurationException;
 }

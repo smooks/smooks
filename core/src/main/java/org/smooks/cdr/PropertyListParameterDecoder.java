@@ -47,6 +47,7 @@ import org.smooks.delivery.ContentDeliveryConfig;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
@@ -82,7 +83,7 @@ public class PropertyListParameterDecoder extends ParameterDecoder<String> {
 		Properties properties = new Properties();
 		
 		try {
-			properties.load(new ByteArrayInputStream(value.getBytes("UTF-8")));
+			properties.load(new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8)));
 		} catch (UnsupportedEncodingException e) {
 			throw new ParameterDecodeException("Unexpected error.  'UTF-8' is not a supported character encoding.", e);
 		} catch (IOException e) {

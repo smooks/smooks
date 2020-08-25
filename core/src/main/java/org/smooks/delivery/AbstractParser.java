@@ -76,6 +76,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Stack;
 
@@ -88,8 +89,8 @@ public class AbstractParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractParser.class);
 
-    private ExecutionContext execContext;
-    private SmooksResourceConfiguration saxDriverConfig;
+    private final ExecutionContext execContext;
+    private final SmooksResourceConfiguration saxDriverConfig;
     public static final String ORG_XML_SAX_DRIVER = "org.xml.sax.driver";
     public static final String FEATURE_ON = "feature-on";
     public static final String FEATURE_OFF = "feature-off";
@@ -234,7 +235,7 @@ public class AbstractParser {
 		    if (contentEncoding != null) {
 		        return new InputStreamReader(inputStream, contentEncoding);
 		    } else {
-		        return new InputStreamReader(inputStream, "UTF-8");
+		        return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
 		    }
 		} catch (UnsupportedEncodingException e) {
 		    throw new SmooksException("Unable to decode input stream.", e);
@@ -295,7 +296,7 @@ public class AbstractParser {
                 if (executionContext != null) {
                     return new OutputStreamWriter(streamResult.getOutputStream(), executionContext.getContentEncoding());
                 } else {
-                    return new OutputStreamWriter(streamResult.getOutputStream(), "UTF-8");
+                    return new OutputStreamWriter(streamResult.getOutputStream(), StandardCharsets.UTF_8);
                 }
             } catch (UnsupportedEncodingException e) {
                 throw new SmooksException("Unable to encode output stream.", e);

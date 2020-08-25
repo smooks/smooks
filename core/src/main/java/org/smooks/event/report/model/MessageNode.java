@@ -56,7 +56,7 @@ public class MessageNode {
     private String elementName;
     private boolean isVisitBefore;
     private int depth;
-    private List<ReportInfoNode> execInfoNodes = new ArrayList<ReportInfoNode>();
+    private final List<ReportInfoNode> execInfoNodes = new ArrayList<ReportInfoNode>();
 
     public int getNodeId() {
         return nodeId;

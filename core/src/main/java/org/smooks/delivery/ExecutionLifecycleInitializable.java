@@ -58,5 +58,5 @@ public interface ExecutionLifecycleInitializable extends Visitor {
      *
      * @param executionContext The ExecutionContext.
      */
-    public abstract void executeExecutionLifecycleInitialize(ExecutionContext executionContext);
+    void executeExecutionLifecycleInitialize(ExecutionContext executionContext);
 }

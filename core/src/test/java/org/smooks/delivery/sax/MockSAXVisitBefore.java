@@ -42,12 +42,12 @@
  */
 package org.smooks.delivery.sax;
 
+import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.smooks.SmooksException;
-import org.smooks.container.ExecutionContext;
 
 /**
  * 
@@ -55,7 +55,7 @@ import org.smooks.container.ExecutionContext;
  */
 public class MockSAXVisitBefore implements SAXVisitBefore {
 
-	private List<String> elements = new ArrayList<String>();
+	private final List<String> elements = new ArrayList<String>();
 	
 	/* (non-Javadoc)
 	 * @see org.smooks.delivery.sax.SAXVisitBefore#visitBefore(org.smooks.delivery.sax.SAXElement, org.smooks.container.ExecutionContext)

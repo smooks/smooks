@@ -42,24 +42,24 @@
  */
 package org.smooks.delivery;
 
-import org.smooks.delivery.sax.SAXVisitAfter;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.dom.DOMVisitAfter;
-import org.smooks.container.ExecutionContext;
 import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.dom.DOMVisitAfter;
+import org.smooks.delivery.sax.SAXElement;
+import org.smooks.delivery.sax.SAXVisitAfter;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
 */
 public class ModelCatcher implements SAXVisitAfter, DOMVisitAfter {
 
-    public static List<Element> elements = new ArrayList<Element>();
+    public static final List<Element> elements = new ArrayList<Element>();
 
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         addModelElement(element.getName().getLocalPart(), executionContext);

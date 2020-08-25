@@ -56,7 +56,7 @@ public class BeanContextLifecycleEvent {
 
 	private final ExecutionContext executionContext;
 
-    private Fragment source;
+    private final Fragment source;
 
 	private final BeanLifecycle lifecycle;
 

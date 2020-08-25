@@ -42,8 +42,8 @@
  */
 package org.smooks.event.report.model;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DOM Execution Report.
@@ -52,8 +52,8 @@ import java.util.ArrayList;
  */
 public class DOMReport extends Report {
 
-    private List<MessageNode> assemblies = new ArrayList<MessageNode>();
-    private List<MessageNode> serializations = new ArrayList<MessageNode>();
+    private final List<MessageNode> assemblies = new ArrayList<MessageNode>();
+    private final List<MessageNode> serializations = new ArrayList<MessageNode>();
 
     public List<MessageNode> getAssemblies() {
         return assemblies;

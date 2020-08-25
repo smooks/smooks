@@ -59,7 +59,7 @@ import java.io.Writer;
 @SuppressWarnings("WeakerAccess")
 public class ReportConfiguration {
 
-    public static File TEMP_DIR = new File(System.getProperty("java.io.tmpdir"));
+    public static final File TEMP_DIR = new File(System.getProperty("java.io.tmpdir"));
 
     private Writer outputWriter;
     private boolean escapeXMLChars = false;

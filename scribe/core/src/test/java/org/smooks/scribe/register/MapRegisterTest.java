@@ -42,12 +42,12 @@
  */
 package org.smooks.scribe.register;
 
-import static org.junit.Assert.*;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -157,8 +157,8 @@ public class MapRegisterTest {
 
 		MapDaoRegister<Object> mapRegister3 = MapDaoRegister.builder().put("3", bean3).build();
 
-		assertTrue(mapRegister1.equals(mapRegister2));
-		assertFalse(mapRegister1.equals(mapRegister3));
+		assertEquals(mapRegister1, mapRegister2);
+		assertNotEquals(mapRegister1, mapRegister3);
 	}
 
 

@@ -42,12 +42,12 @@
  */
 package org.smooks.xml;
 
-import java.util.Hashtable;
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import org.smooks.util.ClassUtil;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Hashtable;
 
 /**
  * 
@@ -59,12 +59,12 @@ public abstract class HTMLEntityLookup {
 	/**
 	 * Table providing the entity reference to character-code mappings.
 	 */
-	private static Hashtable<String,Character>  m_nameMap = new Hashtable<String, Character>();
+	private static final Hashtable<String,Character>  m_nameMap = new Hashtable<String, Character>();
 
 	/**
 	 * Table providing the character-code to entity reference mappings.
 	 */
-	private static Hashtable<Character,String>  m_codeMap = new Hashtable<Character,String>();
+	private static final Hashtable<Character,String>  m_codeMap = new Hashtable<Character,String>();
 
 	/**
 	 * Load the entities.
@@ -170,7 +170,7 @@ public abstract class HTMLEntityLookup {
 	 *         the table.
 	 */
 	public static Character getCharacterCode(String entityName) {
-		return (Character) m_nameMap.get(entityName);
+		return m_nameMap.get(entityName);
 	}
 
 	/**
@@ -182,6 +182,6 @@ public abstract class HTMLEntityLookup {
 	 *         table.
 	 */
 	public static String getEntityRef(char charCode) {
-		return (String) m_codeMap.get(new Character(charCode));
+		return m_codeMap.get(new Character(charCode));
 	}
 }

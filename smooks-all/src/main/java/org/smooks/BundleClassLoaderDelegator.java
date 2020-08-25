@@ -42,11 +42,11 @@
  */
 package org.smooks;
 
+import org.osgi.framework.Bundle;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
-
-import org.osgi.framework.Bundle;
 
 /**
  * 
@@ -55,7 +55,7 @@ import org.osgi.framework.Bundle;
  */
 public class BundleClassLoaderDelegator extends ClassLoader
 {
-    private Bundle bundle;
+    private final Bundle bundle;
     private ClassLoader classLoader;
     
     public BundleClassLoaderDelegator(final Bundle bundle)

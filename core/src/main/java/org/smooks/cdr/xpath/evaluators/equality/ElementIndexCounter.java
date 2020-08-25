@@ -59,7 +59,7 @@ import java.io.IOException;
  */
 public class ElementIndexCounter implements SAXVisitBefore {
 
-    private SelectorStep selectorStep;
+    private final SelectorStep selectorStep;
 
     public ElementIndexCounter(SelectorStep selectorStep) {
         this.selectorStep = selectorStep;

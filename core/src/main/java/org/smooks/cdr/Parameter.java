@@ -57,7 +57,7 @@ public class Parameter<T> {
 	public static final String PARAM_TYPE_PREFIX = "param-type:";
 	private final String name;
 	private String type;
-	private T value;
+	private final T value;
 
     private Element xml;
     

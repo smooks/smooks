@@ -55,7 +55,7 @@ import java.util.Set;
  */
 public class TestProducerConsumer implements Producer, Consumer {
 
-    private Set<String> products = new HashSet<String>();
+    private final Set<String> products = new HashSet<String>();
     private List<String> consumes;
 
     public TestProducerConsumer setProducts(String... products) {

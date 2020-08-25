@@ -42,11 +42,11 @@
  */
 package org.smooks.scribe.register;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.smooks.assertion.AssertArgument;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Enables multiple {@link DaoRegister} objects to be used as one DaoRegister.
@@ -165,7 +165,7 @@ public class MultiDaoRegister<T> extends AbstractDaoRegister<T> {
 		if(obj == null) {
 			return false;
 		}
-		if(obj instanceof MultiDaoRegister == false) {
+		if(!(obj instanceof MultiDaoRegister)) {
 			return false;
 		}
 

@@ -60,9 +60,9 @@ import javax.xml.XMLConstants;
  */
 public class IndexEvaluator extends XPathExpressionEvaluator {
 
-    private int index;
+    private final int index;
     private ElementIndexCounter counter;
-    private String elementName;
+    private final String elementName;
     private String elementNS;
 
     public IndexEvaluator(int index, SelectorStep selectorStep) {

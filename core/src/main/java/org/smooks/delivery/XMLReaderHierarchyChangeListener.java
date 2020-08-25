@@ -53,7 +53,7 @@ import org.xml.sax.XMLReader;
  */
 public class XMLReaderHierarchyChangeListener implements HierarchyChangeListener {
 
-    private ExecutionContext executionContext;
+    private final ExecutionContext executionContext;
 
     public XMLReaderHierarchyChangeListener(ExecutionContext executionContext) {
         this.executionContext = executionContext;

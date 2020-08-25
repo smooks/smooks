@@ -65,7 +65,7 @@ public class HttpAcceptHeaderProfile extends BasicProfile {
 	/**
 	 * Accept Parameters.
 	 */
-	private String[] params;
+	private final String[] params;
 
 	/**
 	 * Public constructor.

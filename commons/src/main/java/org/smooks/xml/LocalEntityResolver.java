@@ -42,15 +42,15 @@
  */
 package org.smooks.xml;
 
+import org.smooks.io.StreamUtils;
+import org.smooks.util.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.smooks.util.ClassUtil;
-import org.smooks.io.StreamUtils;
 
 import java.io.*;
-import java.util.Hashtable;
 import java.net.URL;
+import java.util.Hashtable;
 
 /**
  * XSD resolver for local XSD's.
@@ -72,7 +72,7 @@ public abstract class LocalEntityResolver implements EntityResolver {
 	/**
 	 * Entity entity lookup table. <p/> Contains preread Entity entity byte arrays.
 	 */
-	private static Hashtable<String,byte[]> entities = new Hashtable<String,byte[]>();
+	private static final Hashtable<String,byte[]> entities = new Hashtable<String,byte[]>();
 
     /**
      * Document type.  This is a bit of a hack.  There's a way of getting the DOM
@@ -115,7 +115,7 @@ public abstract class LocalEntityResolver implements EntityResolver {
 	 *      java.lang.String)
 	 */
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-		byte cachedBytes[] = (byte[]) entities.get(systemId);
+		byte[] cachedBytes = entities.get(systemId);
 		InputSource entityInputSource = null;
 
         if (cachedBytes == null) {

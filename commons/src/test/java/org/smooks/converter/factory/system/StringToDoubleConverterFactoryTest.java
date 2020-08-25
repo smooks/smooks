@@ -62,7 +62,7 @@ import static org.junit.Assert.fail;
  */
 public class StringToDoubleConverterFactoryTest {
 
-	private StringToDoubleConverterFactory stringToDoubleConverterFactory = new StringToDoubleConverterFactory();
+	private final StringToDoubleConverterFactory stringToDoubleConverterFactory = new StringToDoubleConverterFactory();
     private Locale defaultLocale;
 
     @Before

@@ -45,6 +45,7 @@ package org.smooks.io;
 import org.smooks.assertion.AssertArgument;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Stream Utilities.
@@ -250,7 +251,7 @@ public abstract class StreamUtils {
      * @throws IOException
      */
     public static StringBuffer trimLines(InputStream charStream) throws IOException {
-        return trimLines(new InputStreamReader(charStream, "UTF-8"));
+        return trimLines(new InputStreamReader(charStream, StandardCharsets.UTF_8));
     }
 
     /**

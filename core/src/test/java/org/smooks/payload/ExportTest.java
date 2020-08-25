@@ -42,9 +42,10 @@
  */
 package org.smooks.payload;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Unit test for {@link Export}.
@@ -89,19 +90,19 @@ public class ExportTest
     @Test
     public void equalsIsConsistent()
     {
-        assertFalse(new Export(String.class, "exportNameX").equals(new Export(String.class)));
-        assertFalse(new Export(String.class, "exportNameX").equals(new Export(String.class, "exportNameY")));
-        assertTrue(new Export(String.class, "exportNameX").equals(new Export(String.class, "exportNameX")));
-        
-        assertFalse(new Export(String.class, "exportNameX", "ext1").equals(new Export(String.class, "exportNameX")));
-        assertTrue(new Export(String.class, "exportNameX", "ext1").equals(new Export(String.class, "exportNameX","ext1")));
+        assertNotEquals(new Export(String.class, "exportNameX"), new Export(String.class));
+        assertNotEquals(new Export(String.class, "exportNameX"), new Export(String.class, "exportNameY"));
+        assertEquals(new Export(String.class, "exportNameX"), new Export(String.class, "exportNameX"));
+
+        assertNotEquals(new Export(String.class, "exportNameX", "ext1"), new Export(String.class, "exportNameX"));
+        assertEquals(new Export(String.class, "exportNameX", "ext1"), new Export(String.class, "exportNameX", "ext1"));
     }
     
     @Test
     public void equalsNull()
     {
         Export export = new Export(String.class);
-        assertFalse(export.equals(null));
+        assertNotEquals(null, export);
     }
 
 }

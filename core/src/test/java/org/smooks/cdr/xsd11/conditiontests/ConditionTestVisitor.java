@@ -60,7 +60,7 @@ public class ConditionTestVisitor implements SAXVisitBefore {
     @Inject
     private String message;
 
-    public static List<String> messagesUsed = new ArrayList<String>();
+    public static final List<String> messagesUsed = new ArrayList<String>();
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         messagesUsed.add(message);

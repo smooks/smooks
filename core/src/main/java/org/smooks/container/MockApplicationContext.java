@@ -58,7 +58,7 @@ import java.util.Collection;
 public class MockApplicationContext implements ApplicationContext {
 
 	private final StandaloneApplicationContext standaloneApplicationContext;
-	public MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
+	public final MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
 
 	public MockApplicationContext() {
 		this.standaloneApplicationContext = new DefaultApplicationContextBuilder().build();

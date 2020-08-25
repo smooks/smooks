@@ -42,12 +42,12 @@
  */
 package org.smooks.profile;
 
+import org.smooks.assertion.AssertArgument;
+
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
-
-import org.smooks.assertion.AssertArgument;
 
 /**
  * Default ProfileStore implementation.
@@ -59,7 +59,7 @@ public class DefaultProfileStore implements ProfileStore {
     /**
 	 * The store table.
 	 */
-	private Hashtable<String, ProfileSet> store = new Hashtable<String, ProfileSet>();
+	private final Hashtable<String, ProfileSet> store = new Hashtable<String, ProfileSet>();
 
 	/*
 	 * (non-Javadoc)
@@ -137,7 +137,7 @@ public class DefaultProfileStore implements ProfileStore {
 			// exceptions
 			// on the ProfileSet.
 			for (int i = 0; i < addOns.size(); i++) {
-				profileSet.addProfileSet((DefaultProfileSet) addOns.get(i));
+				profileSet.addProfileSet(addOns.get(i));
 			}
 		}
 	}

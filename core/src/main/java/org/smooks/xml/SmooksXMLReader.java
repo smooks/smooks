@@ -64,5 +64,5 @@ public interface SmooksXMLReader extends XMLReader, ContentHandler {
 	 * Set the Smooks {@link ExecutionContext} on the implementing class.
 	 * @param executionContext The Smooks {@link ExecutionContext}.
 	 */
-	public void setExecutionContext(ExecutionContext executionContext);
+    void setExecutionContext(ExecutionContext executionContext);
 }

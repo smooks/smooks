@@ -60,5 +60,5 @@ public interface ConfigurationExpander extends ContentHandler {
      * @return A list of expansion configurations, or an empty list if no configutations
      *         are to be added for this instance.
      */
-    public List<SmooksResourceConfiguration> expandConfigurations();
+    List<SmooksResourceConfiguration> expandConfigurations();
 }

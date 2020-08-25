@@ -83,15 +83,15 @@ public class Serializer {
 	/**
 	 * Node to be serialized.
 	 */
-	private Node node;
+	private final Node node;
 	/**
 	 * Target device context.
 	 */
-	private ExecutionContext executionContext;
+	private final ExecutionContext executionContext;
   /**
 	 * Target content delivery context SerializationUnit definitions.
 	 */
-	private ContentHandlerConfigMapTable<SerializationUnit> serializationUnits;
+	private final ContentHandlerConfigMapTable<SerializationUnit> serializationUnits;
   /**
      * Default serialization unit.
      */
@@ -99,12 +99,12 @@ public class Serializer {
     /**
 	 * Global SerializationUnits.
 	 */
-	private List globalSUs;
+	private final List globalSUs;
     /**
      * Event Listener.
      */
-    private ExecutionEventListener eventListener;
-    private boolean terminateOnVisitorException;
+    private final ExecutionEventListener eventListener;
+    private final boolean terminateOnVisitorException;
 
     /**
 	 * Public constructor.
@@ -324,7 +324,7 @@ public class Serializer {
         return defaultSerializationUnit;
 	}
 
-    private static DefaultSerializationUnit defaultSerializer = new DefaultSerializationUnit();
+    private static final DefaultSerializationUnit defaultSerializer = new DefaultSerializationUnit();
 
     static {
         defaultSerializer.setCloseEmptyElements(Optional.of(true));

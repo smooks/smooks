@@ -43,18 +43,18 @@
 package org.smooks;
 
 
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceReference;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Dictionary;
 import java.util.Enumeration;
-
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceReference;
 
 /**
  * 
@@ -63,7 +63,7 @@ import org.osgi.framework.ServiceReference;
  */
 public class MockBundle implements Bundle
 {
-    private JavaArchive jar;
+    private final JavaArchive jar;
 
     public MockBundle(final JavaArchive jar)
     {

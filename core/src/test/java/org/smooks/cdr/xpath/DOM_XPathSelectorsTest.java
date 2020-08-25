@@ -44,17 +44,16 @@ package org.smooks.cdr.xpath;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import org.smooks.Smooks;
 import org.smooks.FilterSettings;
+import org.smooks.Smooks;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.IOException;
 import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -123,7 +122,7 @@ public class DOM_XPathSelectorsTest {
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
-        assertEquals(null, XPathAfterVisitor.domVisitedAfterElement);
+        assertNull(XPathAfterVisitor.domVisitedAfterElement);
     }
 
 	@Test

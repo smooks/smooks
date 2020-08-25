@@ -42,18 +42,17 @@
  */
 package org.smooks.javabean.pojogen;
 
-import org.smooks.assertion.AssertArgument;
-import org.smooks.util.FreeMarkerTemplate;
-import org.smooks.io.StreamUtils;
-
-import java.io.Serializable;
-import java.util.*;
-import java.io.Writer;
-import java.io.IOException;
-
+import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CannotCompileException;
+import org.smooks.assertion.AssertArgument;
+import org.smooks.io.StreamUtils;
+import org.smooks.util.FreeMarkerTemplate;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * Java POJO model.
@@ -62,22 +61,22 @@ import javassist.CannotCompileException;
  */
 public class JClass {
 
-    private String uniqueId;
-    private String packageName;
-    private String className;
-    private Set<JType> rawImports = new LinkedHashSet<JType>();
-    private Set<JType> implementTypes = new LinkedHashSet<JType>();
-    private Set<JType> extendTypes = new LinkedHashSet<JType>();
-    private Set<JType> annotationTypes = new LinkedHashSet<JType>();
+    private final String uniqueId;
+    private final String packageName;
+    private final String className;
+    private final Set<JType> rawImports = new LinkedHashSet<JType>();
+    private final Set<JType> implementTypes = new LinkedHashSet<JType>();
+    private final Set<JType> extendTypes = new LinkedHashSet<JType>();
+    private final Set<JType> annotationTypes = new LinkedHashSet<JType>();
     private Class<?> skeletonClass;
-    private List<JNamedType> properties = new ArrayList<JNamedType>();
-    private List<JMethod> constructors = new ArrayList<JMethod>();
-    private List<JMethod> methods = new ArrayList<JMethod>();
+    private final List<JNamedType> properties = new ArrayList<JNamedType>();
+    private final List<JMethod> constructors = new ArrayList<JMethod>();
+    private final List<JMethod> methods = new ArrayList<JMethod>();
     private boolean fluentSetters = true;
     private boolean serializable = false;
     private boolean finalized = false;
 
-    private static FreeMarkerTemplate template;
+    private static final FreeMarkerTemplate template;
 
     static {
         try {

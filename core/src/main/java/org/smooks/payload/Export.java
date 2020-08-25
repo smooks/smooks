@@ -110,9 +110,7 @@ public class Export implements ContentHandler {
     }
 
     private void initExtractSet() {
-        if (extract.isPresent()) {
-            extractSet = CollectionsUtil.toSet(extract.get().split(","));
-        }
+        extract.ifPresent(s -> extractSet = CollectionsUtil.toSet(s.split(",")));
     }
 
     public String getName() {

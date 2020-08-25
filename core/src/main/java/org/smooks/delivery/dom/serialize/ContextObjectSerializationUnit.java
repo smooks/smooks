@@ -127,11 +127,7 @@ public class ContextObjectSerializationUnit implements SerializationUnit, SAXEle
     }
 
     public static boolean isContextObjectElement(Element element) {
-        if(DomUtils.getName(element).equals("context-object") && Namespace.SMOOKS_URI.equals(element.getNamespaceURI())) {
-            return true;
-        }
-
-        return false;
+        return DomUtils.getName(element).equals("context-object") && Namespace.SMOOKS_URI.equals(element.getNamespaceURI());
     }
 
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {

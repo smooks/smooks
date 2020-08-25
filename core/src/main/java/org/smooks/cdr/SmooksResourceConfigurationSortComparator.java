@@ -100,7 +100,7 @@ public class SmooksResourceConfigurationSortComparator implements Comparator {
 	/**
 	 * Profile set.
 	 */
-	private ProfileSet profileSet;
+	private final ProfileSet profileSet;
 
 	/**
 	 * Private constructor.

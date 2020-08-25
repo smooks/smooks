@@ -42,21 +42,21 @@
  */
 package org.smooks.xml;
 
+import org.smooks.assertion.AssertArgument;
+import org.smooks.util.ClassUtil;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
-import org.smooks.util.ClassUtil;
-import org.smooks.assertion.AssertArgument;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.dom.DOMSource;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.ArrayList;
+import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * XSD DOM Validator.
@@ -71,9 +71,9 @@ import java.io.InputStream;
  */
 public class XsdDOMValidator extends XsdValidator {
 
-    private Document document;
+    private final Document document;
     private URI defaultNamespace;
-    private List<URI> namespaces = new ArrayList<URI>();
+    private final List<URI> namespaces = new ArrayList<URI>();
 
     public XsdDOMValidator(Document document) throws SAXException {
         AssertArgument.isNotNull(document, "document");

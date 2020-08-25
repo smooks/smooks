@@ -60,7 +60,7 @@ public class LocalXSDEntityResolver extends LocalEntityResolver {
     /**
      * Schema sources for this entity resolver.
      */
-    private Source[] schemaSources;
+    private final Source[] schemaSources;
 
     /**
 	 * Public Constructor.

@@ -139,17 +139,14 @@ public class BeanId {
 			return true;
 		}
 
-		if(obj instanceof BeanId == false) {
+		if(!(obj instanceof BeanId)) {
 			return false;
 		}
 		BeanId rhs = (BeanId) obj;
 		if(this.beanIdStore != rhs.beanIdStore) {
 			return false;
 		}
-		if(this.name != rhs.name) {
-			return false;
-		}
-		return true;
+		return this.name == rhs.name;
 	}
 
 	/* (non-Javadoc)

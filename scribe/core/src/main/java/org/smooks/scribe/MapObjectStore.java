@@ -53,7 +53,7 @@ import java.util.Map;
  */
 public class MapObjectStore implements ObjectStore {
 
-	HashMap<Object, Object> store = new HashMap<Object, Object>();
+	final HashMap<Object, Object> store = new HashMap<Object, Object>();
 
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.ObjectStore#get(java.lang.Object)

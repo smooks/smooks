@@ -54,12 +54,12 @@ public interface Filter {
      * @param resourceName The classpath resource file name.  Needs to be converted to
      * a proper class name
      */
-    public void filter(String resourceName);
+    void filter(String resourceName);
 
     /**
      * Is this resource ignorable.
      * @param resourceName
      * @return
      */
-    public boolean isIgnorable(String resourceName);
+    boolean isIgnorable(String resourceName);
 }

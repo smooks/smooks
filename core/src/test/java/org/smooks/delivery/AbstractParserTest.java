@@ -42,20 +42,20 @@
  */
 package org.smooks.delivery;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
 import org.apache.xerces.parsers.SAXParser;
-import org.smooks.container.ExecutionContext;
-import org.smooks.payload.StringSource;
+import org.junit.Test;
 import org.smooks.FilterSettings;
 import org.smooks.GenericReaderConfigurator;
 import org.smooks.Smooks;
+import org.smooks.container.ExecutionContext;
+import org.smooks.payload.StringSource;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
 import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -74,8 +74,8 @@ public class AbstractParserTest {
         assertEquals(8, reader.features.size());
         assertTrue(reader.features.get("feature-on-1"));
         assertTrue(reader.features.get("feature-on-2"));
-        assertTrue(!reader.features.get("feature-off-1"));
-        assertTrue(!reader.features.get("feature-off-2"));
+		assertFalse(reader.features.get("feature-off-1"));
+		assertFalse(reader.features.get("feature-off-2"));
 
         assertNotNull(reader.dtdHandler);
         assertNotNull(reader.entityResolver);

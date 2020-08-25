@@ -70,7 +70,7 @@ public abstract class AbstractEqualityEvaluator extends XPathExpressionEvaluator
     private static final TypeConverter<String, Object> NUMBER_CONVERTER_FACTORY = new XPathNumberConverterFactory().createTypeConverter();
 
     protected Value lhs;
-    private String op;
+    private final String op;
     protected Value rhs;
 
     public AbstractEqualityEvaluator(BinaryExpr expr, Properties namespaces) throws SAXPathException {

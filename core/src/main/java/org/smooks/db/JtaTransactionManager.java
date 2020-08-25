@@ -51,13 +51,13 @@ import java.sql.SQLException;
 
 class JtaTransactionManager implements TransactionManager {
 
-	private UserTransaction transaction;
+	private final UserTransaction transaction;
 
-	private Connection connection;
+	private final Connection connection;
 
 	private boolean newTransaction;
 
-	private boolean setAutoCommitAllowed;
+	private final boolean setAutoCommitAllowed;
 
 	/**
 	 * @param transaction

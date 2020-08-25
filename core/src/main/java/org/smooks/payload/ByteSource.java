@@ -52,7 +52,7 @@ import java.io.ByteArrayInputStream;
  */
 public class ByteSource extends StreamSource {
 
-    private byte[] source;
+    private final byte[] source;
 
     public ByteSource(byte[] source) {
         super(new ByteArrayInputStream(source));

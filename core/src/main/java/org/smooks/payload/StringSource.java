@@ -52,7 +52,7 @@ import java.io.StringReader;
  */
 public class StringSource extends StreamSource {
 
-    private String source;
+    private final String source;
 
     public StringSource(String source) {
         super(new StringReader(source));

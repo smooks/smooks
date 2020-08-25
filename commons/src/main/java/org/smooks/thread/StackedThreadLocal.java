@@ -56,8 +56,8 @@ public class StackedThreadLocal<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StackedThreadLocal.class);
 
-    private String resourceName;
-    private ThreadLocal<Stack<T>> stackTL = new ThreadLocal<Stack<T>>();
+    private final String resourceName;
+    private final ThreadLocal<Stack<T>> stackTL = new ThreadLocal<Stack<T>>();
 
     public StackedThreadLocal(String resourceName) {
         this.resourceName = resourceName;

@@ -42,6 +42,8 @@
  */
 package org.smooks.event.types;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.annotation.AnnotationConstants;
 import org.smooks.container.ExecutionContext;
@@ -56,8 +58,6 @@ import org.smooks.event.report.annotation.VisitBeforeReport;
 import org.smooks.expression.MVELExpressionEvaluator;
 import org.smooks.util.FreeMarkerTemplate;
 import org.smooks.util.MultiLineToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -73,8 +73,8 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ElementVisitEvent.class);
 
-    private ContentHandlerConfigMap configMapping;
-    private VisitSequence sequence;
+    private final ContentHandlerConfigMap configMapping;
+    private final VisitSequence sequence;
     private String executionContextState;
     private Throwable error;
     private String reportSummary;

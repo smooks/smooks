@@ -80,11 +80,11 @@ public class ContentDeliveryConfigBuilder {
 	/**
 	 * Profile set.
 	 */
-	private ProfileSet profileSet;
+	private final ProfileSet profileSet;
 	/**
 	 * Container context.
 	 */
-	private ApplicationContext applicationContext;
+	private final ApplicationContext applicationContext;
     /**
 	 * XML selector content spec definition prefix
 	 */
@@ -92,20 +92,20 @@ public class ContentDeliveryConfigBuilder {
     /**
      * An unsorted list of SmooksResourceConfiguration.
      */
-    private List<SmooksResourceConfiguration> resourceConfigsList = new ArrayList<SmooksResourceConfiguration>();
+    private final List<SmooksResourceConfiguration> resourceConfigsList = new ArrayList<SmooksResourceConfiguration>();
     /**
 	 * Table (by element) of sorted SmooksResourceConfiguration instances keyed by selector value. Each table entry
 	 * contains a List of SmooksResourceConfiguration instances.
 	 */
-	private LinkedHashMap<String, List<SmooksResourceConfiguration>> resourceConfigTable = new LinkedHashMap<String, List<SmooksResourceConfiguration>>();
+	private final LinkedHashMap<String, List<SmooksResourceConfiguration>> resourceConfigTable = new LinkedHashMap<String, List<SmooksResourceConfiguration>>();
     /**
      * Visitor Config.
      */
-    private VisitorConfigMap visitorConfig;
+    private final VisitorConfigMap visitorConfig;
     /**
      * Config builder events list.
      */
-    private List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<ConfigBuilderEvent>();
+    private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<ConfigBuilderEvent>();
 
     /**
 	 * DTD for the associated device.
@@ -566,7 +566,7 @@ public class ContentDeliveryConfigBuilder {
 	 */
 	private final class ContentHandlerExtractionStrategy implements SmooksResourceConfigurationStrategy {
 
-        private Registry registry;
+        private final Registry registry;
 
         private ContentHandlerExtractionStrategy(ApplicationContext applicationContext) {
             registry = applicationContext.getRegistry();
@@ -585,10 +585,8 @@ public class ContentDeliveryConfigBuilder {
                 if (contentHandlerFactory == null) {
                     throw new SmooksException("No ContentHandlerFactory configured (IoC) for type 'class' (Java).");
                 }
-                if (addCDU(resourceConfig, contentHandlerFactory)) {
-                    // Job done - it's a CDU and we've added it!
-                    return true;
-                }
+                // Job done - it's a CDU and we've added it!
+                return addCDU(resourceConfig, contentHandlerFactory);
 
             } else {
                 // Get the resource type and "try" creating a ContentHandlerFactory for that resource
@@ -709,7 +707,7 @@ public class ContentDeliveryConfigBuilder {
 		/**
 		 * Iteration strategy.
 		 */
-		private SmooksResourceConfigurationStrategy strategy;
+		private final SmooksResourceConfigurationStrategy strategy;
 
 		/**
 		 * Private constructor.

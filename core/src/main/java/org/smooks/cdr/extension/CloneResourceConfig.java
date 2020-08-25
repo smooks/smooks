@@ -76,9 +76,7 @@ public class CloneResourceConfig implements DOMElementVisitor {
 	        }
         }
 
-        if(resource.isPresent()) {
-        	config.setResource(resource.get());
-        }
+        resource.ifPresent(config::setResource);
 
         extensionContext.addResource(config);
     }

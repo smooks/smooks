@@ -48,12 +48,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * {@link Archive} based {@link ClassLoader}.
@@ -62,8 +57,8 @@ import java.util.Map;
  */
 public class ArchiveClassLoader extends ClassLoader {
 
-    private Archive archive;
-    private Map<String, Class> loadedClasses = new HashMap<String, Class>();
+    private final Archive archive;
+    private final Map<String, Class> loadedClasses = new HashMap<String, Class>();
 
     public ArchiveClassLoader(Archive archive) {
         this(Thread.currentThread().getContextClassLoader(), archive);

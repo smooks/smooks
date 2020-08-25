@@ -55,9 +55,9 @@ import java.util.List;
  */
 public class DynamicSAXElementVisitorList {
 
-    private List<SAXVisitBefore> visitBefores = new ArrayList<SAXVisitBefore>();
-    private List<SAXVisitChildren> childVisitors = new ArrayList<SAXVisitChildren>();
-    private List<SAXVisitAfter> visitAfters = new ArrayList<SAXVisitAfter>();
+    private final List<SAXVisitBefore> visitBefores = new ArrayList<SAXVisitBefore>();
+    private final List<SAXVisitChildren> childVisitors = new ArrayList<SAXVisitChildren>();
+    private final List<SAXVisitAfter> visitAfters = new ArrayList<SAXVisitAfter>();
 
     public DynamicSAXElementVisitorList(ExecutionContext executionContext) {
         executionContext.setAttribute(DynamicSAXElementVisitorList.class, this);

@@ -123,7 +123,7 @@ import java.util.Stack;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisitAfter, Producer {
-    private DocumentBuilder documentBuilder;
+    private final DocumentBuilder documentBuilder;
 
     @Inject
     private SmooksResourceConfiguration config;
@@ -206,7 +206,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
 
     private class DOMCreator implements SAXElementVisitor {
 
-        private Document document;
+        private final Document document;
         private Node currentNode;
 
         private DOMCreator() {
@@ -239,6 +239,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
 
             switch (childText.getType()) {
                 case TEXT:
+                case ENTITY:
                     currentNode.appendChild(document.createTextNode(childText.getText()));
                     break;
                 case CDATA:
@@ -246,9 +247,6 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
                     break;
                 case COMMENT:
                     currentNode.appendChild(document.createComment(childText.getText()));
-                    break;
-                case ENTITY:
-                    currentNode.appendChild(document.createTextNode(childText.getText()));
                     break;
             }
         }

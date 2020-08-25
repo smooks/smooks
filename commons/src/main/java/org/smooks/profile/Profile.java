@@ -61,5 +61,5 @@ public interface Profile extends Serializable {
 	 * 
 	 * @return The profile name.
 	 */
-	public abstract String getName();
+    String getName();
 }

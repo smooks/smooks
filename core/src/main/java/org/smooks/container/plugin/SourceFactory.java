@@ -59,7 +59,7 @@ import java.io.StringReader;
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
 public class SourceFactory {
-    private static SourceFactory factory = new SourceFactory();
+    private static final SourceFactory factory = new SourceFactory();
 
     private SourceFactory() {
     }

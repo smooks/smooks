@@ -48,7 +48,7 @@ package org.smooks.lang;
  */
 public class MutableInt {
 	
-	public int value;
+	public final int value;
 	
 	public MutableInt(int initialValue) {
 		this.value = initialValue;

@@ -42,8 +42,8 @@
  */
 package org.smooks.function;
 
-import org.smooks.assertion.AssertArgument;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.smooks.assertion.AssertArgument;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,7 +56,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class StringFunctionExecutor {
 
-    private static ConcurrentMap<String, StringFunctionExecutor> cache = new ConcurrentHashMap<String, StringFunctionExecutor>();
+    private static final ConcurrentMap<String, StringFunctionExecutor> cache = new ConcurrentHashMap<String, StringFunctionExecutor>();
 
     public static StringFunctionExecutor getInstance(String functionDefinition) {
         StringFunctionExecutor executor = cache.get(functionDefinition);
@@ -73,7 +73,7 @@ public class StringFunctionExecutor {
         return executor;
     }
 
-    private List<StringFunction> functions;
+    private final List<StringFunction> functions;
 
     private final String functionDefinition;
 

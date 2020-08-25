@@ -56,7 +56,7 @@ import javax.xml.transform.Result;
  */
 public class ResultFactory
 {
-	private static ResultFactory factory = new ResultFactory();
+	private static final ResultFactory factory = new ResultFactory();
 	
 	private ResultFactory() {} 
 	

@@ -57,7 +57,7 @@ import java.util.List;
  */
 public class PredicatesEvaluator extends XPathExpressionEvaluator {
 
-    private List<XPathExpressionEvaluator> evaluators = new ArrayList<XPathExpressionEvaluator>();
+    private final List<XPathExpressionEvaluator> evaluators = new ArrayList<XPathExpressionEvaluator>();
     private int evalCount;
 
     public void addEvaluator(XPathExpressionEvaluator evaluator) {

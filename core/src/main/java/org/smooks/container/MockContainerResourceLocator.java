@@ -54,7 +54,7 @@ import java.util.Hashtable;
 public class MockContainerResourceLocator implements ContainerResourceLocator {
 
 	public static final File TEST_STANDALONE_CTX_BASE = new File("src/test/standalone-ctx");
-	private Hashtable streams = new Hashtable();
+	private final Hashtable streams = new Hashtable();
 
 	@SuppressWarnings("unchecked")
 	public void setResource(String nameOrUri, InputStream stream) {

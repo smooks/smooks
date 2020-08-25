@@ -78,8 +78,7 @@ public abstract class FreeMarkerUtils {
         if(!domModel.getModels().isEmpty()) {
             Map<String, ElementToNodeModel> elementToNodeModelMap = getElementToNodeModelMap(executionContext);
 
-            model = new HashMap<String, Object>();
-            model.putAll(beans);
+            model = new HashMap<>(beans);
 
             Set<Map.Entry<String, Element>> models = domModel.getModels().entrySet();
             for (Map.Entry<String, Element> entry : models) {

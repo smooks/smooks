@@ -88,7 +88,7 @@ public class VisitorConfigMap {
     /**
      * App context.
      */
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
     /**
 	 * Assembly Visit Befores.
 	 */

@@ -55,12 +55,12 @@ import org.smooks.scribe.annotation.Update;
 public interface OnlyDefaultAnnotatedDao {
 
 	@Insert
-	public void insertIt(Object entity);
+    void insertIt(Object entity);
 
 	@Update
-	public void updateIt(Object entity);
+    void updateIt(Object entity);
 
 	@Delete
-	public void deleteIt(Object entity);
+    void deleteIt(Object entity);
 
 }

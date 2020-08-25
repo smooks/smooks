@@ -42,9 +42,9 @@
  */
 package org.smooks;
 
-import org.xml.sax.XMLReader;
-import org.smooks.delivery.AbstractParser;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.delivery.AbstractParser;
+import org.xml.sax.XMLReader;
 
 import java.util.*;
 
@@ -59,8 +59,8 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
 
     private Class readerClass;
     private Properties parameters = new Properties();
-    private List<String> featuresOn = new ArrayList<String>();
-    private List<String> featuresOff = new ArrayList<String>();
+    private final List<String> featuresOn = new ArrayList<String>();
+    private final List<String> featuresOff = new ArrayList<String>();
     private String targetProfile;
 
     public GenericReaderConfigurator() {

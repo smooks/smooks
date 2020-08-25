@@ -81,7 +81,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      * Table of Object instance lists keyed by selector. Each table entry
      * contains a List of Objects.
      */
-    private Map objectsTable = new LinkedHashMap();
+    private final Map objectsTable = new LinkedHashMap();
     /**
      * DTD for the associated device.
      */
@@ -89,10 +89,10 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     /**
      * Config builder events list.
      */
-    private List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<ConfigBuilderEvent>();
+    private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<ConfigBuilderEvent>();
 
-    private Set<ExecutionLifecycleInitializable> execInitializableHandlers = new LinkedHashSet<ExecutionLifecycleInitializable>();
-    private Set<ExecutionLifecycleCleanable> execCleanableHandlers = new LinkedHashSet<ExecutionLifecycleCleanable>();
+    private final Set<ExecutionLifecycleInitializable> execInitializableHandlers = new LinkedHashSet<ExecutionLifecycleInitializable>();
+    private final Set<ExecutionLifecycleCleanable> execCleanableHandlers = new LinkedHashSet<ExecutionLifecycleCleanable>();
 
     private Boolean isDefaultSerializationOn = null;
 

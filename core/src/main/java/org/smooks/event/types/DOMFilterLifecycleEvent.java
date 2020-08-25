@@ -50,7 +50,7 @@ package org.smooks.event.types;
  */
 public class DOMFilterLifecycleEvent extends FilterLifecycleEvent {
 
-    public static enum DOMEventType {
+    public enum DOMEventType {
         /**
          * The filtering process has started.
          */
@@ -65,7 +65,7 @@ public class DOMFilterLifecycleEvent extends FilterLifecycleEvent {
         SERIALIZATION_STARTED,
     }
 
-    private DOMEventType eventType;
+    private final DOMEventType eventType;
 
     public DOMFilterLifecycleEvent(DOMEventType eventType) {
         this.eventType = eventType;

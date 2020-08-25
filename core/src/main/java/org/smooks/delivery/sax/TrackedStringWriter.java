@@ -43,8 +43,8 @@
 package org.smooks.delivery.sax;
 
 import java.io.StringWriter;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a specialized StringWriter that tracks the writes to make sure we don't
@@ -60,7 +60,7 @@ public class TrackedStringWriter extends StringWriter {
     private int lastWriteLen;
     private List<WriteRecord> writeTrackingList;
 
-    public void write(char cbuf[], int off, int len) {
+    public void write(char[] cbuf, int off, int len) {
         if(cbuf == lastWriteBuf && off == lastWriteOff && len == lastWriteLen) {
             // we've already written this character buffer segment...
             return;
@@ -86,7 +86,7 @@ public class TrackedStringWriter extends StringWriter {
         lastWriteLen = len;
     }
 
-    private boolean isAlreadyWritten(char cbuf[], int off, int len) {
+    private boolean isAlreadyWritten(char[] cbuf, int off, int len) {
         int trackListLen = writeTrackingList.size();
 
         for(int i = 0; i < trackListLen; i++) {
@@ -101,9 +101,9 @@ public class TrackedStringWriter extends StringWriter {
     }
 
     private class WriteRecord {
-        private char[] lastWriteBuf;
-        private int lastWriteOff;
-        private int lastWriteLen;
+        private final char[] lastWriteBuf;
+        private final int lastWriteOff;
+        private final int lastWriteLen;
 
         private WriteRecord(char[] lastWriteBuf, int lastWriteOff, int lastWriteLen) {
             this.lastWriteBuf = lastWriteBuf;

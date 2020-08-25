@@ -42,26 +42,24 @@
  */
 package org.smooks;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.smooks.archive.Archive;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit test for {@link ResourceMerger}.
@@ -76,7 +74,7 @@ public class ResourceMergerTest {
     private final ResourceMerger resourceMerger = new ResourceMerger(CONTENT_HANDLER_PATH);
 
     @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    public final TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
     public void merge_resources_from_two_jars() throws Exception {
@@ -115,7 +113,7 @@ public class ResourceMergerTest {
         final File jarfile = setupPreExistingJar();
         final Archive firstJar = setupFirstJar();
 
-        final Archive merged = resourceMerger.mergeJars(jarfile.getAbsolutePath(), Arrays.asList(firstJar));
+        final Archive merged = resourceMerger.mergeJars(jarfile.getAbsolutePath(), Collections.singletonList(firstJar));
 
         assertThat(readContent(merged, "firstJar/someFile"), is("dummyContent"));
         assertThat(readContent(merged, "preExistingJar/file"), is("contentInPreExistingJar"));
@@ -124,7 +122,7 @@ public class ResourceMergerTest {
     private File setupPreExistingJar() throws Exception {
         final String jarname = "prexisting.jar";
         final Archive preExistingJar = createPreExistingJar();
-        return exportJarToFile(jarname, preExistingJar);
+        return exportJarToFile(preExistingJar);
     }
 
     private Archive createPreExistingJar() throws Exception {
@@ -135,8 +133,8 @@ public class ResourceMergerTest {
         return preExistingJar;
     }
 
-    private File exportJarToFile(final String jarname, final Archive preExistingJar) throws Exception {
-        final File jarfile = tempFolder.newFile(jarname);
+    private File exportJarToFile(final Archive preExistingJar) throws Exception {
+        final File jarfile = tempFolder.newFile("prexisting.jar");
         preExistingJar.toOutputStream(new JarOutputStream(new FileOutputStream(jarfile)));
         return jarfile;
     }
@@ -146,7 +144,7 @@ public class ResourceMergerTest {
         final Archive firstJar = setupFirstJar();
         final File jarfile = setupPreExistingJar();
 
-        final Archive merged = resourceMerger.mergeJars(jarfile.getAbsolutePath(), Arrays.asList(firstJar));
+        final Archive merged = resourceMerger.mergeJars(jarfile.getAbsolutePath(), Collections.singletonList(firstJar));
 
         final byte[] content = merged.getEntryBytes(JarFile.MANIFEST_NAME);
         assertThat(content, is(notNullValue()));

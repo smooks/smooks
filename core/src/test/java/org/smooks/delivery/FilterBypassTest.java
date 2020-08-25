@@ -42,11 +42,8 @@
  */
 package org.smooks.delivery;
 
-import java.io.IOException;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
@@ -59,10 +56,13 @@ import org.smooks.delivery.sax.SAXVisitBefore;
 import org.smooks.payload.StringResult;
 import org.smooks.payload.StringSource;
 import org.w3c.dom.Element;
-import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * 
@@ -133,7 +133,7 @@ public class FilterBypassTest {
 	
 	private class MyVisitBypass implements DOMVisitBefore, SAXVisitAfter, FilterBypass {
 		
-		private boolean expectsVisitCall;
+		private final boolean expectsVisitCall;
 		private boolean bypassCalled;
 
 		public MyVisitBypass(boolean expectsVisitCall) {

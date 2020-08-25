@@ -75,7 +75,7 @@ public class StringToBigDecimalConverterFactory implements TypeConverterFactory<
                             return new BigDecimal((BigInteger) number);
                         }
 
-                        return new BigDecimal(number.doubleValue());
+                        return BigDecimal.valueOf(number.doubleValue());
                     } catch (ParseException e) {
                         throw new TypeConverterException("Failed to decode BigDecimal value '" + value + "' using NumberFormat instance " + numberFormat + ".", e);
                     }

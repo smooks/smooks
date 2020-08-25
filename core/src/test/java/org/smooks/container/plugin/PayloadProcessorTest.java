@@ -59,7 +59,6 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
@@ -130,7 +129,7 @@ public class PayloadProcessorTest {
         final PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.JAVA);
         Map<String, Object> map = (Map<String, Object>) processor.process("<testing/>", smooks.createExecutionContext());
 
-        assertThat(map, hasEntry("theBean", (Object) "Hi there!"));
+        assertThat(map, hasEntry("theBean", "Hi there!"));
         assertThat(map, hasKey("PTIME"));
         assertThat(map, hasKey("PUUID"));
 
@@ -187,6 +186,6 @@ public class PayloadProcessorTest {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.NORESULT);
         Object object = processor.process(123, smooks.createExecutionContext());
 
-        TestCase.assertEquals(null, object);
+        TestCase.assertNull(object);
     }
 }

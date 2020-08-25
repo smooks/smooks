@@ -60,7 +60,7 @@ public interface ProfileStore {
      *
      * @param profileSet  The ProfileSet.
      */
-    public void addProfileSet(ProfileSet profileSet);
+    void addProfileSet(ProfileSet profileSet);
 
     /**
      * Get the ProfileSet associated with the specified profile member. <p/> A
@@ -72,6 +72,6 @@ public interface ProfileStore {
      * @return The ProfileSet for the specified base profile.
      * @throws UnknownProfileMemberException There's no {@link ProfileSet} for the specified base profile.
      */
-    public ProfileSet getProfileSet(String baseProfile)
+    ProfileSet getProfileSet(String baseProfile)
 			throws UnknownProfileMemberException;
 }

@@ -43,9 +43,9 @@
 package org.smooks.event.types;
 
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.delivery.VisitSequence;
 import org.smooks.event.ElementProcessingEvent;
 import org.smooks.event.ResourceBasedEvent;
-import org.smooks.delivery.VisitSequence;
 
 import java.util.Arrays;
 
@@ -56,7 +56,7 @@ import java.util.Arrays;
  */
 public class ResourceTargetingEvent extends ElementProcessingEvent implements ResourceBasedEvent {
 
-    private SmooksResourceConfiguration resourceConfig;
+    private final SmooksResourceConfiguration resourceConfig;
     private Object[] metadata;
     private VisitSequence sequence;
 

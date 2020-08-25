@@ -42,13 +42,13 @@
  */
 package org.smooks.profile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.StringTokenizer;
-
 import org.smooks.xml.XmlUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.StringTokenizer;
 
 /**
  * Default device profile XML configuration digester. <p/> The profile
@@ -92,7 +92,6 @@ public class DefaultProfileConfigDigester implements ProfileConfigDigester {
 			String list = XmlUtil.getString(profileDoc, profileSelector
 					+ "/@list");
 			StringTokenizer tokenizer = null;
-			;
 
 			if (name == null) {
 				throw new SAXException(
@@ -133,8 +132,7 @@ public class DefaultProfileConfigDigester implements ProfileConfigDigester {
 					} catch (IllegalArgumentException invalid) {
 						SAXException saxE = new SAXException(
 								"<device-profile> attribute 'list' contains invalid device-name token value ["
-										+ profileMember + "].");
-						saxE.initCause(invalid);
+										+ profileMember + "].", invalid);
 						throw saxE;
 					}
 				}

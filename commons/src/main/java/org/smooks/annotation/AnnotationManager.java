@@ -21,7 +21,7 @@ import java.util.Map;
  * @version 1.0
  */
 public class AnnotationManager {
-	private static Map<Class<?>, AnnotatedClass> classToAnnotatedMap = new HashMap<Class<?>, AnnotatedClass>();
+	private static final Map<Class<?>, AnnotatedClass> classToAnnotatedMap = new HashMap<Class<?>, AnnotatedClass>();
 
 	/**
 	 * @param theClass to wrap.

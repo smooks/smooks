@@ -78,23 +78,23 @@ import java.util.Optional;
 public class SAXHandler extends SmooksContentHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SAXHandler.class);
-    private ExecutionContext execContext;
-    private Writer writer;
+    private final ExecutionContext execContext;
+    private final Writer writer;
     private ElementProcessor currentProcessor = null;
     private TextType currentTextType = TextType.TEXT;
-    private SAXContentDeliveryConfig deliveryConfig;
-    private Map<String, SAXElementVisitorMap> visitorConfigMap;
-    private SAXElementVisitorMap globalVisitorConfig;
-    private boolean rewriteEntities;
+    private final SAXContentDeliveryConfig deliveryConfig;
+    private final Map<String, SAXElementVisitorMap> visitorConfigMap;
+    private final SAXElementVisitorMap globalVisitorConfig;
+    private final boolean rewriteEntities;
     private boolean defaultSerializationOn;
-    private boolean maintainElementStack;
-    private boolean reverseVisitOrderOnVisitAfter;
-    private boolean terminateOnVisitorException;
-    private DefaultSAXElementSerializer defaultSerializer = new DefaultSAXElementSerializer();
-    private static ContentHandlerConfigMap defaultSerializerMapping;
-    private ExecutionEventListener eventListener;
+    private final boolean maintainElementStack;
+    private final boolean reverseVisitOrderOnVisitAfter;
+    private final boolean terminateOnVisitorException;
+    private final DefaultSAXElementSerializer defaultSerializer = new DefaultSAXElementSerializer();
+    private static final ContentHandlerConfigMap defaultSerializerMapping;
+    private final ExecutionEventListener eventListener;
     private DynamicSAXElementVisitorList dynamicVisitorList;
-    private StringBuilder cdataNodeBuilder = new StringBuilder();
+    private final StringBuilder cdataNodeBuilder = new StringBuilder();
 
     static {
         // Configure the default handler mapping...
@@ -435,7 +435,7 @@ public class SAXHandler extends SmooksContentHandler {
         }
     }
 
-    private SAXText textWrapper = new SAXText();
+    private final SAXText textWrapper = new SAXText();
     @SuppressWarnings("RedundantThrows")
     public void characters(char[] ch, int start, int length) throws SAXException {
         if(currentTextType != TextType.CDATA) {
@@ -445,7 +445,7 @@ public class SAXHandler extends SmooksContentHandler {
         }
     }
 
-    private StringBuilder entityBuilder = new StringBuilder(10);
+    private final StringBuilder entityBuilder = new StringBuilder(10);
     private void _characters(char[] ch, int start, int length) {
 
         if(!rewriteEntities && currentTextType == TextType.ENTITY) {

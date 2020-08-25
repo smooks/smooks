@@ -57,7 +57,7 @@ import java.util.Properties;
 public abstract class AbstractLogicalEvaluator extends XPathExpressionEvaluator {
 
     protected XPathExpressionEvaluator lhs;
-    private String op;
+    private final String op;
     protected XPathExpressionEvaluator rhs;
 
     public AbstractLogicalEvaluator(LogicalExpr expr, SelectorStep selectorStep, Properties namespaces) throws SAXPathException {

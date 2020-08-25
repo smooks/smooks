@@ -57,7 +57,7 @@ public class ConfigSearch {
 	private String selector;
 	private String selectorNS;
 	private String resource;
-	private Properties params = new Properties();
+	private final Properties params = new Properties();
 	
 	public String getConfigNS() {
 		return configNS;
