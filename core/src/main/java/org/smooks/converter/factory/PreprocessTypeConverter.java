@@ -75,7 +75,7 @@ public class PreprocessTypeConverter implements Configurable, TypeConverter<Stri
     @Inject
     private ApplicationContext applicationContext;
     private Properties properties;
-    private TypeConverter<String, Object> delegateTypeConverter;
+    private TypeConverter<? super String, ?> delegateTypeConverter;
 
     @PostConstruct
     public void postConstruct() {
@@ -102,11 +102,11 @@ public class PreprocessTypeConverter implements Configurable, TypeConverter<Stri
         }
     }
 
-    public TypeConverter<String, Object> getDelegateTypeConverter() {
+    public TypeConverter<? super String, ?> getDelegateTypeConverter() {
         return delegateTypeConverter;
     }
 
-    public void setDelegateTypeConverter(final TypeConverter<String, Object> delegateTypeConverter) {
+    public void setDelegateTypeConverter(final TypeConverter<? super String, ?> delegateTypeConverter) {
         this.delegateTypeConverter = delegateTypeConverter;
     }
 

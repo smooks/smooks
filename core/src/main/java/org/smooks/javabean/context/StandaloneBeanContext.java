@@ -42,6 +42,8 @@
  */
 package org.smooks.javabean.context;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Fragment;
@@ -50,8 +52,6 @@ import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.javabean.repository.BeanId;
 import org.smooks.util.MultiLineToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -641,10 +641,10 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#putAll(java.util.Map)
 		 */
-		public void putAll(Map<? extends String, ? extends Object> map) {
+		public void putAll(Map<? extends String, ?> map) {
 			AssertArgument.isNotNull(map, "map");
 
-			for (Entry<? extends String, ? extends Object> entry : map
+			for (Entry<? extends String, ?> entry : map
 					.entrySet()) {
 
 				addBean(entry.getKey(), entry.getValue(), null);

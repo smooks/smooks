@@ -42,13 +42,13 @@
  */
 package org.smooks.delivery.ordering.testvisitors;
 
-import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.ordering.Consumer;
+import org.smooks.delivery.ordering.Producer;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -68,7 +68,7 @@ public class TestProducerConsumer implements Producer, Consumer {
         return this;
     }
 
-    public Set<? extends Object> getProducts() {
+    public Set<?> getProducts() {
         return products;
     }
 

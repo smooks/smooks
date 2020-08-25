@@ -70,5 +70,5 @@ public interface Producer extends Visitor {
      * Get the set of products produced by this producer instance.
      * @return The set the set of products produced by this producer instance.
      */
-    Set<? extends Object> getProducts();
+    Set<?> getProducts();
 }

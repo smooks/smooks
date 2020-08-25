@@ -42,20 +42,15 @@
  */
 package org.smooks.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
 import org.smooks.container.ExecutionContext;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Static utility class for generating JSON like multi line Strings
@@ -124,7 +119,7 @@ public class MultiLineToStringBuilder {
      * @param map The Map to create the string from
      * @return The String representation of the Map
      */
-    public static String toString(Map<? extends Object, ? extends Object> map) {
+    public static String toString(Map<?, ?> map) {
     	return toString(map, Collections.emptyList());
 	}
 
@@ -135,7 +130,7 @@ public class MultiLineToStringBuilder {
      * @param filterKeyList A list of objects that are ignored when encountered as keys
      * @return The String representation of the Map
      */
-    public static String toString(Map<? extends Object, ? extends Object> map, List<?> filterKeyList) {
+    public static String toString(Map<?, ?> map, List<?> filterKeyList) {
 		Stack<Object> stack = new Stack<Object>();
 		stack.add(new Object()); // A little hack to make sure that the first level is rendered correctly
     	return toString(map, stack, filterKeyList);
@@ -147,7 +142,7 @@ public class MultiLineToStringBuilder {
      * @param map The Map to create the string from
      * @return The String representation of the Map
      */
-	public static String toString(Collection<? extends Object> collection) {
+	public static String toString(Collection<?> collection) {
 		return toString(collection, Collections.emptyList());
 	}
 
@@ -158,7 +153,7 @@ public class MultiLineToStringBuilder {
      * @param filterKeyList A list of objects that are ignored when encountered as keys
      * @return The String representation of the Map
      */
-	public static String toString(Collection<? extends Object> collection, List<?> filterKeyList) {
+	public static String toString(Collection<?> collection, List<?> filterKeyList) {
 		Stack<Object> stack = new Stack<Object>();
 		stack.add(new Object()); // A little hack to make sure that the first level is rendered correctly
 
@@ -196,7 +191,7 @@ public class MultiLineToStringBuilder {
      * @param filterKeyList A list of objects that are ignored when encountered as keys
      * @return The String representation of the Map
      */
-	private static String toString(Map<? extends Object, ? extends Object> map, Stack<Object> parentStack, List<?> filterKeys) {
+	private static String toString(Map<?, ?> map, Stack<Object> parentStack, List<?> filterKeys) {
     	StringBuilder builder = new StringBuilder();
     	builder.append(CURLY_BRACKET_OPEN);
 
@@ -205,7 +200,7 @@ public class MultiLineToStringBuilder {
 
     	int i = 0;
     	int size = map.entrySet().size();
-    	for(Entry<? extends Object, ? extends Object> entry : map.entrySet()) {
+    	for(Entry<?, ?> entry : map.entrySet()) {
     		String key = entry.getKey().toString();
 
     		if(filterKeys.contains(key)) {
@@ -248,7 +243,7 @@ public class MultiLineToStringBuilder {
 
 
 
-    private static String toString(Collection<? extends Object> collection, Stack<Object> parentStack, List<?> filterKeys) {
+    private static String toString(Collection<?> collection, Stack<Object> parentStack, List<?> filterKeys) {
     	StringBuilder builder = new StringBuilder();
     	builder.append(SQUARE_BRACKET_OPEN);
 
@@ -340,11 +335,11 @@ public class MultiLineToStringBuilder {
 	private static void processValue(Object current, Object value, String key, Stack<Object> parentStack, StringBuilder builder, List<?> filterKeys) {
 		if(value instanceof Map<?, ?>) {
 			parentStack.push(current);
-			builder.append(toString((Map<? extends Object, ? extends Object>) value, parentStack, filterKeys));
+			builder.append(toString((Map<?, ?>) value, parentStack, filterKeys));
 			parentStack.pop();
 		} else if(value instanceof Collection<?>) {
 			parentStack.push(current);
-			builder.append(toString((Collection<? extends Object>) value, parentStack, filterKeys));
+			builder.append(toString((Collection<?>) value, parentStack, filterKeys));
 			parentStack.pop();
 		} else if(value.getClass().isArray()) {
 			parentStack.push(current);
