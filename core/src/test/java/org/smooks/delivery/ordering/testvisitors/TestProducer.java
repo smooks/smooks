@@ -44,9 +44,9 @@ package org.smooks.delivery.ordering.testvisitors;
 
 import org.smooks.delivery.ordering.Producer;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -59,7 +59,7 @@ public class TestProducer implements Producer {
         this.products.addAll(Arrays.asList(products));
     }
 
-    public Set<? extends Object> getProducts() {
+    public Set<?> getProducts() {
         return products;
     }
 }

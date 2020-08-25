@@ -40,11 +40,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.registry.lookup;
+package org.smooks.cdr.registry.lookup.converter;
 
 import org.junit.Test;
-import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
-import org.smooks.cdr.registry.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.factory.TypeConverterFactory;
@@ -88,7 +86,7 @@ public class SourceTargetTypeConverterFactoryLookupTest {
         }});
 
         SourceTargetTypeConverterFactoryLookup<String, Integer> sourceTargetTypeConverterFactoryLookup = new SourceTargetTypeConverterFactoryLookup<>(String.class, Integer.class);
-        TypeConverter<String, Integer> typeConverter = sourceTargetTypeConverterFactoryLookup.apply(registryEntries).createTypeConverter();
+        TypeConverter<? super String, ? extends Integer> typeConverter = sourceTargetTypeConverterFactoryLookup.apply(registryEntries).createTypeConverter();
         assertNotNull(typeConverter);
         assertNotNull(typeConverter.convert("1"));
     }
@@ -139,7 +137,7 @@ public class SourceTargetTypeConverterFactoryLookupTest {
         ((Set<TypeConverterFactory<?, ?>>) registryEntries.get(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY)).add(mediumPriorityTypeConverterFactory);
 
         SourceTargetTypeConverterFactoryLookup<String, Integer> sourceTargetTypeConverterFactoryLookup = new SourceTargetTypeConverterFactoryLookup<>(String.class, Integer.class);
-        TypeConverter<String, Integer> typeConverter = sourceTargetTypeConverterFactoryLookup.apply(registryEntries).createTypeConverter();
+        TypeConverter<? super String, ? extends Integer> typeConverter = sourceTargetTypeConverterFactoryLookup.apply(registryEntries).createTypeConverter();
         assertNotNull(typeConverter.convert("1"));
     }
 }

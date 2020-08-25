@@ -42,12 +42,12 @@
  */
 package org.smooks.scribe.register;
 
-import static org.junit.Assert.*;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -106,12 +106,12 @@ public class AbstractDaoAdapterRegisterTest {
 
 	private static class Mock extends AbstractDaoAdapterRegister<Object, Object> {
 
-		public Mock(Map<String, ? extends Object> adaptableMap) {
+		public Mock(Map<String, ?> adaptableMap) {
 			super(adaptableMap);
 		}
 
 		public Mock(Object defaultAdaptable,
-				Map<String, ? extends Object> adaptableMap) {
+				Map<String, ?> adaptableMap) {
 			super(defaultAdaptable, adaptableMap);
 		}
 

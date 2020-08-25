@@ -152,7 +152,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         // the content handler and redirect the reader events to it...
     }
 
-    public Set<? extends Object> getProducts() {
+    public Set<?> getProducts() {
         return CollectionsUtil.toSet(mapBeans);
     }
 
