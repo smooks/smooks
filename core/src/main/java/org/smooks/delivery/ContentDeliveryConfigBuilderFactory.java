@@ -42,7 +42,9 @@
  */
 package org.smooks.delivery;
 
-public interface ContentDeliveryConfigBuilder {
+import org.smooks.profile.ProfileSet;
 
-    ContentDeliveryConfig getConfig(VisitorConfigMap extendedVisitorConfigMap);
+public interface ContentDeliveryConfigBuilderFactory {
+    
+    ContentDeliveryConfigBuilder create(ProfileSet profileSet);
 }

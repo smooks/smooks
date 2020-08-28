@@ -145,7 +145,7 @@ public class Exports implements ContentHandler {
     }
 
     public static Exports getExports(final ApplicationContext appContext) {
-        Exports exports = (Exports) appContext.getRegistry().lookup(Exports.class);
+        Exports exports = appContext.getRegistry().lookup(Exports.class);
         if (exports == null) {
             return NULL_EXPORTS;
         }

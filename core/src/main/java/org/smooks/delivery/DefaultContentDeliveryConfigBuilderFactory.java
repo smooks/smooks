@@ -42,7 +42,22 @@
  */
 package org.smooks.delivery;
 
-public interface ContentDeliveryConfigBuilder {
+import org.smooks.container.ApplicationContext;
+import org.smooks.profile.ProfileSet;
 
-    ContentDeliveryConfig getConfig(VisitorConfigMap extendedVisitorConfigMap);
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class DefaultContentDeliveryConfigBuilderFactory implements ContentDeliveryConfigBuilderFactory {
+    private final Map<String, ContentDeliveryConfigBuilder> contentDeliveryConfigBuilders = new ConcurrentHashMap<>();
+    private final ApplicationContext applicationContext;
+
+    public DefaultContentDeliveryConfigBuilderFactory(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+    
+    @Override
+    public ContentDeliveryConfigBuilder create(final ProfileSet profileSet) {
+        return contentDeliveryConfigBuilders.computeIfAbsent(profileSet.getBaseProfile(), c -> new DefaultContentDeliveryConfigBuilder(profileSet, applicationContext));
+    }
 }

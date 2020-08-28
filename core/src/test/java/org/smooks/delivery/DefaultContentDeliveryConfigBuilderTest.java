@@ -61,7 +61,7 @@ import static org.junit.Assert.*;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ContentDeliveryConfigBuilderTest {
+public class DefaultContentDeliveryConfigBuilderTest {
 
 	@Test
     public void test_sax() throws IOException, SAXException {

@@ -46,7 +46,6 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.delivery.ContentDeliveryConfigBuilder;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.VisitorConfigMap;
 import org.smooks.event.ExecutionEventListener;
@@ -114,7 +113,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 		this.context = applicationContext;
 		setContentEncoding(contentEncoding);
         targetProfileSet = applicationContext.getProfileStore().getProfileSet(targetProfile);
-        deliveryConfig = ContentDeliveryConfigBuilder.getConfig(targetProfileSet, applicationContext, extendedVisitorConfigMap);
+		deliveryConfig = applicationContext.getContentDeliveryConfigBuilderFactory().create(targetProfileSet).getConfig(extendedVisitorConfigMap);
         isDefaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", deliveryConfig));
     }
 

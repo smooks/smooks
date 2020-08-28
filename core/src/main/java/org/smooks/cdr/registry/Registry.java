@@ -146,8 +146,8 @@ public class Registry {
         return function.apply(Collections.unmodifiableMap(registry));
     }
 
-    public Object lookup(final Object key) {
-        return registry.get(key);
+    public <T> T lookup(final Object key) {
+        return (T) registry.get(key);
     }
 
     /**
