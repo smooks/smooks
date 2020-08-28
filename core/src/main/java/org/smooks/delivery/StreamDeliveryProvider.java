@@ -42,7 +42,18 @@
  */
 package org.smooks.delivery;
 
-public interface ContentDeliveryConfigBuilder {
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.container.ApplicationContext;
+import org.smooks.dtd.DTDStore;
+import org.smooks.event.types.ConfigBuilderEvent;
 
-    ContentDeliveryConfig build(VisitorConfigMap extendedVisitorConfigMap);
+import java.util.List;
+import java.util.Map;
+
+public interface StreamDeliveryProvider {
+    ContentDeliveryConfig createContentDeliveryConfig(VisitorConfigMap visitorConfigMap, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors);
+    
+    Boolean isProvider(VisitorConfigMap visitorConfigMap);
+    
+    String getName();
 }

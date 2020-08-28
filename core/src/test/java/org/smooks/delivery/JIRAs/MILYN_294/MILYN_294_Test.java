@@ -43,13 +43,15 @@
 package org.smooks.delivery.JIRAs.MILYN_294;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.smooks.Smooks;
 import org.smooks.FilterSettings;
+import org.smooks.Smooks;
 import org.smooks.SmooksException;
-import org.smooks.payload.StringSource;
 import org.smooks.delivery.dom.ProcessorVisitor1;
 import org.smooks.delivery.sax.SAXVisitor01;
+import org.smooks.payload.StringSource;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * http://jira.codehaus.org/browse/MILYN-294
@@ -72,7 +74,7 @@ public class MILYN_294_Test {
             smooks.filterSource(new StringSource("<a/>"));
             fail("Expected SmooksException.");
         } catch (SmooksException e) {
-            assertEquals("The configured Filter ('SAX') cannot be used with the specified set of Smooks visitors.  The 'DOM' Filter is the only filter that can be used for this set of Visitors.  Turn on Debug logging for more information.", e.getMessage());
+            assertEquals("The configured Filter ('SAX') cannot be used: [DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
         }
     }
 
@@ -90,7 +92,7 @@ public class MILYN_294_Test {
             smooks.filterSource(new StringSource("<a/>"));
             fail("Expected SmooksException.");
         } catch (SmooksException e) {
-            assertEquals("The configured Filter ('DOM') cannot be used with the specified set of Smooks visitors.  The 'SAX' Filter is the only filter that can be used for this set of Visitors.  Turn on Debug logging for more information.", e.getMessage());
+            assertEquals("The configured Filter ('DOM') cannot be used: [SAX] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
         }
     }
 }

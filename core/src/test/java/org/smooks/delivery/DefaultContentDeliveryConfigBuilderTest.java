@@ -122,7 +122,7 @@ public class DefaultContentDeliveryConfigBuilderTest {
             smooks.createExecutionContext();
             fail("Expected SmooksException");
         } catch(SmooksException e) {
-            assertEquals("Invalid 'stream.filter.type' configuration parameter value of 'xxxx'.  Must be 'SAX' or 'DOM'.", e.getMessage());
+            assertEquals("The configured Filter ('xxxx') cannot be used: [SAX, DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
         }
     }
 

@@ -74,16 +74,7 @@ public abstract class Filter {
      * Stream filter type config parameter.
      */
     public static final String STREAM_FILTER_TYPE = "stream.filter.type";
-
-    /**
-     * Filter type enumeration.
-     */
-    public enum StreamFilterType {
-        SAX,
-        DOM
-
-    }
-
+    
     /**
      * The Threadlocal storage instance for the ExecutionContext associated with the "current" SmooksDOMFilter thread instance.
      */
@@ -222,7 +213,7 @@ public abstract class Filter {
             return streamResult.getWriter();
         } else if(streamResult.getOutputStream() != null) {
             try {
-                if(executionContext instanceof ExecutionContext) {
+                if(executionContext != null) {
                     return new OutputStreamWriter(streamResult.getOutputStream(), executionContext.getContentEncoding());
                 } else {
                     return new OutputStreamWriter(streamResult.getOutputStream(), StandardCharsets.UTF_8);

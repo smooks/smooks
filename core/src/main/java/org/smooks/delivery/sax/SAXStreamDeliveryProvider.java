@@ -40,27 +40,55 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery;
+package org.smooks.delivery.sax;
 
+import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ApplicationContext;
-import org.smooks.delivery.dom.DOMStreamDeliveryProvider;
-import org.smooks.delivery.sax.SAXStreamDeliveryProvider;
-import org.smooks.profile.ProfileSet;
+import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.delivery.StreamDeliveryProvider;
+import org.smooks.delivery.VisitorConfigMap;
+import org.smooks.dtd.DTDStore;
+import org.smooks.event.types.ConfigBuilderEvent;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultContentDeliveryConfigBuilderFactory implements ContentDeliveryConfigBuilderFactory {
-    private final Map<String, ContentDeliveryConfigBuilder> contentDeliveryConfigBuilders = new ConcurrentHashMap<>();
-    private final ApplicationContext applicationContext;
-
-    public DefaultContentDeliveryConfigBuilderFactory(final ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-    
+public class SAXStreamDeliveryProvider implements StreamDeliveryProvider {
     @Override
-    public ContentDeliveryConfigBuilder create(final ProfileSet profileSet) {
-        return contentDeliveryConfigBuilders.computeIfAbsent(profileSet.getBaseProfile(), c -> new DefaultContentDeliveryConfigBuilder(profileSet, applicationContext, Arrays.asList(new SAXStreamDeliveryProvider(), new DOMStreamDeliveryProvider())));
+    public ContentDeliveryConfig createContentDeliveryConfig(VisitorConfigMap visitorConfigMap, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
+        SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
+
+        saxConfig.setVisitBefores(visitorConfigMap.getSaxVisitBefores());
+        saxConfig.setVisitAfters(visitorConfigMap.getSaxVisitAfters());
+        saxConfig.setVisitCleanables(visitorConfigMap.getVisitCleanables());
+
+        saxConfig.setApplicationContext(applicationContext);
+        saxConfig.setSmooksResourceConfigurations(resourceConfigTable);
+        saxConfig.setDtd(dtdObjectContainer);
+        saxConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
+
+        saxConfig.optimizeConfig();
+        saxConfig.assertSelectorsNotAccessingText();
+
+        if(sortVisitors) {
+            saxConfig.sort();
+        }
+
+        saxConfig.addToExecutionLifecycleSets();
+        saxConfig.initializeXMLReaderPool();
+
+        saxConfig.addIndexCounters();
+        
+        return saxConfig;
+    }
+
+    @Override
+    public Boolean isProvider(VisitorConfigMap visitorConfigMap) {
+        return visitorConfigMap.getSaxVisitorCount() == visitorConfigMap.getVisitorCount();
+    }
+
+    @Override
+    public String getName() {
+        return "SAX";
     }
 }

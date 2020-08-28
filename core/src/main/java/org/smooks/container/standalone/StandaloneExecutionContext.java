@@ -113,7 +113,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 		this.context = applicationContext;
 		setContentEncoding(contentEncoding);
         targetProfileSet = applicationContext.getProfileStore().getProfileSet(targetProfile);
-		deliveryConfig = applicationContext.getContentDeliveryConfigBuilderFactory().create(targetProfileSet).getConfig(extendedVisitorConfigMap);
+		deliveryConfig = applicationContext.getContentDeliveryConfigBuilderFactory().create(targetProfileSet).build(extendedVisitorConfigMap);
         isDefaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", deliveryConfig));
     }
 

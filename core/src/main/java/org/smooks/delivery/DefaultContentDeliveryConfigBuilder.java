@@ -45,15 +45,13 @@ package org.smooks.delivery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
-import org.smooks.StreamFilterType;
+import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.*;
 import org.smooks.cdr.registry.Registry;
 import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.cdr.registry.lookup.InstanceLookup;
 import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationsProfileSetLookup;
 import org.smooks.container.ApplicationContext;
-import org.smooks.delivery.dom.DOMContentDeliveryConfig;
-import org.smooks.delivery.sax.SAXContentDeliveryConfig;
 import org.smooks.dtd.DTDStore;
 import org.smooks.dtd.DTDStore.DTDObjectContainer;
 import org.smooks.event.types.ConfigBuilderEvent;
@@ -62,6 +60,7 @@ import org.smooks.profile.ProfileSet;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Content delivery configuration builder.
@@ -103,6 +102,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * Config builder events list.
      */
     private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<>();
+    private final List<StreamDeliveryProvider> streamDeliveryProviders;
 
     /**
 	 * DTD for the associated device.
@@ -116,15 +116,14 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * @param profileSet Profile set.
 	 * @param applicationContext Container context.
 	 */
-	public DefaultContentDeliveryConfigBuilder(ProfileSet profileSet, ApplicationContext applicationContext) {
-        if (profileSet == null) {
-            throw new IllegalArgumentException("null 'profileSet' arg passed in method call.");
-        } else if (applicationContext == null) {
-            throw new IllegalArgumentException("null 'applicationContext' arg passed in method call.");
-        }
+	public DefaultContentDeliveryConfigBuilder(final ProfileSet profileSet, final ApplicationContext applicationContext, final List<StreamDeliveryProvider> streamDeliveryProviders) {
+        AssertArgument.isNotNull(profileSet, "profileSet");
+        AssertArgument.isNotNull(applicationContext, "applicationContext");
+        AssertArgument.isNotNull(streamDeliveryProviders, "streamDeliveryProviders");
         
 		this.profileSet = profileSet;
 		this.applicationContext = applicationContext;
+		this.streamDeliveryProviders = streamDeliveryProviders;
         visitorConfig = new VisitorConfigMap(applicationContext);
         visitorConfig.setConfigBuilderEvents(configBuilderEvents);
     }
@@ -135,12 +134,12 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * @return The ContentDeliveryConfig instance for the named table.
 	 */
     @Override
-    public ContentDeliveryConfig getConfig(VisitorConfigMap extendedVisitorConfigMap) {
+    public ContentDeliveryConfig build(VisitorConfigMap extendedVisitorConfigMap) {
         if (contentDeliveryConfig == null) {
             synchronized (DefaultContentDeliveryConfigBuilder.class) {
                 if (contentDeliveryConfig == null) {
                     load(profileSet);
-                    contentDeliveryConfig = createConfig(extendedVisitorConfigMap);
+                    contentDeliveryConfig = buildConfig(extendedVisitorConfigMap);
                 }
             }
         }
@@ -148,119 +147,37 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         return contentDeliveryConfig;
     }
 
-    private ContentDeliveryConfig createConfig(VisitorConfigMap extendedVisitorConfigMap) {
+    private ContentDeliveryConfig buildConfig(VisitorConfigMap extendedVisitorConfigMap) {
         boolean sortVisitors = ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable);
-        StreamFilterType filterType;
 
         visitorConfig.addAll(extendedVisitorConfigMap);
 
-        filterType = getStreamFilterType();
+        StreamDeliveryProvider streamDeliveryProvider = getStreamDeliveryProvider();
+        LOGGER.debug(String.format("Using the %s Stream Filter", streamDeliveryProvider.getName()));
         configBuilderEvents.add(new ConfigBuilderEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
-        configBuilderEvents.add(new ConfigBuilderEvent("Using Stream Filter Type: " + filterType));
+        configBuilderEvents.add(new ConfigBuilderEvent("Using Stream Filter Type: " + streamDeliveryProvider.getName()));
 
-        if(filterType == StreamFilterType.DOM) {
-            DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
+        ContentDeliveryConfig contentDeliveryConfig = streamDeliveryProvider.createContentDeliveryConfig(visitorConfig, applicationContext, resourceConfigTable, configBuilderEvents, dtd, sortVisitors);
+        fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
 
-            LOGGER.debug("Using the DOM Stream Filter.");
-            domConfig.setAssemblyVisitBefores(visitorConfig.getDomAssemblyVisitBefores());
-            domConfig.setAssemblyVisitAfters(visitorConfig.getDomAssemblyVisitAfters());
-            domConfig.setProcessingVisitBefores(visitorConfig.getDomProcessingVisitBefores());
-            domConfig.setProcessingVisitAfters(visitorConfig.getDomProcessingVisitAfters());
-            domConfig.setSerializationVisitors(visitorConfig.getDomSerializationVisitors());
-            domConfig.setVisitCleanables(visitorConfig.getVisitCleanables());
-
-            domConfig.setApplicationContext(applicationContext);
-            domConfig.setSmooksResourceConfigurations(resourceConfigTable);
-            domConfig.setDtd(dtd);
-            domConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
-
-            if(sortVisitors) {
-                domConfig.sort();
-            }
-
-            domConfig.addToExecutionLifecycleSets();
-            domConfig.initializeXMLReaderPool();
-            domConfig.configureFilterBypass();
-
-            // Tell all interested listeners that the config builder for the profile has now been created.
-            fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
-
-            return domConfig;
-        } else {
-            SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
-
-            LOGGER.debug("Using the SAX Stream Filter.");
-            saxConfig.setVisitBefores(visitorConfig.getSaxVisitBefores());
-            saxConfig.setVisitAfters(visitorConfig.getSaxVisitAfters());
-            saxConfig.setVisitCleanables(visitorConfig.getVisitCleanables());
-
-            saxConfig.setApplicationContext(applicationContext);
-            saxConfig.setSmooksResourceConfigurations(resourceConfigTable);
-            saxConfig.setDtd(dtd);
-            saxConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
-
-            saxConfig.optimizeConfig();
-            saxConfig.assertSelectorsNotAccessingText();
-
-            if(sortVisitors) {
-                saxConfig.sort();
-            }
-
-            saxConfig.addToExecutionLifecycleSets();
-            saxConfig.initializeXMLReaderPool();
-
-            saxConfig.addIndexCounters();
-
-            // Tell all interested listeners that the config builder for the profile has now been created.
-            fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
-
-            return saxConfig;
-        }
+        return contentDeliveryConfig;
     }
 
-    private StreamFilterType getStreamFilterType() {
-        StreamFilterType filterType;
-
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics());
-        }
-
-        String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
-
-        if(visitorConfig.getSaxVisitorCount() == visitorConfig.getVisitorCount() && visitorConfig.getDomVisitorCount() == visitorConfig.getVisitorCount()) {
-
-            if(filterTypeParam == null) {
-                filterType = StreamFilterType.SAX;
-                LOGGER.debug("All configured XML Element Content Handler resource configurations can be " +
-                        "applied using the SAX or DOM Stream Filter.  Defaulting to " + filterType + " Filter.  Set '" + ParameterAccessor.GLOBAL_PARAMETERS + ":"
-                        + Filter.STREAM_FILTER_TYPE + "'.");
-                LOGGER.debug("You can explicitly select the Filter type as follows:\n" +
-                        "\t\t<resource-config selector=\"" + ParameterAccessor.GLOBAL_PARAMETERS + "\">\n" +
-                        "\t\t\t<param name=\"" + Filter.STREAM_FILTER_TYPE + "\">SAX/DOM</param>\n" +
-                        "\t\t</resource-config>");
-            } else if(filterTypeParam.equalsIgnoreCase(StreamFilterType.DOM.name())) {
-                filterType = StreamFilterType.DOM;
-            } else if(filterTypeParam.equalsIgnoreCase(StreamFilterType.SAX.name())) {
-                filterType = StreamFilterType.SAX;
-            } else {
-                throw new SmooksException("Invalid '" + Filter.STREAM_FILTER_TYPE + "' configuration parameter value of '" + filterTypeParam + "'.  Must be 'SAX' or 'DOM'.");
-            }
-        } else if(visitorConfig.getDomVisitorCount() == visitorConfig.getVisitorCount()) {
-            filterType = StreamFilterType.DOM;
-        } else if(visitorConfig.getSaxVisitorCount() == visitorConfig.getVisitorCount()) {
-            filterType = StreamFilterType.SAX;
-        } else {
+    private StreamDeliveryProvider getStreamDeliveryProvider() {
+        final List<StreamDeliveryProvider> candidateStreamDeliveryProviders = streamDeliveryProviders.stream().filter(s -> s.isProvider(visitorConfig)).collect(Collectors.toList());
+        final String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
+        if (candidateStreamDeliveryProviders.isEmpty()) {
             throw new SmooksException("Ambiguous Resource Configuration set.  All Element Content Handlers must support processing on the SAX and/or DOM Filter:\n" + getResourceFilterCharacteristics());
-        }
-
-        // If the filter type has been configured, we make sure the selected filter matches...
-        if(filterTypeParam != null) {
-            if(!filterTypeParam.equalsIgnoreCase(filterType.name())) {
-                throw new SmooksException("The configured Filter ('" + filterTypeParam + "') cannot be used with the specified set of Smooks visitors.  The '" + filterType + "' Filter is the only filter that can be used for this set of Visitors.  Turn on Debug logging for more information.");
+        } else if (filterTypeParam == null) {
+            return candidateStreamDeliveryProviders.get(0);
+        } else {
+            final Optional<StreamDeliveryProvider> streamDeliveryProviderOptional = candidateStreamDeliveryProviders.stream().filter(c -> c.getName().equalsIgnoreCase(filterTypeParam)).findFirst();
+            if (streamDeliveryProviderOptional.isPresent()) {
+                return streamDeliveryProviderOptional.get();
+            } else {
+                throw new SmooksException("The configured Filter ('" + filterTypeParam + "') cannot be used: " + Arrays.toString(candidateStreamDeliveryProviders.stream().map(StreamDeliveryProvider::getName).collect(Collectors.toList()).toArray()) + " filters can be used for the given set of visitors. Turn on debug logging for more information.");
             }
         }
-
-        return filterType;
     }
 
     /**
