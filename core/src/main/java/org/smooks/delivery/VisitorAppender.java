@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery;
 
+import java.util.List;
+
 /**
  * Vistor appender.
  * <p/>
@@ -56,5 +58,5 @@ public interface VisitorAppender {
      * Add visitors to the supplied Cisitor map.
      * @param visitorMap The visitor map to be added to. 
      */
-    void addVisitors(VisitorConfigMap visitorMap);
+    void addVisitors(List<ContentHandlerBinding<Visitor>> contentHandlerBindings);
 }

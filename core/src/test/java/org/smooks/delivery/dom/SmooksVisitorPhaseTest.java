@@ -43,13 +43,13 @@
 package org.smooks.delivery.dom;
 
 import org.junit.Test;
-import org.smooks.Smooks;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ContentHandlerConfigMap;
-import org.smooks.event.BasicExecutionEventListener;
-import org.smooks.io.StreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.Smooks;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.event.BasicExecutionEventListener;
+import org.smooks.io.StreamUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -82,8 +82,8 @@ public class SmooksVisitorPhaseTest {
         config = (DOMContentDeliveryConfig) execContext.getDeliveryConfig();
 
         // Check the assembly units...
-        List<ContentHandlerConfigMap<DOMVisitBefore>> assemblyVBs = config.getAssemblyVisitBefores().getMappings("a");
-        List<ContentHandlerConfigMap<DOMVisitAfter>> assemblyVAs = config.getAssemblyVisitAfters().getMappings("a");
+        List<ContentHandlerBinding<DOMVisitBefore>> assemblyVBs = config.getAssemblyVisitBefores().getMappings("a");
+        List<ContentHandlerBinding<DOMVisitAfter>> assemblyVAs = config.getAssemblyVisitAfters().getMappings("a");
         assertEquals(2, assemblyVBs.size());
         assertTrue(assemblyVBs.get(0).getContentHandler() instanceof AssemblyVisitor1);
         assertTrue(assemblyVBs.get(1).getContentHandler() instanceof ConfigurableVisitor);
@@ -91,8 +91,8 @@ public class SmooksVisitorPhaseTest {
         assertTrue(assemblyVAs.get(0).getContentHandler() instanceof ConfigurableVisitor);
         assertTrue(assemblyVAs.get(1).getContentHandler() instanceof AssemblyVisitor1);
 
-        List<ContentHandlerConfigMap<DOMVisitBefore>> processingVBs = config.getProcessingVisitBefores().getMappings("a");
-        List<ContentHandlerConfigMap<DOMVisitAfter>> processingVAs = config.getProcessingVisitAfters().getMappings("a");
+        List<ContentHandlerBinding<DOMVisitBefore>> processingVBs = config.getProcessingVisitBefores().getMappings("a");
+        List<ContentHandlerBinding<DOMVisitAfter>> processingVAs = config.getProcessingVisitAfters().getMappings("a");
         assertEquals(2, processingVBs.size());
         assertTrue(processingVBs.get(0).getContentHandler() instanceof ProcessorVisitor1);
         assertTrue(processingVBs.get(1).getContentHandler() instanceof ConfigurableVisitor);

@@ -46,7 +46,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.delivery.ContentHandlerConfigMap;
+import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.ordering.testvisitors.TestConsumer;
 import org.smooks.delivery.ordering.testvisitors.TestProducer;
@@ -64,13 +64,13 @@ import static org.junit.Assert.fail;
  */
 public class SorterTest {
 
-    private final List<ContentHandlerConfigMap<Visitor>> sortList = new ArrayList<ContentHandlerConfigMap<Visitor>>();
-    private final List<ContentHandlerConfigMap<Visitor>> originalList = new ArrayList<ContentHandlerConfigMap<Visitor>>();
+    private final List<ContentHandlerBinding<Visitor>> sortedContentHandlerBindings = new ArrayList<>();
+    private final List<ContentHandlerBinding<Visitor>> unsortedContentHandlerBindings = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception {
-        sortList.clear();
-        originalList.clear();
+        sortedContentHandlerBindings.clear();
+        unsortedContentHandlerBindings.clear();
     }
 
     @Test
@@ -85,16 +85,16 @@ public class SorterTest {
         addVisitor(new TestVisitor());
         addVisitor(new TestProducerConsumer().setProducts("g").setConsumes("c"));
 
-        Sorter.sort(sortList, Sorter.SortOrder.PRODUCERS_FIRST);
-        assertEquals(originalList.get(5), sortList.get(0));
-        assertEquals(originalList.get(2), sortList.get(1));
-        assertEquals(originalList.get(8), sortList.get(2));
-        assertEquals(originalList.get(1), sortList.get(3));
-        assertEquals(originalList.get(3), sortList.get(4));
-        assertEquals(originalList.get(7), sortList.get(5));
-        assertEquals(originalList.get(0), sortList.get(6));
-        assertEquals(originalList.get(4), sortList.get(7));
-        assertEquals(originalList.get(6), sortList.get(8));
+        Sorter.sort(sortedContentHandlerBindings, Sorter.SortOrder.PRODUCERS_FIRST);
+        assertEquals(unsortedContentHandlerBindings.get(5), sortedContentHandlerBindings.get(0));
+        assertEquals(unsortedContentHandlerBindings.get(2), sortedContentHandlerBindings.get(1));
+        assertEquals(unsortedContentHandlerBindings.get(8), sortedContentHandlerBindings.get(2));
+        assertEquals(unsortedContentHandlerBindings.get(1), sortedContentHandlerBindings.get(3));
+        assertEquals(unsortedContentHandlerBindings.get(3), sortedContentHandlerBindings.get(4));
+        assertEquals(unsortedContentHandlerBindings.get(7), sortedContentHandlerBindings.get(5));
+        assertEquals(unsortedContentHandlerBindings.get(0), sortedContentHandlerBindings.get(6));
+        assertEquals(unsortedContentHandlerBindings.get(4), sortedContentHandlerBindings.get(7));
+        assertEquals(unsortedContentHandlerBindings.get(6), sortedContentHandlerBindings.get(8));
     }
 
     @Test
@@ -109,16 +109,16 @@ public class SorterTest {
         addVisitor(new TestVisitor());
         addVisitor(new TestProducer("a", "b", "c"));
 
-        Sorter.sort(sortList, Sorter.SortOrder.PRODUCERS_FIRST);
-        assertEquals(originalList.get(8), sortList.get(0));
-        assertEquals(originalList.get(3), sortList.get(1));
-        assertEquals(originalList.get(4), sortList.get(2));
-        assertEquals(originalList.get(0), sortList.get(3));
-        assertEquals(originalList.get(6), sortList.get(4));
-        assertEquals(originalList.get(7), sortList.get(5));
-        assertEquals(originalList.get(1), sortList.get(6));
-        assertEquals(originalList.get(2), sortList.get(7));
-        assertEquals(originalList.get(5), sortList.get(8));
+        Sorter.sort(sortedContentHandlerBindings, Sorter.SortOrder.PRODUCERS_FIRST);
+        assertEquals(unsortedContentHandlerBindings.get(8), sortedContentHandlerBindings.get(0));
+        assertEquals(unsortedContentHandlerBindings.get(3), sortedContentHandlerBindings.get(1));
+        assertEquals(unsortedContentHandlerBindings.get(4), sortedContentHandlerBindings.get(2));
+        assertEquals(unsortedContentHandlerBindings.get(0), sortedContentHandlerBindings.get(3));
+        assertEquals(unsortedContentHandlerBindings.get(6), sortedContentHandlerBindings.get(4));
+        assertEquals(unsortedContentHandlerBindings.get(7), sortedContentHandlerBindings.get(5));
+        assertEquals(unsortedContentHandlerBindings.get(1), sortedContentHandlerBindings.get(6));
+        assertEquals(unsortedContentHandlerBindings.get(2), sortedContentHandlerBindings.get(7));
+        assertEquals(unsortedContentHandlerBindings.get(5), sortedContentHandlerBindings.get(8));
     }
 
     @Test
@@ -133,16 +133,16 @@ public class SorterTest {
         addVisitor(new TestVisitor());
         addVisitor(new TestProducer("a", "b", "c"));
 
-        Sorter.sort(sortList, Sorter.SortOrder.CONSUMERS_FIRST);
-        assertEquals(originalList.get(8), sortList.get(8));
-        assertEquals(originalList.get(3), sortList.get(7));
-        assertEquals(originalList.get(4), sortList.get(6));
-        assertEquals(originalList.get(0), sortList.get(5));
-        assertEquals(originalList.get(6), sortList.get(4));
-        assertEquals(originalList.get(7), sortList.get(3));
-        assertEquals(originalList.get(1), sortList.get(2));
-        assertEquals(originalList.get(2), sortList.get(1));
-        assertEquals(originalList.get(5), sortList.get(0));
+        Sorter.sort(sortedContentHandlerBindings, Sorter.SortOrder.CONSUMERS_FIRST);
+        assertEquals(unsortedContentHandlerBindings.get(8), sortedContentHandlerBindings.get(8));
+        assertEquals(unsortedContentHandlerBindings.get(3), sortedContentHandlerBindings.get(7));
+        assertEquals(unsortedContentHandlerBindings.get(4), sortedContentHandlerBindings.get(6));
+        assertEquals(unsortedContentHandlerBindings.get(0), sortedContentHandlerBindings.get(5));
+        assertEquals(unsortedContentHandlerBindings.get(6), sortedContentHandlerBindings.get(4));
+        assertEquals(unsortedContentHandlerBindings.get(7), sortedContentHandlerBindings.get(3));
+        assertEquals(unsortedContentHandlerBindings.get(1), sortedContentHandlerBindings.get(2));
+        assertEquals(unsortedContentHandlerBindings.get(2), sortedContentHandlerBindings.get(1));
+        assertEquals(unsortedContentHandlerBindings.get(5), sortedContentHandlerBindings.get(0));
     }
 
     @Test
@@ -157,16 +157,16 @@ public class SorterTest {
         addVisitor(new TestVisitor());
         addVisitor(new TestVisitor());
 
-        Sorter.sort(sortList, Sorter.SortOrder.PRODUCERS_FIRST);
-        assertEquals(originalList.get(0), sortList.get(0));
-        assertEquals(originalList.get(1), sortList.get(1));
-        assertEquals(originalList.get(2), sortList.get(2));
-        assertEquals(originalList.get(3), sortList.get(3));
-        assertEquals(originalList.get(4), sortList.get(4));
-        assertEquals(originalList.get(5), sortList.get(5));
-        assertEquals(originalList.get(6), sortList.get(6));
-        assertEquals(originalList.get(7), sortList.get(7));
-        assertEquals(originalList.get(8), sortList.get(8));
+        Sorter.sort(sortedContentHandlerBindings, Sorter.SortOrder.PRODUCERS_FIRST);
+        assertEquals(unsortedContentHandlerBindings.get(0), sortedContentHandlerBindings.get(0));
+        assertEquals(unsortedContentHandlerBindings.get(1), sortedContentHandlerBindings.get(1));
+        assertEquals(unsortedContentHandlerBindings.get(2), sortedContentHandlerBindings.get(2));
+        assertEquals(unsortedContentHandlerBindings.get(3), sortedContentHandlerBindings.get(3));
+        assertEquals(unsortedContentHandlerBindings.get(4), sortedContentHandlerBindings.get(4));
+        assertEquals(unsortedContentHandlerBindings.get(5), sortedContentHandlerBindings.get(5));
+        assertEquals(unsortedContentHandlerBindings.get(6), sortedContentHandlerBindings.get(6));
+        assertEquals(unsortedContentHandlerBindings.get(7), sortedContentHandlerBindings.get(7));
+        assertEquals(unsortedContentHandlerBindings.get(8), sortedContentHandlerBindings.get(8));
     }
 
     @Test
@@ -181,16 +181,16 @@ public class SorterTest {
         addVisitor(new TestVisitor());
         addVisitor(new TestVisitor());
 
-        Sorter.sort(sortList, Sorter.SortOrder.CONSUMERS_FIRST);
-        assertEquals(originalList.get(0), sortList.get(8));
-        assertEquals(originalList.get(1), sortList.get(7));
-        assertEquals(originalList.get(2), sortList.get(6));
-        assertEquals(originalList.get(3), sortList.get(5));
-        assertEquals(originalList.get(4), sortList.get(4));
-        assertEquals(originalList.get(5), sortList.get(3));
-        assertEquals(originalList.get(6), sortList.get(2));
-        assertEquals(originalList.get(7), sortList.get(1));
-        assertEquals(originalList.get(8), sortList.get(0));
+        Sorter.sort(sortedContentHandlerBindings, Sorter.SortOrder.CONSUMERS_FIRST);
+        assertEquals(unsortedContentHandlerBindings.get(0), sortedContentHandlerBindings.get(8));
+        assertEquals(unsortedContentHandlerBindings.get(1), sortedContentHandlerBindings.get(7));
+        assertEquals(unsortedContentHandlerBindings.get(2), sortedContentHandlerBindings.get(6));
+        assertEquals(unsortedContentHandlerBindings.get(3), sortedContentHandlerBindings.get(5));
+        assertEquals(unsortedContentHandlerBindings.get(4), sortedContentHandlerBindings.get(4));
+        assertEquals(unsortedContentHandlerBindings.get(5), sortedContentHandlerBindings.get(3));
+        assertEquals(unsortedContentHandlerBindings.get(6), sortedContentHandlerBindings.get(2));
+        assertEquals(unsortedContentHandlerBindings.get(7), sortedContentHandlerBindings.get(1));
+        assertEquals(unsortedContentHandlerBindings.get(8), sortedContentHandlerBindings.get(0));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class SorterTest {
         addVisitor(new TestProducerConsumer().setProducts("b").setConsumes("a"));
 
         try {
-            Sorter.sort(sortList, Sorter.SortOrder.PRODUCERS_FIRST);
+            Sorter.sort(sortedContentHandlerBindings, Sorter.SortOrder.PRODUCERS_FIRST);
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
             assertEquals(("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
@@ -217,7 +217,7 @@ public class SorterTest {
         addVisitor(new TestProducerConsumer().setProducts("d").setConsumes("a"));
 
         try {
-            Sorter.sort(sortList, Sorter.SortOrder.PRODUCERS_FIRST);
+            Sorter.sort(sortedContentHandlerBindings, Sorter.SortOrder.PRODUCERS_FIRST);
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
             assertEquals(("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
@@ -230,8 +230,8 @@ public class SorterTest {
     }
 
     private void addVisitor(Visitor visitor) {
-        ContentHandlerConfigMap<Visitor> listEntry = new ContentHandlerConfigMap<Visitor>(visitor, new SmooksResourceConfiguration("" + sortList.size(), visitor.getClass().getName()));
-        sortList.add(listEntry);
-        originalList.add(listEntry);
+        ContentHandlerBinding<Visitor> contentHandlerBinding = new ContentHandlerBinding<>(visitor, new SmooksResourceConfiguration("" + sortedContentHandlerBindings.size(), visitor.getClass().getName()));
+        sortedContentHandlerBindings.add(contentHandlerBinding);
+        unsortedContentHandlerBindings.add(contentHandlerBinding);
     }
 }

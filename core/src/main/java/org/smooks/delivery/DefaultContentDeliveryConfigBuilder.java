@@ -94,10 +94,9 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * contains a List of SmooksResourceConfiguration instances.
 	 */
 	private final Map<String, List<SmooksResourceConfiguration>> resourceConfigTable = new LinkedHashMap<>();
-    /**
-     * Visitor Config.
-     */
-    private final VisitorConfigMap visitorConfig;
+
+    private final List<ContentHandlerBinding<Visitor>> contentHandlerBindings = new ArrayList<>();
+
     /**
      * Config builder events list.
      */
@@ -110,7 +109,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	private DTDObjectContainer dtd;
 	
 	private ContentDeliveryConfig contentDeliveryConfig;
-
+	
     /**
 	 * Private (hidden) constructor.
      * @param profileSet Profile set.
@@ -124,22 +123,20 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 		this.profileSet = profileSet;
 		this.applicationContext = applicationContext;
 		this.streamDeliveryProviders = streamDeliveryProviders;
-        visitorConfig = new VisitorConfigMap(applicationContext);
-        visitorConfig.setConfigBuilderEvents(configBuilderEvents);
     }
 
 	/**
 	 * Get the ContentDeliveryConfig instance for the specified profile set.
-     * @param extendedVisitorConfigMap Preconfigured/extended Visitor Configuration Map.
+     * @param extendedContentHandlerBindings Preconfigured/extended Visitor Configuration Map.
      * @return The ContentDeliveryConfig instance for the named table.
 	 */
     @Override
-    public ContentDeliveryConfig build(VisitorConfigMap extendedVisitorConfigMap) {
+    public ContentDeliveryConfig build(List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) {
         if (contentDeliveryConfig == null) {
             synchronized (DefaultContentDeliveryConfigBuilder.class) {
                 if (contentDeliveryConfig == null) {
                     load(profileSet);
-                    contentDeliveryConfig = buildConfig(extendedVisitorConfigMap);
+                    contentDeliveryConfig = buildConfig(extendedContentHandlerBindings);
                 }
             }
         }
@@ -147,24 +144,25 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         return contentDeliveryConfig;
     }
 
-    private ContentDeliveryConfig buildConfig(VisitorConfigMap extendedVisitorConfigMap) {
+    private ContentDeliveryConfig buildConfig(List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) {
+        if (extendedContentHandlerBindings != null) {
+            contentHandlerBindings.addAll(extendedContentHandlerBindings);
+        }
         boolean sortVisitors = ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable);
-
-        visitorConfig.addAll(extendedVisitorConfigMap);
-
         StreamDeliveryProvider streamDeliveryProvider = getStreamDeliveryProvider();
+        
         LOGGER.debug(String.format("Using the %s Stream Filter", streamDeliveryProvider.getName()));
         configBuilderEvents.add(new ConfigBuilderEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
         configBuilderEvents.add(new ConfigBuilderEvent("Using Stream Filter Type: " + streamDeliveryProvider.getName()));
 
-        ContentDeliveryConfig contentDeliveryConfig = streamDeliveryProvider.createContentDeliveryConfig(visitorConfig, applicationContext, resourceConfigTable, configBuilderEvents, dtd, sortVisitors);
+        ContentDeliveryConfig contentDeliveryConfig = streamDeliveryProvider.createContentDeliveryConfig(contentHandlerBindings, applicationContext, resourceConfigTable, configBuilderEvents, dtd, sortVisitors);
         fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
 
         return contentDeliveryConfig;
     }
 
     private StreamDeliveryProvider getStreamDeliveryProvider() {
-        final List<StreamDeliveryProvider> candidateStreamDeliveryProviders = streamDeliveryProviders.stream().filter(s -> s.isProvider(visitorConfig)).collect(Collectors.toList());
+        final List<StreamDeliveryProvider> candidateStreamDeliveryProviders = streamDeliveryProviders.stream().filter(s -> s.isProvider(contentHandlerBindings)).collect(Collectors.toList());
         final String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
         if (candidateStreamDeliveryProviders.isEmpty()) {
             throw new SmooksException("Ambiguous Resource Configuration set.  All Element Content Handlers must support processing on the SAX and/or DOM Filter:\n" + getResourceFilterCharacteristics());
@@ -186,48 +184,38 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      */
     private String getResourceFilterCharacteristics() {
         StringBuffer stringBuf = new StringBuffer();
-        List<ContentHandler> printedHandlers = new ArrayList<ContentHandler>();
+        List<ContentHandler> printedHandlers = new ArrayList<>();
 
         stringBuf.append("\t\tDOM   SAX    Resource  ('x' equals supported)\n");
         stringBuf.append("\t\t---------------------------------------------------------------------\n");
 
-        printHandlerCharacteristics(visitorConfig.getDomAssemblyVisitBefores(), stringBuf, printedHandlers);
-        printHandlerCharacteristics(visitorConfig.getDomAssemblyVisitAfters(), stringBuf, printedHandlers);
-        printHandlerCharacteristics(visitorConfig.getDomProcessingVisitBefores(), stringBuf, printedHandlers);
-        printHandlerCharacteristics(visitorConfig.getDomProcessingVisitAfters(), stringBuf, printedHandlers);
-        printHandlerCharacteristics(visitorConfig.getDomSerializationVisitors(), stringBuf, printedHandlers);
-        printHandlerCharacteristics(visitorConfig.getSaxVisitBefores(), stringBuf, printedHandlers);
-        printHandlerCharacteristics(visitorConfig.getSaxVisitAfters(), stringBuf, printedHandlers);
+        for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
+            printHandlerCharacteristics(contentHandlerBinding, stringBuf, printedHandlers);
+        }
 
         stringBuf.append("\n\n");
 
         return stringBuf.toString();
     }
 
-    private <U extends ContentHandler> void printHandlerCharacteristics(ContentHandlerConfigMapTable<U> table, StringBuffer stringBuf, List<ContentHandler> printedHandlers) {
-        Collection<List<ContentHandlerConfigMap<U>>> map = table.getTable().values();
+    private void printHandlerCharacteristics(ContentHandlerBinding<Visitor> contentHandlerBinding, StringBuffer stringBuf, List<ContentHandler> printedHandlers) {
+        ContentHandler handler = contentHandlerBinding.getContentHandler();
 
-        for (List<ContentHandlerConfigMap<U>> mapList : map) {
-            for (ContentHandlerConfigMap<U> configMap : mapList) {
-                ContentHandler handler = configMap.getContentHandler();
-                boolean domSupported = VisitorConfigMap.isDOMVisitor(handler);
-                boolean saxSupported = VisitorConfigMap.isSAXVisitor(handler);
-
-                if(printedHandlers.contains(handler)) {
-                    continue;
-                } else {
-                    printedHandlers.add(handler);
-                }
-
-                stringBuf.append("\t\t ")
-                         .append(domSupported ? "x" : " ")
-                         .append("     ")
-                         .append(saxSupported ? "x" : " ")
-                         .append("     ")
-                         .append(configMap.getResourceConfig())
-                         .append("\n");
-            }
+        if (printedHandlers.contains(handler)) {
+            return;
+        } else {
+            printedHandlers.add(handler);
         }
+
+        stringBuf.append("\t\t ");
+        Map<String, Boolean> supportedStreamDeliveryProviders = streamDeliveryProviders.stream().map(s -> new AbstractMap.SimpleEntry<>(s.getName(), s.isProvider(Collections.singletonList(contentHandlerBinding)))).
+                collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+        for (Entry<String, Boolean> supportedStreamDeliveryProvider : supportedStreamDeliveryProviders.entrySet()) {
+            stringBuf.append(supportedStreamDeliveryProvider.getValue() ? supportedStreamDeliveryProvider.getKey() : " ").append("     ");
+        }
+
+        stringBuf.append(contentHandlerBinding.getResourceConfig())
+                .append("\n");
     }
     
     /**
@@ -544,7 +532,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             if (contentHandler instanceof Visitor) {
                 // Add the visitor.  No need to configure it as that should have been done by
                 // creator...
-                visitorConfig.addVisitor((Visitor) contentHandler, resourceConfig, false);
+                contentHandlerBindings.add(new ContentHandlerBinding<>((Visitor) contentHandler, resourceConfig));
+//                visitorConfig.addVisitor((Visitor) contentHandler, resourceConfig, false);
             }
 
             // Content delivery units are allowed to dynamically add new configurations...
@@ -562,7 +551,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             }
 
             if (contentHandler instanceof VisitorAppender) {
-                ((VisitorAppender) contentHandler).addVisitors(visitorConfig);
+                ((VisitorAppender) contentHandler).addVisitors(contentHandlerBindings);
             }
 
             return true;

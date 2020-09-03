@@ -48,7 +48,7 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.annotation.AnnotationConstants;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentHandler;
-import org.smooks.delivery.ContentHandlerConfigMap;
+import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.VisitSequence;
 import org.smooks.event.ElementProcessingEvent;
@@ -73,14 +73,14 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ElementVisitEvent.class);
 
-    private final ContentHandlerConfigMap configMapping;
+    private final ContentHandlerBinding configMapping;
     private final VisitSequence sequence;
     private String executionContextState;
     private Throwable error;
     private String reportSummary;
     private String reportDetail;
 
-    public ElementVisitEvent(Object element, ContentHandlerConfigMap configMapping, VisitSequence sequence) {
+    public ElementVisitEvent(Object element, ContentHandlerBinding configMapping, VisitSequence sequence) {
         super(element);
         this.configMapping = configMapping;
         this.sequence = sequence;
@@ -96,7 +96,7 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
         initReport(executionContext);
     }
 
-    public ElementVisitEvent(Object element, ContentHandlerConfigMap configMapping, VisitSequence sequence, Throwable error) {
+    public ElementVisitEvent(Object element, ContentHandlerBinding configMapping, VisitSequence sequence, Throwable error) {
         this(element, configMapping, sequence);
         this.error = error;
     }
@@ -105,7 +105,7 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
         return configMapping.getResourceConfig();
     }
 
-    public ContentHandlerConfigMap getConfigMapping() {
+    public ContentHandlerBinding getConfigMapping() {
         return configMapping;
     }
 

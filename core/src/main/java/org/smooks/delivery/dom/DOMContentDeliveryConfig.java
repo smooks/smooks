@@ -55,60 +55,60 @@ import org.smooks.delivery.ordering.Sorter;
  */
 @SuppressWarnings("unchecked")
 public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
-    private ContentHandlerConfigMapTable<DOMVisitBefore>          assemblyVisitBefores;
-    private ContentHandlerConfigMapTable<DOMVisitAfter>           assemblyVisitAfters;
-    private ContentHandlerConfigMapTable<DOMVisitBefore>          processingVisitBefores;
-    private ContentHandlerConfigMapTable<DOMVisitAfter>           processingVisitAfters;
-    private ContentHandlerConfigMapTable<SerializationUnit>       serializationVisitors;
-    private ContentHandlerConfigMapTable<VisitLifecycleCleanable> visitCleanables;
-    private FilterBypass                                          filterBypass;
+    private ContentHandlerBindings<DOMVisitBefore> assemblyVisitBefores = new ContentHandlerBindings<>();
+    private ContentHandlerBindings<DOMVisitAfter> assemblyVisitAfters = new ContentHandlerBindings<>();
+    private ContentHandlerBindings<DOMVisitBefore> processingVisitBefores = new ContentHandlerBindings<>();
+    private ContentHandlerBindings<DOMVisitAfter> processingVisitAfters = new ContentHandlerBindings<>();
+    private ContentHandlerBindings<SerializationUnit> serializationVisitors = new ContentHandlerBindings<>();
+    private ContentHandlerBindings<VisitLifecycleCleanable> visitCleanables = new ContentHandlerBindings<>();
+    private FilterBypass filterBypass;
 
-    public ContentHandlerConfigMapTable<DOMVisitBefore> getAssemblyVisitBefores() {
+    public ContentHandlerBindings<DOMVisitBefore> getAssemblyVisitBefores() {
         return assemblyVisitBefores;
     }
 
-    public void setAssemblyVisitBefores(ContentHandlerConfigMapTable<DOMVisitBefore> assemblyVisitBefores) {
+    public void setAssemblyVisitBefores(ContentHandlerBindings<DOMVisitBefore> assemblyVisitBefores) {
         this.assemblyVisitBefores = assemblyVisitBefores;
     }
 
-    public ContentHandlerConfigMapTable<DOMVisitAfter> getAssemblyVisitAfters() {
+    public ContentHandlerBindings<DOMVisitAfter> getAssemblyVisitAfters() {
         return assemblyVisitAfters;
     }
 
-    public void setAssemblyVisitAfters(ContentHandlerConfigMapTable<DOMVisitAfter> assemblyVisitAfters) {
+    public void setAssemblyVisitAfters(ContentHandlerBindings<DOMVisitAfter> assemblyVisitAfters) {
         this.assemblyVisitAfters = assemblyVisitAfters;
     }
 
-    public ContentHandlerConfigMapTable<DOMVisitBefore> getProcessingVisitBefores() {
+    public ContentHandlerBindings<DOMVisitBefore> getProcessingVisitBefores() {
         return processingVisitBefores;
     }
 
-    public void setProcessingVisitBefores(ContentHandlerConfigMapTable<DOMVisitBefore> processingVisitBefores) {
+    public void setProcessingVisitBefores(ContentHandlerBindings<DOMVisitBefore> processingVisitBefores) {
         this.processingVisitBefores = processingVisitBefores;
     }
 
-    public ContentHandlerConfigMapTable<DOMVisitAfter> getProcessingVisitAfters() {
+    public ContentHandlerBindings<DOMVisitAfter> getProcessingVisitAfters() {
         return processingVisitAfters;
     }
 
-    public void setProcessingVisitAfters(ContentHandlerConfigMapTable<DOMVisitAfter> processingVisitAfters) {
+    public void setProcessingVisitAfters(ContentHandlerBindings<DOMVisitAfter> processingVisitAfters) {
         this.processingVisitAfters = processingVisitAfters;
     }
 
-    public ContentHandlerConfigMapTable<SerializationUnit> getSerializationVisitors() {
+    public ContentHandlerBindings<SerializationUnit> getSerializationVisitors() {
         return serializationVisitors;
     }
 
-    public void setSerializationVisitors(ContentHandlerConfigMapTable<SerializationUnit> serializationVisitors) {
+    public void setSerializationVisitors(ContentHandlerBindings<SerializationUnit> serializationVisitors) {
         this.serializationVisitors = serializationVisitors;
     }
 
     @SuppressWarnings("WeakerAccess")
-    public ContentHandlerConfigMapTable<VisitLifecycleCleanable> getVisitCleanables() {
+    public ContentHandlerBindings<VisitLifecycleCleanable> getVisitCleanables() {
         return visitCleanables;
     }
 
-    public void setVisitCleanables(ContentHandlerConfigMapTable<VisitLifecycleCleanable> visitCleanables) {
+    public void setVisitCleanables(ContentHandlerBindings<VisitLifecycleCleanable> visitCleanables) {
         this.visitCleanables = visitCleanables;
     }
 

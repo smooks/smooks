@@ -42,35 +42,85 @@
  */
 package org.smooks.delivery.dom;
 
+import org.jaxen.saxpath.SAXPathException;
+import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
-import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.delivery.StreamDeliveryProvider;
-import org.smooks.delivery.VisitorConfigMap;
+import org.smooks.delivery.*;
+import org.smooks.delivery.dom.serialize.SerializationUnit;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
 
 import java.util.List;
 import java.util.Map;
 
-public class DOMStreamDeliveryProvider implements StreamDeliveryProvider {
+public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(VisitorConfigMap visitorConfigMap, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> contentHandlerBindings, final ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, final Boolean sortVisitors) {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
-        domConfig.setAssemblyVisitBefores(visitorConfigMap.getDomAssemblyVisitBefores());
-        domConfig.setAssemblyVisitAfters(visitorConfigMap.getDomAssemblyVisitAfters());
-        domConfig.setProcessingVisitBefores(visitorConfigMap.getDomProcessingVisitBefores());
-        domConfig.setProcessingVisitAfters(visitorConfigMap.getDomProcessingVisitAfters());
-        domConfig.setSerializationVisitors(visitorConfigMap.getDomSerializationVisitors());
-        domConfig.setVisitCleanables(visitorConfigMap.getVisitCleanables());
+        for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
+            final String targetElement = contentHandlerBinding.getResourceConfig().getTargetElement();
+            final Visitor visitor = contentHandlerBinding.getContentHandler();
+            final SmooksResourceConfiguration smooksResourceConfiguration = contentHandlerBinding.getResourceConfig();
+
+            try {
+                SelectorStep.setNamespaces(smooksResourceConfiguration.getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+            } catch (SAXPathException e) {
+                throw new SmooksConfigurationException("Error configuring resource selector.", e);
+            }
+
+            if (isDOMVisitor(visitor)) {
+                if (visitor instanceof SerializationUnit) {
+                    domConfig.getSerializationVisitors().addBinding(targetElement, smooksResourceConfiguration, (SerializationUnit) visitor);
+                    configBuilderEvents.add(new ConfigBuilderEvent(smooksResourceConfiguration, "Added as a DOM " + SerializationUnit.class.getSimpleName() + " resource."));
+                } else {
+                    Phase phaseAnnotation = contentHandlerBinding.getContentHandler().getClass().getAnnotation(Phase.class);
+                    String visitPhase = smooksResourceConfiguration.getParameterValue("VisitPhase", String.class, VisitPhase.PROCESSING.toString());
+
+                    if (phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
+                        // It's an assembly unit...
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                            domConfig.getAssemblyVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
+                        }
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                            domConfig.getAssemblyVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
+                        }
+                    } else if (visitPhase.equalsIgnoreCase(VisitPhase.ASSEMBLY.toString())) {
+                        // It's an assembly unit...
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                            domConfig.getAssemblyVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
+                        }
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                            domConfig.getAssemblyVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
+                        }
+                    } else {
+                        // It's a processing unit...
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                            domConfig.getProcessingVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
+                        }
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                            domConfig.getProcessingVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
+                        }
+                    }
+
+                    configBuilderEvents.add(new ConfigBuilderEvent(smooksResourceConfiguration, "Added as a DOM " + visitPhase + " Phase resource."));
+                }
+            }
+
+            if (visitor instanceof VisitLifecycleCleanable) {
+                domConfig.getVisitCleanables().addBinding(targetElement, smooksResourceConfiguration, (VisitLifecycleCleanable) visitor);
+            }
+        }
 
         domConfig.setApplicationContext(applicationContext);
         domConfig.setSmooksResourceConfigurations(resourceConfigTable);
         domConfig.setDtd(dtdObjectContainer);
         domConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
 
-        if(sortVisitors) {
+        if (sortVisitors) {
             domConfig.sort();
         }
 
@@ -82,12 +132,16 @@ public class DOMStreamDeliveryProvider implements StreamDeliveryProvider {
     }
 
     @Override
-    public Boolean isProvider(VisitorConfigMap visitorConfigMap) {
-        return visitorConfigMap.getDomVisitorCount() == visitorConfigMap.getVisitorCount();
+    public Boolean isProvider(List<ContentHandlerBinding<Visitor>> contentHandlerBindings) {
+        return contentHandlerBindings.stream().filter(c -> isDOMVisitor(c.getContentHandler())).count() == contentHandlerBindings.size();
     }
 
     @Override
     public String getName() {
         return "DOM";
+    }
+
+    protected boolean isDOMVisitor(ContentHandler contentHandler) {
+        return (contentHandler instanceof DOMVisitBefore || contentHandler instanceof DOMVisitAfter || contentHandler instanceof SerializationUnit);
     }
 }

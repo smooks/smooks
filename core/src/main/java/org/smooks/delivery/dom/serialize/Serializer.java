@@ -49,8 +49,8 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfigurationNotFoundException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ContentHandlerConfigMap;
-import org.smooks.delivery.ContentHandlerConfigMapTable;
+import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.delivery.ContentHandlerBindings;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.event.ExecutionEventListener;
@@ -91,7 +91,7 @@ public class Serializer {
   /**
 	 * Target content delivery context SerializationUnit definitions.
 	 */
-	private final ContentHandlerConfigMapTable<SerializationUnit> serializationUnits;
+	private final ContentHandlerBindings<SerializationUnit> serializationUnits;
   /**
      * Default serialization unit.
      */
@@ -276,7 +276,7 @@ public class Serializer {
 	@SuppressWarnings("unchecked")
   private SerializationUnit getSerializationUnit(Element element, boolean isRoot) {
 		String elementName = DomUtils.getName(element);
-        List<ContentHandlerConfigMap<SerializationUnit>> elementSUs;
+        List<ContentHandlerBinding<SerializationUnit>> elementSUs;
 
         // Register the "presence" of the element...
         if(eventListener != null) {
@@ -295,7 +295,7 @@ public class Serializer {
 		}
 
         if(elementSUs != null) {
-          for (final ContentHandlerConfigMap<SerializationUnit> elementSU : elementSUs)
+          for (final ContentHandlerBinding<SerializationUnit> elementSU : elementSUs)
           {
             SmooksResourceConfiguration config = elementSU.getResourceConfig();
 
@@ -317,7 +317,7 @@ public class Serializer {
             }
 
             // This is the one, return it...
-            return (SerializationUnit) ((ContentHandlerConfigMap) elementSU).getContentHandler();
+            return (SerializationUnit) ((ContentHandlerBinding) elementSU).getContentHandler();
           }
         }
 

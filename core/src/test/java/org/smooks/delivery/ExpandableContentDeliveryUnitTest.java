@@ -73,11 +73,11 @@ public class ExpandableContentDeliveryUnitTest {
         ExecutionContext executionContext = smooks.createExecutionContext();
 
         DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) executionContext.getDeliveryConfig();
-        ContentHandlerConfigMapTable<DOMVisitBefore> assemblyVisitBefores = config.getAssemblyVisitBefores();
-        ContentHandlerConfigMapTable<DOMVisitAfter> assemblyVisitAfters = config.getAssemblyVisitAfters();
-        ContentHandlerConfigMapTable<DOMVisitBefore> processingVisitBefores = config.getProcessingVisitBefores();
-        ContentHandlerConfigMapTable<DOMVisitAfter> processingVisitAfters = config.getProcessingVisitAfters();
-        ContentHandlerConfigMapTable<SerializationUnit> serializationUnits = config.getSerializationVisitors();
+        ContentHandlerBindings<DOMVisitBefore> assemblyVisitBefores = config.getAssemblyVisitBefores();
+        ContentHandlerBindings<DOMVisitAfter> assemblyVisitAfters = config.getAssemblyVisitAfters();
+        ContentHandlerBindings<DOMVisitBefore> processingVisitBefores = config.getProcessingVisitBefores();
+        ContentHandlerBindings<DOMVisitAfter> processingVisitAfters = config.getProcessingVisitAfters();
+        ContentHandlerBindings<SerializationUnit> serializationUnits = config.getSerializationVisitors();
 
         assertEquals(1, assemblyVisitBefores.getCount());
         assertTrue(assemblyVisitBefores.getMappings("a").get(0).getContentHandler() instanceof Assembly1);

@@ -40,44 +40,40 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.dom;
+package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.delivery.annotation.VisitAfterIf;
+import org.smooks.delivery.annotation.VisitBeforeIf;
+import org.smooks.expression.MVELExpressionEvaluator;
 
-import java.util.ArrayList;
-import java.util.List;
+public abstract class AbstractStreamDeliveryProvider implements StreamDeliveryProvider {
 
-/**
- * Processing set.
- * <p/>
- * The set of ProcessingUnit to be applied to an Element.
- * @author tfennelly
- */
-@SuppressWarnings("unused")
-public class ProcessingSet {
+    protected boolean visitBeforeAnnotationsOK(SmooksResourceConfiguration resourceConfig, ContentHandler contentHandler) {
+        Class<? extends ContentHandler> handlerClass = contentHandler.getClass();
+        VisitBeforeIf visitBeforeIf = handlerClass.getAnnotation(VisitBeforeIf.class);
 
-	/**
-	 * ProcessingUnit instances.
-	 */
-	private final List<ContentHandlerBinding> processingUnits = new ArrayList<>();
+        if (visitBeforeIf != null) {
+            MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
 
-	/**
-	 * Add to the ProcessingSet.
-	 * @param processingUnit The Processing Unit to be added.
-	 * @param resourceConfig Corresponding resource config.
-	 */
-	@SuppressWarnings("unchecked")
-	public void addProcessingUnit(DOMElementVisitor processingUnit, SmooksResourceConfiguration resourceConfig) {
-        ContentHandlerBinding contentHandlerBinding = new ContentHandlerBinding(processingUnit, resourceConfig);
-        processingUnits.add(contentHandlerBinding);
-	}
+            conditionEval.setExpression(visitBeforeIf.condition());
+            return conditionEval.eval(resourceConfig);
+        }
 
-	/**
-	 * Get the list of ProcessingUnit instances to be applied.
-	 * @return List of ProcessingUnit instances.
-	 */
-	public List<ContentHandlerBinding> getProcessingUnits() {
-		return processingUnits;
-	}
+        return true;
+    }
+
+    protected boolean visitAfterAnnotationsOK(SmooksResourceConfiguration resourceConfig, ContentHandler contentHandler) {
+        Class<? extends ContentHandler> handlerClass = contentHandler.getClass();
+        VisitAfterIf visitAfterIf = handlerClass.getAnnotation(VisitAfterIf.class);
+
+        if (visitAfterIf != null) {
+            MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
+
+            conditionEval.setExpression(visitAfterIf.condition());
+            return conditionEval.eval(resourceConfig);
+        }
+
+        return true;
+    }
 }

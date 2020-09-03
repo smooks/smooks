@@ -46,7 +46,7 @@ import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.delivery.ContentHandlerConfigMap;
+import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.VisitSequence;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
@@ -314,7 +314,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
 
                 if (visitEvent.getSequence() == visitSequence) {
                     ReportInfoNode reportInfoNode = new ReportInfoNode();
-                    ContentHandlerConfigMap configMapping = ((ElementVisitEvent) event).getConfigMapping();
+                    ContentHandlerBinding configMapping = ((ElementVisitEvent) event).getConfigMapping();
 
                     messageNode.addExecInfoNode(reportInfoNode);
 

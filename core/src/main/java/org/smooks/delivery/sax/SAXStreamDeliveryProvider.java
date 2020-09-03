@@ -42,26 +42,48 @@
  */
 package org.smooks.delivery.sax;
 
+import org.jaxen.saxpath.SAXPathException;
+import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
-import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.delivery.StreamDeliveryProvider;
-import org.smooks.delivery.VisitorConfigMap;
+import org.smooks.delivery.*;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
 
 import java.util.List;
 import java.util.Map;
 
-public class SAXStreamDeliveryProvider implements StreamDeliveryProvider {
+public class SAXStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
+    
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(VisitorConfigMap visitorConfigMap, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> contentHandlerBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
         SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
 
-        saxConfig.setVisitBefores(visitorConfigMap.getSaxVisitBefores());
-        saxConfig.setVisitAfters(visitorConfigMap.getSaxVisitAfters());
-        saxConfig.setVisitCleanables(visitorConfigMap.getVisitCleanables());
+        for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
+            String targetElement = contentHandlerBinding.getResourceConfig().getTargetElement();
+            try {
+                SelectorStep.setNamespaces(contentHandlerBinding.getResourceConfig().getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+            } catch (SAXPathException e) {
+                throw new SmooksConfigurationException("Error configuring resource selector.", e);
+            }
+            
+            if (isSAXVisitor(contentHandlerBinding.getContentHandler())) {
+                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitBefore && visitBeforeAnnotationsOK(contentHandlerBinding.getResourceConfig(), contentHandlerBinding.getContentHandler())) {
+                    saxConfig.getVisitBefores().addBinding(targetElement, contentHandlerBinding.getResourceConfig(), (SAXVisitBefore) contentHandlerBinding.getContentHandler());
+                }
+                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitAfter && visitAfterAnnotationsOK(contentHandlerBinding.getResourceConfig(), contentHandlerBinding.getContentHandler())) {
+                    saxConfig.getVisitAfters().addBinding(targetElement, contentHandlerBinding.getResourceConfig(), (SAXVisitAfter) contentHandlerBinding.getContentHandler());
+                }
+                configBuilderEvents.add(new ConfigBuilderEvent(contentHandlerBinding.getResourceConfig(), "Added as a SAX resource."));
+            }
 
+            if(contentHandlerBinding.getContentHandler() instanceof VisitLifecycleCleanable) {
+                saxConfig.getVisitCleanables().addBinding(targetElement, contentHandlerBinding.getResourceConfig(), (VisitLifecycleCleanable) contentHandlerBinding.getContentHandler());
+            }
+        }
+        
         saxConfig.setApplicationContext(applicationContext);
         saxConfig.setSmooksResourceConfigurations(resourceConfigTable);
         saxConfig.setDtd(dtdObjectContainer);
@@ -83,12 +105,17 @@ public class SAXStreamDeliveryProvider implements StreamDeliveryProvider {
     }
 
     @Override
-    public Boolean isProvider(VisitorConfigMap visitorConfigMap) {
-        return visitorConfigMap.getSaxVisitorCount() == visitorConfigMap.getVisitorCount();
+    public Boolean isProvider(List<ContentHandlerBinding<Visitor>> contentHandlerBindings) {
+        return contentHandlerBindings.stream().filter(c -> isSAXVisitor(c.getContentHandler())).count() == contentHandlerBindings.size();
     }
 
     @Override
     public String getName() {
         return "SAX";
+    }
+
+    protected boolean isSAXVisitor(ContentHandler contentHandler) {
+        // Intentionally not checking for SAXVisitChildren.  Must be incorporated into a visit before or after...
+        return (contentHandler instanceof SAXVisitBefore || contentHandler instanceof SAXVisitAfter);
     }
 }

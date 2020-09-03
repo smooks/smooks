@@ -45,7 +45,7 @@ package org.smooks.delivery.ordering;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.delivery.ContentHandler;
-import org.smooks.delivery.ContentHandlerConfigMap;
+import org.smooks.delivery.ContentHandlerBinding;
 
 import java.util.*;
 
@@ -63,7 +63,7 @@ public class Sorter {
     private Sorter() {
     }
 
-    public static <T extends ContentHandler> void sort(List<ContentHandlerConfigMap<T>> visitors, SortOrder sortOrder) throws SmooksConfigurationException {
+    public static <T extends ContentHandler> void sort(List<ContentHandlerBinding<T>> visitors, SortOrder sortOrder) throws SmooksConfigurationException {
         List<DependencySpec> dependancySpecs;
 
         dependancySpecs = buildDependencyMap(visitors);
@@ -73,10 +73,10 @@ public class Sorter {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends ContentHandler> List<DependencySpec> buildDependencyMap(List<ContentHandlerConfigMap<T>> visitors) {
+    private static <T extends ContentHandler> List<DependencySpec> buildDependencyMap(List<ContentHandlerBinding<T>> visitors) {
         List<DependencySpec> dependancySpecs = new ArrayList<DependencySpec>();
 
-        for(ContentHandlerConfigMap<T> visitor : visitors) {
+        for(ContentHandlerBinding<T> visitor : visitors) {
             dependancySpecs.add(new DependencySpec(visitor));
         }
 
@@ -182,7 +182,7 @@ public class Sorter {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends ContentHandler> void remapList(List<DependencySpec> dependancySpecs, List<ContentHandlerConfigMap<T>> visitors) {
+    private static <T extends ContentHandler> void remapList(List<DependencySpec> dependancySpecs, List<ContentHandlerBinding<T>> visitors) {
         visitors.clear();
 
         for(DependencySpec dependancySpec : dependancySpecs) {
@@ -217,11 +217,11 @@ public class Sorter {
 
     private static class DependencySpec<T extends ContentHandler>  {
 
-        private final ContentHandlerConfigMap<T> visitor;
+        private final ContentHandlerBinding<T> visitor;
 
         private final List<DependencySpec> dependants = new ArrayList<DependencySpec>();
 
-        private DependencySpec(ContentHandlerConfigMap<T> visitor) {
+        private DependencySpec(ContentHandlerBinding<T> visitor) {
             AssertArgument.isNotNull(visitor, "visitor");
             this.visitor = visitor;
         }

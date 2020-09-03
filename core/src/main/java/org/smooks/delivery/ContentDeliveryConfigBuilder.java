@@ -42,7 +42,9 @@
  */
 package org.smooks.delivery;
 
+import java.util.List;
+
 public interface ContentDeliveryConfigBuilder {
 
-    ContentDeliveryConfig build(VisitorConfigMap extendedVisitorConfigMap);
+    ContentDeliveryConfig build(List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings);
 }

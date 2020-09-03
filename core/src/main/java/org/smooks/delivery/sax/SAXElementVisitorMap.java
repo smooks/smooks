@@ -44,7 +44,7 @@ package org.smooks.delivery.sax;
 
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.xpath.SelectorStep;
-import org.smooks.delivery.ContentHandlerConfigMap;
+import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.VisitLifecycleCleanable;
 import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.delivery.sax.annotation.TextConsumer;
@@ -61,42 +61,42 @@ import java.util.List;
  */
 public class SAXElementVisitorMap {
 
-    private List<ContentHandlerConfigMap<SAXVisitBefore>> visitBefores;
-    private List<ContentHandlerConfigMap<SAXVisitChildren>> childVisitors;
-    private List<ContentHandlerConfigMap<SAXVisitAfter>> visitAfters;
-    private List<ContentHandlerConfigMap<VisitLifecycleCleanable>> visitCleanables;
+    private List<ContentHandlerBinding<SAXVisitBefore>> visitBefores;
+    private List<ContentHandlerBinding<SAXVisitChildren>> childVisitors;
+    private List<ContentHandlerBinding<SAXVisitAfter>> visitAfters;
+    private List<ContentHandlerBinding<VisitLifecycleCleanable>> visitCleanables;
     private boolean accumulateText = false;
     private SAXVisitor acquireWriterFor = null;
 
-    public List<ContentHandlerConfigMap<SAXVisitBefore>> getVisitBefores() {
+    public List<ContentHandlerBinding<SAXVisitBefore>> getVisitBefores() {
         return visitBefores;
     }
 
-    public void setVisitBefores(List<ContentHandlerConfigMap<SAXVisitBefore>> visitBefores) {
+    public void setVisitBefores(List<ContentHandlerBinding<SAXVisitBefore>> visitBefores) {
         this.visitBefores = visitBefores;
     }
 
-    public List<ContentHandlerConfigMap<SAXVisitChildren>> getChildVisitors() {
+    public List<ContentHandlerBinding<SAXVisitChildren>> getChildVisitors() {
         return childVisitors;
     }
 
-    public void setChildVisitors(List<ContentHandlerConfigMap<SAXVisitChildren>> childVisitors) {
+    public void setChildVisitors(List<ContentHandlerBinding<SAXVisitChildren>> childVisitors) {
         this.childVisitors = childVisitors;
     }
 
-    public List<ContentHandlerConfigMap<SAXVisitAfter>> getVisitAfters() {
+    public List<ContentHandlerBinding<SAXVisitAfter>> getVisitAfters() {
         return visitAfters;
     }
 
-    public void setVisitAfters(List<ContentHandlerConfigMap<SAXVisitAfter>> visitAfters) {
+    public void setVisitAfters(List<ContentHandlerBinding<SAXVisitAfter>> visitAfters) {
         this.visitAfters = visitAfters;
     }
 
-    public List<ContentHandlerConfigMap<VisitLifecycleCleanable>> getVisitCleanables() {
+    public List<ContentHandlerBinding<VisitLifecycleCleanable>> getVisitCleanables() {
         return visitCleanables;
     }
 
-    public void setVisitCleanables(List<ContentHandlerConfigMap<VisitLifecycleCleanable>> visitCleanables) {
+    public void setVisitCleanables(List<ContentHandlerBinding<VisitLifecycleCleanable>> visitCleanables) {
         this.visitCleanables = visitCleanables;
     }
 
@@ -123,7 +123,7 @@ public class SAXElementVisitorMap {
         if(visitAfters == null) {
             return;
         }
-        for(ContentHandlerConfigMap<? extends SAXVisitor> contentHandlerMap : visitAfters) {
+        for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : visitAfters) {
             SmooksResourceConfiguration resourceConfig = contentHandlerMap.getResourceConfig();
             SelectorStep selectorStep = resourceConfig.getSelectorStep();
 
@@ -159,10 +159,10 @@ public class SAXElementVisitorMap {
     	
     	SAXElementVisitorMap merge = new SAXElementVisitorMap();
     	
-        merge.visitBefores = new ArrayList<ContentHandlerConfigMap<SAXVisitBefore>>();
-        merge.childVisitors = new ArrayList<ContentHandlerConfigMap<SAXVisitChildren>>();
-        merge.visitAfters = new ArrayList<ContentHandlerConfigMap<SAXVisitAfter>>();
-        merge.visitCleanables = new ArrayList<ContentHandlerConfigMap<VisitLifecycleCleanable>>();
+        merge.visitBefores = new ArrayList<>();
+        merge.childVisitors = new ArrayList<>();
+        merge.visitAfters = new ArrayList<>();
+        merge.visitCleanables = new ArrayList<>();
         
         merge.visitBefores.addAll(visitBefores);
         merge.visitBefores.addAll(map.visitBefores);
@@ -178,12 +178,12 @@ public class SAXElementVisitorMap {
         return merge;
     }
 
-	private <T extends SAXVisitor> T getAnnotatedHandler(List<ContentHandlerConfigMap<T>> handlerMaps, Class<? extends Annotation> annotationClass, boolean checkFields) {
+	private <T extends SAXVisitor> T getAnnotatedHandler(List<ContentHandlerBinding<T>> handlerMaps, Class<? extends Annotation> annotationClass, boolean checkFields) {
 		if(handlerMaps == null) {
 			return null;
 		}
 		
-		for(ContentHandlerConfigMap<T> handlerMap : handlerMaps) {
+		for(ContentHandlerBinding<T> handlerMap : handlerMaps) {
         	T contentHandler = handlerMap.getContentHandler();
 			if(contentHandler.getClass().isAnnotationPresent(annotationClass)) {
         		return contentHandler;
