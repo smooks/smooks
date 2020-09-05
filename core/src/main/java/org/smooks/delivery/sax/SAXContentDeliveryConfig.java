@@ -64,10 +64,10 @@ import java.util.*;
 @SuppressWarnings({ "WeakerAccess", "unused", "unchecked" })
 public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
-    private ContentHandlerConfigMapTable<SAXVisitBefore> visitBefores;
-    private final ContentHandlerConfigMapTable<SAXVisitChildren> childVisitors = new ContentHandlerConfigMapTable<SAXVisitChildren>();
-    private ContentHandlerConfigMapTable<SAXVisitAfter> visitAfters;
-    private ContentHandlerConfigMapTable<VisitLifecycleCleanable> visitCleanables;
+    private ContentHandlerBindings<SAXVisitBefore> visitBefores = new ContentHandlerBindings<>();
+    private final ContentHandlerBindings<SAXVisitChildren> childVisitors = new ContentHandlerBindings<>();
+    private ContentHandlerBindings<SAXVisitAfter> visitAfters = new ContentHandlerBindings<>();
+    private ContentHandlerBindings<VisitLifecycleCleanable> visitCleanables = new ContentHandlerBindings<>();
     private boolean rewriteEntities;
     private boolean maintainElementStack;
     private boolean reverseVisitOrderOnVisitAfter;
@@ -76,31 +76,31 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
     private final Map<String, SAXElementVisitorMap> optimizedVisitorConfig = new HashMap<String, SAXElementVisitorMap>();
 
-    public ContentHandlerConfigMapTable<SAXVisitBefore> getVisitBefores() {
+    public ContentHandlerBindings<SAXVisitBefore> getVisitBefores() {
         return visitBefores;
     }
 
-    public void setVisitBefores(ContentHandlerConfigMapTable<SAXVisitBefore> visitBefores) {
+    public void setVisitBefores(ContentHandlerBindings<SAXVisitBefore> visitBefores) {
         this.visitBefores = visitBefores;
     }
 
-    public ContentHandlerConfigMapTable<SAXVisitChildren> getChildVisitors() {
+    public ContentHandlerBindings<SAXVisitChildren> getChildVisitors() {
         return childVisitors;
     }
 
-    public ContentHandlerConfigMapTable<SAXVisitAfter> getVisitAfters() {
+    public ContentHandlerBindings<SAXVisitAfter> getVisitAfters() {
         return visitAfters;
     }
 
-    public void setVisitAfters(ContentHandlerConfigMapTable<SAXVisitAfter> visitAfters) {
+    public void setVisitAfters(ContentHandlerBindings<SAXVisitAfter> visitAfters) {
         this.visitAfters = visitAfters;
     }
 
-    public ContentHandlerConfigMapTable<VisitLifecycleCleanable> getVisitCleanables() {
+    public ContentHandlerBindings<VisitLifecycleCleanable> getVisitCleanables() {
         return visitCleanables;
     }
 
-    public void setVisitCleanables(ContentHandlerConfigMapTable<VisitLifecycleCleanable> visitCleanables) {
+    public void setVisitCleanables(ContentHandlerBindings<VisitLifecycleCleanable> visitCleanables) {
         this.visitCleanables = visitCleanables;
     }
 
@@ -134,10 +134,10 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         extractChildVisitors();
 
-        List<ContentHandlerConfigMap<SAXVisitBefore>> starVBs = new ArrayList<ContentHandlerConfigMap<SAXVisitBefore>>();
-        List<ContentHandlerConfigMap<SAXVisitChildren>> starVCs = new ArrayList<ContentHandlerConfigMap<SAXVisitChildren>>();
-        List<ContentHandlerConfigMap<SAXVisitAfter>> starVAs = new ArrayList<ContentHandlerConfigMap<SAXVisitAfter>>();
-        List<ContentHandlerConfigMap<VisitLifecycleCleanable>> starCleanables = new ArrayList<ContentHandlerConfigMap<VisitLifecycleCleanable>>();
+        List<ContentHandlerBinding<SAXVisitBefore>> starVBs = new ArrayList<>();
+        List<ContentHandlerBinding<SAXVisitChildren>> starVCs = new ArrayList<>();
+        List<ContentHandlerBinding<SAXVisitAfter>> starVAs = new ArrayList<>();
+        List<ContentHandlerBinding<VisitLifecycleCleanable>> starCleanables = new ArrayList<>();
 
         if(visitBefores.getTable().get("*") != null) {
         	starVBs.addAll(visitBefores.getTable().get("*"));
@@ -171,10 +171,10 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         for (String elementName : elementNames) {
             SAXElementVisitorMap entry = new SAXElementVisitorMap();
-            List<ContentHandlerConfigMap<SAXVisitBefore>> befores = visitBefores.getTable().get(elementName);
-            List<ContentHandlerConfigMap<SAXVisitChildren>> children = childVisitors.getTable().get(elementName);
-            List<ContentHandlerConfigMap<SAXVisitAfter>> afters = visitAfters.getTable().get(elementName);
-            List<ContentHandlerConfigMap<VisitLifecycleCleanable>> cleanables = visitCleanables.getTable().get(elementName);
+            List<ContentHandlerBinding<SAXVisitBefore>> befores = visitBefores.getTable().get(elementName);
+            List<ContentHandlerBinding<SAXVisitChildren>> children = childVisitors.getTable().get(elementName);
+            List<ContentHandlerBinding<SAXVisitAfter>> afters = visitAfters.getTable().get(elementName);
+            List<ContentHandlerBinding<VisitLifecycleCleanable>> cleanables = visitCleanables.getTable().get(elementName);
         	boolean isStar = (elementName.equals("*") || elementName.equals("**"));
 
         	// So what's going on with the "*" and "**" resources here?  Basically, we are adding
@@ -219,12 +219,12 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         assertSelectorsNotAccessingText(childVisitors);
     }
 
-    private void assertSelectorsNotAccessingText(ContentHandlerConfigMapTable saxVisitorMap) {
-        Map<String, List<ContentHandlerConfigMap<? extends SAXVisitor>>> table = saxVisitorMap.getTable();
-        Collection<List<ContentHandlerConfigMap<? extends SAXVisitor>>> contentHandlerMaps = table.values();
+    private void assertSelectorsNotAccessingText(ContentHandlerBindings saxVisitorMap) {
+        Map<String, List<ContentHandlerBinding<? extends SAXVisitor>>> table = saxVisitorMap.getTable();
+        Collection<List<ContentHandlerBinding<? extends SAXVisitor>>> contentHandlerMaps = table.values();
 
-        for(List<ContentHandlerConfigMap<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
-            for(ContentHandlerConfigMap<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
+        for(List<ContentHandlerBinding<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
+            for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
                 SmooksResourceConfiguration resourceConfig = contentHandlerMap.getResourceConfig();
                 SelectorStep selectorStep = resourceConfig.getSelectorStep();
 
@@ -246,12 +246,12 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         }
     }
 
-    private <T extends SAXVisitor> void addIndexCounters(List<ContentHandlerConfigMap<T>> saxVisitorMap) {
+    private <T extends SAXVisitor> void addIndexCounters(List<ContentHandlerBinding<T>> saxVisitorMap) {
         if(saxVisitorMap == null) {
             return;
         }
 
-        for(ContentHandlerConfigMap<? extends SAXVisitor> contentHandlerMap : saxVisitorMap) {
+        for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : saxVisitorMap) {
             SmooksResourceConfiguration resourceConfig = contentHandlerMap.getResourceConfig();
             SelectorStep[] selectorSteps = resourceConfig.getSelectorSteps();
             List<IndexEvaluator> indexEvaluators = new ArrayList<IndexEvaluator>();
@@ -283,10 +283,10 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
             optimizedVisitorConfig.put(targetElementName, visitorMap);
         }
 
-        List<ContentHandlerConfigMap<SAXVisitBefore>> vbs = visitorMap.getVisitBefores();
+        List<ContentHandlerBinding<SAXVisitBefore>> vbs = visitorMap.getVisitBefores();
 
         if(vbs == null) {
-            vbs = new ArrayList<ContentHandlerConfigMap<SAXVisitBefore>>();
+            vbs = new ArrayList<>();
             visitorMap.setVisitBefores(vbs);
         }
 
@@ -296,25 +296,25 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
             resourceConfig.setSelectorNamespaceURI(targetNS);
         }
 
-        vbs.add(0, new ContentHandlerConfigMap(indexCounter, resourceConfig));
+        vbs.add(0, new ContentHandlerBinding(indexCounter, resourceConfig));
     }
 
     public SAXElementVisitorMap getCombinedOptimizedConfig(String[] elementNames) {
         SAXElementVisitorMap combinedConfig = new SAXElementVisitorMap();
 
-        combinedConfig.setVisitBefores(new ArrayList<ContentHandlerConfigMap<SAXVisitBefore>>());
-        combinedConfig.setChildVisitors(new ArrayList<ContentHandlerConfigMap<SAXVisitChildren>>());
-        combinedConfig.setVisitAfters(new ArrayList<ContentHandlerConfigMap<SAXVisitAfter>>());
-        combinedConfig.setVisitCleanables(new ArrayList<ContentHandlerConfigMap<VisitLifecycleCleanable>>());
+        combinedConfig.setVisitBefores(new ArrayList<>());
+        combinedConfig.setChildVisitors(new ArrayList<>());
+        combinedConfig.setVisitAfters(new ArrayList<>());
+        combinedConfig.setVisitCleanables(new ArrayList<>());
 
         for(String elementName : elementNames) {
             SAXElementVisitorMap elementConfig = optimizedVisitorConfig.get(elementName);
 
             if(elementConfig != null) {
-                List<ContentHandlerConfigMap<SAXVisitBefore>> elementVisitBefores = elementConfig.getVisitBefores();
-                List<ContentHandlerConfigMap<SAXVisitChildren>> elementChildVisitors = elementConfig.getChildVisitors();
-                List<ContentHandlerConfigMap<SAXVisitAfter>> elementVisitAfteres = elementConfig.getVisitAfters();
-                List<ContentHandlerConfigMap<VisitLifecycleCleanable>> elementVisitCleanables = elementConfig.getVisitCleanables();
+                List<ContentHandlerBinding<SAXVisitBefore>> elementVisitBefores = elementConfig.getVisitBefores();
+                List<ContentHandlerBinding<SAXVisitChildren>> elementChildVisitors = elementConfig.getChildVisitors();
+                List<ContentHandlerBinding<SAXVisitAfter>> elementVisitAfteres = elementConfig.getVisitAfters();
+                List<ContentHandlerBinding<VisitLifecycleCleanable>> elementVisitCleanables = elementConfig.getVisitCleanables();
 
                 if(elementVisitBefores != null) {
                     combinedConfig.getVisitBefores().addAll(elementVisitBefores);
@@ -360,30 +360,30 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         // visitBefores if they also impl SAXVisitAfter (avoiding adding where it impls both).  We add from the visitafters list
         // if it impls SAXVisitAfter without checking for SAXVisitBefore (catching the case where it impls both).
 
-        Set<Map.Entry<String, List<ContentHandlerConfigMap<SAXVisitBefore>>>> beforeMappings = visitBefores.getTable().entrySet();
-        for (Map.Entry<String, List<ContentHandlerConfigMap<SAXVisitBefore>>> beforeMapping : beforeMappings) {
-            List<ContentHandlerConfigMap<SAXVisitBefore>> elementMappings = beforeMapping.getValue();
-            for (ContentHandlerConfigMap<SAXVisitBefore> elementMapping : elementMappings) {
+        Set<Map.Entry<String, List<ContentHandlerBinding<SAXVisitBefore>>>> beforeMappings = visitBefores.getTable().entrySet();
+        for (Map.Entry<String, List<ContentHandlerBinding<SAXVisitBefore>>> beforeMapping : beforeMappings) {
+            List<ContentHandlerBinding<SAXVisitBefore>> elementMappings = beforeMapping.getValue();
+            for (ContentHandlerBinding<SAXVisitBefore> elementMapping : elementMappings) {
                 String elementName = beforeMapping.getKey();
                 SAXVisitBefore handler = elementMapping.getContentHandler();
 
                 // Wanna make sure we don't add the same handler twice, so if it also impls SAXVisitAfter, leave
                 // that until we process the SAXVisitAfter handlers...
                 if(handler instanceof SAXVisitChildren && !(handler instanceof SAXVisitAfter)) {
-                    childVisitors.addMapping(elementName, elementMapping.getResourceConfig(), (SAXVisitChildren) handler);
+                    childVisitors.addBinding(elementName, elementMapping.getResourceConfig(), (SAXVisitChildren) handler);
                 }
             }
         }
 
-        Set<Map.Entry<String, List<ContentHandlerConfigMap<SAXVisitAfter>>>> afterMappings = visitAfters.getTable().entrySet();
-        for (Map.Entry<String,List<ContentHandlerConfigMap<SAXVisitAfter>>> afterMapping : afterMappings) {
-            List<ContentHandlerConfigMap<SAXVisitAfter>> elementMappings = afterMapping.getValue();
-            for (ContentHandlerConfigMap<SAXVisitAfter> elementMapping : elementMappings) {
+        Set<Map.Entry<String, List<ContentHandlerBinding<SAXVisitAfter>>>> afterMappings = visitAfters.getTable().entrySet();
+        for (Map.Entry<String,List<ContentHandlerBinding<SAXVisitAfter>>> afterMapping : afterMappings) {
+            List<ContentHandlerBinding<SAXVisitAfter>> elementMappings = afterMapping.getValue();
+            for (ContentHandlerBinding<SAXVisitAfter> elementMapping : elementMappings) {
                 String elementName = afterMapping.getKey();
                 SAXVisitAfter handler = elementMapping.getContentHandler();
 
                 if(handler instanceof SAXVisitChildren) {
-                    childVisitors.addMapping(elementName, elementMapping.getResourceConfig(), (SAXVisitChildren) handler);
+                    childVisitors.addBinding(elementName, elementMapping.getResourceConfig(), (SAXVisitChildren) handler);
                 }
             }
         }

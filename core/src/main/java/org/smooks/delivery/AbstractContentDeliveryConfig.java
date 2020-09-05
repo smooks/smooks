@@ -192,11 +192,11 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     }
 
     @SuppressWarnings("WeakerAccess")
-    public <T extends Visitor> void addToExecutionLifecycleSets(ContentHandlerConfigMapTable<T> handlerSet) {
-        Collection<List<ContentHandlerConfigMap<T>>> mapEntries = handlerSet.getTable().values();
+    public <T extends Visitor> void addToExecutionLifecycleSets(ContentHandlerBindings<T> handlerSet) {
+        Collection<List<ContentHandlerBinding<T>>> mapEntries = handlerSet.getTable().values();
 
-        for(List<ContentHandlerConfigMap<T>> mapList : mapEntries) {
-            for(ContentHandlerConfigMap<T> map : mapList) {
+        for(List<ContentHandlerBinding<T>> mapList : mapEntries) {
+            for(ContentHandlerBinding<T> map : mapList) {
                 if(map.isLifecycleInitializable()) {
                     execInitializableHandlers.add((ExecutionLifecycleInitializable) map.getContentHandler());
                 }
@@ -249,8 +249,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 		}
 	}
 
-    protected FilterBypass getFilterBypass(ContentHandlerConfigMapTable... visitorTables) {
-    	for(ContentHandlerConfigMapTable visitorTable : visitorTables) {
+    protected FilterBypass getFilterBypass(ContentHandlerBindings... visitorTables) {
+    	for(ContentHandlerBindings visitorTable : visitorTables) {
             if(visitorTable != null && visitorTable.getUserConfiguredCount() > 1) {
             	// If any of the visitor tables have more than 1 visitor instance...
             	return null;
@@ -259,7 +259,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     	// Gather the possible set of FilterBypass instances...
     	Set<FilterBypass> bypassSet = new HashSet<FilterBypass>();
-    	for(ContentHandlerConfigMapTable visitorTable : visitorTables) {
+    	for(ContentHandlerBindings visitorTable : visitorTables) {
             if(visitorTable != null && visitorTable.getUserConfiguredCount() == 1) {
             	FilterBypass filterBypass = getFilterBypass(visitorTable);
 
@@ -282,11 +282,11 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     	return null;
     }
 
-    private <T extends Visitor> FilterBypass getFilterBypass(ContentHandlerConfigMapTable<T> visitorTable) {
-        Set<Entry<String, List<ContentHandlerConfigMap<T>>>> entries = visitorTable.getTable().entrySet();
+    private <T extends Visitor> FilterBypass getFilterBypass(ContentHandlerBindings<T> visitorTable) {
+        Set<Entry<String, List<ContentHandlerBinding<T>>>> entries = visitorTable.getTable().entrySet();
 
-        for(Entry<String, List<ContentHandlerConfigMap<T>>> entry : entries) {
-        	ContentHandlerConfigMap<T> configMap = entry.getValue().get(0);
+        for(Entry<String, List<ContentHandlerBinding<T>>> entry : entries) {
+        	ContentHandlerBinding<T> configMap = entry.getValue().get(0);
         	SmooksResourceConfiguration resourceConfig = configMap.getResourceConfig();
 
         	if(!resourceConfig.isDefaultResource()) {

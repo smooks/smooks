@@ -93,23 +93,24 @@ public class SmooksStandaloneTest {
         SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
-        SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
-        resourceConfig.setParameter("new-name", "xxx");
-        smooks.getApplicationContext().getRegistry().registerResource(resourceConfig);
-        resourceConfig = new SmooksResourceConfiguration("aaa", "profile2", RenameElementTrans.class.getName());
-        resourceConfig.setParameter("new-name", "zzz");
-        smooks.getApplicationContext().getRegistry().registerResource(resourceConfig);
+        SmooksResourceConfiguration profile1AndNotProfile3SmooksResourceConfiguration = new SmooksResourceConfiguration("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
+        profile1AndNotProfile3SmooksResourceConfiguration.setParameter("new-name", "xxx");
+        smooks.getApplicationContext().getRegistry().registerResource(profile1AndNotProfile3SmooksResourceConfiguration);
+
+        SmooksResourceConfiguration profile2SmooksResourceConfiguration = new SmooksResourceConfiguration("aaa", "profile2", RenameElementTrans.class.getName());
+        profile2SmooksResourceConfiguration.setParameter("new-name", "zzz");
+        smooks.getApplicationContext().getRegistry().registerResource(profile2SmooksResourceConfiguration);
 
         // Transform the same message for each useragent...
         String message = "<aaa><bbb>888</bbb><ccc>999</ccc></aaa>";
-        ExecutionContext context = smooks.createExecutionContext("message-target1");
-        String result = SmooksUtil.filterAndSerialize(context, new ByteArrayInputStream(message.getBytes()), smooks);
-        LOGGER.debug(result);
-        assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", result);
-        context = smooks.createExecutionContext("message-target2");
-        result = SmooksUtil.filterAndSerialize(context, new ByteArrayInputStream(message.getBytes()), smooks);
-        LOGGER.debug(result);
-        assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><ccc>999</ccc></zzz>", result);
+        
+        ExecutionContext messageTarget1ExecutionContext = smooks.createExecutionContext("message-target1");
+        String messageTarget1Result = SmooksUtil.filterAndSerialize(messageTarget1ExecutionContext, new ByteArrayInputStream(message.getBytes()), smooks);
+        assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", messageTarget1Result);
+
+        ExecutionContext messageTarget2ExecutionContext = smooks.createExecutionContext("message-target2");
+        String messageTarget2Result = SmooksUtil.filterAndSerialize(messageTarget2ExecutionContext, new ByteArrayInputStream(message.getBytes()), smooks);
+        assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><ccc>999</ccc></zzz>", messageTarget2Result);
     }
 
 	@Test

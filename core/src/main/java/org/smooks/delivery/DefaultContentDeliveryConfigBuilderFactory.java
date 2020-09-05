@@ -40,44 +40,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.dom;
+package org.smooks.delivery;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.container.ApplicationContext;
+import org.smooks.delivery.dom.DOMStreamDeliveryProvider;
+import org.smooks.delivery.sax.SAXStreamDeliveryProvider;
+import org.smooks.profile.ProfileSet;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Processing set.
- * <p/>
- * The set of ProcessingUnit to be applied to an Element.
- * @author tfennelly
- */
-@SuppressWarnings("unused")
-public class ProcessingSet {
+public class DefaultContentDeliveryConfigBuilderFactory implements ContentDeliveryConfigBuilderFactory {
+    private final Map<String, ContentDeliveryConfigBuilder> contentDeliveryConfigBuilders = new ConcurrentHashMap<>();
+    private final ApplicationContext applicationContext;
 
-	/**
-	 * ProcessingUnit instances.
-	 */
-	private final List<ContentHandlerBinding> processingUnits = new ArrayList<>();
-
-	/**
-	 * Add to the ProcessingSet.
-	 * @param processingUnit The Processing Unit to be added.
-	 * @param resourceConfig Corresponding resource config.
-	 */
-	@SuppressWarnings("unchecked")
-	public void addProcessingUnit(DOMElementVisitor processingUnit, SmooksResourceConfiguration resourceConfig) {
-        ContentHandlerBinding contentHandlerBinding = new ContentHandlerBinding(processingUnit, resourceConfig);
-        processingUnits.add(contentHandlerBinding);
-	}
-
-	/**
-	 * Get the list of ProcessingUnit instances to be applied.
-	 * @return List of ProcessingUnit instances.
-	 */
-	public List<ContentHandlerBinding> getProcessingUnits() {
-		return processingUnits;
-	}
+    public DefaultContentDeliveryConfigBuilderFactory(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+    
+    @Override
+    public ContentDeliveryConfigBuilder create(final ProfileSet profileSet) {
+        return contentDeliveryConfigBuilders.computeIfAbsent(profileSet.getBaseProfile(), c -> new DefaultContentDeliveryConfigBuilder(profileSet, applicationContext, Arrays.asList(new SAXStreamDeliveryProvider(), new DOMStreamDeliveryProvider())));
+    }
 }

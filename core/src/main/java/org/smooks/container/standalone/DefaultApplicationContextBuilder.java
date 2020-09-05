@@ -50,6 +50,7 @@ import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ApplicationContextBuilder;
 import org.smooks.delivery.ContentHandlerFactory;
+import org.smooks.delivery.DefaultContentDeliveryConfigBuilderFactory;
 import org.smooks.profile.DefaultProfileSet;
 import org.smooks.profile.Profile;
 
@@ -74,10 +75,11 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     @Override
     public StandaloneApplicationContext build() {
         final StandaloneApplicationContext standaloneApplicationContext = new StandaloneApplicationContext();
+        standaloneApplicationContext.setContentDeliveryConfigBuilderFactory(new DefaultContentDeliveryConfigBuilderFactory(standaloneApplicationContext));
         
         final Registry registry = new Registry(standaloneApplicationContext.getClassLoader(), standaloneApplicationContext.getResourceLocator(), standaloneApplicationContext.getProfileStore());
         registry.registerObject(ApplicationContext.class, standaloneApplicationContext);
-
+        
         registerInstalledContentHandlerFactories(registry);
         if (registerInstalledResources) {
             registerInstalledResources(registry);

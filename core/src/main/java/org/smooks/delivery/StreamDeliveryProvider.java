@@ -40,44 +40,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.dom;
+package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.container.ApplicationContext;
+import org.smooks.dtd.DTDStore;
+import org.smooks.event.types.ConfigBuilderEvent;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-/**
- * Processing set.
- * <p/>
- * The set of ProcessingUnit to be applied to an Element.
- * @author tfennelly
- */
-@SuppressWarnings("unused")
-public class ProcessingSet {
-
-	/**
-	 * ProcessingUnit instances.
-	 */
-	private final List<ContentHandlerBinding> processingUnits = new ArrayList<>();
-
-	/**
-	 * Add to the ProcessingSet.
-	 * @param processingUnit The Processing Unit to be added.
-	 * @param resourceConfig Corresponding resource config.
-	 */
-	@SuppressWarnings("unchecked")
-	public void addProcessingUnit(DOMElementVisitor processingUnit, SmooksResourceConfiguration resourceConfig) {
-        ContentHandlerBinding contentHandlerBinding = new ContentHandlerBinding(processingUnit, resourceConfig);
-        processingUnits.add(contentHandlerBinding);
-	}
-
-	/**
-	 * Get the list of ProcessingUnit instances to be applied.
-	 * @return List of ProcessingUnit instances.
-	 */
-	public List<ContentHandlerBinding> getProcessingUnits() {
-		return processingUnits;
-	}
+public interface StreamDeliveryProvider {
+    ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> contentHandlerBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors);
+    
+    Boolean isProvider(List<ContentHandlerBinding<Visitor>> contentHandlerBindings);
+    
+    String getName();
 }

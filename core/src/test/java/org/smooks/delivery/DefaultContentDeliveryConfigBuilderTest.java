@@ -61,7 +61,7 @@ import static org.junit.Assert.*;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ContentDeliveryConfigBuilderTest {
+public class DefaultContentDeliveryConfigBuilderTest {
 
 	@Test
     public void test_sax() throws IOException, SAXException {
@@ -122,7 +122,7 @@ public class ContentDeliveryConfigBuilderTest {
             smooks.createExecutionContext();
             fail("Expected SmooksException");
         } catch(SmooksException e) {
-            assertEquals("Invalid 'stream.filter.type' configuration parameter value of 'xxxx'.  Must be 'SAX' or 'DOM'.", e.getMessage());
+            assertEquals("The configured Filter ('xxxx') cannot be used: [SAX, DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
         }
     }
 

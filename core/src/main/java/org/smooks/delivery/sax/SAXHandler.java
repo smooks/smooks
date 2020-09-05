@@ -91,7 +91,7 @@ public class SAXHandler extends SmooksContentHandler {
     private final boolean reverseVisitOrderOnVisitAfter;
     private final boolean terminateOnVisitorException;
     private final DefaultSAXElementSerializer defaultSerializer = new DefaultSAXElementSerializer();
-    private static final ContentHandlerConfigMap defaultSerializerMapping;
+    private static final ContentHandlerBinding defaultSerializerMapping;
     private final ExecutionEventListener eventListener;
     private DynamicSAXElementVisitorList dynamicVisitorList;
     private final StringBuilder cdataNodeBuilder = new StringBuilder();
@@ -100,7 +100,7 @@ public class SAXHandler extends SmooksContentHandler {
         // Configure the default handler mapping...
         SmooksResourceConfiguration resource = new SmooksResourceConfiguration("*", DefaultSAXElementSerializer.class.getName());
         resource.setDefaultResource(true);
-        defaultSerializerMapping = new ContentHandlerConfigMap(new DefaultSAXElementSerializer(), resource);
+        defaultSerializerMapping = new ContentHandlerBinding(new DefaultSAXElementSerializer(), resource);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -224,20 +224,20 @@ public class SAXHandler extends SmooksContentHandler {
         }
 
         if(currentProcessor.elementVisitorConfig != null) {
-            List<ContentHandlerConfigMap<SAXVisitAfter>> visitAfterMappings = currentProcessor.elementVisitorConfig.getVisitAfters();
+            List<ContentHandlerBinding<SAXVisitAfter>> visitAfterMappings = currentProcessor.elementVisitorConfig.getVisitAfters();
 
             if(visitAfterMappings != null) {
                 if(reverseVisitOrderOnVisitAfter) {
                     // We work through the mappings in reverse order on the end element event...
                     int mappingCount = visitAfterMappings.size();
-                    ContentHandlerConfigMap<SAXVisitAfter> mapping;
+                    ContentHandlerBinding<SAXVisitAfter> mapping;
 
                     for(int i = mappingCount - 1; i >= 0; i--) {
                         mapping = visitAfterMappings.get(i);
                         visitAfter(mapping);
                     }
                 } else {
-                    for (final ContentHandlerConfigMap<SAXVisitAfter> visitAfterMapping : visitAfterMappings)
+                    for (final ContentHandlerBinding<SAXVisitAfter> visitAfterMapping : visitAfterMappings)
                     {
                         visitAfter(visitAfterMapping);
                     }
@@ -264,10 +264,10 @@ public class SAXHandler extends SmooksContentHandler {
 
         // Process cleanables after applying all the visit afters...
         if(currentProcessor.elementVisitorConfig != null) {
-            List<ContentHandlerConfigMap<VisitLifecycleCleanable>> visitCleanables = currentProcessor.elementVisitorConfig.getVisitCleanables();
+            List<ContentHandlerBinding<VisitLifecycleCleanable>> visitCleanables = currentProcessor.elementVisitorConfig.getVisitCleanables();
 
             if(visitCleanables != null) {
-                for (final ContentHandlerConfigMap<VisitLifecycleCleanable> visitCleanable : visitCleanables)
+                for (final ContentHandlerBinding<VisitLifecycleCleanable> visitCleanable : visitCleanables)
                 {
                     final boolean targetedAtElement
                         = visitCleanable.getResourceConfig().isTargetedAtElement(currentProcessor.element, execContext);
@@ -315,7 +315,7 @@ public class SAXHandler extends SmooksContentHandler {
         currentProcessor = processor;
         if(currentProcessor.elementVisitorConfig != null) {
             // And visit it with the targeted visitor...
-            List<ContentHandlerConfigMap<SAXVisitBefore>> visitBeforeMappings = currentProcessor.elementVisitorConfig.getVisitBefores();
+            List<ContentHandlerBinding<SAXVisitBefore>> visitBeforeMappings = currentProcessor.elementVisitorConfig.getVisitBefores();
 
             if(elementVisitorConfig.accumulateText()) {
                 currentProcessor.element.accumulateText();
@@ -326,7 +326,7 @@ public class SAXHandler extends SmooksContentHandler {
             }
 
             if(visitBeforeMappings != null) {
-                for (final ContentHandlerConfigMap<SAXVisitBefore> mapping : visitBeforeMappings)
+                for (final ContentHandlerBinding<SAXVisitBefore> mapping : visitBeforeMappings)
                 {
                     try
                     {
@@ -377,10 +377,10 @@ public class SAXHandler extends SmooksContentHandler {
 
     private void onChildElement(SAXElement childElement) {
         if(currentProcessor.elementVisitorConfig != null) {
-            List<ContentHandlerConfigMap<SAXVisitChildren>> visitChildMappings = currentProcessor.elementVisitorConfig.getChildVisitors();
+            List<ContentHandlerBinding<SAXVisitChildren>> visitChildMappings = currentProcessor.elementVisitorConfig.getChildVisitors();
 
             if(visitChildMappings != null) {
-                for (final ContentHandlerConfigMap<SAXVisitChildren> mapping : visitChildMappings)
+                for (final ContentHandlerBinding<SAXVisitChildren> mapping : visitChildMappings)
                 {
                     if (mapping.getResourceConfig().isTargetedAtElement(currentProcessor.element, execContext))
                     {
@@ -420,7 +420,7 @@ public class SAXHandler extends SmooksContentHandler {
         }
     }
 
-    private void visitAfter(ContentHandlerConfigMap<SAXVisitAfter> afterMapping) {
+    private void visitAfter(ContentHandlerBinding<SAXVisitAfter> afterMapping) {
 
         try {
             if(afterMapping.getResourceConfig().isTargetedAtElement(currentProcessor.element, execContext)) {
@@ -471,10 +471,10 @@ public class SAXHandler extends SmooksContentHandler {
 
             if(!currentProcessor.isNullProcessor) {
                 if(currentProcessor.elementVisitorConfig != null) {
-                    List<ContentHandlerConfigMap<SAXVisitChildren>> visitChildMappings = currentProcessor.elementVisitorConfig.getChildVisitors();
+                    List<ContentHandlerBinding<SAXVisitChildren>> visitChildMappings = currentProcessor.elementVisitorConfig.getChildVisitors();
 
                     if(visitChildMappings != null) {
-                        for (final ContentHandlerConfigMap<SAXVisitChildren> mapping : visitChildMappings)
+                        for (final ContentHandlerBinding<SAXVisitChildren> mapping : visitChildMappings)
                         {
                             try
                             {
@@ -596,9 +596,9 @@ public class SAXHandler extends SmooksContentHandler {
         private SAXElementVisitorMap elementVisitorConfig;
     }
 
-    private void processVisitorException(SAXElement element, Throwable error, ContentHandlerConfigMap configMapping, VisitSequence visitSequence, String errorMsg) throws SmooksException {
+    private void processVisitorException(SAXElement element, Throwable error, ContentHandlerBinding contentHandlerBinding, VisitSequence visitSequence, String errorMsg) throws SmooksException {
         if (eventListener != null) {
-            eventListener.onEvent(new ElementVisitEvent(element, configMapping, visitSequence, error));
+            eventListener.onEvent(new ElementVisitEvent(element, contentHandlerBinding, visitSequence, error));
         }
 
         processVisitorException(error, errorMsg);

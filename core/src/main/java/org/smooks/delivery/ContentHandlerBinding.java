@@ -52,7 +52,7 @@ import org.smooks.cdr.SmooksResourceConfiguration;
  * a {@link ContentHandler}.
  * @author tfennelly
  */
-public class ContentHandlerConfigMap<T extends ContentHandler> {
+public class ContentHandlerBinding<T extends ContentHandler> {
 
     private final T contentHandler;
     private final boolean isLifecycleInitializable;
@@ -64,7 +64,7 @@ public class ContentHandlerConfigMap<T extends ContentHandler> {
      * @param contentHandler The content handler instance.
      * @param resourceConfig The defining resource configuration.
      */
-    public ContentHandlerConfigMap(T contentHandler, SmooksResourceConfiguration resourceConfig) {
+    public ContentHandlerBinding(T contentHandler, SmooksResourceConfiguration resourceConfig) {
         this.contentHandler = contentHandler;
         this.resourceConfig = resourceConfig;
         isLifecycleInitializable = (contentHandler instanceof ExecutionLifecycleInitializable);

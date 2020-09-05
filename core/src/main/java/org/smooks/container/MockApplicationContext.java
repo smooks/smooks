@@ -45,6 +45,7 @@ package org.smooks.container;
 import org.smooks.cdr.registry.Registry;
 import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.container.standalone.StandaloneApplicationContext;
+import org.smooks.delivery.ContentDeliveryConfigBuilderFactory;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.ProfileStore;
@@ -100,5 +101,10 @@ public class MockApplicationContext implements ApplicationContext {
 
 	public ClassLoader getClassLoader() {
 		return standaloneApplicationContext.getClassLoader();
+	}
+
+	@Override
+	public ContentDeliveryConfigBuilderFactory getContentDeliveryConfigBuilderFactory() {
+		return standaloneApplicationContext.getContentDeliveryConfigBuilderFactory();
 	}
 }

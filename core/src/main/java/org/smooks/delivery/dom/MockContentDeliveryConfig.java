@@ -42,8 +42,7 @@
  */
 package org.smooks.delivery.dom;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.delivery.ContentHandlerConfigMapTable;
+import org.smooks.delivery.ContentHandlerBindings;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -60,13 +59,13 @@ public class MockContentDeliveryConfig extends DOMContentDeliveryConfig {
   private final Map objectsHash = new LinkedHashMap();
 
   public MockContentDeliveryConfig() {
-    setSmooksResourceConfigurations(new LinkedHashMap<String, List<SmooksResourceConfiguration>>());
-    setAssemblyVisitBefores(new ContentHandlerConfigMapTable());
-    setAssemblyVisitAfters(new ContentHandlerConfigMapTable());
-    setProcessingVisitBefores(new ContentHandlerConfigMapTable());
-    setProcessingVisitAfters(new ContentHandlerConfigMapTable());
-    setSerializationVisitors(new ContentHandlerConfigMapTable());
-    setVisitCleanables(new ContentHandlerConfigMapTable());
+    setSmooksResourceConfigurations(new LinkedHashMap<>());
+    setAssemblyVisitBefores(new ContentHandlerBindings());
+    setAssemblyVisitAfters(new ContentHandlerBindings());
+    setProcessingVisitBefores(new ContentHandlerBindings());
+    setProcessingVisitAfters(new ContentHandlerBindings());
+    setSerializationVisitors(new ContentHandlerBindings());
+    setVisitCleanables(new ContentHandlerBindings());
   }
 
   /* (non-Javadoc)

@@ -47,6 +47,7 @@ import org.smooks.cdr.registry.Registry;
 import org.smooks.classpath.IsAnnotationPresentFilter;
 import org.smooks.classpath.Scanner;
 import org.smooks.container.ApplicationContext;
+import org.smooks.delivery.ContentDeliveryConfigBuilderFactory;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.DefaultProfileStore;
@@ -77,6 +78,7 @@ public class StandaloneApplicationContext implements ApplicationContext {
 	private final BeanIdStore beanIdStore = new BeanIdStore();
     private final List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
     private ClassLoader classLoader;
+    private ContentDeliveryConfigBuilderFactory contentDeliveryConfigBuilderFactory;
     
     /**
      * Private constructor.
@@ -102,6 +104,7 @@ public class StandaloneApplicationContext implements ApplicationContext {
         this.resourceLocator = resourceLocator;
     }
 
+    @Override
 	public Registry getRegistry() {
 		return registry;
 	}
@@ -134,7 +137,16 @@ public class StandaloneApplicationContext implements ApplicationContext {
         return classLoader;
     }
 
-    void setRegistry(Registry registry) {
+    public void setContentDeliveryConfigBuilderFactory(final ContentDeliveryConfigBuilderFactory contentDeliveryConfigBuilderFactory) {
+		this.contentDeliveryConfigBuilderFactory = contentDeliveryConfigBuilderFactory;
+	}
+    
+	@Override
+	public ContentDeliveryConfigBuilderFactory getContentDeliveryConfigBuilderFactory() {
+		return contentDeliveryConfigBuilderFactory;
+	}
+
+	void setRegistry(Registry registry) {
         this.registry = registry;
     }
 }

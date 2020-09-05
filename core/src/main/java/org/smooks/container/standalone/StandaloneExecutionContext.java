@@ -46,9 +46,9 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.delivery.ContentDeliveryConfigBuilder;
+import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Filter;
-import org.smooks.delivery.VisitorConfigMap;
+import org.smooks.delivery.Visitor;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.context.StandaloneBeanContextFactory;
@@ -58,6 +58,7 @@ import org.smooks.profile.UnknownProfileMemberException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Standalone Container Request implementation.
@@ -84,11 +85,11 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	 * @param targetProfile The target base profile for the execution context.
 	 * These parameters are not appended to the supplied requestURI.  This arg must be supplied, even if it's empty.
      * @param context The application context.
-     * @param extendedVisitorConfigMap Preconfigured/extended Visitor Configuration Map.
+     * @param extendedContentHandlerBindings Preconfigured/extended Visitor Configuration Map.
      * @throws UnknownProfileMemberException Unknown target profile.
 	 */
-	public StandaloneExecutionContext(String targetProfile, ApplicationContext context, VisitorConfigMap extendedVisitorConfigMap) throws UnknownProfileMemberException {
-		this(targetProfile, context, "UTF-8", extendedVisitorConfigMap);
+	public StandaloneExecutionContext(String targetProfile, ApplicationContext context, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) throws UnknownProfileMemberException {
+		this(targetProfile, context, "UTF-8", extendedContentHandlerBindings);
 	}
 
 	/**
@@ -101,10 +102,10 @@ public class StandaloneExecutionContext implements ExecutionContext {
      * @param applicationContext The application context.
 	 * @param contentEncoding Character encoding to be used when parsing content.  Null
 	 * defaults to "UTF-8".
-     * @param extendedVisitorConfigMap Preconfigured/extended Visitor Configuration Map.
+     * @param extendedContentHandlerBindings Preconfigured/extended Visitor Configuration Map.
      * @throws UnknownProfileMemberException Unknown target profile.
 	 */
-	public StandaloneExecutionContext(String targetProfile, ApplicationContext applicationContext, String contentEncoding, VisitorConfigMap extendedVisitorConfigMap) throws UnknownProfileMemberException {
+	public StandaloneExecutionContext(String targetProfile, ApplicationContext applicationContext, String contentEncoding, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) throws UnknownProfileMemberException {
         if(targetProfile == null) {
             throw new IllegalArgumentException("null 'targetProfile' arg in constructor call.");
         }
@@ -114,7 +115,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 		this.context = applicationContext;
 		setContentEncoding(contentEncoding);
         targetProfileSet = applicationContext.getProfileStore().getProfileSet(targetProfile);
-        deliveryConfig = ContentDeliveryConfigBuilder.getConfig(targetProfileSet, applicationContext, extendedVisitorConfigMap);
+		deliveryConfig = applicationContext.getContentDeliveryConfigBuilderFactory().create(targetProfileSet).build(extendedContentHandlerBindings);
         isDefaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", deliveryConfig));
     }
 

@@ -46,16 +46,16 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.delivery.ordering.Sorter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * Simple table for storing {@link ContentHandlerConfigMap} lists against a selector string.
+ * Simple table for storing {@link ContentHandlerBinding} lists against a selector string.
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ContentHandlerConfigMapTable<T extends ContentHandler> {
+public class ContentHandlerBindings<T extends ContentHandler> {
 
-    private final Map<String, List<ContentHandlerConfigMap<T>>> table = new LinkedHashMap<String, List<ContentHandlerConfigMap<T>>>();
-    private final List<ContentHandlerConfigMap<T>> list = new ArrayList<ContentHandlerConfigMap<T>>();
+    private final Map<String, List<ContentHandlerBinding<T>>> contentHandlerBindingsByElementName = new LinkedHashMap<String, List<ContentHandlerBinding<T>>>();
     private int count = 0;
     private int userConfiguredCount = 0;
 
@@ -66,72 +66,67 @@ public class ContentHandlerConfigMapTable<T extends ContentHandler> {
      * @param resourceConfig Resource configuration.
      * @param contentHandler The delivery unit.
      */
-    public void addMapping(String elementName, SmooksResourceConfiguration resourceConfig, T contentHandler) {
-        addMapping(elementName, new ContentHandlerConfigMap<T>(contentHandler, resourceConfig));
+    public void addBinding(String elementName, SmooksResourceConfiguration resourceConfig, T contentHandler) {
+        addBinding(elementName, new ContentHandlerBinding<T>(contentHandler, resourceConfig));
     }
 
     /**
      * Add a mapping for the specified element.
      * @param elementName The element name.
-     * @param mapInst The mapping instance to be added.
+     * @param contentHandlerBinding The mapping instance to be added.
      */
-    private void addMapping(String elementName, ContentHandlerConfigMap<T> mapInst) {
-        List<ContentHandlerConfigMap<T>> elementMappings = table.get(elementName);
+    private void addBinding(String elementName, ContentHandlerBinding<T> contentHandlerBinding) {
+        List<ContentHandlerBinding<T>> elementMappings = contentHandlerBindingsByElementName.computeIfAbsent(elementName, k -> new Vector<>());
 
-        if(elementMappings == null) {
-            elementMappings = new Vector<ContentHandlerConfigMap<T>>();
-            table.put(elementName, elementMappings);
-        }
-        elementMappings.add(mapInst);
-        list.add(mapInst);
+        elementMappings.add(contentHandlerBinding);
         count++;
         
-        if(!mapInst.getResourceConfig().isDefaultResource()) {
+        if(!contentHandlerBinding.getResourceConfig().isDefaultResource()) {
         	userConfiguredCount++;
         }
     }
 
     /**
      * Add all the content handlers defined in the supplied configMap.
-     * @param configMap The config map.
+     * @param contentHandlerBindings The config map.
      */
-    public void addAll(ContentHandlerConfigMapTable<T> configMap) {
-        Set<Map.Entry<String, List<ContentHandlerConfigMap<T>>>> mappingsES = configMap.table.entrySet();
+    public void addAll(ContentHandlerBindings<T> contentHandlerBindings) {
+        Set<Map.Entry<String, List<ContentHandlerBinding<T>>>> mappingsES = contentHandlerBindings.contentHandlerBindingsByElementName.entrySet();
 
-        for (Map.Entry<String, List<ContentHandlerConfigMap<T>>> elementMappings : mappingsES) {
+        for (Map.Entry<String, List<ContentHandlerBinding<T>>> elementMappings : mappingsES) {
             String elementName = elementMappings.getKey();
-            List<ContentHandlerConfigMap<T>> mappingList = elementMappings.getValue();
+            List<ContentHandlerBinding<T>> mappingList = elementMappings.getValue();
 
-            for (ContentHandlerConfigMap<T> mapping : mappingList) {
-                addMapping(elementName, mapping);
+            for (ContentHandlerBinding<T> mapping : mappingList) {
+                addBinding(elementName, mapping);
             }
         }
     }
 
-    public Map<String, List<ContentHandlerConfigMap<T>>> getTable() {
-        return Collections.unmodifiableMap(table);
+    public Map<String, List<ContentHandlerBinding<T>>> getTable() {
+        return Collections.unmodifiableMap(contentHandlerBindingsByElementName);
     }
 
     /**
-     * Get the {@link ContentHandlerConfigMap} list for the supplied selector string.
+     * Get the {@link ContentHandlerBinding} list for the supplied selector string.
      * @param selector The lookup selector.
-     * @return It's list of {@link ContentHandlerConfigMap} instances, or null if there are none.
+     * @return It's list of {@link ContentHandlerBinding} instances, or null if there are none.
      */
-    public List<ContentHandlerConfigMap<T>> getMappings(String selector) {
-        return table.get(selector);
+    public List<ContentHandlerBinding<T>> getMappings(String selector) {
+        return contentHandlerBindingsByElementName.get(selector);
     }
 
     /**
-     * Get the combined {@link ContentHandlerConfigMap} list for the supplied list of selector strings.
+     * Get the combined {@link ContentHandlerBinding} list for the supplied list of selector strings.
      * @param selectors The lookup selectors.
-     * @return The combined {@link ContentHandlerConfigMap} list for the supplied list of selector strings,
+     * @return The combined {@link ContentHandlerBinding} list for the supplied list of selector strings,
      * or an empty list if there are none.
      */
-    public List<ContentHandlerConfigMap<T>> getMappings(String[] selectors) {
-        List<ContentHandlerConfigMap<T>> combinedList = new ArrayList<ContentHandlerConfigMap<T>>();
+    public List<ContentHandlerBinding<T>> getMappings(String[] selectors) {
+        List<ContentHandlerBinding<T>> combinedList = new ArrayList<ContentHandlerBinding<T>>();
 
         for(String selector : selectors) {
-            List<ContentHandlerConfigMap<T>> selectorList = table.get(selector);
+            List<ContentHandlerBinding<T>> selectorList = contentHandlerBindingsByElementName.get(selector);
             if(selectorList != null) {
                 combinedList.addAll(selectorList);
             }
@@ -140,8 +135,8 @@ public class ContentHandlerConfigMapTable<T extends ContentHandler> {
         return combinedList;
     }
 
-    public List<ContentHandlerConfigMap<T>> getAllMappings() {
-        return list;
+    public List<ContentHandlerBinding<T>> getAllMappings() {
+        return contentHandlerBindingsByElementName.values().stream().flatMap(List::stream).collect(Collectors.toList());
     }
 
     /**
@@ -149,7 +144,7 @@ public class ContentHandlerConfigMapTable<T extends ContentHandler> {
      * @return True if the table is empty, otherwise false.
      */
     public boolean isEmpty() {
-        return table.isEmpty();
+        return contentHandlerBindingsByElementName.isEmpty();
     }
 
     /**
@@ -173,9 +168,9 @@ public class ContentHandlerConfigMapTable<T extends ContentHandler> {
      * @param sortOrder The sort order.
      */
     public void sort(Sorter.SortOrder sortOrder) {
-        Set<Map.Entry<String,List<ContentHandlerConfigMap<T>>>> tableEntries = table.entrySet();
+        Set<Map.Entry<String,List<ContentHandlerBinding<T>>>> tableEntries = contentHandlerBindingsByElementName.entrySet();
 
-        for(Map.Entry<String, List<ContentHandlerConfigMap<T>>> tableEntry : tableEntries) {
+        for(Map.Entry<String, List<ContentHandlerBinding<T>>> tableEntry : tableEntries) {
             Sorter.sort(tableEntry.getValue(), sortOrder);
         }
     }
