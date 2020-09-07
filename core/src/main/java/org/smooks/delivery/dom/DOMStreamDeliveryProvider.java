@@ -62,9 +62,9 @@ public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
         for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
-            final String targetElement = contentHandlerBinding.getResourceConfig().getTargetElement();
+            final String targetElement = contentHandlerBinding.getSmooksResourceConfiguration().getTargetElement();
             final Visitor visitor = contentHandlerBinding.getContentHandler();
-            final SmooksResourceConfiguration smooksResourceConfiguration = contentHandlerBinding.getResourceConfig();
+            final SmooksResourceConfiguration smooksResourceConfiguration = contentHandlerBinding.getSmooksResourceConfiguration();
 
             try {
                 SelectorStep.setNamespaces(smooksResourceConfiguration.getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
@@ -132,16 +132,15 @@ public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
     }
 
     @Override
-    public Boolean isProvider(List<ContentHandlerBinding<Visitor>> contentHandlerBindings) {
-        return contentHandlerBindings.stream().filter(c -> isDOMVisitor(c.getContentHandler())).count() == contentHandlerBindings.size();
+    public Boolean isProvider(List<ContentHandlerBinding<Visitor>> visitorBindings) {
+        return visitorBindings.stream().filter(c -> isDOMVisitor(c.getContentHandler())).count() == visitorBindings.
+                stream().
+                filter(v -> isDOMVisitor(v.getContentHandler()) || isSAXVisitor(v.getContentHandler())).
+                count();
     }
 
     @Override
     public String getName() {
         return "DOM";
-    }
-
-    protected boolean isDOMVisitor(ContentHandler contentHandler) {
-        return (contentHandler instanceof DOMVisitBefore || contentHandler instanceof DOMVisitAfter || contentHandler instanceof SerializationUnit);
     }
 }

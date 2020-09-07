@@ -225,7 +225,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         for(List<ContentHandlerBinding<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
             for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
-                SmooksResourceConfiguration resourceConfig = contentHandlerMap.getResourceConfig();
+                SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
                 SelectorStep selectorStep = resourceConfig.getSelectorStep();
 
                 if(selectorStep.accessesText()) {
@@ -252,7 +252,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         }
 
         for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : saxVisitorMap) {
-            SmooksResourceConfiguration resourceConfig = contentHandlerMap.getResourceConfig();
+            SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
             SelectorStep[] selectorSteps = resourceConfig.getSelectorSteps();
             List<IndexEvaluator> indexEvaluators = new ArrayList<IndexEvaluator>();
 
@@ -370,7 +370,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
                 // Wanna make sure we don't add the same handler twice, so if it also impls SAXVisitAfter, leave
                 // that until we process the SAXVisitAfter handlers...
                 if(handler instanceof SAXVisitChildren && !(handler instanceof SAXVisitAfter)) {
-                    childVisitors.addBinding(elementName, elementMapping.getResourceConfig(), (SAXVisitChildren) handler);
+                    childVisitors.addBinding(elementName, elementMapping.getSmooksResourceConfiguration(), (SAXVisitChildren) handler);
                 }
             }
         }
@@ -383,7 +383,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
                 SAXVisitAfter handler = elementMapping.getContentHandler();
 
                 if(handler instanceof SAXVisitChildren) {
-                    childVisitors.addBinding(elementName, elementMapping.getResourceConfig(), (SAXVisitChildren) handler);
+                    childVisitors.addBinding(elementName, elementMapping.getSmooksResourceConfiguration(), (SAXVisitChildren) handler);
                 }
             }
         }

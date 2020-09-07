@@ -481,7 +481,7 @@ public class SmooksDOMFilter extends Filter {
     private void applyAssemblyBefores(Element element, List<ContentHandlerBinding<DOMVisitBefore>> assemblyBefores) {
         for (final ContentHandlerBinding<DOMVisitBefore> configMap : assemblyBefores)
         {
-            SmooksResourceConfiguration config = configMap.getResourceConfig();
+            SmooksResourceConfiguration config = configMap.getSmooksResourceConfiguration();
 
             // Make sure the assembly unit is targeted at this element...
             if (!config.isTargetedAtElement(element, executionContext))
@@ -533,7 +533,7 @@ public class SmooksDOMFilter extends Filter {
     }
 
     private void applyAssemblyAfter(Element element, ContentHandlerBinding<DOMVisitAfter> configMap) {
-        SmooksResourceConfiguration config = configMap.getResourceConfig();
+        SmooksResourceConfiguration config = configMap.getSmooksResourceConfiguration();
 
         // Make sure the assembly unit is targeted at this element...
         if (!config.isTargetedAtElement(element, executionContext)) {
@@ -759,7 +759,7 @@ public class SmooksDOMFilter extends Filter {
         }
 
         private void processMapping(ExecutionContext executionContext, ContentHandlerBinding configMap, VisitSequence visitSequence) {
-            SmooksResourceConfiguration config = configMap.getResourceConfig();
+            SmooksResourceConfiguration config = configMap.getSmooksResourceConfiguration();
 
             // Make sure the processing unit is targeted at this element...
             if (!config.isTargetedAtElement(element, executionContext)) {

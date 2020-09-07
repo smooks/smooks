@@ -53,7 +53,7 @@ import static org.junit.Assert.*;
 public class ProgrammaticConfigTest {
 
 	@Test
-    public void test_properly_configed() {
+    public void test_properly_configured() {
         Smooks smooks = new Smooks();
         ConfigurableVisitor visitor = new ConfigurableVisitor().setStringParam("hi");
 

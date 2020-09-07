@@ -59,7 +59,7 @@ public class DynamicVisitorTest {
         Smooks smooks = new Smooks();
         StringSource source = new StringSource("<a><b><c>c1</c><d>c2</d><e>c3</e></b></a>");
 
-        smooks.getApplicationContext().getRegistry().registerResource(new SmooksResourceConfiguration("b", DynamicVisitorLoader.class.getName()));
+        smooks.getApplicationContext().getRegistry().registerSmooksResourceConfiguration(new SmooksResourceConfiguration("b", DynamicVisitorLoader.class.getName()));
         smooks.filterSource(source);
 
         assertEquals("<b><c>c1</c><d>c2</d><e>c3</e></b>", DynamicVisitorLoader.visitor.stuff.toString());

@@ -297,7 +297,7 @@ public class Serializer {
         if(elementSUs != null) {
           for (final ContentHandlerBinding<SerializationUnit> elementSU : elementSUs)
           {
-            SmooksResourceConfiguration config = elementSU.getResourceConfig();
+            SmooksResourceConfiguration config = elementSU.getSmooksResourceConfiguration();
 
             // Make sure the serialization unit is targeted at this element.
             if (!config.isTargetedAtElement(element, executionContext))

@@ -45,6 +45,11 @@ package org.smooks.delivery;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.delivery.annotation.VisitAfterIf;
 import org.smooks.delivery.annotation.VisitBeforeIf;
+import org.smooks.delivery.dom.DOMVisitAfter;
+import org.smooks.delivery.dom.DOMVisitBefore;
+import org.smooks.delivery.dom.serialize.SerializationUnit;
+import org.smooks.delivery.sax.SAXVisitAfter;
+import org.smooks.delivery.sax.SAXVisitBefore;
 import org.smooks.expression.MVELExpressionEvaluator;
 
 public abstract class AbstractStreamDeliveryProvider implements StreamDeliveryProvider {
@@ -75,5 +80,14 @@ public abstract class AbstractStreamDeliveryProvider implements StreamDeliveryPr
         }
 
         return true;
+    }
+
+    protected boolean isSAXVisitor(ContentHandler contentHandler) {
+        // Intentionally not checking for SAXVisitChildren.  Must be incorporated into a visit before or after...
+        return (contentHandler instanceof SAXVisitBefore || contentHandler instanceof SAXVisitAfter);
+    }
+
+    protected boolean isDOMVisitor(ContentHandler contentHandler) {
+        return (contentHandler instanceof DOMVisitBefore || contentHandler instanceof DOMVisitAfter || contentHandler instanceof SerializationUnit);
     }
 }

@@ -42,16 +42,16 @@
  */
 package org.smooks.payload;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.smooks.Smooks;
+import org.smooks.cdr.registry.lookup.ExportLookup;
 
+import javax.xml.transform.Result;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.xml.transform.Result;
-
-import org.junit.Test;
-import org.smooks.Smooks;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Functional test for {@link Exports}.
@@ -66,8 +66,8 @@ public class ExportsFunctionalTest
     {
         Smooks smooks = new Smooks("/org/smooks/payload/exports-01.xml");
         smooks.createExecutionContext();
-
-        Exports exports = Exports.getExports(smooks.getApplicationContext());
+        
+        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportLookup());
 
         Set<Class<?>> resultTypes = exports.getResultTypes();
         assertTrue(resultTypes.contains(StringResult.class));
@@ -80,7 +80,7 @@ public class ExportsFunctionalTest
         Smooks smooks = new Smooks("/org/smooks/payload/exports-named.xml");
         smooks.createExecutionContext();
 
-        Exports exports = Exports.getExports(smooks.getApplicationContext());
+        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportLookup());
         Collection<Export> exportTypes = exports.getExports();
         assertEquals(2, exportTypes.size());
     }
@@ -92,7 +92,7 @@ public class ExportsFunctionalTest
         smooks.createExecutionContext();
         smooks.setExports(new Exports(StringResult.class));
 
-        Exports exports = Exports.getExports(smooks.getApplicationContext());
+        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportLookup());
 
         assertTrue(exports.getResultTypes().contains(StringResult.class));
         assertEquals(1, exports.getResultTypes().size());

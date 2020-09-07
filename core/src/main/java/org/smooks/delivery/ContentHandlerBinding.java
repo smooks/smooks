@@ -43,6 +43,12 @@
 package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.SmooksResourceConfigurationFactory;
+import org.smooks.cdr.injector.FieldInjector;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.registry.Registry;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 
 /**
  * Mapping between a resource configuration and its corresponding resource
@@ -57,20 +63,41 @@ public class ContentHandlerBinding<T extends ContentHandler> {
     private final T contentHandler;
     private final boolean isLifecycleInitializable;
     private final boolean isLifecycleCleanable;
-    private final SmooksResourceConfiguration resourceConfig;
+    private final SmooksResourceConfiguration smooksResourceConfiguration;
 
     /**
      * Public constructor.
      * @param contentHandler The content handler instance.
-     * @param resourceConfig The defining resource configuration.
+     * @param smooksResourceConfiguration The defining resource configuration.
      */
-    public ContentHandlerBinding(T contentHandler, SmooksResourceConfiguration resourceConfig) {
+    public ContentHandlerBinding(final T contentHandler, final SmooksResourceConfiguration smooksResourceConfiguration) {
         this.contentHandler = contentHandler;
-        this.resourceConfig = resourceConfig;
+        this.smooksResourceConfiguration = smooksResourceConfiguration;
         isLifecycleInitializable = (contentHandler instanceof ExecutionLifecycleInitializable);
         isLifecycleCleanable = (contentHandler instanceof ExecutionLifecycleCleanable);
     }
 
+    public ContentHandlerBinding(final T contentHandler, final String targetSelector, final String targetSelectorNS, final Registry registry) {
+        this.contentHandler = contentHandler;
+        if (contentHandler instanceof SmooksResourceConfigurationFactory) {
+            smooksResourceConfiguration = ((SmooksResourceConfigurationFactory) contentHandler).createConfiguration();
+            smooksResourceConfiguration.setResource(contentHandler.getClass().getName());
+            smooksResourceConfiguration.setSelector(targetSelector);
+        } else {
+            smooksResourceConfiguration = new SmooksResourceConfiguration(targetSelector, contentHandler.getClass().getName());
+        }
+
+        smooksResourceConfiguration.setSelectorNamespaceURI(targetSelectorNS);
+
+        final FieldInjector fieldInjector = new FieldInjector(contentHandler, new Scope(registry, smooksResourceConfiguration, contentHandler));
+        fieldInjector.inject();
+        registry.lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase());
+        registry.registerObject(contentHandler);
+        
+        isLifecycleInitializable = (contentHandler instanceof ExecutionLifecycleInitializable);
+        isLifecycleCleanable = (contentHandler instanceof ExecutionLifecycleCleanable);
+    }
+    
     /**
      * Get the content handler.
      * @return The {@link ContentHandler}.
@@ -83,8 +110,8 @@ public class ContentHandlerBinding<T extends ContentHandler> {
      * Get the resource configuration.
      * @return The {@link SmooksResourceConfiguration}.
      */
-    public SmooksResourceConfiguration getResourceConfig() {
-        return resourceConfig;
+    public SmooksResourceConfiguration getSmooksResourceConfiguration() {
+        return smooksResourceConfiguration;
     }
 
     /**
