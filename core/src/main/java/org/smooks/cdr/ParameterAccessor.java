@@ -188,7 +188,7 @@ public abstract class ParameterAccessor {
         SmooksResourceConfiguration config = new SmooksResourceConfiguration(ParameterAccessor.GLOBAL_PARAMETERS);
 
         config.setParameter(name, value);
-        smooks.getApplicationContext().getRegistry().registerResource(config);
+        smooks.getApplicationContext().getRegistry().registerSmooksResourceConfiguration(config);
     }
 
     public static void removeParameter(String name, Smooks smooks) {

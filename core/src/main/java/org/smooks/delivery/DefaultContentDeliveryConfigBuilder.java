@@ -95,7 +95,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 */
 	private final Map<String, List<SmooksResourceConfiguration>> resourceConfigTable = new LinkedHashMap<>();
 
-    private final List<ContentHandlerBinding<Visitor>> contentHandlerBindings = new ArrayList<>();
+    private final List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
 
     /**
      * Config builder events list.
@@ -146,7 +146,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 
     private ContentDeliveryConfig buildConfig(List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) {
         if (extendedContentHandlerBindings != null) {
-            contentHandlerBindings.addAll(extendedContentHandlerBindings);
+            visitorBindings.addAll(extendedContentHandlerBindings);
         }
         boolean sortVisitors = ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable);
         StreamDeliveryProvider streamDeliveryProvider = getStreamDeliveryProvider();
@@ -155,16 +155,16 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         configBuilderEvents.add(new ConfigBuilderEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
         configBuilderEvents.add(new ConfigBuilderEvent("Using Stream Filter Type: " + streamDeliveryProvider.getName()));
 
-        ContentDeliveryConfig contentDeliveryConfig = streamDeliveryProvider.createContentDeliveryConfig(contentHandlerBindings, applicationContext, resourceConfigTable, configBuilderEvents, dtd, sortVisitors);
+        ContentDeliveryConfig contentDeliveryConfig = streamDeliveryProvider.createContentDeliveryConfig(visitorBindings, applicationContext, resourceConfigTable, configBuilderEvents, dtd, sortVisitors);
         fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
 
         return contentDeliveryConfig;
     }
 
     private StreamDeliveryProvider getStreamDeliveryProvider() {
-        final List<StreamDeliveryProvider> candidateStreamDeliveryProviders = streamDeliveryProviders.stream().filter(s -> s.isProvider(contentHandlerBindings)).collect(Collectors.toList());
+        final List<StreamDeliveryProvider> candidateStreamDeliveryProviders = streamDeliveryProviders.stream().filter(s -> s.isProvider(visitorBindings)).collect(Collectors.toList());
         final String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
-        if (candidateStreamDeliveryProviders.isEmpty()) {
+        if (filterTypeParam == null && candidateStreamDeliveryProviders.isEmpty()) {
             throw new SmooksException("Ambiguous Resource Configuration set.  All Element Content Handlers must support processing on the SAX and/or DOM Filter:\n" + getResourceFilterCharacteristics());
         } else if (filterTypeParam == null) {
             return candidateStreamDeliveryProviders.get(0);
@@ -189,7 +189,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         stringBuf.append("\t\tDOM   SAX    Resource  ('x' equals supported)\n");
         stringBuf.append("\t\t---------------------------------------------------------------------\n");
 
-        for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
+        for (ContentHandlerBinding<Visitor> contentHandlerBinding : visitorBindings) {
             printHandlerCharacteristics(contentHandlerBinding, stringBuf, printedHandlers);
         }
 
@@ -214,7 +214,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             stringBuf.append(supportedStreamDeliveryProvider.getValue() ? supportedStreamDeliveryProvider.getKey() : " ").append("     ");
         }
 
-        stringBuf.append(contentHandlerBinding.getResourceConfig())
+        stringBuf.append(contentHandlerBinding.getSmooksResourceConfiguration())
                 .append("\n");
     }
     
@@ -287,12 +287,11 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * Build the basic SmooksResourceConfiguration table from the list.
 	 * @param resourceConfigsList List of SmooksResourceConfigurations.
 	 */
-	private void buildSmooksResourceConfigurationTable(List resourceConfigsList) {
-    for (final Object resourceConfig : resourceConfigsList)
-    {
-      addResourceConfiguration((SmooksResourceConfiguration) resourceConfig);
+    private void buildSmooksResourceConfigurationTable(List resourceConfigsList) {
+        for (final Object resourceConfig : resourceConfigsList) {
+            addResourceConfiguration((SmooksResourceConfiguration) resourceConfig);
+        }
     }
-	}
 
     /**
      * Add the supplied resource configuration to this configuration's main
@@ -509,31 +508,32 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 
         /**
 		 * Add a {@link ContentHandler} for the specified element and configuration.
-		 * @param resourceConfig Configuration.
-		 * @param handlerFactory CDU Creator class.
+		 * @param smooksResourceConfiguration Configuration.
+		 * @param contentHandlerFactory CDU Creator class.
 		 * @return True if the CDU was added, otherwise false.
 		 */
-        private boolean addContentDeliveryUnit(SmooksResourceConfiguration resourceConfig, ContentHandlerFactory handlerFactory) {
+        private boolean addContentDeliveryUnit(SmooksResourceConfiguration smooksResourceConfiguration, ContentHandlerFactory<?> contentHandlerFactory) {
             Object contentHandler;
 
             // Create the ContentHandler.
             try {
-                contentHandler = handlerFactory.create(resourceConfig);
+                contentHandler = contentHandlerFactory.create(smooksResourceConfiguration);
             } catch (SmooksConfigurationException e) {
                 throw e;
             } catch (Throwable thrown) {
-                String message = "ContentHandlerFactory [" + handlerFactory.getClass().getName() + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
+                String message = "ContentHandlerFactory [" + contentHandlerFactory.getClass().getName() + "] unable to create resource processing instance for resource [" + smooksResourceConfiguration + "]. ";
                 LOGGER.error(message + thrown.getMessage(), thrown);
-                configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message, thrown));
+                configBuilderEvents.add(new ConfigBuilderEvent(smooksResourceConfiguration, message, thrown));
 
                 return false;
             }
+            
+            //TODO: register object
 
             if (contentHandler instanceof Visitor) {
                 // Add the visitor.  No need to configure it as that should have been done by
                 // creator...
-                contentHandlerBindings.add(new ContentHandlerBinding<>((Visitor) contentHandler, resourceConfig));
-//                visitorConfig.addVisitor((Visitor) contentHandler, resourceConfig, false);
+                visitorBindings.add(new ContentHandlerBinding<>((Visitor) contentHandler, smooksResourceConfiguration));
             }
 
             // Content delivery units are allowed to dynamically add new configurations...
@@ -541,7 +541,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                 List<SmooksResourceConfiguration> additionalConfigs = ((ConfigurationExpander) contentHandler).expandConfigurations();
                 if (additionalConfigs != null && !additionalConfigs.isEmpty()) {
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Adding expansion resource configurations created by: " + resourceConfig);
+                        LOGGER.debug("Adding expansion resource configurations created by: " + smooksResourceConfiguration);
                         for (SmooksResourceConfiguration additionalConfig : additionalConfigs) {
                             LOGGER.debug("\tAdding expansion resource configuration: " + additionalConfig);
                         }
@@ -551,7 +551,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             }
 
             if (contentHandler instanceof VisitorAppender) {
-                ((VisitorAppender) contentHandler).addVisitors(contentHandlerBindings);
+                visitorBindings.addAll(((VisitorAppender) contentHandler).addVisitors());
             }
 
             return true;
@@ -563,7 +563,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
          */
         private void processExpansionConfigurations(List<SmooksResourceConfiguration> additionalConfigs) {
             for (final SmooksResourceConfiguration smooksResourceConfiguration : additionalConfigs) {
-                applicationContext.getRegistry().registerResource(smooksResourceConfiguration);
+                applicationContext.getRegistry().registerSmooksResourceConfiguration(smooksResourceConfiguration);
                 // Try adding it as a ContentHandler instance...
                 if (!applyContentDeliveryUnitStrategy(smooksResourceConfiguration)) {
                     // Else just add it to the main list...

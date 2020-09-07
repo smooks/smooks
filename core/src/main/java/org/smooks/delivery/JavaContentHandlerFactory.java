@@ -42,6 +42,7 @@
  */
 package org.smooks.delivery;
 
+import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.injector.Scope;
@@ -68,7 +69,7 @@ import java.util.function.Function;
 public class JavaContentHandlerFactory implements ContentHandlerFactory {
 
     @Inject
-    private ApplicationContext appContext;
+    private ApplicationContext applicationContext;
     
     private final Map<SmooksResourceConfiguration, Object> javaContentHandlers = new ConcurrentHashMap<>();
 
@@ -95,11 +96,10 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory {
                     } catch (NoSuchMethodException e) {
                         contentHandler = classRuntime.newInstance();
                     }
-                    appContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase(new Scope(appContext.getRegistry(), smooksResourceConfiguration, contentHandler)));
-                    appContext.getRegistry().registerObject(contentHandler);
-
+                    applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), smooksResourceConfiguration, contentHandler)));
+                    applicationContext.getRegistry().registerObject(contentHandler);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
-                    throw new IllegalStateException("Failed to create an instance of Java ContentHandler [" + smooksResourceConfiguration.getResource() + "].  See exception cause...", e);
+                    throw new SmooksException("Failed to create an instance of Java ContentHandler [" + smooksResourceConfiguration.getResource() + "].  See exception cause...", e);
                 }
 
                 return contentHandler;

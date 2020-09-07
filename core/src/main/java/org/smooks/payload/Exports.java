@@ -48,7 +48,6 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.util.ClassUtil;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.xml.transform.Result;
 import java.util.*;
@@ -65,9 +64,7 @@ import java.util.*;
  */
 public class Exports implements ContentHandler {
     
-    private static final Exports NULL_EXPORTS = new Exports();
-
-    private final Map<Class<?>, Export> exportsMap = new HashMap<Class<?>, Export>();
+    private final Map<Class<?>, Export> exportsMap = new HashMap<>();
 
     @Inject
     private ApplicationContext applicationContext;
@@ -103,11 +100,6 @@ public class Exports implements ContentHandler {
         }
     }
 
-    @PostConstruct
-    public void setExportsInAppContext() {
-        Exports.setExportsInApplicationContext(applicationContext, this);
-    }
-
     public void addExport(Export export) {
         exportsMap.put(export.getType(), export);
     }
@@ -139,24 +131,7 @@ public class Exports implements ContentHandler {
     public Collection<Export> getProducts() {
         return getExports();
     }
-
-    public static void setExportsInApplicationContext(final ApplicationContext appContext, final Exports exports) {
-        appContext.getRegistry().registerObject(Exports.class, exports);
-    }
-
-    public static Exports getExports(final ApplicationContext appContext) {
-        Exports exports = appContext.getRegistry().lookup(Exports.class);
-        if (exports == null) {
-            return NULL_EXPORTS;
-        }
-        return exports;
-    }
-
-    public static void addExport(ApplicationContext appContext, Export export) {
-        Exports exports = getExports(appContext);
-        exports.addExport(export);
-    }
-
+    
     /**
      * Will return the Objects contained in the results array. If the corresponding
      * {@link Export} for that result type was configured with an extract property

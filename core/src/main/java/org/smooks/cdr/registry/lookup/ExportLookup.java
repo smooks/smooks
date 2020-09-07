@@ -40,20 +40,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery;
+package org.smooks.cdr.registry.lookup;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.container.ApplicationContext;
-import org.smooks.dtd.DTDStore;
-import org.smooks.event.types.ConfigBuilderEvent;
+import org.smooks.payload.Exports;
 
-import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
-public interface StreamDeliveryProvider {
-    ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> contentHandlerBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors);
-    
-    Boolean isProvider(List<ContentHandlerBinding<Visitor>> visitorBindings);
-    
-    String getName();
+public class ExportLookup implements Function<Map<Object, Object>, Exports> {
+
+    @Override
+    public Exports apply(Map<Object, Object> registryEntries) {
+        return (Exports) registryEntries.get(Exports.class);
+    }
 }

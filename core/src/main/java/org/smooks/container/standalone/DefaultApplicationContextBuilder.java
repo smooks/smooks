@@ -51,6 +51,7 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.container.ApplicationContextBuilder;
 import org.smooks.delivery.ContentHandlerFactory;
 import org.smooks.delivery.DefaultContentDeliveryConfigBuilderFactory;
+import org.smooks.payload.Exports;
 import org.smooks.profile.DefaultProfileSet;
 import org.smooks.profile.Profile;
 
@@ -79,7 +80,8 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
         
         final Registry registry = new Registry(standaloneApplicationContext.getClassLoader(), standaloneApplicationContext.getResourceLocator(), standaloneApplicationContext.getProfileStore());
         registry.registerObject(ApplicationContext.class, standaloneApplicationContext);
-        
+        registry.registerObject(Exports.class, new Exports());
+
         registerInstalledContentHandlerFactories(registry);
         if (registerInstalledResources) {
             registerInstalledResources(registry);
@@ -95,7 +97,7 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     private void registerInstalledContentHandlerFactories(final Registry registry) {
         final Iterator<ContentHandlerFactory> contentHandlerFactoryIterator = ServiceLoader.load(ContentHandlerFactory.class).iterator();
         while (contentHandlerFactoryIterator.hasNext()) {
-            final ContentHandlerFactory contentHandlerFactory = contentHandlerFactoryIterator.next();
+            final ContentHandlerFactory<?> contentHandlerFactory = contentHandlerFactoryIterator.next();
             registry.lookup(new LifecycleManagerLookup()).applyPhase(contentHandlerFactory, new PostConstructLifecyclePhase(new Scope(registry)));
             registry.registerObject(contentHandlerFactory);
         }
@@ -107,9 +109,9 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
      * @param resourceFile Installed (internal) resource config file.
      */
     private void registerInstalledResources(final Registry registry) {
-        registry.addSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-dom.cdrl", classLoader).create());
-        registry.addSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-sax.cdrl", classLoader).create());
-        registry.addSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-param-decoders.cdrl", classLoader).create());
-        registry.addSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-serializers.cdrl", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-dom.cdrl", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-sax.cdrl", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-param-decoders.cdrl", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-serializers.cdrl", classLoader).create());
     }
 }

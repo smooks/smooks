@@ -81,7 +81,7 @@ public class ContentHandlerBindings<T extends ContentHandler> {
         elementMappings.add(contentHandlerBinding);
         count++;
         
-        if(!contentHandlerBinding.getResourceConfig().isDefaultResource()) {
+        if(!contentHandlerBinding.getSmooksResourceConfiguration().isDefaultResource()) {
         	userConfiguredCount++;
         }
     }

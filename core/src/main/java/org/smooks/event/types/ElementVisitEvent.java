@@ -102,7 +102,7 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
     }
 
     public SmooksResourceConfiguration getResourceConfig() {
-        return configMapping.getResourceConfig();
+        return configMapping.getSmooksResourceConfiguration();
     }
 
     public ContentHandlerBinding getConfigMapping() {
@@ -152,13 +152,13 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
     private boolean evalReportCondition(String condition) {
         MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
         conditionEval.setExpression(condition);
-        return conditionEval.eval(configMapping.getResourceConfig());
+        return conditionEval.eval(configMapping.getSmooksResourceConfiguration());
     }
 
     private void applyReportTemplates(String summary, String detailTemplate, Class handlerClass, ExecutionContext executionContext) {
         Map<String, Object> templateParams = new HashMap<String, Object>();
 
-        templateParams.put("resource", configMapping.getResourceConfig());
+        templateParams.put("resource", configMapping.getSmooksResourceConfiguration());
         templateParams.put("execContext", executionContext);
         templateParams.put("event", this);
 

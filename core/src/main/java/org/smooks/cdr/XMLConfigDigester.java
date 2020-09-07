@@ -530,7 +530,7 @@ public final class XMLConfigDigester {
 
                 configDigester.extendedConfigDigesters = extendedConfigDigesters;
                 configDigester.digestConfigRecursively(new InputStreamReader(ClassUtil.getResourceAsStream(resourcePath, classLoader)), baseURI);
-                configStore.addSmooksResourceConfigurationList(extConfigList);
+                configStore.registerSmooksResourceConfigurationList(extConfigList);
             } catch (Exception e) {
                 throw new SmooksConfigurationException("Failed to construct Smooks instance for processing extended configuration resource '" + resourcePath + "'.", e);
             } finally {
