@@ -44,7 +44,7 @@ package org.smooks.payload;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cdr.registry.lookup.ExportLookup;
+import org.smooks.cdr.registry.lookup.ExportsLookup;
 
 import javax.xml.transform.Result;
 import java.util.Collection;
@@ -67,7 +67,7 @@ public class ExportsFunctionalTest
         Smooks smooks = new Smooks("/org/smooks/payload/exports-01.xml");
         smooks.createExecutionContext();
         
-        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportLookup());
+        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportsLookup());
 
         Set<Class<?>> resultTypes = exports.getResultTypes();
         assertTrue(resultTypes.contains(StringResult.class));
@@ -80,7 +80,7 @@ public class ExportsFunctionalTest
         Smooks smooks = new Smooks("/org/smooks/payload/exports-named.xml");
         smooks.createExecutionContext();
 
-        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportLookup());
+        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportsLookup());
         Collection<Export> exportTypes = exports.getExports();
         assertEquals(2, exportTypes.size());
     }
@@ -92,7 +92,7 @@ public class ExportsFunctionalTest
         smooks.createExecutionContext();
         smooks.setExports(new Exports(StringResult.class));
 
-        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportLookup());
+        Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportsLookup());
 
         assertTrue(exports.getResultTypes().contains(StringResult.class));
         assertEquals(1, exports.getResultTypes().size());
