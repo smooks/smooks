@@ -47,7 +47,7 @@ import org.smooks.payload.Exports;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ExportLookup implements Function<Map<Object, Object>, Exports> {
+public class ExportsLookup implements Function<Map<Object, Object>, Exports> {
 
     @Override
     public Exports apply(Map<Object, Object> registryEntries) {
