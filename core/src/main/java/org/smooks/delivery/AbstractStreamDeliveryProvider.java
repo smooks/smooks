@@ -42,7 +42,6 @@
  */
 package org.smooks.delivery;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.delivery.annotation.VisitAfterIf;
 import org.smooks.delivery.annotation.VisitBeforeIf;
 import org.smooks.delivery.dom.DOMVisitAfter;
@@ -54,7 +53,7 @@ import org.smooks.expression.MVELExpressionEvaluator;
 
 public abstract class AbstractStreamDeliveryProvider implements StreamDeliveryProvider {
 
-    protected boolean visitBeforeAnnotationsOK(SmooksResourceConfiguration resourceConfig, ContentHandler contentHandler) {
+    protected boolean visitBeforeAnnotationsOK(ContentHandler contentHandler) {
         Class<? extends ContentHandler> handlerClass = contentHandler.getClass();
         VisitBeforeIf visitBeforeIf = handlerClass.getAnnotation(VisitBeforeIf.class);
 
@@ -62,13 +61,13 @@ public abstract class AbstractStreamDeliveryProvider implements StreamDeliveryPr
             MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
 
             conditionEval.setExpression(visitBeforeIf.condition());
-            return conditionEval.eval(resourceConfig);
+            return conditionEval.eval(contentHandler);
         }
 
         return true;
     }
 
-    protected boolean visitAfterAnnotationsOK(SmooksResourceConfiguration resourceConfig, ContentHandler contentHandler) {
+    protected boolean visitAfterAnnotationsOK(ContentHandler contentHandler) {
         Class<? extends ContentHandler> handlerClass = contentHandler.getClass();
         VisitAfterIf visitAfterIf = handlerClass.getAnnotation(VisitAfterIf.class);
 
@@ -76,7 +75,7 @@ public abstract class AbstractStreamDeliveryProvider implements StreamDeliveryPr
             MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
 
             conditionEval.setExpression(visitAfterIf.condition());
-            return conditionEval.eval(resourceConfig);
+            return conditionEval.eval(contentHandler);
         }
 
         return true;

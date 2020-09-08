@@ -70,10 +70,10 @@ public class SAXStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
             }
             
             if (isSAXVisitor(contentHandlerBinding.getContentHandler())) {
-                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitBefore && visitBeforeAnnotationsOK(contentHandlerBinding.getSmooksResourceConfiguration(), contentHandlerBinding.getContentHandler())) {
+                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitBefore && visitBeforeAnnotationsOK(contentHandlerBinding.getContentHandler())) {
                     saxConfig.getVisitBefores().addBinding(targetElement, contentHandlerBinding.getSmooksResourceConfiguration(), (SAXVisitBefore) contentHandlerBinding.getContentHandler());
                 }
-                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitAfter && visitAfterAnnotationsOK(contentHandlerBinding.getSmooksResourceConfiguration(), contentHandlerBinding.getContentHandler())) {
+                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitAfter && visitAfterAnnotationsOK(contentHandlerBinding.getContentHandler())) {
                     saxConfig.getVisitAfters().addBinding(targetElement, contentHandlerBinding.getSmooksResourceConfiguration(), (SAXVisitAfter) contentHandlerBinding.getContentHandler());
                 }
                 configBuilderEvents.add(new ConfigBuilderEvent(contentHandlerBinding.getSmooksResourceConfiguration(), "Added as a SAX resource."));

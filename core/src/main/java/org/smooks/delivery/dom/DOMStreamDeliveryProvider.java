@@ -82,26 +82,26 @@ public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
 
                     if (phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
                         // It's an assembly unit...
-                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
                             domConfig.getAssemblyVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
                         }
-                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
                             domConfig.getAssemblyVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
                         }
                     } else if (visitPhase.equalsIgnoreCase(VisitPhase.ASSEMBLY.toString())) {
                         // It's an assembly unit...
-                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
                             domConfig.getAssemblyVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
                         }
-                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
                             domConfig.getAssemblyVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
                         }
                     } else {
                         // It's a processing unit...
-                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
                             domConfig.getProcessingVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
                         }
-                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
                             domConfig.getProcessingVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
                         }
                     }
