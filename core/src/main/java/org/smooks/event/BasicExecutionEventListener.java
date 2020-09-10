@@ -125,7 +125,7 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
 
         if(event instanceof ElementVisitEvent) {
             ElementVisitEvent visitEvent = (ElementVisitEvent) event;
-            ContentHandler handler = visitEvent.getConfigMapping().getContentHandler();
+            ContentHandler handler = visitEvent.getVisitorBinding().getContentHandler();
             if(visitEvent.getSequence() == VisitSequence.BEFORE) {
                 VisitBeforeReport reportAnnotation = handler.getClass().getAnnotation(VisitBeforeReport.class);
                 if(reportAnnotation != null) {

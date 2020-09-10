@@ -314,7 +314,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
 
                 if (visitEvent.getSequence() == visitSequence) {
                     ReportInfoNode reportInfoNode = new ReportInfoNode();
-                    ContentHandlerBinding configMapping = ((ElementVisitEvent) event).getConfigMapping();
+                    ContentHandlerBinding configMapping = ((ElementVisitEvent) event).getVisitorBinding();
 
                     messageNode.addExecInfoNode(reportInfoNode);
 

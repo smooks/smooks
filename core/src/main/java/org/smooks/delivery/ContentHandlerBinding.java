@@ -43,7 +43,6 @@
 package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationFactory;
 import org.smooks.cdr.injector.FieldInjector;
 import org.smooks.cdr.injector.Scope;
 import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
@@ -79,14 +78,7 @@ public class ContentHandlerBinding<T extends ContentHandler> {
 
     public ContentHandlerBinding(final T contentHandler, final String targetSelector, final String targetSelectorNS, final Registry registry) {
         this.contentHandler = contentHandler;
-        if (contentHandler instanceof SmooksResourceConfigurationFactory) {
-            smooksResourceConfiguration = ((SmooksResourceConfigurationFactory) contentHandler).createConfiguration();
-            smooksResourceConfiguration.setResource(contentHandler.getClass().getName());
-            smooksResourceConfiguration.setSelector(targetSelector);
-        } else {
-            smooksResourceConfiguration = new SmooksResourceConfiguration(targetSelector, contentHandler.getClass().getName());
-        }
-
+        smooksResourceConfiguration = new SmooksResourceConfiguration(targetSelector, contentHandler.getClass().getName());
         smooksResourceConfiguration.setSelectorNamespaceURI(targetSelectorNS);
 
         final FieldInjector fieldInjector = new FieldInjector(contentHandler, new Scope(registry, smooksResourceConfiguration, contentHandler));
