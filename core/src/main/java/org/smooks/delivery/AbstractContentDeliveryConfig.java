@@ -290,7 +290,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         	SmooksResourceConfiguration resourceConfig = configMap.getSmooksResourceConfiguration();
 
         	if(!resourceConfig.isDefaultResource()) {
-	        	if(resourceConfig.getTargetElement().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+	        	if(resourceConfig.getSelectorPath().getTargetElement().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
 	        		T visitor = configMap.getContentHandler();
 	        		if(visitor instanceof FilterBypass) {
 	        			return (FilterBypass) visitor;

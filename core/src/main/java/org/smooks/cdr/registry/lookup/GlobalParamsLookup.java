@@ -64,7 +64,7 @@ public class GlobalParamsLookup implements Function<Map<Object, Object>, SmooksR
         for (final SmooksResourceConfigurationList smooksResourceConfigurationList : this.registry.lookup(new SmooksResourceConfigurationListsLookup())) {
             for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
                 final SmooksResourceConfiguration nextSmooksResourceConfiguration = smooksResourceConfigurationList.get(i);
-                if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextSmooksResourceConfiguration.getSelector())) {
+                if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextSmooksResourceConfiguration.getSelectorPath().getSelector())) {
                     smooksResourceConfiguration.addParameters(nextSmooksResourceConfiguration);
                 }
             }

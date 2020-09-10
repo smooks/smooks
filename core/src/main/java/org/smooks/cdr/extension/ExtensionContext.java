@@ -84,10 +84,10 @@ public class ExtensionContext {
     };
     private final SmooksResourceConfigurationChangeListener resChangeListener = new SmooksResourceConfigurationChangeListener() {
         public void changed(SmooksResourceConfiguration configuration) {
-            String selector = configuration.getSelector();
+            String selector = configuration.getSelectorPath().getSelector();
             if(selector != null && selector.startsWith("#/")) {
                 SmooksResourceConfiguration parentResource = resourceStack.get(resourceStack.size() - 2);
-                configuration.setSelector(parentResource.getSelector() + selector.substring(1));
+                configuration.setSelector(parentResource.getSelectorPath().getSelector() + selector.substring(1));
             }
         }
     };

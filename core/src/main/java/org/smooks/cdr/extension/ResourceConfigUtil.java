@@ -110,13 +110,13 @@ public abstract class ResourceConfigUtil {
 
     public static void mapProperty(SmooksResourceConfiguration fromConfig, String fromProperty, SmooksResourceConfiguration toConfig, String toProperty, String defaultValue, ExecutionContext executionContext) throws SmooksException {
         if(fromProperty.equals("selector")) {
-            setProperty(toConfig, toProperty, fromConfig.getSelector(), executionContext);
+            setProperty(toConfig, toProperty, fromConfig.getSelectorPath().getSelector(), executionContext);
         } else if(fromProperty.equals("resource")) {
             setProperty(toConfig, toProperty, fromConfig.getResource(), executionContext);
         } else if(fromProperty.equals("resourceType")) {
             setProperty(toConfig, toProperty, fromConfig.getResourceType(), executionContext);
         } else if(fromProperty.equals("selector-namespace")) {
-            setProperty(toConfig, toProperty, fromConfig.getSelectorNamespaceURI(), executionContext);
+            setProperty(toConfig, toProperty, fromConfig.getSelectorPath().getSelectorNamespaceURI(), executionContext);
         } else if(fromProperty.equals("defaultResource")) {
             setProperty(toConfig, toProperty, fromConfig.isDefaultResource(), executionContext);
         } else if(fromProperty.equals("targetProfile")) {

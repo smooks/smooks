@@ -62,12 +62,12 @@ public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
         for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
-            final String targetElement = contentHandlerBinding.getSmooksResourceConfiguration().getTargetElement();
+            final String targetElement = contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetElement();
             final Visitor visitor = contentHandlerBinding.getContentHandler();
             final SmooksResourceConfiguration smooksResourceConfiguration = contentHandlerBinding.getSmooksResourceConfiguration();
 
             try {
-                SelectorStep.setNamespaces(smooksResourceConfiguration.getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+                SelectorStep.setNamespaces(smooksResourceConfiguration.getSelectorPath(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
             } catch (SAXPathException e) {
                 throw new SmooksConfigurationException("Error configuring resource selector.", e);
             }

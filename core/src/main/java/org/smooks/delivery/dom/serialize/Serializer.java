@@ -300,7 +300,7 @@ public class Serializer {
             SmooksResourceConfiguration config = elementSU.getSmooksResourceConfiguration();
 
             // Make sure the serialization unit is targeted at this element.
-            if (!config.isTargetedAtElement(element, executionContext))
+            if (!config.getSelectorPath().isTargetedAtElement(element, executionContext))
             {
               continue;
             }

@@ -50,10 +50,7 @@ import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
-import org.smooks.cdr.xpath.evaluators.PredicatesEvaluator;
-import org.smooks.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
-import org.smooks.cdr.xpath.evaluators.XPathExpressionEvaluator;
+import org.smooks.cdr.xpath.evaluators.*;
 import org.smooks.cdr.xpath.evaluators.equality.AbstractEqualityEvaluator;
 import org.smooks.cdr.xpath.evaluators.logical.AbstractLogicalEvaluator;
 import org.smooks.cdr.xpath.evaluators.value.TextValue;
@@ -430,17 +427,17 @@ public class SelectorStep {
 
     /**
      * Set the namespaces on the specified set of selector steps.
-     * @param steps The selector steps.
+     * @param selectorPath The selector steps.
      * @param namespaces The set of selector steps to be updated.
      * @return The set of selector steps (as passed in the 'steps' argument).
      * @throws org.jaxen.saxpath.SAXPathException Error setting namespaces
      */
-    public static SelectorStep[] setNamespaces(SelectorStep[] steps, Properties namespaces) throws SAXPathException {
-        AssertArgument.isNotNull(steps, "steps");
+    public static SelectorPath setNamespaces(SelectorPath selectorPath, Properties namespaces) throws SAXPathException {
+        AssertArgument.isNotNull(selectorPath, "steps");
         AssertArgument.isNotNull(namespaces, "namespaces");
 
-        for(int i = 0; i < steps.length; i++) {
-            SelectorStep step = steps[i];
+        for(int i = 0; i < selectorPath.size(); i++) {
+            SelectorStep step = selectorPath.get(i);
             try {
                 step.buildPredicatesEvaluator(namespaces);
             } catch (SAXPathException e) {
@@ -449,13 +446,12 @@ public class SelectorStep {
                 throw new SAXPathException("Error compiling PredicatesEvaluator.", e);
             }
 
-            //
-            if(i < steps.length - 1 && step.accessesText()) {
+            if(i < selectorPath.size() - 1 && step.accessesText()) {
                 throw new SAXPathException("Unsupported XPath selector expression '" + step.getXPathExpression() + "'.  XPath 'text()' tokens are only supported in the last step.");
             }
         }
 
-        return steps;
+        return selectorPath;
     }
 
     /**
