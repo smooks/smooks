@@ -155,7 +155,7 @@ public class SmooksResourceConfigurationSortComparator implements Comparator {
 		// Check the 'selector' attribute value.
 		if(resourceConfig.isXmlDef()) {
 			specificity += 10;
-		} else if(resourceConfig.getSelector().equals("*")) {
+		} else if(resourceConfig.getSelectorPath().getSelector().equals("*")) {
 			specificity += 5;
 		} else {
 			// Explicit selector listed
@@ -164,14 +164,14 @@ public class SmooksResourceConfigurationSortComparator implements Comparator {
 			// If the selector is contextual it's, therefore more specific so
 			// account for that.  Subtract 1 because that "1" is already accounted
 			// for by the addition of 100 - it's the extra we're accounting for here...
-			if(resourceConfig.isSelectorContextual()) {
-			    int contextSpecificity = resourceConfig.getSelectorSteps().length;
+			if(resourceConfig.getSelectorPath().isSelectorContextual()) {
+			    int contextSpecificity = resourceConfig.getSelectorPath().size();
 			    specificity += (10 * (contextSpecificity - 1));
 			}
 		}
 		
 		// Check the 'namespace' attribute.
-		if(resourceConfig.getSelectorNamespaceURI() != null) {
+		if(resourceConfig.getSelectorPath().getSelectorNamespaceURI() != null) {
 			specificity += 10;
 		}
 		

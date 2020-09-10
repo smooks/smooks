@@ -87,7 +87,7 @@ public class NamespaceMappings {
 
 		for (SmooksResourceConfigurationList smooksResourceConfigurationList : applicationContext.getRegistry().lookup(new SmooksResourceConfigurationListsLookup())) {
 			for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-				SelectorStep.setNamespaces(smooksResourceConfigurationList.get(i).getSelectorSteps(), newNamespaces);
+				SelectorStep.setNamespaces(smooksResourceConfigurationList.get(i).getSelectorPath(), newNamespaces);
 			}
 		}
 		

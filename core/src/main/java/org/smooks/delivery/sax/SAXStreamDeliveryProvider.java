@@ -62,9 +62,9 @@ public class SAXStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
         SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
 
         for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
-            String targetElement = contentHandlerBinding.getSmooksResourceConfiguration().getTargetElement();
+            String targetElement = contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetElement();
             try {
-                SelectorStep.setNamespaces(contentHandlerBinding.getSmooksResourceConfiguration().getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+                SelectorStep.setNamespaces(contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
             } catch (SAXPathException e) {
                 throw new SmooksConfigurationException("Error configuring resource selector.", e);
             }

@@ -45,6 +45,7 @@ package org.smooks.delivery.sax;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.evaluators.equality.ElementIndexCounter;
 import org.smooks.cdr.xpath.evaluators.equality.IndexEvaluator;
@@ -226,7 +227,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         for(List<ContentHandlerBinding<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
             for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
                 SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
-                SelectorStep selectorStep = resourceConfig.getSelectorStep();
+                SelectorStep selectorStep = resourceConfig.getSelectorPath().getSelectorStep();
 
                 if(selectorStep.accessesText()) {
                     throw new SmooksConfigurationException("Unsupported selector '" + selectorStep.getXPathExpression() + "' on resource '" + resourceConfig + "'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the " + SAXVisitAfter.class.getName() + " interface only.  Class '" + resourceConfig.getResource() + "' implements other SAX Visitor interfaces.");
@@ -253,10 +254,10 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : saxVisitorMap) {
             SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
-            SelectorStep[] selectorSteps = resourceConfig.getSelectorSteps();
-            List<IndexEvaluator> indexEvaluators = new ArrayList<IndexEvaluator>();
+            SelectorPath selectorPath = resourceConfig.getSelectorPath();
+            List<IndexEvaluator> indexEvaluators = new ArrayList<>();
 
-            for(SelectorStep selectorStep : selectorSteps) {
+            for(SelectorStep selectorStep : selectorPath) {
                 indexEvaluators.clear();
                 selectorStep.getEvaluators(IndexEvaluator.class, indexEvaluators);
                 for(IndexEvaluator indexEvaluator : indexEvaluators) {

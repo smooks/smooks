@@ -133,7 +133,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
     }
 
     public Set<String> getProducts() {
-        return CollectionsUtil.toSet(config.getTargetElement());
+        return CollectionsUtil.toSet(config.getSelectorPath().getTargetElement());
     }
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {

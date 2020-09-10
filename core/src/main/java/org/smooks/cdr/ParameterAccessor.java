@@ -199,7 +199,7 @@ public abstract class ParameterAccessor {
             SmooksResourceConfigurationList list = configLists.next();
             for(int i = 0; i < list.size(); i++) {
                 SmooksResourceConfiguration nextConfig = list.get(i);
-                if(ParameterAccessor.GLOBAL_PARAMETERS.equals(nextConfig.getSelector())) {
+                if(ParameterAccessor.GLOBAL_PARAMETERS.equals(nextConfig.getSelectorPath().getSelector())) {
                 	nextConfig.removeParameter(name);
                 }
             }

@@ -101,7 +101,7 @@ public class SmooksResourceConfigurationList {
      */
     public void add(SmooksResourceConfiguration config) {
         AssertArgument.isNotNull(config, "config");
-        String[] selectors = config.getSelector().split(",");
+        String[] selectors = config.getSelectorPath().getSelector().split(",");
 
         for(String selector : selectors) {
             SmooksResourceConfiguration clone = (SmooksResourceConfiguration) config.clone();

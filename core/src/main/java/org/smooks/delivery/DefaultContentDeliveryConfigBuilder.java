@@ -299,11 +299,11 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * @param config The configuration to be added.
      */
     private void addResourceConfiguration(SmooksResourceConfiguration config) {
-        String target = config.getSelector();
+        String target = config.getSelectorPath().getSelector();
 
         // If it's contextual, it's targeting an XML element...
-        if(config.isSelectorContextual()) {
-            target = config.getTargetElement();
+        if(config.getSelectorPath().isSelectorContextual()) {
+            target = config.getSelectorPath().getTargetElement();
         }
 
         addResourceConfiguration(target, config);
@@ -345,7 +345,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             public void applyStrategy(String elementName, SmooksResourceConfiguration resourceConfig) {
                 // Expand XmlDef entries.
                 if (resourceConfig.isXmlDef()) {
-                    String[] elements = getDTDElements(resourceConfig.getSelector().substring(SmooksResourceConfiguration.XML_DEF_PREFIX.length()));
+                    String[] elements = getDTDElements(resourceConfig.getSelectorPath().getSelector().substring(SmooksResourceConfiguration.XML_DEF_PREFIX.length()));
                     for (final String element : elements) {
                         addResourceConfiguration(element, resourceConfig);
                     }
@@ -599,7 +599,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 		 */
         private void iterate() {
             for (final SmooksResourceConfiguration smooksResourceConfiguration : resourceConfigsList) {
-                strategy.applyStrategy(smooksResourceConfiguration.getTargetElement(), smooksResourceConfiguration);
+                strategy.applyStrategy(smooksResourceConfiguration.getSelectorPath().getTargetElement(), smooksResourceConfiguration);
             }
         }
 	}
