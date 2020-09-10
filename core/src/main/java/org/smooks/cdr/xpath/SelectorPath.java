@@ -79,27 +79,6 @@ public class SelectorPath implements List<SelectorStep> {
     private String namespaceURI;
 
     /**
-     * The name of the target element specified on the selector.
-     */
-    private QName targetElement;
-    /**
-     * The name of an attribute, if one is specified on the selector.
-     */
-    private QName targetAttribute;
-
-    /**
-     * Is the selector contextual i.e. does it have multiple steps.
-     */
-    private boolean isContextualSelector;
-
-    /**
-     * Selector step.  Is the last step in the selectorSteps array.
-     * We maintsain it as a stanalone variable as a small optimization i.e to save
-     * indexing into the selectorSteps array.
-     */
-    private SelectorStep selectorStep;
-
-    /**
      * Condition evaluator used in resource targeting.
      */
     private ExpressionEvaluator expressionEvaluator;
@@ -135,12 +114,9 @@ public class SelectorPath implements List<SelectorStep> {
 
         try {
             selectorSteps.addAll(SelectorStepBuilder.buildSteps(selector));
-
         } catch (SAXPathException e) {
             selectorSteps.addAll(constructSelectorStepsFromLegacySelector(selector));
         }
-
-        initTarget();
     }
 
     private SelectorPath constructSelectorStepsFromLegacySelector(String selector) {
@@ -220,8 +196,8 @@ public class SelectorPath implements List<SelectorStep> {
      *
      * @return The targeting selector step.
      */
-    public SelectorStep getSelectorStep() {
-        return selectorStep;
+    public SelectorStep getLastSelectorStep() {
+        return selectorSteps.get(selectorSteps.size() - 1);
     }
 
     /**
@@ -237,23 +213,7 @@ public class SelectorPath implements List<SelectorStep> {
      * @return The target XML element name.
      */
     public String getTargetElement() {
-        return targetElement.getLocalPart();
-    }
-
-    /**
-     * Get the {@link QName} of the target element where the {@link #getSelector() selector}
-     * is targeting the resource at an XML element.
-     * <p/>
-     * Accomodates the fact that element based selectors can be contextual. This method
-     * is not relevant where the selector is not targeting an XML element.
-     * <p/>
-     * See details about the "selector" attribute in the
-     * <a href="#attribdefs">Attribute Definitions</a> section.
-     *
-     * @return The target XML element {@link QName}.
-     */
-    public QName getTargetElementQName() {
-        return targetElement;
+        return getLastSelectorStep().getTargetElement().getLocalPart();
     }
 
     /**
@@ -263,20 +223,11 @@ public class SelectorPath implements List<SelectorStep> {
      * @return An attribute name, if one was specified on the selector, otherwise null.
      */
     public String getTargetAttribute() {
+        QName targetAttribute = getLastSelectorStep().getTargetAttribute();
         if (targetAttribute == null) {
             return null;
         }
         return targetAttribute.getLocalPart();
-    }
-
-    /**
-     * Get the name of the attribute specified on the selector, if one was
-     * specified.
-     *
-     * @return An attribute name, if one was specified on the selector, otherwise null.
-     */
-    public QName getTargetAttributeQName() {
-        return targetAttribute;
     }
 
     /**
@@ -327,19 +278,7 @@ public class SelectorPath implements List<SelectorStep> {
     public ExpressionEvaluator getConditionEvaluator() {
         return expressionEvaluator;
     }
-
-    /**
-     * Is the resource selector contextual.
-     * <p/>
-     * See details about the "selector" attribute in the
-     * <a href="#attribdefs">Attribute Definitions</a> section.
-     *
-     * @return True if the selector is contextual, otherwise false.
-     */
-    public boolean isSelectorContextual() {
-        return isContextualSelector;
-    }
-
+    
     /**
      * Is this resource configuration targeted at the specified DOM element
      * in context.
@@ -607,22 +546,22 @@ public class SelectorPath implements List<SelectorStep> {
         } else {
             // We don't test the SelectorStep namespace if a namespace is configured on the
             // resource configuration.  This is why we have this code inside the else block.
-            if (!selectorStep.isTargetedAtNamespace(element.getNamespaceURI())) {
+            if (!getLastSelectorStep().isTargetedAtNamespace(element.getNamespaceURI())) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + selectorStep.getTargetElement().getNamespaceURI() + "].");
+                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + getLastSelectorStep().getTargetElement().getNamespaceURI() + "].");
                 }
                 return false;
             }
         }
 
-        XPathExpressionEvaluator evaluator = selectorStep.getPredicatesEvaluator();
+        XPathExpressionEvaluator evaluator = getLastSelectorStep().getPredicatesEvaluator();
         if (evaluator == null) {
             LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
         } else if (!evaluator.evaluate(element, executionContext)) {
             return false;
         }
 
-        if (isContextualSelector && !isTargetedAtElementContext(element, executionContext)) {
+        if (selectorSteps.size() > 1 && !isTargetedAtElementContext(element, executionContext)) {
             // Note: If the selector is not contextual, there's no need to perform the
             // isTargetedAtElementContext check because we already know the unit is targeted at the
             // element by name - because we looked it up by name in the 1st place (at least that's the assumption).
@@ -660,22 +599,22 @@ public class SelectorPath implements List<SelectorStep> {
         } else {
             // We don't test the SelectorStep namespace if a namespace is configured on the
             // resource configuration.  This is why we have this code inside the else block.
-            if (!selectorStep.isTargetedAtNamespace(element.getName().getNamespaceURI())) {
+            if (!getLastSelectorStep().isTargetedAtNamespace(element.getName().getNamespaceURI())) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + selectorStep.getTargetElement().getNamespaceURI() + "].");
+                    LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + getLastSelectorStep().getTargetElement().getNamespaceURI() + "].");
                 }
                 return false;
             }
         }
 
-        XPathExpressionEvaluator evaluator = selectorStep.getPredicatesEvaluator();
+        XPathExpressionEvaluator evaluator = getLastSelectorStep().getPredicatesEvaluator();
         if (evaluator == null) {
             LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
         } else if (!evaluator.evaluate(element, executionContext)) {
             return false;
         }
 
-        if (isContextualSelector && !isTargetedAtElementContext(element, executionContext)) {
+        if (selectorSteps.size() > 1 && !isTargetedAtElementContext(element, executionContext)) {
             // Note: If the selector is not contextual, there's no need to perform the
             // isTargetedAtElementContext check because we already know the visitor is targeted at the
             // element by name - because we looked it up by name in the 1st place (at least that's the assumption).
@@ -688,13 +627,6 @@ public class SelectorPath implements List<SelectorStep> {
         return true;
     }
 
-    public void initTarget() {
-        selectorStep = selectorSteps.get(size() - 1);
-        targetElement = selectorStep.getTargetElement();
-        targetAttribute = selectorStep.getTargetAttribute();
-        isContextualSelector = (selectorSteps.size() > 1);
-    }
-
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean assertConditionTrue() {
         if (expressionEvaluator == null) {
@@ -705,36 +637,6 @@ public class SelectorPath implements List<SelectorStep> {
         ExecutionContext execContext = Filter.getCurrentExecutionContext();
 
         return evaluator.eval(execContext);
-    }
-
-    private String extractTargetElement(String[] contextualSelector) {
-        if (contextualSelector != null) {
-            String token = contextualSelector[contextualSelector.length - 1];
-            if (token.startsWith("@")) {
-                if (contextualSelector.length > 1) {
-                    token = contextualSelector[contextualSelector.length - 2];
-                }
-            }
-            return token;
-        } else {
-            return null;
-        }
-    }
-
-    public static String extractTargetAttribute(String[] selectorTokens) {
-        StringBuilder selectorProp = new StringBuilder();
-
-        for (String selectorToken : selectorTokens) {
-            if (selectorToken.trim().startsWith("@")) {
-                selectorProp.append(selectorToken.substring(1));
-            }
-        }
-
-        if (selectorProp.length() == 0) {
-            return null;
-        }
-
-        return selectorProp.toString();
     }
 
     /**
@@ -758,9 +660,6 @@ public class SelectorPath implements List<SelectorStep> {
         SelectorPath copySelectorPath = new SelectorPath();
 
         copySelectorPath.selector = selector;
-        copySelectorPath.targetElement = targetElement;
-        copySelectorPath.targetAttribute = targetAttribute;
-        copySelectorPath.isContextualSelector = isContextualSelector;
         copySelectorPath.namespaceURI = namespaceURI;
         copySelectorPath.expressionEvaluator = expressionEvaluator;
         

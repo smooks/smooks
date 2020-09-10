@@ -50,7 +50,10 @@ import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.xpath.evaluators.*;
+import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
+import org.smooks.cdr.xpath.evaluators.PredicatesEvaluator;
+import org.smooks.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
+import org.smooks.cdr.xpath.evaluators.XPathExpressionEvaluator;
 import org.smooks.cdr.xpath.evaluators.equality.AbstractEqualityEvaluator;
 import org.smooks.cdr.xpath.evaluators.logical.AbstractLogicalEvaluator;
 import org.smooks.cdr.xpath.evaluators.value.TextValue;
@@ -409,6 +412,7 @@ public class SelectorStep {
         }
     }
 
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -431,7 +435,7 @@ public class SelectorStep {
      * @param namespaces The set of selector steps to be updated.
      * @return The set of selector steps (as passed in the 'steps' argument).
      * @throws org.jaxen.saxpath.SAXPathException Error setting namespaces
-     */
+     */ 
     public static SelectorPath setNamespaces(SelectorPath selectorPath, Properties namespaces) throws SAXPathException {
         AssertArgument.isNotNull(selectorPath, "steps");
         AssertArgument.isNotNull(namespaces, "namespaces");
