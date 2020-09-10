@@ -483,7 +483,6 @@ public class SmooksResourceConfiguration {
      */
     public void setSelectorPath(SelectorPath selectorPath) {
         this.selectorPath = selectorPath;
-        selectorPath.initTarget();
         fireChangedEvent();
     }
 

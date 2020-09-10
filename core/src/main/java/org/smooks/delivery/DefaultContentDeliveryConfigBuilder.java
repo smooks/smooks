@@ -302,7 +302,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         String target = config.getSelectorPath().getSelector();
 
         // If it's contextual, it's targeting an XML element...
-        if(config.getSelectorPath().isSelectorContextual()) {
+        if(config.getSelectorPath().size() > 1) {
             target = config.getSelectorPath().getTargetElement();
         }
 

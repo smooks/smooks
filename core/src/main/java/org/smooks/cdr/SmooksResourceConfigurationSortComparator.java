@@ -164,7 +164,7 @@ public class SmooksResourceConfigurationSortComparator implements Comparator {
 			// If the selector is contextual it's, therefore more specific so
 			// account for that.  Subtract 1 because that "1" is already accounted
 			// for by the addition of 100 - it's the extra we're accounting for here...
-			if(resourceConfig.getSelectorPath().isSelectorContextual()) {
+			if(resourceConfig.getSelectorPath().size() > 1) {
 			    int contextSpecificity = resourceConfig.getSelectorPath().size();
 			    specificity += (10 * (contextSpecificity - 1));
 			}

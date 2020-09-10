@@ -227,7 +227,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         for(List<ContentHandlerBinding<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
             for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
                 SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
-                SelectorStep selectorStep = resourceConfig.getSelectorPath().getSelectorStep();
+                SelectorStep selectorStep = resourceConfig.getSelectorPath().getLastSelectorStep();
 
                 if(selectorStep.accessesText()) {
                     throw new SmooksConfigurationException("Unsupported selector '" + selectorStep.getXPathExpression() + "' on resource '" + resourceConfig + "'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the " + SAXVisitAfter.class.getName() + " interface only.  Class '" + resourceConfig.getResource() + "' implements other SAX Visitor interfaces.");
