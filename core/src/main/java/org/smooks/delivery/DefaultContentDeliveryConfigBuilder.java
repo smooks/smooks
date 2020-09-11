@@ -85,10 +85,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * XML selector content spec definition prefix
 	 */
 	private static final String ELCSPEC_PREFIX = "elcspec:";
-    /**
-     * An unsorted list of SmooksResourceConfiguration.
-     */
-    private final List<SmooksResourceConfiguration> resourceConfigsList = new ArrayList<>();
+
     /**
 	 * Table (by element) of sorted SmooksResourceConfiguration instances keyed by selector value. Each table entry
 	 * contains a List of SmooksResourceConfiguration instances.
@@ -225,11 +222,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * for the specified device.
 	 */
 	private void load(ProfileSet profileSet) {
-        resourceConfigsList.clear();
-        resourceConfigsList.addAll(Arrays.asList(applicationContext.getRegistry().lookup(new SmooksResourceConfigurationsProfileSetLookup(applicationContext.getRegistry(), profileSet))));
-
 		// Build and sort the resourceConfigTable table - non-transforming elements.
-		buildSmooksResourceConfigurationTable(resourceConfigsList);
+		buildSmooksResourceConfigurationTable(Arrays.asList(applicationContext.getRegistry().lookup(new SmooksResourceConfigurationsProfileSetLookup(applicationContext.getRegistry(), profileSet))));
 		sortSmooksResourceConfigurations(resourceConfigTable, profileSet);
 
 		// If there's a DTD for this device, get it and add it to the DTDStore.
@@ -314,19 +308,9 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * @param element The element to which the config is to be added.
      * @param resourceConfiguration The Object to be added.
      */
-    @SuppressWarnings("unchecked")
     private void addResourceConfiguration(String element, SmooksResourceConfiguration resourceConfiguration) {
-        // Add it to the unsorted list...
-        if(!resourceConfigsList.contains(resourceConfiguration)) {
-            resourceConfigsList.add(resourceConfiguration);
-        }
-
         // Add it to the sorted resourceConfigTable...
-        List elementConfigList = resourceConfigTable.get(element);
-        if(elementConfigList == null) {
-            elementConfigList = new Vector();
-            resourceConfigTable.put(element, elementConfigList);
-        }
+        List<SmooksResourceConfiguration> elementConfigList = resourceConfigTable.computeIfAbsent(element, k -> new Vector<>());
         if(!elementConfigList.contains(resourceConfiguration)) {
             elementConfigList.add(resourceConfiguration);
         }
@@ -598,7 +582,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 		 * Iterate over the table applying the strategy.
 		 */
         private void iterate() {
-            for (final SmooksResourceConfiguration smooksResourceConfiguration : resourceConfigsList) {
+            for (SmooksResourceConfiguration smooksResourceConfiguration : resourceConfigTable.values().stream().flatMap(List::stream).collect(Collectors.toList())) {
                 strategy.applyStrategy(smooksResourceConfiguration.getSelectorPath().getTargetElement(), smooksResourceConfiguration);
             }
         }
