@@ -49,7 +49,6 @@ import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.classpath.ClasspathUtils;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.Visitor;
-import org.smooks.expression.ExpressionEvaluator;
 import org.smooks.io.StreamUtils;
 import org.smooks.profile.Profile;
 import org.smooks.resource.URIResourceLocator;
@@ -221,10 +220,7 @@ public class SmooksResourceConfiguration {
      * The type of the resource.  "class", "groovy", "xsl" etc....
      */
     private String resourceType;
-    /**
-     * Is this selector defininition an XML based definition.
-     */
-    private boolean isXmlDef;
+   
     /**
      * SmooksResourceConfiguration parameters - String name and String value.
      */
@@ -330,7 +326,6 @@ public class SmooksResourceConfiguration {
         clone.resource = resource;
         clone.isInline = isInline;
         clone.resourceType = resourceType;
-        clone.isXmlDef = isXmlDef;
         if (parameters != null) {
             clone.parameters = (LinkedHashMap<String, Object>) parameters.clone();
         }
@@ -386,7 +381,7 @@ public class SmooksResourceConfiguration {
      */
     public SmooksResourceConfiguration(String selector, String selectorNamespaceURI, String targetProfile, String resource) {
         this(selector, targetProfile, resource);
-        setSelectorNamespaceURI(selectorNamespaceURI);
+        selectorPath.setSelectorNamespaceURI(selectorNamespaceURI);
     }
 
     /**
@@ -396,18 +391,7 @@ public class SmooksResourceConfiguration {
      */
     public void setSelector(final String selector) {
         selectorPath.setSelector(selector);
-        isXmlDef = selector.startsWith(XML_DEF_PREFIX);
-
         fireChangedEvent();
-    }
-
-    /**
-     * Set the namespace URI to which the selector is associated.
-     *
-     * @param namespaceURI Selector namespace.
-     */
-    public void setSelectorNamespaceURI(String namespaceURI) {
-        selectorPath.setSelectorNamespaceURI(namespaceURI);
     }
 
     /**
@@ -511,25 +495,7 @@ public class SmooksResourceConfiguration {
     public String getResource() {
         return resource;
     }
-
-    /**
-     * Set the condition evaluator to be used in targeting of this resource.
-     *
-     * @param expressionEvaluator The {@link org.smooks.expression.ExpressionEvaluator}, or null if no condition is to be used.
-     */
-    public void setConditionEvaluator(ExpressionEvaluator expressionEvaluator) {
-        selectorPath.setConditionEvaluator(expressionEvaluator);
-    }
-
-    /**
-     * Get the condition evaluator used in targeting of this resource.
-     *
-     * @return The {@link org.smooks.expression.ExpressionEvaluator}, or null if no condition is specified.
-     */
-    public ExpressionEvaluator getConditionEvaluator() {
-        return selectorPath.getConditionEvaluator();
-    }
-
+    
     /**
      * Is this resource config a default applied resource.
      * <p/>
@@ -811,7 +777,7 @@ public class SmooksResourceConfiguration {
      * @return True if this selector defininition is an XML based definition, otherwise false.
      */
     public boolean isXmlDef() {
-        return isXmlDef;
+        return selectorPath.getSelector().startsWith(XML_DEF_PREFIX);
     }
 
     /* (non-Javadoc)

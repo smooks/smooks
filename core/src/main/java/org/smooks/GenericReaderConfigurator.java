@@ -95,7 +95,7 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
 
     public List<SmooksResourceConfiguration> toConfig() {
         SmooksResourceConfiguration smooksConfig = new SmooksResourceConfiguration();
-
+        
         smooksConfig.setSelector(AbstractParser.ORG_XML_SAX_DRIVER);        
 
         if(readerClass != null) {

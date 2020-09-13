@@ -1062,5 +1062,11 @@ public abstract class DomUtils {
 		return elements;
 	}
 
-
+	public static Element getElementByTagName(Element configElement, String name) {
+		NodeList elements = configElement.getElementsByTagName(name);
+		if (elements.getLength() != 0) {
+			return (Element) elements.item(0);
+		}
+		return null;
+	}
 }

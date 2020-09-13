@@ -97,7 +97,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     private Boolean isDefaultSerializationOn = null;
 
     private final List<XMLReader> readerPool = new CopyOnWriteArrayList<XMLReader>();
-	private         int             readerPoolSize;
+    private int readerPoolSize;
 
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;

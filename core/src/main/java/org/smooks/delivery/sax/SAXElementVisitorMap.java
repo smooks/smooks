@@ -125,7 +125,7 @@ public class SAXElementVisitorMap {
         }
         for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : visitAfters) {
             SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
-            SelectorStep selectorStep = resourceConfig.getSelectorPath().getLastSelectorStep();
+            SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
 
             if(selectorStep.accessesText()) {
                 accumulateText = true;

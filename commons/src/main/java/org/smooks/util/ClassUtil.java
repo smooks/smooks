@@ -77,43 +77,40 @@ public class ClassUtil {
         primitives.put("byte", Byte.TYPE);
         primitives.put("short", Short.TYPE);
     }
-
+    
     /**
-	 * Load the specified class.
-	 *
-	 * @param className
-	 *            The name of the class to load.
-	 * @param caller
-	 *            The class of the caller.
-	 * @return The specified class.
-	 * @throws ClassNotFoundException
-	 *             If the class cannot be found.
-	 */
-	public static Class forName(final String className, final Class caller) throws ClassNotFoundException {
-		final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
+     * Load the specified class.
+     *
+     * @param className The name of the class to load.
+     * @param caller    The class of the caller.
+     * @return The specified class.
+     * @throws ClassNotFoundException If the class cannot be found.
+     */
+    public static Class forName(final String className, final Class caller) throws ClassNotFoundException {
+        final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
 
         Class primitiveClass = primitives.get(className);
-        if(primitiveClass != null) {
+        if (primitiveClass != null) {
             return primitiveClass;
         }
 
         if (threadClassLoader != null) {
-			try {
-				return threadClassLoader.loadClass(className);
-			} catch (final ClassNotFoundException ignored) {
-			} // ignore
-		}
+            try {
+                return threadClassLoader.loadClass(className);
+            } catch (final ClassNotFoundException ignored) {
+            } // ignore
+        }
 
-		ClassLoader classLoader = caller.getClassLoader();
-		if (classLoader != null) {
-			try {
-				return classLoader.loadClass(className);
-			} catch (final ClassNotFoundException ignored) {
-			} // ignore
-		}
+        ClassLoader classLoader = caller.getClassLoader();
+        if (classLoader != null) {
+            try {
+                return classLoader.loadClass(className);
+            } catch (final ClassNotFoundException ignored) {
+            } // ignore
+        }
 
-		return Class.forName(className, true, ClassLoader.getSystemClassLoader());
-	}
+        return Class.forName(className, true, ClassLoader.getSystemClassLoader());
+    }
 
     /**
      * Get the specified resource as a stream.

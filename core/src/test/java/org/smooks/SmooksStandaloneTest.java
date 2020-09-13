@@ -67,21 +67,15 @@ public class SmooksStandaloneTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SmooksStandaloneTest.class);
 	
 	@Test
-    public void testProcess() {
-        Smooks smooks = null;
-        try {
-            smooks = new PreconfiguredSmooks();
-            ExecutionContext context = smooks.createExecutionContext("msie6");
-            String response = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("html_2.html"), smooks);
-            LOGGER.debug(response);
-            Document doc = DomUtil.parse(response);
+    public void testProcess() throws IOException, SAXException {
+        Smooks smooks = new PreconfiguredSmooks();
+        ExecutionContext context = smooks.createExecutionContext("msie6");
+        String response = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("html_2.html"), smooks);
+        LOGGER.debug(response);
+        Document doc = DomUtil.parse(response);
 
-            assertNull(XmlUtil.getNode(doc, "html/body/xxx"));
-            assertNotNull(XmlUtil.getNode(doc, "html/body/yyy"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected exception: " + e.getMessage());
-        }
+        assertNull(XmlUtil.getNode(doc, "html/body/xxx"));
+        assertNotNull(XmlUtil.getNode(doc, "html/body/yyy"));
     }
 
 	@Test

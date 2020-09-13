@@ -80,14 +80,14 @@ public class NewResourceConfig implements DOMElementVisitor {
         if(extensionContext.getDefaultSelector() != null) {
             config.setSelector(extensionContext.getDefaultSelector());
         }
-        config.setSelectorNamespaceURI(extensionContext.getDefaultNamespace());
+        config.getSelectorPath().setSelectorNamespaceURI(extensionContext.getDefaultNamespace());
 
         String targetProfile = DomUtils.getAttributeValue(element, PARAMETER_TARGET_PROFILE);
         if(targetProfile == null) {
         	targetProfile = extensionContext.getDefaultProfile();
         }
         config.setTargetProfile(targetProfile);
-        config.setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
+        config.getSelectorPath().setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
 
         if(isTemplate) {
         	extensionContext.addResourceTemplate(config);

@@ -215,8 +215,10 @@ public class SelectorStepBuilder {
      */
     @SuppressWarnings("WeakerAccess")
     public static SelectorPath buildSteps(String selectorExpression, Properties namespaces) throws SAXPathException {
-        SelectorPath steps = buildSteps(selectorExpression);
-        return SelectorStep.setNamespaces(steps, namespaces);
+        SelectorPath selectorPath = buildSteps(selectorExpression);
+        selectorPath.setNamespaces(namespaces);
+        
+        return selectorPath;
     }
 
     /**
@@ -279,7 +281,7 @@ public class SelectorStepBuilder {
         }
 
         for(int i = 0; i < selectorSteps.length; i++) {
-            contextualSelector[i] = selectorSteps[i].getTargetElement().getLocalPart();
+            contextualSelector[i] = selectorSteps[i].getElement().getLocalPart();
         }
 
         return contextualSelector;
@@ -287,12 +289,12 @@ public class SelectorStepBuilder {
 
     @SuppressWarnings("unused")
     public static String extractTargetElement(SelectorStep[] selectorSteps) {
-        return selectorSteps[selectorSteps.length - 1].getTargetElement().getLocalPart();
+        return selectorSteps[selectorSteps.length - 1].getElement().getLocalPart();
     }
 
     @SuppressWarnings("WeakerAccess")
     public static String extractTargetAttribute(SelectorStep[] selectorSteps) {
-        QName targetAttribute = selectorSteps[selectorSteps.length - 1].getTargetAttribute();
+        QName targetAttribute = selectorSteps[selectorSteps.length - 1].getAttribute();
 
         if(targetAttribute == null) {
             return null;
