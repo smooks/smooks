@@ -49,7 +49,6 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
 import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
-import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.namespace.NamespaceDeclarationStack;
@@ -87,7 +86,7 @@ public class NamespaceMappings {
 
 		for (SmooksResourceConfigurationList smooksResourceConfigurationList : applicationContext.getRegistry().lookup(new SmooksResourceConfigurationListsLookup())) {
 			for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-				SelectorStep.setNamespaces(smooksResourceConfigurationList.get(i).getSelectorPath(), newNamespaces);
+				smooksResourceConfigurationList.get(i).getSelectorPath().setNamespaces(newNamespaces);
 			}
 		}
 		

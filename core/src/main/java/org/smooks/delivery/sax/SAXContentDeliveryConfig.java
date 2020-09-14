@@ -75,7 +75,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
     private boolean terminateOnVisitorException;
     private FilterBypass filterBypass;
 
-    private final Map<String, SAXElementVisitorMap> optimizedVisitorConfig = new HashMap<String, SAXElementVisitorMap>();
+    private final Map<String, SAXElementVisitorMap> optimizedVisitorConfig = new HashMap<>();
 
     public ContentHandlerBindings<SAXVisitBefore> getVisitBefores() {
         return visitBefores;
@@ -227,7 +227,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         for(List<ContentHandlerBinding<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
             for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
                 SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
-                SelectorStep selectorStep = resourceConfig.getSelectorPath().getLastSelectorStep();
+                SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
 
                 if(selectorStep.accessesText()) {
                     throw new SmooksConfigurationException("Unsupported selector '" + selectorStep.getXPathExpression() + "' on resource '" + resourceConfig + "'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the " + SAXVisitAfter.class.getName() + " interface only.  Class '" + resourceConfig.getResource() + "' implements other SAX Visitor interfaces.");
@@ -237,7 +237,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
     }
 
     public void addIndexCounters() {
-        Map<String, SAXElementVisitorMap> optimizedVisitorConfigCopy = new LinkedHashMap<String, SAXElementVisitorMap>(optimizedVisitorConfig);
+        Map<String, SAXElementVisitorMap> optimizedVisitorConfigCopy = new LinkedHashMap<>(optimizedVisitorConfig);
         Collection<SAXElementVisitorMap> visitorMaps = optimizedVisitorConfigCopy.values();
 
         for(SAXElementVisitorMap visitorMap : visitorMaps) {
@@ -247,21 +247,21 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         }
     }
 
-    private <T extends SAXVisitor> void addIndexCounters(List<ContentHandlerBinding<T>> saxVisitorMap) {
-        if(saxVisitorMap == null) {
+    private <T extends SAXVisitor> void addIndexCounters(List<ContentHandlerBinding<T>> saxVisitorBindings) {
+        if(saxVisitorBindings == null) {
             return;
         }
 
-        for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : saxVisitorMap) {
-            SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
-            SelectorPath selectorPath = resourceConfig.getSelectorPath();
+        for (ContentHandlerBinding<? extends SAXVisitor> saxVisitorBinding : saxVisitorBindings) {
+            SmooksResourceConfiguration smooksResourceConfiguration = saxVisitorBinding.getSmooksResourceConfiguration();
+            SelectorPath selectorPath = smooksResourceConfiguration.getSelectorPath();
             List<IndexEvaluator> indexEvaluators = new ArrayList<>();
 
-            for(SelectorStep selectorStep : selectorPath) {
+            for (SelectorStep selectorStep : selectorPath) {
                 indexEvaluators.clear();
                 selectorStep.getEvaluators(IndexEvaluator.class, indexEvaluators);
-                for(IndexEvaluator indexEvaluator : indexEvaluators) {
-                    if(indexEvaluator.getCounter() == null) {
+                for (IndexEvaluator indexEvaluator : indexEvaluators) {
+                    if (indexEvaluator.getCounter() == null) {
                         ElementIndexCounter indexCounter = new ElementIndexCounter(selectorStep);
 
                         indexEvaluator.setCounter(indexCounter);
@@ -274,30 +274,30 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
     private void addIndexCounter(ElementIndexCounter indexCounter) {
         SelectorStep selectorStep = indexCounter.getSelectorStep();
-        QName targetElement = selectorStep.getTargetElement();
+        QName targetElement = selectorStep.getElement();
         String targetElementName = targetElement.getLocalPart();
         String targetNS = targetElement.getNamespaceURI();
         SAXElementVisitorMap visitorMap = optimizedVisitorConfig.get(targetElementName);
 
-        if(visitorMap == null) {
+        if (visitorMap == null) {
             visitorMap = new SAXElementVisitorMap();
             optimizedVisitorConfig.put(targetElementName, visitorMap);
         }
 
         List<ContentHandlerBinding<SAXVisitBefore>> vbs = visitorMap.getVisitBefores();
 
-        if(vbs == null) {
+        if (vbs == null) {
             vbs = new ArrayList<>();
             visitorMap.setVisitBefores(vbs);
         }
 
         SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration(targetElementName);
 
-        if(!XMLConstants.NULL_NS_URI.equals(targetNS)) {
-            resourceConfig.setSelectorNamespaceURI(targetNS);
+        if (!XMLConstants.NULL_NS_URI.equals(targetNS)) {
+            resourceConfig.getSelectorPath().setSelectorNamespaceURI(targetNS);
         }
 
-        vbs.add(0, new ContentHandlerBinding(indexCounter, resourceConfig));
+        vbs.add(0, new ContentHandlerBinding<>(indexCounter, resourceConfig));
     }
 
     public SAXElementVisitorMap getCombinedOptimizedConfig(String[] elementNames) {

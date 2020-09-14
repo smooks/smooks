@@ -109,9 +109,9 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
      * @param resourceFile Installed (internal) resource config file.
      */
     private void registerInstalledResources(final Registry registry) {
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-dom.cdrl", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-sax.cdrl", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-param-decoders.cdrl", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-serializers.cdrl", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-dom.xml", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-sax.xml", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-param-decoders.xml", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-serializers.xml", classLoader).create());
     }
 }

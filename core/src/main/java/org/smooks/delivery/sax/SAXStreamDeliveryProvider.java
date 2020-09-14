@@ -46,7 +46,6 @@ import org.jaxen.saxpath.SAXPathException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
-import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.*;
 import org.smooks.dtd.DTDStore;
@@ -58,29 +57,29 @@ import java.util.Map;
 public class SAXStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
     
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> contentHandlerBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
         SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
 
-        for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
-            String targetElement = contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetElement();
+        for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
+            String targetElement = visitorBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetElement();
             try {
-                SelectorStep.setNamespaces(contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+                visitorBinding.getSmooksResourceConfiguration().getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
             } catch (SAXPathException e) {
                 throw new SmooksConfigurationException("Error configuring resource selector.", e);
             }
-            
-            if (isSAXVisitor(contentHandlerBinding.getContentHandler())) {
-                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitBefore && visitBeforeAnnotationsOK(contentHandlerBinding.getContentHandler())) {
-                    saxConfig.getVisitBefores().addBinding(targetElement, contentHandlerBinding.getSmooksResourceConfiguration(), (SAXVisitBefore) contentHandlerBinding.getContentHandler());
+
+            if (isSAXVisitor(visitorBinding.getContentHandler())) {
+                if (visitorBinding.getContentHandler() instanceof SAXVisitBefore && visitBeforeAnnotationsOK(visitorBinding.getContentHandler())) {
+                    saxConfig.getVisitBefores().addBinding(targetElement, visitorBinding.getSmooksResourceConfiguration(), (SAXVisitBefore) visitorBinding.getContentHandler());
                 }
-                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitAfter && visitAfterAnnotationsOK(contentHandlerBinding.getContentHandler())) {
-                    saxConfig.getVisitAfters().addBinding(targetElement, contentHandlerBinding.getSmooksResourceConfiguration(), (SAXVisitAfter) contentHandlerBinding.getContentHandler());
+                if (visitorBinding.getContentHandler() instanceof SAXVisitAfter && visitAfterAnnotationsOK(visitorBinding.getContentHandler())) {
+                    saxConfig.getVisitAfters().addBinding(targetElement, visitorBinding.getSmooksResourceConfiguration(), (SAXVisitAfter) visitorBinding.getContentHandler());
                 }
-                configBuilderEvents.add(new ConfigBuilderEvent(contentHandlerBinding.getSmooksResourceConfiguration(), "Added as a SAX resource."));
+                configBuilderEvents.add(new ConfigBuilderEvent(visitorBinding.getSmooksResourceConfiguration(), "Added as a SAX resource."));
             }
 
-            if(contentHandlerBinding.getContentHandler() instanceof VisitLifecycleCleanable) {
-                saxConfig.getVisitCleanables().addBinding(targetElement, contentHandlerBinding.getSmooksResourceConfiguration(), (VisitLifecycleCleanable) contentHandlerBinding.getContentHandler());
+            if(visitorBinding.getContentHandler() instanceof VisitLifecycleCleanable) {
+                saxConfig.getVisitCleanables().addBinding(targetElement, visitorBinding.getSmooksResourceConfiguration(), (VisitLifecycleCleanable) visitorBinding.getContentHandler());
             }
         }
         

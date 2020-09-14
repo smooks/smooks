@@ -79,7 +79,7 @@ public class ContentHandlerBinding<T extends ContentHandler> {
     public ContentHandlerBinding(final T contentHandler, final String targetSelector, final String targetSelectorNS, final Registry registry) {
         this.contentHandler = contentHandler;
         smooksResourceConfiguration = new SmooksResourceConfiguration(targetSelector, contentHandler.getClass().getName());
-        smooksResourceConfiguration.setSelectorNamespaceURI(targetSelectorNS);
+        smooksResourceConfiguration.getSelectorPath().setSelectorNamespaceURI(targetSelectorNS);
 
         final FieldInjector fieldInjector = new FieldInjector(contentHandler, new Scope(registry, smooksResourceConfiguration, contentHandler));
         fieldInjector.inject();

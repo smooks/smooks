@@ -47,6 +47,8 @@ import javassist.NotFoundException;
 import org.jaxen.saxpath.SAXPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.SmooksException;
+import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
@@ -66,7 +68,7 @@ import java.util.*;
 public class SelectorPath implements List<SelectorStep> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SelectorPath.class);
-
+    
     /**
      * Document target on which the resource is to be applied.
      */
@@ -196,7 +198,7 @@ public class SelectorPath implements List<SelectorStep> {
      *
      * @return The targeting selector step.
      */
-    public SelectorStep getLastSelectorStep() {
+    public SelectorStep getTargetSelectorStep() {
         return selectorSteps.get(selectorSteps.size() - 1);
     }
 
@@ -213,7 +215,7 @@ public class SelectorPath implements List<SelectorStep> {
      * @return The target XML element name.
      */
     public String getTargetElement() {
-        return getLastSelectorStep().getTargetElement().getLocalPart();
+        return getTargetSelectorStep().getElement().getLocalPart();
     }
 
     /**
@@ -223,7 +225,7 @@ public class SelectorPath implements List<SelectorStep> {
      * @return An attribute name, if one was specified on the selector, otherwise null.
      */
     public String getTargetAttribute() {
-        QName targetAttribute = getLastSelectorStep().getTargetAttribute();
+        QName targetAttribute = getTargetSelectorStep().getAttribute();
         if (targetAttribute == null) {
             return null;
         }
@@ -546,15 +548,15 @@ public class SelectorPath implements List<SelectorStep> {
         } else {
             // We don't test the SelectorStep namespace if a namespace is configured on the
             // resource configuration.  This is why we have this code inside the else block.
-            if (!getLastSelectorStep().isTargetedAtNamespace(element.getNamespaceURI())) {
+            if (!getTargetSelectorStep().isTargetedAtNamespace(element.getNamespaceURI())) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + getLastSelectorStep().getTargetElement().getNamespaceURI() + "].");
+                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + getTargetSelectorStep().getElement().getNamespaceURI() + "].");
                 }
                 return false;
             }
         }
 
-        XPathExpressionEvaluator evaluator = getLastSelectorStep().getPredicatesEvaluator();
+        XPathExpressionEvaluator evaluator = getTargetSelectorStep().getPredicatesEvaluator();
         if (evaluator == null) {
             LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
         } else if (!evaluator.evaluate(element, executionContext)) {
@@ -599,15 +601,15 @@ public class SelectorPath implements List<SelectorStep> {
         } else {
             // We don't test the SelectorStep namespace if a namespace is configured on the
             // resource configuration.  This is why we have this code inside the else block.
-            if (!getLastSelectorStep().isTargetedAtNamespace(element.getName().getNamespaceURI())) {
+            if (!getTargetSelectorStep().isTargetedAtNamespace(element.getName().getNamespaceURI())) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + getLastSelectorStep().getTargetElement().getNamespaceURI() + "].");
+                    LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + getTargetSelectorStep().getElement().getNamespaceURI() + "].");
                 }
                 return false;
             }
         }
 
-        XPathExpressionEvaluator evaluator = getLastSelectorStep().getPredicatesEvaluator();
+        XPathExpressionEvaluator evaluator = getTargetSelectorStep().getPredicatesEvaluator();
         if (evaluator == null) {
             LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
         } else if (!evaluator.evaluate(element, executionContext)) {
@@ -654,7 +656,6 @@ public class SelectorPath implements List<SelectorStep> {
         }
     }
     
-    
     @Override
     public SelectorPath clone() {
         SelectorPath copySelectorPath = new SelectorPath();
@@ -664,6 +665,31 @@ public class SelectorPath implements List<SelectorStep> {
         copySelectorPath.expressionEvaluator = expressionEvaluator;
         
         return copySelectorPath;
+    }
+
+    /**
+     * Set the namespaces on the specified set of selector steps.
+     * @param namespaces The set of selector steps to be updated.
+     * @return The set of selector steps (as passed in the 'steps' argument).
+     * @throws org.jaxen.saxpath.SAXPathException Error setting namespaces
+     */
+    public void setNamespaces(Properties namespaces) throws SAXPathException {
+        AssertArgument.isNotNull(namespaces, "namespaces");
+        
+        for(int i = 0; i < selectorSteps.size(); i++) {
+            SelectorStep step = selectorSteps.get(i);
+            try {
+                step.buildPredicatesEvaluator(namespaces);
+            } catch (SAXPathException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new SmooksException("Error compiling PredicatesEvaluator.", e);
+            }
+
+            if(i < selectorSteps.size() - 1 && step.accessesText()) {
+                throw new SmooksException("Unsupported XPath selector expression '" + step.getXPathExpression() + "'.  XPath 'text()' tokens are only supported in the last step.");
+            }
+        }
     }
 
     /**

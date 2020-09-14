@@ -46,7 +46,6 @@ import org.jaxen.saxpath.SAXPathException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
-import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.dom.serialize.SerializationUnit;
@@ -58,16 +57,16 @@ import java.util.Map;
 
 public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> contentHandlerBindings, final ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, final Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, final Boolean sortVisitors) {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
-        for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
+        for (ContentHandlerBinding<Visitor> contentHandlerBinding : visitorBindings) {
             final String targetElement = contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetElement();
             final Visitor visitor = contentHandlerBinding.getContentHandler();
             final SmooksResourceConfiguration smooksResourceConfiguration = contentHandlerBinding.getSmooksResourceConfiguration();
 
             try {
-                SelectorStep.setNamespaces(smooksResourceConfiguration.getSelectorPath(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+                smooksResourceConfiguration.getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
             } catch (SAXPathException e) {
                 throw new SmooksConfigurationException("Error configuring resource selector.", e);
             }

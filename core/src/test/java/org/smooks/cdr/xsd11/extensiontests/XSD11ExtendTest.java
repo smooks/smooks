@@ -141,7 +141,7 @@ public class XSD11ExtendTest {
         // Make sure the resource has the other default settings...
         SmooksResourceConfiguration config = configList.get(0);
         assertEquals("http://an", config.getSelectorPath().getSelectorNamespaceURI());
-        assertNotNull(config.getConditionEvaluator());
+        assertNotNull(config.getSelectorPath().getConditionEvaluator());
     }
 
 	@Test
@@ -160,6 +160,6 @@ public class XSD11ExtendTest {
         // Make sure the resource has the other default settings...
         SmooksResourceConfiguration config = configList.get(0);
         assertEquals("http://an", config.getSelectorPath().getSelectorNamespaceURI());
-        assertNotNull(config.getConditionEvaluator());
+        assertNotNull(config.getSelectorPath().getConditionEvaluator());
     }
 }

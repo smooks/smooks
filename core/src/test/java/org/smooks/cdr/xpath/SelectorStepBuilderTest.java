@@ -44,6 +44,7 @@ package org.smooks.cdr.xpath;
 
 import org.jaxen.saxpath.SAXPathException;
 import org.junit.Test;
+import org.smooks.SmooksException;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.xml.XmlUtil;
 import org.w3c.dom.Element;
@@ -486,7 +487,7 @@ public class SelectorStepBuilderTest  {
             // text() XPath nodes only supported in the last step
             SelectorStepBuilder.buildSteps("a[text() = 123]/b", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
+        } catch(SmooksException e) {
             assertEquals("Unsupported XPath selector expression 'a[text() = 123]/b'.  XPath 'text()' tokens are only supported in the last step.", e.getMessage());
         }
     }
