@@ -42,7 +42,8 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"  xmlns:ds="https://www.smooks.org/xsd/smooks/datasource-1.4.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"  
+					  xmlns:ds="https://www.smooks.org/xsd/smooks/datasource-1.5.xsd">
 
 	<profiles>
 		<profile base-profile="mock" />

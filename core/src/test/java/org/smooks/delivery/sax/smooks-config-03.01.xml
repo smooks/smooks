@@ -42,14 +42,14 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:y="http://y">
 
     <resource-config selector="org.xml.sax.driver">
         <param name="feature-off">http://xml.org/sax/features/validation</param>
         <param name="sax-handler">org.smooks.delivery.sax.MockEntityResolver</param>
     </resource-config>
 
-    <resource-config selector="*/h" selector-namespace="http://y">
+    <resource-config selector="*/y:h">
         <resource>org.smooks.delivery.sax.SAXVisitor01</resource>
     </resource-config>
 

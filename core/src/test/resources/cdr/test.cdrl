@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"> 
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"> 
 
 	<resource-config target-profile="msie6" selector="xxx">
 	    <resource>org.smooks.RenameElementTrans</resource>

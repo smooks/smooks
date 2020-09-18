@@ -73,7 +73,7 @@ public class XsdDOMValidator extends XsdValidator {
 
     private final Document document;
     private URI defaultNamespace;
-    private final List<URI> namespaces = new ArrayList<URI>();
+    private final List<URI> namespaces = new ArrayList<>();
 
     public XsdDOMValidator(Document document) throws SAXException {
         AssertArgument.isNotNull(document, "document");
@@ -98,7 +98,10 @@ public class XsdDOMValidator extends XsdValidator {
         for (int i = 0; i < namespaces.size(); i++) {
             URI namespace = namespaces.get(i);
             if(!XmlUtil.isXMLReservedNamespace(namespace.toString())) {
-            	sources.add(getNamespaceSource(namespace));
+                final Source namespaceSource = getNamespaceSource(namespace);
+                if (namespaceSource != null) {
+                    sources.add(namespaceSource);
+                }
             }
         }
         setXSDSources(sources);
@@ -169,15 +172,18 @@ public class XsdDOMValidator extends XsdValidator {
         }
     }
 
-    private Source getNamespaceSource(URI namespace) throws SAXException {
-        String resourcePath = "/META-INF" + namespace.getPath();
-        InputStream xsdStream = ClassUtil.getResourceAsStream(resourcePath, getClass());
+    private Source getNamespaceSource(URI namespace) {
+        if (namespace.getPath().length() > 0) {
+            String resourcePath = "/META-INF" + namespace.getPath();
+            InputStream xsdStream = ClassUtil.getResourceAsStream(resourcePath, getClass());
 
-        if(xsdStream == null) {
-            throw new SAXException("Failed to locate XSD resource '" + resourcePath + "' on classpath. Namespace: '" + namespace + "'.");
+            if (xsdStream == null) {
+                return null;
+            } else {
+                return new StreamSource(xsdStream);
+            }
+        } else {
+            return null;
         }
-
-        return new StreamSource(xsdStream);
     }
-
 }

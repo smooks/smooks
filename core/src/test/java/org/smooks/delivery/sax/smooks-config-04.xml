@@ -42,7 +42,7 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:b="http://blah">
 
     <resource-config selector="org.xml.sax.driver">
         <param name="feature-off">http://xml.org/sax/features/validation</param>
@@ -58,10 +58,7 @@
     </resource-config>
 
     <!-- Shouldn't get applied -->
-    <resource-config selector="xx" selector-namespace="http://blah">
-        <resource>org.smooks.delivery.sax.SAXVisitor03</resource>
-    </resource-config>
-    <resource-config selector="#document" selector-namespace="http://blah">
+    <resource-config selector="b:xx">
         <resource>org.smooks.delivery.sax.SAXVisitor03</resource>
     </resource-config>
 

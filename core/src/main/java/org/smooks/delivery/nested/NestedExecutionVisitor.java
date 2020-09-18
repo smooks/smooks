@@ -61,7 +61,7 @@ import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.javabean.repository.BeanId;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.util.CollectionsUtil;
-import org.smooks.xml.NamespaceMappings;
+import org.smooks.xml.NamespaceManager;
 import org.xml.sax.XMLReader;
 
 import javax.annotation.PostConstruct;
@@ -127,8 +127,8 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         AbstractParser.setReaders(AbstractParser.getReaders(executionContext), nestedExecutionContext);
 
         // Attach the NamespaceDeclarationStack to the nested execution context...
-        NamespaceDeclarationStack nsStack = NamespaceMappings.getNamespaceDeclarationStack(executionContext);
-        NamespaceMappings.setNamespaceDeclarationStack(nsStack, nestedExecutionContext);
+        NamespaceDeclarationStack nsStack = NamespaceManager.getNamespaceDeclarationStack(executionContext);
+        NamespaceManager.setNamespaceDeclarationStack(nsStack, nestedExecutionContext);
 
         SmooksContentHandler parentContentHandler = SmooksContentHandler.getHandler(executionContext);
 

@@ -137,7 +137,7 @@
     -->
     <resource-config selector="namespaces">
         <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.xml.NamespaceMappings</param>
+        <param name="resource">org.smooks.xml.NamespaceManager</param>
     </resource-config>
 
     <resource-config selector="namespace">

@@ -47,7 +47,7 @@ import org.smooks.delivery.AbstractParser;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.delivery.XMLReaderHierarchyChangeListener;
 import org.smooks.namespace.NamespaceDeclarationStack;
-import org.smooks.xml.NamespaceMappings;
+import org.smooks.xml.NamespaceManager;
 import org.smooks.xml.hierarchy.HierarchyChangeReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -89,7 +89,7 @@ public class SAXParser extends AbstractParser {
             }
 
             NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
-            NamespaceMappings.setNamespaceDeclarationStack(namespaceDeclarationStack, executionContext);
+            NamespaceManager.setNamespaceDeclarationStack(namespaceDeclarationStack, executionContext);
 
             attachNamespaceDeclarationStack(saxReader, executionContext);
             attachXMLReader(saxReader, executionContext);

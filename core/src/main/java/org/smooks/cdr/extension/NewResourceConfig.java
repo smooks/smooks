@@ -43,7 +43,9 @@
 package org.smooks.cdr.extension;
 
 import org.smooks.SmooksException;
+import org.smooks.cdr.DefaultSmooksResourceConfigurationFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.SmooksResourceConfigurationFactory;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.xml.DomUtils;
@@ -67,32 +69,28 @@ public class NewResourceConfig implements DOMElementVisitor {
     private Optional<String> resource;
 
     @Inject
+    private SmooksResourceConfigurationFactory smooksResourceConfigurationFactory = new DefaultSmooksResourceConfigurationFactory();
+
+    @Inject
     private Boolean isTemplate = false;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
-
-        config.setExtendedConfigNS(element.getNamespaceURI());
-        config.setResource(resource.orElse(null));
-
-        // Set the defaults...
-        if(extensionContext.getDefaultSelector() != null) {
-            config.setSelector(extensionContext.getDefaultSelector());
-        }
-        config.getSelectorPath().setSelectorNamespaceURI(extensionContext.getDefaultNamespace());
 
         String targetProfile = DomUtils.getAttributeValue(element, PARAMETER_TARGET_PROFILE);
         if(targetProfile == null) {
-        	targetProfile = extensionContext.getDefaultProfile();
+            targetProfile = extensionContext.getDefaultProfile();
         }
-        config.setTargetProfile(targetProfile);
-        config.getSelectorPath().setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
+        
+        SmooksResourceConfiguration smooksResourceConfiguration = smooksResourceConfigurationFactory.createConfiguration(extensionContext.getDefaultSelector(), extensionContext.getDefaultNamespace(), targetProfile, element);
+        smooksResourceConfiguration.setExtendedConfigNS(element.getNamespaceURI());
+        smooksResourceConfiguration.setResource(resource.orElse(null));
+        smooksResourceConfiguration.getSelectorPath().setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
 
         if(isTemplate) {
-        	extensionContext.addResourceTemplate(config);
+        	extensionContext.addResourceTemplate(smooksResourceConfiguration);
         } else {
-        	extensionContext.addResource(config);
+        	extensionContext.addResource(smooksResourceConfiguration);
         }
     }
 

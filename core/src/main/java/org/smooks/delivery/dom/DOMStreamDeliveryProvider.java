@@ -45,7 +45,7 @@ package org.smooks.delivery.dom;
 import org.jaxen.saxpath.SAXPathException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.registry.lookup.NamespaceManagerLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.dom.serialize.SerializationUnit;
@@ -66,7 +66,7 @@ public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
             final SmooksResourceConfiguration smooksResourceConfiguration = contentHandlerBinding.getSmooksResourceConfiguration();
 
             try {
-                smooksResourceConfiguration.getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+                smooksResourceConfiguration.getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceManagerLookup()));
             } catch (SAXPathException e) {
                 throw new SmooksConfigurationException("Error configuring resource selector.", e);
             }

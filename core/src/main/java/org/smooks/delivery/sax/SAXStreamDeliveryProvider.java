@@ -45,7 +45,7 @@ package org.smooks.delivery.sax;
 import org.jaxen.saxpath.SAXPathException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.registry.lookup.NamespaceManagerLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.*;
 import org.smooks.dtd.DTDStore;
@@ -63,7 +63,7 @@ public class SAXStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
             String targetElement = visitorBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetElement();
             try {
-                visitorBinding.getSmooksResourceConfiguration().getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+                visitorBinding.getSmooksResourceConfiguration().getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceManagerLookup()));
             } catch (SAXPathException e) {
                 throw new SmooksConfigurationException("Error configuring resource selector.", e);
             }

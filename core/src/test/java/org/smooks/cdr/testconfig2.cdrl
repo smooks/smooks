@@ -1,6 +1,7 @@
 <?xml version='1.0'?>
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile='yyy' default-selector='b' default-selector-namespace='https://www.smooks.org-default'>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" default-target-profile='yyy'
+                      xmlns:smooks='https://www.smooks.org' xmlns:smooks-default='https://www.smooks.org-default'>
 
     <profiles>
         <profile base-profile="profileA" sub-profiles="profile1, profile2" />
@@ -8,12 +9,12 @@
     </profiles>
 
 	<!-- Overriding the defaults -->
-	<resource-config target-profile='xxx' selector='a' selector-namespace='https://www.smooks.org'>
+	<resource-config target-profile='xxx' selector='smooks:a'>
 	    <resource>x.txt</resource>
 	</resource-config>
 
 	<!-- Inheriting the defaults -->
-	<resource-config>
+	<resource-config selector='smooks-default:b'>
 	    <resource type="ytext">/org/smooks/cdr/test-resource.txt</resource>
 		<param name='param1'>param1Val</param>
 		<param name='param2'>true</param>
@@ -21,7 +22,7 @@
 	</resource-config>
 
 	<!-- Inheriting the defaults + inlining the resource data. -->
-	<resource-config>
+	<resource-config selector='smooks-default:b'>
 	    <resource type="abc">Howya</resource>
 	</resource-config>
 

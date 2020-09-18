@@ -140,17 +140,17 @@ public class XMLConfigDigesterTest {
         assertEquals(3, resList.size());
 
         // Test the overridden attribute values from the 1st config entry.
-        assertEquals("a", resList.get(0).getSelectorPath().getSelector());
+        assertEquals("smooks:a", resList.get(0).getSelectorPath().getSelector());
         assertEquals("xxx", resList.get(0).getProfileTargetingExpressions()[0].getExpression());
         assertEquals("x.txt", resList.get(0).getResource());
-        assertEquals("https://www.smooks.org", resList.get(0).getSelectorPath().getSelectorNamespaceURI());
+        assertEquals("https://www.smooks.org", resList.get(0).getSelectorPath().getNamespaces().getProperty("smooks"));
 
         // Test the default inherited attribute values from the 2nd config entry.
-        assertEquals("b", resList.get(1).getSelectorPath().getSelector());
+        assertEquals("smooks-default:b", resList.get(1).getSelectorPath().getSelector());
         assertEquals("yyy", resList.get(1).getProfileTargetingExpressions()[0].getExpression());
         assertEquals("/org/smooks/cdr/test-resource.txt", resList.get(1).getResource());
         assertEquals("Hi there :-)", new String(resList.get(1).getBytes()));
-        assertEquals("https://www.smooks.org-default", resList.get(1).getSelectorPath().getSelectorNamespaceURI());
+        assertEquals("https://www.smooks.org-default", resList.get(1).getSelectorPath().getNamespaces().getProperty("smooks-default"));
 
         // Test the parameters on the 2nd config entry.
         assertEquals("param1Val", resList.get(1).getParameterValue("param1", String.class));

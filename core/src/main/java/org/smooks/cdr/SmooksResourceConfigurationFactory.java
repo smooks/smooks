@@ -50,9 +50,12 @@ import org.w3c.dom.Element;
  */
 public interface SmooksResourceConfigurationFactory {
 
+    @Deprecated
+    SmooksResourceConfiguration createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element);
+
     /**
      * Create the configuration instance.
      * @return The configuration instance.
      */
-    SmooksResourceConfiguration createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element);
+    SmooksResourceConfiguration createConfiguration(String defaultProfile, Element element);
 }

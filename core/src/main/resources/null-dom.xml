@@ -42,7 +42,7 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-target-profile="null-dom">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" default-target-profile="null-dom">
 
     <!--
         This is a "Null" Smooks config for DOM.  It applies no transforms.
