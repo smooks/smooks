@@ -46,7 +46,6 @@ import org.jaxen.saxpath.SAXPathException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
-import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.dom.serialize.SerializationUnit;
@@ -58,16 +57,16 @@ import java.util.Map;
 
 public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> contentHandlerBindings, final ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, final Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, final Boolean sortVisitors) {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
-        for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
-            final String targetElement = contentHandlerBinding.getResourceConfig().getTargetElement();
+        for (ContentHandlerBinding<Visitor> contentHandlerBinding : visitorBindings) {
+            final String targetElement = contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetElement();
             final Visitor visitor = contentHandlerBinding.getContentHandler();
-            final SmooksResourceConfiguration smooksResourceConfiguration = contentHandlerBinding.getResourceConfig();
+            final SmooksResourceConfiguration smooksResourceConfiguration = contentHandlerBinding.getSmooksResourceConfiguration();
 
             try {
-                SelectorStep.setNamespaces(smooksResourceConfiguration.getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+                smooksResourceConfiguration.getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
             } catch (SAXPathException e) {
                 throw new SmooksConfigurationException("Error configuring resource selector.", e);
             }
@@ -82,26 +81,26 @@ public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
 
                     if (phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
                         // It's an assembly unit...
-                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
                             domConfig.getAssemblyVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
                         }
-                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
                             domConfig.getAssemblyVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
                         }
                     } else if (visitPhase.equalsIgnoreCase(VisitPhase.ASSEMBLY.toString())) {
                         // It's an assembly unit...
-                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
                             domConfig.getAssemblyVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
                         }
-                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
                             domConfig.getAssemblyVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
                         }
                     } else {
                         // It's a processing unit...
-                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
                             domConfig.getProcessingVisitBefores().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitBefore) visitor);
                         }
-                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(smooksResourceConfiguration, visitor)) {
+                        if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
                             domConfig.getProcessingVisitAfters().addBinding(targetElement, smooksResourceConfiguration, (DOMVisitAfter) visitor);
                         }
                     }
@@ -132,16 +131,15 @@ public class DOMStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
     }
 
     @Override
-    public Boolean isProvider(List<ContentHandlerBinding<Visitor>> contentHandlerBindings) {
-        return contentHandlerBindings.stream().filter(c -> isDOMVisitor(c.getContentHandler())).count() == contentHandlerBindings.size();
+    public Boolean isProvider(List<ContentHandlerBinding<Visitor>> visitorBindings) {
+        return visitorBindings.stream().filter(c -> isDOMVisitor(c.getContentHandler())).count() == visitorBindings.
+                stream().
+                filter(v -> isDOMVisitor(v.getContentHandler()) || isSAXVisitor(v.getContentHandler())).
+                count();
     }
 
     @Override
     public String getName() {
         return "DOM";
-    }
-
-    protected boolean isDOMVisitor(ContentHandler contentHandler) {
-        return (contentHandler instanceof DOMVisitBefore || contentHandler instanceof DOMVisitAfter || contentHandler instanceof SerializationUnit);
     }
 }

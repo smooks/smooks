@@ -314,14 +314,14 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
 
                 if (visitEvent.getSequence() == visitSequence) {
                     ReportInfoNode reportInfoNode = new ReportInfoNode();
-                    ContentHandlerBinding configMapping = ((ElementVisitEvent) event).getConfigMapping();
+                    ContentHandlerBinding configMapping = ((ElementVisitEvent) event).getVisitorBinding();
 
                     messageNode.addExecInfoNode(reportInfoNode);
 
                     reportInfoNode.setNodeId(reportInfoNodeCounter);
                     reportInfoNode.setSummary(configMapping.getContentHandler().getClass().getSimpleName() + ": " + visitEvent.getReportSummary());
                     reportInfoNode.setDetail(visitEvent.getReportDetail());
-                    reportInfoNode.setResourceXML(configMapping.getResourceConfig().toXML());
+                    reportInfoNode.setResourceXML(configMapping.getSmooksResourceConfiguration().toXML());
                     reportInfoNode.setContextState(visitEvent.getExecutionContextState());
 
                     reportInfoNodeCounter++;

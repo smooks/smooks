@@ -55,7 +55,6 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksResourceConfiguration;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -66,7 +65,7 @@ import java.util.Properties;
  */
 public class SelectorStepBuilder {
 
-    private static final SelectorStep[] SELECTOR_NONE_STEP;
+    private static final SelectorPath SELECTOR_NONE_STEP;
 
     static {
         try {
@@ -86,7 +85,7 @@ public class SelectorStepBuilder {
      * @return The set of selector steps.
      * @throws SAXPathException Error parsing expression.
      */
-    public static SelectorStep[] buildSteps(String selectorExpression) throws SAXPathException {
+    public static SelectorPath buildSteps(String selectorExpression) throws SAXPathException {
         if(SmooksResourceConfiguration.SELECTOR_NONE.equals(selectorExpression)) {
             return SELECTOR_NONE_STEP;
         }
@@ -105,13 +104,13 @@ public class SelectorStepBuilder {
      * @throws SAXPathException Error parsing expression.
      */
     @SuppressWarnings("unchecked")
-    private static SelectorStep[] _buildSteps(String selectorExpression) throws SAXPathException {
+    private static SelectorPath _buildSteps(String selectorExpression) throws SAXPathException {
         AssertArgument.isNotNull(selectorExpression, "selectorExpression");
 
         String xpathExpression = toXPathExpression(selectorExpression);
         XPathReader reader = XPathReaderFactory.createReader();
         JaxenHandler handler = new JaxenHandler();
-        List<SelectorStep> selectorSteps = new ArrayList<SelectorStep>();
+        SelectorPath selectorPath = new SelectorPath();
         boolean isRooted = false;
         boolean endsStarStar = false;
 
@@ -120,7 +119,7 @@ public class SelectorStepBuilder {
         } else if(isEncodedToken(xpathExpression)) {
             String[] tokens = xpathExpression.split("/");
 
-            selectorSteps.add(new SelectorStep(tokens[0]));
+            selectorPath.add(new SelectorStep(tokens[0]));
 
             StringBuilder reconstructedExpression = new StringBuilder();
             for(int i = 1; i < tokens.length; i++) {
@@ -157,22 +156,22 @@ public class SelectorStepBuilder {
                         // Attribute steps are only supported as the last step...
                         throw new SAXPathException("Attribute axis steps are only supported at the end of the expression.  '" + step.getText() + "' is not at the end.");
                     } else if(step.getAxis() == Axis.DESCENDANT_OR_SELF) {
-                        selectorSteps.add(new SelectorStep(xpathExpression, "**"));
+                        selectorPath.add(new SelectorStep(xpathExpression, "**"));
                     } else if(step.getAxis() != Axis.CHILD && step.getAxis() != Axis.ATTRIBUTE) {
                         throw new SAXPathException("XPath step '" + step.getText() + "' not supported.");
                     } else {
                         if(i == steps.size() - 2) {
                             Step nextStep = steps.get(i + 1);
                             if(nextStep.getAxis() == Axis.ATTRIBUTE) {
-                                selectorSteps.add(new SelectorStep(xpathExpression, step, nextStep));
+                                selectorPath.add(new SelectorStep(xpathExpression, step, nextStep));
                                 // We end here.  The next step is the last step and we've merged it into
                                 // the last evaluator...
                                 break;
                             } else {
-                                selectorSteps.add(new SelectorStep(xpathExpression, step));
+                                selectorPath.add(new SelectorStep(xpathExpression, step));
                             }
                         } else {
-                            selectorSteps.add(new SelectorStep(xpathExpression, step));
+                            selectorPath.add(new SelectorStep(xpathExpression, step));
                         }
                     }
                 } catch (SAXPathException e) {
@@ -184,18 +183,18 @@ public class SelectorStepBuilder {
         }
 
         if(isRooted) {
-            if(selectorSteps.isEmpty()) {
-                selectorSteps.add(new SelectorStep(xpathExpression, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR));
+            if(selectorPath.isEmpty()) {
+                selectorPath.add(new SelectorStep(xpathExpression, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR));
             } else {
-                selectorSteps.get(0).setRooted(true);
+                selectorPath.get(0).setRooted(true);
             }
         }
 
         if(endsStarStar) {
-            selectorSteps.add(new SelectorStep(xpathExpression, "**"));
+            selectorPath.add(new SelectorStep(xpathExpression, "**"));
         }
 
-        return selectorSteps.toArray(new SelectorStep[0]);
+        return selectorPath;
     }
 
     private static boolean isEncodedToken(String xpathExpression) {
@@ -215,32 +214,11 @@ public class SelectorStepBuilder {
      * @throws SAXPathException Error parsing expression.
      */
     @SuppressWarnings("WeakerAccess")
-    public static SelectorStep[] buildSteps(String selectorExpression, Properties namespaces) throws SAXPathException {
-        SelectorStep[] steps = buildSteps(selectorExpression);
-        return SelectorStep.setNamespaces(steps, namespaces);
-    }
-
-    /**
-     * Create a print friendly representation of the set of selector steps.
-     * @param steps The selector steps.
-     * @return A print friendly representation of the set of selector steps.
-     */
-    public static String toString(SelectorStep[] steps) {
-        AssertArgument.isNotNull(steps, "steps");
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for(int i = 0; i < steps.length; i++) {
-            if(steps[i].isRooted()) {
-                stringBuilder.append("/");
-            } else if(i > 0) {
-                stringBuilder.append("/");
-            }
-
-            stringBuilder.append(steps[i]);
-        }
-
-        return stringBuilder.toString();
+    public static SelectorPath buildSteps(String selectorExpression, Properties namespaces) throws SAXPathException {
+        SelectorPath selectorPath = buildSteps(selectorExpression);
+        selectorPath.setNamespaces(namespaces);
+        
+        return selectorPath;
     }
 
     /**
@@ -303,7 +281,7 @@ public class SelectorStepBuilder {
         }
 
         for(int i = 0; i < selectorSteps.length; i++) {
-            contextualSelector[i] = selectorSteps[i].getTargetElement().getLocalPart();
+            contextualSelector[i] = selectorSteps[i].getElement().getLocalPart();
         }
 
         return contextualSelector;
@@ -311,12 +289,12 @@ public class SelectorStepBuilder {
 
     @SuppressWarnings("unused")
     public static String extractTargetElement(SelectorStep[] selectorSteps) {
-        return selectorSteps[selectorSteps.length - 1].getTargetElement().getLocalPart();
+        return selectorSteps[selectorSteps.length - 1].getElement().getLocalPart();
     }
 
     @SuppressWarnings("WeakerAccess")
     public static String extractTargetAttribute(SelectorStep[] selectorSteps) {
-        QName targetAttribute = selectorSteps[selectorSteps.length - 1].getTargetAttribute();
+        QName targetAttribute = selectorSteps[selectorSteps.length - 1].getAttribute();
 
         if(targetAttribute == null) {
             return null;

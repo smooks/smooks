@@ -46,7 +46,6 @@ import org.jaxen.saxpath.SAXPathException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
-import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.*;
 import org.smooks.dtd.DTDStore;
@@ -58,29 +57,29 @@ import java.util.Map;
 public class SAXStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
     
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> contentHandlerBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
         SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
 
-        for (ContentHandlerBinding<Visitor> contentHandlerBinding : contentHandlerBindings) {
-            String targetElement = contentHandlerBinding.getResourceConfig().getTargetElement();
+        for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
+            String targetElement = visitorBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetElement();
             try {
-                SelectorStep.setNamespaces(contentHandlerBinding.getResourceConfig().getSelectorSteps(), applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
+                visitorBinding.getSmooksResourceConfiguration().getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceMappingsLookup()));
             } catch (SAXPathException e) {
                 throw new SmooksConfigurationException("Error configuring resource selector.", e);
             }
-            
-            if (isSAXVisitor(contentHandlerBinding.getContentHandler())) {
-                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitBefore && visitBeforeAnnotationsOK(contentHandlerBinding.getResourceConfig(), contentHandlerBinding.getContentHandler())) {
-                    saxConfig.getVisitBefores().addBinding(targetElement, contentHandlerBinding.getResourceConfig(), (SAXVisitBefore) contentHandlerBinding.getContentHandler());
+
+            if (isSAXVisitor(visitorBinding.getContentHandler())) {
+                if (visitorBinding.getContentHandler() instanceof SAXVisitBefore && visitBeforeAnnotationsOK(visitorBinding.getContentHandler())) {
+                    saxConfig.getVisitBefores().addBinding(targetElement, visitorBinding.getSmooksResourceConfiguration(), (SAXVisitBefore) visitorBinding.getContentHandler());
                 }
-                if (contentHandlerBinding.getContentHandler() instanceof SAXVisitAfter && visitAfterAnnotationsOK(contentHandlerBinding.getResourceConfig(), contentHandlerBinding.getContentHandler())) {
-                    saxConfig.getVisitAfters().addBinding(targetElement, contentHandlerBinding.getResourceConfig(), (SAXVisitAfter) contentHandlerBinding.getContentHandler());
+                if (visitorBinding.getContentHandler() instanceof SAXVisitAfter && visitAfterAnnotationsOK(visitorBinding.getContentHandler())) {
+                    saxConfig.getVisitAfters().addBinding(targetElement, visitorBinding.getSmooksResourceConfiguration(), (SAXVisitAfter) visitorBinding.getContentHandler());
                 }
-                configBuilderEvents.add(new ConfigBuilderEvent(contentHandlerBinding.getResourceConfig(), "Added as a SAX resource."));
+                configBuilderEvents.add(new ConfigBuilderEvent(visitorBinding.getSmooksResourceConfiguration(), "Added as a SAX resource."));
             }
 
-            if(contentHandlerBinding.getContentHandler() instanceof VisitLifecycleCleanable) {
-                saxConfig.getVisitCleanables().addBinding(targetElement, contentHandlerBinding.getResourceConfig(), (VisitLifecycleCleanable) contentHandlerBinding.getContentHandler());
+            if(visitorBinding.getContentHandler() instanceof VisitLifecycleCleanable) {
+                saxConfig.getVisitCleanables().addBinding(targetElement, visitorBinding.getSmooksResourceConfiguration(), (VisitLifecycleCleanable) visitorBinding.getContentHandler());
             }
         }
         
@@ -105,17 +104,15 @@ public class SAXStreamDeliveryProvider extends AbstractStreamDeliveryProvider {
     }
 
     @Override
-    public Boolean isProvider(List<ContentHandlerBinding<Visitor>> contentHandlerBindings) {
-        return contentHandlerBindings.stream().filter(c -> isSAXVisitor(c.getContentHandler())).count() == contentHandlerBindings.size();
+    public Boolean isProvider(List<ContentHandlerBinding<Visitor>> visitorBindings) {
+        return visitorBindings.stream().filter(c -> isSAXVisitor(c.getContentHandler())).count() == visitorBindings.
+                stream().
+                filter(v -> isDOMVisitor(v.getContentHandler()) || isSAXVisitor(v.getContentHandler())).
+                count();
     }
 
     @Override
     public String getName() {
         return "SAX";
-    }
-
-    protected boolean isSAXVisitor(ContentHandler contentHandler) {
-        // Intentionally not checking for SAXVisitChildren.  Must be incorporated into a visit before or after...
-        return (contentHandler instanceof SAXVisitBefore || contentHandler instanceof SAXVisitAfter);
     }
 }

@@ -97,7 +97,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     private Boolean isDefaultSerializationOn = null;
 
     private final List<XMLReader> readerPool = new CopyOnWriteArrayList<XMLReader>();
-	private         int             readerPoolSize;
+    private int readerPoolSize;
 
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -155,8 +155,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
                 }
 
                 for (final Object unitDef : unitDefs) {
-                    SmooksResourceConfiguration resConfig = (SmooksResourceConfiguration) unitDef;
-                    objects.add(applicationContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(resConfig));
+                    SmooksResourceConfiguration smooksResourceConfiguration = (SmooksResourceConfiguration) unitDef;
+                    objects.add(applicationContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(smooksResourceConfiguration));
                 }
             } else {
                 objects = EMPTY_LIST;
@@ -287,10 +287,10 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
         for(Entry<String, List<ContentHandlerBinding<T>>> entry : entries) {
         	ContentHandlerBinding<T> configMap = entry.getValue().get(0);
-        	SmooksResourceConfiguration resourceConfig = configMap.getResourceConfig();
+        	SmooksResourceConfiguration resourceConfig = configMap.getSmooksResourceConfiguration();
 
         	if(!resourceConfig.isDefaultResource()) {
-	        	if(resourceConfig.getTargetElement().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+	        	if(resourceConfig.getSelectorPath().getTargetElement().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
 	        		T visitor = configMap.getContentHandler();
 	        		if(visitor instanceof FilterBypass) {
 	        			return (FilterBypass) visitor;

@@ -43,7 +43,9 @@
 package org.smooks.cdr;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -73,7 +75,7 @@ public class ConfigSearchTest {
 		search.configNS(null); // clear it
 		assertTrue(search.matches(config));
 
-		config.setSelectorNamespaceURI("http://x/y");
+		config.getSelectorPath().setSelectorNamespaceURI("http://x/y");
 		assertTrue(search.selectorNS("http://x/y").matches(config));
 		assertFalse(search.selectorNS("http://x/z").matches(config));
 		search.selectorNS(null); // clear it

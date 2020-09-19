@@ -47,10 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.annotation.AnnotationConstants;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ContentHandler;
-import org.smooks.delivery.ContentHandlerBinding;
-import org.smooks.delivery.Filter;
-import org.smooks.delivery.VisitSequence;
+import org.smooks.delivery.*;
 import org.smooks.event.ElementProcessingEvent;
 import org.smooks.event.ResourceBasedEvent;
 import org.smooks.event.report.annotation.VisitAfterReport;
@@ -69,20 +66,20 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ElementVisitEvent extends ElementProcessingEvent implements ResourceBasedEvent {
+public class ElementVisitEvent<T extends Visitor> extends ElementProcessingEvent implements ResourceBasedEvent {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ElementVisitEvent.class);
 
-    private final ContentHandlerBinding configMapping;
+    private final ContentHandlerBinding<T> visitorBinding;
     private final VisitSequence sequence;
     private String executionContextState;
     private Throwable error;
     private String reportSummary;
     private String reportDetail;
 
-    public ElementVisitEvent(Object element, ContentHandlerBinding configMapping, VisitSequence sequence) {
+    public ElementVisitEvent(Object element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence) {
         super(element);
-        this.configMapping = configMapping;
+        this.visitorBinding = visitorBinding;
         this.sequence = sequence;
         ExecutionContext executionContext = Filter.getCurrentExecutionContext();
         try {
@@ -96,17 +93,17 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
         initReport(executionContext);
     }
 
-    public ElementVisitEvent(Object element, ContentHandlerBinding configMapping, VisitSequence sequence, Throwable error) {
-        this(element, configMapping, sequence);
+    public ElementVisitEvent(Object element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, Throwable error) {
+        this(element, visitorBinding, sequence);
         this.error = error;
     }
 
     public SmooksResourceConfiguration getResourceConfig() {
-        return configMapping.getResourceConfig();
+        return visitorBinding.getSmooksResourceConfiguration();
     }
 
-    public ContentHandlerBinding getConfigMapping() {
-        return configMapping;
+    public ContentHandlerBinding getVisitorBinding() {
+        return visitorBinding;
     }
 
     public VisitSequence getSequence() {
@@ -130,7 +127,7 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
     }
 
     private void initReport(ExecutionContext executionContext) {
-        ContentHandler handler = configMapping.getContentHandler();
+        ContentHandler handler = visitorBinding.getContentHandler();
         if (getSequence() == VisitSequence.BEFORE) {
             VisitBeforeReport reportAnnotation = handler.getClass().getAnnotation(VisitBeforeReport.class);
             if (reportAnnotation != null && evalReportCondition(reportAnnotation.condition())) {
@@ -152,13 +149,13 @@ public class ElementVisitEvent extends ElementProcessingEvent implements Resourc
     private boolean evalReportCondition(String condition) {
         MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
         conditionEval.setExpression(condition);
-        return conditionEval.eval(configMapping.getResourceConfig());
+        return conditionEval.eval(visitorBinding.getSmooksResourceConfiguration());
     }
 
-    private void applyReportTemplates(String summary, String detailTemplate, Class handlerClass, ExecutionContext executionContext) {
-        Map<String, Object> templateParams = new HashMap<String, Object>();
+    private void applyReportTemplates(String summary, String detailTemplate, Class<?> handlerClass, ExecutionContext executionContext) {
+        Map<String, Object> templateParams = new HashMap<>();
 
-        templateParams.put("resource", configMapping.getResourceConfig());
+        templateParams.put("resource", visitorBinding.getSmooksResourceConfiguration());
         templateParams.put("execContext", executionContext);
         templateParams.put("event", this);
 

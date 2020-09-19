@@ -67,9 +67,9 @@ public class IndexEvaluator extends XPathExpressionEvaluator {
 
     public IndexEvaluator(int index, SelectorStep selectorStep) {
         this.index = index;
-        elementName = selectorStep.getTargetElement().getLocalPart();
-        elementNS = selectorStep.getTargetElement().getNamespaceURI();
-        if(elementNS == XMLConstants.NULL_NS_URI) {
+        elementName = selectorStep.getElement().getLocalPart();
+        elementNS = selectorStep.getElement().getNamespaceURI();
+        if(elementNS.equals(XMLConstants.NULL_NS_URI)) {
             elementNS = null;
         }
     }

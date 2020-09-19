@@ -44,7 +44,6 @@ package org.smooks.delivery;
 
 import org.junit.Test;
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.annotation.VisitAfterIf;
 import org.smooks.delivery.annotation.VisitBeforeIf;
@@ -64,52 +63,58 @@ import static org.junit.Assert.assertTrue;
 public class VisitIfAndIfNotTest {
 
     private SAXStreamDeliveryProvider saxStreamDeliveryProvider = new SAXStreamDeliveryProvider();
-    
-	@Test
+
+    @Test
     public void test_sax_visitBefore() {
-        SmooksResourceConfiguration resourceConfig;
+        assertTrue(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1("true")));
 
-        resourceConfig = new SmooksResourceConfiguration ();
-        resourceConfig.setParameter("visitBefore", "true");
-        assertTrue(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(resourceConfig, new MySAXVisitBeforeVisitor1()));
-
-        resourceConfig = new SmooksResourceConfiguration ();
-        assertFalse(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(resourceConfig, new MySAXVisitBeforeVisitor1()));
-
-        resourceConfig = new SmooksResourceConfiguration ();
-        resourceConfig.setParameter("visitBefore", "false");
-        assertFalse(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(resourceConfig, new MySAXVisitBeforeVisitor1()));
+        assertFalse(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1(null)));
+        
+        assertFalse(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1("false")));
     }
 
-	@Test
+    @Test
     public void test_sax_visitAfter() {
-        SmooksResourceConfiguration resourceConfig;
+        assertFalse(saxStreamDeliveryProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1("true")));
 
-        resourceConfig = new SmooksResourceConfiguration ();
-        resourceConfig.setParameter("visitBefore", "true");
-        assertFalse(saxStreamDeliveryProvider.visitAfterAnnotationsOK(resourceConfig, new MySAXVisitAfterVisitor1()));
-
-        resourceConfig = new SmooksResourceConfiguration ();
-        assertTrue(saxStreamDeliveryProvider.visitAfterAnnotationsOK(resourceConfig, new MySAXVisitAfterVisitor1()));
-
-        resourceConfig = new SmooksResourceConfiguration ();
-        resourceConfig.setParameter("visitBefore", "false");
-        assertTrue(saxStreamDeliveryProvider.visitAfterAnnotationsOK(resourceConfig, new MySAXVisitAfterVisitor1()));
+        assertTrue(saxStreamDeliveryProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1(null)));
+        
+        assertTrue(saxStreamDeliveryProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1("false")));
     }
 
     /* ====================================================================================================
              Test classes - visitor impls
        ==================================================================================================== */
 
-    @VisitBeforeIf(condition = "parameters.containsKey('visitBefore') && parameters.visitBefore.value == 'true'")
-    private class MySAXVisitBeforeVisitor1 implements SAXVisitBefore {
+    @VisitBeforeIf(condition = "visitBefore == 'true'")
+    public static class MySAXVisitBeforeVisitor1 implements SAXVisitBefore {
+        private String visitBefore;
+        
+        public MySAXVisitBeforeVisitor1(String visitBefore) {
+            this.visitBefore = visitBefore;
+        }
+        
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        }
+
+        public String getVisitBefore() {
+            return visitBefore;
         }
     }
 
-    @VisitAfterIf(condition = "!parameters.containsKey('visitBefore') || parameters.visitBefore.value != 'true'")
-    private class MySAXVisitAfterVisitor1 implements SAXVisitAfter {
+    @VisitAfterIf(condition = "visitBefore != 'true'")
+    public static class MySAXVisitAfterVisitor1 implements SAXVisitAfter {
+        private String visitBefore;
+
+        public MySAXVisitAfterVisitor1(String visitBefore) {
+            this.visitBefore = visitBefore;
+        }
+        
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        }
+
+        public String getVisitBefore() {
+            return visitBefore;
         }
     }
 }

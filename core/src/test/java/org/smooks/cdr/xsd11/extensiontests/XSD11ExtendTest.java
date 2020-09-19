@@ -43,12 +43,11 @@
 package org.smooks.cdr.xsd11.extensiontests;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
-import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.container.ExecutionContext;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.payload.StringResult;
 import org.smooks.payload.StringSource;
 import org.smooks.xml.XmlUtil;
@@ -59,6 +58,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -139,8 +140,8 @@ public class XSD11ExtendTest {
 
         // Make sure the resource has the other default settings...
         SmooksResourceConfiguration config = configList.get(0);
-        assertEquals("http://an", config.getSelectorNamespaceURI());
-        assertNotNull(config.getConditionEvaluator());
+        assertEquals("http://an", config.getSelectorPath().getSelectorNamespaceURI());
+        assertNotNull(config.getSelectorPath().getConditionEvaluator());
     }
 
 	@Test
@@ -158,7 +159,7 @@ public class XSD11ExtendTest {
 
         // Make sure the resource has the other default settings...
         SmooksResourceConfiguration config = configList.get(0);
-        assertEquals("http://an", config.getSelectorNamespaceURI());
-        assertNotNull(config.getConditionEvaluator());
+        assertEquals("http://an", config.getSelectorPath().getSelectorNamespaceURI());
+        assertNotNull(config.getSelectorPath().getConditionEvaluator());
     }
 }

@@ -56,7 +56,7 @@ public interface VisitorAppender {
 
     /**
      * Add visitors to the supplied Cisitor map.
-     * @param visitorMap The visitor map to be added to. 
+     * @param visitorBindings The visitor bindings to be added to. 
      */
-    void addVisitors(List<ContentHandlerBinding<Visitor>> contentHandlerBindings);
+    List<ContentHandlerBinding<Visitor>> addVisitors();
 }

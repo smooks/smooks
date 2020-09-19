@@ -83,8 +83,8 @@ public class SelectorStep {
     private boolean isRooted;
     private boolean isStar;
     private boolean isStarStar;
-    private QName targetElement;
-    private QName targetAttribute;
+    private QName element;
+    private QName attribute;
     private XPathExpressionEvaluator predicatesEvaluator;
 
     /**
@@ -96,7 +96,7 @@ public class SelectorStep {
     {
         AssertArgument.isNotNull(xpathExpression, "xpathExpression");
         this.xpathExpression = xpathExpression;
-        targetElement = new QName(xpathExpression);
+        element = new QName(xpathExpression);
         initFlags();
     }
 
@@ -112,7 +112,7 @@ public class SelectorStep {
         AssertArgument.isNotNull(step, "step");
         this.xpathExpression = xpathExpression;
         this.step = step;
-        targetElement = toQName(step, null);
+        element = toQName(step, null);
         initFlags();
     }
 
@@ -152,7 +152,7 @@ public class SelectorStep {
         AssertArgument.isNotNull(targetElementName, "targetElementName");
 
         this.xpathExpression = xpathExpression;
-        targetElement = new QName(targetElementName);
+        element = new QName(targetElementName);
         initFlags();
     }
 
@@ -160,14 +160,14 @@ public class SelectorStep {
      * Public constructor.
      * @param xpathExpression The XPath expression of which the {@link Step} is a
      * part.
-     * @param targetElementName The target element name associated with this selector step.
-     * @param targetAttributeName The target attribute name associated with this selector step.
+     * @param elementName The target element name associated with this selector step.
+     * @param attributeName The target attribute name associated with this selector step.
      */
-    public SelectorStep(String xpathExpression, String targetElementName, String targetAttributeName) {
-        this(xpathExpression, targetElementName);
-        AssertArgument.isNotNull(targetAttributeName, "targetAttributeName");
+    public SelectorStep(String xpathExpression, String elementName, String attributeName) {
+        this(xpathExpression, elementName);
+        AssertArgument.isNotNull(attributeName, "targetAttributeName");
 
-        targetAttribute = new QName(targetAttributeName);
+        attribute = new QName(attributeName);
     }
 
     public Step getAttributeStep() {
@@ -178,13 +178,12 @@ public class SelectorStep {
     public void setAttributeStep(Step attributeStep) {
         this.attributeStep = attributeStep;
         try {
-            targetAttribute = toQName(attributeStep, null);
+            attribute = toQName(attributeStep, null);
         } catch (SAXPathException e) {
             throw new IllegalStateException("Unexpected SAXPathException setting attribute SelectorStep.", e);
         }
     }
 
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public SelectorStep clone() {
         SelectorStep clone = new SelectorStep(xpathExpression);
@@ -195,8 +194,8 @@ public class SelectorStep {
         clone.isRooted = isRooted;
         clone.isStar = isStar;
         clone.isStarStar = isStarStar;
-        clone.targetElement = targetElement;
-        clone.targetAttribute = targetAttribute;
+        clone.element = element;
+        clone.attribute = attribute;
         clone.predicatesEvaluator = predicatesEvaluator;
 
         return clone;
@@ -206,9 +205,9 @@ public class SelectorStep {
      * Initialize the step flags.
      */
     private void initFlags() {
-        isStar = targetElement.getLocalPart().equals("*");
-        isStarStar = targetElement.getLocalPart().equals("**");
-        setRooted(targetElement.getLocalPart().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR));
+        isStar = element.getLocalPart().equals("*");
+        isStarStar = element.getLocalPart().equals("**");
+        setRooted(element.getLocalPart().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR));
     }
 
     /**
@@ -219,12 +218,12 @@ public class SelectorStep {
         return xpathExpression;
     }
 
-    public QName getTargetElement() {
-        return targetElement;
+    public QName getElement() {
+        return element;
     }
 
-    public QName getTargetAttribute() {
-        return targetAttribute;
+    public QName getAttribute() {
+        return attribute;
     }
 
     public XPathExpressionEvaluator getPredicatesEvaluator() {
@@ -268,9 +267,9 @@ public class SelectorStep {
             }
 
             // And update the QNames again now that we have the namespaces...
-            targetElement = toQName(step, builder);
+            element = toQName(step, builder);
             if(attributeStep != null) {
-                targetAttribute = toQName(attributeStep, builder);
+                attribute = toQName(attributeStep, builder);
             }
         } else {
             predicatesEvaluator = PassThruEvaluator.INSTANCE;
@@ -284,7 +283,7 @@ public class SelectorStep {
             return true;
         }
 
-        if(!qname.getLocalPart().equalsIgnoreCase(targetElement.getLocalPart())) {
+        if(!qname.getLocalPart().equalsIgnoreCase(this.element.getLocalPart())) {
             return false;
         }
 
@@ -298,7 +297,7 @@ public class SelectorStep {
             return true;
         }
 
-        if(!elementName.equalsIgnoreCase(targetElement.getLocalPart())) {
+        if(!elementName.equalsIgnoreCase(this.element.getLocalPart())) {
             return false;
         }
 
@@ -316,7 +315,7 @@ public class SelectorStep {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isTargetedAtNamespace(String namespace) {
-        String targetNS = targetElement.getNamespaceURI();
+        String targetNS = element.getNamespaceURI();
 
         // If the target NS is null, we match, no matter what the specified namespace...
         if(targetNS == null || targetNS.equals(XMLConstants.NULL_NS_URI)) {
@@ -412,12 +411,13 @@ public class SelectorStep {
         }
     }
 
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(getTargetElement());
-        if(targetAttribute != null) {
-            stringBuilder.append("{@").append(targetAttribute).append("}");
+        stringBuilder.append(getElement());
+        if(attribute != null) {
+            stringBuilder.append("{@").append(attribute).append("}");
         }
 
         XPathExpressionEvaluator evaluator = getPredicatesEvaluator();
@@ -426,36 +426,6 @@ public class SelectorStep {
         }
 
         return stringBuilder.toString();
-    }
-
-    /**
-     * Set the namespaces on the specified set of selector steps.
-     * @param steps The selector steps.
-     * @param namespaces The set of selector steps to be updated.
-     * @return The set of selector steps (as passed in the 'steps' argument).
-     * @throws org.jaxen.saxpath.SAXPathException Error setting namespaces
-     */
-    public static SelectorStep[] setNamespaces(SelectorStep[] steps, Properties namespaces) throws SAXPathException {
-        AssertArgument.isNotNull(steps, "steps");
-        AssertArgument.isNotNull(namespaces, "namespaces");
-
-        for(int i = 0; i < steps.length; i++) {
-            SelectorStep step = steps[i];
-            try {
-                step.buildPredicatesEvaluator(namespaces);
-            } catch (SAXPathException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new SAXPathException("Error compiling PredicatesEvaluator.", e);
-            }
-
-            //
-            if(i < steps.length - 1 && step.accessesText()) {
-                throw new SAXPathException("Unsupported XPath selector expression '" + step.getXPathExpression() + "'.  XPath 'text()' tokens are only supported in the last step.");
-            }
-        }
-
-        return steps;
     }
 
     /**

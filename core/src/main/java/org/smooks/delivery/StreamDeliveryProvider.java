@@ -51,9 +51,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface StreamDeliveryProvider {
-    ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> contentHandlerBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors);
+    ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, ApplicationContext applicationContext, Map<String, List<SmooksResourceConfiguration>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors);
     
-    Boolean isProvider(List<ContentHandlerBinding<Visitor>> contentHandlerBindings);
+    Boolean isProvider(List<ContentHandlerBinding<Visitor>> visitorBindings);
     
     String getName();
 }

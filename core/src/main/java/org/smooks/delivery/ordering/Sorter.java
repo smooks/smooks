@@ -247,12 +247,12 @@ public class Sorter {
         int numTabs = 0;
 
         appendTabs(++numTabs, builder);
-        builder.append(dependencyStack.pop().visitor.getResourceConfig());
+        builder.append(dependencyStack.pop().visitor.getSmooksResourceConfiguration());
         builder.append("\n");
         while(!dependencyStack.isEmpty()) {
             appendTabs(++numTabs, builder);
             builder.append("depends-on: ");
-            builder.append(dependencyStack.pop().visitor.getResourceConfig());
+            builder.append(dependencyStack.pop().visitor.getSmooksResourceConfiguration());
             builder.append("\n");
         }
 

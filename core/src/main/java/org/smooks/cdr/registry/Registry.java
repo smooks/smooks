@@ -92,7 +92,6 @@ public class Registry {
     private final Map<Object, Object> registry = new ConcurrentHashMap<>();
     private final ContainerResourceLocator containerResourceLocator;
     private final ClassLoader classLoader;
-    private final ProfileStore profileStore;
 
     public Registry(ClassLoader classLoader, ContainerResourceLocator containerResourceLocator, ProfileStore profileStore) {
         AssertArgument.isNotNull(containerResourceLocator, "containerResourceLocator");
@@ -100,7 +99,7 @@ public class Registry {
 
         this.containerResourceLocator = containerResourceLocator;
         this.classLoader = classLoader;
-        this.profileStore = profileStore;
+        registerObject(ProfileStore.class, profileStore);
 
         final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
         registerObject(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY, typeConverterFactories);
@@ -117,7 +116,7 @@ public class Registry {
         registerObject(new TypeResolver().resolve(List.class, SmooksResourceConfigurationList.class), smooksResourceConfigurationLists);
     }
 
-    public void registerObject(Object value) {
+    public void registerObject(final Object value) {
         AssertArgument.isNotNull(value, "value");
 
         final String name;
@@ -129,7 +128,7 @@ public class Registry {
         registerObject(name, value);
     }
     
-    public void registerObject(Object key, Object value) {
+    public void registerObject(final Object key, final Object value) {
         AssertArgument.isNotNull(key, "key");
         AssertArgument.isNotNull(value, "value");
      
@@ -200,23 +199,17 @@ public class Registry {
      * @see SmooksResourceConfiguration
      */
     public SmooksResourceConfigurationList registerResources(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException, URISyntaxException {
-        SmooksResourceConfigurationList smooksResourceConfigurationList;
-
-        if (baseURI == null || baseURI.trim().equals("")) {
-            throw new IllegalArgumentException("null or empty 'name' arg in method call.");
-        }
-        if (resourceConfigStream == null) {
-            throw new IllegalArgumentException("null 'resourceConfigStream' arg in method call.");
-        }
-
-        smooksResourceConfigurationList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
-        addSmooksResourceConfigurationList(smooksResourceConfigurationList);
+        AssertArgument.isNotEmpty(baseURI, "baseURI");
+        AssertArgument.isNotNull(resourceConfigStream, "resourceConfigStream");
+        
+        SmooksResourceConfigurationList smooksResourceConfigurationList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
+        registerSmooksResourceConfigurationList(smooksResourceConfigurationList);
 
         return smooksResourceConfigurationList;
     }
     
-    @SuppressWarnings("ConstantConditions")
     private void addProfileSets(List<ProfileSet> profileSets) {
+        final ProfileStore profileStore = lookup(ProfileStore.class);
         if (profileSets == null) {
             return;
         }
@@ -234,12 +227,11 @@ public class Registry {
      *
      * @param resourceConfig The Content Delivery Resource definition to be registered.
      */
-    public void registerResource(SmooksResourceConfiguration resourceConfig) {
-        if (resourceConfig == null) {
-            throw new IllegalArgumentException("null 'resourceConfig' arg in method call.");
-        }
-        lookup(new LifecycleManagerLookup()).applyPhase(resourceConfig, new PostConstructLifecyclePhase(new Scope(this)));
-        lookup(new SystemSmooksResourceConfigurationListLookup()).add(resourceConfig);
+    public void registerSmooksResourceConfiguration(SmooksResourceConfiguration smooksResourceConfiguration) {
+        AssertArgument.isNotNull(smooksResourceConfiguration, "smooksResourceConfiguration");
+
+        lookup(new LifecycleManagerLookup()).applyPhase(smooksResourceConfiguration, new PostConstructLifecyclePhase(new Scope(this)));
+        lookup(new SystemSmooksResourceConfigurationListLookup()).add(smooksResourceConfiguration);
     }
 
     /**
@@ -247,7 +239,7 @@ public class Registry {
      *
      * @param smooksResourceConfigurationList All the SmooksResourceConfigurationList instances added on this registry.
      */
-    public void addSmooksResourceConfigurationList(SmooksResourceConfigurationList smooksResourceConfigurationList) {
+    public void registerSmooksResourceConfigurationList(SmooksResourceConfigurationList smooksResourceConfigurationList) {
         lookup(new SmooksResourceConfigurationListsLookup()).add(smooksResourceConfigurationList);
         lookup(new LifecycleManagerLookup()).applyPhase(smooksResourceConfigurationList, new PostConstructLifecyclePhase(new Scope(this)));
 

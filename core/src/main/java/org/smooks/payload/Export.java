@@ -42,6 +42,7 @@
  */
 package org.smooks.payload;
 
+import org.smooks.cdr.registry.lookup.ExportsLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.util.CollectionsUtil;
@@ -106,9 +107,10 @@ public class Export implements ContentHandler {
     @PostConstruct
     public void addToExportsInApplicationContext() {
         initExtractSet();
-        Exports.addExport(applicationContext, this);
+        Exports exports = applicationContext.getRegistry().lookup(new ExportsLookup());
+        exports.addExport(this);
     }
-
+    
     private void initExtractSet() {
         extract.ifPresent(s -> extractSet = CollectionsUtil.toSet(s.split(",")));
     }

@@ -43,7 +43,6 @@
 package org.smooks.cdr;
 
 import org.junit.Test;
-import org.smooks.cdr.xpath.SelectorStepBuilder;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.util.DomUtil;
 import org.smooks.xml.XmlUtil;
@@ -107,12 +106,12 @@ public class SmooksResourceConfigurationTest {
         SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("xx/b/c/d/e", "blah");
         SmooksResourceConfiguration rc7 = new SmooksResourceConfiguration("/c/d/e", "blah");
 
-        assertTrue(rc1.isTargetedAtElement(e, null));
-        assertTrue(rc2.isTargetedAtElement(e, null));
-        assertTrue(rc3.isTargetedAtElement(e, null));
-        assertFalse(rc4.isTargetedAtElement(e, null));
-        assertFalse(rc5.isTargetedAtElement(e, null));
-        assertFalse(rc7.isTargetedAtElement(e, null));
+        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc4.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc7.getSelectorPath().isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -125,17 +124,17 @@ public class SmooksResourceConfigurationTest {
         SmooksResourceConfiguration rc9 = new SmooksResourceConfiguration("a/b/c/d/e/@attrib1", "blah");
         SmooksResourceConfiguration rc10 = new SmooksResourceConfiguration("/c/d/e/@attrib1", "blah");
 
-        assertEquals("e", rc8.getTargetElement());
-        assertEquals("attrib1", rc8.getTargetAttribute());
-        assertTrue(rc8.isTargetedAtElement(e, null));
+        assertEquals("e", rc8.getSelectorPath().getTargetElement());
+        assertEquals("attrib1", rc8.getSelectorPath().getTargetAttribute());
+        assertTrue(rc8.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertEquals("e", rc9.getTargetElement());
-        assertEquals("attrib1", rc9.getTargetAttribute());
-        assertTrue(rc9.isTargetedAtElement(e, null));
+        assertEquals("e", rc9.getSelectorPath().getTargetElement());
+        assertEquals("attrib1", rc9.getSelectorPath().getTargetAttribute());
+        assertTrue(rc9.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertEquals("e", rc10.getTargetElement());
-        assertEquals("attrib1", rc10.getTargetAttribute());
-        assertFalse(rc10.isTargetedAtElement(e, null));
+        assertEquals("e", rc10.getSelectorPath().getTargetElement());
+        assertEquals("attrib1", rc10.getSelectorPath().getTargetAttribute());
+        assertFalse(rc10.getSelectorPath().isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -167,34 +166,34 @@ public class SmooksResourceConfigurationTest {
         SmooksResourceConfiguration rc22 = new SmooksResourceConfiguration("*/e", "blah");
         SmooksResourceConfiguration rc23 = new SmooksResourceConfiguration("/*/e", "blah");
 
-        assertTrue(rc1.isTargetedAtElement(e, null));
-        assertTrue(rc2.isTargetedAtElement(e, null));
-        assertTrue(rc3.isTargetedAtElement(e, null));
+        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertFalse(rc4.isTargetedAtElement(e, null));
-        assertFalse(rc5.isTargetedAtElement(e, null));
+        assertFalse(rc4.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertTrue(rc6.isTargetedAtElement(e, null));
-        assertTrue(rc7.isTargetedAtElement(e, null));
-        assertTrue(rc8.isTargetedAtElement(e, null));
-        assertTrue(rc9.isTargetedAtElement(e, null));
-        assertTrue(rc10.isTargetedAtElement(e, null));
-        assertTrue(rc11.isTargetedAtElement(e, null));
-        assertTrue(rc12.isTargetedAtElement(e, null));
-        assertTrue(rc13.isTargetedAtElement(e, null));
-        assertTrue(rc14.isTargetedAtElement(e, null));
-        assertTrue(rc15.isTargetedAtElement(e, null));
-        assertTrue(rc16.isTargetedAtElement(e, null));
+        assertTrue(rc6.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc7.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc8.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc9.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc10.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc11.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc12.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc13.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc14.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc15.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc16.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertFalse(rc17.isTargetedAtElement(e, null));
-        assertFalse(rc18.isTargetedAtElement(e, null));
-        assertFalse(rc19.isTargetedAtElement(e, null));
+        assertFalse(rc17.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc18.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc19.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertTrue(rc20.isTargetedAtElement(e, null));
-        assertTrue(rc21.isTargetedAtElement(e, null));
-        assertTrue(rc22.isTargetedAtElement(e, null));
+        assertTrue(rc20.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc21.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc22.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertFalse(rc23.isTargetedAtElement(e, null));
+        assertFalse(rc23.getSelectorPath().isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -215,11 +214,11 @@ public class SmooksResourceConfigurationTest {
             assertEquals("Invalid selector 'xx/#document/a/b/c/a/d/e'.  '#document' token can only exist at the start of the selector.", ex.getMessage());
         }
 
-        assertTrue(rc1.isTargetedAtElement(e, null));
-        assertFalse(rc2.isTargetedAtElement(e, null));
-        assertTrue(rc3.isTargetedAtElement(e, null));
-        assertTrue(rc4.isTargetedAtElement(e, null));
-        assertFalse(rc5.isTargetedAtElement(e, null));
+        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc2.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc4.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -232,11 +231,11 @@ public class SmooksResourceConfigurationTest {
         SmooksResourceConfiguration rc4 = new SmooksResourceConfiguration("xx/a/b/c/d/e", "blah");
         SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("xx/b/c/d/e", "blah");
 
-        assertTrue(rc1.isTargetedAtElement(e, null));
-        assertTrue(rc2.isTargetedAtElement(e, null));
-        assertTrue(rc3.isTargetedAtElement(e, null));
-        assertFalse(rc4.isTargetedAtElement(e, null));
-        assertFalse(rc5.isTargetedAtElement(e, null));
+        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc4.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -269,43 +268,43 @@ public class SmooksResourceConfigurationTest {
         SmooksResourceConfiguration rc22 = new SmooksResourceConfiguration("*/e", "blah");
         SmooksResourceConfiguration rc23 = new SmooksResourceConfiguration("/*/e", "blah");
 
-        assertTrue(rc1.isTargetedAtElement(e, null));
-        assertTrue(rc2.isTargetedAtElement(e, null));
-        assertTrue(rc3.isTargetedAtElement(e, null));
+        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertFalse(rc4.isTargetedAtElement(e, null));
-        assertFalse(rc5.isTargetedAtElement(e, null));
+        assertFalse(rc4.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertTrue(rc6.isTargetedAtElement(e, null));
-        assertTrue(rc7.isTargetedAtElement(e, null));
-        assertTrue(rc8.isTargetedAtElement(e, null));
-        assertTrue(rc9.isTargetedAtElement(e, null));
-        assertTrue(rc10.isTargetedAtElement(e, null));
-        assertTrue(rc11.isTargetedAtElement(e, null));
-        assertTrue(rc12.isTargetedAtElement(e, null));
-        assertTrue(rc13.isTargetedAtElement(e, null));
-        assertTrue(rc14.isTargetedAtElement(e, null));
-        assertTrue(rc15.isTargetedAtElement(e, null));
-        assertTrue(rc16.isTargetedAtElement(e, null));
-        assertTrue(rc15_1.isTargetedAtElement(e, null));
-        assertTrue(rc16_1.isTargetedAtElement(e, null));
+        assertTrue(rc6.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc7.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc8.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc9.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc10.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc11.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc12.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc13.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc14.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc15.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc16.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc15_1.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc16_1.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertFalse(rc17.isTargetedAtElement(e, null));
-        assertFalse(rc18.isTargetedAtElement(e, null));
-        assertFalse(rc19.isTargetedAtElement(e, null));
+        assertFalse(rc17.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc18.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc19.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertTrue(rc20.isTargetedAtElement(e, null));
-        assertTrue(rc21.isTargetedAtElement(e, null));
-        assertTrue(rc22.isTargetedAtElement(e, null));
+        assertTrue(rc20.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc21.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc22.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertFalse(rc23.isTargetedAtElement(e, null));
+        assertFalse(rc23.getSelectorPath().isTargetedAtElement(e, null));
     }
 
 	@Test
     public void test_attributeSelector() {
         // Test that the attribute part of the selector doesn't get lowercased...
         SmooksResourceConfiguration resource = new SmooksResourceConfiguration("a/b/@myAttribute");
-        assertEquals("a/b{@myAttribute}", SelectorStepBuilder.toString(resource.getSelectorSteps()));
+        assertEquals("a/b{@myAttribute}", resource.getSelectorPath().toString());
     }
 
 	@Test
@@ -318,11 +317,11 @@ public class SmooksResourceConfigurationTest {
         SmooksResourceConfiguration rc4 = new SmooksResourceConfiguration("/a/b/**/d/e", "blah");
         SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("/a/b/*/d/e", "blah");
 
-        assertTrue(rc1.isTargetedAtElement(e, null));
-        assertFalse(rc2.isTargetedAtElement(e, null));
-        assertTrue(rc3.isTargetedAtElement(e, null));
-        assertTrue(rc4.isTargetedAtElement(e, null));
-        assertFalse(rc5.isTargetedAtElement(e, null));
+        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc2.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(rc4.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
     }
 
 	@Test
@@ -330,24 +329,24 @@ public class SmooksResourceConfigurationTest {
         SAXElement e = buildE_rooted();
 
         SmooksResourceConfiguration noAtt = new SmooksResourceConfiguration("e", "blah");
-        assertNull(noAtt.getTargetAttribute());
+        assertNull(noAtt.getSelectorPath().getTargetAttribute());
 
         // Check with an attribute on the selector....
         SmooksResourceConfiguration rc8 = new SmooksResourceConfiguration("e/@attrib1", "blah");
         SmooksResourceConfiguration rc9 = new SmooksResourceConfiguration("a/b/c/a/d/e/@attrib1", "blah");
         SmooksResourceConfiguration rc10 = new SmooksResourceConfiguration("/a/d/e/@attrib1", "blah");
 
-        assertEquals("e", rc8.getTargetElement());
-        assertEquals("attrib1", rc8.getTargetAttribute());
-        assertTrue(rc8.isTargetedAtElement(e, null));
+        assertEquals("e", rc8.getSelectorPath().getTargetElement());
+        assertEquals("attrib1", rc8.getSelectorPath().getTargetAttribute());
+        assertTrue(rc8.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertEquals("e", rc9.getTargetElement());
-        assertEquals("attrib1", rc9.getTargetAttribute());
-        assertTrue(rc9.isTargetedAtElement(e, null));
+        assertEquals("e", rc9.getSelectorPath().getTargetElement());
+        assertEquals("attrib1", rc9.getSelectorPath().getTargetAttribute());
+        assertTrue(rc9.getSelectorPath().isTargetedAtElement(e, null));
 
-        assertEquals("e", rc10.getTargetElement());
-        assertEquals("attrib1", rc10.getTargetAttribute());
-        assertFalse(rc10.isTargetedAtElement(e, null));
+        assertEquals("e", rc10.getSelectorPath().getTargetElement());
+        assertEquals("attrib1", rc10.getSelectorPath().getTargetAttribute());
+        assertFalse(rc10.getSelectorPath().isTargetedAtElement(e, null));
     }
 
     private SAXElement buildE() {

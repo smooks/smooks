@@ -46,8 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationFactory;
-import org.smooks.cdr.injector.FieldInjector;
 import org.smooks.cdr.injector.Scope;
 import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
 import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
@@ -130,7 +128,7 @@ public class Smooks {
      * Manually added visitors.  In contract to those that are constructed and configured dynamically from
      * an XML configuration stream.
      */
-    private final List<ContentHandlerBinding<Visitor>> contentHandlerBindings;
+    private final List<ContentHandlerBinding<Visitor>> visitorBindings;
     /**
      * Flag indicating whether or not the Smooks instance is configurable.  It becomes unconfigurable
      * after the first execution context has been created.
@@ -145,7 +143,7 @@ public class Smooks {
      */
     public Smooks() {
         applicationContext = new DefaultApplicationContextBuilder().build();
-        contentHandlerBindings = new ArrayList<>();
+        visitorBindings = new ArrayList<>();
     }
 
     /**
@@ -156,7 +154,7 @@ public class Smooks {
      */
     public Smooks(StandaloneApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-        contentHandlerBindings = new ArrayList<>();
+        visitorBindings = new ArrayList<>();
     }
 
     /**
@@ -233,7 +231,9 @@ public class Smooks {
      */
     public Smooks setExports(Exports exports) {
         AssertArgument.isNotNull(exports, "exports");
-        Exports.setExportsInApplicationContext(getApplicationContext(), exports);
+        applicationContext.getRegistry().deRegisterObject(Exports.class);
+        applicationContext.getRegistry().registerObject(Exports.class, exports);
+
         return this;
     }
 
@@ -291,36 +291,26 @@ public class Smooks {
         assertIsConfigurable();
         AssertArgument.isNotNull(visitor, "visitor");
         AssertArgument.isNotNull(targetSelector, "targetSelector");
-
-        SmooksResourceConfiguration smooksResourceConfiguration;
-        if (visitor instanceof SmooksResourceConfigurationFactory) {
-            smooksResourceConfiguration = ((SmooksResourceConfigurationFactory)visitor).createConfiguration();
-            smooksResourceConfiguration.setResource(visitor.getClass().getName());
-            smooksResourceConfiguration.setSelector(targetSelector);
-        } else {
-            smooksResourceConfiguration = new SmooksResourceConfiguration(targetSelector, visitor.getClass().getName());
-        }
-
-        smooksResourceConfiguration.setSelectorNamespaceURI(targetSelectorNS);
-
-        final FieldInjector fieldInjector = new FieldInjector(visitor, new Scope(applicationContext.getRegistry(), smooksResourceConfiguration, visitor));
-        fieldInjector.inject();
-        applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitor, new PostConstructLifecyclePhase());
-        applicationContext.getRegistry().registerObject(visitor);
         
-        contentHandlerBindings.add(new ContentHandlerBinding<>(visitor, smooksResourceConfiguration));
+        ContentHandlerBinding<Visitor> contentHandlerBinding = new ContentHandlerBinding<>(visitor, targetSelector, targetSelectorNS, applicationContext.getRegistry());
+        visitorBindings.add(contentHandlerBinding);
         
-        return smooksResourceConfiguration;
+        return contentHandlerBinding.getSmooksResourceConfiguration();
     }
 
     /**
      * Add a visitor instances to <code>this</code> Smooks instance
      * via a {@link VisitorAppender}.
      *
-     * @param appender The visitor appender.
+     * @param visitorBindings The visitor bindings.
      */
-    public void addVisitor(VisitorAppender appender) {
-        appender.addVisitors(contentHandlerBindings);
+    public void addVisitors(VisitorAppender visitorAppender) {
+        getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitorAppender, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry())));
+        
+        for (ContentHandlerBinding<Visitor> visitorBinding : visitorAppender.addVisitors()) {
+            getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitorBinding.getContentHandler(), new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), visitorBinding.getSmooksResourceConfiguration(), visitorBinding.getContentHandler())));
+            this.visitorBindings.add(visitorBinding);
+        }
     }
 
     /**
@@ -334,7 +324,7 @@ public class Smooks {
     public void addConfiguration(SmooksResourceConfiguration resourceConfig) {
         AssertArgument.isNotNull(resourceConfig, "resourceConfig");
         assertIsConfigurable();
-        applicationContext.getRegistry().registerResource(resourceConfig);
+        applicationContext.getRegistry().registerSmooksResourceConfiguration(resourceConfig);
     }
 
     /**
@@ -457,7 +447,7 @@ public class Smooks {
                 if(isConfigurable) {
                     setNotConfigurable();
                 }
-                return new StandaloneExecutionContext(targetProfile, applicationContext, contentHandlerBindings);
+                return new StandaloneExecutionContext(targetProfile, applicationContext, visitorBindings);
             } finally {
                 Thread.currentThread().setContextClassLoader(originalTCCL);
             }
@@ -465,7 +455,7 @@ public class Smooks {
             if(isConfigurable) {
                 setNotConfigurable();
             }
-            return new StandaloneExecutionContext(targetProfile, applicationContext, contentHandlerBindings);
+            return new StandaloneExecutionContext(targetProfile, applicationContext, visitorBindings);
         }
     }
 

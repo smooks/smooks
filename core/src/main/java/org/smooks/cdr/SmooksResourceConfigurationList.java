@@ -97,14 +97,14 @@ public class SmooksResourceConfigurationList {
     
     /**
      * Add a {@link SmooksResourceConfiguration} instance to this list.
-     * @param config {@link SmooksResourceConfiguration} instance to add.
+     * @param smooksResourceConfiguration {@link SmooksResourceConfiguration} instance to add.
      */
-    public void add(SmooksResourceConfiguration config) {
-        AssertArgument.isNotNull(config, "config");
-        String[] selectors = config.getSelector().split(",");
+    public void add(SmooksResourceConfiguration smooksResourceConfiguration) {
+        AssertArgument.isNotNull(smooksResourceConfiguration, "smooksResourceConfiguration");
+        String[] selectors = smooksResourceConfiguration.getSelectorPath().getSelector().split(",");
 
         for(String selector : selectors) {
-            SmooksResourceConfiguration clone = (SmooksResourceConfiguration) config.clone();
+            SmooksResourceConfiguration clone = (SmooksResourceConfiguration) smooksResourceConfiguration.clone();
 
             clone.setSelector(selector.trim());
             smooksResourceConfigurations.add(clone);

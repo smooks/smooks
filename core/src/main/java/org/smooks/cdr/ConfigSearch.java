@@ -107,12 +107,12 @@ public class ConfigSearch {
 			}
 		}
 		if(selector != null) {
-			if(config.getSelector() == null || !config.getSelector().equalsIgnoreCase(selector)) {
+			if(config.getSelectorPath().getSelector() == null || !config.getSelectorPath().getSelector().equalsIgnoreCase(selector)) {
 				return false;
 			}
 		}
 		if(selectorNS != null) {
-			if(config.getSelectorNamespaceURI() == null || !config.getSelectorNamespaceURI().equals(selectorNS)) {
+			if(config.getSelectorPath().getSelectorNamespaceURI() == null || !config.getSelectorPath().getSelectorNamespaceURI().equals(selectorNS)) {
 				return false;
 			}
 		}
