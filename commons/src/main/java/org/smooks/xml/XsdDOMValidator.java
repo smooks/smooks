@@ -42,17 +42,19 @@
  */
 package org.smooks.xml;
 
+import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.io.StreamUtils;
 import org.smooks.util.ClassUtil;
 import org.w3c.dom.*;
+import org.w3c.dom.ls.LSInput;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -91,20 +93,96 @@ public class XsdDOMValidator extends XsdValidator {
 
         // Get the full namespace list...
         namespaces.addAll(collectNamespaces(document.getDocumentElement()));
+        
+        this.setSchemaSourceResolver((type, namespaceURI, publicId, systemId, baseURI) -> new LSInput() {
+            @Override
+            public Reader getCharacterStream() {
+                return null;
+            }
 
-        // Using the namespace URI list, create the XSD Source array used to
-        // create the merged Schema instance...
-    	List<Source> sources = new ArrayList<Source>();
-        for (int i = 0; i < namespaces.size(); i++) {
-            URI namespace = namespaces.get(i);
-            if(!XmlUtil.isXMLReservedNamespace(namespace.toString())) {
-                final Source namespaceSource = getNamespaceSource(namespace);
-                if (namespaceSource != null) {
-                    sources.add(namespaceSource);
+            @Override
+            public void setCharacterStream(Reader characterStream) {
+
+            }
+
+            @Override
+            public InputStream getByteStream() {
+                return null;
+            }
+
+            @Override
+            public void setByteStream(InputStream byteStream) {
+
+            }
+
+            @Override
+            public String getStringData() {
+                if (namespaceURI != null) {
+                    try {
+                        return getNamespaceSource(new URI(namespaceURI));
+                    } catch (URISyntaxException e) {
+                        throw new SmooksException(e.getMessage(), e);
+                    }
+                } else {
+                    return null;
                 }
             }
-        }
-        setXSDSources(sources);
+
+            @Override
+            public void setStringData(String stringData) {
+
+            }
+
+            @Override
+            public String getSystemId() {
+                return null;
+            }
+
+            @Override
+            public void setSystemId(String systemId) {
+
+            }
+
+            @Override
+            public String getPublicId() {
+                return null;
+            }
+
+            @Override
+            public void setPublicId(String publicId) {
+
+            }
+
+            @Override
+            public String getBaseURI() {
+                return null;
+            }
+
+            @Override
+            public void setBaseURI(String baseURI) {
+
+            }
+
+            @Override
+            public String getEncoding() {
+                return null;
+            }
+
+            @Override
+            public void setEncoding(String encoding) {
+
+            }
+
+            @Override
+            public boolean getCertifiedText() {
+                return false;
+            }
+
+            @Override
+            public void setCertifiedText(boolean certifiedText) {
+
+            }
+        });
     }
 
     public URI getDefaultNamespace() {
@@ -175,7 +253,7 @@ public class XsdDOMValidator extends XsdValidator {
         return namespaceSources;
     }
 
-    private Source getNamespaceSource(URI namespace) {
+    private String getNamespaceSource(URI namespace) {
         if (namespace.getPath().length() > 0) {
             String resourcePath = "/META-INF" + namespace.getPath();
             InputStream xsdStream = ClassUtil.getResourceAsStream(resourcePath, getClass());
@@ -183,7 +261,11 @@ public class XsdDOMValidator extends XsdValidator {
             if (xsdStream == null) {
                 return null;
             } else {
-                return new StreamSource(xsdStream);
+                try {
+                    return new String(StreamUtils.readStream(xsdStream));
+                } catch (IOException e) {
+                   throw new SmooksException(e.getMessage(), e);
+                }
             }
         } else {
             return null;
