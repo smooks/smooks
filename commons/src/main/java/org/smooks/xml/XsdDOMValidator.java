@@ -90,7 +90,7 @@ public class XsdDOMValidator extends XsdValidator {
         }
 
         // Get the full namespace list...
-        gatherNamespaces(document.getDocumentElement(), namespaces);
+        namespaces.addAll(collectNamespaces(document.getDocumentElement()));
 
         // Using the namespace URI list, create the XSD Source array used to
         // create the merged Schema instance...
@@ -144,7 +144,8 @@ public class XsdDOMValidator extends XsdValidator {
         return null;
     }
 
-    private void gatherNamespaces(Element element, List<URI> namespaceSources) throws SAXException {
+    private List<URI> collectNamespaces(Element element) throws SAXException {
+        List<URI> namespaceSources = new ArrayList<>();
         NamedNodeMap attributes = element.getAttributes();
         int attributeCount = attributes.getLength();
 
@@ -167,9 +168,11 @@ public class XsdDOMValidator extends XsdValidator {
             Node child = childNodes.item(i);
 
             if(child.getNodeType() == Node.ELEMENT_NODE) {
-                gatherNamespaces((Element) child, namespaceSources);
+                namespaceSources.addAll(collectNamespaces((Element) child));
             }
         }
+        
+        return namespaceSources;
     }
 
     private Source getNamespaceSource(URI namespace) {
