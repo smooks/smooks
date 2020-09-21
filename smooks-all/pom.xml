@@ -83,43 +83,9 @@
             <artifactId>jaxen</artifactId>
         </dependency>
 
-        <!-- Bundles -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jaxen</groupId>
-            <artifactId>com.springsource.org.jaxen</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm.tree.analysis</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm.tree</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm.util</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -209,7 +175,6 @@
                         </Export-Package>
                         <Import-Package>
                             org.osgi.framework,
-                            org.jaxen.*;version="${spring.jaxen.version}",
                             org.apache.commons.*,
                             freemarker.*;version="${freemarker.version}",
                             groovy.xml;version="${spring.groovy.version}",
