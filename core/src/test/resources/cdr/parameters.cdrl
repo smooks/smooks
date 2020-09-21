@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
-<smooks-resource-list default-selector="device-parameters" xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd"> 
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"> 
 
-	<resource-config target-profile="msie6">
+	<resource-config target-profile="msie6" selector="device-parameters">
 		<param name="friendly-name">Internet Explorer 6</param>
 	</resource-config>
-	<resource-config target-profile="msie6w">
+	<resource-config target-profile="msie6w" selector="device-parameters">
 		<param name="friendly-name">Internet Explorer 6 (Windows)</param>
 	</resource-config>
-	<resource-config target-profile="msie6m">
+	<resource-config target-profile="msie6m" selector="device-parameters">
 		<param name="friendly-name">Internet Explorer 6 (Mac)</param>
 	</resource-config>
 
-	<resource-config target-profile="firefox">
+	<resource-config target-profile="firefox" selector="device-parameters">
 		<param name="friendly-name">Mozilla Firefox</param>
 	</resource-config>
 

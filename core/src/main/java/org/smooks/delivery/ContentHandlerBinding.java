@@ -76,7 +76,7 @@ public class ContentHandlerBinding<T extends ContentHandler> {
         isLifecycleCleanable = (contentHandler instanceof ExecutionLifecycleCleanable);
     }
 
-    public ContentHandlerBinding(final T contentHandler, final String targetSelector, final String targetSelectorNS, final Registry registry) {
+    public ContentHandlerBinding(final T contentHandler, final String targetSelector, @Deprecated final String targetSelectorNS, final Registry registry) {
         this.contentHandler = contentHandler;
         smooksResourceConfiguration = new SmooksResourceConfiguration(targetSelector, contentHandler.getClass().getName());
         smooksResourceConfiguration.getSelectorPath().setSelectorNamespaceURI(targetSelectorNS);

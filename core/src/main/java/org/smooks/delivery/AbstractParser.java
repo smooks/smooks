@@ -62,7 +62,7 @@ import org.smooks.namespace.NamespaceDeclarationStackAware;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
 import org.smooks.util.ClassUtil;
-import org.smooks.xml.NamespaceMappings;
+import org.smooks.xml.NamespaceManager;
 import org.smooks.xml.NullSourceXMLReader;
 import org.smooks.xml.SmooksXMLReader;
 import org.xml.sax.*;
@@ -123,7 +123,7 @@ public class AbstractParser {
     public static void attachXMLReader(XMLReader xmlReader, ExecutionContext execContext) {
         getReaders(execContext).push(xmlReader);
 
-        NamespaceDeclarationStack namespaceDeclarationStack = NamespaceMappings.getNamespaceDeclarationStack(execContext);
+        NamespaceDeclarationStack namespaceDeclarationStack = NamespaceManager.getNamespaceDeclarationStack(execContext);
         if(namespaceDeclarationStack == null) {
             throw new IllegalStateException("No NamespaceDeclarationStack attached to the ExecutionContext.");
         }
@@ -145,7 +145,7 @@ public class AbstractParser {
 
         if(!xmlReaderStack.isEmpty()) {
             xmlReaderStack.pop();
-            NamespaceMappings.getNamespaceDeclarationStack(execContext).popReader();
+            NamespaceManager.getNamespaceDeclarationStack(execContext).popReader();
         }
     }
 
@@ -354,7 +354,7 @@ public class AbstractParser {
 
     protected void attachNamespaceDeclarationStack(XMLReader reader, ExecutionContext execContext) {
         if (reader instanceof NamespaceDeclarationStackAware) {
-            NamespaceDeclarationStack nsDeclarationStack = NamespaceMappings.getNamespaceDeclarationStack(execContext);
+            NamespaceDeclarationStack nsDeclarationStack = NamespaceManager.getNamespaceDeclarationStack(execContext);
 
             if (nsDeclarationStack == null) {
                 throw new IllegalStateException("NamespaceDeclarationStack not configured on ExecutionContext.");

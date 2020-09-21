@@ -42,11 +42,10 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list 
-	xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" 
-	xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.5.xsd" >
-	
-
+<smooks-resource-list
+        xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
+        xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
+    
     <core:exports>
         <core:result type="org.smooks.payload.StringResult"/>
         <core:result type="org.smooks.payload.JavaResult"/>

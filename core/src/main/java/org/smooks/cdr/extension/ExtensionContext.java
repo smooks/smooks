@@ -59,7 +59,9 @@ public class ExtensionContext {
     private static final String EXEC_CONTEXT_KEY = ExtensionContext.class.getName() + "#EXEC_CONTEXT_KEY";
 
     private final XMLConfigDigester xmlConfigDigester;
+    @Deprecated
     private final String defaultSelector;
+    @Deprecated
     private final String defaultNamespace;
     private final String defaultProfile;
     private final ExpressionEvaluator defaultConditionEvaluator;
@@ -101,7 +103,7 @@ public class ExtensionContext {
      * @param defaultProfile The default profile.
      * @param defaultConditionEvaluator The default condition evaluator.
      */
-    public ExtensionContext(XMLConfigDigester xmlConfigDigester, String defaultSelector, String defaultNamespace, String defaultProfile, ExpressionEvaluator defaultConditionEvaluator) {
+    public ExtensionContext(XMLConfigDigester xmlConfigDigester, @Deprecated String defaultSelector, @Deprecated String defaultNamespace, String defaultProfile, ExpressionEvaluator defaultConditionEvaluator) {
         this.xmlConfigDigester = xmlConfigDigester;
         this.defaultSelector = defaultSelector;
         this.defaultNamespace = defaultNamespace;
@@ -194,10 +196,12 @@ public class ExtensionContext {
         return xmlConfigDigester;
     }
 
+    @Deprecated
     public String getDefaultSelector() {
         return defaultSelector;
     }
 
+    @Deprecated
     public String getDefaultNamespace() {
         return defaultNamespace;
     }

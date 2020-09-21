@@ -42,7 +42,7 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-selector-namespace="http://www.milyn.org/xsd/smooks/test-xsd-04.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd">
 
     <!-- Should cause an error because profiles are not allowed in extension configs -->
     <profiles>

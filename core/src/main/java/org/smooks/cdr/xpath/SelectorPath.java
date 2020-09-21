@@ -68,6 +68,8 @@ import java.util.*;
 public class SelectorPath implements List<SelectorStep> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SelectorPath.class);
+
+    private Properties namespaces = new Properties();
     
     /**
      * Document target on which the resource is to be applied.
@@ -78,6 +80,7 @@ public class SelectorPath implements List<SelectorStep> {
      * The XML namespace of the tag to which this config
      * should only be applied.
      */
+    @Deprecated
     private String namespaceURI;
 
     /**
@@ -102,9 +105,7 @@ public class SelectorPath implements List<SelectorStep> {
      * @param selector The selector definition.
      */
     public void setSelector(final String selector) {
-        if (selector == null || selector.trim().equals("")) {
-            throw new IllegalArgumentException("null or empty 'selector' arg in constructor call.");
-        }
+        AssertArgument.isNotEmpty(selector, "selector");
         this.selector = selector;
 
         // If there's a "#document" token in the selector, but it's not at the very start,
@@ -114,6 +115,7 @@ public class SelectorPath implements List<SelectorStep> {
             throw new SmooksConfigurationException("Invalid selector '" + selector + "'.  '" + SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR + "' token can only exist at the start of the selector.");
         }
 
+        selectorSteps.clear();
         try {
             selectorSteps.addAll(SelectorStepBuilder.buildSteps(selector));
         } catch (SAXPathException e) {
@@ -238,6 +240,7 @@ public class SelectorPath implements List<SelectorStep> {
      * @return The XML namespace URI of the element to which this configuration
      * applies, or null if not namespaced.
      */
+    @Deprecated
     public String getSelectorNamespaceURI() {
         return namespaceURI;
     }
@@ -252,6 +255,7 @@ public class SelectorPath implements List<SelectorStep> {
      * otherwise false.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    @Deprecated
     public boolean isTargetedAtNamespace(String namespace) {
         if (namespaceURI != null) {
             return namespaceURI.equals(namespace);
@@ -646,6 +650,7 @@ public class SelectorPath implements List<SelectorStep> {
      *
      * @param namespaceURI Selector namespace.
      */
+    @Deprecated
     public void setSelectorNamespaceURI(String namespaceURI) {
         if (namespaceURI != null) {
             if (namespaceURI.equals("*")) {
@@ -655,7 +660,11 @@ public class SelectorPath implements List<SelectorStep> {
             }
         }
     }
-    
+
+    public Properties getNamespaces() {
+        return namespaces;
+    }
+
     @Override
     public SelectorPath clone() {
         SelectorPath copySelectorPath = new SelectorPath();
@@ -663,6 +672,10 @@ public class SelectorPath implements List<SelectorStep> {
         copySelectorPath.selector = selector;
         copySelectorPath.namespaceURI = namespaceURI;
         copySelectorPath.expressionEvaluator = expressionEvaluator;
+        copySelectorPath.namespaces = namespaces;
+        for (SelectorStep selectorStep : selectorSteps) {
+            copySelectorPath.selectorSteps.add(selectorStep.clone());
+        }
         
         return copySelectorPath;
     }
@@ -675,11 +688,13 @@ public class SelectorPath implements List<SelectorStep> {
      */
     public void setNamespaces(Properties namespaces) throws SAXPathException {
         AssertArgument.isNotNull(namespaces, "namespaces");
+
+        this.namespaces.putAll(namespaces);
         
         for(int i = 0; i < selectorSteps.size(); i++) {
             SelectorStep step = selectorSteps.get(i);
             try {
-                step.buildPredicatesEvaluator(namespaces);
+                step.buildPredicatesEvaluator(this.namespaces);
             } catch (SAXPathException e) {
                 throw e;
             } catch (Exception e) {

@@ -42,7 +42,7 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd">
 
     <!-- The text() node should cause an error for this Visitor because it implements more than just the SAXVisitAfter interface -->
     <resource-config selector="item[@code = '8655']/units[text() = 1]">

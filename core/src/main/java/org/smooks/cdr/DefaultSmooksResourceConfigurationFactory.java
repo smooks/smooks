@@ -46,11 +46,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import java.util.Properties;
 
 public class DefaultSmooksResourceConfigurationFactory implements SmooksResourceConfigurationFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSmooksResourceConfigurationFactory.class);
 
     @Override
+    @Deprecated
     public SmooksResourceConfiguration createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element) {
         String selector = DomUtils.getAttributeValue(element, "selector");
         String namespace = DomUtils.getAttributeValue(element, "selector-namespace");
@@ -68,6 +72,7 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
                 (namespace != null ? namespace : defaultNamespace),
                 (profiles != null ? profiles : defaultProfile),
                 resource);
+        smooksResourceConfiguration.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
         
         if (resourceElement != null) {
             smooksResourceConfiguration.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));
@@ -82,5 +87,53 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
         }
 
         return smooksResourceConfiguration;
+    }
+
+    @Override
+    public SmooksResourceConfiguration createConfiguration(String defaultProfile, Element element) {
+        String selector = DomUtils.getAttributeValue(element, "selector");
+        String profiles = DomUtils.getAttributeValue(element, "target-profile");
+        Element resourceElement = DomUtils.getElementByTagName(element, "resource");
+
+        final String resource;
+        if (resourceElement != null) {
+            resource = DomUtils.getAllText(resourceElement, true);
+        } else {
+            resource = null;
+        }
+
+        final SmooksResourceConfiguration smooksResourceConfiguration = new SmooksResourceConfiguration(selector, (profiles != null ? profiles : defaultProfile), resource);
+        smooksResourceConfiguration.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
+
+        if (resourceElement != null) {
+            smooksResourceConfiguration.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));
+        }
+
+        if (resource == null) {
+            if (smooksResourceConfiguration.getParameters("restype") != null) {
+                LOGGER.debug("Resource 'null' for resource config: " + smooksResourceConfiguration + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
+            } else {
+                LOGGER.debug("Resource 'null' for resource config: " + smooksResourceConfiguration + ". This is not invalid!");
+            }
+        }
+
+        return smooksResourceConfiguration;
+    }
+
+    private Properties getNamespaces(Element element) {
+        Properties namespaces = new Properties();
+
+        for (int i = 0; i < element.getParentNode().getAttributes().getLength(); i++) {
+            Node node = element.getParentNode().getAttributes().item(i);
+            String prefix = node.getNodeName();
+            if (prefix.startsWith("xmlns")) {
+                if (prefix.indexOf(":") > 0) {
+                    prefix = prefix.substring(prefix.indexOf(":") + 1);
+                    namespaces.put(prefix, node.getNodeValue());
+                }
+            }
+        }
+
+        return namespaces;
     }
 }

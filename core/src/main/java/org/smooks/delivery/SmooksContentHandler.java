@@ -48,7 +48,7 @@ import org.smooks.delivery.replay.EndElementEvent;
 import org.smooks.delivery.replay.SAXEventReplay;
 import org.smooks.delivery.replay.StartElementEvent;
 import org.smooks.namespace.NamespaceDeclarationStack;
-import org.smooks.xml.NamespaceMappings;
+import org.smooks.xml.NamespaceManager;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -83,7 +83,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
 
     public NamespaceDeclarationStack getNamespaceDeclarationStack() {
         if(namespaceDeclarationStack == null) {
-            namespaceDeclarationStack = NamespaceMappings.getNamespaceDeclarationStack(executionContext);
+            namespaceDeclarationStack = NamespaceManager.getNamespaceDeclarationStack(executionContext);
             if(namespaceDeclarationStack == null) {
                 throw new IllegalStateException("NamespaceDeclarationStack instance not set on ExecutionContext.");
             }

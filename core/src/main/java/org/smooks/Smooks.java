@@ -71,7 +71,7 @@ import org.smooks.profile.Profile;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.UnknownProfileMemberException;
 import org.smooks.resource.URIResourceLocator;
-import org.smooks.xml.NamespaceMappings;
+import org.smooks.xml.NamespaceManager;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.Result;
@@ -256,7 +256,7 @@ public class Smooks {
     public void setNamespaces(Properties namespaces) {
         AssertArgument.isNotNull(namespaces, "namespaces");
         assertIsConfigurable();
-        applicationContext.getRegistry().registerObject(NamespaceMappings.class, namespaces);
+        applicationContext.getRegistry().registerObject(NamespaceManager.class, namespaces);
     }
 
     /**
