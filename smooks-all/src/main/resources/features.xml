@@ -46,11 +46,6 @@
 <features name="smooks-${project.version}">
   <feature name="smooks" version="${project.version}">
     <bundle>mvn:org.freemarker/freemarker/${freemarker.version}</bundle>
-    <bundle>mvn:org.jaxen/com.springsource.org.jaxen/${spring.jaxen.version}</bundle>
-    <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm/${spring.objectweb.version}</bundle>
-    <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree/${spring.objectweb.version}</bundle>
-    <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.tree.analysis/${spring.objectweb.version}</bundle>
-    <bundle>mvn:org.objectweb.asm/com.springsource.org.objectweb.asm.util/${spring.objectweb.version}</bundle>
     <bundle>mvn:commons-lang/commons-lang/${commons_lang.version}</bundle>
     <bundle>mvn:org.smooks/smooks-all/${project.version}</bundle>
   </feature>
