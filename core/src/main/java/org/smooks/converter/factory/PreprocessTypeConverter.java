@@ -43,12 +43,12 @@
 package org.smooks.converter.factory;
 
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.config.Configurable;
 import org.smooks.container.ApplicationContext;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.expression.MVELExpressionEvaluator;
+import org.smooks.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.util.ClassUtil;
 
 import javax.annotation.PostConstruct;

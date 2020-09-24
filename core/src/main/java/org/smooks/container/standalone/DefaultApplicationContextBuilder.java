@@ -43,17 +43,17 @@
 package org.smooks.container.standalone;
 
 import org.smooks.cdr.SystemSmooksResourceConfigurationListFactory;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.Registry;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ApplicationContextBuilder;
 import org.smooks.delivery.ContentHandlerFactory;
 import org.smooks.delivery.DefaultContentDeliveryConfigBuilderFactory;
+import org.smooks.injector.Scope;
+import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
 import org.smooks.payload.Exports;
 import org.smooks.profile.DefaultProfileSet;
 import org.smooks.profile.Profile;
+import org.smooks.registry.Registry;
+import org.smooks.registry.lookup.LifecycleManagerLookup;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -84,7 +84,7 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
 
         registerInstalledContentHandlerFactories(registry);
         if (registerInstalledResources) {
-            registerInstalledResources(registry);
+            registerSystemResources(registry);
         }
          
         standaloneApplicationContext.setRegistry(registry);
@@ -108,10 +108,11 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
      *
      * @param resourceFile Installed (internal) resource config file.
      */
-    private void registerInstalledResources(final Registry registry) {
+    private void registerSystemResources(final Registry registry) {
         registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-dom.xml", classLoader).create());
         registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-sax.xml", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-param-decoders.xml", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/installed-serializers.xml", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/system-param-decoders.xml", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/system-serializers.xml", classLoader).create());
+        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/system-interceptors.xml", classLoader).create());
     }
 }

@@ -55,7 +55,7 @@ import java.util.List;
 public interface VisitorAppender {
 
     /**
-     * Add visitors to the supplied Cisitor map.
+     * Add visitors to the supplied visitor map.
      * @param visitorBindings The visitor bindings to be added to. 
      */
     List<ContentHandlerBinding<Visitor>> addVisitors();

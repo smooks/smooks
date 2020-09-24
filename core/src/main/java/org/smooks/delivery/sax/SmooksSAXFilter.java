@@ -71,10 +71,10 @@ public class SmooksSAXFilter extends Filter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SmooksSAXFilter.class);
 	
-    private final ExecutionContext executionContext;
-    private final SAXParser parser;
-    private final boolean closeSource;
-    private final boolean closeResult;
+    protected final ExecutionContext executionContext;
+    protected final SAXParser parser;
+    protected final boolean closeSource;
+    protected final boolean closeResult;
 
     public SmooksSAXFilter(ExecutionContext executionContext) {
         this.executionContext = executionContext;
@@ -109,7 +109,9 @@ public class SmooksSAXFilter extends Filter {
         }
 
         try {
-            Writer writer = parser.parse(source, result, executionContext);
+            Writer writer = getWriter(result, executionContext);
+            executionContext.setWriter(writer);
+            parser.parse(source, executionContext);
             writer.flush();
         } catch (TerminateException e) {
             if(LOGGER.isDebugEnabled()) {

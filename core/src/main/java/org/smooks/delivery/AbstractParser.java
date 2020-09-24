@@ -48,19 +48,18 @@ import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.Parameter;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.LifecycleManager;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.java.JavaXMLReader;
 import org.smooks.delivery.java.XStreamXMLReader;
+import org.smooks.injector.Scope;
 import org.smooks.io.NullReader;
-import org.smooks.io.NullWriter;
+import org.smooks.lifecycle.LifecycleManager;
+import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.namespace.NamespaceDeclarationStackAware;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
+import org.smooks.registry.lookup.LifecycleManagerLookup;
 import org.smooks.util.ClassUtil;
 import org.smooks.xml.NamespaceManager;
 import org.smooks.xml.NullSourceXMLReader;
@@ -69,9 +68,7 @@ import org.xml.sax.*;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -87,32 +84,33 @@ import java.util.Stack;
  */
 public class AbstractParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractParser.class);
-
-    private final ExecutionContext execContext;
-    private final SmooksResourceConfiguration saxDriverConfig;
     public static final String ORG_XML_SAX_DRIVER = "org.xml.sax.driver";
     public static final String FEATURE_ON = "feature-on";
     public static final String FEATURE_OFF = "feature-off";
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractParser.class);
+
+    private final ExecutionContext executionContext;
+    private final SmooksResourceConfiguration saxDriverConfig;
 
     /**
      * Public constructor.
      *
-     * @param execContext     The Smooks Container Request that the parser is being instantiated on behalf of.
+     * @param executionContext     The Smooks Container Request that the parser is being instantiated on behalf of.
      * @param saxDriverConfig SAX Parser configuration. See <a href="#parserconfig">.cdrl Configuration</a>.
      */
-    public AbstractParser(ExecutionContext execContext, SmooksResourceConfiguration saxDriverConfig) {
-        AssertArgument.isNotNull(execContext, "execContext");
-        this.execContext = execContext;
+    public AbstractParser(ExecutionContext executionContext, SmooksResourceConfiguration saxDriverConfig) {
+        AssertArgument.isNotNull(executionContext, "execContext");
+        this.executionContext = executionContext;
         this.saxDriverConfig = saxDriverConfig;
     }
 
-    public AbstractParser(ExecutionContext execContext) {
-        this(execContext, getSAXParserConfiguration(execContext.getDeliveryConfig()));
+    public AbstractParser(ExecutionContext executionContext) {
+        this(executionContext, getSAXParserConfiguration(executionContext.getDeliveryConfig()));
     }
 
-    protected ExecutionContext getExecContext() {
-        return execContext;
+    protected ExecutionContext getExecutionContext() {
+        return executionContext;
     }
 
     @SuppressWarnings("unused")
@@ -282,34 +280,10 @@ public class AbstractParser {
         return null;
     }
 
-
-    protected Writer getWriter(Result result, ExecutionContext executionContext) {
-        if (!(result instanceof StreamResult)) {
-            return new NullWriter();
-        }
-
-        StreamResult streamResult = (StreamResult) result;
-        if (streamResult.getWriter() != null) {
-            return streamResult.getWriter();
-        } else if (streamResult.getOutputStream() != null) {
-            try {
-                if (executionContext != null) {
-                    return new OutputStreamWriter(streamResult.getOutputStream(), executionContext.getContentEncoding());
-                } else {
-                    return new OutputStreamWriter(streamResult.getOutputStream(), StandardCharsets.UTF_8);
-                }
-            } catch (UnsupportedEncodingException e) {
-                throw new SmooksException("Unable to encode output stream.", e);
-            }
-        } else {
-            throw new SmooksException("Invalid " + StreamResult.class.getName() + ".  No OutputStream or Writer instance.");
-        }
-    }
-
     protected XMLReader createXMLReader() throws SAXException {
         XMLReader reader;
-        ExecutionContext execContext = getExecContext();
-        Source source = FilterSource.getSource(execContext);
+        ExecutionContext executionContext = getExecutionContext();
+        Source source = FilterSource.getSource(executionContext);
 
         if (saxDriverConfig != null && saxDriverConfig.getResource() != null) {
             String className = saxDriverConfig.getResource();
@@ -335,9 +309,9 @@ public class AbstractParser {
         }
 
         if (reader instanceof SmooksXMLReader) {
-            final LifecycleManager lifecycleManager = execContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
+            final LifecycleManager lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
             if(saxDriverConfig != null) {
-                lifecycleManager.applyPhase(reader, new PostConstructLifecyclePhase(new Scope(execContext.getApplicationContext().getRegistry(), saxDriverConfig, reader)));
+                lifecycleManager.applyPhase(reader, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), saxDriverConfig, reader)));
         	} else {
                 lifecycleManager.applyPhase(reader, new PostConstructLifecyclePhase());
         	}

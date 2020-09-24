@@ -51,12 +51,14 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.dom.serialize.Serializer;
+import org.smooks.delivery.dom.serialize.TextSerializerVisitor;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.event.report.AbstractReportGenerator;
 import org.smooks.event.types.DOMFilterLifecycleEvent;
 import org.smooks.event.types.ElementPresentEvent;
 import org.smooks.event.types.ElementVisitEvent;
 import org.smooks.event.types.ResourceTargetingEvent;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
@@ -73,6 +75,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Vector;
@@ -84,7 +87,7 @@ import java.util.Vector;
  * (XML/XHTML/HTML etc) through a process of iterating over the source XML DOM tree
  * and applying the {@link org.smooks.cdr.SmooksResourceConfiguration configured} Content Delivery Units
  * ({@link DOMElementVisitor DOMElementVisitors} and
- * {@link org.smooks.delivery.dom.serialize.SerializationUnit SerializationUnits}).
+ * {@link SerializerVisitor SerializationUnits}).
  * <p/>
  * This class doesn't get used directly.  See the {@link org.smooks.Smooks} class.
  * <p/>
@@ -138,7 +141,7 @@ import java.util.Vector;
  * <li>
  * <b><u>Serialisation</u></b>: This phase is executed by the {@link #serialize(Node, Writer)} method (which uses the
  * {@link org.smooks.delivery.dom.serialize.Serializer} class).  The serialisation phase takes the processed DOM and
- * iterates over it to apply all {@link org.smooks.delivery.dom.serialize.SerializationUnit SerializationUnits},
+ * iterates over it to apply all {@link SerializerVisitor SerializationUnits},
  * which write the document to the target output stream.
  * <p/>
  * Instead of using this serialisation mechanism, you may wish to perform
@@ -359,6 +362,25 @@ public class SmooksDOMFilter extends Filter {
      * @return Node representing filtered Element.
      */
     public Node filter(Element element) {
+        executionContext.setWriter(new Writer() {
+            @Override
+            public void write(char[] cbuf, int off, int len) {
+                StringWriter stringWriter = new StringWriter();
+                stringWriter.write(cbuf, off, len);
+                final Node resultNode = TextSerializerVisitor.createTextElement(element, stringWriter.toString());
+                DomUtils.replaceNode(resultNode, element);
+            }
+
+            @Override
+            public void flush() throws IOException {
+
+            }
+
+            @Override
+            public void close() throws IOException {
+
+            }
+        });
         ContentHandlerBindings<DOMVisitBefore> visitBefores = deliveryConfig.getAssemblyVisitBefores();
         ContentHandlerBindings<DOMVisitAfter> visitAfters = deliveryConfig.getAssemblyVisitAfters();
         globalAssemblyBefores = visitBefores.getMappings(GLOBAL_SELECTORS);
@@ -411,7 +433,7 @@ public class SmooksDOMFilter extends Filter {
             elementTrans.process(executionContext);
         }
 
-        return (Node) executionContext.getAttribute(DELIVERY_NODE_REQUEST_KEY);
+        return executionContext.getAttribute(DELIVERY_NODE_REQUEST_KEY);
     }
 
     private boolean applyAssembly(ContentHandlerBindings<DOMVisitBefore> visitBefores, ContentHandlerBindings<DOMVisitAfter> visitAfters) {

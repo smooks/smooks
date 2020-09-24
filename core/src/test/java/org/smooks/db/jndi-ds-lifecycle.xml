@@ -43,7 +43,7 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"  
-					  xmlns:ds="https://www.smooks.org/xsd/smooks/datasource-1.5.xsd">
+					  xmlns:ds="https://www.smooks.org/xsd/smooks/datasource-1.4.xsd">
 
 	<profiles>
 		<profile base-profile="mock" />

@@ -47,13 +47,14 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ExecutionLifecycleCleanable;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.VisitLifecycleCleanable;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
+import org.smooks.delivery.sax.ng.BeforeVisitor;
+import org.smooks.lifecycle.ExecutionLifecycleCleanable;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.w3c.dom.Element;
 
 import javax.inject.Inject;
@@ -87,9 +88,8 @@ import java.nio.charset.StandardCharsets;
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  *
  */
-public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DOMVisitBefore, Consumer, VisitLifecycleCleanable, ExecutionLifecycleCleanable
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger( AbstractOutputStreamResource.class );
+public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DOMVisitBefore, Consumer, VisitLifecycleCleanable, ExecutionLifecycleCleanable, BeforeVisitor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOutputStreamResource.class);
 
     protected static final String RESOURCE_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputresource:";
 
@@ -103,32 +103,33 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
 
     //	public
 
-	/**
-	 * Retrieve/create an output stream that is appropriate for the concreate implementation
-	 *
-	 * @param executionContext Execution Context.
-	 * @return OutputStream specific to the concreate implementation
-	 */
-	public abstract OutputStream getOutputStream( final ExecutionContext executionContext ) throws IOException;
+    /**
+     * Retrieve/create an output stream that is appropriate for the concreate implementation
+     *
+     * @param executionContext Execution Context.
+     * @return OutputStream specific to the concreate implementation
+     */
+    public abstract OutputStream getOutputStream(final ExecutionContext executionContext) throws IOException;
 
     /**
-	 * Get the name of this resource
-	 *
-	 * @return The name of the resource
-	 */
-	public String getResourceName() {
+     * Get the name of this resource
+     *
+     * @return The name of the resource
+     */
+    public String getResourceName() {
         return resourceName;
     }
 
+    @Override
     public boolean consumes(Object object) {
         return object.equals(resourceName);
     }
 
     /**
-	 * Set the name of this resource
-	 *
-	 * @param resourceName The name of the resource
-	 */
+     * Set the name of this resource
+     *
+     * @param resourceName The name of the resource
+     */
     public AbstractOutputStreamResource setResourceName(String resourceName) {
         AssertArgument.isNotNullAndNotEmpty(resourceName, "resourceName");
         this.resourceName = resourceName;
@@ -144,58 +145,57 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
     public Charset getWriterEncoding() {
         return writerEncoding;
     }
-
-    public void visitBefore( final SAXElement element, final ExecutionContext executionContext ) throws SmooksException, IOException
-	{
-		bind ( executionContext );
-	}
-
-    public void visitBefore( final Element element, final ExecutionContext executionContext ) throws SmooksException
-    {
-        bind ( executionContext );
+    
+    @Override
+    public void visitBefore(final SAXElement element, final ExecutionContext executionContext) throws SmooksException, IOException {
+        bind(executionContext);
     }
 
+    @Override
+    public void visitBefore(final Element element, final ExecutionContext executionContext) throws SmooksException {
+        bind(executionContext);
+    }
+
+    @Override
     public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
-        if(closeCondition( executionContext )) {
-            closeResource( executionContext );
+        if (closeCondition(executionContext)) {
+            closeResource(executionContext);
         }
     }
 
-	public void executeExecutionLifecycleCleanup( ExecutionContext executionContext )
-	{
-		closeResource( executionContext );
-	}
+    @Override
+    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
+        closeResource(executionContext);
+    }
 
-	protected boolean closeCondition(ExecutionContext executionContext) {
-		return true;
-	}
+    protected boolean closeCondition(ExecutionContext executionContext) {
+        return true;
+    }
 
     /**
      * Get an {@link OutputStream} to the named Resource.
      *
-     * @param resourceName The resource name.
+     * @param resourceName     The resource name.
      * @param executionContext The current ExececutionContext.
      * @return An {@link OutputStream} to the named Resource.
      * @throws SmooksException Unable to access OutputStream.
      */
     public static OutputStream getOutputStream(
-    		final String resourceName,
-            final ExecutionContext executionContext) throws SmooksException
-    {
+            final String resourceName,
+            final ExecutionContext executionContext) throws SmooksException {
         String resourceKey = OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName;
-        Object resourceIOObj = executionContext.getAttribute( resourceKey );
+        Object resourceIOObj = executionContext.getAttribute(resourceKey);
 
-        if( resourceIOObj == null )
-        {
-            AbstractOutputStreamResource resource = (AbstractOutputStreamResource) executionContext.getAttribute( RESOURCE_CONTEXT_KEY_PREFIX + resourceName );
+        if (resourceIOObj == null) {
+            AbstractOutputStreamResource resource = (AbstractOutputStreamResource) executionContext.getAttribute(RESOURCE_CONTEXT_KEY_PREFIX + resourceName);
             OutputStream outputStream = openOutputStream(resource, resourceName, executionContext);
 
-            executionContext.setAttribute( resourceKey, outputStream );
+            executionContext.setAttribute(resourceKey, outputStream);
             return outputStream;
         } else {
-            if(resourceIOObj instanceof OutputStream) {
+            if (resourceIOObj instanceof OutputStream) {
                 return (OutputStream) resourceIOObj;
-            } else if(resourceIOObj instanceof Writer) {
+            } else if (resourceIOObj instanceof Writer) {
                 throw new SmooksException("An Writer to the '" + resourceName + "' resource is already open.  Cannot open an OutputStream to this resource now!");
             } else {
                 throw new RuntimeException("Invalid runtime ExecutionContext state. Value stored under context key '" + resourceKey + "' must be either and OutputStream or Writer.  Is '" + resourceIOObj.getClass().getName() + "'.");
@@ -209,26 +209,26 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
      * Wraps the {@link OutputStream} in a {@link Writer}.  Uses the "writerEncoding"
      * param to set the encoding on the {@link Writer}.
      *
-     * @param resourceName The resource name.
+     * @param resourceName     The resource name.
      * @param executionContext The current ExececutionContext.
      * @return A {@link Writer} to the named {@link OutputStream} Resource.
      * @throws SmooksException Unable to access OutputStream.
      */
     public static Writer getOutputWriter(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
         String resourceKey = OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName;
-        Object resourceIOObj = executionContext.getAttribute( resourceKey );
+        Object resourceIOObj = executionContext.getAttribute(resourceKey);
 
-        if( resourceIOObj == null ) {
-            AbstractOutputStreamResource resource = (AbstractOutputStreamResource) executionContext.getAttribute( RESOURCE_CONTEXT_KEY_PREFIX + resourceName );
+        if (resourceIOObj == null) {
+            AbstractOutputStreamResource resource = (AbstractOutputStreamResource) executionContext.getAttribute(RESOURCE_CONTEXT_KEY_PREFIX + resourceName);
             OutputStream outputStream = openOutputStream(resource, resourceName, executionContext);
             Writer outputStreamWriter = new OutputStreamWriter(outputStream, resource.getWriterEncoding());
 
-            executionContext.setAttribute( resourceKey, outputStreamWriter );
+            executionContext.setAttribute(resourceKey, outputStreamWriter);
             return outputStreamWriter;
         } else {
-            if(resourceIOObj instanceof Writer) {
+            if (resourceIOObj instanceof Writer) {
                 return (Writer) resourceIOObj;
-            } else if(resourceIOObj instanceof OutputStream) {
+            } else if (resourceIOObj instanceof OutputStream) {
                 throw new SmooksException("An OutputStream to the '" + resourceName + "' resource is already open.  Cannot open a Writer to this resource now!");
             } else {
                 throw new RuntimeException("Invalid runtime ExecutionContext state. Value stored under context key '" + resourceKey + "' must be either and OutputStream or Writer.  Is '" + resourceIOObj.getClass().getName() + "'.");
@@ -237,74 +237,57 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
     }
 
     private static OutputStream openOutputStream(AbstractOutputStreamResource resource, String resourceName, ExecutionContext executionContext) {
-        if( resource == null )
-        {
-            throw new SmooksException( "OutputResource '" + resourceName + "' not bound to context.  Configure an '" + AbstractOutputStreamResource.class.getName() +  "' implementation, or change resource ordering." );
+        if (resource == null) {
+            throw new SmooksException("OutputResource '" + resourceName + "' not bound to context.  Configure an '" + AbstractOutputStreamResource.class.getName() + "' implementation, or change resource ordering.");
         }
 
-        try
-        {
-            return resource.getOutputStream( executionContext );
-        }
-        catch ( IOException e )
-        {
-            throw new SmooksException( "Unable to set outputstream for '" + resource.getResourceName() + "'.", e );
+        try {
+            return resource.getOutputStream(executionContext);
+        } catch (IOException e) {
+            throw new SmooksException("Unable to set outputstream for '" + resource.getResourceName() + "'.", e);
         }
     }
 
     /**
-	 * Close the resource output stream.
+     * Close the resource output stream.
      * <p/>
      * Classes overriding this method must call super on this method. This will
      * probably need to be done before performing any aditional cleanup.
-	 *
-	 * @param executionContext Smooks ExecutionContext
-	 */
-    protected void closeResource( final ExecutionContext executionContext )
-	{
-		try
-		{
-            Closeable output = (Closeable) executionContext.getAttribute( OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName() );
-            close( output );
-		}
-		finally
-		{
-            executionContext.removeAttribute( OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName() );
-            executionContext.removeAttribute( RESOURCE_CONTEXT_KEY_PREFIX + getResourceName() );
-		}
-	}
+     *
+     * @param executionContext Smooks ExecutionContext
+     */
+    protected void closeResource(final ExecutionContext executionContext) {
+        try {
+            Closeable output = executionContext.getAttribute(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName());
+            close(output);
+        } finally {
+            executionContext.removeAttribute(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName());
+            executionContext.removeAttribute(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName());
+        }
+    }
 
-	private void bind( final ExecutionContext executionContext )
-	{
-        executionContext.setAttribute( RESOURCE_CONTEXT_KEY_PREFIX + getResourceName(), this );
-	}
+    private void bind(final ExecutionContext executionContext) {
+        executionContext.setAttribute(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName(), this);
+    }
 
-	private void close( final Closeable closeable)
-	{
-		if ( closeable == null )
-		{
-			return;
-		}
+    private void close(final Closeable closeable) {
+        if (closeable == null) {
+            return;
+        }
 
-        if(closeable instanceof Flushable) {
-            try
-            {
+        if (closeable instanceof Flushable) {
+            try {
                 ((Flushable) closeable).flush();
-            }
-            catch (IOException e)
-            {
-                LOGGER.debug( "IOException while trying to flush output resource '" + resourceName + "': ", e );
+            } catch (IOException e) {
+                LOGGER.debug("IOException while trying to flush output resource '" + resourceName + "': ", e);
             }
         }
 
-        try
-		{
-			closeable.close();
-		}
-		catch (IOException e)
-		{
-			LOGGER.debug( "IOException while trying to close output resource '" + resourceName + "': ", e );
-		}
-	}
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            LOGGER.debug("IOException while trying to close output resource '" + resourceName + "': ", e);
+        }
+    }
 
 }

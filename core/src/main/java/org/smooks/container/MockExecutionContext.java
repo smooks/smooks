@@ -42,22 +42,18 @@
  */
 package org.smooks.container;
 
-import org.smooks.cdr.ParameterAccessor;
+import org.smooks.container.standalone.StandaloneExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.delivery.dom.MockContentDeliveryConfig;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.javabean.context.BeanContext;
-import org.smooks.javabean.context.StandaloneBeanContextFactory;
 import org.smooks.profile.DefaultProfileSet;
 import org.smooks.profile.Profile;
 import org.smooks.profile.ProfileSet;
-import org.smooks.util.IteratorEnumeration;
 
+import java.io.Writer;
 import java.net.URI;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -65,127 +61,108 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class MockExecutionContext implements ExecutionContext {
-	private URI                    docSource;
-	public final ProfileSet             profileSet = new DefaultProfileSet(Profile.DEFAULT_PROFILE);
-	public final ContentDeliveryConfig  deliveryConfig = new MockContentDeliveryConfig();
-	public  MockApplicationContext context = new MockApplicationContext();
-	private final Hashtable              attributes = new Hashtable();
-	public final LinkedHashMap          parameters = new LinkedHashMap();
-	private String                 contentEncoding;
-	private ExecutionEventListener executionListener;
-    private Throwable terminationError;
-    private BeanContext beanContext;
+	private final StandaloneExecutionContext executionContext;
+	public final ProfileSet profileSet = new DefaultProfileSet(Profile.DEFAULT_PROFILE);
+	public final ContentDeliveryConfig deliveryConfig = new MockContentDeliveryConfig();
+	private ApplicationContext applicationContext = new MockApplicationContext();
+	
+	public MockExecutionContext() {
+		executionContext = new StandaloneExecutionContext(Profile.DEFAULT_PROFILE, applicationContext, new ArrayList<>());
+	}
 
+	@Override
     public void setDocumentSource(URI docSource) {
-        this.docSource = docSource;
+		executionContext.setDocumentSource(docSource);
     }
-
+	
+    @Override
     public URI getDocumentSource() {
-		return docSource;
+		return executionContext.getDocumentSource();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.ExecutionContext#getParameterNames()
-	 */
-	@SuppressWarnings("unused")
-	public Enumeration getParameterNames() {
-		return (new IteratorEnumeration(parameters.keySet().iterator()));
-	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.ExecutionContext#getParameterValues(java.lang.String)
-	 */
-	@SuppressWarnings("unused")
-	public String[] getParameterValues(String name) {
-		return (String[])parameters.get(name);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.ExecutionContext#getApplicationContext()
-	 */
+	
+	@Override
 	public ApplicationContext getApplicationContext() {
-		if(context == null) {
-			throw new IllegalStateException("Call to getApplicationContext before context member has been initialised.  Set the 'context' member variable.");
-		}
-		return context;
+		return executionContext.getApplicationContext();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.smooks.container.ExecutionContext#getTargetProfiles()
 	 */
+	@Override
 	public ProfileSet getTargetProfiles() {
-		if(profileSet == null) {
-			throw new IllegalStateException("Call to getTargetProfiles before profileSet member has been initialised.  Set the 'profileSet' member variable.");
-		}
 		return profileSet;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.smooks.container.ExecutionContext#getDeliveryConfig()
 	 */
+	@Override
 	public ContentDeliveryConfig getDeliveryConfig() {
-		if(deliveryConfig == null) {
-			throw new IllegalStateException("Call to getDeliveryConfig before deliveryConfig member has been initialised.  Set the 'deliveryConfig' member variable.");
-		}
 		return deliveryConfig;
 	}
 
     public void setContentEncoding(String contentEncoding) throws IllegalArgumentException {
-        this.contentEncoding = contentEncoding;
+		executionContext.setContentEncoding(contentEncoding);
     }
 
-    public String getContentEncoding() {
-        return contentEncoding;
+	@Override
+	public String getContentEncoding() {
+		return executionContext.getContentEncoding();
     }
 
-    public void setEventListener(ExecutionEventListener listener) {
-        this.executionListener = listener;
+	@Override
+	public void setEventListener(ExecutionEventListener executionEventListener) {
+		executionContext.setEventListener(executionEventListener);
     }
 
-    public ExecutionEventListener getEventListener() {
-        return executionListener;
+	@Override
+	public ExecutionEventListener getEventListener() {
+        return executionContext.getEventListener();
     }
 
-    public void setTerminationError(Throwable terminationError) {
-        this.terminationError = terminationError;
+	@Override
+	public void setTerminationError(Throwable terminationError) {
+		executionContext.setTerminationError(terminationError);
     }
 
-    public Throwable getTerminationError() {
-        return terminationError;
+	@Override
+	public Throwable getTerminationError() {
+        return executionContext.getTerminationError();
     }
 
-    public String getConfigParameter(String name) {
-        return getConfigParameter(name, null);
+	@Override
+	public String getConfigParameter(String name) {
+		return executionContext.getConfigParameter(name);
     }
 
-    public String getConfigParameter(String name, String defaultVal) {
-        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, deliveryConfig);
+	@Override
+	public String getConfigParameter(String name, String defaultVal) {
+		return executionContext.getConfigParameter(name, defaultVal);
     }
-
-    public boolean isDefaultSerializationOn() {
-        return true;
-    }
-
+    
     /* (non-Javadoc)
       * @see org.smooks.container.BoundAttributeStore#setAttribute(java.lang.String, java.lang.Object)
       */
 	@SuppressWarnings("unchecked")
+	@Override
 	public void setAttribute(Object key, Object value) {
-		attributes.put(key, value);
+		executionContext.setAttribute(key, value);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.smooks.container.BoundAttributeStore#getAttribute(java.lang.String)
 	 */
+	@Override
 	public Object getAttribute(Object key) {
-		return attributes.get(key);
+		return executionContext.getAttribute(key);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.smooks.container.BoundAttributeStore#removeAttribute(java.lang.String)
 	 */
+	@Override
 	public void removeAttribute(Object key) {
-		attributes.remove(key);
+		executionContext.removeAttribute(key);
 	}
 
 	@SuppressWarnings("unused")
@@ -194,19 +171,36 @@ public class MockExecutionContext implements ExecutionContext {
     }
 
     @SuppressWarnings("unchecked")
-		public Map getAttributes()
-    {
-    	return attributes;
-    }
+	@Override
+	public Map getAttributes() {
+		return executionContext.getAttributes();
+	}
 
+	@Override
 	public BeanContext getBeanContext() {
-		if(beanContext == null) {
-			beanContext = StandaloneBeanContextFactory.create(this);
-		}
-		return beanContext;
+		return executionContext.getBeanContext();
 	}
 
     public void setBeanContext(BeanContext beanContext) {
-        this.beanContext = beanContext;
+		executionContext.setBeanContext(beanContext);
     }
+
+	@Override
+	public void setWriter(Writer writer) {
+		executionContext.setWriter(writer);
+	}
+
+	@Override
+	public Writer getWriter() {
+		return executionContext.getWriter();
+	}
+
+	@Override
+	public MementoCaretaker getMementoCaretaker() {
+		return executionContext.getMementoCaretaker();
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 }

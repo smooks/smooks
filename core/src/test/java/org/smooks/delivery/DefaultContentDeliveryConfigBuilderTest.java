@@ -72,12 +72,12 @@ public class DefaultContentDeliveryConfigBuilderTest {
         SAXContentDeliveryConfig config = (SAXContentDeliveryConfig) execContext.getDeliveryConfig();
 
         // Should be 5: 4 configured + 2 auto-installed
-        assertEquals(7, config.getVisitBefores().getCount());
+        assertEquals(8, config.getVisitBefores().getCount());
         assertTrue(config.getVisitBefores().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
         assertTrue(config.getVisitBefores().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
-        assertEquals(6, config.getVisitAfters().getCount());
-        assertTrue(config.getVisitAfters().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
-        assertTrue(config.getVisitAfters().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
+        assertEquals(7, config.getVisitAfters().getCount());
+        assertTrue(config.getVisitAfters().getMappings("b").get(1).getContentHandler() instanceof SAXVisitor01);
+        assertTrue(config.getVisitAfters().getMappings("b").get(1).getContentHandler() instanceof SAXVisitor01);
     }
 
 	@Test
@@ -90,8 +90,8 @@ public class DefaultContentDeliveryConfigBuilderTest {
 
         assertEquals(1, config.getAssemblyVisitBefores().getCount());
         assertEquals(1, config.getAssemblyVisitAfters().getCount());
-        assertEquals(2, config.getProcessingVisitBefores().getCount());
-        assertEquals(2, config.getProcessingVisitAfters().getCount());
+        assertEquals(3, config.getProcessingVisitBefores().getCount());
+        assertEquals(3, config.getProcessingVisitAfters().getCount());
         assertEquals(4, config.getSerializationVisitors().getCount());
     }
 

@@ -44,13 +44,14 @@ package org.smooks.db;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ExecutionLifecycleCleanable;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.VisitLifecycleCleanable;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
+import org.smooks.delivery.sax.ng.BeforeVisitor;
+import org.smooks.lifecycle.ExecutionLifecycleCleanable;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.util.CollectionsUtil;
 import org.w3c.dom.Element;
 
@@ -64,24 +65,28 @@ import java.util.Set;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefore, Producer, VisitLifecycleCleanable, ExecutionLifecycleCleanable {
+public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefore, BeforeVisitor, Producer, VisitLifecycleCleanable, ExecutionLifecycleCleanable {
 
     private static final String DS_CONTEXT_KEY_PREFIX = AbstractDataSource.class.getName() + "#datasource:";
     private static final String CONNECTION_CONTEXT_KEY_PREFIX = AbstractDataSource.class.getName() + "#connection:";
     private static final String TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX = AbstractDataSource.class.getName() + "#transactionManager:";
 
+    @Override
     public final void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         bind(executionContext);
     }
 
+    @Override
     public final void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         bind(executionContext);
     }
 
+    @Override
     public final void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
         unbind(executionContext);
     }
 
+    @Override
     public final void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
         // This guarantees Datasource resource cleanup (at the end of an ExecutionContext lifecycle) in
         // situations where the Smooks filter operation has terminated prematurely i.e. where the
@@ -95,10 +100,10 @@ public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefo
 
     protected void unbind(ExecutionContext executionContext) {
         try {
-            Connection connection = (Connection) executionContext.getAttribute(CONNECTION_CONTEXT_KEY_PREFIX + getName());
+            Connection connection = executionContext.getAttribute(CONNECTION_CONTEXT_KEY_PREFIX + getName());
 
             if(connection != null) {
-            	TransactionManager transactionManager = (TransactionManager) executionContext.getAttribute(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX  + getName());
+            	TransactionManager transactionManager = executionContext.getAttribute(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX  + getName());
             	if(transactionManager == null) {
             		throw new SmooksException("No TransactionManager is set for the datasource '" + getName() + "'");
             	}
@@ -150,6 +155,7 @@ public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefo
         return connection;
     }
 
+    @Override
     public Set<String> getProducts() {
         return CollectionsUtil.toSet(getName());
     }

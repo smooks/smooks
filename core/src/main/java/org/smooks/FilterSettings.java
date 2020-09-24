@@ -63,6 +63,7 @@ public class FilterSettings {
     private boolean closeSource = true;
     private boolean closeResult = true;
     private int readerPoolSize = 0;
+    private int maxNodeDepth = 1;
 
     public FilterSettings() {
     }
@@ -73,6 +74,10 @@ public class FilterSettings {
     
     public static FilterSettings newSAXSettings() {
     	return new FilterSettings(StreamFilterType.SAX);
+    }
+
+    public static FilterSettings newSaxNgSettings() {
+        return new FilterSettings(StreamFilterType.SAX_NG);
     }
 
     public FilterSettings(StreamFilterType filterType) {
@@ -128,6 +133,12 @@ public class FilterSettings {
         return this;
     }
 
+    public FilterSettings setMaxNodeDepth(final int maxNodeDepth) {
+        assertNonStaticDecl();
+        this.maxNodeDepth = maxNodeDepth;
+        return this;
+    }
+
     protected void applySettings(Smooks smooks) {
     	// Remove the old params...
         ParameterAccessor.removeParameter(Filter.STREAM_FILTER_TYPE, smooks);        
@@ -138,8 +149,9 @@ public class FilterSettings {
         ParameterAccessor.removeParameter(Filter.CLOSE_SOURCE, smooks);
         ParameterAccessor.removeParameter(Filter.CLOSE_RESULT, smooks);
         ParameterAccessor.removeParameter(Filter.READER_POOL_SIZE, smooks);
-    	
-    	// Set the params...
+        ParameterAccessor.removeParameter(Filter.MAX_NODE_DEPTH, smooks);
+
+        // Set the params...
         ParameterAccessor.setParameter(Filter.STREAM_FILTER_TYPE, filterType.toString(), smooks);        
         ParameterAccessor.setParameter(Filter.ENTITIES_REWRITE, Boolean.toString(rewriteEntities), smooks);
         ParameterAccessor.setParameter(Filter.DEFAULT_SERIALIZATION_ON, Boolean.toString(defaultSerializationOn), smooks);
@@ -148,6 +160,7 @@ public class FilterSettings {
         ParameterAccessor.setParameter(Filter.CLOSE_SOURCE, Boolean.toString(closeSource), smooks);
         ParameterAccessor.setParameter(Filter.CLOSE_RESULT, Boolean.toString(closeResult), smooks);
         ParameterAccessor.setParameter(Filter.READER_POOL_SIZE, Integer.toString(readerPoolSize), smooks);
+        ParameterAccessor.setParameter(Filter.MAX_NODE_DEPTH, Integer.toString(maxNodeDepth), smooks);
     }
 
 	private void assertNonStaticDecl() {

@@ -45,9 +45,14 @@ package org.smooks.delivery;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.ordering.Producer;
-import org.smooks.delivery.sax.*;
+import org.smooks.delivery.sax.SAXElement;
+import org.smooks.delivery.sax.SAXElementVisitor;
+import org.smooks.delivery.sax.SAXText;
+import org.smooks.delivery.sax.ng.AfterVisitor;
+import org.smooks.delivery.sax.ng.BeforeVisitor;
+import org.smooks.delivery.sax.ng.DynamicSaxNgElementVisitorList;
+import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Document;
@@ -122,34 +127,25 @@ import java.util.Stack;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisitAfter, Producer {
+public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
     private final DocumentBuilder documentBuilder;
 
     @Inject
-    private SmooksResourceConfiguration config;
+    private SmooksResourceConfiguration smooksResourceConfiguration;
 
     public DomModelCreator() throws ParserConfigurationException {
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
 
     public Set<String> getProducts() {
-        return CollectionsUtil.toSet(config.getSelectorPath().getTargetElement());
+        return CollectionsUtil.toSet(smooksResourceConfiguration.getSelectorPath().getTargetElement());
     }
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        addNodeModel(element, executionContext);
-    }
-
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         // Push a new DOMCreator onto the DOMCreator stack and install it in the
         // Dynamic Vistor list in the SAX handler...
-        pushCreator(new DOMCreator(), executionContext);
-    }
-
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        // Pop the DOMCreator off the DOMCreator stack and uninstall it from the
-        // Dynamic Vistor list in the SAX handler...
-        popCreator(executionContext);
+         pushCreator(new DOMCreator(), executionContext);
     }
 
     private void addNodeModel(Element element, ExecutionContext executionContext) {
@@ -159,10 +155,10 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
 
     @SuppressWarnings("unchecked")
     private void pushCreator(DOMCreator domCreator, ExecutionContext executionContext) {
-        Stack<DOMCreator> domCreatorStack = (Stack<DOMCreator>) executionContext.getAttribute(DOMCreator.class);
+        Stack<DOMCreator> domCreatorStack = executionContext.getAttribute(DOMCreator.class);
 
         if(domCreatorStack == null) {
-            domCreatorStack = new Stack<DOMCreator>();
+            domCreatorStack = new Stack<>();
             executionContext.setAttribute(DOMCreator.class, domCreatorStack);
         } else if(!domCreatorStack.isEmpty()) {
             // We need to remove the current DOMCreator from the dynamic visitor list because
@@ -171,16 +167,16 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
             // via SAX) because it maintains a hierarchy of model. Inner model can represent collection
             // entry instances, with a single model for a single collection entry only being held in memory
             // at any point in time i.e. old ones are overwritten and so freed for GC.
-            DynamicSAXElementVisitorList.removeDynamicVisitor(domCreatorStack.peek(), executionContext);
+            DynamicSaxNgElementVisitorList.removeDynamicVisitor(domCreatorStack.peek(), executionContext);
         }
 
-        DynamicSAXElementVisitorList.addDynamicVisitor(domCreator, executionContext);
+        DynamicSaxNgElementVisitorList.addDynamicVisitor(domCreator, executionContext);
         domCreatorStack.push(domCreator);
     }
 
     @SuppressWarnings({ "unchecked", "WeakerAccess", "UnusedReturnValue" })
     public Document popCreator(ExecutionContext executionContext) {
-        Stack<DOMCreator> domCreatorStack = (Stack<DOMCreator>) executionContext.getAttribute(DOMCreator.class);
+        Stack<DOMCreator> domCreatorStack = executionContext.getAttribute(DOMCreator.class);
 
         if(domCreatorStack == null) {
             throw new IllegalStateException("No DOM Creator Stack available.");
@@ -189,7 +185,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
                 // Remove the current DOMCreators from the dynamic visitor list...
                 if(!domCreatorStack.isEmpty()) {
                     DOMCreator removedCreator = domCreatorStack.pop();
-                    DynamicSAXElementVisitorList.removeDynamicVisitor(removedCreator, executionContext);
+                    DynamicSaxNgElementVisitorList.removeDynamicVisitor(removedCreator, executionContext);
 
                     return removedCreator.document;
                 } else {
@@ -198,13 +194,20 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
             } finally {
                 // Reinstate parent DOMCreators in the dynamic visitor list...
                 if(!domCreatorStack.isEmpty()) {
-                    DynamicSAXElementVisitorList.addDynamicVisitor(domCreatorStack.peek(), executionContext);
+                    DynamicSaxNgElementVisitorList.addDynamicVisitor(domCreatorStack.peek(), executionContext);
                 }
             }
         }
     }
 
-    private class DOMCreator implements SAXElementVisitor {
+    @Override
+    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+        // Pop the DOMCreator off the DOMCreator stack and uninstall it from the
+        // Dynamic Vistor list in the SAX handler...
+        popCreator(executionContext);
+    }
+
+    private class DOMCreator implements SAXElementVisitor, ElementVisitor {
 
         private final Document document;
         private Node currentNode;
@@ -214,6 +217,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
             currentNode = document;
         }
 
+        @Override
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             Element domElement = element.toDOMElement(document);
 
@@ -225,7 +229,7 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
             currentNode = domElement;
         }
 
-        @SuppressWarnings("RedundantThrows")
+        @Override
         public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
             if(currentNode == document) {
                 // Just ignore for now...
@@ -251,12 +255,62 @@ public class DomModelCreator implements DOMVisitBefore, SAXVisitBefore, SAXVisit
             }
         }
 
-        @SuppressWarnings("RedundantThrows")
+        @Override
         public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
         }
 
+        @Override
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             currentNode = currentNode.getParentNode();
+        }
+
+        @Override
+        public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+            currentNode = currentNode.getParentNode();
+        }
+
+        @Override
+        public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+            Element importNode = (Element) document.importNode(element, true);
+
+            if(currentNode == document) {
+                addNodeModel(importNode, executionContext);
+            }
+
+            currentNode.appendChild(importNode);
+            currentNode = importNode;
+        }
+
+        @Override
+        public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
+            if(currentNode == document) {
+                // Just ignore for now...
+                return;
+            }
+
+            String textContent = element.getTextContent();
+            if(textContent.trim().length() == 0) {
+                // Ignore pure whitespace...
+                return;
+            }
+            
+            switch (element.getChildNodes().item(0).getNodeType()) {
+                case Node.TEXT_NODE:
+                case Node.ENTITY_NODE:
+                    currentNode.appendChild(document.createTextNode(textContent));
+                    break;
+                case Node.CDATA_SECTION_NODE:
+                    currentNode.appendChild(document.createCDATASection(textContent));
+                    break;
+                case Node.COMMENT_NODE:
+                    currentNode.appendChild(document.createComment(textContent));
+                    break;
+            }
+        }
+
+        @Override
+        public void visitChildElement(Element childElement, ExecutionContext executionContext) throws SmooksException {
+
         }
     }
 }

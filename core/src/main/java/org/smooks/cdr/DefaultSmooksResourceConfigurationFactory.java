@@ -58,7 +58,7 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
     public SmooksResourceConfiguration createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element) {
         String selector = DomUtils.getAttributeValue(element, "selector");
         String namespace = DomUtils.getAttributeValue(element, "selector-namespace");
-        String profiles = DomUtils.getAttributeValue(element, "target-profile");
+        String targetProfile = DomUtils.getAttributeValue(element, "target-profile");
         Element resourceElement = DomUtils.getElementByTagName(element, "resource");
 
         final String resource;
@@ -70,7 +70,7 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
 
         final SmooksResourceConfiguration smooksResourceConfiguration = new SmooksResourceConfiguration((selector != null ? selector : defaultSelector),
                 (namespace != null ? namespace : defaultNamespace),
-                (profiles != null ? profiles : defaultProfile),
+                (targetProfile != null ? targetProfile : defaultProfile),
                 resource);
         smooksResourceConfiguration.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
         
@@ -92,7 +92,7 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
     @Override
     public SmooksResourceConfiguration createConfiguration(String defaultProfile, Element element) {
         String selector = DomUtils.getAttributeValue(element, "selector");
-        String profiles = DomUtils.getAttributeValue(element, "target-profile");
+        String targetProfile = DomUtils.getAttributeValue(element, "target-profile");
         Element resourceElement = DomUtils.getElementByTagName(element, "resource");
 
         final String resource;
@@ -102,7 +102,7 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
             resource = null;
         }
 
-        final SmooksResourceConfiguration smooksResourceConfiguration = new SmooksResourceConfiguration(selector, (profiles != null ? profiles : defaultProfile), resource);
+        final SmooksResourceConfiguration smooksResourceConfiguration = new SmooksResourceConfiguration(selector, (targetProfile != null ? targetProfile : defaultProfile), resource);
         smooksResourceConfiguration.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
 
         if (resourceElement != null) {
@@ -123,13 +123,15 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
     private Properties getNamespaces(Element element) {
         Properties namespaces = new Properties();
 
-        for (int i = 0; i < element.getParentNode().getAttributes().getLength(); i++) {
-            Node node = element.getParentNode().getAttributes().item(i);
-            String prefix = node.getNodeName();
-            if (prefix.startsWith("xmlns")) {
-                if (prefix.indexOf(":") > 0) {
-                    prefix = prefix.substring(prefix.indexOf(":") + 1);
-                    namespaces.put(prefix, node.getNodeValue());
+        if (element.getParentNode() != null && element.getParentNode().getAttributes() != null) {
+            for (int i = 0; i < element.getParentNode().getAttributes().getLength(); i++) {
+                Node node = element.getParentNode().getAttributes().item(i);
+                String prefix = node.getNodeName();
+                if (prefix.startsWith("xmlns")) {
+                    if (prefix.indexOf(":") > 0) {
+                        prefix = prefix.substring(prefix.indexOf(":") + 1);
+                        namespaces.put(prefix, node.getNodeValue());
+                    }
                 }
             }
         }

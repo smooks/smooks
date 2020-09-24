@@ -43,8 +43,9 @@
 package org.smooks.delivery;
 
 import org.smooks.container.ApplicationContext;
-import org.smooks.delivery.dom.DOMStreamDeliveryProvider;
-import org.smooks.delivery.sax.SAXStreamDeliveryProvider;
+import org.smooks.delivery.dom.DOMFilterProvider;
+import org.smooks.delivery.sax.SAXFilterProvider;
+import org.smooks.delivery.sax.ng.SaxNgFilterProvider;
 import org.smooks.profile.ProfileSet;
 
 import java.util.Arrays;
@@ -61,6 +62,6 @@ public class DefaultContentDeliveryConfigBuilderFactory implements ContentDelive
     
     @Override
     public ContentDeliveryConfigBuilder create(final ProfileSet profileSet) {
-        return contentDeliveryConfigBuilders.computeIfAbsent(profileSet.getBaseProfile(), c -> new DefaultContentDeliveryConfigBuilder(profileSet, applicationContext, Arrays.asList(new SAXStreamDeliveryProvider(), new DOMStreamDeliveryProvider())));
+        return contentDeliveryConfigBuilders.computeIfAbsent(profileSet.getBaseProfile(), c -> new DefaultContentDeliveryConfigBuilder(profileSet, applicationContext, Arrays.asList(new SaxNgFilterProvider(), new SAXFilterProvider(), new DOMFilterProvider())));
     }
 }

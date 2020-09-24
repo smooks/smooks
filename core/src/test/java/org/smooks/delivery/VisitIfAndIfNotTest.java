@@ -48,7 +48,7 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.annotation.VisitAfterIf;
 import org.smooks.delivery.annotation.VisitBeforeIf;
 import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXStreamDeliveryProvider;
+import org.smooks.delivery.sax.SAXFilterProvider;
 import org.smooks.delivery.sax.SAXVisitAfter;
 import org.smooks.delivery.sax.SAXVisitBefore;
 
@@ -62,24 +62,24 @@ import static org.junit.Assert.assertTrue;
  */
 public class VisitIfAndIfNotTest {
 
-    private SAXStreamDeliveryProvider saxStreamDeliveryProvider = new SAXStreamDeliveryProvider();
+    private SAXFilterProvider saxFilterProvider = new SAXFilterProvider();
 
     @Test
     public void test_sax_visitBefore() {
-        assertTrue(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1("true")));
+        assertTrue(saxFilterProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1("true")));
 
-        assertFalse(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1(null)));
+        assertFalse(saxFilterProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1(null)));
         
-        assertFalse(saxStreamDeliveryProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1("false")));
+        assertFalse(saxFilterProvider.visitBeforeAnnotationsOK(new MySAXVisitBeforeVisitor1("false")));
     }
 
     @Test
     public void test_sax_visitAfter() {
-        assertFalse(saxStreamDeliveryProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1("true")));
+        assertFalse(saxFilterProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1("true")));
 
-        assertTrue(saxStreamDeliveryProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1(null)));
+        assertTrue(saxFilterProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1(null)));
         
-        assertTrue(saxStreamDeliveryProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1("false")));
+        assertTrue(saxFilterProvider.visitAfterAnnotationsOK(new MySAXVisitAfterVisitor1("false")));
     }
 
     /* ====================================================================================================

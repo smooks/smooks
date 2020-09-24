@@ -91,10 +91,14 @@ public abstract class Filter {
 
     public static final String ENTITIES_REWRITE = "entities.rewrite";
 
+    public static final String CLOSE_EMPTY_ELEMENTS = "close.empty.elements";
+
     public static final String DEFAULT_SERIALIZATION_ON = "default.serialization.on";
 
     public static final String MAINTAIN_ELEMENT_STACK = "maintain.element.stack";
 
+    public static final String MAX_NODE_DEPTH = "max.node.depth";
+    
     public static final String REVERSE_VISIT_ORDER_ON_VISIT_AFTER = "reverse.visit.order.on.visit.after";
 
     public static final String TERMINATE_ON_VISITOR_EXCEPTION = "terminate.on.visitor.exception";
@@ -204,21 +208,21 @@ public abstract class Filter {
     }
 
     protected Writer getWriter(Result result, ExecutionContext executionContext) {
-        if(!(result instanceof StreamResult)) {
+        if (!(result instanceof StreamResult)) {
             return new NullWriter();
         }
 
         StreamResult streamResult = (StreamResult) result;
-        if(streamResult.getWriter() != null) {
+        if (streamResult.getWriter() != null) {
             return streamResult.getWriter();
-        } else if(streamResult.getOutputStream() != null) {
+        } else if (streamResult.getOutputStream() != null) {
             try {
-                if(executionContext != null) {
+                if (executionContext != null) {
                     return new OutputStreamWriter(streamResult.getOutputStream(), executionContext.getContentEncoding());
                 } else {
                     return new OutputStreamWriter(streamResult.getOutputStream(), StandardCharsets.UTF_8);
                 }
-            } catch(UnsupportedEncodingException e) {
+            } catch (UnsupportedEncodingException e) {
                 throw new SmooksException("Unable to encode output stream.", e);
             }
         } else {

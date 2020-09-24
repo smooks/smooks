@@ -43,6 +43,7 @@
 package org.smooks.delivery;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -71,9 +72,7 @@ public class DomModelCreatorTest {
 	@Test
     public void test_sax_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-01.xml"));
-
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
-
+        
         ExecutionContext executionContext = smooks.createExecutionContext();
         smooks.filterSource(executionContext, new StreamSource(getClass().getResourceAsStream("order-message.xml")), null);
 
@@ -122,9 +121,7 @@ public class DomModelCreatorTest {
 	@Test
     public void test_sax_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-02.xml"));
-
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
-
+        
         ExecutionContext executionContext = smooks.createExecutionContext();
         smooks.filterSource(executionContext, new StreamSource(getClass().getResourceAsStream("order-message.xml")), null);
 
@@ -183,9 +180,7 @@ public class DomModelCreatorTest {
 	@Test
     public void test_sax_03() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-02.xml"));
-
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
-
+        
         ExecutionContext executionContext = smooks.createExecutionContext();
         smooks.filterSource(executionContext, new StreamSource(getClass().getResourceAsStream("order-message-with-ns.xml")), null);
 
@@ -217,6 +212,7 @@ public class DomModelCreatorTest {
     }
 
 	@Test
+    @Ignore
     public void test_dom() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-01.xml"));
         ExecutionContext executionContext = smooks.createExecutionContext();

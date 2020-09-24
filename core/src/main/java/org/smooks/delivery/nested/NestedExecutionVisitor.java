@@ -49,7 +49,7 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.AbstractParser;
 import org.smooks.delivery.Fragment;
 import org.smooks.delivery.SmooksContentHandler;
-import org.smooks.delivery.VisitLifecycleCleanable;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.DynamicSAXElementVisitorList;
 import org.smooks.delivery.sax.SAXElement;
@@ -136,7 +136,8 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
             throw new SmooksException("Illegal use of more than one nested content handler fired on the same element.");
         }
 
-        SmooksContentHandler nestedContentHandler = new SAXHandler(nestedExecutionContext, element.getWriter(this), parentContentHandler);
+        nestedExecutionContext.setWriter(element.getWriter(this));
+        SmooksContentHandler nestedContentHandler = new SAXHandler(nestedExecutionContext, parentContentHandler);
 
         DynamicSAXElementVisitorList.propogateDynamicVisitors(executionContext, nestedExecutionContext);
 

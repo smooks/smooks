@@ -71,6 +71,7 @@ public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAft
         return this;
     }
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         // Claim ownership of the writer for this fragment element...
         Writer writer = element.getWriter(this);
@@ -85,6 +86,7 @@ public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAft
         }
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(!keepChildren) {
             // Reset the writer...
@@ -92,6 +94,7 @@ public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAft
         }
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         DomUtils.removeElement(element, keepChildren);
     }

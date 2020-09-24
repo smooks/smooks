@@ -83,12 +83,13 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
     private Optional<String> defaultValue;
 
     @PostConstruct
-    public void initialize() throws SmooksConfigurationException {
+    public void postConstruct() throws SmooksConfigurationException {
         if(parentRelIndex >= 0) {
             throw new SmooksConfigurationException("param 'parentRelIndex' value must be negative.  Value is '" + parentRelIndex + "'.");
         }
     }
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         Stack<SmooksResourceConfiguration> resourceStack = ExtensionContext.getExtensionContext(executionContext).getResourceStack();
         SmooksResourceConfiguration currentConfig;

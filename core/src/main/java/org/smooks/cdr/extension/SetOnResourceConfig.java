@@ -71,6 +71,7 @@ public class SetOnResourceConfig implements DOMVisitBefore {
     @Inject
     private String value;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         SmooksResourceConfiguration config;
 

@@ -52,7 +52,6 @@
         <core:namespace prefix="d" uri="http://d"/>
     </core:namespaces>
 
-
     <resource-config selector="/a:ord[@num = 3122 and @state = 'finished']/a:items/c:item[@c:code = '8655']/d:units[text() = 1]">
         <resource>org.smooks.cdr.xpath.XPathAfterVisitor</resource>
     </resource-config>

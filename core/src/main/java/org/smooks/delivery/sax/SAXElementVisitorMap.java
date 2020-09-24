@@ -45,9 +45,9 @@ package org.smooks.delivery.sax;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.delivery.ContentHandlerBinding;
-import org.smooks.delivery.VisitLifecycleCleanable;
 import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.delivery.sax.annotation.TextConsumer;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.util.ClassUtil;
 
 import java.lang.annotation.Annotation;
@@ -170,8 +170,12 @@ public class SAXElementVisitorMap {
         merge.childVisitors.addAll(map.childVisitors);
         merge.visitAfters.addAll(visitAfters);
         merge.visitAfters.addAll(map.visitAfters);
-        merge.visitCleanables.addAll(visitCleanables);
-        merge.visitCleanables.addAll(map.visitCleanables);
+        if (visitCleanables != null) {
+            merge.visitCleanables.addAll(visitCleanables);
+        }
+        if (map.visitCleanables != null) {
+            merge.visitCleanables.addAll(map.visitCleanables);
+        }
         
         merge.accumulateText = (accumulateText || merge.accumulateText);
 

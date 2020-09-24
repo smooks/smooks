@@ -45,6 +45,7 @@ package org.smooks.container.standalone;
 import static org.junit.Assert.*;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,29 +59,25 @@ import org.smooks.profile.DefaultProfileSet;
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  *
  */
-public class StandaloneExecutionContextTest
-{
+public class StandaloneExecutionContextTest {
     private StandaloneExecutionContext context;
-	@Test
-	public void getAttributes()
-	{
+
+    @Test
+    public void getAttributes() {
         final String key = "testKey";
         final String value = "testValue";
-        context.setAttribute( key, value );
-        
-        Hashtable attributes = context.getAttributes();
-        
-        assertTrue( attributes.containsKey( key ) );
-        assertTrue( attributes.contains( value ) );
-	}
-	
-	@Before
-	public void setup()
-	{
-        Smooks smooks = new Smooks();
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[] {"profile1"}), smooks);
-        context = new StandaloneExecutionContext("device1", smooks.getApplicationContext(), null);
-	}
-	
+        context.setAttribute(key, value);
 
+        Map<Object, Object> attributes = context.getAttributes();
+
+        assertTrue(attributes.containsKey(key));
+        assertTrue(attributes.containsValue(value));
+    }
+
+    @Before
+    public void setup() {
+        Smooks smooks = new Smooks();
+        SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[]{"profile1"}), smooks);
+        context = new StandaloneExecutionContext("device1", smooks.getApplicationContext(), null);
+    }
 }

@@ -42,7 +42,6 @@
  */
 package org.smooks.io;
 
-import java.io.IOException;
 import java.io.Writer;
 
 /**
@@ -73,36 +72,36 @@ public class NullWriter extends Writer {
         return parentWriter;
     }
 
-    public void write(int c) throws IOException {
+    public void write(int c) {
     }
 
-    public void write(char[] cbuf) throws IOException {
+    public void write(char[] cbuf) {
     }
 
-    public void write(String str) throws IOException {
+    public void write(String str) {
     }
 
-    public void write(String str, int off, int len) throws IOException {
+    public void write(String str, int off, int len) {
     }
 
-    public Writer append(CharSequence csq) throws IOException {
+    public Writer append(CharSequence csq) {
         return this;
     }
 
-    public Writer append(CharSequence csq, int start, int end) throws IOException {
+    public Writer append(CharSequence csq, int start, int end) {
         return this;
     }
 
-    public Writer append(char c) throws IOException {
+    public Writer append(char c) {
         return this;
     }
 
-    public void write(char[] cbuf, int off, int len) throws IOException {
+    public void write(char[] cbuf, int off, int len) {
     }
 
-    public void flush() throws IOException {
+    public void flush() {
     }
 
-    public void close() throws IOException {
+    public void close() {
     }
 }

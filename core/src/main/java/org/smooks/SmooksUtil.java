@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.SerializerVisitor;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.ProfileStore;
 import org.smooks.profile.UnknownProfileMemberException;
@@ -97,7 +98,7 @@ public final class SmooksUtil {
      * {@link Smooks#filter(org.smooks.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result)}.
      * <p/>
      * The content of the returned String is totally dependent on the configured
-     * {@link org.smooks.delivery.dom.DOMElementVisitor} and {@link org.smooks.delivery.dom.serialize.SerializationUnit}
+     * {@link org.smooks.delivery.dom.DOMElementVisitor} and {@link SerializerVisitor}
      * implementations.
      *
      * @param executionContext Execution context for the filter.

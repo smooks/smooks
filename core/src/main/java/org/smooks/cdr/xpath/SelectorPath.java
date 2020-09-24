@@ -686,7 +686,7 @@ public class SelectorPath implements List<SelectorStep> {
      * @return The set of selector steps (as passed in the 'steps' argument).
      * @throws org.jaxen.saxpath.SAXPathException Error setting namespaces
      */
-    public void setNamespaces(Properties namespaces) throws SAXPathException {
+    public void setNamespaces(Properties namespaces) {
         AssertArgument.isNotNull(namespaces, "namespaces");
 
         this.namespaces.putAll(namespaces);
@@ -696,7 +696,7 @@ public class SelectorPath implements List<SelectorStep> {
             try {
                 step.buildPredicatesEvaluator(this.namespaces);
             } catch (SAXPathException e) {
-                throw e;
+                throw new SmooksException("Error configuring resource selector", e);
             } catch (Exception e) {
                 throw new SmooksException("Error compiling PredicatesEvaluator.", e);
             }

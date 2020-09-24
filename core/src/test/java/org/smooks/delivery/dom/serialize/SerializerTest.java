@@ -46,22 +46,23 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.LifecycleManager;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.container.MockExecutionContext;
 import org.smooks.delivery.dom.MockContentDeliveryConfig;
+import org.smooks.injector.Scope;
+import org.smooks.lifecycle.LifecycleManager;
+import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.registry.lookup.LifecycleManagerLookup;
 import org.smooks.util.CharUtils;
 import org.smooks.xml.XmlUtil;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -72,7 +73,7 @@ public class SerializerTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SerializerTest.class);
 
 	@Test
-	public void testSerialize() {
+	public void testSerialize() throws IOException, SAXException {
 		MockExecutionContext executionContext = new MockExecutionContext();
 		LifecycleManager lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
 		// Target a resource at the "document fragment" i.e. the root..
@@ -85,7 +86,7 @@ public class SerializerTest {
 
         // Don't write xxx but write its child elements
 		configuration = new SmooksResourceConfiguration("xxx", "deviceX", "....");
-		RemoveTestSerializationUnit removeTestSerializationUnit = new RemoveTestSerializationUnit();
+		RemoveTestSerializaterVisitor removeTestSerializationUnit = new RemoveTestSerializaterVisitor();
 		lifecycleManager.applyPhase(removeTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, removeTestSerializationUnit)));
 
 		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addBinding("xxx", configuration, removeTestSerializationUnit);
@@ -93,33 +94,28 @@ public class SerializerTest {
 		// write yyyy as a badly-formed empty element
 		configuration = new SmooksResourceConfiguration("yyyy", "deviceX", "....");
 		configuration.setParameter("wellformed", "false");
-		EmptyElTestSerializationUnit emptyElTestSerializationUnit = new EmptyElTestSerializationUnit();
+		EmptyElTestSerializerVisitor emptyElTestSerializationUnit = new EmptyElTestSerializerVisitor();
 		lifecycleManager.applyPhase(emptyElTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, emptyElTestSerializationUnit)));
 		
 		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addBinding("yyyy", configuration, emptyElTestSerializationUnit);
 
 		/// write zzz as a well-formed empty element
 		configuration = new SmooksResourceConfiguration("zzz", "deviceX", "....");
-		EmptyElTestSerializationUnit otherEmptyElTestSerializationUnit = new EmptyElTestSerializationUnit();
+		EmptyElTestSerializerVisitor otherEmptyElTestSerializationUnit = new EmptyElTestSerializerVisitor();
 		lifecycleManager.applyPhase(otherEmptyElTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, otherEmptyElTestSerializationUnit)));
 
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addBinding("zzz", configuration, otherEmptyElTestSerializationUnit);
+		((MockContentDeliveryConfig) executionContext.deliveryConfig).getSerializationVisitors().addBinding("zzz", configuration, otherEmptyElTestSerializationUnit);
 
-		try {
-			Document doc = XmlUtil.parseStream(getClass().getResourceAsStream("testmarkup.xxml"), XmlUtil.VALIDATION_TYPE.NONE, true);
-			Serializer serializer = new Serializer(doc, executionContext);
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			OutputStreamWriter writer = new OutputStreamWriter(output);
+		Document doc = XmlUtil.parseStream(getClass().getResourceAsStream("testmarkup.xxml"), XmlUtil.VALIDATION_TYPE.NONE, true);
+		Serializer serializer = new Serializer(doc, executionContext);
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		OutputStreamWriter writer = new OutputStreamWriter(output);
 
-			serializer.serialize(writer);
-			writer.flush();
-			byte[] actualBytes = output.toByteArray();
-			LOGGER.debug(new String(actualBytes));
-			boolean areEqual = CharUtils.compareCharStreams(getClass().getResourceAsStream("testmarkup.xxml.ser_1"), new ByteArrayInputStream(actualBytes));
-			assertTrue("Unexpected Serialization result failure.", areEqual);
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		serializer.serialize(writer);
+		writer.flush();
+		byte[] actualBytes = output.toByteArray();
+		LOGGER.debug(new String(actualBytes));
+		boolean areEqual = CharUtils.compareCharStreams(getClass().getResourceAsStream("testmarkup.xxml.ser_1"), new ByteArrayInputStream(actualBytes));
+		assertTrue("Unexpected Serialization result failure.", areEqual);
 	}
 }

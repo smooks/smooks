@@ -66,7 +66,7 @@ public abstract class FilterResult implements Result {
     }
 
     public static Result[] getResults(ExecutionContext executionContext) {
-        return (Result[]) executionContext.getAttribute(CONTEXT_KEY);
+        return executionContext.getAttribute(CONTEXT_KEY);
     }
 
     public static Result getResult(ExecutionContext executionContext, Class<? extends Result> resultType) {

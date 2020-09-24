@@ -52,7 +52,7 @@ import org.smooks.StreamFilterType;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.dom.DOMVisitBefore;
-import org.smooks.delivery.dom.serialize.DefaultSerializationUnit;
+import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.delivery.sax.DefaultSAXElementSerializer;
 import org.smooks.payload.StringResult;
 import org.w3c.dom.Element;
@@ -119,8 +119,8 @@ public class MILYN_367_Test {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new DefaultSerializationUnit(), "#document");
-		smooks.addVisitor(new DefaultSerializationUnit(), "#document/**");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "#document");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "#document/**");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -133,8 +133,8 @@ public class MILYN_367_Test {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new DefaultSerializationUnit(), "customer");
-		smooks.addVisitor(new DefaultSerializationUnit(), "customer/**");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "customer");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "customer/**");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -147,8 +147,8 @@ public class MILYN_367_Test {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new DefaultSerializationUnit(), "items");
-		smooks.addVisitor(new DefaultSerializationUnit(), "items/**");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "items");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "items/**");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);

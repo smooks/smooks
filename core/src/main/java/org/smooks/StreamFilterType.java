@@ -48,5 +48,6 @@ package org.smooks;
  */
 public enum StreamFilterType {
     SAX,
+    SAX_NG,
     DOM
 }

@@ -74,6 +74,7 @@ public class NewResourceConfig implements DOMElementVisitor {
     @Inject
     private Boolean isTemplate = false;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
 
@@ -94,6 +95,7 @@ public class NewResourceConfig implements DOMElementVisitor {
         }
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         ExtensionContext.getExtensionContext(executionContext).getResourceStack().pop();
     }

@@ -80,7 +80,7 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     private SmooksResourceConfiguration resourceConfig;
 
     @PostConstruct
-    public void init() {
+    public void postConstruct() {
         if(elementQName.isPresent()) {
             int nsPrefixIdx = elementQName.get().indexOf(":");
             if(nsPrefixIdx != -1) {

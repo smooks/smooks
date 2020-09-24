@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.replay.EndElementEvent;
@@ -104,15 +105,15 @@ public class SAXHandler extends SmooksContentHandler {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public SAXHandler(ExecutionContext executionContext, Writer writer) {
-        this(executionContext, writer, null);
+    public SAXHandler(ExecutionContext executionContext) {
+        this(executionContext, null);
     }
 
-    public SAXHandler(ExecutionContext executionContext, Writer writer, SmooksContentHandler parentContentHandler) {
+    public SAXHandler(ExecutionContext executionContext, SmooksContentHandler parentContentHandler) {
         super(executionContext, parentContentHandler);
 
         this.execContext = executionContext;
-        this.writer = writer;
+        this.writer = executionContext.getWriter();
         eventListener = executionContext.getEventListener();
 
         deliveryConfig = ((SAXContentDeliveryConfig)executionContext.getDeliveryConfig());
@@ -131,7 +132,7 @@ public class SAXHandler extends SmooksContentHandler {
         rewriteEntities = contentDeliveryConfig.isRewriteEntities();
         defaultSerializer.setRewriteEntities(Optional.of(rewriteEntities));
 
-        defaultSerializationOn = executionContext.isDefaultSerializationOn();
+        defaultSerializationOn = executionContext.getDeliveryConfig().isDefaultSerializationOn();
         if(defaultSerializationOn) {
             // If it's not explicitly configured off, we auto turn it off if the NullWriter is configured...
             defaultSerializationOn = !(writer instanceof NullWriter);
@@ -183,17 +184,17 @@ public class SAXHandler extends SmooksContentHandler {
             currentProcessor = processor;
             // Register the "presence" of the element...
             if(eventListener != null) {
-                eventListener.onEvent(new ElementPresentEvent(new WriterManagedSAXElement(elementQName, startEvent.atts, currentProcessor.element)));
+                eventListener.onEvent(new ElementPresentEvent(new WriterManagedSAXElement(elementQName, startEvent.attributes, currentProcessor.element)));
             }
         } else {
             if(!isRoot) {
                 // Push the existing "current" processor onto the stack and create a new current
                 // based on this start event...
-                element = new WriterManagedSAXElement(elementQName, startEvent.atts, currentProcessor.element);
+                element = new WriterManagedSAXElement(elementQName, startEvent.attributes, currentProcessor.element);
                 element.setWriter(getWriter());
                 onChildElement(element);
             } else {
-                element = new WriterManagedSAXElement(elementQName, startEvent.atts, null);
+                element = new WriterManagedSAXElement(elementQName, startEvent.attributes, null);
                 element.setWriter(writer);
             }
 

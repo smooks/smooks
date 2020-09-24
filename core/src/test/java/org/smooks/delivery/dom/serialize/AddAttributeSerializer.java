@@ -42,18 +42,27 @@
  */
 package org.smooks.delivery.dom.serialize;
 
+import org.smooks.delivery.DomToXmlWriter;
 import org.w3c.dom.NamedNodeMap;
 
-import java.io.Writer;
+import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.Writer;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class AddAttributeSerializer extends DefaultSerializationUnit {
-
-    protected void writeAttributes(NamedNodeMap attributes, Writer writer) throws IOException {
-        super.writeAttributes(attributes, writer);
-        writer.write(" someattrib=\"hasval\"");
+public class AddAttributeSerializer extends DefaultDOMSerializerVisitor {
+    
+    @PostConstruct
+    @Override
+    public void postConstruct() {
+        domToXmlWriter = new DomToXmlWriter(closeEmptyElements, rewriteEntities) {
+            @Override
+            public void writeAttributes(NamedNodeMap attributes, Writer writer) throws IOException {
+                super.writeAttributes(attributes, writer);
+                writer.write(" someattrib=\"hasval\"");
+            }
+        };
     }
 }

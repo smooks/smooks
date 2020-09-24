@@ -894,11 +894,11 @@ public abstract class DomUtils {
 		return xpathToken;
 	}
 
-    public static int getDepth(Element element) {
-        Node parent = element.getParentNode();
+    public static int getDepth(Node node) {
+        Node parent = node.getParentNode();
         int depth = 0;
 
-        while(parent != null && parent.getNodeType() == Node.ELEMENT_NODE) {
+		while (parent != null && parent.getNodeType() == Node.ELEMENT_NODE) {
             depth++;
             parent = parent.getParentNode();
         }

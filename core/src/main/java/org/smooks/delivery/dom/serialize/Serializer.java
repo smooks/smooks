@@ -52,6 +52,7 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.ContentHandlerBindings;
 import org.smooks.delivery.Filter;
+import org.smooks.delivery.SerializerVisitor;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.event.types.DOMFilterLifecycleEvent;
@@ -59,7 +60,10 @@ import org.smooks.event.types.ElementPresentEvent;
 import org.smooks.event.types.ResourceTargetingEvent;
 import org.smooks.xml.DocType;
 import org.smooks.xml.DomUtils;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -70,7 +74,7 @@ import java.util.Optional;
  * Node serializer.
  * <p/>
  * This class uses the {@link org.smooks.delivery.ContentDeliveryConfig} and the
- * {@link org.smooks.delivery.dom.serialize.SerializationUnit} instances defined there on
+ * {@link SerializerVisitor} instances defined there on
  * to perform the serialization.
  * @author tfennelly
  */
@@ -91,11 +95,11 @@ public class Serializer {
   /**
 	 * Target content delivery context SerializationUnit definitions.
 	 */
-	private final ContentHandlerBindings<SerializationUnit> serializationUnits;
+	private final ContentHandlerBindings<SerializerVisitor> serializationUnits;
   /**
      * Default serialization unit.
      */
-	private DefaultSerializationUnit defaultSerializationUnit;
+	private DefaultDOMSerializerVisitor defaultSerializationUnit;
     /**
 	 * Global SerializationUnits.
 	 */
@@ -112,36 +116,37 @@ public class Serializer {
 	 * @param executionContext Target device context.
 	 */
 	public Serializer(Node node, ExecutionContext executionContext) {
-		if(node == null) {
-			throw new IllegalArgumentException("null 'node' arg passed in method call.");
-		} else if(executionContext == null) {
-			throw new IllegalArgumentException("null 'executionContext' arg passed in method call.");
-		}
-		this.node = node;
-		this.executionContext = executionContext;
+        if (node == null) {
+            throw new IllegalArgumentException("null 'node' arg passed in method call.");
+        } else if (executionContext == null) {
+            throw new IllegalArgumentException("null 'executionContext' arg passed in method call.");
+        }
+        this.node = node;
+        this.executionContext = executionContext;
         eventListener = executionContext.getEventListener();
-		// Get the delivery context for the device.
+        // Get the delivery context for the device.
     /*
       Target content delivery config.
      */
-    DOMContentDeliveryConfig deliveryConfig = (DOMContentDeliveryConfig) executionContext.getDeliveryConfig();
-		// Initialise the serializationUnits member
-		serializationUnits = deliveryConfig.getSerializationVisitors();
+        DOMContentDeliveryConfig deliveryConfig = (DOMContentDeliveryConfig) executionContext.getDeliveryConfig();
+        // Initialise the serializationUnits member
+        serializationUnits = deliveryConfig.getSerializationVisitors();
 
-        globalSUs = serializationUnits.getMappings(new String[] {"*", "**"});
+        globalSUs = serializationUnits.getMappings(new String[]{"*", "**"});
 
         // Set the default SerializationUnit
     /*
       Turn default serialization on/off.  Default is "true".
      */
-    boolean defaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", executionContext.getDeliveryConfig()));
-        if(defaultSerializationOn) {
-            defaultSerializationUnit = new DefaultSerializationUnit();
+        boolean defaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", executionContext.getDeliveryConfig()));
+        if (defaultSerializationOn) {
+            defaultSerializationUnit = new DefaultDOMSerializerVisitor();
             boolean rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", executionContext.getDeliveryConfig()));
             defaultSerializationUnit.setRewriteEntities(Optional.of(rewriteEntities));
+            defaultSerializationUnit.postConstruct();
         }
         terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", executionContext.getDeliveryConfig()));
-	}
+    }
 
 	/**
 	 * Serialise the document to the supplied output writer instance.
@@ -155,23 +160,23 @@ public class Serializer {
 	 * @throws IOException Unable to write to output writer.
 	 */
 	public void serialize(Writer writer) throws ResourceConfigurationNotFoundException, IOException {
-    if(writer == null) {
-			throw new IllegalArgumentException("null 'writer' arg passed in method call.");
-		}
+        if (writer == null) {
+            throw new IllegalArgumentException("null 'writer' arg passed in method call.");
+        }
 
         // Register the DOM phase events...
-        if(eventListener != null) {
+        if (eventListener != null) {
             eventListener.onEvent(new DOMFilterLifecycleEvent(DOMFilterLifecycleEvent.DOMEventType.SERIALIZATION_STARTED));
         }
 
-        if(node instanceof Document) {
-			Document doc = (Document)node;
-			Element rootElement = doc.getDocumentElement();
+        if (node instanceof Document) {
+            Document doc = (Document) node;
+            Element rootElement = doc.getDocumentElement();
 
             DocType.DocumentTypeData docTypeData = DocType.getDocType(executionContext);
-            if(docTypeData != null) {
+            if (docTypeData != null) {
                 DocType.serializeDoctype(docTypeData, writer);
-                if(docTypeData.getXmlns() != null) {
+                if (docTypeData.getXmlns() != null) {
                     rootElement.setAttribute("xmlns", docTypeData.getXmlns());
                 } else {
                     rootElement.removeAttribute("xmlns");
@@ -179,15 +184,15 @@ public class Serializer {
             }
 
             recursiveDOMWrite(rootElement, writer, true);
-		} else {
+        } else {
             // Write the DOM, the child elements of the node
             NodeList deliveryNodes = node.getChildNodes();
             int nodeCount = deliveryNodes.getLength();
             boolean isRoot = (node == node.getOwnerDocument().getDocumentElement());
-            for(int i = 0; i < nodeCount; i++) {
+            for (int i = 0; i < nodeCount; i++) {
                 Node childNode = deliveryNodes.item(i);
-                if(childNode.getNodeType() == Node.ELEMENT_NODE) {
-                    recursiveDOMWrite((Element)childNode, writer, isRoot);
+                if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                    recursiveDOMWrite((Element) childNode, writer, isRoot);
                 }
             }
         }
@@ -200,15 +205,15 @@ public class Serializer {
      * @param isRoot Is the supplied element the document root element.
 	 */
 	private void recursiveDOMWrite(Element element, Writer writer, boolean isRoot) {
-		SerializationUnit elementSU;
+		SerializerVisitor elementSU;
 		NodeList children = element.getChildNodes();
 
 		elementSU = getSerializationUnit(element, isRoot);
 		try {
             if(elementSU != null) {
-                elementSU.writeElementStart(element, writer, executionContext);
+                elementSU.writeStartElement(element, writer, executionContext);
             }
-
+            
             if(children != null && children.getLength() > 0) {
 				int childCount = children.getLength();
 
@@ -216,41 +221,20 @@ public class Serializer {
 					Node childNode = children.item(i);
 
                     if(elementSU != null) {
-                        switch(childNode.getNodeType()) {
-                            case Node.CDATA_SECTION_NODE: {
-                                elementSU.writeElementCDATA((CDATASection)childNode, writer, executionContext);
-                                break;
+                        if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                            if (elementSU.writeChildElements()) {
+                                recursiveDOMWrite((Element) childNode, writer, false);
                             }
-                            case Node.COMMENT_NODE: {
-                                elementSU.writeElementComment((Comment)childNode, writer, executionContext);
-                                break;
-                            }
-                            case Node.ELEMENT_NODE: {
-                                if(elementSU.writeChildElements()) {
-                                    recursiveDOMWrite((Element)childNode, writer, false);
-                                }
-                                break;
-                            }
-                            case Node.ENTITY_REFERENCE_NODE: {
-                                elementSU.writeElementEntityRef((EntityReference)childNode, writer, executionContext);
-                                break;
-                            }
-                            case Node.TEXT_NODE: {
-                                elementSU.writeElementText((Text)childNode, writer, executionContext);
-                                break;
-                            }
-                            default: {
-                                elementSU.writeElementNode(childNode, writer, executionContext);
-                                break;
-                            }
+                        } else {
+                            elementSU.writeCharacterData(childNode, writer, executionContext);
                         }
-                    } else if(childNode.getNodeType() == Node.ELEMENT_NODE) {
-                        recursiveDOMWrite((Element)childNode, writer, false);
+                    } else if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                        recursiveDOMWrite((Element) childNode, writer, false);
                     }
                 }
 			}
             if(elementSU != null) {
-    			elementSU.writeElementEnd(element, writer, executionContext);
+    			elementSU.writeEndElement(element, writer, executionContext);
             }
         } catch(Throwable thrown) {
             String error = "Failed to apply serialization unit [" + elementSU.getClass().getName() + "] to [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -274,9 +258,9 @@ public class Serializer {
      * @return SerializationUnit.
 	 */
 	@SuppressWarnings("unchecked")
-  private SerializationUnit getSerializationUnit(Element element, boolean isRoot) {
+  private SerializerVisitor getSerializationUnit(Element element, boolean isRoot) {
 		String elementName = DomUtils.getName(element);
-        List<ContentHandlerBinding<SerializationUnit>> elementSUs;
+        List<ContentHandlerBinding<SerializerVisitor>> elementSUs;
 
         // Register the "presence" of the element...
         if(eventListener != null) {
@@ -295,7 +279,7 @@ public class Serializer {
 		}
 
         if(elementSUs != null) {
-          for (final ContentHandlerBinding<SerializationUnit> elementSU : elementSUs)
+          for (final ContentHandlerBinding<SerializerVisitor> elementSU : elementSUs)
           {
             SmooksResourceConfiguration config = elementSU.getSmooksResourceConfiguration();
 
@@ -317,17 +301,18 @@ public class Serializer {
             }
 
             // This is the one, return it...
-            return (SerializationUnit) ((ContentHandlerBinding) elementSU).getContentHandler();
+            return (SerializerVisitor) ((ContentHandlerBinding) elementSU).getContentHandler();
           }
         }
 
         return defaultSerializationUnit;
 	}
 
-    private static final DefaultSerializationUnit defaultSerializer = new DefaultSerializationUnit();
+    private static final DefaultDOMSerializerVisitor defaultSerializer = new DefaultDOMSerializerVisitor();
 
     static {
         defaultSerializer.setCloseEmptyElements(Optional.of(true));
+        defaultSerializer.postConstruct();
     }
 
     /**
@@ -340,43 +325,21 @@ public class Serializer {
         NodeList children = element.getChildNodes();
 
         try {
-            defaultSerializer.writeElementStart(element, writer);
+            defaultSerializer.writeStartElement(element, writer, null);
 
             if(children != null && children.getLength() > 0) {
                 int childCount = children.getLength();
 
                 for(int i = 0; i < childCount; i++) {
                     Node childNode = children.item(i);
-
-                    switch(childNode.getNodeType()) {
-                        case Node.CDATA_SECTION_NODE: {
-                            defaultSerializer.writeElementCDATA((CDATASection)childNode, writer, null);
-                            break;
-                        }
-                        case Node.COMMENT_NODE: {
-                            defaultSerializer.writeElementComment((Comment)childNode, writer, null);
-                            break;
-                        }
-                        case Node.ELEMENT_NODE: {
-                            recursiveDOMWrite((Element)childNode, writer);
-                            break;
-                        }
-                        case Node.ENTITY_REFERENCE_NODE: {
-                            defaultSerializer.writeElementEntityRef((EntityReference)childNode, writer, null);
-                            break;
-                        }
-                        case Node.TEXT_NODE: {
-                            defaultSerializer.writeElementText((Text)childNode, writer, null);
-                            break;
-                        }
-                        default: {
-                            defaultSerializer.writeElementNode(childNode, writer, null);
-                            break;
-                        }
+                    if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                        recursiveDOMWrite((Element)childNode, writer);
+                    } else {
+                        defaultSerializer.writeCharacterData(childNode, writer, null);
                     }
                 }
             }
-            defaultSerializer.writeElementEnd(element, writer);
+            defaultSerializer.writeEndElement(element, writer, null);
         } catch(Throwable thrown) {
             if(thrown instanceof SmooksException) {
                 throw (SmooksException) thrown;

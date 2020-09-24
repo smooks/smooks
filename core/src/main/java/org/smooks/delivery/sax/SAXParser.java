@@ -52,7 +52,6 @@ import org.smooks.xml.hierarchy.HierarchyChangeReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import java.io.IOException;
 import java.io.Writer;
@@ -72,13 +71,11 @@ public class SAXParser extends AbstractParser {
         super(execContext);
     }
 
-    protected Writer parse(Source source, Result result, ExecutionContext executionContext) throws SAXException, IOException {
-
-        Writer writer = getWriter(result, executionContext);
+    protected void parse(Source source, ExecutionContext executionContext) throws SAXException, IOException {
         ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();
         XMLReader saxReader = getXMLReader(executionContext);
 
-        saxHandler = new SAXHandler(getExecContext(), writer);
+        saxHandler = new SAXHandler(getExecutionContext());
 
         try {
             if(saxReader == null) {
@@ -122,8 +119,6 @@ public class SAXParser extends AbstractParser {
                 }
             }
         }
-        
-        return writer;
     }
 
     public void cleanup() {

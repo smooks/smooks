@@ -44,12 +44,12 @@ package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.registry.Registry;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
+import org.smooks.registry.Registry;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 

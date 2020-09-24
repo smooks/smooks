@@ -43,7 +43,7 @@
 package org.smooks.javabean.lifecycle;
 
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ExecutionLifecycleCleanable;
+import org.smooks.lifecycle.ExecutionLifecycleCleanable;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.util.CollectionsUtil;
 

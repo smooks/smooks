@@ -45,6 +45,7 @@ package org.smooks.delivery.sax;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.evaluators.equality.ElementIndexCounter;

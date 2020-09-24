@@ -116,7 +116,7 @@ public class DOMParser extends AbstractParser {
 	 * @throws IOException Unable to read the input stream.
 	 */
 	public Document parse(Source source) throws IOException, SAXException {
-	   	DOMBuilder contentHandler = new DOMBuilder(getExecContext());
+	   	DOMBuilder contentHandler = new DOMBuilder(getExecutionContext());
 
 	   	parse(source, contentHandler);
 
@@ -135,7 +135,7 @@ public class DOMParser extends AbstractParser {
   	 * @throws IOException Unable to read the input stream.
   	 */
   	public void append(Source source, Element appendElement) throws IOException, SAXException {
-  	   	DOMBuilder contentHandler = new DOMBuilder(getExecContext());
+  	   	DOMBuilder contentHandler = new DOMBuilder(getExecutionContext());
 
   		contentHandler.setAppendElement(appendElement);
   	   	parse(source, contentHandler);
@@ -149,7 +149,7 @@ public class DOMParser extends AbstractParser {
   	 * @throws IOException Unable to read the input stream.
   	 */
   	private void parse(Source source, DOMBuilder contentHandler) throws SAXException, IOException {
-  		ExecutionContext executionContext = getExecContext();
+  		ExecutionContext executionContext = getExecutionContext();
   		
   		if(executionContext != null) {
 			ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();

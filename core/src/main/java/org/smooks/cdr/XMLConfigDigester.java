@@ -46,13 +46,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.cdr.extension.ExtensionContext;
-import org.smooks.cdr.registry.Registry;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.expression.ExpressionEvaluator;
 import org.smooks.io.StreamUtils;
 import org.smooks.net.URIUtil;
 import org.smooks.profile.DefaultProfileSet;
+import org.smooks.registry.Registry;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.util.ClassUtil;
 import org.smooks.xml.DomUtils;
@@ -112,10 +112,10 @@ public final class XMLConfigDigester {
      * ThreadLocal.
      *
      *
-     * @param list Config list.
+     * @param smooksResourceConfigurationList Config list.
      */
-    public XMLConfigDigester(SmooksResourceConfigurationList list) {
-        this.smooksResourceConfigurationList = list;
+    public XMLConfigDigester(SmooksResourceConfigurationList smooksResourceConfigurationList) {
+        this.smooksResourceConfigurationList = smooksResourceConfigurationList;
         configStack.push(new SmooksConfig("root-config"));
     }
 
@@ -561,14 +561,14 @@ public final class XMLConfigDigester {
             smooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterInstalledResources(false).build());
             setExtensionDigestOn();
             try {
-                Registry configStore = smooks.getApplicationContext().getRegistry();
+                Registry registry = smooks.getApplicationContext().getRegistry();
                 SmooksResourceConfigurationList extConfigList = new SmooksResourceConfigurationList(baseURI);
 
                 XMLConfigDigester configDigester = new XMLConfigDigester(extConfigList);
 
                 configDigester.extendedConfigDigesters = extendedConfigDigesters;
                 configDigester.digestConfigRecursively(new InputStreamReader(ClassUtil.getResourceAsStream(resourcePath, classLoader)), baseURI);
-                configStore.registerSmooksResourceConfigurationList(extConfigList);
+                registry.registerSmooksResourceConfigurationList(extConfigList);
             } catch (Exception e) {
                 throw new SmooksConfigurationException("Failed to construct Smooks instance for processing extended configuration resource '" + resourcePath + "'.", e);
             } finally {

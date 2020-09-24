@@ -43,7 +43,6 @@
 package org.smooks.container.standalone;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.registry.Registry;
 import org.smooks.classpath.IsAnnotationPresentFilter;
 import org.smooks.classpath.Scanner;
 import org.smooks.container.ApplicationContext;
@@ -52,6 +51,7 @@ import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.DefaultProfileStore;
 import org.smooks.profile.ProfileStore;
+import org.smooks.registry.Registry;
 import org.smooks.resource.ContainerResourceLocator;
 import org.smooks.resource.URIResourceLocator;
 

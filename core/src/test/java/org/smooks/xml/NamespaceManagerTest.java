@@ -44,9 +44,9 @@ package org.smooks.xml;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cdr.registry.lookup.NamespaceManagerLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
+import org.smooks.registry.lookup.NamespaceManagerLookup;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

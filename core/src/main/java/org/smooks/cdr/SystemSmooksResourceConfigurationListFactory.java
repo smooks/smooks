@@ -42,6 +42,8 @@
  */
 package org.smooks.cdr;
 
+import org.smooks.SmooksException;
+
 import java.io.InputStream;
 
 public class SystemSmooksResourceConfigurationListFactory implements SmooksResourceConfigurationListFactory {
@@ -70,7 +72,7 @@ public class SystemSmooksResourceConfigurationListFactory implements SmooksResou
 
             return smooksResourceConfigurationList;
         } catch (Exception e) {
-            throw new IllegalStateException("Error processing resource file '" + resourceFile + "'.", e);
+            throw new SmooksException("Error processing resource file '" + resourceFile + "'.", e);
         }
     }
 }

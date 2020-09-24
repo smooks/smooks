@@ -50,7 +50,7 @@ import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.VisitSequence;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
-import org.smooks.delivery.dom.serialize.DefaultSerializationUnit;
+import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.event.BasicExecutionEventListener;
 import org.smooks.event.ElementProcessingEvent;
@@ -85,11 +85,11 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     private ExecutionContext executionContext;
     private int messageNodeCounter = 0;
     private int reportInfoNodeCounter = 0;
-    private final List<ExecutionEvent> preProcessingEvents = new ArrayList<ExecutionEvent>();
-    private final List<ExecutionEvent> processingEvents = new ArrayList<ExecutionEvent>();
-    private final Stack<ReportNode> reportNodeStack = new Stack<ReportNode>();
-    private final List<ReportNode> allNodes = new ArrayList<ReportNode>();
-    protected static final DefaultSerializationUnit domSerializer = new DefaultSerializationUnit();
+    private final List<ExecutionEvent> preProcessingEvents = new ArrayList<>();
+    private final List<ExecutionEvent> processingEvents = new ArrayList<>();
+    private final Stack<ReportNode> reportNodeStack = new Stack<>();
+    private final List<ReportNode> allNodes = new ArrayList<>();
+    protected static final DefaultDOMSerializerVisitor DOM_SERIALIZER = new DefaultDOMSerializerVisitor();
 
     protected AbstractReportGenerator(ReportConfiguration reportConfiguration) {
         AssertArgument.isNotNull(reportConfiguration, "reportConfiguration");
