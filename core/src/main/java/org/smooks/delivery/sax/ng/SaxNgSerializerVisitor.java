@@ -83,15 +83,15 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     public void setRewriteEntities(@Named(Filter.ENTITIES_REWRITE) Optional<Boolean> rewriteEntities) {
         this.rewriteEntities = rewriteEntities.orElse(this.rewriteEntities);
     }
-    
+
     @PostConstruct
     public void postConstruct() {
         domToXmlWriter = new DomToXmlWriter(closeEmptyElements, rewriteEntities);
     }
-    
+
     @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        
+
     }
 
     @Override
@@ -173,47 +173,45 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     }
 
     public void writeStartElement(final Element element, final ExecutionContext executionContext) {
-        onWrite(writer -> {
-            if (!isStartWritten(element, executionContext.getMementoCaretaker())) {
-                try {
-                    writeStartElement(element, writer, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                executionContext.getMementoCaretaker().save(new StartElementMemento(new NodeVisitable(element), this, true));
-            }
-        }, executionContext);
-    }
-
-    public void writeEndElement(final Element element, final ExecutionContext executionContext) {
-        onWrite(writer -> {
+        final Writer writer = executionContext.getWriter();
+        if (!isStartWritten(element, executionContext.getMementoCaretaker())) {
             try {
-                if (closeEmptyElements && !isStartWritten(element, executionContext.getMementoCaretaker())) {
-                    writer.write('<');
-                    writer.write(element.getTagName());
-                    domToXmlWriter.writeAttributes(element.getAttributes(), writer);
-                    writer.write(" />");
-                } else {
-                    if (!isStartWritten(element, executionContext.getMementoCaretaker())) {
-                        writeStartElement(element, executionContext);
-                    }
-                    writer.write("</");
-                    writer.write(element.getTagName());
-                    writer.write('>');
-                }
-
-                writer.flush();
+                writeStartElement(element, writer, executionContext);
             } catch (IOException e) {
                 throw new SmooksException(e.getMessage(), e);
             }
-        }, executionContext);
+            executionContext.getMementoCaretaker().save(new StartElementMemento(new NodeVisitable(element), this, true));
+        }
     }
-    
+
+    public void writeEndElement(final Element element, final ExecutionContext executionContext) {
+        final Writer writer = executionContext.getWriter();
+        try {
+            if (closeEmptyElements && !isStartWritten(element, executionContext.getMementoCaretaker())) {
+                writer.write('<');
+                writer.write(element.getTagName());
+                domToXmlWriter.writeAttributes(element.getAttributes(), writer);
+                writer.write(" />");
+            } else {
+                if (!isStartWritten(element, executionContext.getMementoCaretaker())) {
+                    writeStartElement(element, executionContext);
+                }
+                writer.write("</");
+                writer.write(element.getTagName());
+                writer.write('>');
+            }
+
+            writer.flush();
+        } catch (IOException e) {
+            throw new SmooksException(e.getMessage(), e);
+        }
+    }
+
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) throws SmooksException {
 
     }
-    
+
     @Override
     public void visitChildText(final Element element, final ExecutionContext executionContext) throws SmooksException {
         onWrite(writer -> {
@@ -241,7 +239,7 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
                     throw new SmooksException(e.getMessage(), e);
                 }
                 executionContext.getMementoCaretaker().save(new StartElementMemento(new NodeVisitable(childElement.getParentNode()), SaxNgSerializerVisitor.this, true));
-            }       
+            }
         }, executionContext);
     }
 
@@ -255,7 +253,7 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
         mementoCaretaker.restore(startElementMemento);
         return startElementMemento.isOpen();
     }
-    
+
     protected void onWrite(final Consumer<Writer> consumer, final ExecutionContext executionContext) {
         if (executionContext.getDeliveryConfig() instanceof SaxNgContentDeliveryConfig && !(executionContext.getWriter() instanceof NullWriter)) {
             consumer.accept(executionContext.getWriter());
