@@ -222,21 +222,6 @@ public class SmooksResourceConfigurationList {
         return profiles;
     }
 
-    protected boolean addSourceResourceURI(URI resource) {
-        AssertArgument.isNotNull(resource, "resource");
-
-        if(loadedResources.contains(resource)) {
-            URI lastLoaded = loadedResources.get(loadedResources.size() - 1);
-
-            LOGGER.info("Not adding resource config import '" + resource + "'.  This resource is already loaded on this list.");
-
-            return false;
-        }
-        
-        loadedResources.add(resource);
-        return true;
-    }
-
 	/**
 	 * Lookup a resource configuration from this config list.
 	 * <p/>

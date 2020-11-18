@@ -47,15 +47,15 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.*;
-import org.smooks.cdr.registry.Registry;
-import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
-import org.smooks.cdr.registry.lookup.InstanceLookup;
-import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationsProfileSetLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.dtd.DTDStore;
 import org.smooks.dtd.DTDStore.DTDObjectContainer;
 import org.smooks.event.types.ConfigBuilderEvent;
 import org.smooks.profile.ProfileSet;
+import org.smooks.registry.Registry;
+import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
+import org.smooks.registry.lookup.InstanceLookup;
+import org.smooks.registry.lookup.SmooksResourceConfigurationsProfileSetLookup;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -88,7 +88,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     /**
      * An unsorted list of SmooksResourceConfiguration.
      */
-    private final List<SmooksResourceConfiguration> resourceConfigsList = new ArrayList<>();
+    private final List<SmooksResourceConfiguration> smooksResourceConfigurations = new ArrayList<>();
     /**
 	 * Table (by element) of sorted SmooksResourceConfiguration instances keyed by selector value. Each table entry
 	 * contains a List of SmooksResourceConfiguration instances.
@@ -101,7 +101,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * Config builder events list.
      */
     private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<>();
-    private final List<StreamDeliveryProvider> streamDeliveryProviders;
+    private final List<FilterProvider> filterProviders;
 
     /**
 	 * DTD for the associated device.
@@ -115,14 +115,14 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * @param profileSet Profile set.
 	 * @param applicationContext Container context.
 	 */
-	public DefaultContentDeliveryConfigBuilder(final ProfileSet profileSet, final ApplicationContext applicationContext, final List<StreamDeliveryProvider> streamDeliveryProviders) {
+	public DefaultContentDeliveryConfigBuilder(final ProfileSet profileSet, final ApplicationContext applicationContext, final List<FilterProvider> filterProviders) {
         AssertArgument.isNotNull(profileSet, "profileSet");
         AssertArgument.isNotNull(applicationContext, "applicationContext");
-        AssertArgument.isNotNull(streamDeliveryProviders, "streamDeliveryProviders");
+        AssertArgument.isNotNull(filterProviders, "filterProviders");
         
 		this.profileSet = profileSet;
 		this.applicationContext = applicationContext;
-		this.streamDeliveryProviders = streamDeliveryProviders;
+		this.filterProviders = filterProviders;
     }
 
 	/**
@@ -149,31 +149,31 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             visitorBindings.addAll(extendedContentHandlerBindings);
         }
         boolean sortVisitors = ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable);
-        StreamDeliveryProvider streamDeliveryProvider = getStreamDeliveryProvider();
+        FilterProvider filterProvider = getFilterProvider();
         
-        LOGGER.debug(String.format("Using the %s Stream Filter", streamDeliveryProvider.getName()));
+        LOGGER.debug(String.format("Activating %s filter", filterProvider.getName()));
         configBuilderEvents.add(new ConfigBuilderEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
-        configBuilderEvents.add(new ConfigBuilderEvent("Using Stream Filter Type: " + streamDeliveryProvider.getName()));
+        configBuilderEvents.add(new ConfigBuilderEvent(String.format("Activating %s filter", filterProvider.getName())));
 
-        ContentDeliveryConfig contentDeliveryConfig = streamDeliveryProvider.createContentDeliveryConfig(visitorBindings, applicationContext, resourceConfigTable, configBuilderEvents, dtd, sortVisitors);
+        ContentDeliveryConfig contentDeliveryConfig = filterProvider.createContentDeliveryConfig(visitorBindings, applicationContext, resourceConfigTable, configBuilderEvents, dtd, sortVisitors);
         fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
 
         return contentDeliveryConfig;
     }
 
-    private StreamDeliveryProvider getStreamDeliveryProvider() {
-        final List<StreamDeliveryProvider> candidateStreamDeliveryProviders = streamDeliveryProviders.stream().filter(s -> s.isProvider(visitorBindings)).collect(Collectors.toList());
+    private FilterProvider getFilterProvider() {
+        final List<FilterProvider> candidateFilterProviders = filterProviders.stream().filter(s -> s.isProvider(visitorBindings)).collect(Collectors.toList());
         final String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
-        if (filterTypeParam == null && candidateStreamDeliveryProviders.isEmpty()) {
+        if (filterTypeParam == null && candidateFilterProviders.isEmpty()) {
             throw new SmooksException("Ambiguous Resource Configuration set.  All Element Content Handlers must support processing on the SAX and/or DOM Filter:\n" + getResourceFilterCharacteristics());
         } else if (filterTypeParam == null) {
-            return candidateStreamDeliveryProviders.get(0);
+            return candidateFilterProviders.get(0);
         } else {
-            final Optional<StreamDeliveryProvider> streamDeliveryProviderOptional = candidateStreamDeliveryProviders.stream().filter(c -> c.getName().equalsIgnoreCase(filterTypeParam)).findFirst();
-            if (streamDeliveryProviderOptional.isPresent()) {
-                return streamDeliveryProviderOptional.get();
+            final Optional<FilterProvider> filterProviderOptional = candidateFilterProviders.stream().filter(c -> c.getName().equalsIgnoreCase(filterTypeParam)).findFirst();
+            if (filterProviderOptional.isPresent()) {
+                return filterProviderOptional.get();
             } else {
-                throw new SmooksException("The configured Filter ('" + filterTypeParam + "') cannot be used: " + Arrays.toString(candidateStreamDeliveryProviders.stream().map(StreamDeliveryProvider::getName).collect(Collectors.toList()).toArray()) + " filters can be used for the given set of visitors. Turn on debug logging for more information.");
+                throw new SmooksException("The configured Filter ('" + filterTypeParam + "') cannot be used: " + Arrays.toString(candidateFilterProviders.stream().map(FilterProvider::getName).collect(Collectors.toList()).toArray()) + " filters can be used for the given set of visitors. Turn on debug logging for more information.");
             }
         }
     }
@@ -208,10 +208,10 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         }
 
         stringBuf.append("\t\t ");
-        Map<String, Boolean> supportedStreamDeliveryProviders = streamDeliveryProviders.stream().map(s -> new AbstractMap.SimpleEntry<>(s.getName(), s.isProvider(Collections.singletonList(contentHandlerBinding)))).
+        Map<String, Boolean> supportedFilterProviders = filterProviders.stream().map(s -> new AbstractMap.SimpleEntry<>(s.getName(), s.isProvider(Collections.singletonList(contentHandlerBinding)))).
                 collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
-        for (Entry<String, Boolean> supportedStreamDeliveryProvider : supportedStreamDeliveryProviders.entrySet()) {
-            stringBuf.append(supportedStreamDeliveryProvider.getValue() ? supportedStreamDeliveryProvider.getKey() : " ").append("     ");
+        for (Entry<String, Boolean> supportedFilterProvider : supportedFilterProviders.entrySet()) {
+            stringBuf.append(supportedFilterProvider.getValue() ? supportedFilterProvider.getKey() : " ").append("     ");
         }
 
         stringBuf.append(contentHandlerBinding.getSmooksResourceConfiguration())
@@ -225,11 +225,11 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * for the specified device.
 	 */
 	private void load(ProfileSet profileSet) {
-        resourceConfigsList.clear();
-        resourceConfigsList.addAll(Arrays.asList(applicationContext.getRegistry().lookup(new SmooksResourceConfigurationsProfileSetLookup(applicationContext.getRegistry(), profileSet))));
+        smooksResourceConfigurations.clear();
+        smooksResourceConfigurations.addAll(Arrays.asList(applicationContext.getRegistry().lookup(new SmooksResourceConfigurationsProfileSetLookup(applicationContext.getRegistry(), profileSet))));
 
 		// Build and sort the resourceConfigTable table - non-transforming elements.
-		buildSmooksResourceConfigurationTable(resourceConfigsList);
+		buildSmooksResourceConfigurationTable(smooksResourceConfigurations);
 		sortSmooksResourceConfigurations(resourceConfigTable, profileSet);
 
 		// If there's a DTD for this device, get it and add it to the DTDStore.
@@ -317,8 +317,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     @SuppressWarnings("unchecked")
     private void addResourceConfiguration(String element, SmooksResourceConfiguration resourceConfiguration) {
         // Add it to the unsorted list...
-        if(!resourceConfigsList.contains(resourceConfiguration)) {
-            resourceConfigsList.add(resourceConfiguration);
+        if(!smooksResourceConfigurations.contains(resourceConfiguration)) {
+            smooksResourceConfigurations.add(resourceConfiguration);
         }
 
         // Add it to the sorted resourceConfigTable...
@@ -387,10 +387,10 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * their respective tables.
 	 */
 	private void extractContentHandlers() {
-		ContentHandlerExtractionStrategy cduStrategy = new ContentHandlerExtractionStrategy(applicationContext);
-		SmooksResourceConfigurationTableIterator tableIterator = new SmooksResourceConfigurationTableIterator(cduStrategy);
+		ContentHandlerExtractionStrategy contentHandlerExtractionStrategy = new ContentHandlerExtractionStrategy(applicationContext);
+		SmooksResourceConfigurationTableIterator smooksResourceConfigurationTableIterator = new SmooksResourceConfigurationTableIterator(contentHandlerExtractionStrategy);
 
-        tableIterator.iterate();
+        smooksResourceConfigurationTableIterator.iterate();
     }
 
     /**
@@ -529,7 +529,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             }
             
             //TODO: register object
-
+            
             if (contentHandler instanceof Visitor) {
                 // Add the visitor.  No need to configure it as that should have been done by
                 // creator...
@@ -598,7 +598,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 		 * Iterate over the table applying the strategy.
 		 */
         private void iterate() {
-            for (final SmooksResourceConfiguration smooksResourceConfiguration : resourceConfigsList) {
+            for (SmooksResourceConfiguration smooksResourceConfiguration : smooksResourceConfigurations) {
                 strategy.applyStrategy(smooksResourceConfiguration.getSelectorPath().getTargetElement(), smooksResourceConfiguration);
             }
         }

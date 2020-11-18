@@ -42,15 +42,15 @@
  */
 package org.smooks.delivery;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.delivery.dom.serialize.DefaultSerializationUnit;
-import org.smooks.delivery.dom.DOMElementVisitor;
+import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.dom.DOMElementVisitor;
+import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.w3c.dom.Element;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author
@@ -66,7 +66,7 @@ public class TestExpandableContentHandler implements DOMElementVisitor, Configur
 
         expansionConfigs.add(new SmooksResourceConfiguration("a", Assembly1.class.getName()));
         expansionConfigs.add(new SmooksResourceConfiguration("b", Processing1.class.getName()));        
-        expansionConfigs.add(new SmooksResourceConfiguration("c", DefaultSerializationUnit.class.getName()));
+        expansionConfigs.add(new SmooksResourceConfiguration("c", DefaultDOMSerializerVisitor.class.getName()));
 
         return expansionConfigs;
     }

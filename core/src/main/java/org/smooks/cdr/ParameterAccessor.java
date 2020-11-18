@@ -44,9 +44,9 @@ package org.smooks.cdr;
 
 import org.smooks.Smooks;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.registry.Registry;
-import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.registry.Registry;
+import org.smooks.registry.lookup.SmooksResourceConfigurationListsLookup;
 
 import java.util.Iterator;
 import java.util.List;

@@ -44,7 +44,7 @@ package org.smooks.payload;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cdr.registry.lookup.ExportsLookup;
+import org.smooks.registry.lookup.ExportsLookup;
 
 import javax.xml.transform.Result;
 import java.util.Collection;

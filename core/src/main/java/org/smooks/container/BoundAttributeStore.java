@@ -70,7 +70,7 @@ public interface BoundAttributeStore {
 	 * @return The object bound with the specified name in this {@link org.smooks.container.BoundAttributeStore}
 	 * implementation, or null if no object is bound under the name.
 	 */
-    Object getAttribute(Object key);
+    <T> T getAttribute(Object key);
 
 	/**
 	 * Returns the Map of attributes bound in this {@link org.smooks.container.BoundAttributeStore}

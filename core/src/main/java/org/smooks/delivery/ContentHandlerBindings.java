@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  */
 public class ContentHandlerBindings<T extends ContentHandler> {
 
-    private final Map<String, List<ContentHandlerBinding<T>>> contentHandlerBindingsByElementName = new LinkedHashMap<String, List<ContentHandlerBinding<T>>>();
+    private final Map<String, List<ContentHandlerBinding<T>>> contentHandlerBindingsByElementName = new LinkedHashMap<>();
     private int count = 0;
     private int userConfiguredCount = 0;
 
@@ -67,7 +67,7 @@ public class ContentHandlerBindings<T extends ContentHandler> {
      * @param contentHandler The delivery unit.
      */
     public void addBinding(String elementName, SmooksResourceConfiguration resourceConfig, T contentHandler) {
-        addBinding(elementName, new ContentHandlerBinding<T>(contentHandler, resourceConfig));
+        addBinding(elementName, new ContentHandlerBinding<>(contentHandler, resourceConfig));
     }
 
     /**
@@ -75,7 +75,7 @@ public class ContentHandlerBindings<T extends ContentHandler> {
      * @param elementName The element name.
      * @param contentHandlerBinding The mapping instance to be added.
      */
-    private void addBinding(String elementName, ContentHandlerBinding<T> contentHandlerBinding) {
+    public void addBinding(String elementName, ContentHandlerBinding<T> contentHandlerBinding) {
         List<ContentHandlerBinding<T>> elementMappings = contentHandlerBindingsByElementName.computeIfAbsent(elementName, k -> new Vector<>());
 
         elementMappings.add(contentHandlerBinding);

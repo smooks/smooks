@@ -80,6 +80,7 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
     @Inject
     private Optional<String> defaultValue;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         SmooksResourceConfiguration config;
         String value = DomUtils.getAttributeValue(element, attribute);

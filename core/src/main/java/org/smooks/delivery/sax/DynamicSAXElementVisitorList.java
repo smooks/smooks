@@ -76,7 +76,7 @@ public class DynamicSAXElementVisitorList {
     }
     
     public static DynamicSAXElementVisitorList getList(ExecutionContext executionContext) {
-        return (DynamicSAXElementVisitorList) executionContext.getAttribute(DynamicSAXElementVisitorList.class);
+        return executionContext.getAttribute(DynamicSAXElementVisitorList.class);
     }
 
     public static void addDynamicVisitor(SAXVisitor visitor, ExecutionContext executionContext) {

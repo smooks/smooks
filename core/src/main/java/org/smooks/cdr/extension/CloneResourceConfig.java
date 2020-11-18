@@ -66,6 +66,7 @@ public class CloneResourceConfig implements DOMElementVisitor {
     @Inject
     private Optional<String[]> unset;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
         SmooksResourceConfiguration config = (SmooksResourceConfiguration) extensionContext.getResourceStack().peek().clone();
@@ -81,6 +82,7 @@ public class CloneResourceConfig implements DOMElementVisitor {
         extensionContext.addResource(config);
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         ExtensionContext.getExtensionContext(executionContext).getResourceStack().pop();
     }

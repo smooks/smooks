@@ -48,9 +48,8 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.dom.DOMVisitBefore;
-import org.smooks.delivery.dom.serialize.ContextObjectSerializationUnit;
-import org.smooks.delivery.dom.serialize.DefaultSerializationUnit;
-import org.smooks.delivery.dom.serialize.SerializationUnit;
+import org.smooks.delivery.dom.serialize.ContextObjectSerializerVisitor;
+import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -77,20 +76,20 @@ public class ExpandableContentDeliveryUnitTest {
         ContentHandlerBindings<DOMVisitAfter> assemblyVisitAfters = config.getAssemblyVisitAfters();
         ContentHandlerBindings<DOMVisitBefore> processingVisitBefores = config.getProcessingVisitBefores();
         ContentHandlerBindings<DOMVisitAfter> processingVisitAfters = config.getProcessingVisitAfters();
-        ContentHandlerBindings<SerializationUnit> serializationUnits = config.getSerializationVisitors();
+        ContentHandlerBindings<SerializerVisitor> serializationUnits = config.getSerializationVisitors();
 
         assertEquals(1, assemblyVisitBefores.getCount());
         assertTrue(assemblyVisitBefores.getMappings("a").get(0).getContentHandler() instanceof Assembly1);
         assertEquals(1, assemblyVisitAfters.getCount());
         assertTrue(assemblyVisitAfters.getMappings("a").get(0).getContentHandler() instanceof Assembly1);
 
-        assertEquals(2, processingVisitBefores.getCount());
+        assertEquals(3, processingVisitBefores.getCount());
         assertTrue(processingVisitBefores.getMappings("b").get(0).getContentHandler() instanceof Processing1);
-        assertEquals(2, processingVisitAfters.getCount());
+        assertEquals(3, processingVisitAfters.getCount());
         assertTrue(processingVisitAfters.getMappings("b").get(0).getContentHandler() instanceof Processing1);
 
         assertEquals(4, serializationUnits.getCount());
-        assertTrue(serializationUnits.getMappings("c").get(0).getContentHandler() instanceof DefaultSerializationUnit);
-        assertTrue(serializationUnits.getMappings("context-object").get(0).getContentHandler() instanceof ContextObjectSerializationUnit);
+        assertTrue(serializationUnits.getMappings("c").get(0).getContentHandler() instanceof DefaultDOMSerializerVisitor);
+        assertTrue(serializationUnits.getMappings("context-object").get(0).getContentHandler() instanceof ContextObjectSerializerVisitor);
     }
 }

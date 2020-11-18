@@ -66,6 +66,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXHandler;

@@ -44,9 +44,9 @@ package org.smooks.cdr;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.container.ExecutionContext;
 import org.smooks.profile.ProfileSet;
+import org.smooks.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

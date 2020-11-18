@@ -53,7 +53,7 @@
     </resource-config>
 
     <resource-config selector="b">
-        <resource>org.smooks.delivery.dom.serialize.DefaultSerializationUnit</resource>
+        <resource>org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor</resource>
     </resource-config>
 
 </smooks-resource-list>

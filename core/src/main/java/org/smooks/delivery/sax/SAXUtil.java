@@ -174,7 +174,7 @@ public abstract class SAXUtil {
         } else if (localName != null && localName.length() != 0) {
             return new QName(localName);
         } else {
-            thowInvalidNameException(namespaceURI, localName, qName);
+            thowInvalidNameException(null, localName, qName);
         }
 
         return null;

@@ -45,11 +45,11 @@ package org.smooks.delivery;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.classpath.ClasspathUtils;
 import org.smooks.container.ApplicationContext;
+import org.smooks.injector.Scope;
+import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.registry.lookup.LifecycleManagerLookup;
 import org.smooks.util.ClassUtil;
 
 import javax.inject.Inject;
@@ -66,11 +66,11 @@ import java.util.function.Function;
  * constructor that takes a SmooksResourceConfiguration instance as a parameter.
  * @author tfennelly
  */
-public class JavaContentHandlerFactory implements ContentHandlerFactory {
+public class JavaContentHandlerFactory implements ContentHandlerFactory<Object> {
 
     @Inject
     private ApplicationContext applicationContext;
-    
+
     private final Map<SmooksResourceConfiguration, Object> javaContentHandlers = new ConcurrentHashMap<>();
 
     /**

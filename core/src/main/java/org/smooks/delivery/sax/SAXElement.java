@@ -232,7 +232,7 @@ public class SAXElement {
      * @see #accumulateText() 
      * @see TextConsumer
      */
-    public void addText (String text) {
+    public void addText(String text) {
         addText(text, TextType.TEXT);
     }
 
@@ -443,7 +443,7 @@ public class SAXElement {
         int attribCount = attributes.getLength();
         for(int i = 0; i < attribCount; i++) {
             if(namespaceURI.equals(attributes.getURI(i))) {
-                boolean isQName = (name.indexOf(":") != -1);
+                boolean isQName = name.contains(":");
                 
                 if(isQName && name.equals(attributes.getQName(i))) {
                     attributes.removeAttribute(i);

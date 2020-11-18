@@ -57,18 +57,18 @@ public class StartElementEvent implements SAXEventReplay {
     public String uri;
     public String localName;
     public String qName;
-    public Attributes atts;
+    public Attributes attributes;
 
     public void set(String uri, String localName, String qName, Attributes atts) {
         this.uri = uri;
         this.localName = localName;
         this.qName = qName;
-        this.atts = atts;
+        this.attributes = atts;
     }
 
     public void replay(ContentHandler handler) throws SmooksException {
         try {
-            handler.startElement(uri, localName, qName, atts);
+            handler.startElement(uri, localName, qName, attributes);
         } catch (SAXException e) {
             throw new SmooksException("Error replaying startElement event.", e);
         }

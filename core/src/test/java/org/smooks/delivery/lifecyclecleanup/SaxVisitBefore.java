@@ -45,8 +45,8 @@ package org.smooks.delivery.lifecyclecleanup;
 import static org.junit.Assert.*;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ExecutionLifecycleCleanable;
-import org.smooks.delivery.ExecutionLifecycleInitializable;
+import org.smooks.lifecycle.ExecutionLifecycleCleanable;
+import org.smooks.lifecycle.ExecutionLifecycleInitializable;
 import org.smooks.delivery.sax.SAXVisitBefore;
 import org.smooks.delivery.sax.SAXElement;
 

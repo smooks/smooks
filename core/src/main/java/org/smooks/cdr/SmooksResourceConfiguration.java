@@ -44,11 +44,11 @@ package org.smooks.cdr;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.cdr.registry.lookup.GlobalParamsLookup;
 import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.classpath.ClasspathUtils;
-import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.Visitor;
+import org.smooks.delivery.dom.serialize.DOMSerializerVisitor;
+import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.io.StreamUtils;
 import org.smooks.profile.Profile;
 import org.smooks.resource.URIResourceLocator;
@@ -226,14 +226,10 @@ public class SmooksResourceConfiguration {
      */
     private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
     private int parameterCount;
-    /**
-     * Global Parameters object.
-     */
-    private SmooksResourceConfiguration globalParams;
    
     /**
      * Flag indicating whether or not the resource is a default applied resource
-     * e.g. {@link org.smooks.delivery.dom.serialize.DefaultSerializationUnit} or
+     * e.g. {@link DefaultDOMSerializerVisitor} or
      * {@link org.smooks.delivery.sax.DefaultSAXElementSerializer}.
      */
     private boolean defaultResource = false;
@@ -352,12 +348,6 @@ public class SmooksResourceConfiguration {
 	public void setExtendedConfigNS(String extendedConfigNS) {
 		this.extendedConfigNS = extendedConfigNS;
 	}
-
-	public void attachGlobalParameters(ApplicationContext appContext) {
-        if(globalParams == null) {
-            globalParams = appContext.getRegistry().lookup(new GlobalParamsLookup(appContext.getRegistry()));
-        }
-    }
 
     public SmooksResourceConfiguration merge(SmooksResourceConfiguration config) {
         SmooksResourceConfiguration clone = (SmooksResourceConfiguration) clone();
@@ -507,7 +497,7 @@ public class SmooksResourceConfiguration {
     /**
      * Is this resource config a default applied resource.
      * <p/>
-     * Some resources (e.g. {@link org.smooks.delivery.dom.serialize.DefaultSerializationUnit} or
+     * Some resources (e.g. {@link DOMSerializerVisitor} or
      * {@link org.smooks.delivery.sax.DefaultSAXElementSerializer}) are applied by default when no other
      * resources are targeted at an element.
      *
@@ -520,7 +510,7 @@ public class SmooksResourceConfiguration {
     /**
      * Set this resource config as a default applied resource.
      * <p/>
-     * Some resources (e.g. {@link org.smooks.delivery.dom.serialize.DefaultSerializationUnit} or
+     * Some resources (e.g. {@link DOMSerializerVisitor} or
      * {@link org.smooks.delivery.sax.DefaultSAXElementSerializer}) are applied by default when no other
      * resources are targeted at an element.
      *
@@ -673,11 +663,7 @@ public class SmooksResourceConfiguration {
         } else if (parameter instanceof Parameter) {
             return (Parameter<T>) parameter;
         }
-
-        if(globalParams != null) {
-            return globalParams.getParameter(name, valueClass);
-        }
-
+        
         return null;
     }
 

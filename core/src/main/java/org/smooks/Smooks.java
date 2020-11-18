@@ -46,9 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.classpath.CascadingClassLoaderSet;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
@@ -58,10 +55,12 @@ import org.smooks.container.standalone.StandaloneExecutionContext;
 import org.smooks.delivery.*;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.event.types.FilterLifecycleEvent;
+import org.smooks.injector.Scope;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.context.preinstalled.Time;
 import org.smooks.javabean.context.preinstalled.UniqueID;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
 import org.smooks.net.URIUtil;
 import org.smooks.payload.Exports;
 import org.smooks.payload.FilterResult;
@@ -70,6 +69,7 @@ import org.smooks.payload.JavaResult;
 import org.smooks.profile.Profile;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.UnknownProfileMemberException;
+import org.smooks.registry.lookup.LifecycleManagerLookup;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.xml.NamespaceManager;
 import org.xml.sax.SAXException;
@@ -607,7 +607,7 @@ public class Smooks {
     /**
      * Close this Smooks instance and all associated resources.
      * <p/>
-     * Should result in the {@link org.smooks.delivery.annotation.Uninitialize uninitialization}
+     * Should result in the {@link javax.annotation.PostConstruct uninitialization}
      * of all allocated {@link org.smooks.delivery.ContentHandler} instances.
      */
     public void close() {

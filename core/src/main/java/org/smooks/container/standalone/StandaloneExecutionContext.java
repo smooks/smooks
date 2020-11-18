@@ -45,10 +45,8 @@ package org.smooks.container.standalone;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.delivery.ContentHandlerBinding;
-import org.smooks.delivery.Filter;
-import org.smooks.delivery.Visitor;
+import org.smooks.container.MementoCaretaker;
+import org.smooks.delivery.*;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.context.StandaloneBeanContextFactory;
@@ -56,9 +54,11 @@ import org.smooks.profile.ProfileSet;
 import org.smooks.profile.UnknownProfileMemberException;
 
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.URI;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Standalone Container Request implementation.
@@ -67,29 +67,31 @@ import java.util.List;
 public class StandaloneExecutionContext implements ExecutionContext {
 
     private final ProfileSet targetProfileSet;
-    private final Hashtable<Object, Object> attributes = new Hashtable<Object, Object>();
+    private final Map<Object, Object> attributes = new Hashtable<>();
     private final ContentDeliveryConfig deliveryConfig;
-    private URI docSource;
+	private final MementoCaretaker mementoCaretaker;
+	private final ApplicationContext applicationContext;
+
+	private URI docSource;
 	private String contentEncoding;
-    private final ApplicationContext context;
     private ExecutionEventListener executionListener;
     private Throwable terminationError;
-    private final boolean isDefaultSerializationOn;
     private BeanContext beanContext;
+	private Writer writer;
 
-    /**
+	/**
 	 * Public Constructor.
 	 * <p/>
      * The execution context is constructed within the context of a target profile and
      * application context.
 	 * @param targetProfile The target base profile for the execution context.
 	 * These parameters are not appended to the supplied requestURI.  This arg must be supplied, even if it's empty.
-     * @param context The application context.
+     * @param applicationContext The application context.
      * @param extendedContentHandlerBindings Preconfigured/extended Visitor Configuration Map.
      * @throws UnknownProfileMemberException Unknown target profile.
 	 */
-	public StandaloneExecutionContext(String targetProfile, ApplicationContext context, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) throws UnknownProfileMemberException {
-		this(targetProfile, context, "UTF-8", extendedContentHandlerBindings);
+	public StandaloneExecutionContext(String targetProfile, ApplicationContext applicationContext, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) throws UnknownProfileMemberException {
+		this(targetProfile, applicationContext, "UTF-8", extendedContentHandlerBindings);
 	}
 
 	/**
@@ -112,32 +114,37 @@ public class StandaloneExecutionContext implements ExecutionContext {
         if(applicationContext == null) {
             throw new IllegalArgumentException("null 'context' arg in constructor call.");
         }
-		this.context = applicationContext;
+		this.applicationContext = applicationContext;
 		setContentEncoding(contentEncoding);
         targetProfileSet = applicationContext.getProfileStore().getProfileSet(targetProfile);
 		deliveryConfig = applicationContext.getContentDeliveryConfigBuilderFactory().create(targetProfileSet).build(extendedContentHandlerBindings);
-        isDefaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", deliveryConfig));
+		mementoCaretaker = new DefaultMementoCaretaker(this);
     }
 
-    public void setDocumentSource(URI docSource) {
+	@Override
+	public void setDocumentSource(URI docSource) {
         this.docSource = docSource;
     }
 
-    public URI getDocumentSource() {
+	@Override
+	public URI getDocumentSource() {
 		if(docSource == null) {
 			return ExecutionContext.DOCUMENT_URI;
 		}
 		return docSource;
 	}
 
+	@Override
 	public ApplicationContext getApplicationContext() {
-		return context;
+		return applicationContext;
 	}
 
+	@Override
 	public ProfileSet getTargetProfiles() {
 		return targetProfileSet;
 	}
 
+	@Override
 	public ContentDeliveryConfig getDeliveryConfig() {
 		return deliveryConfig;
 	}
@@ -148,6 +155,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	 * defaults to "UTF-8".
 	 * @throws IllegalArgumentException Invalid encoding.
 	 */
+	@Override
 	public void setContentEncoding(String contentEncoding) throws IllegalArgumentException {
 		contentEncoding = (contentEncoding == null)?"UTF-8":contentEncoding;
 		try {
@@ -164,41 +172,45 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	 * Get the content encoding to be used when parsing content on this standalone request instance.
 	 * @return Character encoding to be used when parsing content.  Defaults to "UTF-8".
 	 */
+	@Override
 	public String getContentEncoding() {
 		return (contentEncoding == null)?"UTF-8":contentEncoding;
 	}
 
-    public void setEventListener(ExecutionEventListener listener) {
+	@Override
+	public void setEventListener(ExecutionEventListener listener) {
         this.executionListener = listener;
     }
 
-    public ExecutionEventListener getEventListener() {
+	@Override
+	public ExecutionEventListener getEventListener() {
         return executionListener;
     }
 
-    public void setTerminationError(Throwable terminationError) {
+	@Override
+	public void setTerminationError(Throwable terminationError) {
         this.terminationError = terminationError;
     }
 
-    public Throwable getTerminationError() {
+	@Override
+	public Throwable getTerminationError() {
         return terminationError;
     }
 
-    public String getConfigParameter(String name) {
+	@Override
+	public String getConfigParameter(String name) {
         return getConfigParameter(name, null);
     }
 
-    public String getConfigParameter(String name, String defaultVal) {
+	@Override
+	public String getConfigParameter(String name, String defaultVal) {
         return ParameterAccessor.getParameterValue(name, String.class, defaultVal, deliveryConfig);
     }
-
-    public boolean isDefaultSerializationOn() {
-        return isDefaultSerializationOn;
-    }
-
+    
     /* (non-Javadoc)
       * @see org.smooks.container.BoundAttributeStore#setAttribute(java.lang.Object, java.lang.Object)
       */
+	@Override
 	public void setAttribute(Object key, Object value) {
 		attributes.put(key, value);
 	}
@@ -206,6 +218,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	/* (non-Javadoc)
 	 * @see org.smooks.container.BoundAttributeStore#getAttribute(java.lang.Object)
 	 */
+	@Override
 	public Object getAttribute(Object key) {
 		return attributes.get(key);
 	}
@@ -213,26 +226,46 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	/* (non-Javadoc)
 	 * @see org.smooks.container.BoundAttributeStore#removeAttribute(java.lang.Object)
 	 */
+	@Override
 	public void removeAttribute(Object key) {
 		attributes.remove(key);
 	}
 
-    public String toString() {
+	@Override
+	public String toString() {
         return attributes.toString();
     }
 
-    public Hashtable<Object, Object> getAttributes() {
+	@Override
+	public Map<Object, Object> getAttributes() {
     	return attributes;
     }
 
-    public BeanContext getBeanContext() {
+	@Override
+	public BeanContext getBeanContext() {
 		if(beanContext == null) {
 			beanContext = StandaloneBeanContextFactory.create(this);
 		}
 		return beanContext;
 	}
 
-    public void setBeanContext(BeanContext beanContext) {
+	@Override
+	public void setBeanContext(BeanContext beanContext) {
         this.beanContext = beanContext;
     }
+
+	@Override
+	public void setWriter(final Writer writer) {
+		this.writer = writer;
+	}
+	
+	@Override
+	public Writer getWriter() {
+		return writer;
+	}
+
+	@Override
+	public MementoCaretaker getMementoCaretaker() {
+		return mementoCaretaker;
+	}
 }

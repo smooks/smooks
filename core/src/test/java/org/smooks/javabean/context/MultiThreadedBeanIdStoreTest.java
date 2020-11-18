@@ -66,17 +66,16 @@ public class MultiThreadedBeanIdStoreTest  {
 		final int parties = 50;
 
 		final AtomicBoolean exceptionsThrown = new AtomicBoolean(false);
-		final MockApplicationContext appContext = new MockApplicationContext();
+		final MockApplicationContext applicationContext = new MockApplicationContext();
 		final CyclicBarrier barrier = new CyclicBarrier(parties);
 		final CountDownLatch countDownLatch = new CountDownLatch(parties);
 
 		Runnable runnable = new Runnable() {
-
 			public void run() {
 
 				try {
 					MockExecutionContext execContext = new MockExecutionContext();
-					execContext.context = appContext;
+					execContext.setApplicationContext(applicationContext);
 
 					BeanContext beanContext = execContext.getBeanContext();
 

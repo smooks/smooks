@@ -42,12 +42,12 @@
  */
 package org.smooks.container;
 
-import org.smooks.cdr.registry.Registry;
 import org.smooks.delivery.ContentDeliveryConfigBuilderFactory;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.ProfileStore;
+import org.smooks.registry.Registry;
 import org.smooks.resource.ContainerResourceLocator;
 
 import java.util.Collection;

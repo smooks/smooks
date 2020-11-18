@@ -47,6 +47,7 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitAfter;
+import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
 
@@ -57,14 +58,16 @@ import java.util.List;
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
 */
-public class ModelCatcher implements SAXVisitAfter, DOMVisitAfter {
+public class ModelCatcher implements SAXVisitAfter, DOMVisitAfter, AfterVisitor {
 
     public static final List<Element> elements = new ArrayList<Element>();
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         addModelElement(element.getName().getLocalPart(), executionContext);
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         addModelElement(DomUtils.getName(element), executionContext);
     }

@@ -45,8 +45,8 @@ package org.smooks.delivery.dom;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
-import org.smooks.delivery.dom.serialize.SerializationUnit;
 import org.smooks.delivery.ordering.Sorter;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 
 /**
  * DOM specific {@link org.smooks.delivery.ContentDeliveryConfig} implementation.
@@ -59,7 +59,7 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
     private ContentHandlerBindings<DOMVisitAfter> assemblyVisitAfters = new ContentHandlerBindings<>();
     private ContentHandlerBindings<DOMVisitBefore> processingVisitBefores = new ContentHandlerBindings<>();
     private ContentHandlerBindings<DOMVisitAfter> processingVisitAfters = new ContentHandlerBindings<>();
-    private ContentHandlerBindings<SerializationUnit> serializationVisitors = new ContentHandlerBindings<>();
+    private ContentHandlerBindings<SerializerVisitor> serializationVisitors = new ContentHandlerBindings<>();
     private ContentHandlerBindings<VisitLifecycleCleanable> visitCleanables = new ContentHandlerBindings<>();
     private FilterBypass filterBypass;
 
@@ -95,11 +95,11 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
         this.processingVisitAfters = processingVisitAfters;
     }
 
-    public ContentHandlerBindings<SerializationUnit> getSerializationVisitors() {
+    public ContentHandlerBindings<SerializerVisitor> getSerializationVisitors() {
         return serializationVisitors;
     }
 
-    public void setSerializationVisitors(ContentHandlerBindings<SerializationUnit> serializationVisitors) {
+    public void setSerializationVisitors(ContentHandlerBindings<SerializerVisitor> serializationVisitors) {
         this.serializationVisitors = serializationVisitors;
     }
 

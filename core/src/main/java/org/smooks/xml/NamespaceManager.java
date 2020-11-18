@@ -47,11 +47,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
-import org.smooks.cdr.registry.lookup.NamespaceManagerLookup;
-import org.smooks.cdr.registry.lookup.SmooksResourceConfigurationListsLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.namespace.NamespaceDeclarationStack;
+import org.smooks.registry.lookup.NamespaceManagerLookup;
+import org.smooks.registry.lookup.SmooksResourceConfigurationListsLookup;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -113,6 +113,6 @@ public class NamespaceManager {
      * @param executionContext The execution context.
      */
     public static NamespaceDeclarationStack getNamespaceDeclarationStack(ExecutionContext executionContext) {
-        return (NamespaceDeclarationStack) executionContext.getAttribute(NamespaceDeclarationStack.class);
+        return executionContext.getAttribute(NamespaceDeclarationStack.class);
     }
 }

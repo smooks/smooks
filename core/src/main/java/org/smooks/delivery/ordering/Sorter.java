@@ -76,20 +76,22 @@ public class Sorter {
     private static <T extends ContentHandler> List<DependencySpec> buildDependencyMap(List<ContentHandlerBinding<T>> visitors) {
         List<DependencySpec> dependancySpecs = new ArrayList<DependencySpec>();
 
-        for(ContentHandlerBinding<T> visitor : visitors) {
+        for (ContentHandlerBinding<T> visitor : visitors) {
             dependancySpecs.add(new DependencySpec(visitor));
         }
 
-        for(DependencySpec outer : dependancySpecs) {
-            if(outer.visitor.getContentHandler() instanceof Producer) {
+        for (DependencySpec outer : dependancySpecs) {
+            if (outer.visitor.getContentHandler() instanceof Producer) {
                 Set<?> outerProducts = ((Producer) outer.visitor.getContentHandler()).getProducts();
 
-                for(DependencySpec inner : dependancySpecs) {
-                    if(inner != outer && inner.visitor.getContentHandler() instanceof Consumer) {
-                        Consumer innerConsumer = (Consumer) inner.visitor.getContentHandler();
-                        for(Object product : outerProducts) {
-                            if(innerConsumer.consumes(product)) {
-                                outer.dependants.add(inner);
+                if (!outerProducts.isEmpty()) {
+                    for (DependencySpec inner : dependancySpecs) {
+                        if (inner != outer && inner.visitor.getContentHandler() instanceof Consumer) {
+                            Consumer innerConsumer = (Consumer) inner.visitor.getContentHandler();
+                            for (Object product : outerProducts) {
+                                if (innerConsumer.consumes(product)) {
+                                    outer.dependants.add(inner);
+                                }
                             }
                         }
                     }

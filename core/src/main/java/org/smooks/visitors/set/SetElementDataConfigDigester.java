@@ -56,6 +56,7 @@ import org.w3c.dom.Element;
  */
 public class SetElementDataConfigDigester implements DOMVisitAfter {
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         SmooksResourceConfiguration config = ExtensionContext.getExtensionContext(executionContext).getCurrentConfig();
 

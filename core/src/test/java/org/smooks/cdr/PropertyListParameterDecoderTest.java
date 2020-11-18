@@ -43,10 +43,10 @@
 package org.smooks.cdr;
 
 import org.junit.Test;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.container.MockApplicationContext;
+import org.smooks.injector.Scope;
+import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.registry.lookup.LifecycleManagerLookup;
 
 import java.util.Properties;
 

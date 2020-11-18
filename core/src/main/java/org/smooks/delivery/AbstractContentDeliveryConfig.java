@@ -46,12 +46,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.registry.Registry;
-import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
+import org.smooks.lifecycle.ExecutionLifecycleCleanable;
+import org.smooks.lifecycle.ExecutionLifecycleInitializable;
+import org.smooks.registry.Registry;
+import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
 import org.xml.sax.XMLReader;
 
 import java.util.*;
@@ -197,10 +199,10 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
         for(List<ContentHandlerBinding<T>> mapList : mapEntries) {
             for(ContentHandlerBinding<T> map : mapList) {
-                if(map.isLifecycleInitializable()) {
+                if(map.getContentHandler() instanceof ExecutionLifecycleInitializable) {
                     execInitializableHandlers.add((ExecutionLifecycleInitializable) map.getContentHandler());
                 }
-                if(map.isLifecycleCleanable()) {
+                if(map.getContentHandler() instanceof ExecutionLifecycleCleanable) {
                     execCleanableHandlers.add((ExecutionLifecycleCleanable) map.getContentHandler());
                 }
             }

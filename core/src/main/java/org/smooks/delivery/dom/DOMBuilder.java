@@ -155,7 +155,7 @@ public class DOMBuilder extends SmooksContentHandler {
     @SuppressWarnings({ "unchecked", "RedundantThrows" })
     public void startElement(StartElementEvent startEvent) throws SAXException {
         Element newElement;
-        int attsCount = startEvent.atts.getLength();
+        int attsCount = startEvent.attributes.getLength();
         Node currentNode = (Node)nodeStack.peek();
 
         try {
@@ -175,10 +175,10 @@ public class DOMBuilder extends SmooksContentHandler {
         }
 
         for(int i = 0; i < attsCount; i++) {
-            String attNamespace = startEvent.atts.getURI(i);
-            String attQName = startEvent.atts.getQName(i);
-            String attLocalName = startEvent.atts.getLocalName(i);
-            String attValue = startEvent.atts.getValue(i);
+            String attNamespace = startEvent.attributes.getURI(i);
+            String attQName = startEvent.attributes.getQName(i);
+            String attLocalName = startEvent.attributes.getLocalName(i);
+            String attValue = startEvent.attributes.getValue(i);
             try {
                 if(attNamespace != null && attQName != null) {
                     attNamespace = attNamespace.intern();

@@ -66,4 +66,8 @@ public class SmooksException extends RuntimeException {
 	public SmooksException(String message, Throwable cause) {
 		super(message, cause);
 	}
+
+	public SmooksException(Throwable cause) {
+		super(cause);
+	}
 }

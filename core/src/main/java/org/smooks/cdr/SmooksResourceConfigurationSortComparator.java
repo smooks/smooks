@@ -42,6 +42,7 @@
  */
 package org.smooks.cdr;
 
+import org.smooks.delivery.SerializerVisitor;
 import org.smooks.profile.ProfileSet;
 
 import java.util.Comparator;
@@ -53,7 +54,7 @@ import java.util.Comparator;
  * Before reading this be sure to read the {@link org.smooks.cdr.SmooksResourceConfiguration} class Javadoc.
  * <p/>
  * As Smooks applies {@link org.smooks.delivery.ContentHandler}s ({@link org.smooks.delivery.dom.DOMElementVisitor DOMElementVisitors} and
- * {@link org.smooks.delivery.dom.serialize.SerializationUnit SerializationUnits}) it may discover that in a given case more than 1 {@link org.smooks.delivery.ContentHandler}
+ * {@link SerializerVisitor SerializationUnits}) it may discover that in a given case more than 1 {@link org.smooks.delivery.ContentHandler}
  * can be applied.  How does Smooks decide on the order in which these {@link org.smooks.delivery.ContentHandler}s are to be applied to the content?
  * <p/>
  * At the moment, Smooks uses this class to calculate a "specificity" rating for each Content Delivery Resource based on its 

@@ -43,7 +43,7 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd">
-
+    
     <reader>
         <features>
             <setOff feature="http://www.smooks.org/sax/features/generate-java-event-stream" />

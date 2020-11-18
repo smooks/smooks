@@ -28,7 +28,13 @@
             <xs:documentation>Namespace Declarations</xs:documentation>
         </xs:annotation>
     </xs:element>
-    
+
+    <xs:element name="interceptors" type="smooks-core:interceptors" substitutionGroup="smooks:abstract-resource-config">
+        <xs:annotation>
+            <xs:documentation>Interceptor Declarations</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
     <xs:element name="terminate" type="smooks-core:terminate" substitutionGroup="smooks:abstract-resource-config" >
 		<xs:annotation>
     		<xs:documentation xml:lang="en">
@@ -174,6 +180,20 @@
         <xs:attribute name="uri" type="xs:anyURI" use="required" />
     </xs:complexType>
 
+    <xs:complexType name="interceptors">
+        <xs:complexContent>
+            <xs:extension base="smooks:abstract-resource-config">
+                <xs:sequence>
+                    <xs:element name="interceptor" type="smooks-core:interceptor" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="interceptor">
+        <xs:attribute name="class" type="xs:string" use="required" />
+    </xs:complexType>
+    
     <xs:complexType name="terminate">
     	<xs:complexContent>
     		<xs:extension base="smooks:element-visitor">

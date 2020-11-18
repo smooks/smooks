@@ -334,9 +334,9 @@ public class SelectorStepBuilderTest  {
         try {
             SelectorStepBuilder.buildSteps("chapter[title=\"Introduction\"]", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
-            assertEquals("Error processing XPath selector expression 'chapter[title=\"Introduction\"]'.", e.getMessage());
-            assertEquals("Unsupported XPath value token 'child::title'.", e.getCause().getMessage());
+        } catch (SmooksException e) {
+            assertEquals("Error processing XPath selector expression 'chapter[title=\"Introduction\"]'.", e.getCause().getMessage());
+            assertEquals("Unsupported XPath value token 'child::title'.", e.getCause().getCause().getMessage());
         }
     }
 
@@ -345,9 +345,9 @@ public class SelectorStepBuilderTest  {
         try {
             SelectorStepBuilder.buildSteps("para[last()]", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
-            assertEquals("Error processing XPath selector expression 'para[last()]'.", e.getMessage());
-            assertEquals("Unsupported XPath expr token 'last()'.", e.getCause().getMessage());
+        } catch (SmooksException e) {
+            assertEquals("Error processing XPath selector expression 'para[last()]'.", e.getCause().getMessage());
+            assertEquals("Unsupported XPath expr token 'last()'.", e.getCause().getCause().getMessage());
         }
     }
 
@@ -367,9 +367,9 @@ public class SelectorStepBuilderTest  {
         try {
             SelectorStepBuilder.buildSteps("employee[@secretary and @assistant]", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
-            assertEquals("Error processing XPath selector expression 'employee[@secretary and @assistant]'.", e.getMessage());
-            assertEquals("Unsupported XPath expr token 'attribute::secretary'.", e.getCause().getMessage());
+        } catch (SmooksException e) {
+            assertEquals("Error processing XPath selector expression 'employee[@secretary and @assistant]'.", e.getCause().getMessage());
+            assertEquals("Unsupported XPath expr token 'attribute::secretary'.", e.getCause().getCause().getMessage());
         }
     }
 
@@ -378,9 +378,9 @@ public class SelectorStepBuilderTest  {
         try {
             SelectorStepBuilder.buildSteps("employee[/a/b/@c='xxx']", namespaces);
             fail("Expected SAXPathException");
-        } catch(SAXPathException e) {
-            assertEquals("Error processing XPath selector expression 'employee[/a/b/@c='xxx']'.", e.getMessage());
-            assertEquals("Unsupported XPath value token '/child::a/child::b/attribute::c'.", e.getCause().getMessage());
+        } catch (SmooksException e) {
+            assertEquals("Error processing XPath selector expression 'employee[/a/b/@c='xxx']'.", e.getCause().getMessage());
+            assertEquals("Unsupported XPath value token '/child::a/child::b/attribute::c'.", e.getCause().getCause().getMessage());
         }
     }
 

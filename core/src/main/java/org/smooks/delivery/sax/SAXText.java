@@ -71,10 +71,10 @@ public class SAXText {
     private int length;
     private TextType type;
 
-    protected SAXText() {
+    public SAXText() {
     }
 
-    protected SAXText(String text, TextType type) {
+    public SAXText(String text, TextType type) {
         setText(text.toCharArray(), 0, text.length(), type);
     }
 
@@ -82,7 +82,7 @@ public class SAXText {
         setText(characters, offset, length, type);
     }
 
-    protected void setText(char[] characters, int offset, int length, TextType type) {
+    public void setText(char[] characters, int offset, int length, TextType type) {
         this.characters = characters;
         this.offset = offset;
         this.length = length;
@@ -222,7 +222,7 @@ public class SAXText {
      * Clone this SAXText object.
      * @return A cloned copy of this SAXText object.
      */
-    protected Object clone() {
+    public Object clone() {
         SAXText clone = new SAXText();
 
         clone.characters = new char[length];

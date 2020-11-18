@@ -43,11 +43,13 @@
 package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.injector.FieldInjector;
-import org.smooks.cdr.injector.Scope;
-import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.cdr.registry.Registry;
-import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
+import org.smooks.injector.FieldInjector;
+import org.smooks.injector.Scope;
+import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.registry.Registry;
+import org.smooks.registry.lookup.LifecycleManagerLookup;
+
+import java.util.Objects;
 
 /**
  * Mapping between a resource configuration and its corresponding resource
@@ -60,8 +62,6 @@ import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 public class ContentHandlerBinding<T extends ContentHandler> {
 
     private final T contentHandler;
-    private final boolean isLifecycleInitializable;
-    private final boolean isLifecycleCleanable;
     private final SmooksResourceConfiguration smooksResourceConfiguration;
 
     /**
@@ -72,8 +72,6 @@ public class ContentHandlerBinding<T extends ContentHandler> {
     public ContentHandlerBinding(final T contentHandler, final SmooksResourceConfiguration smooksResourceConfiguration) {
         this.contentHandler = contentHandler;
         this.smooksResourceConfiguration = smooksResourceConfiguration;
-        isLifecycleInitializable = (contentHandler instanceof ExecutionLifecycleInitializable);
-        isLifecycleCleanable = (contentHandler instanceof ExecutionLifecycleCleanable);
     }
 
     public ContentHandlerBinding(final T contentHandler, final String targetSelector, @Deprecated final String targetSelectorNS, final Registry registry) {
@@ -85,9 +83,6 @@ public class ContentHandlerBinding<T extends ContentHandler> {
         fieldInjector.inject();
         registry.lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase());
         registry.registerObject(contentHandler);
-        
-        isLifecycleInitializable = (contentHandler instanceof ExecutionLifecycleInitializable);
-        isLifecycleCleanable = (contentHandler instanceof ExecutionLifecycleCleanable);
     }
     
     /**
@@ -106,19 +101,21 @@ public class ContentHandlerBinding<T extends ContentHandler> {
         return smooksResourceConfiguration;
     }
 
-    /**
-     * Does the ContentHandler implement {@link ExecutionLifecycleInitializable}.
-     * @return True if the ContentHandler implements {@link ExecutionLifecycleInitializable}, otherwise false.
-     */
-    public boolean isLifecycleInitializable() {
-        return isLifecycleInitializable;
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ContentHandlerBinding)) {
+            return false;
+        }
+        final ContentHandlerBinding<?> that = (ContentHandlerBinding<?>) o;
+        return Objects.equals(contentHandler, that.contentHandler) &&
+                Objects.equals(smooksResourceConfiguration, that.smooksResourceConfiguration);
     }
 
-    /**
-     * Does the ContentHandler implement {@link ExecutionLifecycleCleanable}.
-     * @return True if the ContentHandler implements {@link ExecutionLifecycleCleanable}, otherwise false.
-     */
-    public boolean isLifecycleCleanable() {
-        return isLifecycleCleanable;
+    @Override
+    public int hashCode() {
+        return Objects.hash(contentHandler, smooksResourceConfiguration);
     }
 }

@@ -42,9 +42,9 @@
  */
 package org.smooks.payload;
 
-import org.smooks.cdr.registry.lookup.ExportsLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
+import org.smooks.registry.lookup.ExportsLookup;
 import org.smooks.util.CollectionsUtil;
 
 import javax.annotation.PostConstruct;

@@ -47,6 +47,7 @@ import org.smooks.event.ExecutionEventListener;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.profile.ProfileSet;
 
+import java.io.Writer;
 import java.net.URI;
 
 /**
@@ -180,23 +181,6 @@ public interface ExecutionContext extends BoundAttributeStore {
     String getConfigParameter(String name, String defaultVal);
 
     /**
-     * Is default serialization on for this execution context.
-     * <p/>
-     * This is controlled by the {@link org.smooks.delivery.Filter#DEFAULT_SERIALIZATION_ON}
-     * global param.  Default Serialization is on by default.
-     * <p/>
-     * <b>Example Configuration:</b>
-     * <pre>
-     * &lt;params&gt;
-     *     &lt;param name="default.serialization.on"&gt;false&lt;/param&gt;
-     * &lt;/params&gt;
-     * </pre>
-     *
-     * @return True if default serialization is on, otherwise false.
-     */
-    boolean isDefaultSerializationOn();
-
-    /**
      * Get the BeanContext in use on this context instance.
      * @return The BeanContext.
      */
@@ -207,4 +191,10 @@ public interface ExecutionContext extends BoundAttributeStore {
      * @param beanContext The BeanContext.
      */
     void setBeanContext(BeanContext beanContext);
+
+    void setWriter(Writer writer);
+
+    Writer getWriter();
+
+    MementoCaretaker getMementoCaretaker();
 }

@@ -147,11 +147,24 @@
     </resource-config>
 
     <!--
+        Interceptor settings...
+    -->
+    <resource-config selector="smooks-core:interceptors">
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.delivery.interceptor.InterceptorVisitorChainFactory</param>
+    </resource-config>
+
+    <resource-config selector="smooks-core:interceptor">
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">class</param>
+    </resource-config>
+    
+    <!--
         Terminate settings...
     -->
     <resource-config selector="smooks-core:terminate">
         <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.delivery.sax.terminate.TerminateVisitor</param>
+        <param name="resource">org.smooks.delivery.sax.ng.terminate.TerminateVisitor</param>
     </resource-config>
 
     <resource-config selector="smooks-core:terminate">
