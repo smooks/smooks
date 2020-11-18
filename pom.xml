@@ -189,6 +189,10 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.2.0</version>
+                    <configuration>
+                        <failOnError>false</failOnError>
+                        <failOnWarnings>false</failOnWarnings>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -273,17 +277,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
-            <!--
-                Signs Maven artifacts. This is a mandatory requirement for
-                publishing Maven artifacts to Maven Central using the open-source
-                Nexus repository operated by Sonatype.
-      
-                See details for the Nexus Staging plugin below.
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.6</version>
+                <configuration>
+                    <gpgArguments>
+                        <arg>--pinentry-mode</arg>
+                        <arg>loopback</arg>
+                    </gpgArguments>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>verify</phase>
@@ -293,14 +296,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-                Generates a JAR file containing Javadocs for the generated classes.
-                This is a mandatory requirement for publishing Maven artifacts to
-                Maven Central using the open-source Nexus repository operated by
-                Sonatype.
-      
-                See details for the Nexus Staging plugin below.
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -312,14 +307,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-                Generates a JAR file containing source code for the generated
-                classes. This is a mandatory requirement for publishing Maven
-                artifacts to Maven Central using the open-source Nexus repository
-                operated by Sonatype.
-      
-                See details for the Nexus Staging plugin below.
-              -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
