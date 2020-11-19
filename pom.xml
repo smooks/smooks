@@ -47,7 +47,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
 
-        <ant.version>1.10.8</ant.version>
+        <ant.version>1.10.9</ant.version>
         <commons-lang.version>2.6</commons-lang.version>
         <dtdparser.version>1.21</dtdparser.version>
         <freemarker.version>2.3.30</freemarker.version>
