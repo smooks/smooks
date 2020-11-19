@@ -388,45 +388,9 @@ public class SaxNgHandler extends SmooksContentHandler {
 
             for (ChildrenVisitor dynamicChildrenVisitor : dynamicVisitorList.getChildVisitors()) {
                 dynamicChildrenVisitor.visitChildText(clonedParentElement, executionContext);
-
-//                onChildText(clonedParentElement, dynamicChildrenVisitor);
             }
         }
     }
-
-//    private void onChildText(Element element, final ChildrenVisitor childrenVisitor) {
-//        final Node node;
-//        switch (currentNodeState.getTextType()) {
-//            case CDATA:
-//                node = factory.createCDATASection(new String(ch, start, length));
-//                break;
-//            case COMMENT:
-//                node = factory.createComment(new String(ch, start, length));
-//                break;
-//            case ENTITY:
-//                if (!rewriteEntities) {
-//                    entityBuilder.setLength(0);
-//
-//                    entityBuilder.append("&#").append((int) ch[start]).append(';');
-//                    char[] newBuf = new char[entityBuilder.length()];
-//                    entityBuilder.getChars(0, newBuf.length, newBuf, 0);
-//
-//                    node = factory.createTextNode(new String(newBuf, 0, newBuf.length));
-//                    break;
-//                }
-//            default:
-//                node = factory.createTextNode(new String(ch, start, length));
-//        }
-
-//        final Element parentElement = currentNodeState.getElement();
-//        parentElement.appendChild(node);
-        
-//        final Element clonedParentElement = (Element) currentNodeState.getElement().cloneNode(false);
-//        clonedParentElement.appendChild(node.cloneNode(false));
-
-//        childrenVisitor.visitChildText(element, executionContext);
-  
-//    }
     
     @Override
     public void ignorableWhitespace(final char[] ch, final int start, final int length) {
