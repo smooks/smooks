@@ -125,7 +125,7 @@ public class SaxNgHandler extends SmooksContentHandler {
         globalVisitorBindings = starVisitorConfigs != null ? starVisitorConfigs.merge(starStarVisitorConfigs) : starStarVisitorConfigs;
         rewriteEntities = contentDeliveryConfig.isRewriteEntities();
         maintainElementStack = contentDeliveryConfig.isMaintainElementStack();
-        globalMaxNodeDepth = contentDeliveryConfig.getMaxNodeDepth();
+        globalMaxNodeDepth = contentDeliveryConfig.getMaxNodeDepth() == 0 ? Integer.MAX_VALUE : contentDeliveryConfig.getMaxNodeDepth();
         reverseVisitOrderOnVisitAfter = contentDeliveryConfig.isReverseVisitOrderOnVisitAfter();
         
         final DynamicSaxNgElementVisitorList dynamicVisitorList = DynamicSaxNgElementVisitorList.getList(executionContext);
