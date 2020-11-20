@@ -59,7 +59,7 @@
         <javax.transaction.version>1.1</javax.transaction.version>
         <jaxen.version>1.2.0</jaxen.version>
         <junit.version>4.13.1</junit.version>
-        <log4j2.version>2.13.3</log4j2.version>
+        <log4j2.version>2.14.0</log4j2.version>
         <mockejb.version>0.6-beta2</mockejb.version>
         <mockito.version>1.10.19</mockito.version>
         <mockobjects-core.version>0.09</mockobjects-core.version>
