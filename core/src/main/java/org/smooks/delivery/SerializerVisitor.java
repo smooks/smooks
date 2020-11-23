@@ -42,6 +42,7 @@
  */
 package org.smooks.delivery;
 
+import org.smooks.cdr.ResourceConfigSortComparator;
 import org.smooks.container.ExecutionContext;
 import org.w3c.dom.*;
 
@@ -66,7 +67,7 @@ import java.io.Writer;
  * <p/>
  * Only one Serialisation Unit is applied to each element.  If more than one 
  * Serialization Unit is applicable to a given element, the most specific Serialization 
- * Unit is choosen.  See {@link org.smooks.cdr.SmooksResourceConfigurationSortComparator}.
+ * Unit is choosen.  See {@link ResourceConfigSortComparator}.
  * <p/>
  * See <a href="../package-summary.html">Delivery Overview</a>.
  * @author tfennelly

@@ -88,10 +88,10 @@ public class TokenizedStringParameterDecoderTest {
 	}
 	
 	public Collection getParameter(String type, String value) {
-        SmooksResourceConfiguration decoderConfig;
+        ResourceConfig decoderConfig;
         TokenizedStringParameterDecoder decoder;
 		
-        decoderConfig = new SmooksResourceConfiguration(Parameter.PARAM_TYPE_PREFIX + type, "org.smooks.cdr.TokenizedStringParameterDecoder");
+        decoderConfig = new ResourceConfig(Parameter.PARAM_TYPE_PREFIX + type, "org.smooks.cdr.TokenizedStringParameterDecoder");
         decoderConfig.setParameter(Parameter.PARAM_TYPE_PREFIX, type);
 		TokenizedStringParameterDecoder tokenizedStringParameterDecoder = new TokenizedStringParameterDecoder();
 		MockApplicationContext mockApplicationContext = new MockApplicationContext();

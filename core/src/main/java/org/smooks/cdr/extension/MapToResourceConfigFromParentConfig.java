@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
@@ -58,10 +58,10 @@ import java.util.Optional;
 import java.util.Stack;
 
 /**
- * Map a property value from a parent {@link org.smooks.cdr.SmooksResourceConfiguration} and onto
- * the current {@link org.smooks.cdr.SmooksResourceConfiguration}.
+ * Map a property value from a parent {@link ResourceConfig} and onto
+ * the current {@link ResourceConfig}.
  * <p/>
- * The value is set on the {@link org.smooks.cdr.SmooksResourceConfiguration} returned from the top
+ * The value is set on the {@link ResourceConfig} returned from the top
  * of the {@link org.smooks.cdr.extension.ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -91,9 +91,9 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        Stack<SmooksResourceConfiguration> resourceStack = ExtensionContext.getExtensionContext(executionContext).getResourceStack();
-        SmooksResourceConfiguration currentConfig;
-        SmooksResourceConfiguration parentConfig;
+        Stack<ResourceConfig> resourceStack = ExtensionContext.getExtensionContext(executionContext).getResourceStack();
+        ResourceConfig currentConfig;
+        ResourceConfig parentConfig;
         String value;
 
         String actualMapTo = mapTo.orElse(null);
@@ -107,14 +107,14 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
         try {
             currentConfig = resourceStack.peek();
         } catch (EmptyStackException e) {
-            throw new SmooksException("No SmooksResourceConfiguration available in ExtensionContext stack.  Unable to set SmooksResourceConfiguration property '" + actualMapTo + "' with element text value.");
+            throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + actualMapTo + "' with element text value.");
         }
 
         // Get the parent Config...
         try {
             parentConfig = resourceStack.get(resourceStack.size() - 1 + parentRelIndex);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new SmooksException("No Parent SmooksResourceConfiguration available in ExtensionContext stack at relative index '" + parentRelIndex + "'.  Unable to set SmooksResourceConfiguration property '" + actualMapTo + "' with value of '" + mapFrom + "' from parent configuration.");
+            throw new SmooksException("No Parent ResourceConfig available in ExtensionContext stack at relative index '" + parentRelIndex + "'.  Unable to set ResourceConfig property '" + actualMapTo + "' with value of '" + mapFrom + "' from parent configuration.");
         }
 
         if(LOGGER.isDebugEnabled()) {

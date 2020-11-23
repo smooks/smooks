@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery.dom;
 
+import org.smooks.cdr.ResourceConfig;
+
 /**
  * Element <b>Visitor</b> (GoF) interface for DOM.
  * <p/>
@@ -56,7 +58,7 @@ package org.smooks.delivery.dom;
  * Implementations should be annotated with the {@link org.smooks.delivery.dom.Phase}
  * annotation, indicating in which of the {@link SmooksDOMFilter Visit Phases} the visitor should be applied. If not
  * annotated, the visitor is applied during the Processing phase.  The phase may also be specified via the
- * "VisitPhase" property on the {@link org.smooks.cdr.SmooksResourceConfiguration resource configuration}.  Valid values
+ * "VisitPhase" property on the {@link ResourceConfig resource configuration}.  Valid values
  * in this case are "ASSEMBLY" and "PROCESSING".
  * <p/>
  * Implementations must be stateless.  If state storage is required, attach the state to the

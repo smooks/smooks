@@ -42,7 +42,7 @@
  */
 package org.smooks.delivery.sax;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.sax.annotation.StreamResultWriter;
@@ -124,7 +124,7 @@ public class SAXElementVisitorMap {
             return;
         }
         for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : visitAfters) {
-            SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
+            ResourceConfig resourceConfig = contentHandlerMap.getResourceConfig();
             SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
 
             if(selectorStep.accessesText()) {

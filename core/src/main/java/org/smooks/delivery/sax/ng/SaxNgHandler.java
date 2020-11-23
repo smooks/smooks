@@ -43,7 +43,7 @@
 package org.smooks.delivery.sax.ng;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Fragment;
@@ -154,7 +154,7 @@ public class SaxNgHandler extends SmooksContentHandler {
 
         SaxNgVisitorBindings visitorBindings;
         if (isRoot) {
-            visitorBindings = deliveryConfig.getCombinedOptimizedConfig(new String[]{SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            visitorBindings = deliveryConfig.getCombinedOptimizedConfig(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
             visitorBindings = elementVisitorMapByElementName.get(elementName);
         }
@@ -237,7 +237,7 @@ public class SaxNgHandler extends SmooksContentHandler {
             final List<ContentHandlerBinding<? extends Visitor>> visitorBindings = currentNodeState.getVisitorBindings().getVisitorBindings();
             final VisitCleanupPhase visitCleanupPhase = new VisitCleanupPhase(new Fragment(currentNodeState.getElement()), executionContext);
             for (final ContentHandlerBinding<? extends Visitor> visitorBinding : visitorBindings) {
-                if (visitorBinding.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
+                if (visitorBinding.getResourceConfig().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
                     lifecycleManager.applyPhase(visitorBinding.getContentHandler(), visitCleanupPhase);
                 }
             }
@@ -280,7 +280,7 @@ public class SaxNgHandler extends SmooksContentHandler {
             if (visitBeforeBindings != null) {
                 int maxNodeDepth = 1;
                 for (final ContentHandlerBinding<BeforeVisitor> visitBeforeBinding : visitBeforeBindings) {
-                    if (visitBeforeBinding.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
+                    if (visitBeforeBinding.getResourceConfig().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
                         if (visitBeforeBinding.getContentHandler() instanceof ParameterizedVisitor) {
                             maxNodeDepth = Math.max(maxNodeDepth, ((ParameterizedVisitor) visitBeforeBinding.getContentHandler()).getMaxNodeDepth());
                         }
@@ -305,7 +305,7 @@ public class SaxNgHandler extends SmooksContentHandler {
             
             if (childVisitorBindings != null) {
                 for (final ContentHandlerBinding<ChildrenVisitor> contentHandlerBinding : childVisitorBindings) {
-                    if (contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
+                    if (contentHandlerBinding.getResourceConfig().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
                         contentHandlerBinding.getContentHandler().visitChildElement(childElement, executionContext);
                     }
                 }
@@ -318,7 +318,7 @@ public class SaxNgHandler extends SmooksContentHandler {
     }
 
     private void visitAfter(final ContentHandlerBinding<AfterVisitor> afterVisitorBinding) {
-        if (afterVisitorBinding.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
+        if (afterVisitorBinding.getResourceConfig().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
             afterVisitorBinding.getContentHandler().visitAfter(currentNodeState.getElement(), executionContext);
         }
     }
@@ -379,7 +379,7 @@ public class SaxNgHandler extends SmooksContentHandler {
 
                 if (childVisitorBindings != null) {
                     for (final ContentHandlerBinding<ChildrenVisitor> childrenVisitorBinding : childVisitorBindings) {
-                        if (childrenVisitorBinding.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
+                        if (childrenVisitorBinding.getResourceConfig().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
                             childrenVisitorBinding.getContentHandler().visitChildText(clonedParentElement, executionContext);
                         }
                     }

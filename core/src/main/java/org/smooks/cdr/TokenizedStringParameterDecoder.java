@@ -75,14 +75,14 @@ import java.util.Vector;
  * <b>Usage</b>:<br/>
  * ... and "com.acme.XXXContentDeliveryUnit" accesses this parameter value as follows:
  * <pre>
- * {@link org.smooks.cdr.Parameter} param = {@link org.smooks.cdr.SmooksResourceConfiguration resourceConfig}.{@link org.smooks.cdr.SmooksResourceConfiguration#getParameter(String, Class) getParameter("blockLevelElements")};
+ * {@link org.smooks.cdr.Parameter} param = {@link ResourceConfig resourceConfig}.{@link ResourceConfig#getParameter(String, Class) getParameter("blockLevelElements")};
  * {@link java.util.HashSet} blockLevelElements = (HashSet)param.{@link org.smooks.cdr.Parameter#getValue(ContentDeliveryConfig) getValue(ContentDeliveryConfig)};
  * </pre>
  * <p/>
  * Note, we will make this filter easier in the next release.  You'll be able to call a method such
- * as "getDecodedParameter" on the {@link SmooksResourceConfiguration}, returning a decoded parameter Object.
+ * as "getDecodedParameter" on the {@link ResourceConfig}, returning a decoded parameter Object.
  *
- * See {@link org.smooks.cdr.SmooksResourceConfiguration}.
+ * See {@link ResourceConfig}.
  * @author tfennelly
  */
 public class TokenizedStringParameterDecoder extends ParameterDecoder<String> {
@@ -95,7 +95,7 @@ public class TokenizedStringParameterDecoder extends ParameterDecoder<String> {
 	 * Public constructor.
 	 * @param resourceConfig Configuration.
 	 */
-	public void setConfiguration(SmooksResourceConfiguration resourceConfig) {
+	public void setConfiguration(ResourceConfig resourceConfig) {
 		delims = resourceConfig.getParameterValue("delims", String.class, ",");
 		returnDelims = resourceConfig.getParameterValue("returnDelims", Boolean.class, false);
 		trimTokens = resourceConfig.getParameterValue("trimTokens", Boolean.class, true);

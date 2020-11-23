@@ -40,22 +40,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr;
+package org.smooks.registry.lookup;
 
-import org.w3c.dom.Element;
+import org.smooks.cdr.ResourceConfigList;
+import org.smooks.registry.Registry;
 
-/**
- * SmooksResourceConfiguration Factory.
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public interface SmooksResourceConfigurationFactory {
+import java.util.Map;
+import java.util.function.Function;
 
-    @Deprecated
-    SmooksResourceConfiguration createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element);
+public class UserDefinedResourceConfigList implements Function<Map<Object, Object>, ResourceConfigList> {
 
-    /**
-     * Create the configuration instance.
-     * @return The configuration instance.
-     */
-    SmooksResourceConfiguration createConfiguration(String defaultProfile, Element element);
+    private final Registry registry;
+
+    public UserDefinedResourceConfigList(final Registry registry) {
+        this.registry = registry;
+    }
+    
+    @Override
+    public ResourceConfigList apply(final Map<Object, Object> registryEntries) {
+        ResourceConfigList userDefinedResources = new ResourceConfigList("userDefinedResources");
+
+        for (ResourceConfigList configList : registry.lookup(new ResourceConfigListsLookup())) {
+            if (!configList.isSystemConfigList()) {
+                userDefinedResources.addAll(configList);
+            }
+        }
+
+        return userDefinedResources;
+    }
 }

@@ -46,7 +46,7 @@ package org.smooks.delivery;
 import org.junit.Before;
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.io.StreamUtils;
 import org.smooks.xml.SmooksXMLReader;
@@ -76,7 +76,7 @@ public class StreamReaderTest
     public void setup()
     {
         smooks = new Smooks();
-        smooks.addConfiguration(new SmooksResourceConfiguration( "org.xml.sax.driver", MockReader.class.getName()));
+        smooks.addConfiguration(new ResourceConfig( "org.xml.sax.driver", MockReader.class.getName()));
     }
 
     @Test public void verifyByteStream()

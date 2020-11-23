@@ -40,16 +40,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.registry.lookup;
+package org.smooks.cdr;
 
-import org.smooks.cdr.SmooksResourceConfigurationList;
+/**
+ * {@link ResourceConfig} change listener.
+ *
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public interface ResourceConfigChangeListener {
 
-import java.util.Map;
-import java.util.function.Function;
-
-public class SystemSmooksResourceConfigurationListLookup implements Function<Map<Object, Object>, SmooksResourceConfigurationList> {
-    @Override
-    public SmooksResourceConfigurationList apply(final Map<Object, Object> registryEntries) {
-        return (SmooksResourceConfigurationList) registryEntries.get(SmooksResourceConfigurationList.class);
-    }
+    /**
+     * The supplied configuration has changed.
+     *
+     * @param configuration The configuration.
+     */
+    void changed(ResourceConfig configuration);
 }

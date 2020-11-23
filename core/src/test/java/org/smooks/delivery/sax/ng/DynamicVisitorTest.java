@@ -44,7 +44,7 @@ package org.smooks.delivery.sax.ng;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.payload.StringSource;
 
 import static org.junit.Assert.assertEquals;
@@ -56,7 +56,7 @@ public class DynamicVisitorTest {
         Smooks smooks = new Smooks();
         StringSource source = new StringSource("<a><b><c>c1</c><d>c2</d><e>c3</e></b></a>");
 
-        smooks.getApplicationContext().getRegistry().registerSmooksResourceConfiguration(new SmooksResourceConfiguration("b", DynamicVisitorLoader.class.getName()));
+        smooks.getApplicationContext().getRegistry().registerResourceConfig(new ResourceConfig("b", DynamicVisitorLoader.class.getName()));
         smooks.filterSource(source);
 
         assertEquals("<b><c>c1</c><d>c2</d><e>c3</e></b>", DynamicVisitorLoader.visitor.stuff.toString());

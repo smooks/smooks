@@ -42,7 +42,7 @@
  */
 package org.smooks.xml;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 
 import java.io.IOException;
@@ -63,21 +63,21 @@ public abstract class DocType {
     }
 
     public static DocumentTypeData getDocType(ExecutionContext executionContext) {
-        List<SmooksResourceConfiguration> docTypeUDs = executionContext.getDeliveryConfig().getSmooksResourceConfigurations("doctype");
-        SmooksResourceConfiguration docTypeSmooksResourceConfiguration = null;
+        List<ResourceConfig> docTypeUDs = executionContext.getDeliveryConfig().getResourceConfigs("doctype");
+        ResourceConfig docTypeResourceConfig = null;
 
         if(docTypeUDs != null && docTypeUDs.size() > 0) {
-            docTypeSmooksResourceConfiguration = docTypeUDs.get(0);
+            docTypeResourceConfig = docTypeUDs.get(0);
         }
 
         // Only use the cdrdef if the override flag is set.  The override flag will
         // cause this DOCTYPE to override any DOCYTPE decl from the source doc.
-        if(docTypeSmooksResourceConfiguration != null && docTypeSmooksResourceConfiguration.getParameterValue("override", Boolean.class, true)) {
-            String name = docTypeSmooksResourceConfiguration.getParameterValue("name", String.class, "!!DOCTYPE name undefined - fix smooks-resource!!");
-            String publicId = docTypeSmooksResourceConfiguration.getParameterValue("publicId", String.class, "!!DOCTYPE publicId undefined - fix smooks-resource!!");
-            String systemId = docTypeSmooksResourceConfiguration.getParameterValue("systemId", String.class, "!!DOCTYPE systemId undefined - fix smooks-resource!!");
-            String xmlns = docTypeSmooksResourceConfiguration.getParameterValue("xmlns",String.class);
-            boolean omit = docTypeSmooksResourceConfiguration.getParameterValue("omit", Boolean.class, false);
+        if(docTypeResourceConfig != null && docTypeResourceConfig.getParameterValue("override", Boolean.class, true)) {
+            String name = docTypeResourceConfig.getParameterValue("name", String.class, "!!DOCTYPE name undefined - fix smooks-resource!!");
+            String publicId = docTypeResourceConfig.getParameterValue("publicId", String.class, "!!DOCTYPE publicId undefined - fix smooks-resource!!");
+            String systemId = docTypeResourceConfig.getParameterValue("systemId", String.class, "!!DOCTYPE systemId undefined - fix smooks-resource!!");
+            String xmlns = docTypeResourceConfig.getParameterValue("xmlns",String.class);
+            boolean omit = docTypeResourceConfig.getParameterValue("omit", Boolean.class, false);
 
             return new DocumentTypeData(name, publicId, systemId, xmlns, omit);
         }

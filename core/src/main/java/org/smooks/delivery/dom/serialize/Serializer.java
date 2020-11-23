@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfigurationNotFoundException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.ContentHandlerBindings;
@@ -269,7 +269,7 @@ public class Serializer {
 
         if(isRoot) {
             // The document as a whole (root node) can also be targeted through the "#document" selector.
-            elementSUs = serializationUnits.getMappings(new String[] {SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            elementSUs = serializationUnits.getMappings(new String[] {ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
             elementSUs = serializationUnits.getMappings(elementName);
         }
@@ -281,7 +281,7 @@ public class Serializer {
         if(elementSUs != null) {
           for (final ContentHandlerBinding<SerializerVisitor> elementSU : elementSUs)
           {
-            SmooksResourceConfiguration config = elementSU.getSmooksResourceConfiguration();
+            ResourceConfig config = elementSU.getResourceConfig();
 
             // Make sure the serialization unit is targeted at this element.
             if (!config.getSelectorPath().isTargetedAtElement(element, executionContext))

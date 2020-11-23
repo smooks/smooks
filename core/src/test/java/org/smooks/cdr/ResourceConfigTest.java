@@ -54,11 +54,11 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class SmooksResourceConfigurationTest {
+public class ResourceConfigTest {
 
 	@Test
 	public void test_getParameter() {
-		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
+		ResourceConfig resourceConfig = new ResourceConfig("body", "device", "xxx");
 
 		resourceConfig.setParameter("x", "val x");
 		assertEquals("Expected x to be 'val x'", "val x", resourceConfig.getParameter("x", String.class).getValue());
@@ -78,7 +78,7 @@ public class SmooksResourceConfigurationTest {
 
 	@Test
 	public void test_getBoolParameter() {
-		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
+		ResourceConfig resourceConfig = new ResourceConfig("body", "device", "xxx");
 		resourceConfig.setParameter("x", true);
 
 		assertTrue("Expected x to be true", resourceConfig.getParameterValue("x", Boolean.class, false));
@@ -87,7 +87,7 @@ public class SmooksResourceConfigurationTest {
 
 	@Test
 	public void test_getStringParameter() {
-		SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("body", "device", "xxx");
+		ResourceConfig resourceConfig = new ResourceConfig("body", "device", "xxx");
 		resourceConfig.setParameter("x", "xxxx");
 
 		assertEquals("Expected x to be xxxx", "xxxx", resourceConfig.getParameterValue("x", String.class, "yyyy"));
@@ -99,12 +99,12 @@ public class SmooksResourceConfigurationTest {
         Document doc = DomUtil.parse("<a><b><c><d><e/></d></c></b></a>");
         Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
 
-        SmooksResourceConfiguration rc1 = new SmooksResourceConfiguration("e", "blah");
-        SmooksResourceConfiguration rc2 = new SmooksResourceConfiguration("d/e", "blah");
-        SmooksResourceConfiguration rc3 = new SmooksResourceConfiguration("a/b/c/d/e", "blah");
-        SmooksResourceConfiguration rc4 = new SmooksResourceConfiguration("xx/a/b/c/d/e", "blah");
-        SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("xx/b/c/d/e", "blah");
-        SmooksResourceConfiguration rc7 = new SmooksResourceConfiguration("/c/d/e", "blah");
+        ResourceConfig rc1 = new ResourceConfig("e", "blah");
+        ResourceConfig rc2 = new ResourceConfig("d/e", "blah");
+        ResourceConfig rc3 = new ResourceConfig("a/b/c/d/e", "blah");
+        ResourceConfig rc4 = new ResourceConfig("xx/a/b/c/d/e", "blah");
+        ResourceConfig rc5 = new ResourceConfig("xx/b/c/d/e", "blah");
+        ResourceConfig rc7 = new ResourceConfig("/c/d/e", "blah");
 
         assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
         assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
@@ -120,9 +120,9 @@ public class SmooksResourceConfigurationTest {
         Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
 
         // Check with an attribute on the selector....
-        SmooksResourceConfiguration rc8 = new SmooksResourceConfiguration("e/@attrib1", "blah");
-        SmooksResourceConfiguration rc9 = new SmooksResourceConfiguration("a/b/c/d/e/@attrib1", "blah");
-        SmooksResourceConfiguration rc10 = new SmooksResourceConfiguration("/c/d/e/@attrib1", "blah");
+        ResourceConfig rc8 = new ResourceConfig("e/@attrib1", "blah");
+        ResourceConfig rc9 = new ResourceConfig("a/b/c/d/e/@attrib1", "blah");
+        ResourceConfig rc10 = new ResourceConfig("/c/d/e/@attrib1", "blah");
 
         assertEquals("e", rc8.getSelectorPath().getTargetElement());
         assertEquals("attrib1", rc8.getSelectorPath().getTargetAttribute());
@@ -142,29 +142,29 @@ public class SmooksResourceConfigurationTest {
         Document doc = DomUtil.parse("<a><b><c><d><e/></d></c></b></a>");
         Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
 
-        SmooksResourceConfiguration rc1 = new SmooksResourceConfiguration("e", "blah");
-        SmooksResourceConfiguration rc2 = new SmooksResourceConfiguration("d/e", "blah");
-        SmooksResourceConfiguration rc3 = new SmooksResourceConfiguration("a/b/*/d/e", "blah");
-        SmooksResourceConfiguration rc4 = new SmooksResourceConfiguration("xx/a/b/*/d/e", "blah");
-        SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("xx/b/*/d/e", "blah");
-        SmooksResourceConfiguration rc6 = new SmooksResourceConfiguration("a/*/c/*/e", "blah");
-        SmooksResourceConfiguration rc7 = new SmooksResourceConfiguration("a/b/**/e", "blah");
-        SmooksResourceConfiguration rc8 = new SmooksResourceConfiguration("a/**/**/e", "blah");
-        SmooksResourceConfiguration rc9 = new SmooksResourceConfiguration("a/b/*/**/e", "blah");
-        SmooksResourceConfiguration rc10 = new SmooksResourceConfiguration("a/**/c/**/e", "blah");
-        SmooksResourceConfiguration rc11 = new SmooksResourceConfiguration("**/c/**/e", "blah");
-        SmooksResourceConfiguration rc12 = new SmooksResourceConfiguration("**/**/e", "blah");
-        SmooksResourceConfiguration rc13 = new SmooksResourceConfiguration("**/e", "blah");
-        SmooksResourceConfiguration rc14 = new SmooksResourceConfiguration("a/**/e", "blah");
-        SmooksResourceConfiguration rc15 = new SmooksResourceConfiguration("a/b/**", "blah");
-        SmooksResourceConfiguration rc16 = new SmooksResourceConfiguration("a/b/**/*", "blah");
-        SmooksResourceConfiguration rc17 = new SmooksResourceConfiguration("h/**", "blah");
-        SmooksResourceConfiguration rc18 = new SmooksResourceConfiguration("h/**/e", "blah");
-        SmooksResourceConfiguration rc19 = new SmooksResourceConfiguration("a/h/**/e", "blah");
-        SmooksResourceConfiguration rc20 = new SmooksResourceConfiguration("/a/**/e", "blah");
-        SmooksResourceConfiguration rc21 = new SmooksResourceConfiguration("/**/e", "blah");
-        SmooksResourceConfiguration rc22 = new SmooksResourceConfiguration("*/e", "blah");
-        SmooksResourceConfiguration rc23 = new SmooksResourceConfiguration("/*/e", "blah");
+        ResourceConfig rc1 = new ResourceConfig("e", "blah");
+        ResourceConfig rc2 = new ResourceConfig("d/e", "blah");
+        ResourceConfig rc3 = new ResourceConfig("a/b/*/d/e", "blah");
+        ResourceConfig rc4 = new ResourceConfig("xx/a/b/*/d/e", "blah");
+        ResourceConfig rc5 = new ResourceConfig("xx/b/*/d/e", "blah");
+        ResourceConfig rc6 = new ResourceConfig("a/*/c/*/e", "blah");
+        ResourceConfig rc7 = new ResourceConfig("a/b/**/e", "blah");
+        ResourceConfig rc8 = new ResourceConfig("a/**/**/e", "blah");
+        ResourceConfig rc9 = new ResourceConfig("a/b/*/**/e", "blah");
+        ResourceConfig rc10 = new ResourceConfig("a/**/c/**/e", "blah");
+        ResourceConfig rc11 = new ResourceConfig("**/c/**/e", "blah");
+        ResourceConfig rc12 = new ResourceConfig("**/**/e", "blah");
+        ResourceConfig rc13 = new ResourceConfig("**/e", "blah");
+        ResourceConfig rc14 = new ResourceConfig("a/**/e", "blah");
+        ResourceConfig rc15 = new ResourceConfig("a/b/**", "blah");
+        ResourceConfig rc16 = new ResourceConfig("a/b/**/*", "blah");
+        ResourceConfig rc17 = new ResourceConfig("h/**", "blah");
+        ResourceConfig rc18 = new ResourceConfig("h/**/e", "blah");
+        ResourceConfig rc19 = new ResourceConfig("a/h/**/e", "blah");
+        ResourceConfig rc20 = new ResourceConfig("/a/**/e", "blah");
+        ResourceConfig rc21 = new ResourceConfig("/**/e", "blah");
+        ResourceConfig rc22 = new ResourceConfig("*/e", "blah");
+        ResourceConfig rc23 = new ResourceConfig("/*/e", "blah");
 
         assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
         assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
@@ -201,14 +201,14 @@ public class SmooksResourceConfigurationTest {
         Document doc = DomUtil.parse("<a><b><c><a><d><e/></d></a></c></b></a>");
         Element e = (Element) XmlUtil.getNode(doc, "a/b/c/a/d/e");
 
-        SmooksResourceConfiguration rc1 = new SmooksResourceConfiguration("/a/b/c/a/d/e", "blah");
-        SmooksResourceConfiguration rc2 = new SmooksResourceConfiguration("/a/d/e", "blah");
-        SmooksResourceConfiguration rc3 = new SmooksResourceConfiguration("/**/d/e", "blah");
-        SmooksResourceConfiguration rc4 = new SmooksResourceConfiguration("/a/b/**/d/e", "blah");
-        SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("/a/b/*/d/e", "blah");
+        ResourceConfig rc1 = new ResourceConfig("/a/b/c/a/d/e", "blah");
+        ResourceConfig rc2 = new ResourceConfig("/a/d/e", "blah");
+        ResourceConfig rc3 = new ResourceConfig("/**/d/e", "blah");
+        ResourceConfig rc4 = new ResourceConfig("/a/b/**/d/e", "blah");
+        ResourceConfig rc5 = new ResourceConfig("/a/b/*/d/e", "blah");
 
         try {
-            new SmooksResourceConfiguration("xx/#document/a/b/c/a/d/e", "blah");
+            new ResourceConfig("xx/#document/a/b/c/a/d/e", "blah");
             fail("Expected SmooksConfigurationException.");
         } catch (SmooksConfigurationException ex) {
             assertEquals("Invalid selector 'xx/#document/a/b/c/a/d/e'.  '#document' token can only exist at the start of the selector.", ex.getMessage());
@@ -225,11 +225,11 @@ public class SmooksResourceConfigurationTest {
     public void test_isTargetedAtElement_SAX() {
         SAXElement e = buildE();
 
-        SmooksResourceConfiguration rc1 = new SmooksResourceConfiguration("e", "blah");
-        SmooksResourceConfiguration rc2 = new SmooksResourceConfiguration("d/e", "blah");
-        SmooksResourceConfiguration rc3 = new SmooksResourceConfiguration("a/b/c/d/e", "blah");
-        SmooksResourceConfiguration rc4 = new SmooksResourceConfiguration("xx/a/b/c/d/e", "blah");
-        SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("xx/b/c/d/e", "blah");
+        ResourceConfig rc1 = new ResourceConfig("e", "blah");
+        ResourceConfig rc2 = new ResourceConfig("d/e", "blah");
+        ResourceConfig rc3 = new ResourceConfig("a/b/c/d/e", "blah");
+        ResourceConfig rc4 = new ResourceConfig("xx/a/b/c/d/e", "blah");
+        ResourceConfig rc5 = new ResourceConfig("xx/b/c/d/e", "blah");
 
         assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
         assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
@@ -242,31 +242,31 @@ public class SmooksResourceConfigurationTest {
     public void test_isTargetedAtElement_SAX_wildcards() {
         SAXElement e = buildE();
 
-        SmooksResourceConfiguration rc1 = new SmooksResourceConfiguration("e", "blah");
-        SmooksResourceConfiguration rc2 = new SmooksResourceConfiguration("d/e", "blah");
-        SmooksResourceConfiguration rc3 = new SmooksResourceConfiguration("a/b/*/d/e", "blah");
-        SmooksResourceConfiguration rc4 = new SmooksResourceConfiguration("xx/a/b/*/d/e", "blah");
-        SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("xx/b/*/d/e", "blah");
-        SmooksResourceConfiguration rc6 = new SmooksResourceConfiguration("a/*/c/*/e", "blah");
-        SmooksResourceConfiguration rc7 = new SmooksResourceConfiguration("a/b/**/e", "blah");
-        SmooksResourceConfiguration rc8 = new SmooksResourceConfiguration("a/**/**/e", "blah");
-        SmooksResourceConfiguration rc9 = new SmooksResourceConfiguration("a/b/*/**/e", "blah");
-        SmooksResourceConfiguration rc10 = new SmooksResourceConfiguration("a/**/c/**/e", "blah");
-        SmooksResourceConfiguration rc11 = new SmooksResourceConfiguration("**/c/**/e", "blah");
-        SmooksResourceConfiguration rc12 = new SmooksResourceConfiguration("**/**/e", "blah");
-        SmooksResourceConfiguration rc13 = new SmooksResourceConfiguration("**/e", "blah");
-        SmooksResourceConfiguration rc14 = new SmooksResourceConfiguration("a/**/e", "blah");
-        SmooksResourceConfiguration rc15 = new SmooksResourceConfiguration("a/b/**", "blah");
-        SmooksResourceConfiguration rc15_1 = new SmooksResourceConfiguration("b/**", "blah");
-        SmooksResourceConfiguration rc16 = new SmooksResourceConfiguration("a/b/**/*", "blah");
-        SmooksResourceConfiguration rc16_1 = new SmooksResourceConfiguration("b/**/*", "blah");
-        SmooksResourceConfiguration rc17 = new SmooksResourceConfiguration("h/**", "blah");
-        SmooksResourceConfiguration rc18 = new SmooksResourceConfiguration("h/**/e", "blah");
-        SmooksResourceConfiguration rc19 = new SmooksResourceConfiguration("a/h/**/e", "blah");
-        SmooksResourceConfiguration rc20 = new SmooksResourceConfiguration("/a/**/e", "blah");
-        SmooksResourceConfiguration rc21 = new SmooksResourceConfiguration("/**/e", "blah");
-        SmooksResourceConfiguration rc22 = new SmooksResourceConfiguration("*/e", "blah");
-        SmooksResourceConfiguration rc23 = new SmooksResourceConfiguration("/*/e", "blah");
+        ResourceConfig rc1 = new ResourceConfig("e", "blah");
+        ResourceConfig rc2 = new ResourceConfig("d/e", "blah");
+        ResourceConfig rc3 = new ResourceConfig("a/b/*/d/e", "blah");
+        ResourceConfig rc4 = new ResourceConfig("xx/a/b/*/d/e", "blah");
+        ResourceConfig rc5 = new ResourceConfig("xx/b/*/d/e", "blah");
+        ResourceConfig rc6 = new ResourceConfig("a/*/c/*/e", "blah");
+        ResourceConfig rc7 = new ResourceConfig("a/b/**/e", "blah");
+        ResourceConfig rc8 = new ResourceConfig("a/**/**/e", "blah");
+        ResourceConfig rc9 = new ResourceConfig("a/b/*/**/e", "blah");
+        ResourceConfig rc10 = new ResourceConfig("a/**/c/**/e", "blah");
+        ResourceConfig rc11 = new ResourceConfig("**/c/**/e", "blah");
+        ResourceConfig rc12 = new ResourceConfig("**/**/e", "blah");
+        ResourceConfig rc13 = new ResourceConfig("**/e", "blah");
+        ResourceConfig rc14 = new ResourceConfig("a/**/e", "blah");
+        ResourceConfig rc15 = new ResourceConfig("a/b/**", "blah");
+        ResourceConfig rc15_1 = new ResourceConfig("b/**", "blah");
+        ResourceConfig rc16 = new ResourceConfig("a/b/**/*", "blah");
+        ResourceConfig rc16_1 = new ResourceConfig("b/**/*", "blah");
+        ResourceConfig rc17 = new ResourceConfig("h/**", "blah");
+        ResourceConfig rc18 = new ResourceConfig("h/**/e", "blah");
+        ResourceConfig rc19 = new ResourceConfig("a/h/**/e", "blah");
+        ResourceConfig rc20 = new ResourceConfig("/a/**/e", "blah");
+        ResourceConfig rc21 = new ResourceConfig("/**/e", "blah");
+        ResourceConfig rc22 = new ResourceConfig("*/e", "blah");
+        ResourceConfig rc23 = new ResourceConfig("/*/e", "blah");
 
         assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
         assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
@@ -303,7 +303,7 @@ public class SmooksResourceConfigurationTest {
 	@Test
     public void test_attributeSelector() {
         // Test that the attribute part of the selector doesn't get lowercased...
-        SmooksResourceConfiguration resource = new SmooksResourceConfiguration("a/b/@myAttribute");
+        ResourceConfig resource = new ResourceConfig("a/b/@myAttribute");
         assertEquals("a/b{@myAttribute}", resource.getSelectorPath().toString());
     }
 
@@ -311,11 +311,11 @@ public class SmooksResourceConfigurationTest {
     public void test_isTargetedAtElement_SAX_rooted() {
         SAXElement e = buildE_rooted();
 
-        SmooksResourceConfiguration rc1 = new SmooksResourceConfiguration("/a/b/c/a/d/e", "blah");
-        SmooksResourceConfiguration rc2 = new SmooksResourceConfiguration("/a/d/e", "blah");
-        SmooksResourceConfiguration rc3 = new SmooksResourceConfiguration("/**/d/e", "blah");
-        SmooksResourceConfiguration rc4 = new SmooksResourceConfiguration("/a/b/**/d/e", "blah");
-        SmooksResourceConfiguration rc5 = new SmooksResourceConfiguration("/a/b/*/d/e", "blah");
+        ResourceConfig rc1 = new ResourceConfig("/a/b/c/a/d/e", "blah");
+        ResourceConfig rc2 = new ResourceConfig("/a/d/e", "blah");
+        ResourceConfig rc3 = new ResourceConfig("/**/d/e", "blah");
+        ResourceConfig rc4 = new ResourceConfig("/a/b/**/d/e", "blah");
+        ResourceConfig rc5 = new ResourceConfig("/a/b/*/d/e", "blah");
 
         assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
         assertFalse(rc2.getSelectorPath().isTargetedAtElement(e, null));
@@ -328,13 +328,13 @@ public class SmooksResourceConfigurationTest {
     public void test_isTargetedAtElement_SAX_with_Attribute() {
         SAXElement e = buildE_rooted();
 
-        SmooksResourceConfiguration noAtt = new SmooksResourceConfiguration("e", "blah");
+        ResourceConfig noAtt = new ResourceConfig("e", "blah");
         assertNull(noAtt.getSelectorPath().getTargetAttribute());
 
         // Check with an attribute on the selector....
-        SmooksResourceConfiguration rc8 = new SmooksResourceConfiguration("e/@attrib1", "blah");
-        SmooksResourceConfiguration rc9 = new SmooksResourceConfiguration("a/b/c/a/d/e/@attrib1", "blah");
-        SmooksResourceConfiguration rc10 = new SmooksResourceConfiguration("/a/d/e/@attrib1", "blah");
+        ResourceConfig rc8 = new ResourceConfig("e/@attrib1", "blah");
+        ResourceConfig rc9 = new ResourceConfig("a/b/c/a/d/e/@attrib1", "blah");
+        ResourceConfig rc10 = new ResourceConfig("/a/d/e/@attrib1", "blah");
 
         assertEquals("e", rc8.getSelectorPath().getTargetElement());
         assertEquals("attrib1", rc8.getSelectorPath().getTargetAttribute());

@@ -43,7 +43,7 @@
 package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 
 
 /**
@@ -65,13 +65,13 @@ public interface ContentHandlerFactory<T> extends ContentHandler {
 
 	/**
 	 * Create the content handler instance.
-	 * @param smooksResourceConfiguration The SmooksResourceConfiguration for the {@link ContentHandler}
+	 * @param resourceConfig The ResourceConfig for the {@link ContentHandler}
      * to be created.
 	 * @return Content handler instance.
      * @throws SmooksConfigurationException Successfully created ContentHandler, but an error occured during configuration.
 	 * @throws InstantiationException Unable to create ContentHandler instance.
 	 */
-	T create(SmooksResourceConfiguration smooksResourceConfiguration);
+	T create(ResourceConfig resourceConfig);
 	
 	String getType();
 }

@@ -44,7 +44,7 @@ package org.smooks.cdr.xsd20.readertests;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.delivery.AbstractParser;
 import org.xml.sax.SAXException;
 
@@ -67,7 +67,7 @@ public class ReaderConfigTest {
 	@Test
     public void test_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_02.xml"));
-        SmooksResourceConfiguration readerConfig = AbstractParser.getSAXParserConfiguration(smooks.createExecutionContext("A").getDeliveryConfig());
+        ResourceConfig readerConfig = AbstractParser.getSAXParserConfiguration(smooks.createExecutionContext("A").getDeliveryConfig());
 
         assertEquals("com.ZZZZReader", readerConfig.getResource());
 

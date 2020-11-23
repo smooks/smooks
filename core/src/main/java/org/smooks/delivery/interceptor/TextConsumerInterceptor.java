@@ -134,7 +134,7 @@ public class TextConsumerInterceptor extends AbstractInterceptorVisitor implemen
             if (visitorBinding.getContentHandler().getClass().isAnnotationPresent(TextConsumer.class)) {
                 return true;
             } else if (visitorBinding.getContentHandler() instanceof AfterVisitor) {
-                return visitorBinding.getSmooksResourceConfiguration().getSelectorPath().getTargetSelectorStep().accessesText();
+                return visitorBinding.getResourceConfig().getSelectorPath().getTargetSelectorStep().accessesText();
             }
         }
         

@@ -49,7 +49,7 @@ import org.jaxen.expr.Step;
 import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
 import org.smooks.cdr.xpath.evaluators.PredicatesEvaluator;
 import org.smooks.cdr.xpath.evaluators.PredicatesEvaluatorBuilder;
@@ -207,7 +207,7 @@ public class SelectorStep {
     private void initFlags() {
         isStar = element.getLocalPart().equals("*");
         isStarStar = element.getLocalPart().equals("**");
-        setRooted(element.getLocalPart().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR));
+        setRooted(element.getLocalPart().equals(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR));
     }
 
     /**

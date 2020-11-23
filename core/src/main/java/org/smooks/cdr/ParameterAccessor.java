@@ -46,7 +46,7 @@ import org.smooks.Smooks;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.registry.Registry;
-import org.smooks.registry.lookup.SmooksResourceConfigurationListsLookup;
+import org.smooks.registry.lookup.ResourceConfigListsLookup;
 
 import java.util.Iterator;
 import java.util.List;
@@ -56,9 +56,9 @@ import java.util.Map;
  * Accessor class for looking up global parameters.
  * <p id="decode"/>
  * Profile specific parameters are stored under the "global-parameters" selector
- * (see {@link org.smooks.cdr.SmooksResourceConfiguration}).  The parameter values are
+ * (see {@link ResourceConfig}).  The parameter values are
  * stored in the &lt;param&gt; elements within this Content Delivery Resource definition.
- * This class iterates over the list of {@link org.smooks.cdr.SmooksResourceConfiguration}
+ * This class iterates over the list of {@link ResourceConfig}
  * elements targeted at the {@link org.smooks.container.ExecutionContext} profile.  It looks for a definition of the named
  * parameter.  If the &lt;param&gt; has a type attribute the 
  * {@link org.smooks.cdr.ParameterDecoder} for that type can be applied to the attribute
@@ -111,7 +111,7 @@ public abstract class ParameterAccessor {
     /**
 	 * Get the named parameter.
      * <p/>
-     * Calls {@link org.smooks.delivery.ContentDeliveryConfig#getSmooksResourceConfigurations()}
+     * Calls {@link org.smooks.delivery.ContentDeliveryConfig#getResourceConfigs()}
      * to get the configurations map and then passes that to
      * {@link #getParameter(String, Class valueType, java.util.Map)}, returning its return value.
      *
@@ -123,7 +123,7 @@ public abstract class ParameterAccessor {
         AssertArgument.isNotNullAndNotEmpty(name, "name");
         AssertArgument.isNotNull(config, "config");
 
-        return getParameter(name, valueType, config.getSmooksResourceConfigurations());
+        return getParameter(name, valueType, config.getResourceConfigs());
 	}
 
     /**
@@ -133,13 +133,13 @@ public abstract class ParameterAccessor {
      * @param resourceConfigurations The resource configuration map.
      * @return The parameter value, or null if not found.
      */
-    public static <T> Parameter<T> getParameter(String name, Class<T> valueType, Map<String, List<SmooksResourceConfiguration>> resourceConfigurations) {
+    public static <T> Parameter<T> getParameter(String name, Class<T> valueType, Map<String, List<ResourceConfig>> resourceConfigurations) {
         AssertArgument.isNotNullAndNotEmpty(name, "name");
         AssertArgument.isNotNull(resourceConfigurations, "resourceConfigurations");
-        List<SmooksResourceConfiguration> configList = resourceConfigurations.get(GLOBAL_PARAMETERS);
+        List<ResourceConfig> configList = resourceConfigurations.get(GLOBAL_PARAMETERS);
 
         if(configList != null) {
-            for (SmooksResourceConfiguration resourceConfig : configList) {
+            for (ResourceConfig resourceConfig : configList) {
                 Parameter<T> param = resourceConfig.getParameter(name, valueType);
                 if(param != null) {
                     return param;
@@ -156,7 +156,7 @@ public abstract class ParameterAccessor {
         return null;
     }
 
-    public static <T> T getParameterValue(String name, Class<T> valueType, T defaultVal, Map<String, List<SmooksResourceConfiguration>> config) {
+    public static <T> T getParameterValue(String name, Class<T> valueType, T defaultVal, Map<String, List<ResourceConfig>> config) {
         Parameter<T> param = getParameter(name, valueType, config);
 
         if(param != null) {
@@ -174,7 +174,7 @@ public abstract class ParameterAccessor {
      * @return The parameter value, or null if not found.
      */
  
-     public static <T> T getParameterValue(String name, Class<T> valueType, Map<String, List<SmooksResourceConfiguration>> resourceConfigurations) {
+     public static <T> T getParameterValue(String name, Class<T> valueType, Map<String, List<ResourceConfig>> resourceConfigurations) {
         Parameter<T> parameter = getParameter(name, valueType, resourceConfigurations);
 
         if(parameter != null) {
@@ -185,20 +185,20 @@ public abstract class ParameterAccessor {
     }
 
     public static void setParameter(String name, Object value, Smooks smooks) {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration(ParameterAccessor.GLOBAL_PARAMETERS);
+        ResourceConfig config = new ResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS);
 
         config.setParameter(name, value);
-        smooks.getApplicationContext().getRegistry().registerSmooksResourceConfiguration(config);
+        smooks.getApplicationContext().getRegistry().registerResourceConfig(config);
     }
 
     public static void removeParameter(String name, Smooks smooks) {
     	Registry registry = smooks.getApplicationContext().getRegistry();
-    	Iterator<SmooksResourceConfigurationList> configLists = registry.lookup(new SmooksResourceConfigurationListsLookup()).iterator();
+    	Iterator<ResourceConfigList> configLists = registry.lookup(new ResourceConfigListsLookup()).iterator();
 
     	while(configLists.hasNext()) {
-            SmooksResourceConfigurationList list = configLists.next();
+            ResourceConfigList list = configLists.next();
             for(int i = 0; i < list.size(); i++) {
-                SmooksResourceConfiguration nextConfig = list.get(i);
+                ResourceConfig nextConfig = list.get(i);
                 if(ParameterAccessor.GLOBAL_PARAMETERS.equals(nextConfig.getSelectorPath().getSelector())) {
                 	nextConfig.removeParameter(name);
                 }

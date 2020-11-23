@@ -44,7 +44,7 @@ package org.smooks.delivery.sax;
 
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.cdr.xpath.SelectorStep;
@@ -227,7 +227,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         for(List<ContentHandlerBinding<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
             for(ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
-                SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
+                ResourceConfig resourceConfig = contentHandlerMap.getResourceConfig();
                 SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
 
                 if(selectorStep.accessesText()) {
@@ -254,8 +254,8 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         }
 
         for (ContentHandlerBinding<? extends SAXVisitor> saxVisitorBinding : saxVisitorBindings) {
-            SmooksResourceConfiguration smooksResourceConfiguration = saxVisitorBinding.getSmooksResourceConfiguration();
-            SelectorPath selectorPath = smooksResourceConfiguration.getSelectorPath();
+            ResourceConfig resourceConfig = saxVisitorBinding.getResourceConfig();
+            SelectorPath selectorPath = resourceConfig.getSelectorPath();
             List<IndexEvaluator> indexEvaluators = new ArrayList<>();
 
             for (SelectorStep selectorStep : selectorPath) {
@@ -292,7 +292,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
             visitorMap.setVisitBefores(vbs);
         }
 
-        SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration(targetElementName);
+        ResourceConfig resourceConfig = new ResourceConfig(targetElementName);
 
         if (!XMLConstants.NULL_NS_URI.equals(targetNS)) {
             resourceConfig.getSelectorPath().setSelectorNamespaceURI(targetNS);
@@ -372,7 +372,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
                 // Wanna make sure we don't add the same handler twice, so if it also impls SAXVisitAfter, leave
                 // that until we process the SAXVisitAfter handlers...
                 if(handler instanceof SAXVisitChildren && !(handler instanceof SAXVisitAfter)) {
-                    childVisitors.addBinding(elementName, elementMapping.getSmooksResourceConfiguration(), (SAXVisitChildren) handler);
+                    childVisitors.addBinding(elementName, elementMapping.getResourceConfig(), (SAXVisitChildren) handler);
                 }
             }
         }
@@ -385,7 +385,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
                 SAXVisitAfter handler = elementMapping.getContentHandler();
 
                 if(handler instanceof SAXVisitChildren) {
-                    childVisitors.addBinding(elementName, elementMapping.getSmooksResourceConfiguration(), (SAXVisitChildren) handler);
+                    childVisitors.addBinding(elementName, elementMapping.getResourceConfig(), (SAXVisitChildren) handler);
                 }
             }
         }

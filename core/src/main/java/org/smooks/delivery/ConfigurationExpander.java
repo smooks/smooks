@@ -42,7 +42,7 @@
  */
 package org.smooks.delivery;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 
 import java.util.List;
 
@@ -60,5 +60,5 @@ public interface ConfigurationExpander extends ContentHandler {
      * @return A list of expansion configurations, or an empty list if no configutations
      *         are to be added for this instance.
      */
-    List<SmooksResourceConfiguration> expandConfigurations();
+    List<ResourceConfig> expandConfigurations();
 }

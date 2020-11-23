@@ -43,7 +43,7 @@
 package org.smooks;
 
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.xml.DomUtils;
@@ -61,7 +61,7 @@ public class RenameElementTrans implements DOMElementVisitor {
         this.newElementName = newElementName;
     }
 
-    public void setConfiguration(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException {
+    public void setConfiguration(ResourceConfig resourceConfig) throws SmooksConfigurationException {
 		// Capture the new name for the element from the configuration...
 		newElementName = resourceConfig.getParameterValue("new-name", String.class);
 	}

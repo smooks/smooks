@@ -49,7 +49,7 @@ import static org.junit.Assert.*;
 
 import org.smooks.profile.DefaultProfileSet;
 
-public class SmooksResourceConfigurationSortComparatorTest {
+public class ResourceConfigSortComparatorTest {
 
     private DefaultProfileSet profileSet;
 
@@ -69,7 +69,7 @@ public class SmooksResourceConfigurationSortComparatorTest {
 		//   10 -> XmlDef selector
 		//    0 -> Null namespace
         //    5 -> "*".
-		assertSpecificityOK(15.0, SmooksResourceConfiguration.XML_DEF_PREFIX + "selector", null, "*");
+		assertSpecificityOK(15.0, ResourceConfig.XML_DEF_PREFIX + "selector", null, "*");
 
 		//    5 -> Wildcard selector "*".
 		//    0 -> Null namespace
@@ -175,36 +175,36 @@ public class SmooksResourceConfigurationSortComparatorTest {
 	
     @Test
 	public void test_compare() {
-		SmooksResourceConfigurationSortComparator sortComparator = new SmooksResourceConfigurationSortComparator(profileSet);
-		SmooksResourceConfiguration config1;
-		SmooksResourceConfiguration config2;
+		ResourceConfigSortComparator sortComparator = new ResourceConfigSortComparator(profileSet);
+		ResourceConfig config1;
+		ResourceConfig config2;
 
 		// 0	-> same object instance
-		config1 = new SmooksResourceConfiguration("selector", "http://namespace", "uaCommonName", null);
+		config1 = new ResourceConfig("selector", "http://namespace", "uaCommonName", null);
 		assertEquals(0, sortComparator.compare(config1, config1));
 
 		// 0	-> 2 configs of equal specificity
-		config1 = new SmooksResourceConfiguration("selector", "http://namespace", "uaCommonName", null);
-		config2 = new SmooksResourceConfiguration("selector", "http://namespace", "uaCommonName", null);
+		config1 = new ResourceConfig("selector", "http://namespace", "uaCommonName", null);
+		config2 = new ResourceConfig("selector", "http://namespace", "uaCommonName", null);
 		assertEquals(0, sortComparator.compare(config1, config2));
 
 		// -1	-> config1 more specific than config2
-		config1 = new SmooksResourceConfiguration("selector", "http://namespace", "uaCommonName", null);
-		config2 = new SmooksResourceConfiguration("selector", "http://namespace", "profile1", null);
+		config1 = new ResourceConfig("selector", "http://namespace", "uaCommonName", null);
+		config2 = new ResourceConfig("selector", "http://namespace", "profile1", null);
 		assertEquals(-1, sortComparator.compare(config1, config2));
 
 		// 1	-> config2 more specific than config1
-		config1 = new SmooksResourceConfiguration("selector", "http://namespace", "profile1", null);
-		config2 = new SmooksResourceConfiguration("selector", "http://namespace", "uaCommonName", null);
+		config1 = new ResourceConfig("selector", "http://namespace", "profile1", null);
+		config2 = new ResourceConfig("selector", "http://namespace", "uaCommonName", null);
 		assertEquals(1, sortComparator.compare(config1, config2));
 	}
 	
 	private void assertSpecificityOK(double expected, String selector, String namespaceURI, String useragents) {
-		SmooksResourceConfigurationSortComparator sortComparator = new SmooksResourceConfigurationSortComparator(profileSet);
-		SmooksResourceConfiguration config;
+		ResourceConfigSortComparator sortComparator = new ResourceConfigSortComparator(profileSet);
+		ResourceConfig config;
 		double specificity;
 
-		config = new SmooksResourceConfiguration(selector, namespaceURI, useragents, null);
+		config = new ResourceConfig(selector, namespaceURI, useragents, null);
 		specificity = sortComparator.getSpecificity(config);
 		assertEquals("Wrong specificity calculated.", expected, specificity, 0.01);
 	}

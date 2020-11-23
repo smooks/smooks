@@ -45,7 +45,7 @@ package org.smooks.cdr.extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.xml.DomUtils;
@@ -56,10 +56,10 @@ import java.util.EmptyStackException;
 import java.util.Optional;
 
 /**
- * Map a property value onto the current {@link SmooksResourceConfiguration} based on an
+ * Map a property value onto the current {@link ResourceConfig} based on an
  * element attribute value.
  * <p/>
- * The value is set on the {@link SmooksResourceConfiguration} returned from the top
+ * The value is set on the {@link ResourceConfig} returned from the top
  * of the {@link org.smooks.cdr.extension.ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -82,7 +82,7 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        SmooksResourceConfiguration config;
+        ResourceConfig config;
         String value = DomUtils.getAttributeValue(element, attribute);
 
         String actualMapTo = mapTo.orElse(null);
@@ -99,7 +99,7 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
         try {
             config = ExtensionContext.getExtensionContext(executionContext).getResourceStack().peek();
         } catch (EmptyStackException e) {
-            throw new SmooksException("No SmooksResourceConfiguration available in ExtensionContext stack.  Unable to set SmooksResourceConfiguration property '" + actualMapTo + "' with attribute '" + attribute + "' value '" + value + "'.");
+            throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + actualMapTo + "' with attribute '" + attribute + "' value '" + value + "'.");
         }
 
         if (value == null) {

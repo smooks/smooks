@@ -50,7 +50,7 @@ import org.smooks.profile.ProfileSet;
  * Represents a single parsed profile targeting expression.
  * <p/>
  * The <b>target-profile</b> attribute can contain multiple comma seperated "profile targeting expressions" i.e.
- * a list of them.  See {@link org.smooks.cdr.SmooksResourceConfiguration} docs.  This class represents
+ * a list of them.  See {@link ResourceConfig} docs.  This class represents
  * a single expression within a list of expressions.
  * <p/>
  * So, a single expression is composed of 1 or more "expression tokens" seperated by 

@@ -100,7 +100,7 @@ public class ConfigSearch {
 		return this;
 	}
 	
-	public boolean matches(SmooksResourceConfiguration config) {
+	public boolean matches(ResourceConfig config) {
 		if(configNS != null) {
 			if(config.getExtendedConfigNS() == null || !config.getExtendedConfigNS().startsWith(configNS)) {
 				return false;

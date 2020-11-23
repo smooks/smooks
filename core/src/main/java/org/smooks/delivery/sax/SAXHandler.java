@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
@@ -99,7 +99,7 @@ public class SAXHandler extends SmooksContentHandler {
 
     static {
         // Configure the default handler mapping...
-        SmooksResourceConfiguration resource = new SmooksResourceConfiguration("*", DefaultSAXElementSerializer.class.getName());
+        ResourceConfig resource = new ResourceConfig("*", DefaultSAXElementSerializer.class.getName());
         resource.setDefaultResource(true);
         defaultSerializerMapping = new ContentHandlerBinding(new DefaultSAXElementSerializer(), resource);
     }
@@ -167,7 +167,7 @@ public class SAXHandler extends SmooksContentHandler {
         elementName = elementQName != null ? elementQName.getLocalPart() : null;
 
         if(isRoot) {
-            elementVisitorConfig = deliveryConfig.getCombinedOptimizedConfig(new String[] {SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            elementVisitorConfig = deliveryConfig.getCombinedOptimizedConfig(new String[] {ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
             elementVisitorConfig = visitorConfigMap.get(elementName);
         }
@@ -271,7 +271,7 @@ public class SAXHandler extends SmooksContentHandler {
                 for (final ContentHandlerBinding<VisitLifecycleCleanable> visitCleanable : visitCleanables)
                 {
                     final boolean targetedAtElement
-                        = visitCleanable.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext);
+                        = visitCleanable.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext);
 
                     if (targetedAtElement)
                     {
@@ -331,13 +331,13 @@ public class SAXHandler extends SmooksContentHandler {
                 {
                     try
                     {
-                        if (mapping.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext))
+                        if (mapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext))
                         {
                             mapping.getContentHandler().visitBefore(currentProcessor.element, execContext);
                             // Register the targeting event.  No need to register this event again on the visitAfter...
                             if (eventListener != null)
                             {
-                                eventListener.onEvent(new ResourceTargetingEvent(element, mapping.getSmooksResourceConfiguration(), VisitSequence.BEFORE));
+                                eventListener.onEvent(new ResourceTargetingEvent(element, mapping.getResourceConfig(), VisitSequence.BEFORE));
                                 eventListener.onEvent(new ElementVisitEvent(element, mapping, VisitSequence.BEFORE));
                             }
                         }
@@ -383,7 +383,7 @@ public class SAXHandler extends SmooksContentHandler {
             if(visitChildMappings != null) {
                 for (final ContentHandlerBinding<SAXVisitChildren> mapping : visitChildMappings)
                 {
-                    if (mapping.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext))
+                    if (mapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext))
                     {
                         try
                         {
@@ -424,7 +424,7 @@ public class SAXHandler extends SmooksContentHandler {
     private void visitAfter(ContentHandlerBinding<SAXVisitAfter> afterMapping) {
 
         try {
-            if(afterMapping.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext)) {
+            if(afterMapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext)) {
                 afterMapping.getContentHandler().visitAfter(currentProcessor.element, execContext);
                 if(eventListener != null) {
                     eventListener.onEvent(new ElementVisitEvent(currentProcessor.element, afterMapping, VisitSequence.AFTER));
@@ -479,7 +479,7 @@ public class SAXHandler extends SmooksContentHandler {
                         {
                             try
                             {
-                                if (mapping.getSmooksResourceConfiguration().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext))
+                                if (mapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext))
                                 {
                                     mapping.getContentHandler().onChildText(currentProcessor.element, textWrapper, execContext);
                                 }

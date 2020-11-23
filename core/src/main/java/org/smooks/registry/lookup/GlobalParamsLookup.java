@@ -43,14 +43,14 @@
 package org.smooks.registry.lookup;
 
 import org.smooks.cdr.ParameterAccessor;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigList;
 import org.smooks.registry.Registry;
 
 import java.util.Map;
 import java.util.function.Function;
 
-public class GlobalParamsLookup implements Function<Map<Object, Object>, SmooksResourceConfiguration> {
+public class GlobalParamsLookup implements Function<Map<Object, Object>, ResourceConfig> {
     private final Registry registry;
 
     public GlobalParamsLookup(final Registry registry) {
@@ -58,18 +58,18 @@ public class GlobalParamsLookup implements Function<Map<Object, Object>, SmooksR
     }
     
     @Override
-    public SmooksResourceConfiguration apply(final Map<Object, Object> registryEntries) {
-        final SmooksResourceConfiguration smooksResourceConfiguration = new SmooksResourceConfiguration();
+    public ResourceConfig apply(final Map<Object, Object> registryEntries) {
+        final ResourceConfig resourceConfig = new ResourceConfig();
 
-        for (final SmooksResourceConfigurationList smooksResourceConfigurationList : this.registry.lookup(new SmooksResourceConfigurationListsLookup())) {
-            for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-                final SmooksResourceConfiguration nextSmooksResourceConfiguration = smooksResourceConfigurationList.get(i);
-                if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextSmooksResourceConfiguration.getSelectorPath().getSelector())) {
-                    smooksResourceConfiguration.addParameters(nextSmooksResourceConfiguration);
+        for (final ResourceConfigList resourceConfigList : this.registry.lookup(new ResourceConfigListsLookup())) {
+            for (int i = 0; i < resourceConfigList.size(); i++) {
+                final ResourceConfig nextResourceConfig = resourceConfigList.get(i);
+                if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
+                    resourceConfig.addParameters(nextResourceConfig);
                 }
             }
         }
         
-        return smooksResourceConfiguration;
+        return resourceConfig;
     }
 }

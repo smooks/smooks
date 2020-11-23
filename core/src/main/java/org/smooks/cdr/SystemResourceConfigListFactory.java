@@ -40,18 +40,39 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.registry.lookup;
+package org.smooks.cdr;
 
-import com.fasterxml.classmate.TypeResolver;
-import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.SmooksException;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import java.io.InputStream;
 
-public class SmooksResourceConfigurationListsLookup implements Function<Map<Object, Object>, List<SmooksResourceConfigurationList>> {
+public class SystemResourceConfigListFactory implements ResourceConfigListFactory {
+
+    private final ClassLoader classLoader;
+    private final String resourceFile;
+
+    public SystemResourceConfigListFactory(String resourceFile, ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        this.resourceFile = resourceFile;
+    }
+    
     @Override
-    public List<SmooksResourceConfigurationList> apply(final Map<Object, Object> registryEntries) {
-        return (List<SmooksResourceConfigurationList>) registryEntries.get(new TypeResolver().resolve(List.class, SmooksResourceConfigurationList.class));
+    public ResourceConfigList create() {
+        InputStream resource = getClass().getResourceAsStream(resourceFile);
+
+        if (resource == null) {
+            throw new IllegalStateException("Failed to load " + resourceFile);
+        }
+        try {
+            ResourceConfigList resourceConfigList = XMLConfigDigester.digestConfig(resource, resourceFile, classLoader);
+            for (int i = 0; i < resourceConfigList.size(); i++) {
+                resourceConfigList.get(i).setDefaultResource(true);
+            }
+            resourceConfigList.setSystemConfigList(true);
+
+            return resourceConfigList;
+        } catch (Exception e) {
+            throw new SmooksException("Error processing resource file '" + resourceFile + "'.", e);
+        }
     }
 }

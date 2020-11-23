@@ -43,7 +43,7 @@
 package org.smooks.delivery;
 
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
@@ -57,16 +57,16 @@ import java.util.List;
  */
 public class TestExpandableContentHandler implements DOMElementVisitor, ConfigurationExpander {
 
-    public void setConfiguration(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException {
+    public void setConfiguration(ResourceConfig resourceConfig) throws SmooksConfigurationException {
     }
 
-    public List<SmooksResourceConfiguration> expandConfigurations() {
+    public List<ResourceConfig> expandConfigurations() {
 
-        List<SmooksResourceConfiguration> expansionConfigs = new ArrayList<SmooksResourceConfiguration>();
+        List<ResourceConfig> expansionConfigs = new ArrayList<ResourceConfig>();
 
-        expansionConfigs.add(new SmooksResourceConfiguration("a", Assembly1.class.getName()));
-        expansionConfigs.add(new SmooksResourceConfiguration("b", Processing1.class.getName()));        
-        expansionConfigs.add(new SmooksResourceConfiguration("c", DefaultDOMSerializerVisitor.class.getName()));
+        expansionConfigs.add(new ResourceConfig("a", Assembly1.class.getName()));
+        expansionConfigs.add(new ResourceConfig("b", Processing1.class.getName()));        
+        expansionConfigs.add(new ResourceConfig("c", DefaultDOMSerializerVisitor.class.getName()));
 
         return expansionConfigs;
     }

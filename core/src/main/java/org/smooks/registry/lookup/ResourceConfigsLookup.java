@@ -42,42 +42,34 @@
  */
 package org.smooks.registry.lookup;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
-import org.smooks.profile.ProfileSet;
+import org.smooks.cdr.ConfigSearch;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigList;
 import org.smooks.registry.Registry;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.function.Function;
 
-/**
- * Get all the SmooksResourceConfiguration entries registered on this context store
- * for the specified profile set.
- *
- * @param profileSet The profile set against which to lookup.
- * @return All SmooksResourceConfiguration entries targeted at the specified useragent.
- */
-public class SmooksResourceConfigurationsProfileSetLookup implements Function<Map<Object, Object>, SmooksResourceConfiguration[]> {
+public class ResourceConfigsLookup implements Function<Map<Object, Object>, List<ResourceConfig>> {
+
+    private final ConfigSearch configSearch;
     private final Registry registry;
-    private final ProfileSet profileSet;
 
-    public SmooksResourceConfigurationsProfileSetLookup(final Registry registry, final ProfileSet profileSet) {
+    public ResourceConfigsLookup(final Registry registry, final ConfigSearch configSearch) {
         this.registry = registry;
-        this.profileSet = profileSet;
+        this.configSearch = configSearch;
     }
-    
-    @Override
-    public SmooksResourceConfiguration[] apply(Map<Object, Object> registryEntries) {
-        List<SmooksResourceConfiguration> profileSetSmooksResourceConfigurations = new Vector();
 
-        for (final SmooksResourceConfigurationList smooksResourceConfigurationList : registry.lookup(new SmooksResourceConfigurationListsLookup())) {
-            SmooksResourceConfiguration[] smooksResourceConfigurations = smooksResourceConfigurationList.getTargetConfigurations(profileSet);
-            profileSetSmooksResourceConfigurations.addAll(Arrays.asList(smooksResourceConfigurations));
+    @Override
+    public List<ResourceConfig> apply(final Map<Object, Object> registryEntries) {
+        final List<ResourceConfig> resultSet = new ArrayList<>();
+
+        for (ResourceConfigList configList : this.registry.lookup(new ResourceConfigListsLookup())) {
+            resultSet.addAll(configList.lookupResource(configSearch));
         }
 
-        return profileSetSmooksResourceConfigurations.toArray(new SmooksResourceConfiguration[]{});
+        return resultSet;
     }
 }

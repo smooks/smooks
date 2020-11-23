@@ -184,7 +184,7 @@
                     </xs:sequence>
                     <xs:attribute name="selector" type="xs:string"/>
                     <xs:attribute name="target-profile" type="xs:string"/>
-                    <xs:attribute name="factory" type="xs:string" default="org.smooks.cdr.DefaultSmooksResourceConfigurationFactory"/>
+                    <xs:attribute name="factory" type="xs:string" default="org.smooks.cdr.DefaultResourceConfigFactory"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>

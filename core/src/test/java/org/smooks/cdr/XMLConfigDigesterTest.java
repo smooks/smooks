@@ -46,7 +46,7 @@ import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.container.ExecutionContext;
 import org.smooks.profile.ProfileSet;
-import org.smooks.registry.lookup.SmooksResourceConfigurationListsLookup;
+import org.smooks.registry.lookup.ResourceConfigListsLookup;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class XMLConfigDigesterTest {
 	@Test
     public void test_digestConfig_v20() throws SAXException, IOException, URISyntaxException {
         // Valid doc
-        SmooksResourceConfigurationList resList = XMLConfigDigester.digestConfig(getClass().getResourceAsStream("testconfig2.cdrl"), "test");
+        ResourceConfigList resList = XMLConfigDigester.digestConfig(getClass().getResourceAsStream("testconfig2.cdrl"), "test");
 
         assertResourceConfigOK(resList);
 
@@ -94,8 +94,8 @@ public class XMLConfigDigesterTest {
 	@Test
     public void test_import_filesys() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("src/test/java/org/smooks/cdr/testconfig3.cdrl");
-        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getRegistry().lookup(new SmooksResourceConfigurationListsLookup()).iterator();
-        SmooksResourceConfigurationList list = null;
+        Iterator<ResourceConfigList> listIt = smooks.getApplicationContext().getRegistry().lookup(new ResourceConfigListsLookup()).iterator();
+        ResourceConfigList list = null;
 
         while(listIt.hasNext()) {
             list = listIt.next();
@@ -107,8 +107,8 @@ public class XMLConfigDigesterTest {
 	@Test
     public void test_import_classpath() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("/org/smooks/cdr/testconfig3.cdrl");
-        Iterator<SmooksResourceConfigurationList> listIt = smooks.getApplicationContext().getRegistry().lookup(new SmooksResourceConfigurationListsLookup()).iterator();
-        SmooksResourceConfigurationList list = null;
+        Iterator<ResourceConfigList> listIt = smooks.getApplicationContext().getRegistry().lookup(new ResourceConfigListsLookup()).iterator();
+        ResourceConfigList list = null;
 
         while(listIt.hasNext()) {
             list = listIt.next();
@@ -136,7 +136,7 @@ public class XMLConfigDigesterTest {
         assertTrue(profileB.isMember("profile2"));
     }
 
-    private void assertResourceConfigOK(SmooksResourceConfigurationList resList) {
+    private void assertResourceConfigOK(ResourceConfigList resList) {
         assertEquals(3, resList.size());
 
         // Test the overridden attribute values from the 1st config entry.

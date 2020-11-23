@@ -43,9 +43,9 @@
 package org.smooks.cdr.extension;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.DefaultSmooksResourceConfigurationFactory;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationFactory;
+import org.smooks.cdr.DefaultResourceConfigFactory;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigFactory;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.xml.DomUtils;
@@ -55,9 +55,9 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 /**
- * Create a new {@link SmooksResourceConfiguration}.
+ * Create a new {@link ResourceConfig}.
  * <p/>
- * The new {@link SmooksResourceConfiguration} is added to the {@link ExtensionContext}.
+ * The new {@link ResourceConfig} is added to the {@link ExtensionContext}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
@@ -69,7 +69,7 @@ public class NewResourceConfig implements DOMElementVisitor {
     private Optional<String> resource;
 
     @Inject
-    private SmooksResourceConfigurationFactory smooksResourceConfigurationFactory = new DefaultSmooksResourceConfigurationFactory();
+    private ResourceConfigFactory resourceConfigFactory = new DefaultResourceConfigFactory();
 
     @Inject
     private Boolean isTemplate = false;
@@ -83,15 +83,15 @@ public class NewResourceConfig implements DOMElementVisitor {
             targetProfile = extensionContext.getDefaultProfile();
         }
         
-        SmooksResourceConfiguration smooksResourceConfiguration = smooksResourceConfigurationFactory.createConfiguration(extensionContext.getDefaultSelector(), extensionContext.getDefaultNamespace(), targetProfile, element);
-        smooksResourceConfiguration.setExtendedConfigNS(element.getNamespaceURI());
-        smooksResourceConfiguration.setResource(resource.orElse(null));
-        smooksResourceConfiguration.getSelectorPath().setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
+        ResourceConfig resourceConfig = resourceConfigFactory.createConfiguration(extensionContext.getDefaultSelector(), extensionContext.getDefaultNamespace(), targetProfile, element);
+        resourceConfig.setExtendedConfigNS(element.getNamespaceURI());
+        resourceConfig.setResource(resource.orElse(null));
+        resourceConfig.getSelectorPath().setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
 
         if(isTemplate) {
-        	extensionContext.addResourceTemplate(smooksResourceConfiguration);
+        	extensionContext.addResourceTemplate(resourceConfig);
         } else {
-        	extensionContext.addResource(smooksResourceConfiguration);
+        	extensionContext.addResource(resourceConfig);
         }
     }
 

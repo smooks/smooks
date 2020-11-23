@@ -42,7 +42,7 @@
  */
 package org.smooks.delivery;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.injector.FieldInjector;
 import org.smooks.injector.Scope;
 import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
@@ -62,24 +62,24 @@ import java.util.Objects;
 public class ContentHandlerBinding<T extends ContentHandler> {
 
     private final T contentHandler;
-    private final SmooksResourceConfiguration smooksResourceConfiguration;
+    private final ResourceConfig resourceConfig;
 
     /**
      * Public constructor.
      * @param contentHandler The content handler instance.
-     * @param smooksResourceConfiguration The defining resource configuration.
+     * @param resourceConfig The defining resource configuration.
      */
-    public ContentHandlerBinding(final T contentHandler, final SmooksResourceConfiguration smooksResourceConfiguration) {
+    public ContentHandlerBinding(final T contentHandler, final ResourceConfig resourceConfig) {
         this.contentHandler = contentHandler;
-        this.smooksResourceConfiguration = smooksResourceConfiguration;
+        this.resourceConfig = resourceConfig;
     }
 
     public ContentHandlerBinding(final T contentHandler, final String targetSelector, @Deprecated final String targetSelectorNS, final Registry registry) {
         this.contentHandler = contentHandler;
-        smooksResourceConfiguration = new SmooksResourceConfiguration(targetSelector, contentHandler.getClass().getName());
-        smooksResourceConfiguration.getSelectorPath().setSelectorNamespaceURI(targetSelectorNS);
+        resourceConfig = new ResourceConfig(targetSelector, contentHandler.getClass().getName());
+        resourceConfig.getSelectorPath().setSelectorNamespaceURI(targetSelectorNS);
 
-        final FieldInjector fieldInjector = new FieldInjector(contentHandler, new Scope(registry, smooksResourceConfiguration, contentHandler));
+        final FieldInjector fieldInjector = new FieldInjector(contentHandler, new Scope(registry, resourceConfig, contentHandler));
         fieldInjector.inject();
         registry.lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase());
         registry.registerObject(contentHandler);
@@ -95,10 +95,10 @@ public class ContentHandlerBinding<T extends ContentHandler> {
 
     /**
      * Get the resource configuration.
-     * @return The {@link SmooksResourceConfiguration}.
+     * @return The {@link ResourceConfig}.
      */
-    public SmooksResourceConfiguration getSmooksResourceConfiguration() {
-        return smooksResourceConfiguration;
+    public ResourceConfig getResourceConfig() {
+        return resourceConfig;
     }
 
     @Override
@@ -111,11 +111,11 @@ public class ContentHandlerBinding<T extends ContentHandler> {
         }
         final ContentHandlerBinding<?> that = (ContentHandlerBinding<?>) o;
         return Objects.equals(contentHandler, that.contentHandler) &&
-                Objects.equals(smooksResourceConfiguration, that.smooksResourceConfiguration);
+                Objects.equals(resourceConfig, that.resourceConfig);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contentHandler, smooksResourceConfiguration);
+        return Objects.hash(contentHandler, resourceConfig);
     }
 }

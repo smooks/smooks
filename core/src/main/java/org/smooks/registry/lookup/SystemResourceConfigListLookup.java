@@ -42,34 +42,14 @@
  */
 package org.smooks.registry.lookup;
 
-import org.smooks.cdr.ConfigSearch;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
-import org.smooks.registry.Registry;
+import org.smooks.cdr.ResourceConfigList;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SmooksResourceConfigurationsLookup implements Function<Map<Object, Object>, List<SmooksResourceConfiguration>> {
-
-    private final ConfigSearch configSearch;
-    private final Registry registry;
-
-    public SmooksResourceConfigurationsLookup(final Registry registry, final ConfigSearch configSearch) {
-        this.registry = registry;
-        this.configSearch = configSearch;
-    }
-
+public class SystemResourceConfigListLookup implements Function<Map<Object, Object>, ResourceConfigList> {
     @Override
-    public List<SmooksResourceConfiguration> apply(final Map<Object, Object> registryEntries) {
-        final List<SmooksResourceConfiguration> resultSet = new ArrayList<>();
-
-        for (SmooksResourceConfigurationList configList : this.registry.lookup(new SmooksResourceConfigurationListsLookup())) {
-            resultSet.addAll(configList.lookupResource(configSearch));
-        }
-
-        return resultSet;
+    public ResourceConfigList apply(final Map<Object, Object> registryEntries) {
+        return (ResourceConfigList) registryEntries.get(ResourceConfigList.class);
     }
 }

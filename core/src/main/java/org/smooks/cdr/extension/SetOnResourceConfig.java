@@ -45,7 +45,7 @@ package org.smooks.cdr.extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
@@ -54,9 +54,9 @@ import javax.inject.Inject;
 import java.util.EmptyStackException;
 
 /**
- * Set a static value on the current {@link org.smooks.cdr.SmooksResourceConfiguration}.
+ * Set a static value on the current {@link ResourceConfig}.
  * <p/>
- * The value is set on the {@link org.smooks.cdr.SmooksResourceConfiguration} returned from the top
+ * The value is set on the {@link ResourceConfig} returned from the top
  * of the {@link org.smooks.cdr.extension.ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -73,12 +73,12 @@ public class SetOnResourceConfig implements DOMVisitBefore {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        SmooksResourceConfiguration config;
+        ResourceConfig config;
 
         try {
             config = ExtensionContext.getExtensionContext(executionContext).getResourceStack().peek();
         } catch (EmptyStackException e) {
-            throw new SmooksException("No SmooksResourceConfiguration available in ExtensionContext stack.  Unable to set SmooksResourceConfiguration property '" + setOn + "' with static value.");
+            throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + setOn + "' with static value.");
         }
 
         LOGGER.debug("Setting property '" + setOn + "' on resource configuration to a value of '" + value + "'.");

@@ -55,7 +55,7 @@ public class ConfigSearchTest {
 
 	@Test
 	public void test() {
-		SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+		ResourceConfig config = new ResourceConfig();
 		ConfigSearch search = new ConfigSearch();
 		
 		assertTrue(search.matches(config));

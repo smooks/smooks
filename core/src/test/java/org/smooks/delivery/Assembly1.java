@@ -46,7 +46,7 @@ import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.dom.Phase;
 import org.smooks.delivery.dom.VisitPhase;
 import org.smooks.container.ExecutionContext;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.w3c.dom.Element;
 
@@ -61,6 +61,6 @@ public class Assembly1 implements DOMElementVisitor {
     public void visitAfter(Element element, ExecutionContext executionContext) {
     }
 
-    public void setConfiguration(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException {
+    public void setConfiguration(ResourceConfig resourceConfig) throws SmooksConfigurationException {
     }
 }

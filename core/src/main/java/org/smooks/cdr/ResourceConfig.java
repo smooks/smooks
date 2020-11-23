@@ -155,15 +155,15 @@ import java.util.*;
  * <h2 id="conditions">Resource Targeting Configurations</h2>
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- * @see SmooksResourceConfigurationSortComparator
+ * @see ResourceConfigSortComparator
  */
 @SuppressWarnings({ "WeakerAccess", "unused", "deprecation", "unchecked" })
-public class SmooksResourceConfiguration {
+public class ResourceConfig {
 
     /**
      * Logger.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(SmooksResourceConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceConfig.class);
     
     /**
      * XML selector type definition prefix
@@ -222,7 +222,7 @@ public class SmooksResourceConfiguration {
     private String resourceType;
    
     /**
-     * SmooksResourceConfiguration parameters - String name and String value.
+     * ResourceConfig parameters - String name and String value.
      */
     private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
     private int parameterCount;
@@ -241,7 +241,7 @@ public class SmooksResourceConfiguration {
     /**
      * Change listeners.
      */
-    private final Set<SmooksResourceConfigurationChangeListener> changeListeners = new HashSet<SmooksResourceConfigurationChangeListener>();
+    private final Set<ResourceConfigChangeListener> changeListeners = new HashSet<ResourceConfigChangeListener>();
 
     /**
      * Public default constructor.
@@ -253,7 +253,7 @@ public class SmooksResourceConfiguration {
      * @see #setResourceType(String)
      * @see #setParameter(String, String)
      */
-    public SmooksResourceConfiguration() {
+    public ResourceConfig() {
         setSelector(SELECTOR_NONE);
         setTargetProfile(Profile.DEFAULT_PROFILE);
     }
@@ -268,7 +268,7 @@ public class SmooksResourceConfiguration {
      * @see #setResourceType(String)
      * @see #setParameter(String, String)
      */
-    public SmooksResourceConfiguration(String selector) {
+    public ResourceConfig(String selector) {
         setSelector(selector);
         setTargetProfile(Profile.DEFAULT_PROFILE);
     }
@@ -283,7 +283,7 @@ public class SmooksResourceConfiguration {
      * @see #setResourceType(String)
      * @see #setParameter(String, String)
      */
-    public SmooksResourceConfiguration(String selector, String resource) {
+    public ResourceConfig(String selector, String resource) {
         this(selector, Profile.DEFAULT_PROFILE, resource);
     }
 
@@ -298,7 +298,7 @@ public class SmooksResourceConfiguration {
      * @see #setResourceType(String)
      * @see #setParameter(String, String)
      */
-    public SmooksResourceConfiguration(String selector, String targetProfile, String resource) {
+    public ResourceConfig(String selector, String targetProfile, String resource) {
         this(selector);
 
         setTargetProfile(targetProfile);
@@ -312,7 +312,7 @@ public class SmooksResourceConfiguration {
      */
     @SuppressWarnings({ "MethodDoesntCallSuperMethod", "unchecked" })
     public Object clone() {
-        SmooksResourceConfiguration clone = new SmooksResourceConfiguration();
+        ResourceConfig clone = new ResourceConfig();
 
         clone.extendedConfigNS = extendedConfigNS;
         clone.selectorPath = selectorPath.clone();
@@ -349,15 +349,15 @@ public class SmooksResourceConfiguration {
 		this.extendedConfigNS = extendedConfigNS;
 	}
 
-    public SmooksResourceConfiguration merge(SmooksResourceConfiguration config) {
-        SmooksResourceConfiguration clone = (SmooksResourceConfiguration) clone();
+    public ResourceConfig merge(ResourceConfig config) {
+        ResourceConfig clone = (ResourceConfig) clone();
         clone.parameters.clear();
         clone.parameters.putAll(config.parameters);
         clone.parameters.putAll(this.parameters);
         return clone;
     }
 
-    public void addParameters(SmooksResourceConfiguration config) {
+    public void addParameters(ResourceConfig config) {
         parameters.putAll(config.parameters);
     }
 
@@ -372,7 +372,7 @@ public class SmooksResourceConfiguration {
      * @see #setResourceType(String)
      * @see #setParameter(String, String)
      */
-    public SmooksResourceConfiguration(String selector, @Deprecated String selectorNamespaceURI, String targetProfile, String resource) {
+    public ResourceConfig(String selector, @Deprecated String selectorNamespaceURI, String targetProfile, String resource) {
         this(selector, targetProfile, resource);
         selectorPath.setSelectorNamespaceURI(selectorNamespaceURI);
     }
@@ -477,7 +477,7 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Get the profile targeting expressions for this SmooksResourceConfiguration.
+     * Get the profile targeting expressions for this ResourceConfig.
      *
      * @return The profile targeting expressions.
      */
@@ -486,7 +486,7 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Get the resource for this SmooksResourceConfiguration.
+     * Get the resource for this ResourceConfig.
      *
      * @return The cdrar path.
      */
@@ -594,7 +594,7 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Set the named SmooksResourceConfiguration parameter value (default type - String).
+     * Set the named ResourceConfig parameter value (default type - String).
      * <p/>
      * Overwrites previous value of the same name.
      *
@@ -609,7 +609,7 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Set the named SmooksResourceConfiguration parameter value (with type).
+     * Set the named ResourceConfig parameter value (with type).
      * <p/>
      * Overwrites previous value of the same name.
      *
@@ -644,7 +644,7 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Get the named SmooksResourceConfiguration {@link Parameter parameter}.
+     * Get the named ResourceConfig {@link Parameter parameter}.
      * <p/>
      * If there is more than one of the named parameters defined, the first
      * defined value is returned.
@@ -691,7 +691,7 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Get the named SmooksResourceConfiguration {@link Parameter parameter} List.
+     * Get the named ResourceConfig {@link Parameter parameter} List.
      *
      * @param name Name of parameter to get.
      * @return {@link Parameter} value {@link List}, or null if not set.
@@ -721,7 +721,7 @@ public class SmooksResourceConfiguration {
     }
     
     /**
-     * Get the named SmooksResourceConfiguration parameter.
+     * Get the named ResourceConfig parameter.
      *
      * @param name Name of parameter to get.
      * @return Parameter value, or null if not set.
@@ -732,11 +732,11 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Get the named SmooksResourceConfiguration parameter.
+     * Get the named ResourceConfig parameter.
      *
      * @param name       Name of parameter to get.
      * @param defaultValue The default value to be returned if there are no
-     *                   parameters on the this SmooksResourceConfiguration instance, or the parameter is not defined.
+     *                   parameters on the this ResourceConfig instance, or the parameter is not defined.
      * @return Parameter value, or defaultVal if not defined.
      */
     public <T> T getParameterValue(String name, Class<T> valueClass, T defaultValue) {
@@ -746,9 +746,9 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Get the SmooksResourceConfiguration parameter count.
+     * Get the ResourceConfig parameter count.
      *
-     * @return Number of parameters defined on this SmooksResourceConfiguration.
+     * @return Number of parameters defined on this ResourceConfig.
      */
     public int getParameterCount() {
         return parameterCount;
@@ -876,7 +876,7 @@ public class SmooksResourceConfiguration {
      * Add the specified change listener to the list of change listeners.
      * @param listener The listener instance.
      */
-    public void addChangeListener(SmooksResourceConfigurationChangeListener listener) {
+    public void addChangeListener(ResourceConfigChangeListener listener) {
         changeListeners.add(listener);
     }
 
@@ -884,7 +884,7 @@ public class SmooksResourceConfiguration {
      * Remove the specified change listener from the list of change listeners.
      * @param listener The listener instance.
      */
-    public void removeChangeListener(SmooksResourceConfigurationChangeListener listener) {
+    public void removeChangeListener(ResourceConfigChangeListener listener) {
         changeListeners.remove(listener);
     }
 
@@ -969,7 +969,7 @@ public class SmooksResourceConfiguration {
     }
 
     /**
-     * Create a {@link Properties} instance from this supplied {@link org.smooks.cdr.SmooksResourceConfiguration}
+     * Create a {@link Properties} instance from this supplied {@link ResourceConfig}
      * @return The resource parameters as a {@link Properties} instance.
      */
     public Properties toProperties() {
@@ -985,7 +985,7 @@ public class SmooksResourceConfiguration {
 
     private void fireChangedEvent() {
         if(!changeListeners.isEmpty()) {
-            for(SmooksResourceConfigurationChangeListener listener : changeListeners) {
+            for(ResourceConfigChangeListener listener : changeListeners) {
                 listener.changed(this);
             }
         }

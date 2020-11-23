@@ -75,7 +75,7 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
- * Digester class for an XML {@link org.smooks.cdr.SmooksResourceConfiguration} file (.cdrl).
+ * Digester class for an XML {@link ResourceConfig} file (.cdrl).
  *
  * @author tfennelly
  */
@@ -89,7 +89,7 @@ public final class XMLConfigDigester {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigDigester.class);
 
-    private final SmooksResourceConfigurationList smooksResourceConfigurationList;
+    private final ResourceConfigList resourceConfigList;
     private final Stack<SmooksConfig> configStack = new Stack<>();
     private ClassLoader classLoader;
 
@@ -112,10 +112,10 @@ public final class XMLConfigDigester {
      * ThreadLocal.
      *
      *
-     * @param smooksResourceConfigurationList Config list.
+     * @param resourceConfigList Config list.
      */
-    public XMLConfigDigester(SmooksResourceConfigurationList smooksResourceConfigurationList) {
-        this.smooksResourceConfigurationList = smooksResourceConfigurationList;
+    public XMLConfigDigester(ResourceConfigList resourceConfigList) {
+        this.resourceConfigList = resourceConfigList;
         configStack.push(new SmooksConfig("root-config"));
     }
 
@@ -125,15 +125,15 @@ public final class XMLConfigDigester {
      * @param stream  The stream.
      * @param baseURI The base URI to be associated with the configuration stream.
      * @param extendedConfigDigesters Config digesters.
-     * @return A {@link SmooksResourceConfigurationList} containing the list of
-     *         {@link SmooksResourceConfiguration SmooksResourceConfigurations} defined in the
+     * @return A {@link ResourceConfigList} containing the list of
+     *         {@link ResourceConfig ResourceConfigs} defined in the
      *         XML configuration.
      * @throws SAXException Error parsing the XML stream.
      * @throws IOException  Error reading the XML stream.
      * @throws SmooksConfigurationException  Invalid configuration..
      */
     @SuppressWarnings("unused")
-    public static SmooksResourceConfigurationList digestConfig(InputStream stream, String baseURI, Map<String, Smooks> extendedConfigDigesters) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
+    public static ResourceConfigList digestConfig(InputStream stream, String baseURI, Map<String, Smooks> extendedConfigDigesters) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
         return digestConfig(stream, baseURI, extendedConfigDigesters, null);
     }
 
@@ -144,18 +144,18 @@ public final class XMLConfigDigester {
      * @param baseURI The base URI to be associated with the configuration stream.
      * @param extendedConfigDigesters Config digesters.
      * @param classLoader The ClassLoader to be used.
-     * @return A {@link SmooksResourceConfigurationList} containing the list of
-     *         {@link SmooksResourceConfiguration SmooksResourceConfigurations} defined in the
+     * @return A {@link ResourceConfigList} containing the list of
+     *         {@link ResourceConfig ResourceConfigs} defined in the
      *         XML configuration.
      * @throws SAXException Error parsing the XML stream.
      * @throws IOException  Error reading the XML stream.
      * @throws SmooksConfigurationException  Invalid configuration..
      */
-    public static SmooksResourceConfigurationList digestConfig(InputStream stream, String baseURI, Map<String, Smooks> extendedConfigDigesters, ClassLoader classLoader) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
-        SmooksResourceConfigurationList smooksResourceConfigurationList = new SmooksResourceConfigurationList(baseURI);
+    public static ResourceConfigList digestConfig(InputStream stream, String baseURI, Map<String, Smooks> extendedConfigDigesters, ClassLoader classLoader) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
+        ResourceConfigList resourceConfigList = new ResourceConfigList(baseURI);
 
         setExtensionDigestOff();
-        XMLConfigDigester digester = new XMLConfigDigester(smooksResourceConfigurationList);
+        XMLConfigDigester digester = new XMLConfigDigester(resourceConfigList);
 
         if(classLoader != null) {
             digester.classLoader = classLoader;
@@ -164,7 +164,7 @@ public final class XMLConfigDigester {
         digester.extendedConfigDigesters = extendedConfigDigesters;
         digester.digestConfigRecursively(new InputStreamReader(stream), baseURI);
 
-        return smooksResourceConfigurationList;
+        return resourceConfigList;
     }
 
     /**
@@ -172,14 +172,14 @@ public final class XMLConfigDigester {
      *
      * @param stream  The stream.
      * @param baseURI The base URI to be associated with the configuration stream.
-     * @return A {@link SmooksResourceConfigurationList} containing the list of
-     *         {@link SmooksResourceConfiguration SmooksResourceConfigurations} defined in the
+     * @return A {@link ResourceConfigList} containing the list of
+     *         {@link ResourceConfig ResourceConfigs} defined in the
      *         XML configuration.
      * @throws SAXException Error parsing the XML stream.
      * @throws IOException  Error reading the XML stream.
      * @throws SmooksConfigurationException  Invalid configuration..
      */
-    public static SmooksResourceConfigurationList digestConfig(InputStream stream, String baseURI) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
+    public static ResourceConfigList digestConfig(InputStream stream, String baseURI) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
         return digestConfig(stream, baseURI, (ClassLoader) null);
     }
 
@@ -188,15 +188,15 @@ public final class XMLConfigDigester {
      *
      * @param stream  The stream.
      * @param baseURI The base URI to be associated with the configuration stream.
-     * @return A {@link SmooksResourceConfigurationList} containing the list of
-     *         {@link SmooksResourceConfiguration SmooksResourceConfigurations} defined in the
+     * @return A {@link ResourceConfigList} containing the list of
+     *         {@link ResourceConfig ResourceConfigs} defined in the
      *         XML configuration.
      * @throws SAXException Error parsing the XML stream.
      * @throws IOException  Error reading the XML stream.
      * @throws SmooksConfigurationException  Invalid configuration..
      */
-    public static SmooksResourceConfigurationList digestConfig(InputStream stream, String baseURI, ClassLoader classLoader) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
-        SmooksResourceConfigurationList list = new SmooksResourceConfigurationList(baseURI);
+    public static ResourceConfigList digestConfig(InputStream stream, String baseURI, ClassLoader classLoader) throws SAXException, IOException, URISyntaxException, SmooksConfigurationException {
+        ResourceConfigList list = new ResourceConfigList(baseURI);
 
         setExtensionDigestOff();
         XMLConfigDigester digester = new XMLConfigDigester(list);
@@ -213,8 +213,8 @@ public final class XMLConfigDigester {
      * Get the active resource configuration list.
      * @return The active resource configuration list.
      */
-    public SmooksResourceConfigurationList getResourceList() {
-    	return smooksResourceConfigurationList;
+    public ResourceConfigList getResourceList() {
+    	return resourceConfigList;
     }
 
     private void digestConfigRecursively(Reader stream, String baseURI) throws IOException, SAXException, URISyntaxException, SmooksConfigurationException {
@@ -241,7 +241,7 @@ public final class XMLConfigDigester {
             throw new SAXException("Cannot parse Smooks configuration.  Unsupported default Namespace '" + defaultNS + "'.");
         }
 
-        if (smooksResourceConfigurationList.isEmpty()) {
+        if (resourceConfigList.isEmpty()) {
             throw new SAXException("Invalid Content Delivery Resource archive definition file: 0 Content Delivery Resource definitions.");
         }
     }
@@ -331,10 +331,10 @@ public final class XMLConfigDigester {
         NodeList paramNodes = paramsElement.getElementsByTagName("param");
 
         if(paramNodes.getLength() > 0) {
-            SmooksResourceConfiguration globalParamsConfig = new SmooksResourceConfiguration(ParameterAccessor.GLOBAL_PARAMETERS);
+            ResourceConfig globalParamsConfig = new ResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS);
 
             digestParameters(paramsElement, globalParamsConfig);
-            smooksResourceConfigurationList.add(globalParamsConfig);
+            resourceConfigList.add(globalParamsConfig);
         }
     }
 
@@ -404,7 +404,7 @@ public final class XMLConfigDigester {
 
     	String readerClass = DomUtils.getAttributeValue(configElement, "class");
 
-        SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration(
+        ResourceConfig resourceConfig = new ResourceConfig(
         		"org.xml.sax.driver",
         		(profiles != null ? profiles : defaultProfile),
         		readerClass);
@@ -414,10 +414,10 @@ public final class XMLConfigDigester {
         configureFeatures(configElement, resourceConfig);
         configureParams(configElement, resourceConfig);
 
-        smooksResourceConfigurationList.add(resourceConfig);
+        resourceConfigList.add(resourceConfig);
     }
 
-    private void configureHandlers(Element configElement, SmooksResourceConfiguration resourceConfig) {
+    private void configureHandlers(Element configElement, ResourceConfig resourceConfig) {
         Element handlersElement = DomUtils.getElement(configElement, "handlers", 1);
 
         if(handlersElement != null) {
@@ -433,7 +433,7 @@ public final class XMLConfigDigester {
         }
     }
 
-    private void configureFeatures(Element configElement, SmooksResourceConfiguration resourceConfig) {
+    private void configureFeatures(Element configElement, ResourceConfig resourceConfig) {
         Element featuresElement = DomUtils.getElement(configElement, "features", 1);
 
         if(featuresElement != null) {
@@ -453,7 +453,7 @@ public final class XMLConfigDigester {
         }
     }
 
-    private void configureParams(Element configElement, SmooksResourceConfiguration resourceConfig) {
+    private void configureParams(Element configElement, ResourceConfig resourceConfig) {
         Element paramsElement = DomUtils.getElement(configElement, "params", 1);
 
         if(paramsElement != null) {
@@ -473,17 +473,17 @@ public final class XMLConfigDigester {
     private void digestResourceConfig(Element configElement, String defaultSelector, String defaultNamespace, String defaultProfile, String defaultConditionRef) {
         final String factory = DomUtils.getAttributeValue(configElement, "factory");
 
-        final SmooksResourceConfiguration smooksResourceConfiguration;
+        final ResourceConfig resourceConfig;
         try {
-            final Class<? extends SmooksResourceConfigurationFactory> smooksResourceConfigurationFactoryClass;
+            final Class<? extends ResourceConfigFactory> resourceConfigFactoryClass;
             if (factory != null) {
-                smooksResourceConfigurationFactoryClass = (Class<SmooksResourceConfigurationFactory>) Class.forName(factory, true, classLoader);
+                resourceConfigFactoryClass = (Class<ResourceConfigFactory>) Class.forName(factory, true, classLoader);
             } else {
-                smooksResourceConfigurationFactoryClass = DefaultSmooksResourceConfigurationFactory.class;
+                resourceConfigFactoryClass = DefaultResourceConfigFactory.class;
             }
             try {
-                SmooksResourceConfigurationFactory smooksResourceConfigurationFactory = smooksResourceConfigurationFactoryClass.newInstance();
-                smooksResourceConfiguration = smooksResourceConfigurationFactory.createConfiguration(defaultSelector, defaultNamespace, defaultProfile, configElement);
+                ResourceConfigFactory resourceConfigFactory = resourceConfigFactoryClass.newInstance();
+                resourceConfig = resourceConfigFactory.createConfiguration(defaultSelector, defaultNamespace, defaultProfile, configElement);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new SmooksConfigurationException(e.getMessage(), e);
             }
@@ -492,21 +492,21 @@ public final class XMLConfigDigester {
             final Element conditionElement = DomUtils.getElementByTagName(configElement, "condition");
             if (conditionElement != null) {
                 ExpressionEvaluator evaluator = digestCondition(conditionElement);
-                smooksResourceConfiguration.getSelectorPath().setConditionEvaluator(evaluator);
+                resourceConfig.getSelectorPath().setConditionEvaluator(evaluator);
             } else if (defaultConditionRef != null) {
                 ExpressionEvaluator evaluator = getConditionEvaluator(defaultConditionRef);
-                smooksResourceConfiguration.getSelectorPath().setConditionEvaluator(evaluator);
+                resourceConfig.getSelectorPath().setConditionEvaluator(evaluator);
             }
         } catch (IllegalArgumentException | ClassNotFoundException e) {
             throw new SmooksConfigurationException("Invalid unit definition.", e);
         }
 
         // Add the parameters...
-        digestParameters(configElement, smooksResourceConfiguration);
+        digestParameters(configElement, resourceConfig);
 
-        smooksResourceConfigurationList.add(smooksResourceConfiguration);
+        resourceConfigList.add(resourceConfig);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Adding smooks-resource config from [" + smooksResourceConfigurationList.getName() + "]: " + smooksResourceConfiguration);
+            LOGGER.debug("Adding smooks-resource config from [" + resourceConfigList.getName() + "]: " + resourceConfig);
         }
     }
 
@@ -531,10 +531,10 @@ public final class XMLConfigDigester {
         // Filter the extension element through Smooks...
         configDigester.filterSource(executionContext, new DOMSource(configElement), null);
 
-        // Copy the created resources from the ExtensionContext and onto the SmooksResourceConfigurationList...
-        List<SmooksResourceConfiguration> resources = extentionContext.getResources();
-        for (SmooksResourceConfiguration resource : resources) {
-            smooksResourceConfigurationList.add(resource);
+        // Copy the created resources from the ExtensionContext and onto the ResourceConfigList...
+        List<ResourceConfig> resources = extentionContext.getResources();
+        for (ResourceConfig resource : resources) {
+            resourceConfigList.add(resource);
         }
     }
 
@@ -562,13 +562,13 @@ public final class XMLConfigDigester {
             setExtensionDigestOn();
             try {
                 Registry registry = smooks.getApplicationContext().getRegistry();
-                SmooksResourceConfigurationList extConfigList = new SmooksResourceConfigurationList(baseURI);
+                ResourceConfigList extConfigList = new ResourceConfigList(baseURI);
 
                 XMLConfigDigester configDigester = new XMLConfigDigester(extConfigList);
 
                 configDigester.extendedConfigDigesters = extendedConfigDigesters;
                 configDigester.digestConfigRecursively(new InputStreamReader(ClassUtil.getResourceAsStream(resourcePath, classLoader)), baseURI);
-                registry.registerSmooksResourceConfigurationList(extConfigList);
+                registry.registerResourceConfigList(extConfigList);
             } catch (Exception e) {
                 throw new SmooksConfigurationException("Failed to construct Smooks instance for processing extended configuration resource '" + resourcePath + "'.", e);
             } finally {
@@ -678,12 +678,12 @@ public final class XMLConfigDigester {
                     profileSet.addProfiles(subProfiles.split(","));
                 }
 
-                smooksResourceConfigurationList.add(profileSet);
+                resourceConfigList.add(profileSet);
             }
         }
     }
 
-    private void digestParameters(Element resourceConfigElement, SmooksResourceConfiguration resourceConfig) {
+    private void digestParameters(Element resourceConfigElement, ResourceConfig resourceConfig) {
         NodeList configNodes = resourceConfigElement.getElementsByTagName("param");
 
         for (int i = 0; i < configNodes.getLength(); i++) {

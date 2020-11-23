@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.Parameter;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.java.JavaXMLReader;
 import org.smooks.delivery.java.XStreamXMLReader;
@@ -91,7 +91,7 @@ public class AbstractParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractParser.class);
 
     private final ExecutionContext executionContext;
-    private final SmooksResourceConfiguration saxDriverConfig;
+    private final ResourceConfig saxDriverConfig;
 
     /**
      * Public constructor.
@@ -99,7 +99,7 @@ public class AbstractParser {
      * @param executionContext     The Smooks Container Request that the parser is being instantiated on behalf of.
      * @param saxDriverConfig SAX Parser configuration. See <a href="#parserconfig">.cdrl Configuration</a>.
      */
-    public AbstractParser(ExecutionContext executionContext, SmooksResourceConfiguration saxDriverConfig) {
+    public AbstractParser(ExecutionContext executionContext, ResourceConfig saxDriverConfig) {
         AssertArgument.isNotNull(executionContext, "execContext");
         this.executionContext = executionContext;
         this.saxDriverConfig = saxDriverConfig;
@@ -114,7 +114,7 @@ public class AbstractParser {
     }
 
     @SuppressWarnings("unused")
-    protected SmooksResourceConfiguration getSaxDriverConfig() {
+    protected ResourceConfig getSaxDriverConfig() {
         return saxDriverConfig;
     }
 
@@ -169,13 +169,13 @@ public class AbstractParser {
      * @return Returns the SAX Parser configuration for the profile associated with the supplied delivery
      *         configuration, or null if no parser configuration is specified.
      */
-    public static SmooksResourceConfiguration getSAXParserConfiguration(ContentDeliveryConfig deliveryConfig) {
+    public static ResourceConfig getSAXParserConfiguration(ContentDeliveryConfig deliveryConfig) {
         if (deliveryConfig == null) {
             throw new IllegalArgumentException("null 'deliveryConfig' arg in method call.");
         }
 
-        SmooksResourceConfiguration saxDriverConfig = null;
-        List<SmooksResourceConfiguration> saxConfigs = deliveryConfig.getSmooksResourceConfigurations(ORG_XML_SAX_DRIVER);
+        ResourceConfig saxDriverConfig = null;
+        List<ResourceConfig> saxConfigs = deliveryConfig.getResourceConfigs(ORG_XML_SAX_DRIVER);
 
         if (saxConfigs != null && !saxConfigs.isEmpty()) {
             saxDriverConfig = saxConfigs.get(0);
@@ -429,7 +429,7 @@ public class AbstractParser {
         }
     }
 
-    public static boolean isFeatureOn(String name, SmooksResourceConfiguration saxDriverConfig) throws SAXException {
+    public static boolean isFeatureOn(String name, ResourceConfig saxDriverConfig) throws SAXException {
         boolean featureOn = isFeature(name, FeatureValue.ON, saxDriverConfig);
 
         // Make sure the same feature is not also configured off...
@@ -440,7 +440,7 @@ public class AbstractParser {
         return featureOn;
     }
 
-    public static boolean isFeatureOff(String name, SmooksResourceConfiguration saxDriverConfig) throws SAXException {
+    public static boolean isFeatureOff(String name, ResourceConfig saxDriverConfig) throws SAXException {
         boolean featureOff = isFeature(name, FeatureValue.OFF, saxDriverConfig);
 
         // Make sure the same feature is not also configured on...
@@ -456,7 +456,7 @@ public class AbstractParser {
         OFF
     }
 
-    private static boolean isFeature(String name, FeatureValue featureValue, SmooksResourceConfiguration saxDriverConfig) {
+    private static boolean isFeature(String name, FeatureValue featureValue, ResourceConfig saxDriverConfig) {
         if (saxDriverConfig != null) {
             List<Parameter> features;
 

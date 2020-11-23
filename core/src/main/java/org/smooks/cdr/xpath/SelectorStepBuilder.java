@@ -52,7 +52,7 @@ import org.jaxen.saxpath.SAXPathException;
 import org.jaxen.saxpath.XPathReader;
 import org.jaxen.saxpath.helpers.XPathReaderFactory;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 
 import javax.xml.namespace.QName;
 import java.util.List;
@@ -69,7 +69,7 @@ public class SelectorStepBuilder {
 
     static {
         try {
-            SELECTOR_NONE_STEP = _buildSteps(SmooksResourceConfiguration.SELECTOR_NONE);
+            SELECTOR_NONE_STEP = _buildSteps(ResourceConfig.SELECTOR_NONE);
         } catch (SAXPathException e) {
             throw new IllegalStateException("Unexpected exception while constructing the 'none' SelectorStep array.");
         }
@@ -86,7 +86,7 @@ public class SelectorStepBuilder {
      * @throws SAXPathException Error parsing expression.
      */
     public static SelectorPath buildSteps(String selectorExpression) throws SAXPathException {
-        if(SmooksResourceConfiguration.SELECTOR_NONE.equals(selectorExpression)) {
+        if(ResourceConfig.SELECTOR_NONE.equals(selectorExpression)) {
             return SELECTOR_NONE_STEP;
         }
 
@@ -184,7 +184,7 @@ public class SelectorStepBuilder {
 
         if(isRooted) {
             if(selectorPath.isEmpty()) {
-                selectorPath.add(new SelectorStep(xpathExpression, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR));
+                selectorPath.add(new SelectorStep(xpathExpression, ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR));
             } else {
                 selectorPath.get(0).setRooted(true);
             }
@@ -198,7 +198,7 @@ public class SelectorStepBuilder {
     }
 
     private static boolean isEncodedToken(String xpathExpression) {
-        if(xpathExpression.startsWith("#") && !xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+        if(xpathExpression.startsWith("#") && !xpathExpression.startsWith(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
             return true;
         }
 
@@ -254,11 +254,11 @@ public class SelectorStepBuilder {
         String xpathExpression = xpathExpressionBuilder.toString();
 
         // Handle the #document token. Just replace it with a leading slash..
-        if (xpathExpression.equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+        if (xpathExpression.equals(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
             xpathExpression = "/";
         }
-        if (xpathExpression.startsWith(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR + "/")) {
-            xpathExpression = xpathExpression.substring(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR.length());
+        if (xpathExpression.startsWith(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR + "/")) {
+            xpathExpression = xpathExpression.substring(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR.length());
         }
 
         // Replace the legacy ** token with the XPath descendant-or-self axis token...

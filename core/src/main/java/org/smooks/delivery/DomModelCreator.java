@@ -43,7 +43,7 @@
 package org.smooks.delivery;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.SAXElement;
@@ -131,14 +131,14 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
     private final DocumentBuilder documentBuilder;
 
     @Inject
-    private SmooksResourceConfiguration smooksResourceConfiguration;
+    private ResourceConfig resourceConfig;
 
     public DomModelCreator() throws ParserConfigurationException {
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
 
     public Set<String> getProducts() {
-        return CollectionsUtil.toSet(smooksResourceConfiguration.getSelectorPath().getTargetElement());
+        return CollectionsUtil.toSet(resourceConfig.getSelectorPath().getTargetElement());
     }
 
     @Override

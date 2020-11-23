@@ -40,48 +40,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr;
+package org.smooks.registry.lookup;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import com.fasterxml.classmate.TypeResolver;
+import org.smooks.cdr.ResourceConfigList;
 
-/**
- *
- * @author tfennelly
- */
-public class SmooksResourceConfigurationListTest {
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
-	@Test
-    public void testConstructor() {
-        testBadArgs(null);
-        testBadArgs(" ");
-
-        SmooksResourceConfigurationList list = new SmooksResourceConfigurationList("list-name");
-        assertEquals("list-name", list.getName());
-    }
-
-    private void testBadArgs(String name) {
-        try {
-            new SmooksResourceConfigurationList(name);
-            fail("Expected IllegalArgumentException");
-        } catch(IllegalArgumentException e) {
-            // OK
-        }
-    }
-    
-    @Test
-    public void testAdd() {
-        SmooksResourceConfigurationList list = new SmooksResourceConfigurationList("list-name");
-        
-        assertTrue(list.isEmpty());
-        list.add(new SmooksResourceConfiguration("*", "a/b.zap"));
-        assertFalse(list.isEmpty());
-        assertEquals(1, list.size());
-        assertEquals("a/b.zap", list.get(0).getResource());
-        
-        
-        list.add(new SmooksResourceConfiguration("*", "c/d.zap"));
-        assertEquals(2, list.size());        
-        assertEquals("c/d.zap", list.get(1).getResource());
+public class ResourceConfigListsLookup implements Function<Map<Object, Object>, List<ResourceConfigList>> {
+    @Override
+    public List<ResourceConfigList> apply(final Map<Object, Object> registryEntries) {
+        return (List<ResourceConfigList>) registryEntries.get(new TypeResolver().resolve(List.class, ResourceConfigList.class));
     }
 }

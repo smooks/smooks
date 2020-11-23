@@ -43,7 +43,7 @@
 package org.smooks.cdr.extension;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.w3c.dom.Element;
@@ -52,9 +52,9 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 /**
- * Create a new {@link org.smooks.cdr.SmooksResourceConfiguration} by cloning the current resource.
+ * Create a new {@link ResourceConfig} by cloning the current resource.
  * <p/>
- * The cloned {@link org.smooks.cdr.SmooksResourceConfiguration} is added to the {@link org.smooks.cdr.extension.ExtensionContext}.
+ * The cloned {@link ResourceConfig} is added to the {@link org.smooks.cdr.extension.ExtensionContext}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
@@ -69,7 +69,7 @@ public class CloneResourceConfig implements DOMElementVisitor {
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
-        SmooksResourceConfiguration config = (SmooksResourceConfiguration) extensionContext.getResourceStack().peek().clone();
+        ResourceConfig config = (ResourceConfig) extensionContext.getResourceStack().peek().clone();
 
         if(unset.isPresent()) {
 	        for(String property : unset.get()) {

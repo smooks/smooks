@@ -49,30 +49,30 @@ import java.util.Comparator;
 
 
 /**
- * Sort Comparator for {@link org.smooks.cdr.SmooksResourceConfiguration} Objects based on their "specificity".
+ * Sort Comparator for {@link ResourceConfig} Objects based on their "specificity".
  * <p/>
- * Before reading this be sure to read the {@link org.smooks.cdr.SmooksResourceConfiguration} class Javadoc.
+ * Before reading this be sure to read the {@link ResourceConfig} class Javadoc.
  * <p/>
  * As Smooks applies {@link org.smooks.delivery.ContentHandler}s ({@link org.smooks.delivery.dom.DOMElementVisitor DOMElementVisitors} and
  * {@link SerializerVisitor SerializationUnits}) it may discover that in a given case more than 1 {@link org.smooks.delivery.ContentHandler}
  * can be applied.  How does Smooks decide on the order in which these {@link org.smooks.delivery.ContentHandler}s are to be applied to the content?
  * <p/>
  * At the moment, Smooks uses this class to calculate a "specificity" rating for each Content Delivery Resource based on its 
- * {@link org.smooks.cdr.SmooksResourceConfiguration &lt;smooks-resource&gt;} configuration, and sorts them in decreasing order of specificity.
+ * {@link ResourceConfig &lt;smooks-resource&gt;} configuration, and sorts them in decreasing order of specificity.
  * <p/>
  * The following outlines how this specificity value is calculated at present.
  * <!-- Just cut-n-paste from the code -->
  * <pre>
     // Get the combined specificity of all the profile targeting expressions.
-	{@link org.smooks.cdr.ProfileTargetingExpression}[] profileTargetingExpressions = resourceConfig.{@link org.smooks.cdr.SmooksResourceConfiguration#getProfileTargetingExpressions() getProfileTargetingExpressions()};
+	{@link org.smooks.cdr.ProfileTargetingExpression}[] profileTargetingExpressions = resourceConfig.{@link ResourceConfig#getProfileTargetingExpressions() getProfileTargetingExpressions()};
 	for(int i = 0; i < profileTargetingExpressions.length; i++) {
 		specificity += profileTargetingExpressions[i].{@link org.smooks.cdr.ProfileTargetingExpression#getSpecificity(org.smooks.profile.ProfileSet) getSpecificity(profileSet)};
 	}
 	
 	// Check the 'selector' attribute value.
-	if(resourceConfig.{@link org.smooks.cdr.SmooksResourceConfiguration#isXmlDef() isXmlDef()}) {
+	if(resourceConfig.{@link ResourceConfig#isXmlDef() isXmlDef()}) {
 		specificity += 10;
-	} else if(resourceConfig.{@link org.smooks.cdr.SmooksResourceConfiguration#getSelector() getselector()}.equals("*")) {
+	} else if(resourceConfig.{@link ResourceConfig#getSelector() getselector()}.equals("*")) {
 		specificity += 5;
 	} else {
 		// Explicit selector listed
@@ -88,7 +88,7 @@ import java.util.Comparator;
 	}
 		
 	// Check the 'namespace' attribute.
-	if(resourceConfig.{@link org.smooks.cdr.SmooksResourceConfiguration#getSelectorNamespaceURI() getSelectorNamespaceURI()} != null) {
+	if(resourceConfig.{@link ResourceConfig#getSelectorNamespaceURI() getSelectorNamespaceURI()} != null) {
 		specificity += 10;
 	}</pre>  
  * For more details on this please refer to the code in this class.
@@ -96,7 +96,7 @@ import java.util.Comparator;
  * @author tfennelly
  */
 
-public class SmooksResourceConfigurationSortComparator implements Comparator {
+public class ResourceConfigSortComparator implements Comparator {
 
 	/**
 	 * Profile set.
@@ -107,7 +107,7 @@ public class SmooksResourceConfigurationSortComparator implements Comparator {
 	 * Private constructor.
 	 * @param profileSet Profile set used to evaluate specificity.
 	 */
-	public SmooksResourceConfigurationSortComparator(ProfileSet profileSet) {
+	public ResourceConfigSortComparator(ProfileSet profileSet) {
 		this.profileSet = profileSet;
 	}
 	
@@ -115,8 +115,8 @@ public class SmooksResourceConfigurationSortComparator implements Comparator {
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
 	public int compare(Object configObj1, Object configObj2) {
-		SmooksResourceConfiguration config1 = (SmooksResourceConfiguration)configObj1;
-		SmooksResourceConfiguration config = (SmooksResourceConfiguration)configObj2;
+		ResourceConfig config1 = (ResourceConfig)configObj1;
+		ResourceConfig config = (ResourceConfig)configObj2;
 
 		if(config1 == config) {
 			return 0;
@@ -136,13 +136,13 @@ public class SmooksResourceConfigurationSortComparator implements Comparator {
 	}
 	
 	/**
-	 * Get the specificity of the SmooksResourceConfiguration.
+	 * Get the specificity of the ResourceConfig.
 	 * <p/>
 	 * The "specificity" is evaluated based on the selector and target-profile values.
 	 * @param resourceConfig Resource configuration.
 	 * @return Configuration specificity.
 	 */
-	protected double getSpecificity(SmooksResourceConfiguration resourceConfig) {
+	protected double getSpecificity(ResourceConfig resourceConfig) {
 		double specificity = 0;
 		
 		// If the following code is modified, please update the class Javadoc.

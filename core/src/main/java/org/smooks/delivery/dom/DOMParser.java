@@ -44,7 +44,7 @@ package org.smooks.delivery.dom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.AbstractParser;
 import org.smooks.delivery.ContentDeliveryConfig;
@@ -77,7 +77,7 @@ import java.nio.charset.Charset;
  * &lt;smooks-resource selector="org.xml.sax.driver" path="org.smooks.protocolx.XParser" &gt;
  * 	&lt;!--
  * 		Optional list of driver parameters for {@link org.smooks.xml.SmooksXMLReader} implementations.
- * 		See {@link org.smooks.cdr.SmooksResourceConfiguration} for how to add configuration parameters.
+ * 		See {@link ResourceConfig} for how to add configuration parameters.
  * 	--&gt;
  * &lt;/smooks-resource&gt;
  * </pre>
@@ -104,7 +104,7 @@ public class DOMParser extends AbstractParser {
 	 * @param execContext The Smooks Container Request that the parser is being instantiated on behalf of.
 	 * @param saxDriverConfig SAX Parser configuration. See <a href="#parserconfig">.cdrl Configuration</a>.
 	 */
-    public DOMParser(ExecutionContext execContext, SmooksResourceConfiguration saxDriverConfig) {
+    public DOMParser(ExecutionContext execContext, ResourceConfig saxDriverConfig) {
         super(execContext, saxDriverConfig);
     }
 

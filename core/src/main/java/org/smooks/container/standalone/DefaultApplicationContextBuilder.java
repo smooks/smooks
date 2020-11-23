@@ -42,7 +42,7 @@
  */
 package org.smooks.container.standalone;
 
-import org.smooks.cdr.SystemSmooksResourceConfigurationListFactory;
+import org.smooks.cdr.SystemResourceConfigListFactory;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ApplicationContextBuilder;
 import org.smooks.delivery.ContentHandlerFactory;
@@ -109,10 +109,10 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
      * @param resourceFile Installed (internal) resource config file.
      */
     private void registerSystemResources(final Registry registry) {
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-dom.xml", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/null-sax.xml", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/system-param-decoders.xml", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/system-serializers.xml", classLoader).create());
-        registry.registerSmooksResourceConfigurationList(new SystemSmooksResourceConfigurationListFactory("/system-interceptors.xml", classLoader).create());
+        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/null-dom.xml", classLoader).create());
+        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/null-sax.xml", classLoader).create());
+        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/system-param-decoders.xml", classLoader).create());
+        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/system-serializers.xml", classLoader).create());
+        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/system-interceptors.xml", classLoader).create());
     }
 }
