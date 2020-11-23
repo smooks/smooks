@@ -44,7 +44,7 @@ package org.smooks.lifecycle.phase;
 
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.config.Configurable;
 import org.smooks.injector.FieldInjector;
 import org.smooks.injector.Injector;
@@ -132,11 +132,11 @@ public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
 
     private <U> void setConfiguration(U instance, Scope scope) {
         if (instance instanceof Configurable) {
-            ((Configurable) instance).setConfiguration(((SmooksResourceConfiguration) scope.get(SmooksResourceConfiguration.class)).toProperties());
+            ((Configurable) instance).setConfiguration(((ResourceConfig) scope.get(ResourceConfig.class)).toProperties());
         } else {
             try {
-                Method setConfigurationMethod = instance.getClass().getMethod("setConfiguration", SmooksResourceConfiguration.class);
-                setConfigurationMethod.invoke(instance, scope.get(SmooksResourceConfiguration.class));
+                Method setConfigurationMethod = instance.getClass().getMethod("setConfiguration", ResourceConfig.class);
+                setConfigurationMethod.invoke(instance, scope.get(ResourceConfig.class));
             } catch (NoSuchMethodException e) {
                 // That's fine
             } catch (IllegalAccessException e) {

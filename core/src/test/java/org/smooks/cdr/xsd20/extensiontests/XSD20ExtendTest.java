@@ -45,7 +45,7 @@ package org.smooks.cdr.xsd20.extensiontests;
 import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.payload.StringResult;
@@ -122,24 +122,24 @@ public class XSD20ExtendTest {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_05.1.xml"));
         ExecutionContext execContext;
         ContentDeliveryConfig deliveryConf;
-        List<SmooksResourceConfiguration> configList;
+        List<ResourceConfig> configList;
 
         // config_05.1.xml defines a default profile of "xxx", so creating the context without specifying
         // a profile should exclude the "aa" resource...
         execContext = smooks.createExecutionContext();
         deliveryConf = execContext.getDeliveryConfig();
-        configList = deliveryConf.getSmooksResourceConfigurations("aa");
+        configList = deliveryConf.getResourceConfigs("aa");
         assertNull(configList);
 
         // config_05.1.xml defines a default profile of "xxx", so creating the context by specifying
         // a profile of "xxx" should include the "aa" resource...
         execContext = smooks.createExecutionContext("xxx");
         deliveryConf = execContext.getDeliveryConfig();
-        configList = deliveryConf.getSmooksResourceConfigurations("an:aa");
+        configList = deliveryConf.getResourceConfigs("an:aa");
         assertNotNull(configList);
 
         // Make sure the resource has the other default settings...
-        SmooksResourceConfiguration config = configList.get(0);
+        ResourceConfig config = configList.get(0);
         assertEquals("http://www.milyn.org/xsd/smooks/test-xsd-05.xsd", config.getSelectorPath().getNamespaces().getProperty("t01"));
         assertEquals("http://an", config.getSelectorPath().getNamespaces().getProperty("an"));
         assertNotNull(config.getSelectorPath().getConditionEvaluator());
@@ -150,16 +150,16 @@ public class XSD20ExtendTest {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_05.2.xml"));
         ExecutionContext execContext;
         ContentDeliveryConfig deliveryConf;
-        List<SmooksResourceConfiguration> configList;
+        List<ResourceConfig> configList;
 
         // config_05.2.xml defines a name attribute, so that should override the default...
         execContext = smooks.createExecutionContext("xxx");
         deliveryConf = execContext.getDeliveryConfig();
-        configList = deliveryConf.getSmooksResourceConfigurations("an:j");
+        configList = deliveryConf.getResourceConfigs("an:j");
         assertNotNull(configList);
 
         // Make sure the resource has the other default settings...
-        SmooksResourceConfiguration config = configList.get(0);
+        ResourceConfig config = configList.get(0);
         assertEquals("http://www.milyn.org/xsd/smooks/test-xsd-05.xsd", config.getSelectorPath().getNamespaces().getProperty("t01"));
         assertEquals("http://an", config.getSelectorPath().getNamespaces().getProperty("an"));
         assertNotNull(config.getSelectorPath().getConditionEvaluator());

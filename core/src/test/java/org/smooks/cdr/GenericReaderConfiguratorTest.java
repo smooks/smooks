@@ -59,7 +59,7 @@ public class GenericReaderConfiguratorTest {
     public void test_resource_only() {
         GenericReaderConfigurator configurator = new GenericReaderConfigurator(JavaXMLReader.class);
 
-        SmooksResourceConfiguration config = configurator.toConfig().get(0);
+        ResourceConfig config = configurator.toConfig().get(0);
         assertConfigOK(config, JavaXMLReader.class.getName(), 0, 0, 0);
     }
 
@@ -76,7 +76,7 @@ public class GenericReaderConfiguratorTest {
         configurator.setFeature("http://e", false);
         configurator.setFeature("http://f", false);
 
-        SmooksResourceConfiguration config = configurator.toConfig().get(0);
+        ResourceConfig config = configurator.toConfig().get(0);
         assertConfigOK(config, JavaXMLReader.class.getName(), 8, 3, 3);
 
         assertEquals("1", config.getParameterValue("a", String.class));
@@ -97,7 +97,7 @@ public class GenericReaderConfiguratorTest {
         configurator.getParameters().setProperty("a", "1");
         configurator.setFeature("http://a", true);
 
-        SmooksResourceConfiguration config = configurator.toConfig().get(0);
+        ResourceConfig config = configurator.toConfig().get(0);
         assertConfigOK(config, null, 2, 1, 0);
 
         assertEquals("1", config.getParameterValue("a", String.class));
@@ -105,7 +105,7 @@ public class GenericReaderConfiguratorTest {
         assertTrue(AbstractParser.isFeatureOn("http://a", config));
     }
 
-    private void assertConfigOK(SmooksResourceConfiguration config, String resource, int numParams, int numFeaturesOn, int numFeaturesOff) {
+    private void assertConfigOK(ResourceConfig config, String resource, int numParams, int numFeaturesOn, int numFeaturesOff) {
         assertEquals(resource, config.getResource());
         assertEquals(numParams, config.getParameterCount());
         if(numFeaturesOn != 0) {

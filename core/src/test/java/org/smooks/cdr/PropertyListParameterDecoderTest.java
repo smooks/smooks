@@ -56,7 +56,7 @@ public class PropertyListParameterDecoderTest {
 
 	@Test
 	public void test_decodeValue() {
-		SmooksResourceConfiguration config = new SmooksResourceConfiguration("x", "x");
+		ResourceConfig config = new ResourceConfig("x", "x");
 		MockApplicationContext mockApplicationContext = new MockApplicationContext();
 		PropertyListParameterDecoder propertyListParameterDecoder = new PropertyListParameterDecoder();
 		mockApplicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(propertyListParameterDecoder, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, propertyListParameterDecoder)));

@@ -49,9 +49,9 @@ import org.smooks.delivery.ContentHandler;
 */
 public class MyContentDeliveryUnit5 implements ContentHandler {
 
-    public SmooksResourceConfiguration config;
+    public ResourceConfig config;
 
-    public void setConfiguration(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException {
+    public void setConfiguration(ResourceConfig resourceConfig) throws SmooksConfigurationException {
         this.config = resourceConfig;
     }
 }

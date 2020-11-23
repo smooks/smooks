@@ -42,7 +42,7 @@
  */
 package org.smooks.delivery;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.delivery.ordering.Sorter;
 
 import java.util.*;
@@ -66,7 +66,7 @@ public class ContentHandlerBindings<T extends ContentHandler> {
      * @param resourceConfig Resource configuration.
      * @param contentHandler The delivery unit.
      */
-    public void addBinding(String elementName, SmooksResourceConfiguration resourceConfig, T contentHandler) {
+    public void addBinding(String elementName, ResourceConfig resourceConfig, T contentHandler) {
         addBinding(elementName, new ContentHandlerBinding<>(contentHandler, resourceConfig));
     }
 
@@ -81,7 +81,7 @@ public class ContentHandlerBindings<T extends ContentHandler> {
         elementMappings.add(contentHandlerBinding);
         count++;
         
-        if(!contentHandlerBinding.getSmooksResourceConfiguration().isDefaultResource()) {
+        if(!contentHandlerBinding.getResourceConfig().isDefaultResource()) {
         	userConfiguredCount++;
         }
     }

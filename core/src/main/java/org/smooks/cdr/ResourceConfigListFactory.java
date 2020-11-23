@@ -43,16 +43,14 @@
 package org.smooks.cdr;
 
 /**
- * {@link SmooksResourceConfiguration} change listener.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ * ResourceConfig Factory.
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public interface SmooksResourceConfigurationChangeListener {
+public interface ResourceConfigListFactory {
 
     /**
-     * The supplied configuration has changed.
-     *
-     * @param configuration The configuration.
+     * Create the configuration instance.
+     * @return The configuration instance.
      */
-    void changed(SmooksResourceConfiguration configuration);
+    ResourceConfigList create();
 }

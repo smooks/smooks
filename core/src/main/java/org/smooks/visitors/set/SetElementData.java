@@ -44,7 +44,7 @@ package org.smooks.visitors.set;
 
 import org.smooks.SmooksException;
 import org.smooks.cdr.Parameter;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.dom.DOMVisitAfter;
@@ -77,7 +77,7 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     private final Map<QName, FreeMarkerTemplate> attributes = new LinkedHashMap<QName, FreeMarkerTemplate>();
 
     @Inject
-    private SmooksResourceConfiguration resourceConfig;
+    private ResourceConfig resourceConfig;
 
     @PostConstruct
     public void postConstruct() {

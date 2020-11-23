@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 import java.util.List;
 
 /**
- * SmooksResourceConfiguration Parameter.
+ * ResourceConfig Parameter.
  * <p/>
  * Wrapper for a param.  Handles decoding.
  * @author tfennelly

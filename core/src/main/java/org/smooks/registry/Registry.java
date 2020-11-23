@@ -47,8 +47,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigList;
 import org.smooks.cdr.XMLConfigDigester;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
@@ -60,8 +60,8 @@ import org.smooks.lifecycle.phase.PreDestroyLifecyclePhase;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.ProfileStore;
 import org.smooks.registry.lookup.LifecycleManagerLookup;
-import org.smooks.registry.lookup.SmooksResourceConfigurationListsLookup;
-import org.smooks.registry.lookup.SystemSmooksResourceConfigurationListLookup;
+import org.smooks.registry.lookup.ResourceConfigListsLookup;
+import org.smooks.registry.lookup.SystemResourceConfigListLookup;
 import org.smooks.registry.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.resource.ContainerResourceLocator;
 import org.xml.sax.SAXException;
@@ -76,11 +76,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * {@link org.smooks.cdr.SmooksResourceConfiguration} context store.
+ * {@link ResourceConfig} context store.
  * <p/>
- * Stores the {@link org.smooks.cdr.SmooksResourceConfiguration SmooksResourceConfigurations}
+ * Stores the {@link ResourceConfig ResourceConfigs}
  * for a given container context in the form of
- * {@link org.smooks.cdr.SmooksResourceConfigurationList} entries.  Also maintains
+ * {@link ResourceConfigList} entries.  Also maintains
  * a "default" config list for the context.
  *
  * @author tfennelly
@@ -106,14 +106,14 @@ public class Registry {
         registerObject(LifecycleManager.class, new DefaultLifecycleManager());
  
         // add the default list to the list.
-        final SmooksResourceConfigurationList systemSmooksResourceConfigurationList = new SmooksResourceConfigurationList("default");
-        systemSmooksResourceConfigurationList.setSystemConfigList(true);
+        final ResourceConfigList systemResourceConfigList = new ResourceConfigList("default");
+        systemResourceConfigList.setSystemConfigList(true);
 
-        registerObject(SmooksResourceConfigurationList.class, systemSmooksResourceConfigurationList);
+        registerObject(ResourceConfigList.class, systemResourceConfigList);
 
-        final List<SmooksResourceConfigurationList> smooksResourceConfigurationLists = new ArrayList<>();
-        smooksResourceConfigurationLists.add(systemSmooksResourceConfigurationList);
-        registerObject(new TypeResolver().resolve(List.class, SmooksResourceConfigurationList.class), smooksResourceConfigurationLists);
+        final List<ResourceConfigList> resourceConfigLists = new ArrayList<>();
+        resourceConfigLists.add(systemResourceConfigList);
+        registerObject(new TypeResolver().resolve(List.class, ResourceConfigList.class), resourceConfigLists);
     }
 
     public void registerObject(final Object value) {
@@ -193,19 +193,19 @@ public class Registry {
      *
      * @param baseURI              The base URI to be associated with the configuration stream.
      * @param resourceConfigStream XML resource configuration stream.
-     * @return The SmooksResourceConfigurationList created from the added resource configuration.
+     * @return The ResourceConfigList created from the added resource configuration.
      * @throws SAXException Error parsing the resource stream.
      * @throws IOException  Error reading resource stream.
-     * @see SmooksResourceConfiguration
+     * @see ResourceConfig
      */
-    public SmooksResourceConfigurationList registerResources(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException, URISyntaxException {
+    public ResourceConfigList registerResources(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException, URISyntaxException {
         AssertArgument.isNotEmpty(baseURI, "baseURI");
         AssertArgument.isNotNull(resourceConfigStream, "resourceConfigStream");
         
-        SmooksResourceConfigurationList smooksResourceConfigurationList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
-        registerSmooksResourceConfigurationList(smooksResourceConfigurationList);
+        ResourceConfigList resourceConfigList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
+        registerResourceConfigList(resourceConfigList);
 
-        return smooksResourceConfigurationList;
+        return resourceConfigList;
     }
     
     private void addProfileSets(List<ProfileSet> profileSets) {
@@ -221,31 +221,31 @@ public class Registry {
 
 
     /**
-     * Register a {@link SmooksResourceConfiguration} on this context store.
+     * Register a {@link ResourceConfig} on this context store.
      * <p/>
      * The config gets added to the default resource list.
      *
      * @param resourceConfig The Content Delivery Resource definition to be registered.
      */
-    public void registerSmooksResourceConfiguration(SmooksResourceConfiguration smooksResourceConfiguration) {
-        AssertArgument.isNotNull(smooksResourceConfiguration, "smooksResourceConfiguration");
+    public void registerResourceConfig(ResourceConfig resourceConfig) {
+        AssertArgument.isNotNull(resourceConfig, "ResourceConfig");
 
-        lookup(new LifecycleManagerLookup()).applyPhase(smooksResourceConfiguration, new PostConstructLifecyclePhase(new Scope(this)));
-        lookup(new SystemSmooksResourceConfigurationListLookup()).add(smooksResourceConfiguration);
+        lookup(new LifecycleManagerLookup()).applyPhase(resourceConfig, new PostConstructLifecyclePhase(new Scope(this)));
+        lookup(new SystemResourceConfigListLookup()).add(resourceConfig);
     }
 
     /**
-     * Add a {@link SmooksResourceConfigurationList} to this registry.
+     * Add a {@link ResourceConfigList} to this registry.
      *
-     * @param smooksResourceConfigurationList All the SmooksResourceConfigurationList instances added on this registry.
+     * @param resourceConfigList All the ResourceConfigList instances added on this registry.
      */
-    public void registerSmooksResourceConfigurationList(SmooksResourceConfigurationList smooksResourceConfigurationList) {
-        lookup(new SmooksResourceConfigurationListsLookup()).add(smooksResourceConfigurationList);
-        lookup(new LifecycleManagerLookup()).applyPhase(smooksResourceConfigurationList, new PostConstructLifecyclePhase(new Scope(this)));
+    public void registerResourceConfigList(ResourceConfigList resourceConfigList) {
+        lookup(new ResourceConfigListsLookup()).add(resourceConfigList);
+        lookup(new LifecycleManagerLookup()).applyPhase(resourceConfigList, new PostConstructLifecyclePhase(new Scope(this)));
 
         // XSD v1.0 added profiles to the resource config.  If there were any, add them to the
         // profile store.
-        addProfileSets(smooksResourceConfigurationList.getProfiles());
+        addProfileSets(resourceConfigList.getProfiles());
     }
 
     /**

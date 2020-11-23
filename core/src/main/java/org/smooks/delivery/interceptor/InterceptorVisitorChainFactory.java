@@ -44,7 +44,7 @@ package org.smooks.delivery.interceptor;
 
 import org.smooks.SmooksException;
 import org.smooks.cdr.Parameter;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Visitor;
@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
 public class InterceptorVisitorChainFactory {
 
 	@Inject
-	private SmooksResourceConfiguration smooksResourceConfiguration;
+	private ResourceConfig resourceConfig;
 
 	@Inject
 	private ApplicationContext applicationContext;
@@ -75,7 +75,7 @@ public class InterceptorVisitorChainFactory {
 
 	@PostConstruct
 	public void postConstruct() throws ClassNotFoundException {
-		List<Parameter> interceptorClasses = smooksResourceConfiguration.getParameters("class");
+		List<Parameter> interceptorClasses = resourceConfig.getParameters("class");
 		if (interceptorClasses != null) {
 			for (String interceptorClassName : interceptorClasses.stream().map(Parameter::toString).collect(Collectors.toList())) {
 				interceptorVisitorClasses.add(ClassUtil.forName(interceptorClassName, this.getClass()));
@@ -97,7 +97,7 @@ public class InterceptorVisitorChainFactory {
 				}
 				interceptorVisitor.setVisitorBinding(interceptedVisitorBinding);
 				interceptorVisitor.setApplicationContext(applicationContext);
-				interceptedVisitorBinding = new ContentHandlerBinding<>(interceptorVisitor, visitorBinding.getSmooksResourceConfiguration());
+				interceptedVisitorBinding = new ContentHandlerBinding<>(interceptorVisitor, visitorBinding.getResourceConfig());
 			}
 			
 			return interceptorVisitor;

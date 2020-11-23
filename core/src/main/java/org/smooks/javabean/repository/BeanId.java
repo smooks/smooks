@@ -42,7 +42,7 @@
  */
 package org.smooks.javabean.repository;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.javabean.context.BeanIdStore;
 
 
@@ -69,7 +69,7 @@ public class BeanId {
 
 	private final BeanIdStore beanIdStore;
 
-	private SmooksResourceConfiguration createResourceConfig;
+	private ResourceConfig createResourceConfig;
 
 	/**
 	 * @param index
@@ -82,24 +82,24 @@ public class BeanId {
 	}
 
 	/**
-	 * Set the {@link SmooksResourceConfiguration} associated with the
+	 * Set the {@link ResourceConfig} associated with the
 	 * {@link BeanInstanceCreator} that is creating the bean with which this
 	 * {@link BeanId} instance is associated.
-	 * @param createResourceConfig The {@link SmooksResourceConfiguration} of the creator.
+	 * @param createResourceConfig The {@link ResourceConfig} of the creator.
 	 * @return This object instance.
 	 */
-	public BeanId setCreateResourceConfiguration(SmooksResourceConfiguration createResourceConfig) {
+	public BeanId setCreateResourceConfiguration(ResourceConfig createResourceConfig) {
 		this.createResourceConfig = createResourceConfig;
 		return this;
 	}
 
 	/**
-	 * Get the {@link SmooksResourceConfiguration} associated with the
+	 * Get the {@link ResourceConfig} associated with the
 	 * {@link BeanInstanceCreator} that is creating the bean with which this
 	 * {@link BeanId} instance is associated.
-	 * @return The {@link SmooksResourceConfiguration} of the creator.
+	 * @return The {@link ResourceConfig} of the creator.
 	 */
-	public SmooksResourceConfiguration getCreateResourceConfiguration() {
+	public ResourceConfig getCreateResourceConfiguration() {
 		return createResourceConfig;
 	}
 

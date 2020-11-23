@@ -55,7 +55,7 @@ import org.smooks.profile.ProfileSet;
 import org.smooks.registry.Registry;
 import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.registry.lookup.InstanceLookup;
-import org.smooks.registry.lookup.SmooksResourceConfigurationsProfileSetLookup;
+import org.smooks.registry.lookup.ResourceConfigsProfileSetLookup;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -86,14 +86,14 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 */
 	private static final String ELCSPEC_PREFIX = "elcspec:";
     /**
-     * An unsorted list of SmooksResourceConfiguration.
+     * An unsorted list of ResourceConfig.
      */
-    private final List<SmooksResourceConfiguration> smooksResourceConfigurations = new ArrayList<>();
+    private final List<ResourceConfig> resourceConfigs = new ArrayList<>();
     /**
-	 * Table (by element) of sorted SmooksResourceConfiguration instances keyed by selector value. Each table entry
-	 * contains a List of SmooksResourceConfiguration instances.
+	 * Table (by element) of sorted ResourceConfig instances keyed by selector value. Each table entry
+	 * contains a List of ResourceConfig instances.
 	 */
-	private final Map<String, List<SmooksResourceConfiguration>> resourceConfigTable = new LinkedHashMap<>();
+	private final Map<String, List<ResourceConfig>> resourceConfigTable = new LinkedHashMap<>();
 
     private final List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
 
@@ -214,7 +214,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             stringBuf.append(supportedFilterProvider.getValue() ? supportedFilterProvider.getKey() : " ").append("     ");
         }
 
-        stringBuf.append(contentHandlerBinding.getSmooksResourceConfiguration())
+        stringBuf.append(contentHandlerBinding.getResourceConfig())
                 .append("\n");
     }
     
@@ -225,31 +225,31 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * for the specified device.
 	 */
 	private void load(ProfileSet profileSet) {
-        smooksResourceConfigurations.clear();
-        smooksResourceConfigurations.addAll(Arrays.asList(applicationContext.getRegistry().lookup(new SmooksResourceConfigurationsProfileSetLookup(applicationContext.getRegistry(), profileSet))));
+        resourceConfigs.clear();
+        resourceConfigs.addAll(Arrays.asList(applicationContext.getRegistry().lookup(new ResourceConfigsProfileSetLookup(applicationContext.getRegistry(), profileSet))));
 
 		// Build and sort the resourceConfigTable table - non-transforming elements.
-		buildSmooksResourceConfigurationTable(smooksResourceConfigurations);
-		sortSmooksResourceConfigurations(resourceConfigTable, profileSet);
+		buildResourceConfigTable(resourceConfigs);
+		sortResourceConfigs(resourceConfigTable, profileSet);
 
 		// If there's a DTD for this device, get it and add it to the DTDStore.
-		List dtdSmooksResourceConfigurations = resourceConfigTable.get("dtd");
-		if(dtdSmooksResourceConfigurations != null && dtdSmooksResourceConfigurations.size() > 0) {
-            SmooksResourceConfiguration dtdSmooksResourceConfiguration = (SmooksResourceConfiguration)dtdSmooksResourceConfigurations.get(0);
-            byte[] dtdDataBytes = dtdSmooksResourceConfiguration.getBytes();
+		List dtdResourceConfigs = resourceConfigTable.get("dtd");
+		if(dtdResourceConfigs != null && dtdResourceConfigs.size() > 0) {
+            ResourceConfig dtdResourceConfig = (ResourceConfig)dtdResourceConfigs.get(0);
+            byte[] dtdDataBytes = dtdResourceConfig.getBytes();
 
             if(dtdDataBytes != null) {
                 DTDStore.addDTD(profileSet, new ByteArrayInputStream(dtdDataBytes));
                 // Initialise the DTD reference for this config table.
                 dtd = DTDStore.getDTDObject(profileSet);
             } else {
-                LOGGER.error("DTD resource [" + dtdSmooksResourceConfiguration.getResource() + "] not found in classpath.");
+                LOGGER.error("DTD resource [" + dtdResourceConfig.getResource() + "] not found in classpath.");
             }
 		}
 
-		// Expand the SmooksResourceConfiguration table and resort
-		expandSmooksResourceConfigurationTable();
-		sortSmooksResourceConfigurations(resourceConfigTable, profileSet);
+		// Expand the ResourceConfig table and resort
+		expandResourceConfigTable();
+		sortResourceConfigs(resourceConfigTable, profileSet);
 
         // Extract the ContentDeliveryUnits and build the tables
         extractContentHandlers();
@@ -284,12 +284,12 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	}
 
 	/**
-	 * Build the basic SmooksResourceConfiguration table from the list.
-	 * @param resourceConfigsList List of SmooksResourceConfigurations.
+	 * Build the basic ResourceConfig table from the list.
+	 * @param resourceConfigsList List of ResourceConfigs.
 	 */
-    private void buildSmooksResourceConfigurationTable(List resourceConfigsList) {
+    private void buildResourceConfigTable(List resourceConfigsList) {
         for (final Object resourceConfig : resourceConfigsList) {
-            addResourceConfiguration((SmooksResourceConfiguration) resourceConfig);
+            addResourceConfiguration((ResourceConfig) resourceConfig);
         }
     }
 
@@ -298,7 +298,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * resource configuration list.
      * @param config The configuration to be added.
      */
-    private void addResourceConfiguration(SmooksResourceConfiguration config) {
+    private void addResourceConfiguration(ResourceConfig config) {
         String target = config.getSelectorPath().getSelector();
 
         // If it's contextual, it's targeting an XML element...
@@ -315,10 +315,10 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * @param resourceConfiguration The Object to be added.
      */
     @SuppressWarnings("unchecked")
-    private void addResourceConfiguration(String element, SmooksResourceConfiguration resourceConfiguration) {
+    private void addResourceConfiguration(String element, ResourceConfig resourceConfiguration) {
         // Add it to the unsorted list...
-        if(!smooksResourceConfigurations.contains(resourceConfiguration)) {
-            smooksResourceConfigurations.add(resourceConfiguration);
+        if(!resourceConfigs.contains(resourceConfiguration)) {
+            resourceConfigs.add(resourceConfiguration);
         }
 
         // Add it to the sorted resourceConfigTable...
@@ -333,19 +333,19 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     }
 
     /**
-	 * Expand the SmooksResourceConfiguration table.
+	 * Expand the ResourceConfig table.
 	 * <p/>
 	 * Expand the XmlDef entries to the target elements etc.
 	 */
-    private void expandSmooksResourceConfigurationTable() {
-        class ExpansionSmooksResourceConfigurationStrategy implements SmooksResourceConfigurationStrategy {
-            private ExpansionSmooksResourceConfigurationStrategy() {
+    private void expandResourceConfigTable() {
+        class ExpansionResourceConfigStrategy implements ResourceConfigStrategy {
+            private ExpansionResourceConfigStrategy() {
             }
 
-            public void applyStrategy(String elementName, SmooksResourceConfiguration resourceConfig) {
+            public void applyStrategy(String elementName, ResourceConfig resourceConfig) {
                 // Expand XmlDef entries.
                 if (resourceConfig.isXmlDef()) {
-                    String[] elements = getDTDElements(resourceConfig.getSelectorPath().getSelector().substring(SmooksResourceConfiguration.XML_DEF_PREFIX.length()));
+                    String[] elements = getDTDElements(resourceConfig.getSelectorPath().getSelector().substring(ResourceConfig.XML_DEF_PREFIX.length()));
                     for (final String element : elements) {
                         addResourceConfiguration(element, resourceConfig);
                     }
@@ -354,26 +354,26 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                 // Add code to expand other expandable entry types here.
             }
         }
-        SmooksResourceConfigurationTableIterator tableIterator = new SmooksResourceConfigurationTableIterator(new ExpansionSmooksResourceConfigurationStrategy());
+        ResourceConfigTableIterator tableIterator = new ResourceConfigTableIterator(new ExpansionResourceConfigStrategy());
         tableIterator.iterate();
     }
 
     /**
-     * Iterate over the table smooks-resource instances and sort the SmooksResourceConfigurations
+     * Iterate over the table smooks-resource instances and sort the ResourceConfigs
      * on each element.  Ordered by specificity.
      */
     @SuppressWarnings("unchecked")
-    private void sortSmooksResourceConfigurations(Map<String, List<SmooksResourceConfiguration>> table, ProfileSet profileSet) {
+    private void sortResourceConfigs(Map<String, List<ResourceConfig>> table, ProfileSet profileSet) {
         Parameter<String> sortParam = ParameterAccessor.getParameter("sort.resources", String.class, table);
         if (sortParam != null && sortParam.getValue().trim().equalsIgnoreCase("true")) {
             if (!table.isEmpty()) {
 
                 for (final Object o : table.entrySet()) {
                     Entry entry = (Entry) o;
-                    List markupElSmooksResourceConfigurations = (List) entry.getValue();
-                    SmooksResourceConfiguration[] resourceConfigs = (SmooksResourceConfiguration[]) markupElSmooksResourceConfigurations
-                            .toArray(new SmooksResourceConfiguration[0]);
-                    SmooksResourceConfigurationSortComparator sortComparator = new SmooksResourceConfigurationSortComparator(profileSet);
+                    List markupElResourceConfigs = (List) entry.getValue();
+                    ResourceConfig[] resourceConfigs = (ResourceConfig[]) markupElResourceConfigs
+                            .toArray(new ResourceConfig[0]);
+                    ResourceConfigSortComparator sortComparator = new ResourceConfigSortComparator(profileSet);
 
                     Arrays.sort(resourceConfigs, sortComparator);
                     entry.setValue(new Vector(Arrays.asList(resourceConfigs)));
@@ -383,14 +383,14 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     }
 
     /**
-	 * Extract the ContentHandler instances from the SmooksResourceConfiguration table and add them to
+	 * Extract the ContentHandler instances from the ResourceConfig table and add them to
 	 * their respective tables.
 	 */
 	private void extractContentHandlers() {
 		ContentHandlerExtractionStrategy contentHandlerExtractionStrategy = new ContentHandlerExtractionStrategy(applicationContext);
-		SmooksResourceConfigurationTableIterator smooksResourceConfigurationTableIterator = new SmooksResourceConfigurationTableIterator(contentHandlerExtractionStrategy);
+		ResourceConfigTableIterator resourceConfigTableIterator = new ResourceConfigTableIterator(contentHandlerExtractionStrategy);
 
-        smooksResourceConfigurationTableIterator.iterate();
+        resourceConfigTableIterator.iterate();
     }
 
     /**
@@ -425,7 +425,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 		throw new IllegalStateException("Unsupported DTD spec definition [" + string + "]");
 	}
 
-    private void logExecutionEvent(SmooksResourceConfiguration resourceConfig, String message) {
+    private void logExecutionEvent(ResourceConfig resourceConfig, String message) {
         configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message));
     }
 
@@ -439,7 +439,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * ContentHandler extraction strategy.
 	 * @author tfennelly
 	 */
-	private final class ContentHandlerExtractionStrategy implements SmooksResourceConfigurationStrategy {
+	private final class ContentHandlerExtractionStrategy implements ResourceConfigStrategy {
 
         private final Registry registry;
 
@@ -447,11 +447,11 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             registry = applicationContext.getRegistry();
         }
 
-        public void applyStrategy(String elementName, SmooksResourceConfiguration resourceConfig) {
+        public void applyStrategy(String elementName, ResourceConfig resourceConfig) {
             applyContentDeliveryUnitStrategy(resourceConfig);
         }
 
-        private boolean applyContentDeliveryUnitStrategy(final SmooksResourceConfiguration resourceConfig) {
+        private boolean applyContentDeliveryUnitStrategy(final ResourceConfig resourceConfig) {
             // Try it as a Java class before trying anything else.  This is to
             // accomodate specification of the class in the standard
             // Java form e.g. java.lang.String Vs java/lang/String.class
@@ -508,22 +508,22 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 
         /**
 		 * Add a {@link ContentHandler} for the specified element and configuration.
-		 * @param smooksResourceConfiguration Configuration.
+		 * @param resourceConfig Configuration.
 		 * @param contentHandlerFactory CDU Creator class.
 		 * @return True if the CDU was added, otherwise false.
 		 */
-        private boolean addContentDeliveryUnit(SmooksResourceConfiguration smooksResourceConfiguration, ContentHandlerFactory<?> contentHandlerFactory) {
+        private boolean addContentDeliveryUnit(ResourceConfig resourceConfig, ContentHandlerFactory<?> contentHandlerFactory) {
             Object contentHandler;
 
             // Create the ContentHandler.
             try {
-                contentHandler = contentHandlerFactory.create(smooksResourceConfiguration);
+                contentHandler = contentHandlerFactory.create(resourceConfig);
             } catch (SmooksConfigurationException e) {
                 throw e;
             } catch (Throwable thrown) {
-                String message = "ContentHandlerFactory [" + contentHandlerFactory.getClass().getName() + "] unable to create resource processing instance for resource [" + smooksResourceConfiguration + "]. ";
+                String message = "ContentHandlerFactory [" + contentHandlerFactory.getClass().getName() + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
                 LOGGER.error(message + thrown.getMessage(), thrown);
-                configBuilderEvents.add(new ConfigBuilderEvent(smooksResourceConfiguration, message, thrown));
+                configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, message, thrown));
 
                 return false;
             }
@@ -533,16 +533,16 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             if (contentHandler instanceof Visitor) {
                 // Add the visitor.  No need to configure it as that should have been done by
                 // creator...
-                visitorBindings.add(new ContentHandlerBinding<>((Visitor) contentHandler, smooksResourceConfiguration));
+                visitorBindings.add(new ContentHandlerBinding<>((Visitor) contentHandler, resourceConfig));
             }
 
             // Content delivery units are allowed to dynamically add new configurations...
             if (contentHandler instanceof ConfigurationExpander) {
-                List<SmooksResourceConfiguration> additionalConfigs = ((ConfigurationExpander) contentHandler).expandConfigurations();
+                List<ResourceConfig> additionalConfigs = ((ConfigurationExpander) contentHandler).expandConfigurations();
                 if (additionalConfigs != null && !additionalConfigs.isEmpty()) {
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Adding expansion resource configurations created by: " + smooksResourceConfiguration);
-                        for (SmooksResourceConfiguration additionalConfig : additionalConfigs) {
+                        LOGGER.debug("Adding expansion resource configurations created by: " + resourceConfig);
+                        for (ResourceConfig additionalConfig : additionalConfigs) {
                             LOGGER.debug("\tAdding expansion resource configuration: " + additionalConfig);
                         }
                     }
@@ -561,13 +561,13 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
          * Process the supplied expansion configurations.
          * @param additionalConfigs Expansion configs.
          */
-        private void processExpansionConfigurations(List<SmooksResourceConfiguration> additionalConfigs) {
-            for (final SmooksResourceConfiguration smooksResourceConfiguration : additionalConfigs) {
-                applicationContext.getRegistry().registerSmooksResourceConfiguration(smooksResourceConfiguration);
+        private void processExpansionConfigurations(List<ResourceConfig> additionalConfigs) {
+            for (final ResourceConfig resourceConfig : additionalConfigs) {
+                applicationContext.getRegistry().registerResourceConfig(resourceConfig);
                 // Try adding it as a ContentHandler instance...
-                if (!applyContentDeliveryUnitStrategy(smooksResourceConfiguration)) {
+                if (!applyContentDeliveryUnitStrategy(resourceConfig)) {
                     // Else just add it to the main list...
-                    addResourceConfiguration(smooksResourceConfiguration);
+                    addResourceConfiguration(resourceConfig);
                 }
             }
         }
@@ -575,22 +575,22 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     }
 
     /**
-	 * Iterate over the SmooksResourceConfiguration table applying the constructor
-	 * supplied SmooksResourceConfigurationStrategy.
+	 * Iterate over the ResourceConfig table applying the constructor
+	 * supplied ResourceConfigStrategy.
 	 * @author tfennelly
 	 */
-	private class SmooksResourceConfigurationTableIterator {
+	private class ResourceConfigTableIterator {
 
 		/**
 		 * Iteration strategy.
 		 */
-		private final SmooksResourceConfigurationStrategy strategy;
+		private final ResourceConfigStrategy strategy;
 
 		/**
 		 * Private constructor.
 		 * @param strategy Strategy algorithm implementation.
 		 */
-		private SmooksResourceConfigurationTableIterator(SmooksResourceConfigurationStrategy strategy) {
+		private ResourceConfigTableIterator(ResourceConfigStrategy strategy) {
 			this.strategy = strategy;
 		}
 
@@ -598,8 +598,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 		 * Iterate over the table applying the strategy.
 		 */
         private void iterate() {
-            for (SmooksResourceConfiguration smooksResourceConfiguration : smooksResourceConfigurations) {
-                strategy.applyStrategy(smooksResourceConfiguration.getSelectorPath().getTargetElement(), smooksResourceConfiguration);
+            for (ResourceConfig resourceConfig : resourceConfigs) {
+                strategy.applyStrategy(resourceConfig.getSelectorPath().getTargetElement(), resourceConfig);
             }
         }
 	}
@@ -608,12 +608,12 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * Unitdef iteration strategy interface.
 	 * @author tfennelly
 	 */
-	private interface SmooksResourceConfigurationStrategy {
+	private interface ResourceConfigStrategy {
 		/**
 		 * Apply the strategy algorithm.
 		 * @param elementName The element name
-		 * @param unitDef The SmooksResourceConfiguration
+		 * @param unitDef The ResourceConfig
 		 */
-		void applyStrategy(String elementName, SmooksResourceConfiguration unitDef);
+		void applyStrategy(String elementName, ResourceConfig unitDef);
 	}
 }

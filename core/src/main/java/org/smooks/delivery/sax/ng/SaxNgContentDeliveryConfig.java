@@ -44,7 +44,7 @@ package org.smooks.delivery.sax.ng;
 
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.evaluators.equality.ElementIndexCounter;
 import org.smooks.cdr.xpath.evaluators.equality.IndexEvaluator;
@@ -184,7 +184,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         for (List<ContentHandlerBinding<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
             for (ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
-                SmooksResourceConfiguration resourceConfig = contentHandlerMap.getSmooksResourceConfiguration();
+                ResourceConfig resourceConfig = contentHandlerMap.getResourceConfig();
                 SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
 
                 if (selectorStep.accessesText()) {
@@ -213,7 +213,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
         for (ContentHandlerBinding<? extends Visitor> contentHandlerBinding : contentHandlerBindings) {
             final List<IndexEvaluator> indexEvaluators = new ArrayList<>();
 
-            for (SelectorStep selectorStep : contentHandlerBinding.getSmooksResourceConfiguration().getSelectorPath()) {
+            for (SelectorStep selectorStep : contentHandlerBinding.getResourceConfig().getSelectorPath()) {
                 indexEvaluators.clear();
                 selectorStep.getEvaluators(IndexEvaluator.class, indexEvaluators);
                 for (IndexEvaluator indexEvaluator : indexEvaluators) {
@@ -247,7 +247,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
             visitorMap.setBeforeVisitors(vbs);
         }
 
-        SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration(targetElementName);
+        ResourceConfig resourceConfig = new ResourceConfig(targetElementName);
 
         vbs.add(0, new ContentHandlerBinding(indexCounter, resourceConfig));
     }

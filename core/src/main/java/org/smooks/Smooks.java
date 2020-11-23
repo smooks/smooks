@@ -45,7 +45,7 @@ package org.smooks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.classpath.CascadingClassLoaderSet;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
@@ -98,7 +98,7 @@ import java.util.Properties;
  * perform some transformation/analysis operation on a message.  There are a number of prebuilt
  * and reuseable implemntations available as
  * "<a target="new" href="https://www.smooks.org#Smooks-smookscartridges">Smooks Cartridges</a>".</li>
- * <li>Write a {@link org.smooks.cdr.SmooksResourceConfiguration resource configuration} to target the {@link org.smooks.delivery.dom.DOMElementVisitor}/{@link org.smooks.delivery.sax.SAXElementVisitor}
+ * <li>Write a {@link ResourceConfig resource configuration} to target the {@link org.smooks.delivery.dom.DOMElementVisitor}/{@link org.smooks.delivery.sax.SAXElementVisitor}
  * implementation at the target fragment of the message being processed.</li>
  * <li>Apply the logic as follows:
  * <pre>
@@ -160,7 +160,7 @@ public class Smooks {
     /**
      * Public constructor.
      * <p/>
-     * Adds the set of {@link SmooksResourceConfiguration resources} via the {@link #addConfigurations(String)} method,
+     * Adds the set of {@link ResourceConfig resources} via the {@link #addConfigurations(String)} method,
      * which resolves the resourceURI parameter using a {@link org.smooks.resource.URIResourceLocator}.
      * <p/>
      * Additional resource configurations can be added through calls to
@@ -169,7 +169,7 @@ public class Smooks {
      * @param resourceURI XML resource configuration stream URI.
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
-     * @see SmooksResourceConfiguration
+     * @see ResourceConfig
      */
     public Smooks(String resourceURI) throws IOException, SAXException {
         this();
@@ -183,7 +183,7 @@ public class Smooks {
     /**
      * Public constructor.
      * <p/>
-     * Adds the set of {@link SmooksResourceConfiguration resources} via the {@link #addConfigurations(java.io.InputStream)}.
+     * Adds the set of {@link ResourceConfig resources} via the {@link #addConfigurations(java.io.InputStream)}.
      * <p/>
      * Additional resource configurations can be added through calls to
      * <code>addConfigurations</code> method set.
@@ -191,7 +191,7 @@ public class Smooks {
      * @param resourceConfigStream XML resource configuration stream.
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
-     * @see SmooksResourceConfiguration
+     * @see ResourceConfig
      */
     public Smooks(InputStream resourceConfigStream) throws IOException, SAXException {
         this();
@@ -242,9 +242,9 @@ public class Smooks {
      * @param readerConfigurator {@link ReaderConfigurator} instance.
      */
     public void setReaderConfig(ReaderConfigurator readerConfigurator) {
-        List<SmooksResourceConfiguration> configList = readerConfigurator.toConfig();
+        List<ResourceConfig> configList = readerConfigurator.toConfig();
 
-        for(SmooksResourceConfiguration config : configList) {
+        for(ResourceConfig config : configList) {
             addConfiguration(config);
         }
     }
@@ -266,8 +266,8 @@ public class Smooks {
      *
      * @param visitor The visitor implementation.
      */
-    public SmooksResourceConfiguration addVisitor(Visitor visitor) {
-        return addVisitor(visitor, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, null);
+    public ResourceConfig addVisitor(Visitor visitor) {
+        return addVisitor(visitor, ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, null);
     }
 
     /**
@@ -276,7 +276,7 @@ public class Smooks {
      * @param visitor The visitor implementation.
      * @param targetSelector The message fragment target selector.
      */
-    public SmooksResourceConfiguration addVisitor(Visitor visitor, String targetSelector) {
+    public ResourceConfig addVisitor(Visitor visitor, String targetSelector) {
         return addVisitor(visitor, targetSelector, null);
     }
 
@@ -287,7 +287,7 @@ public class Smooks {
      * @param targetSelector The message fragment target selector.
      * @param targetSelectorNS The message fragment target selector namespace.
      */
-    public SmooksResourceConfiguration addVisitor(Visitor visitor, String targetSelector, String targetSelectorNS) {
+    public ResourceConfig addVisitor(Visitor visitor, String targetSelector, String targetSelectorNS) {
         assertIsConfigurable();
         AssertArgument.isNotNull(visitor, "visitor");
         AssertArgument.isNotNull(targetSelector, "targetSelector");
@@ -295,7 +295,7 @@ public class Smooks {
         ContentHandlerBinding<Visitor> contentHandlerBinding = new ContentHandlerBinding<>(visitor, targetSelector, targetSelectorNS, applicationContext.getRegistry());
         visitorBindings.add(contentHandlerBinding);
         
-        return contentHandlerBinding.getSmooksResourceConfiguration();
+        return contentHandlerBinding.getResourceConfig();
     }
 
     /**
@@ -308,7 +308,7 @@ public class Smooks {
         getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitorAppender, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry())));
         
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorAppender.addVisitors()) {
-            getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitorBinding.getContentHandler(), new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), visitorBinding.getSmooksResourceConfiguration(), visitorBinding.getContentHandler())));
+            getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitorBinding.getContentHandler(), new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), visitorBinding.getResourceConfig(), visitorBinding.getContentHandler())));
             this.visitorBindings.add(visitorBinding);
         }
     }
@@ -321,10 +321,10 @@ public class Smooks {
      *
      * @param resourceConfig The resource configuration to be added.
      */
-    public void addConfiguration(SmooksResourceConfiguration resourceConfig) {
+    public void addConfiguration(ResourceConfig resourceConfig) {
         AssertArgument.isNotNull(resourceConfig, "resourceConfig");
         assertIsConfigurable();
-        applicationContext.getRegistry().registerSmooksResourceConfiguration(resourceConfig);
+        applicationContext.getRegistry().registerResourceConfig(resourceConfig);
     }
 
     /**

@@ -43,7 +43,7 @@
 package org.smooks.delivery.dom;
 
 import org.smooks.container.ExecutionContext;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.w3c.dom.Element;
 
@@ -58,6 +58,6 @@ public class ConfigurableVisitor implements DOMElementVisitor {
     public void visitAfter(Element element, ExecutionContext executionContext) {
     }
 
-    public void setConfiguration(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException {
+    public void setConfiguration(ResourceConfig resourceConfig) throws SmooksConfigurationException {
     }
 }

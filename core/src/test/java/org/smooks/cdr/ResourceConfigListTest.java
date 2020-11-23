@@ -42,37 +42,46 @@
  */
 package org.smooks.cdr;
 
-import org.smooks.SmooksException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-import java.io.InputStream;
+/**
+ *
+ * @author tfennelly
+ */
+public class ResourceConfigListTest {
 
-public class SystemSmooksResourceConfigurationListFactory implements SmooksResourceConfigurationListFactory {
+	@Test
+    public void testConstructor() {
+        testBadArgs(null);
+        testBadArgs(" ");
 
-    private final ClassLoader classLoader;
-    private final String resourceFile;
+        ResourceConfigList list = new ResourceConfigList("list-name");
+        assertEquals("list-name", list.getName());
+    }
 
-    public SystemSmooksResourceConfigurationListFactory(String resourceFile, ClassLoader classLoader) {
-        this.classLoader = classLoader;
-        this.resourceFile = resourceFile;
+    private void testBadArgs(String name) {
+        try {
+            new ResourceConfigList(name);
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
+            // OK
+        }
     }
     
-    @Override
-    public SmooksResourceConfigurationList create() {
-        InputStream resource = getClass().getResourceAsStream(resourceFile);
-
-        if (resource == null) {
-            throw new IllegalStateException("Failed to load " + resourceFile);
-        }
-        try {
-            SmooksResourceConfigurationList smooksResourceConfigurationList = XMLConfigDigester.digestConfig(resource, resourceFile, classLoader);
-            for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-                smooksResourceConfigurationList.get(i).setDefaultResource(true);
-            }
-            smooksResourceConfigurationList.setSystemConfigList(true);
-
-            return smooksResourceConfigurationList;
-        } catch (Exception e) {
-            throw new SmooksException("Error processing resource file '" + resourceFile + "'.", e);
-        }
+    @Test
+    public void testAdd() {
+        ResourceConfigList list = new ResourceConfigList("list-name");
+        
+        assertTrue(list.isEmpty());
+        list.add(new ResourceConfig("*", "a/b.zap"));
+        assertFalse(list.isEmpty());
+        assertEquals(1, list.size());
+        assertEquals("a/b.zap", list.get(0).getResource());
+        
+        
+        list.add(new ResourceConfig("*", "c/d.zap"));
+        assertEquals(2, list.size());        
+        assertEquals("c/d.zap", list.get(1).getResource());
     }
 }

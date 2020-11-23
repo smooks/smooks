@@ -42,7 +42,7 @@
  */
 package org.smooks.injector;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.delivery.DomToXmlWriter;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.sax.SAXToXMLWriter;
@@ -60,20 +60,20 @@ public class Scope implements Map<Object, Object> {
 
     private final Map<Object, Object> scope = new HashMap<>();
     
-    public Scope(final Registry registry, final SmooksResourceConfiguration smooksResourceConfiguration, final Object instance) {
+    public Scope(final Registry registry, final ResourceConfig resourceConfig, final Object instance) {
         this(registry);
-        scope.put(SmooksResourceConfiguration.class, smooksResourceConfiguration);
-        for (String parameterName : smooksResourceConfiguration.getParameters().keySet()) {
-            scope.put(parameterName, smooksResourceConfiguration.getParameterValue(parameterName));
+        scope.put(ResourceConfig.class, resourceConfig);
+        for (String parameterName : resourceConfig.getParameters().keySet()) {
+            scope.put(parameterName, resourceConfig.getParameterValue(parameterName));
         }
 
-        final boolean entitiesRewrite = Boolean.parseBoolean(smooksResourceConfiguration.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true"));
+        final boolean entitiesRewrite = Boolean.parseBoolean(resourceConfig.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true"));
         if (instance instanceof SAXVisitor) {
             scope.put(SAXToXMLWriter.class, new SAXToXMLWriter((SAXVisitor) instance, entitiesRewrite));
         }
         
         if (instance instanceof SaxNgVisitor) {
-            final boolean closeEmptyElements = Boolean.parseBoolean(smooksResourceConfiguration.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "true"));
+            final boolean closeEmptyElements = Boolean.parseBoolean(resourceConfig.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "true"));
             scope.put(DomToXmlWriter.class, new DomToXmlWriter(closeEmptyElements, entitiesRewrite));
         }
     }
@@ -82,7 +82,7 @@ public class Scope implements Map<Object, Object> {
         scope.put(Registry.class, registry);
         scope.putAll(registry.lookup(registryEntries -> registryEntries));
 
-        final SmooksResourceConfiguration globalParams = registry.lookup(new GlobalParamsLookup(registry));
+        final ResourceConfig globalParams = registry.lookup(new GlobalParamsLookup(registry));
         for (String parameterName : globalParams.getParameters().keySet()) {
             scope.put(parameterName, globalParams.getParameterValue(parameterName));
         }

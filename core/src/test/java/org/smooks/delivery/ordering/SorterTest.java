@@ -45,7 +45,7 @@ package org.smooks.delivery.ordering;
 import org.junit.Before;
 import org.junit.Test;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.ordering.testvisitors.TestConsumer;
@@ -230,7 +230,7 @@ public class SorterTest {
     }
 
     private void addVisitor(Visitor visitor) {
-        ContentHandlerBinding<Visitor> contentHandlerBinding = new ContentHandlerBinding<>(visitor, new SmooksResourceConfiguration("" + sortedContentHandlerBindings.size(), visitor.getClass().getName()));
+        ContentHandlerBinding<Visitor> contentHandlerBinding = new ContentHandlerBinding<>(visitor, new ResourceConfig("" + sortedContentHandlerBindings.size(), visitor.getClass().getName()));
         sortedContentHandlerBindings.add(contentHandlerBinding);
         unsortedContentHandlerBindings.add(contentHandlerBinding);
     }

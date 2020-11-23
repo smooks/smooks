@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
 import org.smooks.cdr.xpath.evaluators.XPathExpressionEvaluator;
 import org.smooks.container.ExecutionContext;
@@ -91,7 +91,7 @@ public class SelectorPath implements List<SelectorStep> {
     private List<SelectorStep> selectorSteps = new ArrayList<>();
 
     /**
-     * Get the selector definition for this SmooksResourceConfiguration.
+     * Get the selector definition for this ResourceConfig.
      *
      * @return The selector definition.
      */
@@ -110,9 +110,9 @@ public class SelectorPath implements List<SelectorStep> {
 
         // If there's a "#document" token in the selector, but it's not at the very start,
         // then we have an invalid selector...
-        int docSelectorIndex = selector.trim().indexOf(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR);
+        int docSelectorIndex = selector.trim().indexOf(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR);
         if (docSelectorIndex > 0) {
-            throw new SmooksConfigurationException("Invalid selector '" + selector + "'.  '" + SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR + "' token can only exist at the start of the selector.");
+            throw new SmooksConfigurationException("Invalid selector '" + selector + "'.  '" + ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR + "' token can only exist at the start of the selector.");
         }
 
         selectorSteps.clear();
@@ -127,7 +127,7 @@ public class SelectorPath implements List<SelectorStep> {
         // In case it's a legacy selector that we don't support...
 
         if (selector.startsWith("/")) {
-            selector = SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR + selector;
+            selector = ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR + selector;
         }
 
         String[] contextualSelector = parseSelector(selector);

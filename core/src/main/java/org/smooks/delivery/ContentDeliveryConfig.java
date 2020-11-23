@@ -42,8 +42,9 @@
  */
 package org.smooks.delivery;
 
+import org.smooks.cdr.ResourceConfigSortComparator;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.ordering.Producer;
@@ -74,44 +75,44 @@ public interface ContentDeliveryConfig {
     String SMOOKS_VISITORS_SORT = "smooks.visitors.sort";
 
     /**
-	 * Get the list of {@link SmooksResourceConfiguration}s for the specified selector definition.
+	 * Get the list of {@link ResourceConfig}s for the specified selector definition.
 	 * <p/>
-	 * This list will be preselected and {@link org.smooks.cdr.SmooksResourceConfigurationSortComparator preordered}
+	 * This list will be preselected and {@link ResourceConfigSortComparator preordered}
 	 * for the target execution context.
-	 * @param selector Configuration {@link org.smooks.cdr.SmooksResourceConfiguration#getSelector() selector}.  This
+	 * @param selector Configuration {@link ResourceConfig#getSelector() selector}.  This
 	 * parameter is treated case incensitively.
-	 * @return List of {@link SmooksResourceConfiguration} instances, or null if no {@link SmooksResourceConfiguration}s are 
+	 * @return List of {@link ResourceConfig} instances, or null if no {@link ResourceConfig}s are 
 	 * defined under that selector (for the device).
 	 * @see #getObjects(String)
 	 */
-	List<SmooksResourceConfiguration> getSmooksResourceConfigurations(String selector);
+	List<ResourceConfig> getResourceConfigs(String selector);
 
 	/**
-	 * Get the {@link SmooksResourceConfiguration} map for the target execution context.
+	 * Get the {@link ResourceConfig} map for the target execution context.
 	 * <p/>
-	 * This Map will be {@link org.smooks.cdr.SmooksResourceConfigurationSortComparator preordered}
+	 * This Map will be {@link ResourceConfigSortComparator preordered}
 	 * for the target execution context.
 	 * 
-	 * @return {@link SmooksResourceConfiguration} map for the target execution context, keyed by the configuration 
-	 * {@link org.smooks.cdr.SmooksResourceConfiguration#getSelector() selector}, with each value being a
-	 * {@link List} of preordered {@link SmooksResourceConfiguration} instances.
+	 * @return {@link ResourceConfig} map for the target execution context, keyed by the configuration 
+	 * {@link ResourceConfig#getSelector() selector}, with each value being a
+	 * {@link List} of preordered {@link ResourceConfig} instances.
 	 */
-	Map<String, List<SmooksResourceConfiguration>> getSmooksResourceConfigurations();
+	Map<String, List<ResourceConfig>> getResourceConfigs();
 	
 	/**
-	 * Get a list of {@link Object}s from the {@link SmooksResourceConfiguration}s specified by the selector.
+	 * Get a list of {@link Object}s from the {@link ResourceConfig}s specified by the selector.
 	 * <p/>
-	 * Gets the {@link SmooksResourceConfiguration}s specified for the selector and attempts to instanciate
-	 * a Java class instance from the resource specified by each of the {@link SmooksResourceConfiguration}s.
+	 * Gets the {@link ResourceConfig}s specified for the selector and attempts to instanciate
+	 * a Java class instance from the resource specified by each of the {@link ResourceConfig}s.
 	 * <p/>
-	 * Implementations should use {@link Registry#getObject(org.smooks.cdr.SmooksResourceConfiguration)} to
+	 * Implementations should use {@link Registry#getObject(ResourceConfig)} to
 	 * construct each object.
 	 * @param selector selector attribute value from the .cdrl file in the .cdrar.  This 
 	 * parameter is treated case incensitively.
 	 * @return List of Object instances.  An empty list is returned where no 
 	 * selectors exist.
-	 * @see Registry#getObject(org.smooks.cdr.SmooksResourceConfiguration)
-	 * @see #getSmooksResourceConfigurations(String)
+	 * @see Registry#getObject(ResourceConfig)
+	 * @see #getResourceConfigs(String)
 	 */
 	List getObjects(String selector);
 

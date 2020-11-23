@@ -42,7 +42,7 @@
  */
 package org.smooks.event;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 
 /**
  * Smooks resource based event.
@@ -51,5 +51,5 @@ import org.smooks.cdr.SmooksResourceConfiguration;
  */
 public interface ResourceBasedEvent {
 
-    SmooksResourceConfiguration getResourceConfig();
+    ResourceConfig getResourceConfig();
 }

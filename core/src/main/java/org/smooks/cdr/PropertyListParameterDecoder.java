@@ -67,14 +67,14 @@ import java.util.Properties;
  * <p/>
  * The code for accessing this parameter value:
  * <pre>
- * {@link org.smooks.cdr.Parameter} param = {@link org.smooks.cdr.SmooksResourceConfiguration resourceConfig}.{@link org.smooks.cdr.SmooksResourceConfiguration#getParameter(String) getParameter("magic-properties-param")};
+ * {@link org.smooks.cdr.Parameter} param = {@link ResourceConfig resourceConfig}.{@link ResourceConfig#getParameter(String) getParameter("magic-properties-param")};
  * {@link java.util.Properties} properties = (Properties)param.{@link org.smooks.cdr.Parameter#getValue(ContentDeliveryConfig) getValue}();
  * </pre>
  * <p/>
  * Note, we will make this filter easier in the next release.  You'll be able to call a method such
- * as "getDecodedParameter" on the {@link SmooksResourceConfiguration}, returning a decoded parameter Object.
+ * as "getDecodedParameter" on the {@link ResourceConfig}, returning a decoded parameter Object.
  * 
- * @see org.smooks.cdr.SmooksResourceConfiguration
+ * @see ResourceConfig
  * @author tfennelly
  */
 public class PropertyListParameterDecoder extends ParameterDecoder<String> {

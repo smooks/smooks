@@ -42,6 +42,8 @@
  */
 package org.smooks.delivery.annotation;
 
+import org.smooks.cdr.ResourceConfig;
+
 import java.lang.annotation.*;
 
 /**
@@ -56,7 +58,7 @@ import java.lang.annotation.*;
 public @interface VisitBeforeIf {
 
     /**
-     * The {@link org.smooks.cdr.SmooksResourceConfiguration} condition that
+     * The {@link ResourceConfig} condition that
      * must evaluate to true in order for the visitBefore method to be called.
      * 
      * @return An inline <a href="http://mvel.codehaus.org/">MVEL</a> expression,

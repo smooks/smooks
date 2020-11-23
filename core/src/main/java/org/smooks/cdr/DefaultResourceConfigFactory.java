@@ -50,12 +50,12 @@ import org.w3c.dom.Node;
 
 import java.util.Properties;
 
-public class DefaultSmooksResourceConfigurationFactory implements SmooksResourceConfigurationFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSmooksResourceConfigurationFactory.class);
+public class DefaultResourceConfigFactory implements ResourceConfigFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultResourceConfigFactory.class);
 
     @Override
     @Deprecated
-    public SmooksResourceConfiguration createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element) {
+    public ResourceConfig createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element) {
         String selector = DomUtils.getAttributeValue(element, "selector");
         String namespace = DomUtils.getAttributeValue(element, "selector-namespace");
         String targetProfile = DomUtils.getAttributeValue(element, "target-profile");
@@ -68,29 +68,29 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
             resource = null;
         }
 
-        final SmooksResourceConfiguration smooksResourceConfiguration = new SmooksResourceConfiguration((selector != null ? selector : defaultSelector),
+        final ResourceConfig resourceConfig = new ResourceConfig((selector != null ? selector : defaultSelector),
                 (namespace != null ? namespace : defaultNamespace),
                 (targetProfile != null ? targetProfile : defaultProfile),
                 resource);
-        smooksResourceConfiguration.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
+        resourceConfig.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
         
         if (resourceElement != null) {
-            smooksResourceConfiguration.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));
+            resourceConfig.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));
         }
 
         if (resource == null) {
-            if (smooksResourceConfiguration.getParameters("restype") != null) {
-                LOGGER.debug("Resource 'null' for resource config: " + smooksResourceConfiguration + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
+            if (resourceConfig.getParameters("restype") != null) {
+                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
             } else {
-                LOGGER.debug("Resource 'null' for resource config: " + smooksResourceConfiguration + ". This is not invalid!");
+                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
             }
         }
 
-        return smooksResourceConfiguration;
+        return resourceConfig;
     }
 
     @Override
-    public SmooksResourceConfiguration createConfiguration(String defaultProfile, Element element) {
+    public ResourceConfig createConfiguration(String defaultProfile, Element element) {
         String selector = DomUtils.getAttributeValue(element, "selector");
         String targetProfile = DomUtils.getAttributeValue(element, "target-profile");
         Element resourceElement = DomUtils.getElementByTagName(element, "resource");
@@ -102,22 +102,22 @@ public class DefaultSmooksResourceConfigurationFactory implements SmooksResource
             resource = null;
         }
 
-        final SmooksResourceConfiguration smooksResourceConfiguration = new SmooksResourceConfiguration(selector, (targetProfile != null ? targetProfile : defaultProfile), resource);
-        smooksResourceConfiguration.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
+        final ResourceConfig resourceConfig = new ResourceConfig(selector, (targetProfile != null ? targetProfile : defaultProfile), resource);
+        resourceConfig.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
 
         if (resourceElement != null) {
-            smooksResourceConfiguration.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));
+            resourceConfig.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));
         }
 
         if (resource == null) {
-            if (smooksResourceConfiguration.getParameters("restype") != null) {
-                LOGGER.debug("Resource 'null' for resource config: " + smooksResourceConfiguration + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
+            if (resourceConfig.getParameters("restype") != null) {
+                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
             } else {
-                LOGGER.debug("Resource 'null' for resource config: " + smooksResourceConfiguration + ". This is not invalid!");
+                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
             }
         }
 
-        return smooksResourceConfiguration;
+        return resourceConfig;
     }
 
     private Properties getNamespaces(Element element) {

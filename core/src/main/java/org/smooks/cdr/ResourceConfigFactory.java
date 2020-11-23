@@ -42,15 +42,20 @@
  */
 package org.smooks.cdr;
 
+import org.w3c.dom.Element;
+
 /**
- * SmooksResourceConfiguration Factory.
+ * ResourceConfig Factory.
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public interface SmooksResourceConfigurationListFactory {
+public interface ResourceConfigFactory {
+
+    @Deprecated
+    ResourceConfig createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element);
 
     /**
      * Create the configuration instance.
      * @return The configuration instance.
      */
-    SmooksResourceConfigurationList create();
+    ResourceConfig createConfiguration(String defaultProfile, Element element);
 }

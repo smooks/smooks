@@ -45,7 +45,8 @@ package org.smooks.delivery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ParameterAccessor;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigSortComparator;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.dtd.DTDStore;
@@ -75,10 +76,10 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      */
     private ApplicationContext applicationContext;
     /**
-     * Table of SmooksResourceConfiguration instances keyed by selector value. Each table entry
-     * contains a List of SmooksResourceConfiguration instances.
+     * Table of ResourceConfig instances keyed by selector value. Each table entry
+     * contains a List of ResourceConfig instances.
      */
-    private Map<String, List<SmooksResourceConfiguration>> resourceConfigTable = new LinkedHashMap<String, List<SmooksResourceConfiguration>>();
+    private Map<String, List<ResourceConfig>> resourceConfigTable = new LinkedHashMap<String, List<ResourceConfig>>();
     /**
      * Table of Object instance lists keyed by selector. Each table entry
      * contains a List of Objects.
@@ -106,38 +107,38 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     }
 
     /**
-     * Get the list of {@link org.smooks.cdr.SmooksResourceConfiguration}s for the specified selector definition.
+     * Get the list of {@link ResourceConfig}s for the specified selector definition.
      * @param selector The configuration "selector" attribute value from the .cdrl file in the .cdrar.
-     * @return List of SmooksResourceConfiguration instances, or null.
+     * @return List of ResourceConfig instances, or null.
      */
-    public List getSmooksResourceConfigurations(String selector) {
+    public List getResourceConfigs(String selector) {
         return resourceConfigTable.get(selector);
     }
 
-    public void setSmooksResourceConfigurations(Map<String, List<SmooksResourceConfiguration>> resourceConfigTable) {
+    public void setResourceConfigs(Map<String, List<ResourceConfig>> resourceConfigTable) {
         this.resourceConfigTable = resourceConfigTable;
     }
 
     /**
-     * Get the {@link org.smooks.cdr.SmooksResourceConfiguration} map for the target execution context.
+     * Get the {@link ResourceConfig} map for the target execution context.
      * <p/>
-     * This Map will be {@link org.smooks.cdr.SmooksResourceConfigurationSortComparator preordered}
+     * This Map will be {@link ResourceConfigSortComparator preordered}
      * for the target execution context.
      *
-     * @return {@link org.smooks.cdr.SmooksResourceConfiguration} map for the target execution context, keyed by the configuration
-     * {@link org.smooks.cdr.SmooksResourceConfiguration#getSelector() selector}, with each value being a
-     * {@link List} of preordered {@link org.smooks.cdr.SmooksResourceConfiguration} instances.
+     * @return {@link ResourceConfig} map for the target execution context, keyed by the configuration
+     * {@link ResourceConfig#getSelector() selector}, with each value being a
+     * {@link List} of preordered {@link ResourceConfig} instances.
      */
-    public Map<String, List<SmooksResourceConfiguration>> getSmooksResourceConfigurations() {
+    public Map<String, List<ResourceConfig>> getResourceConfigs() {
         return resourceConfigTable;
     }
 
     private static final Vector EMPTY_LIST = new Vector();
 
     /**
-     * Get a list {@link Object}s from the supplied {@link org.smooks.cdr.SmooksResourceConfiguration} selector value.
+     * Get a list {@link Object}s from the supplied {@link ResourceConfig} selector value.
      * <p/>
-     * Uses {@link Registry#getObject(org.smooks.cdr.SmooksResourceConfiguration)} to construct the object.
+     * Uses {@link Registry#getObject(ResourceConfig)} to construct the object.
      * @param selector selector attribute value from the .cdrl file in the .cdrar.
      * @return List of Object instances.  An empty list is returned where no
      * selectors exist.
@@ -157,8 +158,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
                 }
 
                 for (final Object unitDef : unitDefs) {
-                    SmooksResourceConfiguration smooksResourceConfiguration = (SmooksResourceConfiguration) unitDef;
-                    objects.add(applicationContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(smooksResourceConfiguration));
+                    ResourceConfig resourceConfig    = (ResourceConfig) unitDef;
+                    objects.add(applicationContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(resourceConfig));
                 }
             } else {
                 objects = EMPTY_LIST;
@@ -289,10 +290,10 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
         for(Entry<String, List<ContentHandlerBinding<T>>> entry : entries) {
         	ContentHandlerBinding<T> configMap = entry.getValue().get(0);
-        	SmooksResourceConfiguration resourceConfig = configMap.getSmooksResourceConfiguration();
+        	ResourceConfig resourceConfig = configMap.getResourceConfig();
 
         	if(!resourceConfig.isDefaultResource()) {
-	        	if(resourceConfig.getSelectorPath().getTargetElement().equals(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+	        	if(resourceConfig.getSelectorPath().getTargetElement().equals(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
 	        		T visitor = configMap.getContentHandler();
 	        		if(visitor instanceof FilterBypass) {
 	        			return (FilterBypass) visitor;

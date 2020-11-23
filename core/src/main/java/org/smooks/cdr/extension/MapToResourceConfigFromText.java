@@ -45,7 +45,7 @@ package org.smooks.cdr.extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.xml.DomUtils;
@@ -56,10 +56,10 @@ import java.util.EmptyStackException;
 import java.util.Optional;
 
 /**
- * Map a property value onto the current {@link org.smooks.cdr.SmooksResourceConfiguration} based on an
+ * Map a property value onto the current {@link ResourceConfig} based on an
  * elements text content.
  * <p/>
- * The value is set on the {@link org.smooks.cdr.SmooksResourceConfiguration} returned from the top
+ * The value is set on the {@link ResourceConfig} returned from the top
  * of the {@link ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -78,7 +78,7 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
     private Optional<String> defaultValue;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        SmooksResourceConfiguration config;
+        ResourceConfig config;
         String value = DomUtils.getAllText(element, false);
         String mapToPropertyName = mapTo.orElse(null);
 
@@ -92,7 +92,7 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
         try {
             config = ExtensionContext.getExtensionContext(executionContext).getResourceStack().peek();
         } catch (EmptyStackException e) {
-            throw new SmooksException("No SmooksResourceConfiguration available in ExtensionContext stack.  Unable to set SmooksResourceConfiguration property '" + mapToPropertyName + "' with element text value.");
+            throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + mapToPropertyName + "' with element text value.");
         }
 
         if (value == null) {

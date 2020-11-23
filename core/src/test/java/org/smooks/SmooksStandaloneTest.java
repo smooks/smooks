@@ -45,7 +45,7 @@ package org.smooks;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.standalone.PreconfiguredSmooks;
 import org.smooks.profile.DefaultProfileSet;
@@ -87,13 +87,13 @@ public class SmooksStandaloneTest {
         SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
-        SmooksResourceConfiguration profile1AndNotProfile3SmooksResourceConfiguration = new SmooksResourceConfiguration("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
-        profile1AndNotProfile3SmooksResourceConfiguration.setParameter("new-name", "xxx");
-        smooks.getApplicationContext().getRegistry().registerSmooksResourceConfiguration(profile1AndNotProfile3SmooksResourceConfiguration);
+        ResourceConfig profile1AndNotProfile3ResourceConfig = new ResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
+        profile1AndNotProfile3ResourceConfig.setParameter("new-name", "xxx");
+        smooks.getApplicationContext().getRegistry().registerResourceConfig(profile1AndNotProfile3ResourceConfig);
 
-        SmooksResourceConfiguration profile2SmooksResourceConfiguration = new SmooksResourceConfiguration("aaa", "profile2", RenameElementTrans.class.getName());
-        profile2SmooksResourceConfiguration.setParameter("new-name", "zzz");
-        smooks.getApplicationContext().getRegistry().registerSmooksResourceConfiguration(profile2SmooksResourceConfiguration);
+        ResourceConfig profile2ResourceConfig = new ResourceConfig("aaa", "profile2", RenameElementTrans.class.getName());
+        profile2ResourceConfig.setParameter("new-name", "zzz");
+        smooks.getApplicationContext().getRegistry().registerResourceConfig(profile2ResourceConfig);
 
         // Transform the same message for each useragent...
         String message = "<aaa><bbb>888</bbb><ccc>999</ccc></aaa>";
@@ -116,12 +116,12 @@ public class SmooksStandaloneTest {
         SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
-        SmooksResourceConfiguration resourceConfig = new SmooksResourceConfiguration("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
+        ResourceConfig resourceConfig = new ResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "xxx");
-        smooks.getApplicationContext().getRegistry().registerSmooksResourceConfiguration(resourceConfig);
-        resourceConfig = new SmooksResourceConfiguration("aaa", "profile2", RenameElementTrans.class.getName());
+        smooks.getApplicationContext().getRegistry().registerResourceConfig(resourceConfig);
+        resourceConfig = new ResourceConfig("aaa", "profile2", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "zzz");
-        smooks.getApplicationContext().getRegistry().registerSmooksResourceConfiguration(resourceConfig);
+        smooks.getApplicationContext().getRegistry().registerResourceConfig(resourceConfig);
 
         // Transform the same message for each useragent...
         String message = "<aaa><bbb>888</bbb><ccc>999</ccc></aaa>";

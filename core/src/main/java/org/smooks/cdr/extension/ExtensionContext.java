@@ -66,34 +66,34 @@ public class ExtensionContext {
     private final String defaultProfile;
     private final ExpressionEvaluator defaultConditionEvaluator;
 
-    private final Stack<SmooksResourceConfiguration> resourceStack = new Stack<SmooksResourceConfiguration>() {
+    private final Stack<ResourceConfig> resourceStack = new Stack<ResourceConfig>() {
         @Override
-        public SmooksResourceConfiguration push(SmooksResourceConfiguration smooksResourceConfiguration) {
+        public ResourceConfig push(ResourceConfig resourceConfiguration) {
             if(!isEmpty()) {
-                smooksResourceConfiguration.addChangeListener(resChangeListener);
+                resourceConfiguration.addChangeListener(resChangeListener);
             }
-            return super.push(smooksResourceConfiguration);
+            return super.push(resourceConfiguration);
         }
 
         @Override
-        public SmooksResourceConfiguration pop() {
-            SmooksResourceConfiguration smooksResourceConfiguration = super.pop();
+        public ResourceConfig pop() {
+            ResourceConfig resourceConfig = super.pop();
             if(!isEmpty()) {
-                smooksResourceConfiguration.removeChangeListener(resChangeListener);
+                resourceConfig.removeChangeListener(resChangeListener);
             }
-            return smooksResourceConfiguration;
+            return resourceConfig;
         }
     };
-    private final SmooksResourceConfigurationChangeListener resChangeListener = new SmooksResourceConfigurationChangeListener() {
-        public void changed(SmooksResourceConfiguration configuration) {
+    private final ResourceConfigChangeListener resChangeListener = new ResourceConfigChangeListener() {
+        public void changed(ResourceConfig configuration) {
             String selector = configuration.getSelectorPath().getSelector();
             if(selector != null && selector.startsWith("#/")) {
-                SmooksResourceConfiguration parentResource = resourceStack.get(resourceStack.size() - 2);
+                ResourceConfig parentResource = resourceStack.get(resourceStack.size() - 2);
                 configuration.setSelector(parentResource.getSelectorPath().getSelector() + selector.substring(1));
             }
         }
     };
-    private final List<SmooksResourceConfiguration> resources = new ArrayList<SmooksResourceConfiguration>();
+    private final List<ResourceConfig> resources = new ArrayList<ResourceConfig>();
 
     /**
      * Public constructor.
@@ -137,7 +137,7 @@ public class ExtensionContext {
      *
      * @param resource The resource to be added.
      */
-    public void addResource(SmooksResourceConfiguration resource) {
+    public void addResource(ResourceConfig resource) {
         resourceStack.push(resource);
         resources.add(resource);
     }
@@ -150,25 +150,25 @@ public class ExtensionContext {
      *
      * @param resource The resource to be added.
      */
-    public void addResourceTemplate(SmooksResourceConfiguration resource) {
+    public void addResourceTemplate(ResourceConfig resource) {
         resourceStack.push(resource);
     }
 
     /**
      * Get the resource stack.
      * @return The resource stack.
-     * @see #addResource(org.smooks.cdr.SmooksResourceConfiguration)
+     * @see #addResource(ResourceConfig)
      */
-    public Stack<SmooksResourceConfiguration> getResourceStack() {
+    public Stack<ResourceConfig> getResourceStack() {
         return resourceStack;
     }
 
     /**
      * Get the resource list.
      * @return The resource list.
-     * @see #addResource(org.smooks.cdr.SmooksResourceConfiguration)
+     * @see #addResource(ResourceConfig)
      */
-    public List<SmooksResourceConfiguration> getResources() {
+    public List<ResourceConfig> getResources() {
         return resources;
     }
     
@@ -180,11 +180,11 @@ public class ExtensionContext {
      * 
      * @return The active resource configuration list.
      */
-    public SmooksResourceConfigurationList getResourceList() {
+    public ResourceConfigList getResourceList() {
     	return xmlConfigDigester.getResourceList();
     }
 
-    public SmooksResourceConfiguration getCurrentConfig() {
+    public ResourceConfig getCurrentConfig() {
         if(resourceStack.isEmpty()) {
             return null;
         } else {
@@ -214,9 +214,9 @@ public class ExtensionContext {
         return defaultConditionEvaluator;
     }
 
-	public SmooksResourceConfiguration getResourceByName(String name) {
+	public ResourceConfig getResourceByName(String name) {
 		for(int i = resourceStack.size() - 1; i >= 0; i--) {
-			SmooksResourceConfiguration config = resourceStack.get(i);
+			ResourceConfig config = resourceStack.get(i);
 			String resourceName = config.getResource();
 			if(name.equals(resourceName)) {
 				return config;
@@ -235,7 +235,7 @@ public class ExtensionContext {
 	 * @param searchCriteria The resource lookup criteria.
 	 * @return List of matches resources, or an empty List if no matches are found.
 	 */
-	public List<SmooksResourceConfiguration> lookupResource(ConfigSearch searchCriteria) {
+	public List<ResourceConfig> lookupResource(ConfigSearch searchCriteria) {
 		return xmlConfigDigester.getResourceList().lookupResource(searchCriteria);
 	}
 }

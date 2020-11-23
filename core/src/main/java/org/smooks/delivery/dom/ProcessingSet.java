@@ -42,7 +42,7 @@
  */
 package org.smooks.delivery.dom;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.delivery.ContentHandlerBinding;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class ProcessingSet {
 	 * @param resourceConfig Corresponding resource config.
 	 */
 	@SuppressWarnings("unchecked")
-	public void addProcessingUnit(DOMElementVisitor processingUnit, SmooksResourceConfiguration resourceConfig) {
+	public void addProcessingUnit(DOMElementVisitor processingUnit, ResourceConfig resourceConfig) {
         ContentHandlerBinding contentHandlerBinding = new ContentHandlerBinding(processingUnit, resourceConfig);
         processingUnits.add(contentHandlerBinding);
 	}

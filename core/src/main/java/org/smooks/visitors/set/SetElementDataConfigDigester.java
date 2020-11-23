@@ -44,7 +44,7 @@ package org.smooks.visitors.set;
 
 import org.smooks.SmooksException;
 import org.smooks.cdr.Parameter;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitAfter;
@@ -58,7 +58,7 @@ public class SetElementDataConfigDigester implements DOMVisitAfter {
 
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        SmooksResourceConfiguration config = ExtensionContext.getExtensionContext(executionContext).getCurrentConfig();
+        ResourceConfig config = ExtensionContext.getExtensionContext(executionContext).getCurrentConfig();
 
         config.setParameter(new Parameter(SetElementData.ATTRIBUTE_DATA, "##value_as_xml_element").setXML(element));
     }

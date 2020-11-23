@@ -59,7 +59,7 @@ public class MockContentDeliveryConfig extends DOMContentDeliveryConfig {
   private final Map objectsHash = new LinkedHashMap();
 
   public MockContentDeliveryConfig() {
-    setSmooksResourceConfigurations(new LinkedHashMap<>());
+    setResourceConfigs(new LinkedHashMap<>());
     setAssemblyVisitBefores(new ContentHandlerBindings());
     setAssemblyVisitAfters(new ContentHandlerBindings());
     setProcessingVisitBefores(new ContentHandlerBindings());

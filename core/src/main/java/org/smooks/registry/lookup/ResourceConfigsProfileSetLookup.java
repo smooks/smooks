@@ -42,30 +42,42 @@
  */
 package org.smooks.registry.lookup;
 
-import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigList;
+import org.smooks.profile.ProfileSet;
 import org.smooks.registry.Registry;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.function.Function;
 
-public class UserDefinedSmooksResourceConfigurationList implements Function<Map<Object, Object>, SmooksResourceConfigurationList> {
-
+/**
+ * Get all the ResourceConfig entries registered on this context store
+ * for the specified profile set.
+ *
+ * @param profileSet The profile set against which to lookup.
+ * @return All ResourceConfig entries targeted at the specified useragent.
+ */
+public class ResourceConfigsProfileSetLookup implements Function<Map<Object, Object>, ResourceConfig[]> {
     private final Registry registry;
+    private final ProfileSet profileSet;
 
-    public UserDefinedSmooksResourceConfigurationList(final Registry registry) {
+    public ResourceConfigsProfileSetLookup(final Registry registry, final ProfileSet profileSet) {
         this.registry = registry;
+        this.profileSet = profileSet;
     }
     
     @Override
-    public SmooksResourceConfigurationList apply(final Map<Object, Object> registryEntries) {
-        SmooksResourceConfigurationList userDefinedResources = new SmooksResourceConfigurationList("userDefinedResources");
+    public ResourceConfig[] apply(final Map<Object, Object> registryEntries) {
+        final List<ResourceConfig> profileSetResourceConfigs = new Vector();
 
-        for (SmooksResourceConfigurationList configList : registry.lookup(new SmooksResourceConfigurationListsLookup())) {
-            if (!configList.isSystemConfigList()) {
-                userDefinedResources.addAll(configList);
-            }
+        for (final ResourceConfigList resourceConfigList : registry.lookup(new ResourceConfigListsLookup())) {
+            final ResourceConfig[] resourceConfigs = resourceConfigList.getTargetConfigurations(profileSet);
+            profileSetResourceConfigs.addAll(Arrays.asList(resourceConfigs));
         }
 
-        return userDefinedResources;
+        return profileSetResourceConfigs.toArray(new ResourceConfig[]{});
     }
 }

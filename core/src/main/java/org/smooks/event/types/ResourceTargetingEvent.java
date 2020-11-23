@@ -42,7 +42,7 @@
  */
 package org.smooks.event.types;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.delivery.VisitSequence;
 import org.smooks.event.ElementProcessingEvent;
 import org.smooks.event.ResourceBasedEvent;
@@ -56,7 +56,7 @@ import java.util.Arrays;
  */
 public class ResourceTargetingEvent extends ElementProcessingEvent implements ResourceBasedEvent {
 
-    private final SmooksResourceConfiguration resourceConfig;
+    private final ResourceConfig resourceConfig;
     private Object[] metadata;
     private VisitSequence sequence;
 
@@ -67,7 +67,7 @@ public class ResourceTargetingEvent extends ElementProcessingEvent implements Re
      * @param resourceConfig The resource configuration.
      * @param metadata Optional event metadata.
      */
-    public ResourceTargetingEvent(Object element, SmooksResourceConfiguration resourceConfig, Object... metadata) {
+    public ResourceTargetingEvent(Object element, ResourceConfig resourceConfig, Object... metadata) {
         super(element);
         this.resourceConfig = resourceConfig;
         this.metadata = metadata;
@@ -80,7 +80,7 @@ public class ResourceTargetingEvent extends ElementProcessingEvent implements Re
      * @param resourceConfig The resource configuration.
      * @param metadata Optional event metadata.
      */
-    public ResourceTargetingEvent(Object element, SmooksResourceConfiguration resourceConfig, VisitSequence sequence, Object... metadata) {
+    public ResourceTargetingEvent(Object element, ResourceConfig resourceConfig, VisitSequence sequence, Object... metadata) {
         this(element, resourceConfig, metadata);
         this.sequence = sequence;
     }
@@ -89,7 +89,7 @@ public class ResourceTargetingEvent extends ElementProcessingEvent implements Re
      * Get the tagreted resource configuration.
      * @return The targeted resource configuration.
      */
-    public SmooksResourceConfiguration getResourceConfig() {
+    public ResourceConfig getResourceConfig() {
         return resourceConfig;
     }
 

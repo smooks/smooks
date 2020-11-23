@@ -46,7 +46,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.smooks.cdr.MyContentDeliveryUnit5;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.MockApplicationContext;
 import org.smooks.delivery.ContentHandler;
@@ -79,7 +79,7 @@ public class LifecycleManagerTest {
     
 	@Test
     public void test_paramaterSetting_allok() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit1 cdu = new MyContentDeliveryUnit1();
 
         config.setParameter("paramA", "A-Val");
@@ -95,7 +95,7 @@ public class LifecycleManagerTest {
 
 	@Test
     public void test_paramaterSetting_missing_required() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit1 cdu = new MyContentDeliveryUnit1();
 
         config.setParameter("paramA", "A-Val");
@@ -114,7 +114,7 @@ public class LifecycleManagerTest {
 
     @Test
     public void test_parameterSetting_optional() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit2 cdu = new MyContentDeliveryUnit2();
 
         config.setParameter("paramA", "A-Val");
@@ -133,7 +133,7 @@ public class LifecycleManagerTest {
     
     @Test
     public void test_parameterSetting_default() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit2 cdu = new MyContentDeliveryUnit2();
 
         config.setParameter("paramA", "A-Val");
@@ -152,7 +152,7 @@ public class LifecycleManagerTest {
 
 	@Test
     public void test_Config_And_Context_Setting() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit3 cdu = new MyContentDeliveryUnit3();
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
@@ -163,7 +163,7 @@ public class LifecycleManagerTest {
 
 	@Test
     public void test_paramaterSetting_Config_setConfiguration_on_private_inner_class() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit4 cdu = new MyContentDeliveryUnit4();
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
@@ -177,7 +177,7 @@ public class LifecycleManagerTest {
 
 	@Test
     public void test_paramaterSetting_Config_setConfiguration_on_top_level_class() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit5 cdu = new MyContentDeliveryUnit5();
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
@@ -187,25 +187,25 @@ public class LifecycleManagerTest {
 
 	@Test
     public void test_paramaterSetting_Config_choice() {
-        SmooksResourceConfiguration config;
+        ResourceConfig config;
         MyContentDeliveryUnit6 cdu = new MyContentDeliveryUnit6();
 
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
         // Check that valid values are accepted....
-        config = new SmooksResourceConfiguration();
+        config = new ResourceConfig();
         config.setParameter("paramA", "A");
         lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
 
-        config = new SmooksResourceConfiguration();
+        config = new ResourceConfig();
         config.setParameter("paramA", "B");
         lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
 
-        config = new SmooksResourceConfiguration();
+        config = new ResourceConfig();
         config.setParameter("paramA", "C");
         lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
 
         // Check that invalid values are accepted....
-        config = new SmooksResourceConfiguration();
+        config = new ResourceConfig();
         config.setParameter("paramA", "X");
         try {
             lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
@@ -217,10 +217,10 @@ public class LifecycleManagerTest {
 
 	@Test
     public void test_paramaterSetting_decode_error() {
-        SmooksResourceConfiguration config;
+        ResourceConfig config;
         MyContentDeliveryUnit7 cdu = new MyContentDeliveryUnit7();
 
-        config = new SmooksResourceConfiguration();
+        config = new ResourceConfig();
         config.setParameter("encoding", "XXXX");
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
         try {
@@ -234,7 +234,7 @@ public class LifecycleManagerTest {
 
 	@Test
     public void test_paramaterSetting_setterMethod() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit8 cdu1 = new MyContentDeliveryUnit8();
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
 
@@ -261,7 +261,7 @@ public class LifecycleManagerTest {
 
 	@Test
     public void test_Initialize_Uninitialize() {
-        SmooksResourceConfiguration config = new SmooksResourceConfiguration();
+        ResourceConfig config = new ResourceConfig();
         MyContentDeliveryUnit11 cdu1 = new MyContentDeliveryUnit11();
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
 
@@ -332,14 +332,14 @@ public class LifecycleManagerTest {
         private ApplicationContext appContext;
 
         @Inject
-        private SmooksResourceConfiguration config;
+        private ResourceConfig config;
     }
 
     private class MyContentDeliveryUnit4 implements ContentHandler {
 
-        private SmooksResourceConfiguration config;
+        private ResourceConfig config;
 
-        public void setConfiguration(SmooksResourceConfiguration resourceConfig) throws SmooksConfigurationException {
+        public void setConfiguration(ResourceConfig resourceConfig) throws SmooksConfigurationException {
             this.config = resourceConfig;
         }
     }

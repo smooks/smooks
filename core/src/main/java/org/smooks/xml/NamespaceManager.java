@@ -45,13 +45,13 @@ package org.smooks.xml;
 import org.jaxen.saxpath.SAXPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigList;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.registry.lookup.NamespaceManagerLookup;
-import org.smooks.registry.lookup.SmooksResourceConfigurationListsLookup;
+import org.smooks.registry.lookup.ResourceConfigListsLookup;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -72,7 +72,7 @@ public class NamespaceManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceManager.class);
 	
 	@Inject
-	private SmooksResourceConfiguration smooksResourceConfiguration;
+	private ResourceConfig resourceConfig;
 	
 	@Inject
 	private ApplicationContext applicationContext;
@@ -82,11 +82,11 @@ public class NamespaceManager {
 	 */
 	@PostConstruct
 	public void postConstruct() throws SAXPathException {
-		final Properties newNamespaces = smooksResourceConfiguration.toProperties();
+		final Properties newNamespaces = resourceConfig.toProperties();
 
-		for (SmooksResourceConfigurationList smooksResourceConfigurationList : applicationContext.getRegistry().lookup(new SmooksResourceConfigurationListsLookup())) {
-			for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-				smooksResourceConfigurationList.get(i).getSelectorPath().setNamespaces(newNamespaces);
+		for (ResourceConfigList resourceConfigList : applicationContext.getRegistry().lookup(new ResourceConfigListsLookup())) {
+			for (int i = 0; i < resourceConfigList.size(); i++) {
+				resourceConfigList.get(i).getSelectorPath().setNamespaces(newNamespaces);
 			}
 		}
 		

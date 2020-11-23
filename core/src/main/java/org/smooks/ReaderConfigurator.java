@@ -42,14 +42,14 @@
  */
 package org.smooks;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 
 import java.util.List;
 
 /**
  * Reader configurator.
  * <p/>
- * Implementation are responsible creating the {@link org.smooks.cdr.SmooksResourceConfiguration} for
+ * Implementation are responsible creating the {@link ResourceConfig} for
  * the Reader to be used by a Smooks instance.
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -57,8 +57,8 @@ import java.util.List;
 public interface ReaderConfigurator {
 
     /**
-     * Create the {@link org.smooks.cdr.SmooksResourceConfiguration} list for the Reader to be used by the Smooks instance.
-     * @return The {@link org.smooks.cdr.SmooksResourceConfiguration} list.
+     * Create the {@link ResourceConfig} list for the Reader to be used by the Smooks instance.
+     * @return The {@link ResourceConfig} list.
      */
-    List<SmooksResourceConfiguration> toConfig();
+    List<ResourceConfig> toConfig();
 }

@@ -42,7 +42,7 @@
  */
 package org.smooks;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.delivery.AbstractParser;
 import org.xml.sax.XMLReader;
 
@@ -93,8 +93,8 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
         return this;
     }
 
-    public List<SmooksResourceConfiguration> toConfig() {
-        SmooksResourceConfiguration smooksConfig = new SmooksResourceConfiguration();
+    public List<ResourceConfig> toConfig() {
+        ResourceConfig smooksConfig = new ResourceConfig();
         
         smooksConfig.setSelector(AbstractParser.ORG_XML_SAX_DRIVER);        
 
@@ -122,7 +122,7 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
             smooksConfig.setParameter(AbstractParser.FEATURE_OFF, featureOff);
         }
 
-        List<SmooksResourceConfiguration> configList = new ArrayList<SmooksResourceConfiguration>();
+        List<ResourceConfig> configList = new ArrayList<ResourceConfig>();
         configList.add(smooksConfig);
 
         return configList;

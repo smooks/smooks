@@ -44,7 +44,7 @@ package org.smooks.event.types;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.annotation.AnnotationConstants;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
@@ -98,8 +98,8 @@ public class ElementVisitEvent<T extends Visitor> extends ElementProcessingEvent
         this.error = error;
     }
 
-    public SmooksResourceConfiguration getResourceConfig() {
-        return visitorBinding.getSmooksResourceConfiguration();
+    public ResourceConfig getResourceConfig() {
+        return visitorBinding.getResourceConfig();
     }
 
     public ContentHandlerBinding getVisitorBinding() {
@@ -149,13 +149,13 @@ public class ElementVisitEvent<T extends Visitor> extends ElementProcessingEvent
     private boolean evalReportCondition(String condition) {
         MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
         conditionEval.setExpression(condition);
-        return conditionEval.eval(visitorBinding.getSmooksResourceConfiguration());
+        return conditionEval.eval(visitorBinding.getResourceConfig());
     }
 
     private void applyReportTemplates(String summary, String detailTemplate, Class<?> handlerClass, ExecutionContext executionContext) {
         Map<String, Object> templateParams = new HashMap<>();
 
-        templateParams.put("resource", visitorBinding.getSmooksResourceConfiguration());
+        templateParams.put("resource", visitorBinding.getResourceConfig());
         templateParams.put("execContext", executionContext);
         templateParams.put("event", this);
 

@@ -78,7 +78,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
         };
         if (getTarget() instanceof SAXVisitBefore) {
             if (executionContext.getEventListener() != null) {
-                executionContext.getEventListener().onEvent(new ResourceTargetingEvent(element, getTarget().getSmooksResourceConfiguration(), VisitSequence.BEFORE));
+                executionContext.getEventListener().onEvent(new ResourceTargetingEvent(element, getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }
             intercept(invocation);
             onEvent(executionContext, element, VisitSequence.BEFORE);
@@ -176,7 +176,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
 
         if (getTarget() instanceof BeforeVisitor) {
             if (executionContext.getEventListener() != null) {
-                executionContext.getEventListener().onEvent(new ResourceTargetingEvent(element, getTarget().getSmooksResourceConfiguration(), VisitSequence.BEFORE));
+                executionContext.getEventListener().onEvent(new ResourceTargetingEvent(element, getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }
             intercept(invocation);
             onEvent(executionContext, element, VisitSequence.BEFORE);

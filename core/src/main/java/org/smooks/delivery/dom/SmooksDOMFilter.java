@@ -46,8 +46,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.ParameterAccessor;
+import org.smooks.cdr.ResourceConfigSortComparator;
 import org.smooks.cdr.ResourceConfigurationNotFoundException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.dom.serialize.Serializer;
@@ -85,7 +86,7 @@ import java.util.Vector;
  * <p/>
  * This class is responsible for <b>Filtering</b> XML DOM streams
  * (XML/XHTML/HTML etc) through a process of iterating over the source XML DOM tree
- * and applying the {@link org.smooks.cdr.SmooksResourceConfiguration configured} Content Delivery Units
+ * and applying the {@link ResourceConfig configured} Content Delivery Units
  * ({@link DOMElementVisitor DOMElementVisitors} and
  * {@link SerializerVisitor SerializationUnits}).
  * <p/>
@@ -114,7 +115,7 @@ import java.util.Vector;
  * This sub-phase involves iterating over the source XML DOM,
  * visiting all DOM elements that have {@link org.smooks.delivery.dom.VisitPhase ASSEMBLY} phase
  * {@link org.smooks.delivery.dom.DOMElementVisitor DOMElementVisitors}
- * {@link org.smooks.cdr.SmooksResourceConfiguration targeted} at them for the profile
+ * {@link ResourceConfig targeted} at them for the profile
  * associated with the {@link org.smooks.container.ExecutionContext}.
  * This phase can result in DOM elements being added to, or trimmed from, the DOM.
  * This phase is also very usefull for gathering data from the message in the DOM
@@ -130,7 +131,7 @@ import java.util.Vector;
  * This sub-phase involves iterating over the source XML DOM again,
  * visiting all DOM elements that have {@link org.smooks.delivery.dom.VisitPhase PROCESSING} phase
  * {@link org.smooks.delivery.dom.DOMElementVisitor DOMElementVisitors}
- * {@link org.smooks.cdr.SmooksResourceConfiguration targeted} at them for the profile
+ * {@link ResourceConfig targeted} at them for the profile
  * associated with the {@link org.smooks.container.ExecutionContext}.
  * This phase will only operate on DOM elements that were present in the assembled
  * document; {@link org.smooks.delivery.dom.DOMElementVisitor DOMElementVisitors} will not be applied
@@ -154,8 +155,8 @@ import java.util.Vector;
  * <h3>Other Documents</h3>
  * <ul>
  * <li>{@link org.smooks.Smooks}</li>
- * <li>{@link org.smooks.cdr.SmooksResourceConfiguration}</li>
- * <li>{@link org.smooks.cdr.SmooksResourceConfigurationSortComparator}</li>
+ * <li>{@link ResourceConfig}</li>
+ * <li>{@link ResourceConfigSortComparator}</li>
  * </ul>
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -466,8 +467,8 @@ public class SmooksDOMFilter extends Filter {
         List<ContentHandlerBinding<DOMVisitAfter>> elementVisitAfters;
         if (isRoot) {
             // The document as a whole (root node) can also be targeted through the "#document" selector.
-            elementVisitBefores = visitBeforeTable.getMappings(new String[]{SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
-            elementVisitAfters = visitAfterTable.getMappings(new String[]{SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            elementVisitBefores = visitBeforeTable.getMappings(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            elementVisitAfters = visitAfterTable.getMappings(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
             elementVisitBefores = visitBeforeTable.getMappings(elementName);
             elementVisitAfters = visitAfterTable.getMappings(elementName);
@@ -503,7 +504,7 @@ public class SmooksDOMFilter extends Filter {
     private void applyAssemblyBefores(Element element, List<ContentHandlerBinding<DOMVisitBefore>> assemblyBefores) {
         for (final ContentHandlerBinding<DOMVisitBefore> configMap : assemblyBefores)
         {
-            SmooksResourceConfiguration config = configMap.getSmooksResourceConfiguration();
+            ResourceConfig config = configMap.getResourceConfig();
 
             // Make sure the assembly unit is targeted at this element...
             if (!config.getSelectorPath().isTargetedAtElement(element, executionContext))
@@ -555,7 +556,7 @@ public class SmooksDOMFilter extends Filter {
     }
 
     private void applyAssemblyAfter(Element element, ContentHandlerBinding<DOMVisitAfter> configMap) {
-        SmooksResourceConfiguration config = configMap.getSmooksResourceConfiguration();
+        ResourceConfig config = configMap.getResourceConfig();
 
         // Make sure the assembly unit is targeted at this element...
         if (!config.getSelectorPath().isTargetedAtElement(element, executionContext)) {
@@ -600,9 +601,9 @@ public class SmooksDOMFilter extends Filter {
         elementName = DomUtils.getName(element);
         if (isRoot) {
             // The document as a whole (root node) can also be targeted through the "#document" selector.
-            processingBefores = deliveryConfig.getProcessingVisitBefores().getMappings(new String[]{SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
-            processingAfters = deliveryConfig.getProcessingVisitAfters().getMappings(new String[]{SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
-            processingCleanables = deliveryConfig.getVisitCleanables().getMappings(new String[]{SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            processingBefores = deliveryConfig.getProcessingVisitBefores().getMappings(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            processingAfters = deliveryConfig.getProcessingVisitAfters().getMappings(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            processingCleanables = deliveryConfig.getVisitCleanables().getMappings(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
             processingBefores = deliveryConfig.getProcessingVisitBefores().getMappings(elementName);
             processingAfters = deliveryConfig.getProcessingVisitAfters().getMappings(elementName);
@@ -781,7 +782,7 @@ public class SmooksDOMFilter extends Filter {
         }
 
         private void processMapping(ExecutionContext executionContext, ContentHandlerBinding configMap, VisitSequence visitSequence) {
-            SmooksResourceConfiguration config = configMap.getSmooksResourceConfiguration();
+            ResourceConfig config = configMap.getResourceConfig();
 
             // Make sure the processing unit is targeted at this element...
             if (!config.getSelectorPath().isTargetedAtElement(element, executionContext)) {

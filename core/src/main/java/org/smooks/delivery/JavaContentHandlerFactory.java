@@ -44,7 +44,7 @@ package org.smooks.delivery;
 
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.classpath.ClasspathUtils;
 import org.smooks.container.ApplicationContext;
 import org.smooks.injector.Scope;
@@ -63,7 +63,7 @@ import java.util.function.Function;
  * Java ContentHandler instance creator.
  * <p/>
  * Java-based ContentHandler implementations should contain a public
- * constructor that takes a SmooksResourceConfiguration instance as a parameter.
+ * constructor that takes a ResourceConfig instance as a parameter.
  * @author tfennelly
  */
 public class JavaContentHandlerFactory implements ContentHandlerFactory<Object> {
@@ -71,35 +71,35 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory<Object> 
     @Inject
     private ApplicationContext applicationContext;
 
-    private final Map<SmooksResourceConfiguration, Object> javaContentHandlers = new ConcurrentHashMap<>();
+    private final Map<ResourceConfig, Object> javaContentHandlers = new ConcurrentHashMap<>();
 
     /**
      * Create a Java based ContentHandler instance.
      *
-     * @param smooksResourceConfiguration The SmooksResourceConfiguration for the Java {@link ContentHandler}
+     * @param resourceConfig The ResourceConfig for the Java {@link ContentHandler}
      *                                    to be created.
      * @return Java {@link ContentHandler} instance.
      */
     @SuppressWarnings("unchecked")
-    public Object create(final SmooksResourceConfiguration smooksResourceConfiguration) throws SmooksConfigurationException {
-        return javaContentHandlers.computeIfAbsent(smooksResourceConfiguration, new Function<SmooksResourceConfiguration, Object>() {
+    public Object create(final ResourceConfig resourceConfig) throws SmooksConfigurationException {
+        return javaContentHandlers.computeIfAbsent(resourceConfig, new Function<ResourceConfig, Object>() {
             @Override
-            public Object apply(final SmooksResourceConfiguration smooksResourceConfiguration) {
+            public Object apply(final ResourceConfig resourceConfig) {
                 Object contentHandler;
                 try {
-                    final String className = ClasspathUtils.toClassName(smooksResourceConfiguration.getResource());
+                    final String className = ClasspathUtils.toClassName(resourceConfig.getResource());
                     final Class<?> classRuntime = ClassUtil.forName(className, getClass());
                     final Constructor<?> constructor;
                     try {
-                        constructor = classRuntime.getConstructor(SmooksResourceConfiguration.class);
-                        contentHandler = constructor.newInstance(smooksResourceConfiguration);
+                        constructor = classRuntime.getConstructor(ResourceConfig.class);
+                        contentHandler = constructor.newInstance(resourceConfig);
                     } catch (NoSuchMethodException e) {
                         contentHandler = classRuntime.newInstance();
                     }
-                    applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), smooksResourceConfiguration, contentHandler)));
+                    applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), resourceConfig, contentHandler)));
                     applicationContext.getRegistry().registerObject(contentHandler);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
-                    throw new SmooksException("Failed to create an instance of Java ContentHandler [" + smooksResourceConfiguration.getResource() + "].  See exception cause...", e);
+                    throw new SmooksException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause...", e);
                 }
 
                 return contentHandler;

@@ -42,7 +42,7 @@
  */
 package org.smooks.event.types;
 
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.event.ExecutionEvent;
 
 /**
@@ -52,7 +52,7 @@ import org.smooks.event.ExecutionEvent;
  */
 public class ConfigBuilderEvent implements ExecutionEvent {
 
-    private SmooksResourceConfiguration resourceConfig;
+    private ResourceConfig resourceConfig;
     private final String message;
     private Throwable thrown;
 
@@ -60,17 +60,17 @@ public class ConfigBuilderEvent implements ExecutionEvent {
         this.message = message;
     }
 
-    public ConfigBuilderEvent(SmooksResourceConfiguration resourceConfig, String message) {
+    public ConfigBuilderEvent(ResourceConfig resourceConfig, String message) {
         this.resourceConfig = resourceConfig;
         this.message = message;
     }
 
-    public ConfigBuilderEvent(SmooksResourceConfiguration resourceConfig, String message, Throwable thrown) {
+    public ConfigBuilderEvent(ResourceConfig resourceConfig, String message, Throwable thrown) {
         this(resourceConfig, message);
         this.thrown = thrown;
     }
 
-    public SmooksResourceConfiguration getResourceConfig() {
+    public ResourceConfig getResourceConfig() {
         return resourceConfig;
     }
 
