@@ -7,14 +7,14 @@
     
     <groupId>org.smooks</groupId>
     <artifactId>smooks</artifactId>
-    <version>2.0.0-M2-SNAPSHOT</version>
+    <version>2.0.0-M2</version>
     <packaging>pom</packaging>
     
     <name>Smooks</name>
     <url>https://www.smooks.org</url>
 
     <description>
-        Smooks is an extensible Java framework for building XML and non-XML data (CSV, EDI, Java, etc...) processing applications.
+        Smooks is an extensible Java framework for building XML and non-XML data (CSV, EDI, Java, etc...) streaming applications.
     </description>
 
     <licenses>
