@@ -44,12 +44,45 @@ package org.smooks.delivery.memento;
 
 import org.smooks.delivery.Visitor;
 
+/**
+ * Holds the state of a {@link Visitor}. 
+ * 
+ * A <code>VisitorMemento</code> is saved and restored it at a later stage. A <code>VisitorMemento</code> is bound to a 
+ * <code>Visitor<code></> and its visitable (e.g., {@link NodeVisitable}). Management of <code>VisitorMemento</code>s
+ * should be delegated to {@link org.smooks.container.MementoCaretaker}.
+ */
 public interface VisitorMemento  {
 
+    /**
+     * Performs a deep clone of this <code>VisitorMemento</code>.
+     * 
+     * @return a deep clone of this <code>VisitorMemento</code>
+     */
     VisitorMemento copy();
+
+    /**
+     * Combines a <code>VisitorMemento</code> state with this <code>VisitorMemento</code>
+     * 
+     * @param visitorMemento  the <code>VisitorMemento</code> restoring this <code>VisitorMemento</code>
+     */
     void restore(VisitorMemento visitorMemento);
+
+    /**
+     * @return the <code>Visitor</code> which this <code>VisitorMemento</code> is bound to
+     */
     Visitor getVisitor();
-    Object getVisitable();
+
+    /**
+     * @return the visitable which this <code>VisitorMemento</code> is bound to
+     */
+    Visitable getVisitable();
+
+    /**
+     * Gets the ID of this <code>VisitorMemento</code>. <code>VisitorMemento</code>s with equal IDs are considered to be 
+     * capturing the state of the same object but at different points in time.
+     * 
+     * @return the ID of this <code>VisitorMemento</code>
+     */
     String getId();
     
 }

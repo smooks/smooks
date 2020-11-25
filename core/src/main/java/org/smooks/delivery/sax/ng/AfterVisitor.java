@@ -45,6 +45,26 @@ package org.smooks.delivery.sax.ng;
 import org.smooks.container.ExecutionContext;
 import org.w3c.dom.Element;
 
+/**
+ * Applies an operation immediately after the {@link org.w3c.dom.Element}'s end tag.
+ */
 public interface AfterVisitor extends SaxNgVisitor {
+
+    /**
+     * Visits the end of an <code>Element</code>.
+     * 
+     * @param element           the <code>Element</code> representing the end of the fragment. The 
+     *                          <code>Element</code>'s ancestors are traversable unless the global configuration 
+     *                          parameter <code>maintain.element.stack</code> is set to false. The <code>Element</code>'s 
+     *                          child nodes are traversable if one of the following conditions are met: 
+     *                          <ul>
+     *                              <li><code>max.node.depth</code> global config parameter is set to 0 or greater than 1, 
+     *                              or</li>    
+     *                              <li>this <code>AfterVisitor</code> implements 
+     *                              {@link org.smooks.delivery.sax.ng.ParameterizedVisitor#getMaxNodeDepth()} which returns 
+     *                              an integer greater than 1</li>
+     *                          </ul>    
+     * @param executionContext  the current <code>ExecutionContext<code>
+     */
     void visitAfter(Element element, ExecutionContext executionContext);
 }

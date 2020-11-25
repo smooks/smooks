@@ -45,6 +45,18 @@ package org.smooks.converter.factory;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterDescriptor;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+/**
+ * Creates a {@link TypeConverter} for converting objects of different types.
+ * 
+ * A <code>TypeConverterFactory</code> is registered in the provider-configuration file 
+ * <code>META-INF/services/org.smooks.converter.factory.TypeConverterFactory</code> and discovered at startup.
+ * 
+ * @param <S>  the <code>TypeConverter</code>'s source class
+ * @param <T>  the <code>TypeConverter</code>'s target class
+ */
+@ThreadSafe
 public interface TypeConverterFactory<S, T> {
     
     TypeConverter<? super S, ? extends T> createTypeConverter();

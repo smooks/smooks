@@ -45,8 +45,7 @@ package org.smooks.cdr;
 import org.w3c.dom.Element;
 
 /**
- * ResourceConfig Factory.
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * Constructs a {@link ResourceConfig} from its corresponding {@link Element}.
  */
 public interface ResourceConfigFactory {
 
@@ -54,8 +53,7 @@ public interface ResourceConfigFactory {
     ResourceConfig createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element);
 
     /**
-     * Create the configuration instance.
-     * @return The configuration instance.
+     * @return the <code>ResourceConfig</code
      */
     ResourceConfig createConfiguration(String defaultProfile, Element element);
 }

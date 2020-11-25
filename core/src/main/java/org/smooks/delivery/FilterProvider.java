@@ -50,7 +50,16 @@ import org.smooks.event.types.ConfigBuilderEvent;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Produces a <code>ContentDeliveryConfig</code> for a given sequence of visitor bindings. 
+ * 
+ * Clients should check whether the <code>FilterProvider</code> is a provider for a visitor binding sequence before
+ * calling {@link #createContentDeliveryConfig(List, ApplicationContext, Map, List, DTDStore.DTDObjectContainer, Boolean)}
+ * by calling {@link #isProvider(List)}. A <code>FilterProvider</code> that is not a provider will return an empty 
+ * <code>ContentDeliveryConfig</code> in {@link #createContentDeliveryConfig(List, ApplicationContext, Map, List, DTDStore.DTDObjectContainer, Boolean)}.
+ */
 public interface FilterProvider {
+
     ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, ApplicationContext applicationContext, Map<String, List<ResourceConfig>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors);
     
     Boolean isProvider(List<ContentHandlerBinding<Visitor>> visitorBindings);

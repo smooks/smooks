@@ -42,19 +42,66 @@
  */
 package org.smooks.container;
 
+import org.smooks.delivery.memento.Visitable;
 import org.smooks.delivery.memento.VisitorMemento;
 
 import java.util.function.Consumer;
 
+/**
+ * Manages {@link VisitorMemento}s on behalf of {@link org.smooks.delivery.Visitor}s. 
+ */
 public interface MementoCaretaker {
 
+    /**
+     * Stores a copy of a <code>VisitorMemento</code>. It is the client's responsibility to remove the saved 
+     * <code>VisitorMemento</code> once it is no longer needed either by calling {@link #forget(Visitable)} or 
+     * {@link #remove(VisitorMemento)}.
+     * 
+     * @param visitorMemento  the <code>VisitorMemento</code> to copy and store. After saving, mutations to this 
+     *                        <code>VisitorMemento</code> should not alter the saved copy.
+     */
     void save(VisitorMemento visitorMemento);
 
+    /**
+     * Mutates a <code>VisitorMemento</code> to match the state of a saved <code>VisitorMemento</code>. The 
+     * <code>VisitorMemento</code> parameter is restored from a saved <code>VisitorMemento</code> having an ID equal to 
+     * its ID as returned by {@link VisitorMemento#getId()}. The <code>VisitorMemento</code> parameter remains unchanged 
+     * if no such saved <code>VisitorMemento</code> exists. 
+     * 
+     * @param visitorMemento  the <code>VisitorMemento</code> to restore
+     */
     void restore(VisitorMemento visitorMemento);
-    
+
+    /**
+     * Removes the <code>VisitorMemento</code> having an ID equal to the <code>VisitorMemento</code> parameter's ID as 
+     * returned by {@link VisitorMemento#getId()}.
+     * 
+     * @param visitorMemento  the <code>VisitorMemento</code> to be removed
+     */
     void remove(VisitorMemento visitorMemento);
 
-    void forget(Object visitable);
+    /**
+     * Removes all <code>VisitorMemento</code>s bound to the <code>Visitable</code> parameter.
+     * 
+     * @param visitable  the visitable 
+     */
+    void forget(Visitable visitable);
 
+    /**
+     * Invokes a {@link Consumer} with a restored <code>VisitorMemento</code> and then saves the <code>VisitorMemento</code>. 
+     * This method offers a convenient way to aggregate and save data instead of writing:
+     * <pre>
+     * mementoCaretaker.restore(visitorMemento);
+     * // add data to visitorMemento
+     * // ...
+     * mementoCaretaker.save(visitorMemento);
+     * </pre>
+     * 
+     * @param visitorMemento  the <code>VisitorMemento</code> to be restored
+     * @param consumer        the consumer acting on the restored <code>VisitorMemento</code>
+     * 
+     * @see #restore(VisitorMemento)
+     * @see #save(VisitorMemento)
+     */
     <T extends VisitorMemento> void stash(final T visitorMemento, Consumer<T> consumer);
 }

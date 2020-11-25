@@ -42,34 +42,36 @@
  */
 package org.smooks.delivery.sax.ng;
 
-import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
 
+/**
+ * Applies an operation on each {@link org.w3c.dom.Element} child.
+ */
 public interface ChildrenVisitor extends SaxNgVisitor {
+    
     /**
-     * Process the onChildText event for the targeted element.
-     * <p/>
-     * Be careful when caching element data.  This is not a DOM.
+     * Visits the character data of an <code>Element</code>. This method is invoked once for each chunk of character 
+     * data. A shortcut for collecting character data is to annotate the <code>SaxNgVisitor</code> implementation with 
+     * {@link org.smooks.delivery.sax.annotation.StreamResultWriter}, or stash the character data in a 
+     * {@link org.smooks.delivery.memento.TextAccumulatorMemento} and restore the <code>TextAccumulatorMemento</code> in 
+     * {@link AfterVisitor#visitAfter(Element, ExecutionContext)}.
      *
-     * @param element          The element containing the text (parent).  The targeted element.
-     * @param executionContext Execution context.
-     * @throws SmooksException Event processing failure.
-     * @throws IOException     Error writing event to output writer.
+     * @param element           the <code>Element</code> which includes character data but not any child 
+     *                          <code>Element</code>s. The <code>Element</code>'s ancestors are traversable unless the 
+     *                          global configuration parameter <code>maintain.element.stack</code> is set to false.
+     * @param executionContext  the current <code>ExecutionContext</code>
      */
     void visitChildText(Element element, ExecutionContext executionContext);
 
     /**
-     * Process the onChildElement event for the targeted element.
-     * <p/>
-     * Be careful when caching element data.  This is not a DOM.
+     * Visits a child <code>Element</code>. This method is invoked once for each child <code>Element</code>.
      *
-     * @param childElement     The child element just added to the targeted element.
-     * @param executionContext Execution context.
-     * @throws SmooksException Event processing failure.
-     * @throws IOException     Error writing event to output writer.
+     * @param childElement      the child <code>Element</code. The <code>Element</code>'s ancestors are traversable 
+     *                          unless the global configuration parameter <code>maintain.element.stack</code> is set to 
+     *                          false. The <code>Element</code>'s child nodes are not traversable.
+     * @param executionContext  the current <code>ExecutionContext</code>
      */
     void visitChildElement(Element childElement, ExecutionContext executionContext);
 }

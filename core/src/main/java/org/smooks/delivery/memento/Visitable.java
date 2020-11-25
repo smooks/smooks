@@ -42,7 +42,18 @@
  */
 package org.smooks.delivery.memento;
 
+/**
+ * Wrapper for a visited object.
+ */
 public interface Visitable {
+
+    /**
+     * @return an identifier unique across visited objects
+     */
     String getId();
+
+    /**
+     * @return the visited object
+     */
     Object unwrap();
 }

@@ -76,14 +76,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * {@link ResourceConfig} context store.
- * <p/>
- * Stores the {@link ResourceConfig ResourceConfigs}
- * for a given container context in the form of
- * {@link ResourceConfigList} entries.  Also maintains
- * a "default" config list for the context.
- *
- * @author tfennelly
+ * A general purpose store for holding system and user objects such as {@link ResourceConfig}s and 
+ * {@link org.smooks.delivery.ContentHandler}s. 
+ * 
+ * Clients should call {@link #deRegisterObject(Object)} to remove registered objects once they are no longer needed.
  */
 public class Registry {
 

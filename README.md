@@ -4,7 +4,7 @@ This is the Git source code repository for the [Smooks][1] Project.
 
 ## Build Status
 
-[![Build Status](https://travis-ci.org/smooks/smooks.svg?branch=master)](https://travis-ci.org/smooks/smooks)
+![Build Status](https://github.com/smooks/smooks/workflows/CI/badge.svg)
 
 ## Building
 

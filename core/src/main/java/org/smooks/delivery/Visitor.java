@@ -43,9 +43,7 @@
 package org.smooks.delivery;
 
 /**
- * Abstract Visitor interface.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ * Applies operations on events. 
  */
 public interface Visitor extends ContentHandler {
 }

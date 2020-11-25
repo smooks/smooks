@@ -45,6 +45,18 @@ package org.smooks.delivery.sax.ng;
 import org.smooks.container.ExecutionContext;
 import org.w3c.dom.Element;
 
+/**
+ * Applies an operation immediately after the {@link org.w3c.dom.Element}'s start tag.
+ */
 public interface BeforeVisitor extends SaxNgVisitor {
+    
+    /**
+     * Visits the beginning of an <code>Element</code>.
+     *
+     * @param element           the <code>Element</code> representing the beginning of the fragment. The <code>Element</code>'s 
+     *                          ancestors are traversable unless the global configuration parameter <code>maintain.element.stack</code> 
+     *                          is set to false. The <code>Element</code>'s child nodes are not traversable.
+     * @param executionContext  the current <code>ExecutionContext<code>
+     */
     void visitBefore(Element element, ExecutionContext executionContext);
 }
