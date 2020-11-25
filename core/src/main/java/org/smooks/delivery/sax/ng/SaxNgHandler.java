@@ -49,6 +49,7 @@ import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Fragment;
 import org.smooks.delivery.SmooksContentHandler;
 import org.smooks.delivery.Visitor;
+import org.smooks.delivery.memento.NodeVisitable;
 import org.smooks.delivery.replay.EndElementEvent;
 import org.smooks.delivery.replay.StartElementEvent;
 import org.smooks.delivery.sax.SAXUtil;
@@ -243,7 +244,7 @@ public class SaxNgHandler extends SmooksContentHandler {
             }
         }
 
-        executionContext.getMementoCaretaker().forget(currentNodeState.getElement());
+        executionContext.getMementoCaretaker().forget(new NodeVisitable(currentNodeState.getElement()));
         
         final NodeState parentNodeState = currentNodeState.getParentNodeState();
         if (parentNodeState != null && parentNodeState.getElement() != null && DomUtils.getDepth(currentNodeState.getElement()) >= Math.max(globalMaxNodeDepth, findMaxNodeDepth(currentNodeState))) {

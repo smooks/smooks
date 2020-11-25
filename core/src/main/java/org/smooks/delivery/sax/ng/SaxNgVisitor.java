@@ -45,9 +45,12 @@ package org.smooks.delivery.sax.ng;
 import org.smooks.delivery.Visitor;
 
 /**
- * SAX Visitor.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ * Applies operations on partial {@link org.w3c.dom.Element}s.
+ * 
+ * Supersedes {@link org.smooks.delivery.dom.DOMVisitor} and {@link org.smooks.delivery.sax.SAXVisitor} without sacrificing
+ * convenience or performance. Visitors should implement this interface since both <code>DOMVisitor</code> and 
+ * <code>SAXVisitor</code> will eventually be phased out.
  */
+
 public interface SaxNgVisitor extends Visitor {
 }

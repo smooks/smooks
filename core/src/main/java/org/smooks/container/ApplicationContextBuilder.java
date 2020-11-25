@@ -42,6 +42,9 @@
  */
 package org.smooks.container;
 
+/**
+ * Constructs an {@link ApplicationContext}.
+ */
 public interface ApplicationContextBuilder {
     
     ApplicationContext build();

@@ -74,6 +74,7 @@ import org.smooks.resource.URIResourceLocator;
 import org.smooks.xml.NamespaceManager;
 import org.xml.sax.SAXException;
 
+import javax.annotation.concurrent.ThreadSafe;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
@@ -119,6 +120,7 @@ import java.util.Properties;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@ThreadSafe
 public class Smooks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Smooks.class);
@@ -299,10 +301,9 @@ public class Smooks {
     }
 
     /**
-     * Add a visitor instances to <code>this</code> Smooks instance
-     * via a {@link VisitorAppender}.
+     * Adds a {@link Visitor} to this <code>Smooks</code> via a {@link VisitorAppender}.
      *
-     * @param visitorBindings The visitor bindings.
+     * @param visitorAppender  the <code>VisitorAppender</code>
      */
     public void addVisitors(VisitorAppender visitorAppender) {
         getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitorAppender, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry())));

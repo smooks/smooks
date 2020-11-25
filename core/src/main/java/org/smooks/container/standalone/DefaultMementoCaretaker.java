@@ -44,6 +44,7 @@ package org.smooks.container.standalone;
 
 import org.smooks.container.BoundAttributeStore;
 import org.smooks.container.MementoCaretaker;
+import org.smooks.delivery.memento.Visitable;
 import org.smooks.delivery.memento.VisitorMemento;
 
 import java.util.HashMap;
@@ -54,7 +55,7 @@ import java.util.function.Consumer;
 
 public class DefaultMementoCaretaker implements MementoCaretaker {
 
-    private final Map<Object, Set<String>> mementoIds = new HashMap<>();
+    private final Map<Visitable, Set<String>> mementoIds = new HashMap<>();
     private final BoundAttributeStore boundAttributeStore;
 
     public DefaultMementoCaretaker(final BoundAttributeStore boundAttributeStore) {
@@ -92,7 +93,7 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
     }
 
     @Override
-    public void forget(final Object visitable) {
+    public void forget(final Visitable visitable) {
         for (final String id : mementoIds.getOrDefault(visitable, new HashSet<>())) {
             boundAttributeStore.removeAttribute(id);
         }

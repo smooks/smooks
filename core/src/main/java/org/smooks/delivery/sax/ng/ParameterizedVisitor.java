@@ -42,6 +42,23 @@
  */
 package org.smooks.delivery.sax.ng;
 
+import org.smooks.container.ExecutionContext;
+import org.w3c.dom.Element;
+
+/**
+ * Adds knobs to the {@link SaxNgVisitor}.
+ */
 public interface ParameterizedVisitor extends BeforeVisitor, AfterVisitor {
+
+    /**
+     * Gets the maximum node depth this <code>ParameterizedVisitor<code/> can accept when visiting an <code>Element</code> 
+     * in {@link AfterVisitor#visitAfter(Element, ExecutionContext)}. 
+     * 
+     * This method allows the targeted <code>Element</code> to emulate a DOM tree at the cost of performance. A 
+     * <code>ParameterizedVisitor</code> with a maximum node depth of {@link Integer#MAX_VALUE} essentially means that 
+     * the visited <code>Element</code> is a complete DOM tree.
+     * 
+     * @return the maximum node depth this <code>ParameterizedVisitor<code/> can traverse. Any value greater than 0 is valid.
+     */
     int getMaxNodeDepth();
 }

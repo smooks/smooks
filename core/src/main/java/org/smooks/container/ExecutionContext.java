@@ -47,14 +47,14 @@ import org.smooks.event.ExecutionEventListener;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.profile.ProfileSet;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.Writer;
 import java.net.URI;
 
 /**
- * Smooks execution context interface definition.
- *
- * @author tfennelly
+ * Runtime context of a filter execution.
  */
+@NotThreadSafe
 public interface ExecutionContext extends BoundAttributeStore {
 
     /**
@@ -64,26 +64,26 @@ public interface ExecutionContext extends BoundAttributeStore {
     URI DOCUMENT_URI = URI.create("org:smooks:unknowndoc");
 
     /**
-     * Set the document source URI.
+     * Sets the document source URI of this <code>ExecutionContext</code>.
      *
-     * @param docSource The document URI.
+     * @param docSource  the document URI
      */
     void setDocumentSource(URI docSource);
 
     /**
-     * Get the document source URI.
+     * Gets the document source URI of this <code>ExecutionContext</code>.
      * <p/>
      * If the document source URI is not set for the context, implementations should
      * return the {@link #DOCUMENT_URI} constant.
      *
-     * @return The document URI.
+     * @return  the document URI.
      */
     URI getDocumentSource();
 
     /**
-     * Get the application context within which this execution context "lives".
+     * Get the {@link ApplicationContext} of this <code>ExecutionContext</code>.
      *
-     * @return The ApplicationContext instance.
+     * @return  the <code>ApplicationContext</code> instance.
      */
     ApplicationContext getApplicationContext();
 
@@ -93,7 +93,7 @@ public interface ExecutionContext extends BoundAttributeStore {
      * Basically, the set of profiles for which this execution context is to perform
      * transformation/analysis.
      *
-     * @return The target {@link org.smooks.profile.ProfileSet}.
+     * @return  the target {@link org.smooks.profile.ProfileSet}.
      */
     ProfileSet getTargetProfiles();
 
@@ -101,21 +101,21 @@ public interface ExecutionContext extends BoundAttributeStore {
      * Get the content delivery configuration for the profile set at which this
      * context is targeted.
      *
-     * @return ContentDeliveryConfig instance.
+     * @return  ContentDeliveryConfig instance.
      */
 	ContentDeliveryConfig getDeliveryConfig();
 
 
     /**
      * Set the content encoding to be used when parsing content on this context.
-     * @param contentEncoding Character encoding to be used when parsing content.  Null
-     * defaults to "UTF-8".
+     * @param  contentEncoding Character encoding to be used when parsing content. Null defaults to "UTF-8".
      * @throws IllegalArgumentException Invalid encoding.
      */
     void setContentEncoding(String contentEncoding) throws IllegalArgumentException;
 
     /**
      * Get the content encoding to be used when parsing content on this context.
+     * 
      * @return Character encoding to be used when parsing content.  Defaults to "UTF-8".
      */
     String getContentEncoding();
@@ -181,20 +181,34 @@ public interface ExecutionContext extends BoundAttributeStore {
     String getConfigParameter(String name, String defaultVal);
 
     /**
-     * Get the BeanContext in use on this context instance.
-     * @return The BeanContext.
+     * Gets the {@link BeanContext} for this <code>ExecutionContext</code>.
+     * 
+     * @return  the <code>BeanContext</code>
      */
     BeanContext getBeanContext();
 
     /**
-     * Set the BeanContext to be use on this context instance.
-     * @param beanContext The BeanContext.
+     * Sets the {@link BeanContext} for this <code>ExecutionContext</code>.
+     * 
+     * @param beanContext  the <code>BeanContext</code>
      */
     void setBeanContext(BeanContext beanContext);
 
+    /**
+     * Sets output stream <code>Writer</code> for this <code>ExecutionContext</code>. Typically it is the <code>Filter</code> 
+     * that sets the <code>Writer</code>. Resources like <code>Visitor</code>s should leave this method alone.
+     * 
+     * @param writer  the output stream <code>Writer</code>
+     */
     void setWriter(Writer writer);
 
+    /**
+     * @return  the output stream <code>Writer</code> for this <code>ExecutionContext</code>
+     */
     Writer getWriter();
 
+    /**
+     * @return  the {@link MementoCaretaker} for this <code>ExecutionContext</code>
+     */
     MementoCaretaker getMementoCaretaker();
 }

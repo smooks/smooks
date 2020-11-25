@@ -42,6 +42,18 @@
  */
 package org.smooks.delivery.sax.ng;
 
-
+/**
+ * Applies an operation:
+ * <ul>
+ *   <li>immediately after the {@link org.w3c.dom.Element}'s start tag</li>
+ *   <li>on each chunk of character data</li>
+ *   <li>on each child {@link org.w3c.dom.Element}</li>
+ *   <li>immediately after the {@link org.w3c.dom.Element}'s end tag</li>
+ * </ul>
+ * 
+ * @see org.smooks.delivery.sax.ng.BeforeVisitor 
+ * @see org.smooks.delivery.sax.ng.ChildrenVisitor 
+ * @see org.smooks.delivery.sax.ng.AfterVisitor
+ */
 public interface ElementVisitor extends BeforeVisitor, ChildrenVisitor, AfterVisitor {
 }

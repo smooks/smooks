@@ -42,13 +42,11 @@
  */
 package org.smooks.delivery;
 
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * Content Handler interface definition.
- * </p>
- * Base interface for all content delivery components.  See extending interfaces.
- * 
- * @author tfennelly
+ * Smooks resource and a target of content delivery.
  */
+@NotThreadSafe
 public interface ContentHandler {
 }

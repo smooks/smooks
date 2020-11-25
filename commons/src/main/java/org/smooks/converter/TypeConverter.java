@@ -42,6 +42,16 @@
  */
 package org.smooks.converter;
 
+/**
+ * Converts an object from a source class to a target class.
+ * 
+ * A reference to a <code>TypeConverter</code> should be obtained from a {@link org.smooks.converter.factory.TypeConverterFactory}. 
+ *
+ * @param <S>  the source class
+ * @param <T>  the target class
+ *           
+ * @see {@link org.smooks.converter.factory.TypeConverterFactory}
+ */
 public interface TypeConverter<S, T> {
     
     T convert(S value);
