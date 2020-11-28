@@ -48,11 +48,11 @@ import org.smooks.registry.Registry;
 import java.util.Map;
 import java.util.function.Function;
 
-public class UserDefinedResourceConfigList implements Function<Map<Object, Object>, ResourceConfigList> {
+public class UserDefinedResourceConfigListLookup implements Function<Map<Object, Object>, ResourceConfigList> {
 
     private final Registry registry;
 
-    public UserDefinedResourceConfigList(final Registry registry) {
+    public UserDefinedResourceConfigListLookup(final Registry registry) {
         this.registry = registry;
     }
     
