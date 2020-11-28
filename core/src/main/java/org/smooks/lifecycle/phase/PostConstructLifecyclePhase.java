@@ -114,7 +114,7 @@ public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
 
             Inject injectAnnotation = field.getAnnotation(Inject.class);
             if (injectAnnotation == null) {
-                // Check is there's a setter method for this property, with the @ConfigParam annotation
+                // Check is there's a setter method for this property, with the @Inject annotation
                 // configured on it...
                 String setterName = ClassUtil.toSetterName(fieldName);
                 Method setterMethod = ClassUtil.getSetterMethod(setterName, contentHandlerClass, field.getType());
@@ -140,7 +140,7 @@ public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
             } catch (NoSuchMethodException e) {
                 // That's fine
             } catch (IllegalAccessException e) {
-                throw new SmooksConfigurationException("Error invoking 'setConfiguration' method on class '" + instance.getClass().getName() + "'.  This class must be public.  Alternatively, use the @Config annotation on a class field.", e);
+                throw new SmooksConfigurationException("Error invoking 'setConfiguration' method on class '" + instance.getClass().getName() + "'.  This class must be public.  Alternatively, use the @Inject annotation on a class field.", e);
             } catch (InvocationTargetException e) {
                 if (e.getTargetException() instanceof SmooksConfigurationException) {
                     throw (SmooksConfigurationException) e.getTargetException();
