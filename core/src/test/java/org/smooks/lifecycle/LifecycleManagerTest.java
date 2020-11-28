@@ -171,7 +171,7 @@ public class LifecycleManagerTest {
             lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), config, cdu)));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigurationException e) {
-            assertEquals("Error invoking 'setConfiguration' method on class 'org.smooks.lifecycle.LifecycleManagerTest$MyContentDeliveryUnit4'.  This class must be public.  Alternatively, use the @Config annotation on a class field.", e.getMessage());
+            assertEquals("Error invoking 'setConfiguration' method on class 'org.smooks.lifecycle.LifecycleManagerTest$MyContentDeliveryUnit4'.  This class must be public.  Alternatively, use the @Inject annotation on a class field.", e.getMessage());
         }
     }
 
