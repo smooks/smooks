@@ -46,16 +46,19 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.MementoCaretaker;
-import org.smooks.delivery.*;
+import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.delivery.Visitor;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.context.StandaloneBeanContextFactory;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.UnknownProfileMemberException;
 
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -157,13 +160,12 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	 */
 	@Override
 	public void setContentEncoding(String contentEncoding) throws IllegalArgumentException {
-		contentEncoding = (contentEncoding == null)?"UTF-8":contentEncoding;
+		contentEncoding = (contentEncoding == null) ? "UTF-8" : contentEncoding;
 		try {
 			// Make sure the encoding is supported....
-			"".getBytes(contentEncoding);
-		} catch (UnsupportedEncodingException e) {
-			IllegalArgumentException argE = new IllegalArgumentException("Invalid 'contentEncoding' arg [" + contentEncoding + "].  This encoding is not supported.", e);
-            throw argE;
+			Charset.forName(contentEncoding);
+		} catch (UnsupportedCharsetException e) {
+			throw new IllegalArgumentException("Invalid 'contentEncoding' arg [" + contentEncoding + "].  This encoding is not supported.", e);
 		}
 		this.contentEncoding = contentEncoding;
 	}

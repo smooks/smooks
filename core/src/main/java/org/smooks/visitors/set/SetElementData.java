@@ -99,14 +99,14 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
             }
         }
 
-        List<Parameter> attributeDataParams = resourceConfig.getParameters(ATTRIBUTE_DATA);
+        List<Parameter<?>> attributeDataParams = resourceConfig.getParameters(ATTRIBUTE_DATA);
         if(attributeDataParams != null && !attributeDataParams.isEmpty()) {
             extractAttributeData(attributeDataParams);
         }
     }
 
-    private void extractAttributeData(List<Parameter> attributeDataParams) {
-        for(Parameter attributeDataParam : attributeDataParams) {
+    private void extractAttributeData(List<Parameter<?>> attributeDataParams) {
+        for(Parameter<?> attributeDataParam : attributeDataParams) {
             Element attributeElement = attributeDataParam.getXml();
             String name = attributeElement.getAttribute("name");
             String namespace = attributeElement.getAttribute("namespace");
