@@ -59,7 +59,7 @@ public class SourceTargetTypeConverterFactoryLookupTest {
     @Test
     public void testApply() {
         Map<Object, Object> registryEntries = new HashMap<>();
-        registryEntries.put(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY, new HashSet() {{
+        registryEntries.put(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY, new HashSet<TypeConverterFactory<String, ?>>() {{
             this.add(new TypeConverterFactory<String, Integer>() {
                 @Override
                 public TypeConverter<String, Integer> createTypeConverter() {

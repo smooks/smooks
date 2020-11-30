@@ -78,8 +78,8 @@ public abstract class AbstractInterceptorVisitor implements InterceptorVisitor {
         this.applicationContext = applicationContext;
     }
 
-    protected <T extends Visitor> Object intercept(Invocation<T> invocation) {
-        Class<T> targetClass = (Class<T>) ((ParameterizedType) invocation.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
+    protected <T extends Visitor> Object intercept(final Invocation<T> invocation) {
+        final Class<?> targetClass = (Class<?>) ((ParameterizedType) invocation.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
         ContentHandlerBinding<Visitor> nextVisitorBinding = visitorBinding;
         while (nextVisitorBinding != null) {
             if (targetClass.isInstance(nextVisitorBinding.getContentHandler())) {

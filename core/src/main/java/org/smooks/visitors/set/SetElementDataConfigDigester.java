@@ -60,6 +60,6 @@ public class SetElementDataConfigDigester implements DOMVisitAfter {
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         ResourceConfig config = ExtensionContext.getExtensionContext(executionContext).getCurrentConfig();
 
-        config.setParameter(new Parameter(SetElementData.ATTRIBUTE_DATA, "##value_as_xml_element").setXML(element));
+        config.setParameter(new Parameter<>(SetElementData.ATTRIBUTE_DATA, "##value_as_xml_element").setXML(element));
     }
 }

@@ -696,7 +696,7 @@ public class ResourceConfig {
      * @param name Name of parameter to get.
      * @return {@link Parameter} value {@link List}, or null if not set.
      */
-    public List<Parameter> getParameters(String name) {
+    public List<Parameter<?>> getParameters(String name) {
         if (parameters == null) {
             return null;
         }

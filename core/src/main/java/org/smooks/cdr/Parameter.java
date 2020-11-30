@@ -127,10 +127,10 @@ public class Parameter<T> {
 	 */
 	public Object getValue(ContentDeliveryConfig deliveryConfig) throws ParameterDecodeException {
 		if (type != null && value != null) {
-			List decoders = deliveryConfig.getObjects(PARAM_TYPE_PREFIX + type);
+			List<?> decoders = deliveryConfig.getObjects(PARAM_TYPE_PREFIX + type);
 			if (!decoders.isEmpty()) {
 				try {
-					ParameterDecoder paramDecoder = (ParameterDecoder) decoders.get(0);
+					ParameterDecoder<T> paramDecoder = (ParameterDecoder<T>) decoders.get(0);
 					return paramDecoder.decodeValue(value);
 				} catch (ClassCastException cast) {
 					throw new ParameterDecodeException("Configured ParameterDecoder '" + PARAM_TYPE_PREFIX + type + "' for device must be of type " + ParameterDecoder.class);
@@ -158,7 +158,7 @@ public class Parameter<T> {
      *
      * @param xml Parameter configuration xml.
      */
-    public Parameter setXML(Element xml) {
+    public Parameter<T> setXML(Element xml) {
         this.xml = xml;
         return this;
     }

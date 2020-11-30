@@ -75,7 +75,7 @@ public class InterceptorVisitorChainFactory {
 
 	@PostConstruct
 	public void postConstruct() throws ClassNotFoundException {
-		List<Parameter> interceptorClasses = resourceConfig.getParameters("class");
+		final List<Parameter<?>> interceptorClasses = resourceConfig.getParameters("class");
 		if (interceptorClasses != null) {
 			for (String interceptorClassName : interceptorClasses.stream().map(Parameter::toString).collect(Collectors.toList())) {
 				interceptorVisitorClasses.add(ClassUtil.forName(interceptorClassName, this.getClass()));

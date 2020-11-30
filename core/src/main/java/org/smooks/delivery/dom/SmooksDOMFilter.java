@@ -425,12 +425,12 @@ public class SmooksDOMFilter extends Filter {
         }
 
         int transListLength;
-        Vector transList = new Vector();
+        Vector<ElementProcessor> transList = new Vector<>();
 
         buildProcessingList(transList, element, true);
         transListLength = transList.size();
         for (int i = 0; i < transListLength; i++) {
-            ElementProcessor elementTrans = (ElementProcessor) transList.get(i);
+            ElementProcessor elementTrans = transList.get(i);
             elementTrans.process(executionContext);
         }
 
@@ -452,7 +452,7 @@ public class SmooksDOMFilter extends Filter {
      * @param isRoot  Is the supplied element the document root element.
      */
     private void assemble(Element element, boolean isRoot) {
-        List nodeListCopy = copyList(element.getChildNodes());
+        List<Node> nodeListCopy = copyList(element.getChildNodes());
 
         ContentHandlerBindings<DOMVisitBefore> visitBeforeTable = deliveryConfig.getAssemblyVisitBefores();
         ContentHandlerBindings<DOMVisitAfter> visitAfterTable = deliveryConfig.getAssemblyVisitAfters();
@@ -528,7 +528,7 @@ public class SmooksDOMFilter extends Filter {
                 assemblyUnit.visitBefore(element, executionContext);
                 if (eventListener != null)
                 {
-                    eventListener.onEvent(new ElementVisitEvent(element, configMap, VisitSequence.BEFORE));
+                    eventListener.onEvent(new ElementVisitEvent<>(element, configMap, VisitSequence.BEFORE));
                 }
             }
             catch (Throwable e)
@@ -570,7 +570,7 @@ public class SmooksDOMFilter extends Filter {
             }
             visitAfter.visitAfter(element, executionContext);
             if (eventListener != null) {
-                eventListener.onEvent(new ElementVisitEvent(element, configMap, VisitSequence.AFTER));
+                eventListener.onEvent(new ElementVisitEvent<>(element, configMap, VisitSequence.AFTER));
             }
         } catch (Throwable e) {
             String errorMsg = "(Assembly) visitAfter failed [" + visitAfter.getClass().getName() + "] on [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -586,8 +586,7 @@ public class SmooksDOMFilter extends Filter {
      * @param element        Current element being tested.  Starts at the document root element.
      * @param isRoot         Is the supplied element the document root element.
      */
-    @SuppressWarnings("unchecked")
-    private void buildProcessingList(List processingList, Element element, boolean isRoot) {
+    private void buildProcessingList(List<ElementProcessor> processingList, Element element, boolean isRoot) {
         String elementName;
         List<ContentHandlerBinding<DOMVisitBefore>> processingBefores;
         List<ContentHandlerBinding<DOMVisitAfter>> processingAfters;
@@ -696,9 +695,8 @@ public class SmooksDOMFilter extends Filter {
      * @param nodeList Nodelist to copy.
      * @return List copy.
      */
-    @SuppressWarnings("unchecked")
-    private List copyList(NodeList nodeList) {
-        Vector copy = new Vector(nodeList.getLength());
+    private List<Node> copyList(NodeList nodeList) {
+        Vector<Node> copy = new Vector<>(nodeList.getLength());
         int nodeCount = nodeList.getLength();
 
         for (int i = 0; i < nodeCount; i++) {
@@ -764,7 +762,7 @@ public class SmooksDOMFilter extends Filter {
                 int loopLength = visitAfters.size();
                 if (reverseVisitOrderOnVisitAfter) {
                     for (int i = loopLength - 1; i >= 0; i--) {
-                        ContentHandlerBinding configMap = visitAfters.get(i);
+                        ContentHandlerBinding<? extends Visitor> configMap = visitAfters.get(i);
                         processMapping(executionContext, configMap, VisitSequence.AFTER);
                     }
                 } else {
@@ -781,7 +779,7 @@ public class SmooksDOMFilter extends Filter {
             }
         }
 
-        private void processMapping(ExecutionContext executionContext, ContentHandlerBinding configMap, VisitSequence visitSequence) {
+        private void processMapping(ExecutionContext executionContext, ContentHandlerBinding<? extends Visitor> configMap, VisitSequence visitSequence) {
             ResourceConfig config = configMap.getResourceConfig();
 
             // Make sure the processing unit is targeted at this element...
@@ -808,7 +806,7 @@ public class SmooksDOMFilter extends Filter {
                     }
                     visitor.visitBefore(element, executionContext);
                     if (eventListener != null) {
-                        eventListener.onEvent(new ElementVisitEvent(element, configMap, VisitSequence.BEFORE));
+                        eventListener.onEvent(new ElementVisitEvent<>(element, configMap, VisitSequence.BEFORE));
                     }
                 } catch (Throwable e) {
                     String errorMsg = "Failed to apply processing unit [" + visitor.getClass().getName() + "] to [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -827,7 +825,7 @@ public class SmooksDOMFilter extends Filter {
                     }
                     visitor.visitAfter(element, executionContext);
                     if (eventListener != null) {
-                        eventListener.onEvent(new ElementVisitEvent(element, configMap, VisitSequence.AFTER));
+                        eventListener.onEvent(new ElementVisitEvent<>(element, configMap, VisitSequence.AFTER));
                     }
                 } catch (Throwable e) {
                     String errorMsg = "Failed to apply processing unit [" + visitor.getClass().getName() + "] to [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -848,7 +846,7 @@ public class SmooksDOMFilter extends Filter {
                         }
                         visitor.executeVisitLifecycleCleanup(new Fragment(element), executionContext);
                         if (eventListener != null) {
-                            eventListener.onEvent(new ElementVisitEvent(element, configMap, VisitSequence.CLEAN));
+                            eventListener.onEvent(new ElementVisitEvent<>(element, configMap, VisitSequence.CLEAN));
                         }
                     } catch (Throwable e) {
                         String errorMsg = "Failed to clean up [" + visitor.getClass().getName() + "]. Targeted at [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -859,9 +857,9 @@ public class SmooksDOMFilter extends Filter {
         }
     }
 
-    private void processVisitorException(Element element, Throwable error, ContentHandlerBinding configMapping, VisitSequence visitSequence, String errorMsg) throws SmooksException {
+    private void processVisitorException(Element element, Throwable error, ContentHandlerBinding<? extends Visitor> configMapping, VisitSequence visitSequence, String errorMsg) throws SmooksException {
         if (eventListener != null) {
-            eventListener.onEvent(new ElementVisitEvent(element, configMapping, visitSequence, error));
+            eventListener.onEvent(new ElementVisitEvent<>(element, configMapping, visitSequence, error));
         }
 
         executionContext.setTerminationError(error);

@@ -171,13 +171,7 @@ public class Registry {
                 LOGGER.info("Loading Smooks Resources from uri [" + uri + "].");
                 registerResources(uri, resource);
                 LOGGER.debug("[" + uri + "] Loaded.");
-            } catch (IllegalArgumentException e) {
-                LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
-            } catch (IOException e) {
-                LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
-            } catch (SAXException e) {
-                LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
-            } catch (URISyntaxException e) {
+            } catch (IllegalArgumentException | IOException | SAXException | URISyntaxException e) {
                 LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
             }
         }

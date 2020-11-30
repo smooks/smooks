@@ -149,10 +149,10 @@ public class AbstractParser {
 
     @SuppressWarnings("unchecked")
     public static Stack<XMLReader> getReaders(ExecutionContext execContext) {
-        Stack<XMLReader> readers = (Stack<XMLReader>) execContext.getAttribute(XMLReader.class);
+        Stack<XMLReader> readers = execContext.getAttribute(XMLReader.class);
 
         if(readers == null) {
-            readers = new Stack<XMLReader>();
+            readers = new Stack<>();
             setReaders(readers, execContext);
         }
         return readers;
@@ -361,12 +361,12 @@ public class AbstractParser {
 
     private void setHandlers(XMLReader reader) throws SAXException {
         if (saxDriverConfig != null) {
-            List<Parameter> handlers;
+            List<Parameter<?>> handlers;
 
             handlers = saxDriverConfig.getParameters("sax-handler");
             if (handlers != null) {
-                for (Parameter<String> handler : handlers) {
-                    Object handlerObj = createHandler(handler.getValue());
+                for (Parameter<?> handler : handlers) {
+                    Object handlerObj = createHandler((String) handler.getValue());
 
                     if (handlerObj instanceof EntityResolver) {
                         reader.setEntityResolver((EntityResolver) handlerObj);
@@ -411,19 +411,19 @@ public class AbstractParser {
         }
 
         if (saxDriverConfig != null) {
-            List<Parameter> features;
+            List<Parameter<?>> features;
 
             features = saxDriverConfig.getParameters(FEATURE_ON);
             if (features != null) {
-                for (Parameter<String> feature : features) {
-                    reader.setFeature(feature.getValue(), true);
+                for (Parameter<?> feature : features) {
+                    reader.setFeature((String) feature.getValue(), true);
                 }
             }
 
             features = saxDriverConfig.getParameters(FEATURE_OFF);
             if (features != null) {
-                for (Parameter<String> feature : features) {
-                    reader.setFeature(feature.getValue(), false);
+                for (Parameter<?> feature : features) {
+                    reader.setFeature((String) feature.getValue(), false);
                 }
             }
         }
@@ -458,7 +458,7 @@ public class AbstractParser {
 
     private static boolean isFeature(String name, FeatureValue featureValue, ResourceConfig saxDriverConfig) {
         if (saxDriverConfig != null) {
-            List<Parameter> features;
+            List<Parameter<?>> features;
 
             if (featureValue == FeatureValue.ON) {
                 features = saxDriverConfig.getParameters(FEATURE_ON);
@@ -466,7 +466,7 @@ public class AbstractParser {
                 features = saxDriverConfig.getParameters(FEATURE_OFF);
             }
             if (features != null) {
-                for (Parameter feature : features) {
+                for (Parameter<?> feature : features) {
                     if (feature.getValue().equals(name)) {
                         return true;
                     }
