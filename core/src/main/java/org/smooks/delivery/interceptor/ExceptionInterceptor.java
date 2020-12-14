@@ -231,7 +231,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
     
     private void processVisitorException(final Throwable t, final String exceptionMessage, final ExecutionContext executionContext, final Object visitable, final VisitSequence visitSequence, final ContentHandlerBinding<Visitor> visitorBinding) {
         if (executionContext.getEventListener() != null) {
-            executionContext.getEventListener().onEvent(new ElementVisitEvent<>(visitable, visitorBinding, visitSequence, t));
+            executionContext.getEventListener().onEvent(new ElementVisitEvent<>(visitable, visitorBinding, visitSequence, executionContext, t));
         }
         
         if (t instanceof TerminateException) {

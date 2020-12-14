@@ -77,11 +77,10 @@ public class ElementVisitEvent<T extends Visitor> extends ElementProcessingEvent
     private String reportSummary;
     private String reportDetail;
 
-    public ElementVisitEvent(Object element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence) {
+    public ElementVisitEvent(Object element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext) {
         super(element);
         this.visitorBinding = visitorBinding;
         this.sequence = sequence;
-        ExecutionContext executionContext = Filter.getCurrentExecutionContext();
         try {
             executionContextState = MultiLineToStringBuilder.toString(executionContext);
 
@@ -93,8 +92,8 @@ public class ElementVisitEvent<T extends Visitor> extends ElementProcessingEvent
         initReport(executionContext);
     }
 
-    public ElementVisitEvent(Object element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, Throwable error) {
-        this(element, visitorBinding, sequence);
+    public ElementVisitEvent(Object element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext, Throwable error) {
+        this(element, visitorBinding, sequence, executionContext);
         this.error = error;
     }
 

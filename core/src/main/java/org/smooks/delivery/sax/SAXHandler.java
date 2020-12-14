@@ -251,7 +251,7 @@ public class SAXHandler extends SmooksContentHandler {
             try {
                 defaultSerializer.visitAfter(currentProcessor.element, execContext);
                 if(eventListener != null) {
-                    eventListener.onEvent(new ElementVisitEvent(currentProcessor.element, defaultSerializerMapping, VisitSequence.AFTER));
+                    eventListener.onEvent(new ElementVisitEvent(currentProcessor.element, defaultSerializerMapping, VisitSequence.AFTER, execContext));
                 }
             } catch (IOException e) {
                 throw new SmooksException("Unexpected exception applying defaultSerializer.", e);
@@ -337,8 +337,8 @@ public class SAXHandler extends SmooksContentHandler {
                             // Register the targeting event.  No need to register this event again on the visitAfter...
                             if (eventListener != null)
                             {
-                                eventListener.onEvent(new ResourceTargetingEvent(element, mapping.getResourceConfig(), VisitSequence.BEFORE));
-                                eventListener.onEvent(new ElementVisitEvent(element, mapping, VisitSequence.BEFORE));
+                                eventListener.onEvent(new ResourceTargetingEvent(element, mapping.getResourceConfig(), VisitSequence.BEFORE, execContext));
+                                eventListener.onEvent(new ElementVisitEvent(element, mapping, VisitSequence.BEFORE, execContext));
                             }
                         }
                     }
@@ -355,7 +355,7 @@ public class SAXHandler extends SmooksContentHandler {
             try {
                 defaultSerializer.visitBefore(currentProcessor.element, execContext);
                 if(eventListener != null) {
-                    eventListener.onEvent(new ElementVisitEvent(element, defaultSerializerMapping, VisitSequence.BEFORE));
+                    eventListener.onEvent(new ElementVisitEvent(element, defaultSerializerMapping, VisitSequence.BEFORE, execContext));
                 }
             } catch (IOException e) {
                 throw new SmooksException("Unexpected exception applying defaultSerializer.", e);
@@ -427,7 +427,7 @@ public class SAXHandler extends SmooksContentHandler {
             if(afterMapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, execContext)) {
                 afterMapping.getContentHandler().visitAfter(currentProcessor.element, execContext);
                 if(eventListener != null) {
-                    eventListener.onEvent(new ElementVisitEvent(currentProcessor.element, afterMapping, VisitSequence.AFTER));
+                    eventListener.onEvent(new ElementVisitEvent(currentProcessor.element, afterMapping, VisitSequence.AFTER, execContext));
                 }
             }
         } catch(Throwable t) {
@@ -599,7 +599,7 @@ public class SAXHandler extends SmooksContentHandler {
 
     private void processVisitorException(SAXElement element, Throwable error, ContentHandlerBinding contentHandlerBinding, VisitSequence visitSequence, String errorMsg) throws SmooksException {
         if (eventListener != null) {
-            eventListener.onEvent(new ElementVisitEvent(element, contentHandlerBinding, visitSequence, error));
+            eventListener.onEvent(new ElementVisitEvent(element, contentHandlerBinding, visitSequence, execContext, error));
         }
 
         processVisitorException(error, errorMsg);

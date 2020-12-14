@@ -160,7 +160,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
 
         try {
             if (event.getEventType() != FilterLifecycleEvent.EventType.FINISHED) {
-                ContentDeliveryConfig deliveryConfig = Filter.getCurrentExecutionContext().getDeliveryConfig();
+                ContentDeliveryConfig deliveryConfig = event.getExecutionContext().getDeliveryConfig();
                 if (event instanceof DOMFilterLifecycleEvent) {
                     DOMFilterLifecycleEvent domEvent = (DOMFilterLifecycleEvent) event;
                     if (domEvent.getDOMEventType() == DOMFilterLifecycleEvent.DOMEventType.PROCESSING_STARTED) {
@@ -173,7 +173,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
                         mapMessageNodeVists(report.getProcessings());
                     }
                 } else if (event.getEventType() == FilterLifecycleEvent.EventType.STARTED) {
-                    executionContext = Filter.getCurrentExecutionContext();
+                    executionContext = event.getExecutionContext();
 
                     if(deliveryConfig instanceof DOMContentDeliveryConfig) {
                         report = new DOMReport();

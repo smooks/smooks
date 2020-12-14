@@ -42,6 +42,8 @@
  */
 package org.smooks.event.types;
 
+import org.smooks.container.ExecutionContext;
+
 /**
  * Smooks DOM filter Lifecycle event.
  *
@@ -67,7 +69,8 @@ public class DOMFilterLifecycleEvent extends FilterLifecycleEvent {
 
     private final DOMEventType eventType;
 
-    public DOMFilterLifecycleEvent(DOMEventType eventType) {
+    public DOMFilterLifecycleEvent(DOMEventType eventType, ExecutionContext executionContext) {
+        super(executionContext);
         this.eventType = eventType;
     }
 

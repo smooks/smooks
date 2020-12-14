@@ -50,6 +50,7 @@ import org.smooks.delivery.Filter;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.sax.DefaultSAXElementSerializer;
 import org.smooks.delivery.sax.SAXElement;
+import org.smooks.javabean.context.BeanContext;
 import org.smooks.util.FreeMarkerTemplate;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
@@ -150,20 +151,20 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     }
 
     @Override
-    protected void writeStart(SAXElement element) throws IOException {
-        SAXElement reconstructedElement = reconstructElement(element);
-        super.writeStart(reconstructedElement);
+    protected void writeStart(SAXElement element, BeanContext beanContext) throws IOException {
+        SAXElement reconstructedElement = reconstructElement(element, beanContext);
+        super.writeStart(reconstructedElement, beanContext);
         element.setCache(this, reconstructedElement.getCache(this));
     }
 
     @Override
-    protected void writeEnd(SAXElement element) throws IOException {
-        SAXElement reconstructedElement = reconstructElement(element);
+    protected void writeEnd(SAXElement element, BeanContext beanContext) throws IOException {
+        SAXElement reconstructedElement = reconstructElement(element, beanContext);
         reconstructedElement.setCache(this, element.getCache(this));
-        super.writeEnd(reconstructedElement);
+        super.writeEnd(reconstructedElement, beanContext);
     }
 
-    private SAXElement reconstructElement(SAXElement element) {
+    private SAXElement reconstructElement(SAXElement element, BeanContext beanContext) {
         QName qName = element.getName();
 
         if (elementQName.isPresent() || elementNamespace.isPresent()) {
@@ -179,7 +180,7 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
         newElement.setWriter(element.getWriter(this), this);
 
         if (!attributes.isEmpty()) {
-            Map<String, Object> beans = Filter.getCurrentExecutionContext().getBeanContext().getBeanMap();
+            Map<String, Object> beans = beanContext.getBeanMap();
             Set<Map.Entry<QName, FreeMarkerTemplate>> attributeSet = attributes.entrySet();
 
             for (Map.Entry<QName, FreeMarkerTemplate> attributeConfig : attributeSet) {
@@ -212,7 +213,7 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
         }
 
         if (!attributes.isEmpty()) {
-            Map<String, Object> beans = Filter.getCurrentExecutionContext().getBeanContext().getBeanMap();
+            Map<String, Object> beans = executionContext.getBeanContext().getBeanMap();
             Set<Map.Entry<QName, FreeMarkerTemplate>> attributeSet = attributes.entrySet();
 
             for (Map.Entry<QName, FreeMarkerTemplate> attributeConfig : attributeSet) {
