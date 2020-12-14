@@ -166,7 +166,7 @@ public class Serializer {
 
         // Register the DOM phase events...
         if (eventListener != null) {
-            eventListener.onEvent(new DOMFilterLifecycleEvent(DOMFilterLifecycleEvent.DOMEventType.SERIALIZATION_STARTED));
+            eventListener.onEvent(new DOMFilterLifecycleEvent(DOMFilterLifecycleEvent.DOMEventType.SERIALIZATION_STARTED, executionContext));
         }
 
         if (node instanceof Document) {

@@ -538,7 +538,7 @@ public class SelectorPath implements List<SelectorStep> {
      * @return True if this configuration is targeted at the supplied element, otherwise false.
      */
     public boolean isTargetedAtElement(Element element, ExecutionContext executionContext) {
-        if (!assertConditionTrue()) {
+        if (!assertConditionTrue(executionContext)) {
             return false;
         }
 
@@ -591,7 +591,7 @@ public class SelectorPath implements List<SelectorStep> {
      * @return True if this configuration is targeted at the supplied element, otherwise false.
      */
     public boolean isTargetedAtElement(SAXElement element, ExecutionContext executionContext) {
-        if (expressionEvaluator != null && !assertConditionTrue()) {
+        if (expressionEvaluator != null && !assertConditionTrue(executionContext)) {
             return false;
         }
 
@@ -634,15 +634,12 @@ public class SelectorPath implements List<SelectorStep> {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean assertConditionTrue() {
+    private boolean assertConditionTrue(ExecutionContext executionContext) {
         if (expressionEvaluator == null) {
             return true;
         }
-
-        ExecutionContextExpressionEvaluator evaluator = (ExecutionContextExpressionEvaluator) expressionEvaluator;
-        ExecutionContext execContext = Filter.getCurrentExecutionContext();
-
-        return evaluator.eval(execContext);
+        
+        return ((ExecutionContextExpressionEvaluator) expressionEvaluator).eval(executionContext);
     }
 
     /**

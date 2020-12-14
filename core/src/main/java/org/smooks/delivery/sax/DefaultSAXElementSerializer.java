@@ -45,6 +45,7 @@ package org.smooks.delivery.sax;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Filter;
+import org.smooks.javabean.context.BeanContext;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -77,42 +78,42 @@ public class DefaultSAXElementSerializer implements SAXElementVisitor {
     }
 
     public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
-        writeStartElement(element);
+        writeStartElement(element, executionContext.getBeanContext());
         if(element.isWriterOwner(writerOwner)) {
             text.toWriter(element.getWriter(writerOwner), rewriteEntities);
         }
     }
 
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-        writeStartElement(element);
+        writeStartElement(element, executionContext.getBeanContext());
         // The child element is responsible for writing itself...
     }
 
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        writeEndElement(element);
+        writeEndElement(element, executionContext.getBeanContext());
     }
 
-    public void writeStartElement(SAXElement element) throws IOException {
+    public void writeStartElement(SAXElement element, BeanContext beanContext) throws IOException {
         // We set a flag in the cache so as to mark the fact that the start element has been writen
         if(element.isWriterOwner(writerOwner)) {
             if(!isStartWritten(element)) {
                 element.setCache(this, true);
-                writeStart(element);
+                writeStart(element, beanContext);
             }
         }
     }
 
-    public void writeEndElement(SAXElement element) throws IOException {
+    public void writeEndElement(SAXElement element, BeanContext beanContext) throws IOException {
         if(element.isWriterOwner(writerOwner)) {
-            writeEnd(element);
+            writeEnd(element, beanContext);
         }
     }
 
-    protected void writeStart(SAXElement element) throws IOException {
+    protected void writeStart(SAXElement element, BeanContext beanContext) throws IOException {
         SAXElementWriterUtil.writeStartElement(element, element.getWriter(writerOwner), rewriteEntities);
     }
 
-    protected void writeEnd(SAXElement element) throws IOException {
+    protected void writeEnd(SAXElement element, BeanContext beanContext) throws IOException {
         if(!isStartWritten(element)) {
             // It's an empty element...
             SAXElementWriterUtil.writeEmptyElement(element, element.getWriter(writerOwner), rewriteEntities);

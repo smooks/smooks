@@ -80,11 +80,6 @@ public abstract class Filter {
      */
     private static final StackedThreadLocal<Filter> filterThreadLocal = new StackedThreadLocal<Filter>("Filter");
 
-    /**
-     * The Threadlocal storage instance for the ExecutionContext associated with the "current" Filter associated with the thread.
-     */
-    private static final StackedThreadLocal<ExecutionContext> execThreadLocal = new StackedThreadLocal<ExecutionContext>("ExecutionContext");
-
     public static final String CLOSE_SOURCE = "close.source";
 
     public static final String CLOSE_RESULT = "close.result";
@@ -158,32 +153,7 @@ public abstract class Filter {
     public static void removeCurrentFilter() {
         Filter.filterThreadLocal.remove();
     }
-
-    /**
-     * Get the {@link org.smooks.container.ExecutionContext} instance bound to the current thread.
-     *
-     * @return The thread-bound {@link org.smooks.container.ExecutionContext} instance.
-     */
-    public static ExecutionContext getCurrentExecutionContext() {
-        return execThreadLocal.get();
-    }
-
-    /**
-     * Set the {@link org.smooks.container.ExecutionContext} instance for the current thread.
-     *
-     * @param executionContext The thread-bound {@link org.smooks.container.ExecutionContext} instance.
-     */
-    public static void setCurrentExecutionContext(ExecutionContext executionContext) {
-        Filter.execThreadLocal.set(executionContext);
-    }
-
-    /**
-     * Remove the {@link org.smooks.container.ExecutionContext} bound to the current thread.
-     */
-    public static void removeCurrentExecutionContext() {
-        Filter.execThreadLocal.remove();
-    }
-
+    
     protected Reader getReader(Source source, ExecutionContext executionContext) {
         if(source instanceof StreamSource) {
             StreamSource streamSource = (StreamSource) source;

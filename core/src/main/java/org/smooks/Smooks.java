@@ -522,75 +522,70 @@ public class Smooks {
         ExecutionEventListener eventListener = executionContext.getEventListener();
 
         try {
-            Filter.setCurrentExecutionContext(executionContext);
+            if (eventListener != null) {
+                eventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.STARTED, executionContext));
+            }
+
+            ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();
+
+            if (results != null && results.length == 1 && results[0] != null) {
+                FilterBypass filterBypass = deliveryConfig.getFilterBypass();
+                if (filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
+                    // We're done... a filter bypass was applied...
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("FilterBypass '" + filterBypass.getClass().getName() + "' applied.");
+                    }
+                    return;
+                }
+            }
+
+            Filter messageFilter = deliveryConfig.newFilter(executionContext);
+            Filter.setFilter(messageFilter);
             try {
-                if(eventListener != null) {
-                    eventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.STARTED));
+                // Attach the source and results to the context...
+                FilterSource.setSource(executionContext, source);
+                FilterResult.setResults(executionContext, results);
+
+                // Add pre installed beans + global BeanContext lifecycle observers...
+                BeanContext beanContext = executionContext.getBeanContext();
+                beanContext.addBean(Time.BEAN_ID, new Time());
+                beanContext.addBean(UniqueID.BEAN_ID, new UniqueID());
+                for (BeanContextLifecycleObserver observer : applicationContext.getBeanContextLifecycleObservers()) {
+                    beanContext.addObserver(observer);
                 }
 
-                ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();
-				
-                if(results != null && results.length == 1 && results[0] != null) {
-	                FilterBypass filterBypass = deliveryConfig.getFilterBypass();                
-	                if(filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
-	                	// We're done... a filter bypass was applied...
-                        if(LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("FilterBypass '" + filterBypass.getClass().getName() + "' applied.");
-                        }
-	                	return;
-	                }
-                }
-                
-                Filter messageFilter = deliveryConfig.newFilter(executionContext);
-                Filter.setFilter(messageFilter);
                 try {
-                    // Attach the source and results to the context...
-                    FilterSource.setSource(executionContext, source);
-                    FilterResult.setResults(executionContext, results);
-
-                    // Add pre installed beans + global BeanContext lifecycle observers...
-                    BeanContext beanContext = executionContext.getBeanContext();
-                    beanContext.addBean(Time.BEAN_ID, new Time());
-                    beanContext.addBean(UniqueID.BEAN_ID, new UniqueID());
-                    for(BeanContextLifecycleObserver observer : applicationContext.getBeanContextLifecycleObservers()) {
-                        beanContext.addObserver(observer);
-                    }
-
-                    try {
-                        deliveryConfig.executeHandlerInit(executionContext);
-                    	messageFilter.doFilter();
-                    } finally {
-                        try {
-                            // We want to make sure that all the beans from the BeanContext are available in the
-                            // JavaResult, if one is supplied by the user...
-                            JavaResult javaResult = (JavaResult) FilterResult.getResult(executionContext, JavaResult.class);
-                            if(javaResult != null) {
-                                javaResult.getResultMap().putAll(executionContext.getBeanContext().getBeanMap());
-                            }
-
-                            // Remove the pre-installed beans...
-                            beanContext.removeBean(Time.BEAN_ID, null);
-                            beanContext.removeBean(UniqueID.BEAN_ID, null);
-                        } finally {
-                            deliveryConfig.executeHandlerCleanup(executionContext);
-                        }
-                    }
-                } catch(SmooksException e) {
-                    executionContext.setTerminationError(e);
-                    throw e;
-                } catch (Throwable t) {
-                    executionContext.setTerminationError(t);
-                    throw new SmooksException("Smooks Filtering operation failed.", t);
+                    deliveryConfig.executeHandlerInit(executionContext);
+                    messageFilter.doFilter();
                 } finally {
-                    messageFilter.cleanup();
-                    Filter.removeCurrentFilter();
+                    try {
+                        // We want to make sure that all the beans from the BeanContext are available in the
+                        // JavaResult, if one is supplied by the user...
+                        JavaResult javaResult = (JavaResult) FilterResult.getResult(executionContext, JavaResult.class);
+                        if (javaResult != null) {
+                            javaResult.getResultMap().putAll(executionContext.getBeanContext().getBeanMap());
+                        }
+
+                        // Remove the pre-installed beans...
+                        beanContext.removeBean(Time.BEAN_ID, null);
+                        beanContext.removeBean(UniqueID.BEAN_ID, null);
+                    } finally {
+                        deliveryConfig.executeHandlerCleanup(executionContext);
+                    }
                 }
+            } catch (SmooksException e) {
+                executionContext.setTerminationError(e);
+                throw e;
+            } catch (Throwable t) {
+                executionContext.setTerminationError(t);
+                throw new SmooksException("Smooks Filtering operation failed.", t);
             } finally {
-                Filter.removeCurrentExecutionContext();
+                messageFilter.cleanup();
+                Filter.removeCurrentFilter();
             }
         } finally {
             if(eventListener != null) {
-                eventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.FINISHED));
+                eventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.FINISHED, executionContext));
             }
         }
     }

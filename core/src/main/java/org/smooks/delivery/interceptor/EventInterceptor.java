@@ -246,7 +246,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
 
     private void onEvent(final ExecutionContext executionContext, final Object visitable, final VisitSequence visitSequence) {
         if (executionContext.getEventListener() != null) {
-            executionContext.getEventListener().onEvent(new ElementVisitEvent<>(visitable, getTarget(), visitSequence));
+            executionContext.getEventListener().onEvent(new ElementVisitEvent<>(visitable, getTarget(), visitSequence, executionContext));
         }
     }
 }

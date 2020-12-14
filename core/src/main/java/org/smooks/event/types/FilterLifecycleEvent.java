@@ -42,6 +42,7 @@
  */
 package org.smooks.event.types;
 
+import org.smooks.container.ExecutionContext;
 import org.smooks.event.ExecutionEvent;
 
 /**
@@ -51,6 +52,8 @@ import org.smooks.event.ExecutionEvent;
  * @see EventType
  */
 public class FilterLifecycleEvent implements ExecutionEvent {
+
+    protected final ExecutionContext executionContext;
 
     public enum EventType {
         /**
@@ -65,12 +68,14 @@ public class FilterLifecycleEvent implements ExecutionEvent {
 
     private EventType eventType;
 
-    protected FilterLifecycleEvent() {
+    protected FilterLifecycleEvent(ExecutionContext executionContext) {
         // Allow package level extension...
+        this.executionContext = executionContext;
     }
 
-    public FilterLifecycleEvent(EventType eventType) {
+    public FilterLifecycleEvent(EventType eventType, ExecutionContext executionContext) {
         this.eventType = eventType;
+        this.executionContext = executionContext;
     }
 
     public EventType getEventType() {
@@ -79,5 +84,9 @@ public class FilterLifecycleEvent implements ExecutionEvent {
 
     public String toString() {
         return eventType.toString();
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return executionContext;
     }
 }
