@@ -60,6 +60,7 @@ import org.smooks.event.types.DOMFilterLifecycleEvent;
 import org.smooks.event.types.ElementPresentEvent;
 import org.smooks.event.types.ElementVisitEvent;
 import org.smooks.event.types.ResourceTargetingEvent;
+import org.smooks.io.FragmentWriter;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
@@ -365,7 +366,7 @@ public class SmooksDOMFilter extends Filter {
      * @return Node representing filtered Element.
      */
     public Node filter(Element element) {
-        executionContext.setWriter(new Writer() {
+        executionContext.put(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY, new Writer() {
             @Override
             public void write(char[] cbuf, int off, int len) {
                 StringWriter stringWriter = new StringWriter();

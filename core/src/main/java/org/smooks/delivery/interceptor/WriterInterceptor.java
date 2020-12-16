@@ -56,6 +56,7 @@ import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ChildrenVisitor;
 import org.smooks.delivery.sax.ng.ElementVisitor;
+import org.smooks.io.FragmentWriter;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -218,7 +219,7 @@ public class WriterInterceptor extends AbstractInterceptorVisitor implements Ele
 
     @Override
     public void visitChildElement(final Element childElement, final ExecutionContext executionContext) {
-        final WriterMemento parentElementWriterMemento = new WriterMemento(new ExclusiveWriter(executionContext.getWriter(), (Element) childElement.getParentNode()), new NodeVisitable(childElement.getParentNode()), this);
+        final WriterMemento parentElementWriterMemento = new WriterMemento(new ExclusiveWriter(executionContext.get(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY), (Element) childElement.getParentNode()), new NodeVisitable(childElement.getParentNode()), this);
         executionContext.getMementoCaretaker().restore(parentElementWriterMemento);
 
         final WriterMemento childWriterMemento;
@@ -245,16 +246,16 @@ public class WriterInterceptor extends AbstractInterceptorVisitor implements Ele
     }
     
     protected <T extends Visitor> void intercept(final Invocation<T> invocation, final ExecutionContext executionContext, final Element element) {
-        final WriterMemento writerMemento = new WriterMemento(new ExclusiveWriter(executionContext.getWriter(), element), new NodeVisitable(element), this);
+        final WriterMemento writerMemento = new WriterMemento(new ExclusiveWriter(executionContext.get(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY), element), new NodeVisitable(element), this);
         executionContext.getMementoCaretaker().restore(writerMemento);
         if (writerMemento.getWriter() instanceof ExclusiveWriter) {
             ((ExclusiveWriter) writerMemento.getWriter()).setCurrentVisitor(getTarget().getContentHandler());
         }
         
-        final Writer originalWriter = executionContext.getWriter();
-        executionContext.setWriter(writerMemento.getWriter());
+        final Writer originalWriter = executionContext.get(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY);
+        executionContext.put(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY, writerMemento.getWriter());
         intercept(invocation);
-        executionContext.getMementoCaretaker().save(new WriterMemento(executionContext.getWriter(), new NodeVisitable(element), this));
-        executionContext.setWriter(originalWriter);
+        executionContext.getMementoCaretaker().save(new WriterMemento(executionContext.get(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY), new NodeVisitable(element), this));
+        executionContext.put(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY, originalWriter);
     }
 }

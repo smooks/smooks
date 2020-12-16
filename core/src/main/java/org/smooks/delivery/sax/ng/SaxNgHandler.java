@@ -56,6 +56,7 @@ import org.smooks.delivery.sax.SAXUtil;
 import org.smooks.delivery.sax.TextType;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.event.types.ElementPresentEvent;
+import org.smooks.io.DefaultFragmentWriter;
 import org.smooks.lifecycle.LifecycleManager;
 import org.smooks.lifecycle.phase.VisitCleanupPhase;
 import org.smooks.registry.lookup.LifecycleManagerLookup;
@@ -112,7 +113,7 @@ public class SaxNgHandler extends SmooksContentHandler {
         super(executionContext, parentContentHandler);
 
         this.executionContext = executionContext;
-        this.writer = executionContext.getWriter();
+        this.writer = new DefaultFragmentWriter(executionContext);
         executionEventListener = executionContext.getEventListener();
         lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
         deliveryConfig = ((SaxNgContentDeliveryConfig) executionContext.getDeliveryConfig());

@@ -257,17 +257,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	public void setBeanContext(BeanContext beanContext) {
         this.beanContext = beanContext;
     }
-
-	@Override
-	public void setWriter(final Writer writer) {
-		this.writer = writer;
-	}
-	
-	@Override
-	public Writer getWriter() {
-		return writer;
-	}
-
+    
 	@Override
 	public MementoCaretaker getMementoCaretaker() {
 		return mementoCaretaker;

@@ -51,7 +51,6 @@ import org.smooks.profile.DefaultProfileSet;
 import org.smooks.profile.Profile;
 import org.smooks.profile.ProfileSet;
 
-import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Map;
@@ -154,16 +153,6 @@ public class MockExecutionContext implements ExecutionContext {
     public void setBeanContext(BeanContext beanContext) {
 		executionContext.setBeanContext(beanContext);
     }
-
-	@Override
-	public void setWriter(Writer writer) {
-		executionContext.setWriter(writer);
-	}
-
-	@Override
-	public Writer getWriter() {
-		return executionContext.getWriter();
-	}
 
 	@Override
 	public MementoCaretaker getMementoCaretaker() {

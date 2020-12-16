@@ -44,6 +44,7 @@ package org.smooks.delivery.sax.ng;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.io.DefaultFragmentWriter;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class VisitorWriter02 implements AfterVisitor {
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
         try {
-            executionContext.getWriter().write("");
+            new DefaultFragmentWriter(executionContext).write("");
         } catch (IOException e) {
             throw new SmooksException(e.getMessage(), e);
         }

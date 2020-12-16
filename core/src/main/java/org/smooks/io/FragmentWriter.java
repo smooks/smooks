@@ -40,42 +40,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.sax.ng;
+package org.smooks.io;
 
-import org.smooks.SmooksException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.io.DefaultFragmentWriter;
-import org.w3c.dom.Element;
+import org.smooks.container.TypedKey;
 
-import java.io.IOException;
+import java.io.Writer;
 
-public class VisitorWriter01 implements ElementVisitor {
-    
-    @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) {
-        try {
-            new DefaultFragmentWriter(executionContext).write("");
-        } catch (IOException e) {
-            throw new SmooksException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) {
-        try {
-            new DefaultFragmentWriter(executionContext).write("");
-        } catch (IOException e) {
-            throw new SmooksException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) {
-
-    }
-
-    @Override
-    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-
-    }
+public interface FragmentWriter {
+    TypedKey<Writer> FRAGMENT_WRITER_TYPED_KEY = new TypedKey<>();
 }

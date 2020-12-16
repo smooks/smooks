@@ -40,42 +40,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.sax.ng;
+package org.smooks.io;
 
-import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.io.DefaultFragmentWriter;
-import org.w3c.dom.Element;
 
 import java.io.IOException;
+import java.io.Writer;
 
-public class VisitorWriter01 implements ElementVisitor {
+public class DefaultFragmentWriter extends Writer implements FragmentWriter {
+
+    private final Writer delegateWriter;
+
+    public DefaultFragmentWriter(final ExecutionContext executionContext) {
+        this.delegateWriter = executionContext.get(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY);
+    }
     
     @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) {
-        try {
-            new DefaultFragmentWriter(executionContext).write("");
-        } catch (IOException e) {
-            throw new SmooksException(e.getMessage(), e);
-        }
+    public void write(char[] cbuf, int off, int len) throws IOException {
+        delegateWriter.write(cbuf, off, len);
     }
 
     @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) {
-        try {
-            new DefaultFragmentWriter(executionContext).write("");
-        } catch (IOException e) {
-            throw new SmooksException(e.getMessage(), e);
-        }
+    public void flush() throws IOException {
+        delegateWriter.flush();
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) {
-
+    public void close() throws IOException {
+        delegateWriter.close();
     }
-
-    @Override
-    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-
+    
+    public Writer getDelegateWriter() {
+        return delegateWriter;
     }
 }

@@ -48,6 +48,7 @@ import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.sax.SmooksSAXFilter;
 import org.smooks.delivery.sax.ng.terminate.TerminateException;
+import org.smooks.io.FragmentWriter;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
@@ -110,7 +111,7 @@ public class SaxNgFilter extends SmooksSAXFilter {
 
         try {
             final Writer writer = getWriter(result, executionContext);
-            executionContext.setWriter(writer);
+            executionContext.put(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY, writer);
             parser.parse(source, executionContext);
             
             if (result instanceof DOMResult) {

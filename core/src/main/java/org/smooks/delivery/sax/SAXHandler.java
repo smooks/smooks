@@ -45,9 +45,8 @@ package org.smooks.delivery.sax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.ResourceConfig;
-import org.smooks.lifecycle.VisitLifecycleCleanable;
+import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.replay.EndElementEvent;
@@ -58,7 +57,10 @@ import org.smooks.event.report.AbstractReportGenerator;
 import org.smooks.event.types.ElementPresentEvent;
 import org.smooks.event.types.ElementVisitEvent;
 import org.smooks.event.types.ResourceTargetingEvent;
+import org.smooks.io.DefaultFragmentWriter;
+import org.smooks.io.FragmentWriter;
 import org.smooks.io.NullWriter;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.xml.DocType;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -80,7 +82,6 @@ public class SAXHandler extends SmooksContentHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SAXHandler.class);
     private final ExecutionContext execContext;
-    private final Writer writer;
     private ElementProcessor currentProcessor = null;
     private TextType currentTextType = TextType.TEXT;
     private final SAXContentDeliveryConfig deliveryConfig;
@@ -113,7 +114,6 @@ public class SAXHandler extends SmooksContentHandler {
         super(executionContext, parentContentHandler);
 
         this.execContext = executionContext;
-        this.writer = executionContext.getWriter();
         eventListener = executionContext.getEventListener();
 
         deliveryConfig = ((SAXContentDeliveryConfig)executionContext.getDeliveryConfig());
@@ -135,7 +135,7 @@ public class SAXHandler extends SmooksContentHandler {
         defaultSerializationOn = executionContext.getDeliveryConfig().isDefaultSerializationOn();
         if(defaultSerializationOn) {
             // If it's not explicitly configured off, we auto turn it off if the NullWriter is configured...
-            defaultSerializationOn = !(writer instanceof NullWriter);
+            defaultSerializationOn = !(new DefaultFragmentWriter(executionContext).getDelegateWriter() instanceof NullWriter);
         }
         maintainElementStack = contentDeliveryConfig.isMaintainElementStack();
 
@@ -195,7 +195,7 @@ public class SAXHandler extends SmooksContentHandler {
                 onChildElement(element);
             } else {
                 element = new WriterManagedSAXElement(elementQName, startEvent.attributes, null);
-                element.setWriter(writer);
+                element.setWriter(new DefaultFragmentWriter(execContext));
             }
 
             // Register the "presence" of the element...
@@ -578,6 +578,7 @@ public class SAXHandler extends SmooksContentHandler {
     public void startDTD(String name, String publicId, String systemId) throws SAXException {
         DocType.setDocType(name, publicId, systemId, null, execContext);
 
+        Writer writer = execContext.get(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY);
         if(writer != null) {
             DocType.DocumentTypeData docTypeData = DocType.getDocType(execContext);
             if(docTypeData != null) {

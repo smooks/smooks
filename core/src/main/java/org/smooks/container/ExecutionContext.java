@@ -48,7 +48,6 @@ import org.smooks.javabean.context.BeanContext;
 import org.smooks.profile.ProfileSet;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import java.io.Writer;
 import java.net.URI;
 
 /**
@@ -193,19 +192,6 @@ public interface ExecutionContext extends TypedMap {
      * @param beanContext  the <code>BeanContext</code>
      */
     void setBeanContext(BeanContext beanContext);
-
-    /**
-     * Sets output stream <code>Writer</code> for this <code>ExecutionContext</code>. Typically it is the <code>Filter</code> 
-     * that sets the <code>Writer</code>. Resources like <code>Visitor</code>s should leave this method alone.
-     * 
-     * @param writer  the output stream <code>Writer</code>
-     */
-    void setWriter(Writer writer);
-
-    /**
-     * @return  the output stream <code>Writer</code> for this <code>ExecutionContext</code>
-     */
-    Writer getWriter();
 
     /**
      * @return  the {@link MementoCaretaker} for this <code>ExecutionContext</code>
