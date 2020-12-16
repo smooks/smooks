@@ -46,10 +46,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.ParameterAccessor;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.ResourceConfigSortComparator;
 import org.smooks.cdr.ResourceConfigurationNotFoundException;
-import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.*;
 import org.smooks.delivery.dom.serialize.Serializer;
 import org.smooks.delivery.dom.serialize.TextSerializerVisitor;
@@ -181,7 +182,8 @@ public class SmooksDOMFilter extends Filter {
      * request.  This is needed because Xerces doesn't allow "overwriting" of
      * the document root node.
      */
-    public static final String DELIVERY_NODE_REQUEST_KEY = ContentDeliveryConfig.class.getName() + "#DELIVERY_NODE_REQUEST_KEY";
+    private static final TypedKey<Node> DELIVERY_NODE_REQUEST_KEY = new TypedKey<>();
+
     /**
      * Event Listener.
      */
@@ -434,7 +436,7 @@ public class SmooksDOMFilter extends Filter {
             elementTrans.process(executionContext);
         }
 
-        return executionContext.getAttribute(DELIVERY_NODE_REQUEST_KEY);
+        return executionContext.get(DELIVERY_NODE_REQUEST_KEY);
     }
 
     private boolean applyAssembly(ContentHandlerBindings<DOMVisitBefore> visitBefores, ContentHandlerBindings<DOMVisitAfter> visitAfters) {

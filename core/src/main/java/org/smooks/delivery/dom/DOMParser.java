@@ -169,7 +169,7 @@ public class DOMParser extends AbstractParser {
                 }
 
                 NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
-                NamespaceManager.setNamespaceDeclarationStack(namespaceDeclarationStack, executionContext);
+                executionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, namespaceDeclarationStack);
                 attachNamespaceDeclarationStack(domReader, executionContext);
 
                 attachXMLReader(domReader, executionContext);

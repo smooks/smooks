@@ -49,6 +49,7 @@ import org.smooks.cdr.ResourceConfig;
 import org.smooks.classpath.CascadingClassLoaderSet;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedMap;
 import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.container.standalone.StandaloneApplicationContext;
 import org.smooks.container.standalone.StandaloneExecutionContext;
@@ -408,7 +409,7 @@ public class Smooks {
      * {@link #filterSource(org.smooks.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}
      * It allows access to the execution context instance
      * before and after calls on this method.  This means the caller has an opportunity to set and get data
-     * {@link org.smooks.container.BoundAttributeStore bound} to the execution context (before and after the calls), providing the
+     * {@link TypedMap bound} to the execution context (before and after the calls), providing the
      * caller with a mechanism for interacting with the content {@link org.smooks.delivery.dom.SmooksDOMFilter filtering} phases.
      *
      * @return Execution context instance.
@@ -427,7 +428,7 @@ public class Smooks {
      * {@link #filterSource(org.smooks.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}.
      * It allows access to the execution context instance
      * before and after calls on this method.  This means the caller has an opportunity to set and get data
-     * {@link org.smooks.container.BoundAttributeStore bound} to the execution context (before and after the calls), providing the
+     * {@link TypedMap bound} to the execution context (before and after the calls), providing the
      * caller with a mechanism for interacting with the content {@link org.smooks.delivery.dom.SmooksDOMFilter filtering} phases.
      *
      * @param targetProfile The target profile ({@link ProfileSet base profile}) on behalf of whom the filtering/serialisation

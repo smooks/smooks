@@ -43,6 +43,7 @@
 package org.smooks.delivery.sax;
 
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.SmooksContentHandler;
 
 import java.util.ArrayList;
@@ -55,12 +56,14 @@ import java.util.List;
  */
 public class DynamicSAXElementVisitorList {
 
+    private static final TypedKey<DynamicSAXElementVisitorList> DYNAMIC_SAX_ELEMENT_VISITOR_LIST_TYPED_KEY = new TypedKey<>();
+    
     private final List<SAXVisitBefore> visitBefores = new ArrayList<SAXVisitBefore>();
     private final List<SAXVisitChildren> childVisitors = new ArrayList<SAXVisitChildren>();
     private final List<SAXVisitAfter> visitAfters = new ArrayList<SAXVisitAfter>();
 
     public DynamicSAXElementVisitorList(ExecutionContext executionContext) {
-        executionContext.setAttribute(DynamicSAXElementVisitorList.class, this);
+        executionContext.put(DYNAMIC_SAX_ELEMENT_VISITOR_LIST_TYPED_KEY, this);
     }
 
     public List<SAXVisitBefore> getVisitBefores() {
@@ -76,7 +79,7 @@ public class DynamicSAXElementVisitorList {
     }
     
     public static DynamicSAXElementVisitorList getList(ExecutionContext executionContext) {
-        return executionContext.getAttribute(DynamicSAXElementVisitorList.class);
+        return executionContext.get(DYNAMIC_SAX_ELEMENT_VISITOR_LIST_TYPED_KEY);
     }
 
     public static void addDynamicVisitor(SAXVisitor visitor, ExecutionContext executionContext) {

@@ -79,7 +79,7 @@ public class SaxNgParser extends AbstractParser {
             }
 
             NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
-            NamespaceManager.setNamespaceDeclarationStack(namespaceDeclarationStack, executionContext);
+            executionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, namespaceDeclarationStack);
 
             attachNamespaceDeclarationStack(saxReader, executionContext);
             attachXMLReader(saxReader, executionContext);

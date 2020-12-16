@@ -97,7 +97,7 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
         }
 
         try {
-            config = ExtensionContext.getExtensionContext(executionContext).getResourceStack().peek();
+            config = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
         } catch (EmptyStackException e) {
             throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + actualMapTo + "' with attribute '" + attribute + "' value '" + value + "'.");
         }

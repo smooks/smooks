@@ -46,6 +46,7 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.MementoCaretaker;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Visitor;
@@ -59,6 +60,7 @@ import java.io.Writer;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +72,7 @@ import java.util.Map;
 public class StandaloneExecutionContext implements ExecutionContext {
 
     private final ProfileSet targetProfileSet;
-    private final Map<Object, Object> attributes = new Hashtable<>();
+    private final Map<TypedKey<Object>, Object> attributes = new Hashtable<>();
     private final ContentDeliveryConfig deliveryConfig;
 	private final MementoCaretaker mementoCaretaker;
 	private final ApplicationContext applicationContext;
@@ -213,23 +215,23 @@ public class StandaloneExecutionContext implements ExecutionContext {
       * @see org.smooks.container.BoundAttributeStore#setAttribute(java.lang.Object, java.lang.Object)
       */
 	@Override
-	public void setAttribute(Object key, Object value) {
-		attributes.put(key, value);
+	public <T> void put(TypedKey<T> key, T value) {
+		attributes.put((TypedKey<Object>) key, value);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.smooks.container.BoundAttributeStore#getAttribute(java.lang.Object)
 	 */
 	@Override
-	public Object getAttribute(Object key) {
-		return attributes.get(key);
+	public <T> T get(TypedKey<T> key) {
+		return (T) attributes.get(key);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.smooks.container.BoundAttributeStore#removeAttribute(java.lang.Object)
 	 */
 	@Override
-	public void removeAttribute(Object key) {
+	public <T> void remove(TypedKey<T> key) {
 		attributes.remove(key);
 	}
 
@@ -239,8 +241,8 @@ public class StandaloneExecutionContext implements ExecutionContext {
     }
 
 	@Override
-	public Map<Object, Object> getAttributes() {
-    	return attributes;
+	public Map<TypedKey<Object>, Object> getAll() {
+    	return Collections.unmodifiableMap(attributes);
     }
 
 	@Override

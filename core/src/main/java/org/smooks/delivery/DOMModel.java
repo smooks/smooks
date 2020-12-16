@@ -43,6 +43,7 @@
 package org.smooks.delivery;
 
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.w3c.dom.Element;
 
 import java.util.LinkedHashMap;
@@ -55,6 +56,7 @@ import java.util.Map;
  */
 public class DOMModel {
 
+    private static final TypedKey<DOMModel> DOM_MODEL_TYPED_KEY = new TypedKey<>();
     private final Map<String, Element> models = new LinkedHashMap<String, Element>();
 
     public Map<String, Element> getModels() {
@@ -62,11 +64,11 @@ public class DOMModel {
     }
 
     public static DOMModel getModel(ExecutionContext executionContext) {
-        DOMModel nodeModel = (DOMModel) executionContext.getAttribute(DOMModel.class);
+        DOMModel nodeModel = executionContext.get(DOM_MODEL_TYPED_KEY);
 
         if(nodeModel == null) {
             nodeModel = new DOMModel();
-            executionContext.setAttribute(DOMModel.class, nodeModel);
+            executionContext.put(DOM_MODEL_TYPED_KEY, nodeModel);
         }
 
         return nodeModel;

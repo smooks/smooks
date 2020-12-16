@@ -71,7 +71,7 @@ public class ResourceConfigsProfileSetLookup implements Function<Map<Object, Obj
     
     @Override
     public ResourceConfig[] apply(final Map<Object, Object> registryEntries) {
-        final List<ResourceConfig> profileSetResourceConfigs = new Vector();
+        final List<ResourceConfig> profileSetResourceConfigs = new Vector<>();
 
         for (final ResourceConfigList resourceConfigList : registry.lookup(new ResourceConfigListsLookup())) {
             final ResourceConfig[] resourceConfigs = resourceConfigList.getTargetConfigurations(profileSet);

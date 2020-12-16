@@ -43,7 +43,7 @@
 package org.smooks.cdr.extension;
 
 import org.smooks.cdr.*;
-import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.expression.ExpressionEvaluator;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ import java.util.Stack;
  */
 public class ExtensionContext {
 
-    private static final String EXEC_CONTEXT_KEY = ExtensionContext.class.getName() + "#EXEC_CONTEXT_KEY";
+    public static final TypedKey<ExtensionContext> EXTENSION_CONTEXT_TYPED_KEY = new TypedKey<>();
 
     private final XMLConfigDigester xmlConfigDigester;
     @Deprecated
@@ -109,24 +109,6 @@ public class ExtensionContext {
         this.defaultNamespace = defaultNamespace;
         this.defaultProfile = defaultProfile;
         this.defaultConditionEvaluator = defaultConditionEvaluator;
-    }
-
-    /**
-     * Set the {@link ExtensionContext} on the {@link org.smooks.container.ExecutionContext}.
-     * @param extensionContext Extension Context.
-     * @param executionContext Execution Context.
-     */
-    public static void setExtensionContext(ExtensionContext extensionContext, ExecutionContext executionContext) {
-        executionContext.setAttribute(EXEC_CONTEXT_KEY, extensionContext);
-    }
-
-    /**
-     * Get the {@link ExtensionContext} from the {@link org.smooks.container.ExecutionContext}.
-     * @param executionContext Execution Context.
-     * @return Extension Context.
-     */
-    public static ExtensionContext getExtensionContext(ExecutionContext executionContext) {
-        return (ExtensionContext) executionContext.getAttribute(EXEC_CONTEXT_KEY);
     }
 
     /**

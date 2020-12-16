@@ -80,12 +80,12 @@ public class MultiLineToStringBuilder {
 	private static final String NL = System.getProperty("line.separator");
 	private static final Pattern NL_PATTERN = Pattern.compile("\r\n|\n|\r");
 
-	private static final List<String> EXECUTION_CONTEXT_FILTER_LIST = new ArrayList<String>();
+	private static final List<String> EXECUTION_CONTEXT_FILTER_LIST = new ArrayList<>();
 
 	static {
 		//These keys are exluded for the execution context string
-		EXECUTION_CONTEXT_FILTER_LIST.add(FilterResult.CONTEXT_KEY);
-		EXECUTION_CONTEXT_FILTER_LIST.add(FilterSource.CONTEXT_KEY);
+		EXECUTION_CONTEXT_FILTER_LIST.add(FilterResult.RESULTS_TYPED_KEY.toString());
+		EXECUTION_CONTEXT_FILTER_LIST.add(FilterSource.SOURCE_TYPED_KEY.toString());
 	}
 
 	private MultiLineToStringBuilder() {
@@ -108,7 +108,7 @@ public class MultiLineToStringBuilder {
     	builder.append(NL);
     	builder.append(NL);
     	builder.append("Attributes : ");
-    	builder.append(toString(executionContext.getAttributes(), stack, EXECUTION_CONTEXT_FILTER_LIST));
+    	builder.append(toString(executionContext.getAll(), stack, EXECUTION_CONTEXT_FILTER_LIST));
 
     	return builder.toString();
     }

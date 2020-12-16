@@ -43,6 +43,7 @@
 package org.smooks.payload;
 
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 
 import javax.xml.transform.Result;
 
@@ -53,20 +54,20 @@ import javax.xml.transform.Result;
  */
 public abstract class FilterResult implements Result {
 
-    public static final String CONTEXT_KEY = FilterResult.class.getName() + "#CONTEXT_KEY";
+    public static final TypedKey<Result[]> RESULTS_TYPED_KEY = new TypedKey<>();
 
     private String systemId;
 
     public static void setResults(ExecutionContext executionContext, Result... results) {
         if(results != null) {
-            executionContext.setAttribute(CONTEXT_KEY, results);
+            executionContext.put(RESULTS_TYPED_KEY, results);
         } else {
-            executionContext.removeAttribute(CONTEXT_KEY);
+            executionContext.remove(RESULTS_TYPED_KEY);
         }
     }
 
     public static Result[] getResults(ExecutionContext executionContext) {
-        return executionContext.getAttribute(CONTEXT_KEY);
+        return executionContext.get(RESULTS_TYPED_KEY);
     }
 
     public static Result getResult(ExecutionContext executionContext, Class<? extends Result> resultType) {

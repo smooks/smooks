@@ -44,6 +44,7 @@ package org.smooks.db;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.Fragment;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.ordering.Producer;
@@ -95,15 +96,15 @@ public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefo
     }
 
     protected void bind(ExecutionContext executionContext) {
-        executionContext.setAttribute(DS_CONTEXT_KEY_PREFIX + getName(), this);
+        executionContext.put(new TypedKey<>(DS_CONTEXT_KEY_PREFIX + getName()), this);
     }
 
     protected void unbind(ExecutionContext executionContext) {
         try {
-            Connection connection = executionContext.getAttribute(CONNECTION_CONTEXT_KEY_PREFIX + getName());
+            Connection connection = executionContext.get(new TypedKey<>(CONNECTION_CONTEXT_KEY_PREFIX + getName()));
 
             if(connection != null) {
-            	TransactionManager transactionManager = executionContext.getAttribute(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX  + getName());
+            	TransactionManager transactionManager = executionContext.get(new TypedKey<>(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX  + getName()));
             	if(transactionManager == null) {
             		throw new SmooksException("No TransactionManager is set for the datasource '" + getName() + "'");
             	}
@@ -117,23 +118,23 @@ public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefo
                         }
                     }
                 } finally {
-                    executionContext.removeAttribute(CONNECTION_CONTEXT_KEY_PREFIX + getName());
+                    executionContext.remove(new TypedKey<>(CONNECTION_CONTEXT_KEY_PREFIX + getName()));
                     connection.close();
                 }
             }
         } catch (SQLException e) {
             throw new SmooksException("Unable to unbind DataSource '" + getName() + "'.", e);
         } finally {
-            executionContext.removeAttribute(DS_CONTEXT_KEY_PREFIX + getName());
-            executionContext.removeAttribute(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX + getName());
+            executionContext.remove(new TypedKey<>(DS_CONTEXT_KEY_PREFIX + getName()));
+            executionContext.remove(new TypedKey<>(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX + getName()));
         }
     }
 
     public static Connection getConnection(String dataSourceName, ExecutionContext executionContext) throws SmooksException {
-        Connection connection = (Connection) executionContext.getAttribute(CONNECTION_CONTEXT_KEY_PREFIX + dataSourceName);
+        Connection connection = executionContext.get(new TypedKey<>(CONNECTION_CONTEXT_KEY_PREFIX + dataSourceName));
 
         if(connection == null) {
-            AbstractDataSource datasource = (AbstractDataSource) executionContext.getAttribute(DS_CONTEXT_KEY_PREFIX + dataSourceName);
+            AbstractDataSource datasource = executionContext.get(new TypedKey<>(DS_CONTEXT_KEY_PREFIX + dataSourceName));
 
             if(datasource == null) {
                 throw new SmooksException("DataSource '" + dataSourceName + "' not bound to context.  Configure an '" + AbstractDataSource.class.getName() +  "' implementation and target it at '#document'.");
@@ -144,8 +145,8 @@ public abstract class AbstractDataSource implements SAXVisitBefore, DOMVisitBefo
                 TransactionManager transactionManager = datasource.createTransactionManager(connection);
                 transactionManager.begin();
 
-                executionContext.setAttribute(CONNECTION_CONTEXT_KEY_PREFIX + dataSourceName, connection);
-                executionContext.setAttribute(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX + dataSourceName, transactionManager);
+                executionContext.put(new TypedKey<>(CONNECTION_CONTEXT_KEY_PREFIX + dataSourceName), connection);
+                executionContext.put(new TypedKey<>(TRANSACTION_MANAGER_CONTEXT_KEY_PREFIX + dataSourceName), transactionManager);
             } catch (SQLException e) {
                 throw new SmooksException("Unable to open connection to dataSource '" + dataSourceName + "'.", e);
             }

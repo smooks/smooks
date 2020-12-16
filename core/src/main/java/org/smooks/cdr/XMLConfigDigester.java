@@ -526,7 +526,7 @@ public final class XMLConfigDigester {
         } else {
             extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, null);
         }
-        ExtensionContext.setExtensionContext(extentionContext, executionContext);
+        executionContext.put(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY, extentionContext);
 
         // Filter the extension element through Smooks...
         configDigester.filterSource(executionContext, new DOMSource(configElement), null);

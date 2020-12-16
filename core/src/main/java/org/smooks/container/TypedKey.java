@@ -40,50 +40,48 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cdr.extension;
+package org.smooks.container;
 
-import org.smooks.SmooksException;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMElementVisitor;
-import org.w3c.dom.Element;
+import org.smooks.assertion.AssertArgument;
 
-import javax.inject.Inject;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.UUID;
 
-/**
- * Create a new {@link ResourceConfig} by cloning the current resource.
- * <p/>
- * The cloned {@link ResourceConfig} is added to the {@link org.smooks.cdr.extension.ExtensionContext}.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public class CloneResourceConfig implements DOMElementVisitor {
+public final class TypedKey<T> {
+    private final String name;
 
-    @Inject
-    private Optional<String> resource;
+    public TypedKey() {
+        this(UUID.randomUUID().toString());
+    }
+    
+    public TypedKey(String name) {
+        AssertArgument.isNotNull(name, "name");
+        this.name = name;
+    }
 
-    @Inject
-    private Optional<String[]> unset;
-
-    @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
-        ResourceConfig config = (ResourceConfig) extensionContext.getResourceStack().peek().clone();
-
-        if(unset.isPresent()) {
-	        for(String property : unset.get()) {
-	            ResourceConfigUtil.unsetProperty(config, property);
-	        }
-        }
-
-        resource.ifPresent(config::setResource);
-
-        extensionContext.addResource(config);
+    public String getName() {
+        return name;
     }
 
     @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().pop();
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TypedKey)) {
+            return false;
+        }
+        TypedKey<?> typedKey = (TypedKey<?>) o;
+        return name.equals(typedKey.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

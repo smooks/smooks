@@ -43,6 +43,7 @@
 package org.smooks.payload;
 
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 
 import javax.xml.transform.Source;
 
@@ -53,19 +54,19 @@ import javax.xml.transform.Source;
  */
 public abstract class FilterSource implements Source {
 
-    public static final String CONTEXT_KEY = FilterSource.class.getName() + "#CONTEXT_KEY";
+    public static final TypedKey<Source> SOURCE_TYPED_KEY = new TypedKey<>();
 
     private String systemId;
 
     public static Source getSource(ExecutionContext executionContext) {
-        return (Source) executionContext.getAttribute(CONTEXT_KEY);
+        return executionContext.get(SOURCE_TYPED_KEY);
     }
 
     public static void setSource(ExecutionContext executionContext, Source source) {
         if(source != null) {
-            executionContext.setAttribute(CONTEXT_KEY, source);
+            executionContext.put(SOURCE_TYPED_KEY, source);
         } else {
-            executionContext.removeAttribute(CONTEXT_KEY);
+            executionContext.remove(SOURCE_TYPED_KEY);
         }
     }
 

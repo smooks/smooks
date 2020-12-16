@@ -42,16 +42,16 @@
  */
 package org.smooks.container.standalone;
 
-import static org.junit.Assert.*;
-
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.SmooksUtil;
+import org.smooks.container.TypedKey;
 import org.smooks.profile.DefaultProfileSet;
+
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for {@link StandaloneExecutionContext}
@@ -63,12 +63,12 @@ public class StandaloneExecutionContextTest {
     private StandaloneExecutionContext context;
 
     @Test
-    public void getAttributes() {
-        final String key = "testKey";
+    public void testGetAttributes() {
+        final TypedKey<String> key = new TypedKey<>("testKey");
         final String value = "testValue";
-        context.setAttribute(key, value);
+        context.put(key, value);
 
-        Map<Object, Object> attributes = context.getAttributes();
+        Map<TypedKey<Object>, Object> attributes = context.getAll();
 
         assertTrue(attributes.containsKey(key));
         assertTrue(attributes.containsValue(value));

@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXElementVisitor;
 import org.smooks.delivery.sax.SAXText;
@@ -73,7 +74,7 @@ public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, SAX
         String key = getContextKey(element);
 
         if(key != null) {
-            Object object = executionContext.getAttribute(key);
+            Object object = executionContext.get(new TypedKey<>(key));
 
             if(object != null) {
                 writer.write(object.toString());

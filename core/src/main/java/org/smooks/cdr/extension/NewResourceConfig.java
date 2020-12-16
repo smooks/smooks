@@ -76,7 +76,7 @@ public class NewResourceConfig implements DOMElementVisitor {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
+        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
 
         String targetProfile = DomUtils.getAttributeValue(element, PARAMETER_TARGET_PROFILE);
         if(targetProfile == null) {
@@ -97,6 +97,6 @@ public class NewResourceConfig implements DOMElementVisitor {
 
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        ExtensionContext.getExtensionContext(executionContext).getResourceStack().pop();
+        executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().pop();
     }
 }

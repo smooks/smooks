@@ -43,15 +43,17 @@
 package org.smooks.delivery.dom.serialize;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
 import org.smooks.SmooksUtil;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.Filter;
 import org.smooks.xml.Namespace;
 
 import java.io.ByteArrayInputStream;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -66,7 +68,7 @@ public class ContextObjectSerializationUnitTest {
         ParameterAccessor.setParameter(Filter.STREAM_FILTER_TYPE, "DOM", smooks);
 
         context = smooks.createExecutionContext();
-        context.setAttribute("object-x", "Hi there!");
+        context.put(new TypedKey<>("object-x"), "Hi there!");
 
         String result = SmooksUtil.filterAndSerialize(context, new ByteArrayInputStream(("<context-object key='object-x' xmlns=\"" + Namespace.SMOOKS_URI + "\" />").getBytes()), smooks);
         assertEquals("Hi there!", result);

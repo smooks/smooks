@@ -76,7 +76,7 @@ public final class ResourceConfigUtil {
         } else if(setOn.equals("condition") && ((String) value).length() > 0) {
             resourceConfig.getSelectorPath().setConditionEvaluator(new BeanMapExpressionEvaluator((String) value));
         } else if(setOn.equals("conditionRef")) {
-            ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
+            ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
             resourceConfig.getSelectorPath().setConditionEvaluator(extensionContext.getXmlConfigDigester().getConditionEvaluator((String) value));
         } else {
             Parameter<?> param = resourceConfig.setParameter(setOn, value);

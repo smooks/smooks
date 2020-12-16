@@ -46,6 +46,7 @@ import org.junit.Test;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.MockExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.Fragment;
 import org.w3c.dom.Element;
 
@@ -121,7 +122,7 @@ public class AbstractOutputStreamResourceTest
     }
 
     private Object getResource(AbstractOutputStreamResource resource, MockExecutionContext executionContext) {
-        return executionContext.getAttribute( AbstractOutputStreamResource.RESOURCE_CONTEXT_KEY_PREFIX + resource.getResourceName());
+        return executionContext.get(new TypedKey<>(AbstractOutputStreamResource.RESOURCE_CONTEXT_KEY_PREFIX + resource.getResourceName()));
     }
 
     /**

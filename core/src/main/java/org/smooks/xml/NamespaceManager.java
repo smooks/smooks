@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.ResourceConfigList;
 import org.smooks.container.ApplicationContext;
-import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.registry.lookup.NamespaceManagerLookup;
 import org.smooks.registry.lookup.ResourceConfigListsLookup;
@@ -66,11 +66,13 @@ import java.util.Properties;
  */
 public class NamespaceManager {
 
-    /**
+	public static final TypedKey<NamespaceDeclarationStack> NAMESPACE_DECLARATION_STACK_TYPED_KEY = new TypedKey<>();
+
+	/**
      * Logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceManager.class);
-	
+
 	@Inject
 	private ResourceConfig resourceConfig;
 	
@@ -98,21 +100,4 @@ public class NamespaceManager {
 			applicationContext.getRegistry().registerObject(NamespaceManager.class, newNamespaces);
 		}
 	}
-    
-    /**
-     * Set the {@link NamespaceDeclarationStack} for the current message on the current {@link ExecutionContext}.
-     * @param namespaceDeclarationStack The {@link NamespaceDeclarationStack} instance.
-     * @param executionContext The execution context.
-     */
-    public static void setNamespaceDeclarationStack(NamespaceDeclarationStack namespaceDeclarationStack, ExecutionContext executionContext) {
-        executionContext.setAttribute(NamespaceDeclarationStack.class, namespaceDeclarationStack);
-    }
-
-    /**
-     * Get the {@link NamespaceDeclarationStack} for the current message from the current {@link ExecutionContext}.
-     * @param executionContext The execution context.
-     */
-    public static NamespaceDeclarationStack getNamespaceDeclarationStack(ExecutionContext executionContext) {
-        return executionContext.getAttribute(NamespaceDeclarationStack.class);
-    }
 }

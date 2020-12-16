@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.Fragment;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.ordering.Consumer;
@@ -183,14 +184,14 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
     public static OutputStream getOutputStream(
             final String resourceName,
             final ExecutionContext executionContext) throws SmooksException {
-        String resourceKey = OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName;
-        Object resourceIOObj = executionContext.getAttribute(resourceKey);
+        TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
+        Object resourceIOObj = executionContext.get(resourceKey);
 
         if (resourceIOObj == null) {
-            AbstractOutputStreamResource resource = (AbstractOutputStreamResource) executionContext.getAttribute(RESOURCE_CONTEXT_KEY_PREFIX + resourceName);
+            AbstractOutputStreamResource resource = executionContext.get(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
             OutputStream outputStream = openOutputStream(resource, resourceName, executionContext);
 
-            executionContext.setAttribute(resourceKey, outputStream);
+            executionContext.put(resourceKey, outputStream);
             return outputStream;
         } else {
             if (resourceIOObj instanceof OutputStream) {
@@ -215,15 +216,15 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
      * @throws SmooksException Unable to access OutputStream.
      */
     public static Writer getOutputWriter(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
-        String resourceKey = OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName;
-        Object resourceIOObj = executionContext.getAttribute(resourceKey);
+        TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
+        Object resourceIOObj = executionContext.get(resourceKey);
 
         if (resourceIOObj == null) {
-            AbstractOutputStreamResource resource = (AbstractOutputStreamResource) executionContext.getAttribute(RESOURCE_CONTEXT_KEY_PREFIX + resourceName);
+            AbstractOutputStreamResource resource = executionContext.get(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
             OutputStream outputStream = openOutputStream(resource, resourceName, executionContext);
             Writer outputStreamWriter = new OutputStreamWriter(outputStream, resource.getWriterEncoding());
 
-            executionContext.setAttribute(resourceKey, outputStreamWriter);
+            executionContext.put(resourceKey, outputStreamWriter);
             return outputStreamWriter;
         } else {
             if (resourceIOObj instanceof Writer) {
@@ -258,16 +259,16 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
      */
     protected void closeResource(final ExecutionContext executionContext) {
         try {
-            Closeable output = executionContext.getAttribute(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName());
+            Closeable output = executionContext.get(new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName()));
             close(output);
         } finally {
-            executionContext.removeAttribute(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName());
-            executionContext.removeAttribute(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName());
+            executionContext.remove(new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName()));
+            executionContext.remove(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName()));
         }
     }
 
     private void bind(final ExecutionContext executionContext) {
-        executionContext.setAttribute(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName(), this);
+        executionContext.put(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName()), this);
     }
 
     private void close(final Closeable closeable) {
@@ -289,5 +290,4 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
             LOGGER.debug("IOException while trying to close output resource '" + resourceName + "': ", e);
         }
     }
-
 }

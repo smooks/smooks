@@ -44,6 +44,7 @@ package org.smooks.util;
 
 import freemarker.ext.dom.NodeModel;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.DOMModel;
 import org.smooks.javabean.context.BeanContext;
 import org.w3c.dom.Element;
@@ -58,6 +59,8 @@ import java.util.Set;
  */
 public abstract class FreeMarkerUtils {
 
+    private static final TypedKey<Map<String, ElementToNodeModel>> ELEMENT_TO_NODE_MODEL_TYPED_KEY = new TypedKey<>();
+    
     /**
      * Get a "merged" model for FreeMarker templating.
      * <p/>
@@ -110,11 +113,11 @@ public abstract class FreeMarkerUtils {
 
 	private static Map<String, ElementToNodeModel> getElementToNodeModelMap(ExecutionContext executionContext) {
 		@SuppressWarnings("unchecked")
-		Map<String, ElementToNodeModel> map = (Map<String, ElementToNodeModel>) executionContext.getAttribute(ElementToNodeModel.class);
+		Map<String, ElementToNodeModel> map = executionContext.get(ELEMENT_TO_NODE_MODEL_TYPED_KEY);
 
         if(map == null) {
-            map = new HashMap<String, ElementToNodeModel>();
-            executionContext.setAttribute(ElementToNodeModel.class, map);
+            map = new HashMap<>();
+            executionContext.put(ELEMENT_TO_NODE_MODEL_TYPED_KEY, map);
         }
 
         return map;

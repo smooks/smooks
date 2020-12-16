@@ -42,8 +42,9 @@
  */
 package org.smooks.container.standalone;
 
-import org.smooks.container.BoundAttributeStore;
 import org.smooks.container.MementoCaretaker;
+import org.smooks.container.TypedKey;
+import org.smooks.container.TypedMap;
 import org.smooks.delivery.memento.Visitable;
 import org.smooks.delivery.memento.VisitorMemento;
 
@@ -56,16 +57,16 @@ import java.util.function.Consumer;
 public class DefaultMementoCaretaker implements MementoCaretaker {
 
     private final Map<Visitable, Set<String>> mementoIds = new HashMap<>();
-    private final BoundAttributeStore boundAttributeStore;
+    private final TypedMap typedMap;
 
-    public DefaultMementoCaretaker(final BoundAttributeStore boundAttributeStore) {
-        this.boundAttributeStore = boundAttributeStore;
+    public DefaultMementoCaretaker(final TypedMap typedMap) {
+        this.typedMap = typedMap;
     }
     
     @Override
     public void save(final VisitorMemento visitorMemento) {
         mementoIds.computeIfAbsent(visitorMemento.getVisitable(), o -> new HashSet<>()).add(visitorMemento.getId());
-        boundAttributeStore.setAttribute(visitorMemento.getId(), visitorMemento.copy());
+        typedMap.put(new TypedKey<>(visitorMemento.getId()), visitorMemento.copy());
     }
 
     @Override
@@ -78,24 +79,25 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
     @Override
     public void restore(final VisitorMemento visitorMemento) {
         final String visitorMementoId = visitorMemento.getId();
-        final VisitorMemento restoredVisitorMemento = boundAttributeStore.getAttribute(visitorMementoId);
+        final TypedKey<VisitorMemento> visitorMementoTypedKey = new TypedKey<>(visitorMementoId);
+        final VisitorMemento restoredVisitorMemento = typedMap.get(visitorMementoTypedKey);
         if (restoredVisitorMemento != null) {
             visitorMemento.restore(restoredVisitorMemento);
         } else {
-            boundAttributeStore.setAttribute(visitorMementoId, visitorMemento);
+            typedMap.put(visitorMementoTypedKey, visitorMemento);
         }
     }
     
     @Override
     public void remove(final VisitorMemento visitorMemento) {
-        boundAttributeStore.removeAttribute(visitorMemento.getId());
+        typedMap.remove(new TypedKey<>(visitorMemento.getId()) );
         mementoIds.getOrDefault(visitorMemento.getVisitable(), new HashSet<>()).remove(visitorMemento.getId());
     }
 
     @Override
     public void forget(final Visitable visitable) {
         for (final String id : mementoIds.getOrDefault(visitable, new HashSet<>())) {
-            boundAttributeStore.removeAttribute(id);
+            typedMap.remove(new TypedKey<>(id));
         }
         mementoIds.remove(visitable);
     }
