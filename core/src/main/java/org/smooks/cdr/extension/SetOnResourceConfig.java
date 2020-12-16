@@ -76,7 +76,7 @@ public class SetOnResourceConfig implements DOMVisitBefore {
         ResourceConfig config;
 
         try {
-            config = ExtensionContext.getExtensionContext(executionContext).getResourceStack().peek();
+            config = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
         } catch (EmptyStackException e) {
             throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + setOn + "' with static value.");
         }

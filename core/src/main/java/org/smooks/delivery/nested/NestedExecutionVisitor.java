@@ -46,10 +46,10 @@ import org.smooks.Smooks;
 import org.smooks.SmooksException;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.AbstractParser;
 import org.smooks.delivery.Fragment;
 import org.smooks.delivery.SmooksContentHandler;
-import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.DynamicSAXElementVisitorList;
 import org.smooks.delivery.sax.SAXElement;
@@ -59,6 +59,7 @@ import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.javabean.repository.BeanId;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.NamespaceManager;
@@ -79,6 +80,8 @@ import java.util.Set;
  */
 public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCleanable, Producer {
 
+    private static final TypedKey<ExecutionContext> NESTED_EXECUTION_CONTEXT_TYPED_KEY = new TypedKey<>();
+    
     @Inject
     private String smooksConfig;
 
@@ -127,8 +130,8 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         AbstractParser.setReaders(AbstractParser.getReaders(executionContext), nestedExecutionContext);
 
         // Attach the NamespaceDeclarationStack to the nested execution context...
-        NamespaceDeclarationStack nsStack = NamespaceManager.getNamespaceDeclarationStack(executionContext);
-        NamespaceManager.setNamespaceDeclarationStack(nsStack, nestedExecutionContext);
+        NamespaceDeclarationStack nsStack = executionContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY);
+        nestedExecutionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, nsStack);
 
         SmooksContentHandler parentContentHandler = SmooksContentHandler.getHandler(executionContext);
 
@@ -147,7 +150,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         AbstractParser.attachXMLReader(xmlReader, nestedExecutionContext);
         xmlReader.setContentHandler(nestedContentHandler);
 
-        executionContext.setAttribute(NestedExecutionVisitor.class, nestedExecutionContext);
+        executionContext.put(NESTED_EXECUTION_CONTEXT_TYPED_KEY, nestedExecutionContext);
 
         // Note we do not execute the Smooks filterSource methods for a nested instance... we just install
         // the content handler and redirect the reader events to it...
@@ -175,7 +178,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
 
     public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
         try {
-            ExecutionContext nestedExecutionContext = (ExecutionContext) executionContext.getAttribute(NestedExecutionVisitor.class);
+            ExecutionContext nestedExecutionContext = executionContext.get(NESTED_EXECUTION_CONTEXT_TYPED_KEY);
 
             try {
                 if(nestedExecutionContext != null) {
@@ -194,7 +197,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
                     }
                 }
             } finally {
-                executionContext.removeAttribute(NestedExecutionVisitor.class);
+                executionContext.remove(NESTED_EXECUTION_CONTEXT_TYPED_KEY);
             }
         } finally {
             AbstractParser.detachXMLReader(executionContext);

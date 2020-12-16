@@ -44,6 +44,7 @@ package org.smooks.xml;
 
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -56,10 +57,10 @@ import java.util.List;
  */
 public abstract class DocType {
 
-    private static final String DOCTYPE_KEY = DocType.class.getName() + "#DOCTYPE_KEY";
+    private static final TypedKey<DocumentTypeData> DOCTYPE_KEY = new TypedKey<>();
 
     public static void setDocType(String name, String publicId, String systemId, String xmlns, ExecutionContext executionContext) {
-        executionContext.setAttribute(DOCTYPE_KEY, new DocumentTypeData(name, publicId, systemId, xmlns));
+        executionContext.put(DOCTYPE_KEY, new DocumentTypeData(name, publicId, systemId, xmlns));
     }
 
     public static DocumentTypeData getDocType(ExecutionContext executionContext) {
@@ -82,7 +83,7 @@ public abstract class DocType {
             return new DocumentTypeData(name, publicId, systemId, xmlns, omit);
         }
 
-        return (DocumentTypeData) executionContext.getAttribute(DOCTYPE_KEY);
+        return executionContext.get(DOCTYPE_KEY);
     }
 
     public static void serializeDoctype(DocumentTypeData docTypeData, Writer writer) throws IOException {

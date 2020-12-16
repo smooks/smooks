@@ -55,8 +55,8 @@ import java.net.URI;
  * Runtime context of a filter execution.
  */
 @NotThreadSafe
-public interface ExecutionContext extends BoundAttributeStore {
-
+public interface ExecutionContext extends TypedMap {
+    
     /**
      * Sometimes the document being transformed/analysed has a URI associated with it.
      * This can be bound to the execution context under this key.

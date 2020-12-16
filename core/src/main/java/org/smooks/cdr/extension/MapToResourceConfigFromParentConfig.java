@@ -45,8 +45,8 @@ package org.smooks.cdr.extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
@@ -91,7 +91,7 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        Stack<ResourceConfig> resourceStack = ExtensionContext.getExtensionContext(executionContext).getResourceStack();
+        Stack<ResourceConfig> resourceStack = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack();
         ResourceConfig currentConfig;
         ResourceConfig parentConfig;
         String value;

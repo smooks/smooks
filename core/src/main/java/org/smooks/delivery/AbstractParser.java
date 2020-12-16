@@ -49,6 +49,7 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.Parameter;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.java.JavaXMLReader;
 import org.smooks.delivery.java.XStreamXMLReader;
 import org.smooks.injector.Scope;
@@ -89,7 +90,8 @@ public class AbstractParser {
     public static final String FEATURE_OFF = "feature-off";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractParser.class);
-
+    private static final TypedKey<Stack<XMLReader>> XML_READER_STACK_TYPED_KEY = new TypedKey<>();
+    
     private final ExecutionContext executionContext;
     private final ResourceConfig saxDriverConfig;
 
@@ -120,8 +122,8 @@ public class AbstractParser {
 
     public static void attachXMLReader(XMLReader xmlReader, ExecutionContext execContext) {
         getReaders(execContext).push(xmlReader);
-
-        NamespaceDeclarationStack namespaceDeclarationStack = NamespaceManager.getNamespaceDeclarationStack(execContext);
+        
+        NamespaceDeclarationStack namespaceDeclarationStack = execContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY);
         if(namespaceDeclarationStack == null) {
             throw new IllegalStateException("No NamespaceDeclarationStack attached to the ExecutionContext.");
         }
@@ -143,13 +145,13 @@ public class AbstractParser {
 
         if(!xmlReaderStack.isEmpty()) {
             xmlReaderStack.pop();
-            NamespaceManager.getNamespaceDeclarationStack(execContext).popReader();
+            execContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY).popReader();
         }
     }
 
     @SuppressWarnings("unchecked")
     public static Stack<XMLReader> getReaders(ExecutionContext execContext) {
-        Stack<XMLReader> readers = execContext.getAttribute(XMLReader.class);
+        Stack<XMLReader> readers = execContext.get(XML_READER_STACK_TYPED_KEY);
 
         if(readers == null) {
             readers = new Stack<>();
@@ -159,7 +161,7 @@ public class AbstractParser {
     }
 
     public static void setReaders(Stack<XMLReader> readers, ExecutionContext execContext) {
-        execContext.setAttribute(XMLReader.class, readers);
+        execContext.put(XML_READER_STACK_TYPED_KEY, readers);
     }
 
     /**
@@ -328,7 +330,7 @@ public class AbstractParser {
 
     protected void attachNamespaceDeclarationStack(XMLReader reader, ExecutionContext execContext) {
         if (reader instanceof NamespaceDeclarationStackAware) {
-            NamespaceDeclarationStack nsDeclarationStack = NamespaceManager.getNamespaceDeclarationStack(execContext);
+            NamespaceDeclarationStack nsDeclarationStack = execContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY);
 
             if (nsDeclarationStack == null) {
                 throw new IllegalStateException("NamespaceDeclarationStack not configured on ExecutionContext.");

@@ -42,21 +42,18 @@
  */
 package org.smooks.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.junit.Test;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.MockExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.JavaResult;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.*;
 
-public class MultiLineToStringBuilderTest {
+import static org.junit.Assert.assertEquals;
+
+	public class MultiLineToStringBuilderTest {
 
 	private static final String NL = System.getProperty("line.separator");
 
@@ -107,7 +104,7 @@ public class MultiLineToStringBuilderTest {
 
 		context.getBeanContext().addBean("objectMap", objectMap, null);
 
-		context.getAttributes().put("multiline", "hello\nworld");
+		context.put(new TypedKey<>("multiline"), "hello\nworld");
 
 		String actual = MultiLineToStringBuilder.toString(context);
 

@@ -45,44 +45,44 @@ package org.smooks.container;
 import java.util.Map;
 
 /**
- * BoundAttributeStore interface definition.
+ * AttributeStore interface definition.
  * <p/>
  * Defines methods for binding, getting and removing named objects on
  * an implementing class.
  * @author tfennelly
  */
-public interface BoundAttributeStore {
+public interface TypedMap {
 
 	/**
-	 * Binds an object to this {@link org.smooks.container.BoundAttributeStore} implementation, using the name
+	 * Binds an object to this {@link TypedMap} implementation, using the name
 	 * specified. If an object of the same name is already bound, the object
 	 * is replaced.
 	 * <p/>
 	 * @param key The key against which the object is bound; cannot be null.
 	 * @param value The object to be bound; cannot be null.
 	 */
-    void setAttribute(Object key, Object value);
+    <T> void put(TypedKey<T> key, T value);
 
 	/**
-	 * Returns the object bound with the specified name in this {@link org.smooks.container.BoundAttributeStore}
+	 * Returns the object bound with the specified name in this {@link TypedMap}
 	 * implementation, or null if no object is bound under the name.
      * @param key The key against which the object is bound; cannot be null.
-	 * @return The object bound with the specified name in this {@link org.smooks.container.BoundAttributeStore}
+	 * @return The object bound with the specified name in this {@link TypedMap}
 	 * implementation, or null if no object is bound under the name.
 	 */
-    <T> T getAttribute(Object key);
+    <T> T get(TypedKey<T> key);
 
 	/**
-	 * Returns the Map of attributes bound in this {@link org.smooks.container.BoundAttributeStore}
-	 * @return Map of all objects bound in this {@link org.smooks.container.BoundAttributeStore}
+	 * Returns the Map of attributes bound in this {@link TypedMap}
+	 * @return Map of all objects bound in this {@link TypedMap}
 	 */
-    Map<Object, Object> getAttributes();
-
+	Map<TypedKey<Object>, Object> getAll();
+	
 	/**
-	 * Removes the object bound with the specified name from this {@link org.smooks.container.BoundAttributeStore}
-	 * implementation. If the {@link org.smooks.container.BoundAttributeStore} implementation does
+	 * Removes the object bound with the specified name from this {@link TypedMap}
+	 * implementation. If the {@link TypedMap} implementation does
 	 * not have an object bound with the specified name, this method does nothing.
      * @param key The key against which the object is bound; cannot be null.
 	 */
-    void removeAttribute(Object key);
+    <T> void remove(TypedKey<T> key);
 }

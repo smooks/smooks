@@ -53,7 +53,8 @@ import org.smooks.profile.ProfileSet;
 
 import java.io.Writer;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
@@ -139,42 +140,11 @@ public class MockExecutionContext implements ExecutionContext {
 	public String getConfigParameter(String name, String defaultVal) {
 		return executionContext.getConfigParameter(name, defaultVal);
     }
-    
-    /* (non-Javadoc)
-      * @see org.smooks.container.BoundAttributeStore#setAttribute(java.lang.String, java.lang.Object)
-      */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void setAttribute(Object key, Object value) {
-		executionContext.setAttribute(key, value);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#getAttribute(java.lang.String)
-	 */
-	@Override
-	public Object getAttribute(Object key) {
-		return executionContext.getAttribute(key);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#removeAttribute(java.lang.String)
-	 */
-	@Override
-	public void removeAttribute(Object key) {
-		executionContext.removeAttribute(key);
-	}
 
 	@SuppressWarnings("unused")
     public MockContentDeliveryConfig getMockDeliveryConfig() {
         return (MockContentDeliveryConfig) this.deliveryConfig;
     }
-
-    @SuppressWarnings("unchecked")
-	@Override
-	public Map getAttributes() {
-		return executionContext.getAttributes();
-	}
 
 	@Override
 	public BeanContext getBeanContext() {
@@ -202,5 +172,25 @@ public class MockExecutionContext implements ExecutionContext {
 
 	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
+	}
+
+	@Override
+	public <T> void put(TypedKey<T> key, T value) {
+		executionContext.put(key, value);
+	}
+
+	@Override
+	public <T> T get(TypedKey<T> key) {
+		return executionContext.get(key);
+	}
+
+	@Override
+	public Map<TypedKey<Object>, Object> getAll() {
+		return executionContext.getAll();
+	}
+
+	@Override
+	public <T> void remove(TypedKey<T> key) {
+		executionContext.remove(key);
 	}
 }

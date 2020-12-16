@@ -43,6 +43,7 @@
 package org.smooks.delivery.sax.ng;
 
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.SmooksContentHandler;
 import org.smooks.delivery.Visitor;
 
@@ -51,12 +52,14 @@ import java.util.List;
 
 public class DynamicSaxNgElementVisitorList {
 
+    private static final TypedKey<DynamicSaxNgElementVisitorList> DYNAMIC_SAX_NG_ELEMENT_VISITOR_LIST_TYPED_KEY = new TypedKey<>();
+    
     private final List<BeforeVisitor> beforeVisitors = new ArrayList<>();
     private final List<ChildrenVisitor> childrenVisitors = new ArrayList<>();
     private final List<AfterVisitor> afterVisitors = new ArrayList<>();
 
     public DynamicSaxNgElementVisitorList(ExecutionContext executionContext) {
-        executionContext.setAttribute(DynamicSaxNgElementVisitorList.class, this);
+        executionContext.put(DYNAMIC_SAX_NG_ELEMENT_VISITOR_LIST_TYPED_KEY, this);
     }
 
     public List<BeforeVisitor> getVisitBefores() {
@@ -72,7 +75,7 @@ public class DynamicSaxNgElementVisitorList {
     }
     
     public static DynamicSaxNgElementVisitorList getList(ExecutionContext executionContext) {
-        return executionContext.getAttribute(DynamicSaxNgElementVisitorList.class);
+        return executionContext.get(DYNAMIC_SAX_NG_ELEMENT_VISITOR_LIST_TYPED_KEY);
     }
 
     public static void addDynamicVisitor(Visitor visitor, ExecutionContext executionContext) {

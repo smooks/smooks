@@ -54,7 +54,6 @@ import org.xml.sax.XMLReader;
 
 import javax.xml.transform.Source;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
@@ -86,7 +85,7 @@ public class SAXParser extends AbstractParser {
             }
 
             NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
-            NamespaceManager.setNamespaceDeclarationStack(namespaceDeclarationStack, executionContext);
+            executionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, namespaceDeclarationStack);
 
             attachNamespaceDeclarationStack(saxReader, executionContext);
             attachXMLReader(saxReader, executionContext);

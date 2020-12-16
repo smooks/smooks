@@ -45,6 +45,7 @@ package org.smooks.delivery;
 import org.smooks.SmooksException;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXElementVisitor;
@@ -128,6 +129,7 @@ import java.util.Stack;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
+    private static final TypedKey<Stack<DOMCreator>> DOM_CREATOR_STACK_TYPED_KEY = new TypedKey<>();
     private final DocumentBuilder documentBuilder;
 
     @Inject
@@ -155,11 +157,11 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
 
     @SuppressWarnings("unchecked")
     private void pushCreator(DOMCreator domCreator, ExecutionContext executionContext) {
-        Stack<DOMCreator> domCreatorStack = executionContext.getAttribute(DOMCreator.class);
+        Stack<DOMCreator> domCreatorStack = executionContext.get(DOM_CREATOR_STACK_TYPED_KEY);
 
         if(domCreatorStack == null) {
             domCreatorStack = new Stack<>();
-            executionContext.setAttribute(DOMCreator.class, domCreatorStack);
+            executionContext.put(DOM_CREATOR_STACK_TYPED_KEY, domCreatorStack);
         } else if(!domCreatorStack.isEmpty()) {
             // We need to remove the current DOMCreator from the dynamic visitor list because
             // we want to stop nodes being added to it and instead, have them added to the new
@@ -176,7 +178,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
 
     @SuppressWarnings({ "unchecked", "WeakerAccess", "UnusedReturnValue" })
     public Document popCreator(ExecutionContext executionContext) {
-        Stack<DOMCreator> domCreatorStack = executionContext.getAttribute(DOMCreator.class);
+        Stack<DOMCreator> domCreatorStack = executionContext.get(DOM_CREATOR_STACK_TYPED_KEY);
 
         if(domCreatorStack == null) {
             throw new IllegalStateException("No DOM Creator Stack available.");

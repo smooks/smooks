@@ -44,6 +44,7 @@ package org.smooks.delivery;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.replay.EndElementEvent;
 import org.smooks.delivery.replay.SAXEventReplay;
 import org.smooks.delivery.replay.StartElementEvent;
@@ -61,6 +62,8 @@ import org.xml.sax.ext.DefaultHandler2;
  */
 public abstract class SmooksContentHandler extends DefaultHandler2 implements SAXEventReplay {
 
+    private static final TypedKey<SmooksContentHandler> SMOOKS_CONTENT_HANDLER_TYPED_KEY = new TypedKey<>();
+    
     private final ExecutionContext executionContext;
     private final SmooksContentHandler parentContentHandler;
     private SmooksContentHandler nestedContentHandler;
@@ -83,7 +86,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
 
     public NamespaceDeclarationStack getNamespaceDeclarationStack() {
         if(namespaceDeclarationStack == null) {
-            namespaceDeclarationStack = NamespaceManager.getNamespaceDeclarationStack(executionContext);
+            namespaceDeclarationStack = executionContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY);
             if(namespaceDeclarationStack == null) {
                 throw new IllegalStateException("NamespaceDeclarationStack instance not set on ExecutionContext.");
             }
@@ -147,15 +150,15 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
     }
 
     private void attachHandler() {
-        executionContext.setAttribute(DefaultHandler2.class, this);
+        executionContext.put(SMOOKS_CONTENT_HANDLER_TYPED_KEY, this);
     }
 
     public static SmooksContentHandler getHandler(ExecutionContext executionContext) {
-        return (SmooksContentHandler) executionContext.getAttribute(DefaultHandler2.class);
+        return executionContext.get(SMOOKS_CONTENT_HANDLER_TYPED_KEY);
     }
 
     public void detachHandler() {
-        executionContext.removeAttribute(DefaultHandler2.class);
+        executionContext.remove(SMOOKS_CONTENT_HANDLER_TYPED_KEY);
     }
 
     public ExecutionContext getExecutionContext() {
