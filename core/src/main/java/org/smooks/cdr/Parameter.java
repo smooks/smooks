@@ -158,7 +158,7 @@ public class Parameter<T> {
      *
      * @param xml Parameter configuration xml.
      */
-    public Parameter<T> setXML(Element xml) {
+    public Parameter<T> setXml(Element xml) {
         this.xml = xml;
         return this;
     }

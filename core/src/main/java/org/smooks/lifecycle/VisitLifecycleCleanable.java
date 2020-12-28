@@ -43,8 +43,8 @@
 package org.smooks.lifecycle;
 
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Fragment;
 import org.smooks.delivery.Visitor;
+import org.smooks.delivery.fragment.Fragment;
 
 /**
  * Visit Lifecycle Cleanable resource.

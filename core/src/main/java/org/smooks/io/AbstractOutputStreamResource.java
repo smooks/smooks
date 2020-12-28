@@ -48,8 +48,8 @@ import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.TypedKey;
-import org.smooks.delivery.Fragment;
 import org.smooks.delivery.dom.DOMVisitBefore;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
@@ -146,7 +146,7 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
     public Charset getWriterEncoding() {
         return writerEncoding;
     }
-    
+
     @Override
     public void visitBefore(final SAXElement element, final ExecutionContext executionContext) throws SmooksException, IOException {
         bind(executionContext);
@@ -280,14 +280,14 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
             try {
                 ((Flushable) closeable).flush();
             } catch (IOException e) {
-                LOGGER.debug("IOException while trying to flush output resource '" + resourceName + "': ", e);
+                LOGGER.warn("IOException while trying to flush output resource '" + resourceName + "': ", e);
             }
         }
 
         try {
             closeable.close();
         } catch (IOException e) {
-            LOGGER.debug("IOException while trying to close output resource '" + resourceName + "': ", e);
+            LOGGER.warn("IOException while trying to close output resource '" + resourceName + "': ", e);
         }
     }
 }

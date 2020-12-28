@@ -42,8 +42,8 @@
  */
 package org.smooks.delivery.sax;
 
+import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfig;
-import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.AbstractFilterProvider;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.delivery.ContentHandlerBinding;
@@ -51,6 +51,7 @@ import org.smooks.delivery.Visitor;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
+import org.smooks.registry.Registry;
 import org.smooks.registry.lookup.NamespaceManagerLookup;
 
 import java.util.List;
@@ -59,29 +60,29 @@ import java.util.Map;
 public class SAXFilterProvider extends AbstractFilterProvider {
     
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, ApplicationContext applicationContext, Map<String, List<ResourceConfig>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer) {
         SAXContentDeliveryConfig saxConfig = new SAXContentDeliveryConfig();
 
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
             String targetElement = visitorBinding.getResourceConfig().getSelectorPath().getTargetElement();
-            visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceManagerLookup()));
+            visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
 
             if (isSAXVisitor(visitorBinding.getContentHandler())) {
                 if (visitorBinding.getContentHandler() instanceof SAXVisitBefore && visitBeforeAnnotationsOK(visitorBinding.getContentHandler())) {
-                    saxConfig.getVisitBefores().addBinding(targetElement, visitorBinding.getResourceConfig(), (SAXVisitBefore) visitorBinding.getContentHandler());
+                    saxConfig.getVisitBeforeSelectorTable().put(targetElement, visitorBinding.getResourceConfig(), (SAXVisitBefore) visitorBinding.getContentHandler());
                 }
                 if (visitorBinding.getContentHandler() instanceof SAXVisitAfter && visitAfterAnnotationsOK(visitorBinding.getContentHandler())) {
-                    saxConfig.getVisitAfters().addBinding(targetElement, visitorBinding.getResourceConfig(), (SAXVisitAfter) visitorBinding.getContentHandler());
+                    saxConfig.getVisitAfterSelectorTable().put(targetElement, visitorBinding.getResourceConfig(), (SAXVisitAfter) visitorBinding.getContentHandler());
                 }
                 configBuilderEvents.add(new ConfigBuilderEvent(visitorBinding.getResourceConfig(), "Added as a SAX resource."));
             }
 
             if(visitorBinding.getContentHandler() instanceof VisitLifecycleCleanable) {
-                saxConfig.getVisitCleanables().addBinding(targetElement, visitorBinding.getResourceConfig(), (VisitLifecycleCleanable) visitorBinding.getContentHandler());
+                saxConfig.getVisitLifecycleCleanableSelectorTable().put(targetElement, visitorBinding.getResourceConfig(), (VisitLifecycleCleanable) visitorBinding.getContentHandler());
             }
         }
         
-        saxConfig.setApplicationContext(applicationContext);
+        saxConfig.setRegistry(registry);
         saxConfig.setResourceConfigs(resourceConfigTable);
         saxConfig.setDtd(dtdObjectContainer);
         saxConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
@@ -89,13 +90,11 @@ public class SAXFilterProvider extends AbstractFilterProvider {
         saxConfig.optimizeConfig();
         saxConfig.assertSelectorsNotAccessingText();
 
-        if(sortVisitors) {
+        if (ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable)) {
             saxConfig.sort();
         }
 
         saxConfig.addToExecutionLifecycleSets();
-        saxConfig.initializeXMLReaderPool();
-
         saxConfig.addIndexCounters();
         
         return saxConfig;

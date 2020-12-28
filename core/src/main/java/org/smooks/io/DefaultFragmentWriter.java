@@ -43,21 +43,36 @@
 package org.smooks.io;
 
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.fragment.Fragment;
 
 import java.io.IOException;
 import java.io.Writer;
 
-public class DefaultFragmentWriter extends Writer implements FragmentWriter {
+public class DefaultFragmentWriter extends FragmentWriter {
 
+    public static final long RESERVED_WRITE_FRAGMENT_ID = 0L;
+    
     private final Writer delegateWriter;
+    private final Fragment fragment;
+    private final ExecutionContext executionContext;
+    private final Boolean tryCapture;
+    
+    public DefaultFragmentWriter(final ExecutionContext executionContext, final Fragment fragment) {
+        this(executionContext, fragment, true);
+    }
 
-    public DefaultFragmentWriter(final ExecutionContext executionContext) {
-        this.delegateWriter = executionContext.get(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY);
+    public DefaultFragmentWriter(final ExecutionContext executionContext, final Fragment fragment, final boolean tryCapture) {
+        this.executionContext = executionContext;
+        this.delegateWriter = Stream.out(executionContext);
+        this.fragment = fragment;
+        this.tryCapture = tryCapture;
     }
     
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
-        delegateWriter.write(cbuf, off, len);
+        if (capture()) {
+            delegateWriter.write(cbuf, off, len);
+        }
     }
 
     @Override
@@ -70,7 +85,35 @@ public class DefaultFragmentWriter extends Writer implements FragmentWriter {
         delegateWriter.close();
     }
     
+    @Override
     public Writer getDelegateWriter() {
         return delegateWriter;
+    }
+    
+    @Override
+    public boolean capture() throws IOException {
+        if (fragment.reserve(RESERVED_WRITE_FRAGMENT_ID, this)) {
+            return true;
+        }
+
+        if (tryCapture) {
+            return false;
+        }
+        
+        throw new IOException(String.format("Illegal access to fragment '%s': fragment is exclusively acquired by another writer. Hint: release writer before acquiring the fragment from a different writer", fragment.toString()));
+    }
+
+    @Override
+    public void release() throws IOException {
+        fragment.release(RESERVED_WRITE_FRAGMENT_ID, this);
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return fragment;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return executionContext;
     }
 }

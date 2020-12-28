@@ -108,7 +108,7 @@ public class AbstractParser {
     }
 
     public AbstractParser(ExecutionContext executionContext) {
-        this(executionContext, getSAXParserConfiguration(executionContext.getDeliveryConfig()));
+        this(executionContext, getSAXParserConfiguration(executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
     }
 
     protected ExecutionContext getExecutionContext() {
@@ -130,8 +130,8 @@ public class AbstractParser {
         namespaceDeclarationStack.pushReader(xmlReader);
     }
 
-    public static XMLReader getXMLReader(ExecutionContext execContext) {
-        Stack<XMLReader> xmlReaderStack = getReaders(execContext);
+    public static XMLReader getXMLReader(ExecutionContext executionContext) {
+        Stack<XMLReader> xmlReaderStack = getReaders(executionContext);
 
         if(!xmlReaderStack.isEmpty()) {
             return xmlReaderStack.peek();
@@ -140,28 +140,28 @@ public class AbstractParser {
         }
     }
 
-    public static void detachXMLReader(ExecutionContext execContext) {
-        Stack<XMLReader> xmlReaderStack = getReaders(execContext);
+    public static void detachXMLReader(ExecutionContext executionContext) {
+        Stack<XMLReader> xmlReaderStack = getReaders(executionContext);
 
         if(!xmlReaderStack.isEmpty()) {
             xmlReaderStack.pop();
-            execContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY).popReader();
+            executionContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY).popReader();
         }
     }
 
     @SuppressWarnings("unchecked")
-    public static Stack<XMLReader> getReaders(ExecutionContext execContext) {
-        Stack<XMLReader> readers = execContext.get(XML_READER_STACK_TYPED_KEY);
+    public static Stack<XMLReader> getReaders(ExecutionContext executionContext) {
+        Stack<XMLReader> readers = executionContext.get(XML_READER_STACK_TYPED_KEY);
 
         if(readers == null) {
             readers = new Stack<>();
-            setReaders(readers, execContext);
+            setReaders(readers, executionContext);
         }
         return readers;
     }
 
-    public static void setReaders(Stack<XMLReader> readers, ExecutionContext execContext) {
-        execContext.put(XML_READER_STACK_TYPED_KEY, readers);
+    public static void setReaders(Stack<XMLReader> readers, ExecutionContext executionContext) {
+        executionContext.put(XML_READER_STACK_TYPED_KEY, readers);
     }
 
     /**
@@ -244,15 +244,15 @@ public class AbstractParser {
 
     protected InputSource createInputSource(Source source, String contentEncoding) {
         // Also attach the underlying stream to the InputSource...
-        if(source instanceof StreamSource) {
+        if (source instanceof StreamSource) {
             StreamSource streamSource = (StreamSource) source;
             InputStream inputStream;
             Reader reader;
 
             inputStream = getInputStream(streamSource);
             reader = streamSource.getReader();
-            if(reader == null) {
-                if(inputStream == null) {
+            if (reader == null) {
+                if (inputStream == null) {
                     throw new SmooksException("Invalid StreamSource.  Unable to extract an InputStream (even by systemId) or Reader instance.");
                 }
                 reader = streamToReader(inputStream, contentEncoding);

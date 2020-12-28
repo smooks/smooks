@@ -42,16 +42,17 @@
  */
 package org.smooks.delivery.lifecyclecleanup;
 
-import static org.junit.Assert.*;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Fragment;
-import org.smooks.lifecycle.VisitLifecycleCleanable;
-import org.smooks.delivery.sax.SAXVisitBefore;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitAfter;
+import org.smooks.delivery.sax.SAXVisitBefore;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 
 import java.io.IOException;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

@@ -43,6 +43,7 @@
 package org.smooks.delivery.sax.ng;
 
 import org.smooks.container.ExecutionContext;
+import org.w3c.dom.Node;
 
 import java.io.Writer;
 import java.util.function.Consumer;
@@ -50,9 +51,9 @@ import java.util.function.Consumer;
 public class SystemSaxNgSerializerVisitor extends SaxNgSerializerVisitor {
     
     @Override
-    protected void onWrite(final Consumer<Writer> consumer, final ExecutionContext executionContext) {
-        if (executionContext.getDeliveryConfig().isDefaultSerializationOn()) {
-            super.onWrite(consumer, executionContext);
+    protected void onWrite(final Consumer<Writer> writerConsumer, final ExecutionContext executionContext, final Node node) {
+        if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn()) {
+            super.onWrite(writerConsumer, executionContext, node);
         }
     }
 }

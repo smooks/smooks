@@ -47,14 +47,13 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.delivery.ContentHandlerBinding;
-import org.smooks.delivery.Filter;
 import org.smooks.delivery.VisitSequence;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.event.BasicExecutionEventListener;
-import org.smooks.event.ElementProcessingEvent;
 import org.smooks.event.ExecutionEvent;
+import org.smooks.event.FragmentEvent;
 import org.smooks.event.ResourceBasedEvent;
 import org.smooks.event.report.model.*;
 import org.smooks.event.types.*;
@@ -108,36 +107,36 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     /**
      * Process the {@link org.smooks.event.ExecutionEvent}.
      *
-     * @param event The {@link org.smooks.event.ExecutionEvent}.
+     * @param executionEvent The {@link org.smooks.event.ExecutionEvent}.
      */
-    public void onEvent(ExecutionEvent event) {
-        AssertArgument.isNotNull(event, "event");
+    public void onEvent(ExecutionEvent executionEvent) {
+        AssertArgument.isNotNull(executionEvent, "executionEvent");
 
-        if(ignoreEvent(event)) {
+        if(ignoreEvent(executionEvent)) {
             // Don't capture this event...
             return;
         }
 
-        if (event instanceof FilterLifecycleEvent) {
-            processLifecycleEvent((FilterLifecycleEvent) event);
-        } else if (event instanceof ElementPresentEvent) {
-            ReportNode node = new ReportNode((ElementPresentEvent) event);
+        if (executionEvent instanceof FilterLifecycleEvent) {
+            processLifecycleEvent((FilterLifecycleEvent) executionEvent);
+        } else if (executionEvent instanceof StartFragmentEvent) {
+            ReportNode node = new ReportNode((StartFragmentEvent) executionEvent);
             allNodes.add(node);
             processNewElementEvent(node);
         } else {
             if (reportNodeStack.isEmpty()) {
                 // We haven't started to process the message/phase yet....
-                preProcessingEvents.add(event);
-            } else if (event instanceof ElementProcessingEvent) {
+                preProcessingEvents.add(executionEvent);
+            } else if (executionEvent instanceof FragmentEvent) {
                 // We have started processing the message/phase, so attach the event to the ReportNode
                 // associated with the event element...
-                ReportNode reportNode = getReportNode(((ElementProcessingEvent) event).getElement());
+                ReportNode reportNode = getReportNode(((FragmentEvent) executionEvent).getFragment().unwrap());
 
                 if (reportNode != null) {
-                    reportNode.elementProcessingEvents.add(event);
+                    reportNode.elementProcessingEvents.add(executionEvent);
                 }
             } else {
-                processingEvents.add(event);
+                processingEvents.add(executionEvent);
             }
         }
     }
@@ -160,7 +159,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
 
         try {
             if (event.getEventType() != FilterLifecycleEvent.EventType.FINISHED) {
-                ContentDeliveryConfig deliveryConfig = event.getExecutionContext().getDeliveryConfig();
+                ContentDeliveryConfig deliveryConfig = event.getExecutionContext().getContentDeliveryRuntime().getContentDeliveryConfig();
                 if (event instanceof DOMFilterLifecycleEvent) {
                     DOMFilterLifecycleEvent domEvent = (DOMFilterLifecycleEvent) event;
                     if (domEvent.getDOMEventType() == DOMFilterLifecycleEvent.DOMEventType.PROCESSING_STARTED) {
@@ -309,19 +308,19 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         List<ExecutionEvent> events = reportNode.getElementProcessingEvents();
 
         for (ExecutionEvent event : events) {
-            if (event instanceof ElementVisitEvent) {
-                ElementVisitEvent visitEvent = (ElementVisitEvent) event;
+            if (event instanceof VisitEvent) {
+                VisitEvent visitEvent = (VisitEvent) event;
 
                 if (visitEvent.getSequence() == visitSequence) {
                     ReportInfoNode reportInfoNode = new ReportInfoNode();
-                    ContentHandlerBinding configMapping = ((ElementVisitEvent) event).getVisitorBinding();
+                    ContentHandlerBinding configMapping = ((VisitEvent) event).getVisitorBinding();
 
                     messageNode.addExecInfoNode(reportInfoNode);
 
                     reportInfoNode.setNodeId(reportInfoNodeCounter);
                     reportInfoNode.setSummary(configMapping.getContentHandler().getClass().getSimpleName() + ": " + visitEvent.getReportSummary());
                     reportInfoNode.setDetail(visitEvent.getReportDetail());
-                    reportInfoNode.setResourceXML(configMapping.getResourceConfig().toXML());
+                    reportInfoNode.setResourceXML(configMapping.getResourceConfig().toXml());
                     reportInfoNode.setContextState(visitEvent.getExecutionContextState());
 
                     reportInfoNodeCounter++;
@@ -350,8 +349,8 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         private final int depth;
         private final List<ExecutionEvent> elementProcessingEvents = new ArrayList<ExecutionEvent>();
 
-        public ReportNode(ElementPresentEvent eventPresentEvent) {
-            this.element = eventPresentEvent.getElement();
+        public ReportNode(StartFragmentEvent eventPresentEvent) {
+            this.element = eventPresentEvent.getFragment().unwrap();
             this.depth = eventPresentEvent.getDepth();
         }
 

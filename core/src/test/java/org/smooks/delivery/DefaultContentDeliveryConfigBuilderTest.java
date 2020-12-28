@@ -55,6 +55,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -68,16 +69,16 @@ public class DefaultContentDeliveryConfigBuilderTest {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-sax.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        assertTrue(execContext.getDeliveryConfig() instanceof SAXContentDeliveryConfig);
-        SAXContentDeliveryConfig config = (SAXContentDeliveryConfig) execContext.getDeliveryConfig();
+        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SAXContentDeliveryConfig);
+        SAXContentDeliveryConfig config = (SAXContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
         // Should be 5: 4 configured + 2 auto-installed
-        assertEquals(8, config.getVisitBefores().getCount());
-        assertTrue(config.getVisitBefores().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
-        assertTrue(config.getVisitBefores().getMappings("b").get(0).getContentHandler() instanceof SAXVisitor01);
-        assertEquals(7, config.getVisitAfters().getCount());
-        assertTrue(config.getVisitAfters().getMappings("b").get(1).getContentHandler() instanceof SAXVisitor01);
-        assertTrue(config.getVisitAfters().getMappings("b").get(1).getContentHandler() instanceof SAXVisitor01);
+        assertEquals(8, config.getVisitBeforeSelectorTable().size());
+        assertTrue(config.getVisitBeforeSelectorTable().get("b").get(0).getContentHandler() instanceof SAXVisitor01);
+        assertTrue(config.getVisitBeforeSelectorTable().get("b").get(0).getContentHandler() instanceof SAXVisitor01);
+        assertEquals(7, config.getVisitAfterSelectorTable().size());
+        assertTrue(config.getVisitAfterSelectorTable().get("b").get(1).getContentHandler() instanceof SAXVisitor01);
+        assertTrue(config.getVisitAfterSelectorTable().get("b").get(1).getContentHandler() instanceof SAXVisitor01);
     }
 
 	@Test
@@ -85,14 +86,14 @@ public class DefaultContentDeliveryConfigBuilderTest {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        assertTrue(execContext.getDeliveryConfig() instanceof DOMContentDeliveryConfig);
-        DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) execContext.getDeliveryConfig();
+        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof DOMContentDeliveryConfig);
+        DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
-        assertEquals(1, config.getAssemblyVisitBefores().getCount());
-        assertEquals(1, config.getAssemblyVisitAfters().getCount());
-        assertEquals(3, config.getProcessingVisitBefores().getCount());
-        assertEquals(3, config.getProcessingVisitAfters().getCount());
-        assertEquals(4, config.getSerializationVisitors().getCount());
+        assertEquals(1, config.getAssemblyVisitBeforeSelectorTable().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(1, config.getAssemblyVisitAfterSelectorTable().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(3, config.getProcessingVisitBeforeSelectorTable().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(3, config.getProcessingVisitAfterSelectorTable().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(4, config.getSerializerVisitorSelectorTable().values().stream().mapToLong(Collection::size).sum());
     }
 
 	@Test
@@ -101,7 +102,7 @@ public class DefaultContentDeliveryConfigBuilderTest {
         ExecutionContext execContext = smooks.createExecutionContext();
 
         // Should default to SAX
-        assertTrue(execContext.getDeliveryConfig() instanceof SAXContentDeliveryConfig);
+        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SAXContentDeliveryConfig);
     }
 
 	@Test
@@ -111,11 +112,11 @@ public class DefaultContentDeliveryConfigBuilderTest {
 
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-2.1.xml"));
         execContext = smooks.createExecutionContext();
-        assertTrue(execContext.getDeliveryConfig() instanceof SAXContentDeliveryConfig);
+        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SAXContentDeliveryConfig);
 
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-2.2.xml"));
         execContext = smooks.createExecutionContext();
-        assertTrue(execContext.getDeliveryConfig() instanceof DOMContentDeliveryConfig);
+        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof DOMContentDeliveryConfig);
 
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-2.3.xml"));
         try {
@@ -135,7 +136,7 @@ public class DefaultContentDeliveryConfigBuilderTest {
             ExecutionContext execContext = smooks.createExecutionContext();
 
             // Should default to DOM
-            assertTrue(execContext.getDeliveryConfig() instanceof DOMContentDeliveryConfig);
+            assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof DOMContentDeliveryConfig);
         } finally {
             if(origDefault != null) {
                 System.setProperty(Filter.STREAM_FILTER_TYPE, origDefault);

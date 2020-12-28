@@ -40,20 +40,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.memento;
+package org.smooks.visitors.smooks;
 
-/**
- * Wrapper for a visited object.
- */
-public interface Visitable {
+import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.sax.ng.BeforeVisitor;
+import org.smooks.io.DefaultFragmentWriter;
+import org.w3c.dom.Element;
 
-    /**
-     * @return an identifier unique across visited objects
-     */
-    String getId();
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
-    /**
-     * @return the visited object
-     */
-    Object unwrap();
+public class BarVisitor implements BeforeVisitor {
+    private final CountDownLatch countDownLatch = new CountDownLatch(1);
+    
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
+    }
+
+    @Override
+    public void visitBefore(Element element, ExecutionContext executionContext) {
+        try {
+            new DefaultFragmentWriter(executionContext, new NodeFragment(element)).write("Hello World!");
+        } catch (IOException e) {
+            throw new SmooksException(e);
+        }
+        countDownLatch.countDown();
+    }
 }

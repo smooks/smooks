@@ -40,37 +40,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.event;
+package org.smooks.delivery;
 
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXUtil;
-import org.smooks.xml.DomUtils;
-import org.w3c.dom.Element;
+import org.smooks.profile.ProfileSet;
 
-/**
- * An element processing related event.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public abstract class ElementProcessingEvent implements ExecutionEvent {
+import java.util.List;
 
-    private final Object element;
+public interface ContentDeliveryRuntimeFactory {
 
-    public ElementProcessingEvent(Object element) {
-        this.element = element;
-    }
-
-    public Object getElement() {
-        return element;
-    }
-
-    public int getDepth() {
-        if(element instanceof Element) {
-            return DomUtils.getDepth((Element) element);
-        } else if(element instanceof SAXElement) {
-            return SAXUtil.getDepth((SAXElement) element);
-        }
-
-        return 0;
-    }
+    ContentDeliveryRuntime create(ProfileSet profileSet, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings);
 }

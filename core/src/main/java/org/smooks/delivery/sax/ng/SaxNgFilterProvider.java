@@ -43,7 +43,6 @@
 package org.smooks.delivery.sax.ng;
 
 import org.smooks.cdr.ResourceConfig;
-import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.AbstractFilterProvider;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.delivery.ContentHandlerBinding;
@@ -51,6 +50,7 @@ import org.smooks.delivery.Visitor;
 import org.smooks.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
+import org.smooks.registry.Registry;
 import org.smooks.registry.lookup.InterceptorVisitorFactoryLookup;
 import org.smooks.registry.lookup.NamespaceManagerLookup;
 
@@ -60,49 +60,38 @@ import java.util.Map;
 public class SaxNgFilterProvider extends AbstractFilterProvider {
 
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, ApplicationContext applicationContext, Map<String, List<ResourceConfig>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer) {
         SaxNgContentDeliveryConfig saxNgContentDeliveryConfig = new SaxNgContentDeliveryConfig();
-        InterceptorVisitorChainFactory interceptorVisitorChainFactory = applicationContext.getRegistry().lookup(new InterceptorVisitorFactoryLookup());
+        InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorFactoryLookup());
 
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
-            String targetElement = visitorBinding.getResourceConfig().getSelectorPath().getTargetElement();
-            visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceManagerLookup()));
+            String selector = visitorBinding.getResourceConfig().getSelectorPath().getTargetElement();
+            visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
 
             if (visitorBinding.getContentHandler() instanceof BeforeVisitor || visitorBinding.getContentHandler() instanceof AfterVisitor) {
                 final Visitor interceptorChain = interceptorVisitorChainFactory.createInterceptorChain(visitorBinding);
                 if (interceptorChain instanceof BeforeVisitor && visitBeforeAnnotationsOK(visitorBinding.getContentHandler())) {
-                    saxNgContentDeliveryConfig.getBeforeVisitors().addBinding(targetElement, visitorBinding.getResourceConfig(), (BeforeVisitor) interceptorChain);
+                    saxNgContentDeliveryConfig.getBeforeVisitorSelectorTable().put(selector, visitorBinding.getResourceConfig(), (BeforeVisitor) interceptorChain);
                     if (interceptorChain instanceof ChildrenVisitor) {
-                        saxNgContentDeliveryConfig.getChildVisitors().addBinding(targetElement, visitorBinding.getResourceConfig(), (ChildrenVisitor) interceptorChain);
+                        saxNgContentDeliveryConfig.getChildVisitorSelectorTable().put(selector, visitorBinding.getResourceConfig(), (ChildrenVisitor) interceptorChain);
                     }
                 }
                 if (interceptorChain instanceof AfterVisitor && visitAfterAnnotationsOK(visitorBinding.getContentHandler())) {
-                    saxNgContentDeliveryConfig.getAfterVisitors().addBinding(targetElement, visitorBinding.getResourceConfig(), (AfterVisitor) interceptorChain);
+                    saxNgContentDeliveryConfig.getAfterVisitorSelectorTable().put(selector, visitorBinding.getResourceConfig(), (AfterVisitor) interceptorChain);
                     if (!(interceptorChain instanceof BeforeVisitor) && interceptorChain instanceof ChildrenVisitor) {
-                        saxNgContentDeliveryConfig.getChildVisitors().addBinding(targetElement, visitorBinding.getResourceConfig(), (ChildrenVisitor) interceptorChain);
+                        saxNgContentDeliveryConfig.getChildVisitorSelectorTable().put(selector, visitorBinding.getResourceConfig(), (ChildrenVisitor) interceptorChain);
                     }
                 }
-                configBuilderEvents.add(new ConfigBuilderEvent(visitorBinding.getResourceConfig(), "Added as a SAX-NG resource."));
+                configBuilderEvents.add(new ConfigBuilderEvent(visitorBinding.getResourceConfig(), "Added as a SAX NG visitor."));
             }
         }
         
-        saxNgContentDeliveryConfig.setApplicationContext(applicationContext);
+        saxNgContentDeliveryConfig.setRegistry(registry);
         saxNgContentDeliveryConfig.setResourceConfigs(resourceConfigTable);
         saxNgContentDeliveryConfig.setDtd(dtdObjectContainer);
         saxNgContentDeliveryConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
-
-        saxNgContentDeliveryConfig.optimizeConfig();
         saxNgContentDeliveryConfig.assertSelectorsNotAccessingText();
-
-        if(sortVisitors) {
-            saxNgContentDeliveryConfig.sort();
-        }
-
-        saxNgContentDeliveryConfig.addToExecutionLifecycleSets();
-        saxNgContentDeliveryConfig.initializeXMLReaderPool();
-
-        saxNgContentDeliveryConfig.addIndexCounters();
-
+        
         return saxNgContentDeliveryConfig;
     }
 
@@ -113,6 +102,6 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
 
     @Override
     public String getName() {
-        return "SAX-NG";
+        return "SAX NG";
     }
 }

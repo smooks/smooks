@@ -40,11 +40,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery;
+package org.smooks.visitors.smooks;
 
-import org.smooks.profile.ProfileSet;
+import org.smooks.container.ExecutionContext;
+import org.smooks.io.AbstractOutputStreamResource;
 
-public interface ContentDeliveryConfigBuilderFactory {
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+public class OutputStreamResource extends AbstractOutputStreamResource {
     
-    ContentDeliveryConfigBuilder create(ProfileSet profileSet);
+    @Inject
+    @Named("Output Stream")
+    private ByteArrayOutputStream byteArrayOutputStream;
+    
+    @Override
+    public OutputStream getOutputStream(ExecutionContext executionContext) throws IOException {
+        return byteArrayOutputStream;
+    }
 }

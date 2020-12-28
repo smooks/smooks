@@ -118,8 +118,8 @@
 
     <xs:simpleType name="filterType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="DOM"></xs:enumeration>
-            <xs:enumeration value="SAX"></xs:enumeration>
+            <xs:enumeration value="DOM"/>
+            <xs:enumeration value="SAX"/>
         </xs:restriction>
     </xs:simpleType>
     
@@ -132,26 +132,116 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+
+    <xs:element name="smooks" type="smooks-core:smooks" substitutionGroup="smooks:abstract-resource-config"/>
+    
+    <xs:complexType name="smooks">
+        <xs:complexContent>
+            <xs:extension base="smooks:element-visitor" >
+                <xs:sequence>
+                    <xs:element name="action" type="smooks-core:action" minOccurs="0" />
+                    <xs:element name="visit">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="smooks:smooks-resource-list"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute type="xs:string" name="filterSourceOn" use="required"/>
+                <xs:attribute type="xs:unsignedInt" name="maxNodeDepth" default="1"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="action">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                The &lt;use&gt; element allows you to define how the templating result is to be used.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice minOccurs="0" maxOccurs="1">
+            <xs:element name="inline" type="smooks-core:inline" />
+            <xs:element name="bindTo" type="smooks-core:bindTo" />
+            <xs:element name="outputTo" type="smooks-core:outputTo" />
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="inline">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Inline the templating result into the <b>Smooks.filter</b> Result message.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="directive" type="smooks-core:inlineDirective" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    How the templating result is to be used (relative to the element on which it
+                    is applied).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="bindTo">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Bind the templating result into the bean context under the specified "id".  This makes the
+                templating result available for routing or other operations.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="id" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    The bean context ID under which the templating result is to be bound if the "BIND_TO" action is chosen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="outputTo">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Output the templating result to a named OutputStreamResource.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="outputStreamResource" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    The name of the "outputStreamResource" to which the templating result is to be written.  By default,
+                    the templating result is written to the  Smooks.filter result if (if a StreamResult is provided).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:simpleType name="inlineDirective">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="REPLACE"/>
+            <xs:enumeration value="INSERT_BEFORE"/>
+            <xs:enumeration value="INSERT_AFTER"/>
+        </xs:restriction>
+    </xs:simpleType>
     
     <xs:complexType name="result">
         <xs:annotation>
             <xs:documentation xml:lang="en">Result that Smooks exports</xs:documentation>
         </xs:annotation>
-        <xs:attribute name="type" type="xs:string" use="required" >
+        <xs:attribute name="type" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation xml:lang="en">
                     Type fully qualifed class of the type that will be produced by this Smooks configuration.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="name" type="xs:string" use="optional">
+        <xs:attribute name="name" type="xs:string">
             <xs:annotation>
                 <xs:documentation xml:lang="en">
                     A name that can be used to identify this result type.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="extract" type="xs:string" use="optional">
+        <xs:attribute name="extract" type="xs:string">
             <xs:annotation>
                 <xs:documentation xml:lang="en">
                     This can be any string and is used when only a portion of a result should be returned. For

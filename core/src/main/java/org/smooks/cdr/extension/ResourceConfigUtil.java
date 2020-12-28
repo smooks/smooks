@@ -81,7 +81,7 @@ public final class ResourceConfigUtil {
         } else {
             Parameter<?> param = resourceConfig.setParameter(setOn, value);
             if(xml != null) {
-            	param.setXML(xml);
+            	param.setXml(xml);
             }
         }
     }

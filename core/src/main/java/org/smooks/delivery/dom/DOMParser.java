@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.AbstractParser;
-import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.delivery.ReaderPool;
 import org.smooks.delivery.XMLReaderHierarchyChangeListener;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.xml.NamespaceManager;
@@ -152,13 +152,13 @@ public class DOMParser extends AbstractParser {
   		ExecutionContext executionContext = getExecutionContext();
   		
   		if(executionContext != null) {
-			ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();
+			ReaderPool readerPool = executionContext.getContentDeliveryRuntime().getReaderPool();
 
 	  		XMLReader domReader = getXMLReader(executionContext);
 
 	  		try {
                 if(domReader == null) {
-                    domReader = deliveryConfig.getXMLReader();
+                    domReader = readerPool.getXMLReader();
                 }
                 if(domReader == null) {
                     domReader = createXMLReader();
@@ -186,7 +186,7 @@ public class DOMParser extends AbstractParser {
                             detachXMLReader(executionContext);
                         } finally {
                             if(domReader != null) {
-                                deliveryConfig.returnXMLReader(domReader);
+								readerPool.returnXMLReader(domReader);
                             }
                         }
                     } finally {

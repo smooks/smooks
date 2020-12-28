@@ -46,8 +46,6 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Visitor;
 
-import java.lang.reflect.ParameterizedType;
-
 public abstract class AbstractInterceptorVisitor implements InterceptorVisitor {
     
     protected ContentHandlerBinding<Visitor> visitorBinding;
@@ -79,7 +77,7 @@ public abstract class AbstractInterceptorVisitor implements InterceptorVisitor {
     }
 
     protected <T extends Visitor> Object intercept(final Invocation<T> invocation) {
-        final Class<?> targetClass = (Class<?>) ((ParameterizedType) invocation.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        final Class<?> targetClass = invocation.getTarget();
         ContentHandlerBinding<Visitor> nextVisitorBinding = visitorBinding;
         while (nextVisitorBinding != null) {
             if (targetClass.isInstance(nextVisitorBinding.getContentHandler())) {

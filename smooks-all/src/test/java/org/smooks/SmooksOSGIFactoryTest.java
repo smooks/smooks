@@ -42,15 +42,13 @@
  */
 package org.smooks;
 
+import org.junit.Test;
+import org.osgi.framework.Bundle;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
-import org.osgi.framework.Bundle;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
 
 /**
  * Unit test for {@link SmooksOSGIFactory}
@@ -59,10 +57,10 @@ import java.io.IOException;
  */
 public class SmooksOSGIFactoryTest {
     @Test
-    public void createWithoutConfig() throws IOException, SAXException {
+    public void createWithoutConfig() {
         final Bundle bundle = mock(Bundle.class);
         final SmooksOSGIFactory factory = new SmooksOSGIFactory(bundle);
         final Smooks smooks = factory.createInstance();
-        assertThat(smooks.getClassLoader(), is(instanceOf(BundleClassLoaderDelegator.class)));
+        assertThat(smooks.getApplicationContext().getClassLoader(), is(instanceOf(BundleClassLoaderDelegator.class)));
     }
 }

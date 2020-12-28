@@ -258,7 +258,7 @@ public final class XMLConfigDigester {
         NodeList configNodes = currentElement.getChildNodes();
 
         for (int i = 0; i < configNodes.getLength(); i++) {
-            if(configNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+            if (configNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element configElement = (Element) configNodes.item(i);
 
                 // Make sure the element is permitted...
@@ -266,7 +266,7 @@ public final class XMLConfigDigester {
 
                 String elementName = DomUtils.getName(configElement);
                 String namespaceURI = configElement.getNamespaceURI();
-                if(namespaceURI == null || namespaceURI.equals(XSD_V12)) {
+                if (namespaceURI == null || namespaceURI.equals(XSD_V12)) {
                     if (elementName.equals("params")) {
                         digestParams(configElement);
                     } else if (elementName.equals("conditions")) {
@@ -558,7 +558,7 @@ public final class XMLConfigDigester {
             assertExtendedConfigOK(configNamespace, resourcePath);
 
             // Construct the Smooks instance for processing this config namespace...
-            smooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterInstalledResources(false).build());
+            smooks = new Smooks(new DefaultApplicationContextBuilder().setClassLoader(classLoader).setRegisterSystemResources(false).build());
             setExtensionDigestOn();
             try {
                 Registry registry = smooks.getApplicationContext().getRegistry();
@@ -578,11 +578,7 @@ public final class XMLConfigDigester {
             // And add it to the Map of extension digesters...
             extendedConfigDigesters.put(configNamespace, smooks);
         }
-
-        if(classLoader != null) {
-            smooks.setClassLoader(classLoader);
-        }
-
+        
         return smooks;
     }
 
@@ -693,7 +689,7 @@ public final class XMLConfigDigester {
             String paramValue = DomUtils.getAllText(paramNode, true);
 
             Parameter<?> paramInstance = resourceConfig.setParameter(paramName, paramType, paramValue);
-            paramInstance.setXML(paramNode);
+            paramInstance.setXml(paramNode);
         }
     }
 

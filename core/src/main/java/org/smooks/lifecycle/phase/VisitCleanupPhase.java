@@ -43,7 +43,7 @@
 package org.smooks.lifecycle.phase;
 
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Fragment;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
 
 public class VisitCleanupPhase implements LifecyclePhase {

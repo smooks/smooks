@@ -44,7 +44,10 @@ package org.smooks.delivery.sax.ng;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.io.DefaultFragmentWriter;
+import org.smooks.io.FragmentWriterMemento;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -53,24 +56,32 @@ public class VisitorWriter01 implements ElementVisitor {
     
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
-        try {
-            new DefaultFragmentWriter(executionContext).write("");
-        } catch (IOException e) {
-            throw new SmooksException(e.getMessage(), e);
-        }
+        executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(new NodeFragment(element), this, new DefaultFragmentWriter(executionContext, new NodeFragment(element))), fragmentWriterVisitorMemento -> {
+            try {
+                fragmentWriterVisitorMemento.getFragmentWriter().write("");
+            } catch (IOException e) {
+                throw new SmooksException(e.getMessage(), e);
+            }
+
+            return fragmentWriterVisitorMemento;
+        });
     }
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
-        try {
-            new DefaultFragmentWriter(executionContext).write("");
-        } catch (IOException e) {
-            throw new SmooksException(e.getMessage(), e);
-        }
+        executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(new NodeFragment(element), this, new DefaultFragmentWriter(executionContext, new NodeFragment(element))), fragmentWriterVisitorMemento -> {
+            try {
+                fragmentWriterVisitorMemento.getFragmentWriter().write("");
+            } catch (IOException e) {
+                throw new SmooksException(e.getMessage(), e);
+            }           
+            
+            return fragmentWriterVisitorMemento;
+        });
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) {
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
 
     }
 

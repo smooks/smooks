@@ -43,50 +43,48 @@
 package org.smooks.delivery.sax.ng;
 
 import org.smooks.cdr.ParameterAccessor;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.evaluators.equality.ElementIndexCounter;
 import org.smooks.cdr.xpath.evaluators.equality.IndexEvaluator;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.ordering.Sorter;
-import org.smooks.delivery.sax.SAXVisitor;
 
 import javax.xml.namespace.QName;
 import java.util.*;
 
 public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
-
-    private final Map<String, SaxNgVisitorBindings> optimizedVisitorConfig = new HashMap<>();
-    private final ContentHandlerBindings<ChildrenVisitor> childVisitors = new ContentHandlerBindings<>();
-    private final ContentHandlerBindings<BeforeVisitor> beforeVisitors = new ContentHandlerBindings<>();
-    private final ContentHandlerBindings<AfterVisitor> afterVisitors = new ContentHandlerBindings<>();
-    private int maxNodeDepth;
-    private boolean rewriteEntities;
-    private boolean maintainElementStack;
-    private boolean reverseVisitOrderOnVisitAfter;
-    private boolean terminateOnVisitorException;
+    
+    private final SelectorTable<ChildrenVisitor> childVisitors = new SelectorTable<>();
+    private final SelectorTable<BeforeVisitor> beforeVisitors = new SelectorTable<>();
+    private final SelectorTable<AfterVisitor> afterVisitors = new SelectorTable<>();
+    private Map<String, SaxNgVisitorBindings> reducedSelectorTable;
+    private Integer maxNodeDepth;
+    private Boolean rewriteEntities;
+    private Boolean maintainElementStack;
+    private Boolean reverseVisitOrderOnVisitAfter;
+    private Boolean terminateOnVisitorException;
     private FilterBypass filterBypass;
 
-    public ContentHandlerBindings<BeforeVisitor> getBeforeVisitors() {
+    public SelectorTable<BeforeVisitor> getBeforeVisitorSelectorTable() {
         return beforeVisitors;
     }
 
-    public ContentHandlerBindings<ChildrenVisitor> getChildVisitors() {
+    public SelectorTable<ChildrenVisitor> getChildVisitorSelectorTable() {
         return childVisitors;
     }
 
-    public ContentHandlerBindings<AfterVisitor> getAfterVisitors() {
+    public SelectorTable<AfterVisitor> getAfterVisitorSelectorTable() {
         return afterVisitors;
     }
-
-    public Map<String, SaxNgVisitorBindings> getOptimizedVisitorConfig() {
-        return optimizedVisitorConfig;
-    }
-
+    
     @Override
     public FilterBypass getFilterBypass() {
+        if (filterBypass == null) {
+            filterBypass = getFilterBypass(beforeVisitors, afterVisitors);
+        }
         return filterBypass;
     }
 
@@ -107,41 +105,51 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
         addToExecutionLifecycleSets(afterVisitors);
     }
 
-    public void optimizeConfig() {
+    public SaxNgVisitorBindings get(String selector) {
+        if (reducedSelectorTable == null) {
+            this.reducedSelectorTable = reduceSelectorTables();
+        }
+
+        return reducedSelectorTable.get(selector);
+    }
+    
+    protected Map<String, SaxNgVisitorBindings> reduceSelectorTables() {
+        final Map<String, SaxNgVisitorBindings> reducedSelectorTable = new HashMap<>();
+
         final List<ContentHandlerBinding<BeforeVisitor>> starVBs = new ArrayList<>();
         final List<ContentHandlerBinding<ChildrenVisitor>> starVCs = new ArrayList<>();
         final List<ContentHandlerBinding<AfterVisitor>> starVAs = new ArrayList<>();
 
-        if (beforeVisitors.getTable().get("*") != null) {
-            starVBs.addAll(beforeVisitors.getTable().get("*"));
+        if (beforeVisitors.get("*") != null) {
+            starVBs.addAll(beforeVisitors.get("*"));
         }
-        if (beforeVisitors.getTable().get("**") != null) {
-            starVBs.addAll(beforeVisitors.getTable().get("**"));
+        if (beforeVisitors.get("**") != null) {
+            starVBs.addAll(beforeVisitors.get("**"));
         }
-        if (childVisitors.getTable().get("*") != null) {
-            starVCs.addAll(childVisitors.getTable().get("*"));
+        if (childVisitors.get("*") != null) {
+            starVCs.addAll(childVisitors.get("*"));
         }
-        if (childVisitors.getTable().get("**") != null) {
-            starVCs.addAll(childVisitors.getTable().get("**"));
+        if (childVisitors.get("**") != null) {
+            starVCs.addAll(childVisitors.get("**"));
         }
-        if (afterVisitors.getTable().get("*") != null) {
-            starVAs.addAll(afterVisitors.getTable().get("*"));
+        if (afterVisitors.get("*") != null) {
+            starVAs.addAll(afterVisitors.get("*"));
         }
-        if (afterVisitors.getTable().get("**") != null) {
-            starVAs.addAll(afterVisitors.getTable().get("**"));
+        if (afterVisitors.get("**") != null) {
+            starVAs.addAll(afterVisitors.get("**"));
         }
 
         // Now extract the before, child and after visitors for all configured elements...
-        Set<String> elementNames = new HashSet<String>();
-        elementNames.addAll(beforeVisitors.getTable().keySet());
-        elementNames.addAll(afterVisitors.getTable().keySet());
+        Set<String> selectors = new HashSet<>();
+        selectors.addAll(beforeVisitors.keySet());
+        selectors.addAll(afterVisitors.keySet());
 
-        for (String elementName : elementNames) {
-            final SaxNgVisitorBindings elementVisitorMap = new SaxNgVisitorBindings();
-            final List<ContentHandlerBinding<BeforeVisitor>> beforeVisitors = this.beforeVisitors.getTable().getOrDefault(elementName, new ArrayList<>());
-            final List<ContentHandlerBinding<ChildrenVisitor>> childVisitors = this.childVisitors.getTable().getOrDefault(elementName, new ArrayList<>());
-            final List<ContentHandlerBinding<AfterVisitor>> afterVisitors = this.afterVisitors.getTable().getOrDefault(elementName, new ArrayList<>());
-            final boolean isStar = (elementName.equals("*") || elementName.equals("**"));
+        for (String selector : selectors) {
+            final SaxNgVisitorBindings visitorBindings = new SaxNgVisitorBindings();
+            final List<ContentHandlerBinding<BeforeVisitor>> beforeVisitors = this.beforeVisitors.getOrDefault(selector, new ArrayList<>());
+            final List<ContentHandlerBinding<ChildrenVisitor>> childVisitors = this.childVisitors.getOrDefault(selector, new ArrayList<>());
+            final List<ContentHandlerBinding<AfterVisitor>> afterVisitors = this.afterVisitors.getOrDefault(selector, new ArrayList<>());
+            final boolean isStar = (selector.equals("*") || selector.equals("**"));
 
             // So what's going on with the "*" and "**" resources here?  Basically, we are adding
             // these resources to all targeted elements, accept for "*" and "**" themselves.
@@ -149,28 +157,29 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
             if (!isStar) {
                 beforeVisitors.addAll(starVBs);
             }
-            elementVisitorMap.setBeforeVisitors(beforeVisitors);
+            visitorBindings.setBeforeVisitors(beforeVisitors);
 
             if (!isStar) {
                 childVisitors.addAll(starVCs);
             }
-            elementVisitorMap.setChildVisitors(childVisitors);
+            visitorBindings.setChildVisitors(childVisitors);
 
             if (!isStar) {
                 afterVisitors.addAll(starVAs);
             }
-            elementVisitorMap.setAfterVisitors(afterVisitors);
+            visitorBindings.setAfterVisitors(afterVisitors);
 
-            optimizedVisitorConfig.put(elementName, elementVisitorMap);
+            reducedSelectorTable.put(selector, visitorBindings);
         }
 
-        rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", this));
-        maintainElementStack = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.MAINTAIN_ELEMENT_STACK, String.class, "true", this));
-        reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, String.class, "true", this));
-        terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", this));
-        maxNodeDepth = Integer.parseInt(ParameterAccessor.getParameterValue(Filter.MAX_NODE_DEPTH, String.class, "1", this));
+        if (ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, this)) {
+            sort();
+        }
+        addToExecutionLifecycleSets();
 
-        filterBypass = getFilterBypass(beforeVisitors, afterVisitors);
+        addIndexCounters(reducedSelectorTable);
+
+        return reducedSelectorTable;
     }
 
     public void assertSelectorsNotAccessingText() {
@@ -178,13 +187,12 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
         assertSelectorsNotAccessingText(childVisitors);
     }
 
-    private void assertSelectorsNotAccessingText(ContentHandlerBindings contentHandlerBindings) {
-        Map<String, List<ContentHandlerBinding<? extends SAXVisitor>>> table = contentHandlerBindings.getTable();
-        Collection<List<ContentHandlerBinding<? extends SAXVisitor>>> contentHandlerMaps = table.values();
+    private void assertSelectorsNotAccessingText(SelectorTable selectorTable) {
+        Collection<List<ContentHandlerBinding<? extends SaxNgVisitor>>> selectorTableValues = selectorTable.values();
 
-        for (List<ContentHandlerBinding<? extends SAXVisitor>> contentHandlerMapList : contentHandlerMaps) {
-            for (ContentHandlerBinding<? extends SAXVisitor> contentHandlerMap : contentHandlerMapList) {
-                ResourceConfig resourceConfig = contentHandlerMap.getResourceConfig();
+        for (List<ContentHandlerBinding<? extends SaxNgVisitor>> contentHandlerBindings : selectorTableValues) {
+            for (ContentHandlerBinding<? extends SaxNgVisitor> contentHandlerBinding : contentHandlerBindings) {
+                ResourceConfig resourceConfig = contentHandlerBinding.getResourceConfig();
                 SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
 
                 if (selectorStep.accessesText()) {
@@ -194,18 +202,18 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
         }
     }
 
-    public void addIndexCounters() {
-        final Map<String, SaxNgVisitorBindings> optimizedVisitorConfigCopy = new LinkedHashMap<>(optimizedVisitorConfig);
-        Collection<SaxNgVisitorBindings> elementVisitorMaps = optimizedVisitorConfigCopy.values();
+    public void addIndexCounters(Map<String, SaxNgVisitorBindings> reducedSelectorTable) {
+        final Map<String, SaxNgVisitorBindings> reducedSelectorTableCopy = new LinkedHashMap<>(reducedSelectorTable);
+        Collection<SaxNgVisitorBindings> elementVisitorMaps = reducedSelectorTableCopy.values();
 
         for (SaxNgVisitorBindings elementVisitorMap : elementVisitorMaps) {
-            addIndexCounters(elementVisitorMap.getBeforeVisitors());
-            addIndexCounters(elementVisitorMap.getChildVisitors());
-            addIndexCounters(elementVisitorMap.getAfterVisitors());
+            addIndexCounters(elementVisitorMap.getBeforeVisitors(), reducedSelectorTable);
+            addIndexCounters(elementVisitorMap.getChildVisitors(), reducedSelectorTable);
+            addIndexCounters(elementVisitorMap.getAfterVisitors(), reducedSelectorTable);
         }
     }
 
-    private <T extends Visitor> void addIndexCounters(final List<ContentHandlerBinding<T>> contentHandlerBindings) {
+    private <T extends Visitor> void addIndexCounters(final List<ContentHandlerBinding<T>> contentHandlerBindings, Map<String, SaxNgVisitorBindings> reducedSelectorTable) {
         if (contentHandlerBindings == null) {
             return;
         }
@@ -221,30 +229,29 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
                         final ElementIndexCounter elementIndexCounter = new ElementIndexCounter(selectorStep);
 
                         indexEvaluator.setCounter(elementIndexCounter);
-                        addIndexCounter(elementIndexCounter);
+                        addIndexCounter(elementIndexCounter, reducedSelectorTable);
                     }
                 }
             }
         }
     }
 
-    private void addIndexCounter(ElementIndexCounter indexCounter) {
+    private void addIndexCounter(ElementIndexCounter indexCounter, Map<String, SaxNgVisitorBindings> reducedSelectorTable) {
         SelectorStep selectorStep = indexCounter.getSelectorStep();
         QName targetElement = selectorStep.getElement();
         String targetElementName = targetElement.getLocalPart();
-        String targetNS = targetElement.getNamespaceURI();
-        SaxNgVisitorBindings visitorMap = optimizedVisitorConfig.get(targetElementName);
+        SaxNgVisitorBindings visitorBindings = reducedSelectorTable.get(targetElementName);
 
-        if (visitorMap == null) {
-            visitorMap = new SaxNgVisitorBindings();
-            optimizedVisitorConfig.put(targetElementName, visitorMap);
+        if (visitorBindings == null) {
+            visitorBindings = new SaxNgVisitorBindings();
+            reducedSelectorTable.put(targetElementName, visitorBindings);
         }
 
-        List<ContentHandlerBinding<BeforeVisitor>> vbs = visitorMap.getBeforeVisitors();
+        List<ContentHandlerBinding<BeforeVisitor>> vbs = visitorBindings.getBeforeVisitors();
 
         if (vbs == null) {
             vbs = new ArrayList<>();
-            visitorMap.setBeforeVisitors(vbs);
+            visitorBindings.setBeforeVisitors(vbs);
         }
 
         ResourceConfig resourceConfig = new ResourceConfig(targetElementName);
@@ -252,67 +259,82 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
         vbs.add(0, new ContentHandlerBinding(indexCounter, resourceConfig));
     }
 
-    public SaxNgVisitorBindings getCombinedOptimizedConfig(String[] elementNames) {
-        SaxNgVisitorBindings combinedConfig = new SaxNgVisitorBindings();
+    public SaxNgVisitorBindings get(String... selectors) {
+        SaxNgVisitorBindings combinedVisitorBindings = new SaxNgVisitorBindings();
 
-        combinedConfig.setBeforeVisitors(new ArrayList<>());
-        combinedConfig.setChildVisitors(new ArrayList<>());
-        combinedConfig.setAfterVisitors(new ArrayList<>());
+        combinedVisitorBindings.setBeforeVisitors(new ArrayList<>());
+        combinedVisitorBindings.setChildVisitors(new ArrayList<>());
+        combinedVisitorBindings.setAfterVisitors(new ArrayList<>());
 
-        for (String elementName : elementNames) {
-            final SaxNgVisitorBindings elementVisitorMap = optimizedVisitorConfig.get(elementName);
+        for (String selector : selectors) {
+            final SaxNgVisitorBindings visitorBindings = get(selector);
 
-            if (elementVisitorMap != null) {
-                final List<ContentHandlerBinding<BeforeVisitor>> beforeVisitorBindings = elementVisitorMap.getBeforeVisitors();
-                final List<ContentHandlerBinding<ChildrenVisitor>> childVisitorBindings = elementVisitorMap.getChildVisitors();
-                final List<ContentHandlerBinding<AfterVisitor>> afterVisitorBindings = elementVisitorMap.getAfterVisitors();
+            if (visitorBindings != null) {
+                final List<ContentHandlerBinding<BeforeVisitor>> beforeVisitorBindings = visitorBindings.getBeforeVisitors();
+                final List<ContentHandlerBinding<ChildrenVisitor>> childVisitorBindings = visitorBindings.getChildVisitors();
+                final List<ContentHandlerBinding<AfterVisitor>> afterVisitorBindings = visitorBindings.getAfterVisitors();
 
                 if (beforeVisitorBindings != null) {
-                    combinedConfig.getBeforeVisitors().addAll(beforeVisitorBindings);
+                    combinedVisitorBindings.getBeforeVisitors().addAll(beforeVisitorBindings);
                 }
                 if (childVisitorBindings != null) {
-                    combinedConfig.getChildVisitors().addAll(childVisitorBindings);
+                    combinedVisitorBindings.getChildVisitors().addAll(childVisitorBindings);
                 }
                 if (afterVisitorBindings != null) {
-                    combinedConfig.getAfterVisitors().addAll(afterVisitorBindings);
+                    combinedVisitorBindings.getAfterVisitors().addAll(afterVisitorBindings);
                 }
             }
         }
 
-        if (combinedConfig.getBeforeVisitors().isEmpty()) {
-            combinedConfig.setBeforeVisitors(null);
+        if (combinedVisitorBindings.getBeforeVisitors().isEmpty()) {
+            combinedVisitorBindings.setBeforeVisitors(null);
         }
-        if (combinedConfig.getChildVisitors().isEmpty()) {
-            combinedConfig.setChildVisitors(null);
+        if (combinedVisitorBindings.getChildVisitors().isEmpty()) {
+            combinedVisitorBindings.setChildVisitors(null);
         }
-        if (combinedConfig.getAfterVisitors().isEmpty()) {
-            combinedConfig.setAfterVisitors(null);
+        if (combinedVisitorBindings.getAfterVisitors().isEmpty()) {
+            combinedVisitorBindings.setAfterVisitors(null);
         }
 
-        if (combinedConfig.getBeforeVisitors() == null && combinedConfig.getChildVisitors() == null && combinedConfig.getAfterVisitors() == null) {
+        if (combinedVisitorBindings.getBeforeVisitors() == null && combinedVisitorBindings.getChildVisitors() == null && combinedVisitorBindings.getAfterVisitors() == null) {
             return null;
         } else {
-            return combinedConfig;
+            return combinedVisitorBindings;
         }
     }
 
     public boolean isRewriteEntities() {
+        if (rewriteEntities == null) {
+            rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", this));
+        }
         return rewriteEntities;
     }
 
     public boolean isMaintainElementStack() {
+        if (maintainElementStack == null) {
+            maintainElementStack = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.MAINTAIN_ELEMENT_STACK, String.class, "true", this));
+        }
         return maintainElementStack;
     }
 
     public boolean isReverseVisitOrderOnVisitAfter() {
+        if (reverseVisitOrderOnVisitAfter == null) {
+            reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, String.class, "true", this));
+        }
         return reverseVisitOrderOnVisitAfter;
     }
 
     public boolean isTerminateOnVisitorException() {
+        if (terminateOnVisitorException == null) {
+            terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", this));
+        }
         return terminateOnVisitorException;
     }
 
     public int getMaxNodeDepth() {
+        if (maxNodeDepth == null) {
+            maxNodeDepth = Integer.parseInt(ParameterAccessor.getParameterValue(Filter.MAX_NODE_DEPTH, String.class, "1", this));
+        }
         return maxNodeDepth;
     }
 }

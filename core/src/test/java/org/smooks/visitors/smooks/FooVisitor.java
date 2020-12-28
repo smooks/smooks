@@ -40,47 +40,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.sax.ng;
+package org.smooks.visitors.smooks;
 
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.w3c.dom.Element;
 
-public class DynamicVisitorLoader implements BeforeVisitor, AfterVisitor {
+import java.util.concurrent.CountDownLatch;
 
-    public static final DynamicVisitor visitor = new DynamicVisitor();
-
-    @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) {
-        visitor.stuff.setLength(0);
-        DynamicSaxNgElementVisitorList.addDynamicVisitor(visitor, executionContext);
-    }
-
+public class FooVisitor implements AfterVisitor {
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
+    
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
-        DynamicSaxNgElementVisitorList.removeDynamicVisitor(visitor, executionContext);
+        countDownLatch.countDown();   
     }
 
-    public static class DynamicVisitor implements ElementVisitor {
-
-        public final StringBuilder stuff = new StringBuilder();
-
-        @Override
-        public void visitBefore(Element element, ExecutionContext executionContext) {
-            stuff.append("<").append(element.getLocalName()).append(">");
-        }
-
-        @Override
-        public void visitChildText(Element element, ExecutionContext executionContext) {
-            stuff.append(element.getTextContent());
-        }
-
-        @Override
-        public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-        }
-
-        @Override
-        public void visitAfter(Element element, ExecutionContext executionContext) {
-            stuff.append("</").append(element.getLocalName()).append(">");
-        }
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
     }
 }

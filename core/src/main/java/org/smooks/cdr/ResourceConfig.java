@@ -178,12 +178,12 @@ public class ResourceConfig {
      */
     private static final URIResourceLocator uriResourceLocator = new URIResourceLocator();
     /**
-     * A special selector for resource targeted at the document as a whole (the roor element).
+     * A special selector for resource targeted at the document as a whole (the root element).
      */
     public static final String DOCUMENT_FRAGMENT_SELECTOR = "#document";
 
     /**
-     * A special selector for resource targeted at the document as a whole (the roor element).
+     * A special selector for resource targeted at the document as a whole (the root element).
      */
     public static final String DOCUMENT_VOID_SELECTOR = "$void";
     
@@ -247,11 +247,10 @@ public class ResourceConfig {
      * Public default constructor.
      *
      * @see #setSelector(String)
-     * @see #setSelectorNamespaceURI(String)
      * @see #setTargetProfile(String)
      * @see #setResource(String)
      * @see #setResourceType(String)
-     * @see #setParameter(String, String)
+     * @see #setParameter(String, Object)
      */
     public ResourceConfig() {
         setSelector(SELECTOR_NONE);
@@ -262,11 +261,10 @@ public class ResourceConfig {
      * Public constructor.
      *
      * @param selector The selector definition.
-     * @see #setSelectorNamespaceURI(String)
      * @see #setTargetProfile(String)
      * @see #setResource(String)
      * @see #setResourceType(String)
-     * @see #setParameter(String, String)
+     * @see #setParameter(String, Object)
      */
     public ResourceConfig(String selector) {
         setSelector(selector);
@@ -278,10 +276,9 @@ public class ResourceConfig {
      *
      * @param selector The selector definition.
      * @param resource The resource.
-     * @see #setSelectorNamespaceURI(String)
      * @see #setTargetProfile(String)
      * @see #setResourceType(String)
-     * @see #setParameter(String, String)
+     * @see #setParameter(String, Object)
      */
     public ResourceConfig(String selector, String resource) {
         this(selector, Profile.DEFAULT_PROFILE, resource);
@@ -294,9 +291,8 @@ public class ResourceConfig {
      * @param targetProfile Target Profile(s).  Comma separated list of
      *                      {@link ProfileTargetingExpression ProfileTargetingExpressions}.
      * @param resource      The resource.
-     * @see #setSelectorNamespaceURI(String)
      * @see #setResourceType(String)
-     * @see #setParameter(String, String)
+     * @see #setParameter(String, Object)
      */
     public ResourceConfig(String selector, String targetProfile, String resource) {
         this(selector);
@@ -370,7 +366,7 @@ public class ResourceConfig {
      *                             {@link ProfileTargetingExpression ProfileTargetingExpressions}.
      * @param resource             The resource.
      * @see #setResourceType(String)
-     * @see #setParameter(String, String)
+     * @see #setParameter(String, Object)
      */
     public ResourceConfig(String selector, @Deprecated String selectorNamespaceURI, String targetProfile, String resource) {
         this(selector, targetProfile, resource);
@@ -633,12 +629,12 @@ public class ResourceConfig {
         if (exists == null) {
             parameters.put(parameter.getName(), parameter);
         } else if (exists instanceof Parameter) {
-            Vector<Parameter> paramList = new Vector<Parameter>();
-            paramList.add((Parameter) exists);
+            Vector<Parameter<?>> paramList = new Vector<>();
+            paramList.add((Parameter<?>) exists);
             paramList.add(parameter);
             parameters.put(parameter.getName(), paramList);
         } else if (exists instanceof List) {
-            ((List) exists).add(parameter);
+            ((List<Object>) exists).add(parameter);
         }
         parameterCount++;
     }
@@ -840,7 +836,7 @@ public class ResourceConfig {
     public Class toJavaResource() {
         String className;
 
-        if (resource == null) {
+        if (resource == null || resource.trim().length() < 1) {
             return null;
         }
 
@@ -893,7 +889,7 @@ public class ResourceConfig {
      *
      * @return XML'ified description of the resource.
      */
-    public String toXML() {
+    public String toXml() {
         StringBuilder builder = new StringBuilder();
 
         builder.append("<resource-config selector=\"")

@@ -44,8 +44,9 @@ package org.smooks.container;
 
 import org.smooks.container.standalone.StandaloneExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.delivery.ContentDeliveryRuntime;
+import org.smooks.delivery.ReaderPool;
 import org.smooks.delivery.dom.MockContentDeliveryConfig;
-import org.smooks.event.ExecutionEventListener;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.profile.DefaultProfileSet;
 import org.smooks.profile.Profile;
@@ -97,8 +98,8 @@ public class MockExecutionContext implements ExecutionContext {
 	 * @see org.smooks.container.ExecutionContext#getDeliveryConfig()
 	 */
 	@Override
-	public ContentDeliveryConfig getDeliveryConfig() {
-		return deliveryConfig;
+	public ContentDeliveryRuntime getContentDeliveryRuntime() {
+		return new ContentDeliveryRuntime(new ReaderPool(deliveryConfig), deliveryConfig);
 	}
 
     public void setContentEncoding(String contentEncoding) throws IllegalArgumentException {
@@ -108,16 +109,6 @@ public class MockExecutionContext implements ExecutionContext {
 	@Override
 	public String getContentEncoding() {
 		return executionContext.getContentEncoding();
-    }
-
-	@Override
-	public void setEventListener(ExecutionEventListener executionEventListener) {
-		executionContext.setEventListener(executionEventListener);
-    }
-
-	@Override
-	public ExecutionEventListener getEventListener() {
-        return executionContext.getEventListener();
     }
 
 	@Override
@@ -144,7 +135,7 @@ public class MockExecutionContext implements ExecutionContext {
     public MockContentDeliveryConfig getMockDeliveryConfig() {
         return (MockContentDeliveryConfig) this.deliveryConfig;
     }
-
+    
 	@Override
 	public BeanContext getBeanContext() {
 		return executionContext.getBeanContext();
@@ -153,7 +144,7 @@ public class MockExecutionContext implements ExecutionContext {
     public void setBeanContext(BeanContext beanContext) {
 		executionContext.setBeanContext(beanContext);
     }
-
+    
 	@Override
 	public MementoCaretaker getMementoCaretaker() {
 		return executionContext.getMementoCaretaker();

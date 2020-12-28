@@ -67,7 +67,7 @@ public class ReaderConfigTest {
 	@Test
     public void test_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_02.xml"));
-        ResourceConfig readerConfig = AbstractParser.getSAXParserConfiguration(smooks.createExecutionContext("A").getDeliveryConfig());
+        ResourceConfig readerConfig = AbstractParser.getSAXParserConfiguration(smooks.createExecutionContext("A").getContentDeliveryRuntime().getContentDeliveryConfig());
 
         assertEquals("com.ZZZZReader", readerConfig.getResource());
 

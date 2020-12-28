@@ -43,13 +43,13 @@
 package org.smooks.event;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.container.ExecutionContext;
 import org.smooks.event.report.FlatReportGenerator;
 import org.smooks.event.report.ReportConfiguration;
 import org.smooks.io.StreamUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -91,7 +91,7 @@ public class ExecutionReportGeneratorTest {
     private String runBasicTest(Smooks smooks, ExecutionContext execContext) {
         StringWriter reportWriter = new StringWriter();
 
-        execContext.setEventListener(new FlatReportGenerator(new ReportConfiguration(reportWriter)));
+        execContext.getContentDeliveryRuntime().addExecutionEventListener(new FlatReportGenerator(new ReportConfiguration(reportWriter)));
         smooks.filterSource(execContext, new StreamSource(getClass().getResourceAsStream("test-data-01.xml")), new StreamResult(new StringWriter()));
         LOGGER.debug(reportWriter.toString());
         return reportWriter.toString();

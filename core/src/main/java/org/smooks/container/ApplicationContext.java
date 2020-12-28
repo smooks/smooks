@@ -42,7 +42,7 @@
  */
 package org.smooks.container;
 
-import org.smooks.delivery.ContentDeliveryConfigBuilderFactory;
+import org.smooks.delivery.ContentDeliveryRuntimeFactory;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
@@ -123,5 +123,5 @@ public interface ApplicationContext {
      */
     ClassLoader getClassLoader();
     
-    ContentDeliveryConfigBuilderFactory getContentDeliveryConfigBuilderFactory();
+    ContentDeliveryRuntimeFactory getContentDeliveryConfigBuilderFactory();
 }

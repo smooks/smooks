@@ -52,15 +52,19 @@ import org.smooks.delivery.Filter;
 import org.smooks.delivery.VisitSequence;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.dom.DOMElementVisitor;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.fragment.SAXElementFragment;
 import org.smooks.delivery.sax.*;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ChildrenVisitor;
 import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.delivery.sax.ng.terminate.TerminateException;
-import org.smooks.event.report.AbstractReportGenerator;
-import org.smooks.event.types.ElementVisitEvent;
+import org.smooks.event.ExecutionEventListener;
+import org.smooks.event.types.VisitEvent;
 import org.smooks.registry.lookup.GlobalParamsLookup;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -88,7 +92,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             public Class<SAXVisitBefore> getTarget() {
                 return SAXVisitBefore.class;
             }
-        }, executionContext, String.format("Error in %s while processing visitBefore SAX event", visitorBinding.getContentHandler().getClass().getName()), element, VisitSequence.BEFORE);
+        }, executionContext, String.format("Error in %s while processing visitBefore SAX event", visitorBinding.getContentHandler().getClass().getName()), new SAXElementFragment(element), VisitSequence.BEFORE);
     }
 
     @Override
@@ -108,7 +112,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             public Class<SAXVisitAfter> getTarget() {
                 return SAXVisitAfter.class;
             }
-        }, executionContext, String.format("Error in %s while processing visitAfter SAX event", visitorBinding.getContentHandler().getClass().getName()), element, VisitSequence.AFTER);
+        }, executionContext, String.format("Error in %s while processing visitAfter SAX event", visitorBinding.getContentHandler().getClass().getName()), new SAXElementFragment(element), VisitSequence.AFTER);
     }
 
     @Override
@@ -128,7 +132,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             public Class<SAXVisitChildren> getTarget() {
                 return SAXVisitChildren.class;
             }
-        }, executionContext, String.format("Error in %s while processing onChildText SAX event", visitorBinding.getContentHandler().getClass().getName()), element, VisitSequence.AFTER);
+        }, executionContext, String.format("Error in %s while processing onChildText SAX event", visitorBinding.getContentHandler().getClass().getName()), new SAXElementFragment(element), VisitSequence.AFTER);
     }
 
     @Override
@@ -148,7 +152,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             public Class<SAXVisitChildren> getTarget() {
                 return SAXVisitChildren.class;
             }
-        }, executionContext, String.format("Error in %s while processing onChildElement SAX event", visitorBinding.getContentHandler().getClass().getName()), element, VisitSequence.AFTER);
+        }, executionContext, String.format("Error in %s while processing onChildElement SAX event", visitorBinding.getContentHandler().getClass().getName()), new SAXElementFragment(element), VisitSequence.AFTER);
     }
 
     @Override
@@ -164,7 +168,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             public Class<BeforeVisitor> getTarget() {
                 return BeforeVisitor.class;
             }
-        }, executionContext, String.format("Error in %s while processing visitBefore SAX-NG event", visitorBinding.getContentHandler().getClass().getName()), element, VisitSequence.BEFORE);
+        }, executionContext, String.format("Error in %s while processing visitBefore SAX NG event", visitorBinding.getContentHandler().getClass().getName()), new NodeFragment(element), VisitSequence.BEFORE);
     }
 
     @Override
@@ -180,15 +184,15 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             public Class<AfterVisitor> getTarget() {
                 return AfterVisitor.class;
             }
-        }, executionContext, String.format("Error in %s while processing visitAfter SAX-NG event", visitorBinding.getContentHandler().getClass().getName()), element, VisitSequence.AFTER);
+        }, executionContext, String.format("Error in %s while processing visitAfter SAX NG event", visitorBinding.getContentHandler().getClass().getName()), new NodeFragment(element), VisitSequence.AFTER);
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) {
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
         intercept(new Invocation<ChildrenVisitor>() {
             @Override
             public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildText(element, executionContext);
+                visitor.visitChildText(characterData, executionContext);
                 return null;
             }
 
@@ -196,7 +200,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             public Class<ChildrenVisitor> getTarget() {
                 return ChildrenVisitor.class;
             }
-        }, executionContext, String.format("Error in %s while processing visitChildText SAX-NG event", visitorBinding.getContentHandler().getClass().getName()), element, VisitSequence.AFTER);
+        }, executionContext, String.format("Error in %s while processing visitChildText SAX NG event", visitorBinding.getContentHandler().getClass().getName()), new NodeFragment(characterData), VisitSequence.AFTER);
     }
 
     @Override
@@ -212,7 +216,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             public Class<ChildrenVisitor> getTarget() {
                 return ChildrenVisitor.class;
             }
-        }, executionContext, String.format("Error in %s while processing visitChildElement SAX-NG event", visitorBinding.getContentHandler().getClass().getName()), childElement.getParentNode(), VisitSequence.AFTER);
+        }, executionContext, String.format("Error in %s while processing visitChildElement SAX NG event", visitorBinding.getContentHandler().getClass().getName()), new NodeFragment(childElement.getParentNode()), VisitSequence.AFTER);
     }
 
     @Override
@@ -221,17 +225,17 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
         terminateOnVisitorException = Boolean.parseBoolean(applicationContext.getRegistry().lookup(new GlobalParamsLookup(applicationContext.getRegistry())).getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true"));
     }
     
-    private <T extends Visitor> void intercept(final Invocation<T> invocation, final ExecutionContext executionContext, final String exceptionMessage, final Object visitable, final VisitSequence visitSequence) {
+    private <T extends Visitor> void intercept(final Invocation<T> invocation, final ExecutionContext executionContext, final String exceptionMessage, final Fragment fragment, final VisitSequence visitSequence) {
         try {
             intercept(invocation);
         } catch (Throwable t) {
-            processVisitorException(t, exceptionMessage, executionContext, visitable, visitSequence, visitorBinding);
+            processVisitorException(t, exceptionMessage, executionContext, fragment, visitSequence, visitorBinding);
         }
     }
     
-    private void processVisitorException(final Throwable t, final String exceptionMessage, final ExecutionContext executionContext, final Object visitable, final VisitSequence visitSequence, final ContentHandlerBinding<Visitor> visitorBinding) {
-        if (executionContext.getEventListener() != null) {
-            executionContext.getEventListener().onEvent(new ElementVisitEvent<>(visitable, visitorBinding, visitSequence, executionContext, t));
+    private void processVisitorException(final Throwable t, final String exceptionMessage, final ExecutionContext executionContext, final Fragment fragment, final VisitSequence visitSequence, final ContentHandlerBinding<Visitor> visitorBinding) {
+        for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
+            executionEventListener.onEvent(new VisitEvent<>(fragment, visitorBinding, visitSequence, executionContext, t));
         }
         
         if (t instanceof TerminateException) {
@@ -239,8 +243,8 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
         }
 
         executionContext.setTerminationError(t);
-        
-        if (!(executionContext.getEventListener() instanceof AbstractReportGenerator) && terminateOnVisitorException) {
+
+        if (terminateOnVisitorException) {
             if (t instanceof SmooksException) {
                 throw (SmooksException) t;
             } else {

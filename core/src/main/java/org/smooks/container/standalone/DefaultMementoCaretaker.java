@@ -45,18 +45,18 @@ package org.smooks.container.standalone;
 import org.smooks.container.MementoCaretaker;
 import org.smooks.container.TypedKey;
 import org.smooks.container.TypedMap;
-import org.smooks.delivery.memento.Visitable;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.memento.VisitorMemento;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class DefaultMementoCaretaker implements MementoCaretaker {
 
-    private final Map<Visitable, Set<String>> mementoIds = new HashMap<>();
+    private final Map<Fragment, Set<String>> mementoIds = new HashMap<>();
     private final TypedMap typedMap;
 
     public DefaultMementoCaretaker(final TypedMap typedMap) {
@@ -65,15 +65,17 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
     
     @Override
     public void save(final VisitorMemento visitorMemento) {
-        mementoIds.computeIfAbsent(visitorMemento.getVisitable(), o -> new HashSet<>()).add(visitorMemento.getId());
+        mementoIds.computeIfAbsent(visitorMemento.getFragment(), o -> new HashSet<>()).add(visitorMemento.getId());
         typedMap.put(new TypedKey<>(visitorMemento.getId()), visitorMemento.copy());
     }
 
     @Override
-    public <T extends VisitorMemento> void stash(final T visitorMemento, final Consumer<T> visitorMementoConsumer) {
-        restore(visitorMemento);
-        visitorMementoConsumer.accept(visitorMemento);
-        save(visitorMemento);
+    public <T extends VisitorMemento> T stash(final T defaultVisitorMemento, final Function<T, T> function) {
+        restore(defaultVisitorMemento);
+        T newVisitorMemento = function.apply(defaultVisitorMemento);
+        save(newVisitorMemento);
+        
+        return newVisitorMemento;
     }
     
     @Override
@@ -91,14 +93,14 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
     @Override
     public void remove(final VisitorMemento visitorMemento) {
         typedMap.remove(new TypedKey<>(visitorMemento.getId()) );
-        mementoIds.getOrDefault(visitorMemento.getVisitable(), new HashSet<>()).remove(visitorMemento.getId());
+        mementoIds.getOrDefault(visitorMemento.getFragment(), new HashSet<>()).remove(visitorMemento.getId());
     }
 
     @Override
-    public void forget(final Visitable visitable) {
-        for (final String id : mementoIds.getOrDefault(visitable, new HashSet<>())) {
+    public void forget(final Fragment fragment) {
+        for (final String id : mementoIds.getOrDefault(fragment, new HashSet<>())) {
             typedMap.remove(new TypedKey<>(id));
         }
-        mementoIds.remove(visitable);
+        mementoIds.remove(fragment);
     }
 }

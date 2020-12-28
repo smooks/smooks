@@ -629,17 +629,17 @@ public class XmlUtil {
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer;
 
-            if(format) {
+            if (format) {
                 try {
                     factory.setAttribute("indent-number", new Integer(4));
-                } catch(Exception e) {
+                } catch (Exception e) {
                     // Ignore... Xalan may throw on this!!
                     // We handle Xalan indentation below (yeuckkk) ...
                 }
             }
             transformer = factory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            if(format) {
+            if (format) {
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "4");
             }

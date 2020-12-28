@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.ResourceConfigSortComparator;
-import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
@@ -55,11 +54,9 @@ import org.smooks.lifecycle.ExecutionLifecycleCleanable;
 import org.smooks.lifecycle.ExecutionLifecycleInitializable;
 import org.smooks.registry.Registry;
 import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
-import org.xml.sax.XMLReader;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Abstract {@link ContentDeliveryConfig}.
@@ -74,12 +71,12 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 	/**
      * Container context.
      */
-    private ApplicationContext applicationContext;
+    private Registry registry;
     /**
      * Table of ResourceConfig instances keyed by selector value. Each table entry
      * contains a List of ResourceConfig instances.
      */
-    private Map<String, List<ResourceConfig>> resourceConfigTable = new LinkedHashMap<String, List<ResourceConfig>>();
+    private Map<String, List<ResourceConfig>> resourceConfigTable = new LinkedHashMap<>();
     /**
      * Table of Object instance lists keyed by selector. Each table entry
      * contains a List of Objects.
@@ -92,18 +89,15 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     /**
      * Config builder events list.
      */
-    private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<ConfigBuilderEvent>();
+    private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<>();
 
-    private final Set<ExecutionLifecycleInitializable> execInitializableHandlers = new LinkedHashSet<ExecutionLifecycleInitializable>();
-    private final Set<ExecutionLifecycleCleanable> execCleanableHandlers = new LinkedHashSet<ExecutionLifecycleCleanable>();
+    private final Set<ExecutionLifecycleInitializable> execInitializableHandlers = new LinkedHashSet<>();
+    private final Set<ExecutionLifecycleCleanable> execCleanableHandlers = new LinkedHashSet<>();
 
     private Boolean isDefaultSerializationOn = null;
-
-    private final List<XMLReader> readerPool = new CopyOnWriteArrayList<XMLReader>();
-    private int readerPoolSize;
-
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    
+    public void setRegistry(Registry registry) {
+        this.registry = registry;
     }
 
     /**
@@ -153,13 +147,13 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
             if (unitDefs != null && unitDefs.size() > 0) {
                 objects = new Vector(unitDefs.size());
 
-                if (applicationContext == null) {
-                    throw new IllegalStateException("Call to getObjects() before the setApplicationContext() was called.");
+                if (registry == null) {
+                    throw new IllegalStateException("Call to getObjects() before the setRegistry() was called.");
                 }
 
                 for (final Object unitDef : unitDefs) {
                     ResourceConfig resourceConfig    = (ResourceConfig) unitDef;
-                    objects.add(applicationContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(resourceConfig));
+                    objects.add(registry.lookup(new ContentHandlerFactoryLookup("class")).create(resourceConfig));
                 }
             } else {
                 objects = EMPTY_LIST;
@@ -187,7 +181,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     }
 
     public boolean isDefaultSerializationOn() {
-        if(isDefaultSerializationOn == null) {
+        if (isDefaultSerializationOn == null) {
             isDefaultSerializationOn = Boolean.valueOf(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", this));
         }
 
@@ -195,16 +189,16 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     }
 
     @SuppressWarnings("WeakerAccess")
-    public <T extends Visitor> void addToExecutionLifecycleSets(ContentHandlerBindings<T> handlerSet) {
-        Collection<List<ContentHandlerBinding<T>>> mapEntries = handlerSet.getTable().values();
+    public <T extends Visitor> void addToExecutionLifecycleSets(SelectorTable<T> selectorTable) {
+        Collection<List<ContentHandlerBinding<T>>> selectorTableContentHandlerBindings = selectorTable.values();
 
-        for(List<ContentHandlerBinding<T>> mapList : mapEntries) {
-            for(ContentHandlerBinding<T> map : mapList) {
-                if(map.getContentHandler() instanceof ExecutionLifecycleInitializable) {
-                    execInitializableHandlers.add((ExecutionLifecycleInitializable) map.getContentHandler());
+        for(List<ContentHandlerBinding<T>> contentHandlerBindings : selectorTableContentHandlerBindings) {
+            for(ContentHandlerBinding<T> contentHandlerBinding : contentHandlerBindings) {
+                if(contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleInitializable) {
+                    execInitializableHandlers.add((ExecutionLifecycleInitializable) contentHandlerBinding.getContentHandler());
                 }
-                if(map.getContentHandler() instanceof ExecutionLifecycleCleanable) {
-                    execCleanableHandlers.add((ExecutionLifecycleCleanable) map.getContentHandler());
+                if(contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleCleanable) {
+                    execCleanableHandlers.add((ExecutionLifecycleCleanable) contentHandlerBinding.getContentHandler());
                 }
             }
         }
@@ -226,67 +220,55 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         }
     }
 
-    public void initializeXMLReaderPool() {
-    	try {
-	        readerPoolSize = Integer.parseInt(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, "0", this));
-    	} catch(NumberFormatException e) {
-    		readerPoolSize = 0;
-    	}
-    }
-
-    public XMLReader getXMLReader() {
-        synchronized (readerPool) {
-            if (!readerPool.isEmpty()) {
-                return readerPool.remove(0);
-            } else {
+    protected FilterBypass getFilterBypass(SelectorTable<?>... selectorTables) {
+    	for (SelectorTable selectorTable : selectorTables) {
+            Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = selectorTable.values();
+            long userContentHandlerBindingsCount = contentHandlerBindings.
+                    stream().
+                    flatMap(l -> l.
+                            stream().
+                            filter(c -> !c.getResourceConfig().isDefaultResource())).count();
+            
+            if (userContentHandlerBindingsCount > 1) {
+                // If any of the visitor tables have more than 1 visitor instance...
                 return null;
             }
         }
+
+        // Gather the possible set of FilterBypass instances...
+        Set<FilterBypass> bypassSet = new HashSet<>();
+        for (SelectorTable selectorTable : selectorTables) {
+            Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = selectorTable.values();
+            long userContentHandlerBindingsCount = contentHandlerBindings.
+                    stream().
+                    flatMap(l -> l.
+                            stream().
+                            filter(c -> !c.getResourceConfig().isDefaultResource())).count();
+            
+            if (userContentHandlerBindingsCount == 1) {
+                FilterBypass filterBypass = getFilterBypass(selectorTable);
+
+                if (filterBypass != null) {
+                    bypassSet.add(filterBypass);
+                } else {
+                    // There's a non-FilterBypass Visitor configured, so we can't
+                    // use the Bypass Filter
+                    return null;
+                }
+            }
+        }
+
+        // If there's just one FilterBypass instance, return it...
+        if (bypassSet.size() == 1) {
+            return bypassSet.iterator().next();
+        }
+
+        // Otherwise we're not going to allow filter bypassing...
+        return null;
     }
 
-	public void returnXMLReader(XMLReader reader) {
-		synchronized(readerPool) {
-			if(readerPool.size() < readerPoolSize) {
-				readerPool.add(reader);
-			}
-		}
-	}
-
-    protected FilterBypass getFilterBypass(ContentHandlerBindings... visitorTables) {
-    	for(ContentHandlerBindings visitorTable : visitorTables) {
-            if(visitorTable != null && visitorTable.getUserConfiguredCount() > 1) {
-            	// If any of the visitor tables have more than 1 visitor instance...
-            	return null;
-            }
-    	}
-
-    	// Gather the possible set of FilterBypass instances...
-    	Set<FilterBypass> bypassSet = new HashSet<FilterBypass>();
-    	for(ContentHandlerBindings visitorTable : visitorTables) {
-            if(visitorTable != null && visitorTable.getUserConfiguredCount() == 1) {
-            	FilterBypass filterBypass = getFilterBypass(visitorTable);
-
-            	if(filterBypass != null) {
-            		bypassSet.add(filterBypass);
-            	} else {
-            		// There's a non-FilterBypass Visitor configured, so we can't
-            		// use the Bypass Filter
-            		return null;
-            	}
-            }
-    	}
-
-    	// If there's just one FilterBypass instance, return it...
-    	if(bypassSet.size() == 1) {
-    		return bypassSet.iterator().next();
-    	}
-
-    	// Otherwise we're not going to allow filter bypassing...
-    	return null;
-    }
-
-    private <T extends Visitor> FilterBypass getFilterBypass(ContentHandlerBindings<T> visitorTable) {
-        Set<Entry<String, List<ContentHandlerBinding<T>>>> entries = visitorTable.getTable().entrySet();
+    private <T extends Visitor> FilterBypass getFilterBypass(SelectorTable<T> selectorTable) {
+        Set<Entry<String, List<ContentHandlerBinding<T>>>> entries = selectorTable.entrySet();
 
         for(Entry<String, List<ContentHandlerBinding<T>>> entry : entries) {
         	ContentHandlerBinding<T> configMap = entry.getValue().get(0);

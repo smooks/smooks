@@ -44,17 +44,18 @@ package org.smooks.delivery.memento;
 
 import org.smooks.assertion.AssertArgument;
 import org.smooks.delivery.Visitor;
+import org.smooks.delivery.fragment.Fragment;
 
 public abstract class AbstractVisitorMemento implements VisitorMemento {
-    protected final Visitable visitable;
+    protected final Fragment fragment;
     protected final Visitor visitor;
     protected String id;
 
-    public AbstractVisitorMemento(final Visitable visitable, final Visitor visitor) {
-        AssertArgument.isNotNull(visitable, "visitable");
+    public AbstractVisitorMemento(final Fragment fragment, final Visitor visitor) {
+        AssertArgument.isNotNull(fragment, "fragment");
         AssertArgument.isNotNull(visitor, "visitor");
         
-        this.visitable = visitable;
+        this.fragment = fragment;
         this.visitor = visitor;
     }
     
@@ -64,14 +65,14 @@ public abstract class AbstractVisitorMemento implements VisitorMemento {
     }
 
     @Override
-    public Visitable getVisitable() {
-        return visitable;
+    public Fragment getFragment() {
+        return fragment;
     }
 
     @Override
     public String getId() {
         if (id == null) {
-            id = visitable.getId() + "@" + visitor.getClass().getName() + "@" + System.identityHashCode(visitor);
+            id = fragment.getId() + "@" + visitor.getClass().getName() + "@" + getClass().getName() + "@" + System.identityHashCode(visitor);
         }
         return id;
     }

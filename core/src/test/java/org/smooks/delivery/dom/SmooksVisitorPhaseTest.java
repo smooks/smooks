@@ -79,11 +79,11 @@ public class SmooksVisitorPhaseTest {
 
         smooks.addConfigurations("config1.xml", getClass().getResourceAsStream("config1.xml"));
         execContext = smooks.createExecutionContext();
-        config = (DOMContentDeliveryConfig) execContext.getDeliveryConfig();
+        config = (DOMContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
         // Check the assembly units...
-        List<ContentHandlerBinding<DOMVisitBefore>> assemblyVBs = config.getAssemblyVisitBefores().getMappings("a");
-        List<ContentHandlerBinding<DOMVisitAfter>> assemblyVAs = config.getAssemblyVisitAfters().getMappings("a");
+        List<ContentHandlerBinding<DOMVisitBefore>> assemblyVBs = config.getAssemblyVisitBeforeSelectorTable().get("a");
+        List<ContentHandlerBinding<DOMVisitAfter>> assemblyVAs = config.getAssemblyVisitAfterSelectorTable().get("a");
         assertEquals(2, assemblyVBs.size());
         assertTrue(assemblyVBs.get(0).getContentHandler() instanceof AssemblyVisitor1);
         assertTrue(assemblyVBs.get(1).getContentHandler() instanceof ConfigurableVisitor);
@@ -91,8 +91,8 @@ public class SmooksVisitorPhaseTest {
         assertTrue(assemblyVAs.get(0).getContentHandler() instanceof ConfigurableVisitor);
         assertTrue(assemblyVAs.get(1).getContentHandler() instanceof AssemblyVisitor1);
 
-        List<ContentHandlerBinding<DOMVisitBefore>> processingVBs = config.getProcessingVisitBefores().getMappings("a");
-        List<ContentHandlerBinding<DOMVisitAfter>> processingVAs = config.getProcessingVisitAfters().getMappings("a");
+        List<ContentHandlerBinding<DOMVisitBefore>> processingVBs = config.getProcessingVisitBeforeSelectorTable().get("a");
+        List<ContentHandlerBinding<DOMVisitAfter>> processingVAs = config.getProcessingVisitAfterSelectorTable().get("a");
         assertEquals(2, processingVBs.size());
         assertTrue(processingVBs.get(0).getContentHandler() instanceof ProcessorVisitor1);
         assertTrue(processingVBs.get(1).getContentHandler() instanceof ConfigurableVisitor);
@@ -112,7 +112,7 @@ public class SmooksVisitorPhaseTest {
         CharArrayWriter outputWriter = new CharArrayWriter();
 
         // Filter the input message to the outputWriter, using the execution context...
-        executionContext.setEventListener(eventListener);
+        executionContext.getContentDeliveryRuntime().addExecutionEventListener(eventListener);
         smooks.filterSource(executionContext, new StreamSource(getClass().getResourceAsStream("testxml1.xml")), new StreamResult(outputWriter));
 
         LOGGER.debug(outputWriter.toString());

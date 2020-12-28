@@ -48,9 +48,9 @@ import org.smooks.delivery.ContentHandler;
 import org.smooks.delivery.VisitSequence;
 import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.event.report.annotation.VisitBeforeReport;
-import org.smooks.event.types.ElementPresentEvent;
-import org.smooks.event.types.ElementVisitEvent;
 import org.smooks.event.types.FilterLifecycleEvent;
+import org.smooks.event.types.StartFragmentEvent;
+import org.smooks.event.types.VisitEvent;
 import org.smooks.expression.MVELExpressionEvaluator;
 
 import java.util.ArrayList;
@@ -97,16 +97,16 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
 
     /**
      * Process the {@link ExecutionEvent}.
-     * @param event The {@link ExecutionEvent}.
+     * @param executionEvent The {@link ExecutionEvent}.
      */
-    public void onEvent(ExecutionEvent event) {
-        if(ignoreEvent(event)) {
+    public void onEvent(ExecutionEvent executionEvent) {
+        if(ignoreEvent(executionEvent)) {
             // Don't capture this event...
             return;
         }
 
-        if(event != null) {
-            events.add(event);
+        if(executionEvent != null) {
+            events.add(executionEvent);
         } else {
             LOGGER.warn("Invalid call to onEvent method.  null 'event' arg.");
         }
@@ -115,7 +115,7 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
     protected boolean ignoreEvent(ExecutionEvent event) {
         if(event instanceof FilterLifecycleEvent) {
             return false;
-        } else if(event instanceof ElementPresentEvent) {
+        } else if(event instanceof StartFragmentEvent) {
             return false;
         }
 
@@ -123,8 +123,8 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
             return true;
         }
 
-        if(event instanceof ElementVisitEvent) {
-            ElementVisitEvent visitEvent = (ElementVisitEvent) event;
+        if(event instanceof VisitEvent) {
+            VisitEvent visitEvent = (VisitEvent) event;
             ContentHandler handler = visitEvent.getVisitorBinding().getContentHandler();
             if(visitEvent.getSequence() == VisitSequence.BEFORE) {
                 VisitBeforeReport reportAnnotation = handler.getClass().getAnnotation(VisitBeforeReport.class);
@@ -142,7 +142,7 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
         return false;
     }
 
-    private boolean evalReportCondition(ElementVisitEvent visitEvent, String condition) {
+    private boolean evalReportCondition(VisitEvent visitEvent, String condition) {
         MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
         conditionEval.setExpression(condition);
         return conditionEval.eval(visitEvent.getResourceConfig());

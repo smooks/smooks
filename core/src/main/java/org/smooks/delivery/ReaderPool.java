@@ -40,21 +40,53 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.event.types;
+package org.smooks.delivery;
 
-import org.smooks.event.ElementProcessingEvent;
+import org.smooks.cdr.ParameterAccessor;
+import org.xml.sax.XMLReader;
 
-/**
- * Element Present Event.
- * <p/>
- * This event is fired for all elements in message.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public class ElementPresentEvent extends ElementProcessingEvent {
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-    public ElementPresentEvent(Object element) {
-        super(element);
+public class ReaderPool {
+
+    private final List<XMLReader> readerPool = new CopyOnWriteArrayList<>();
+    private final ContentDeliveryConfig contentDeliveryConfig;
+
+    public ReaderPool(ContentDeliveryConfig contentDeliveryConfig) {
+        this.contentDeliveryConfig = contentDeliveryConfig;
+    }
+
+    /**
+     * Get an {@link XMLReader} instance from the 
+     * reader pool associated with this ContentDelivery config instance.
+     * @return An XMLReader instance if the pool is not empty, otherwise null.
+     */
+    public XMLReader getXMLReader() {
+        synchronized (readerPool) {
+            if (!readerPool.isEmpty()) {
+                return readerPool.remove(0);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Return an {@link XMLReader} instance to the
+     * reader pool associated with this ContentDelivery config instance.
+     * @param reader The XMLReader instance to be returned.  If the pool is full, the instance
+     * is left to the GC (i.e. lost).
+     */
+    public void returnXMLReader(XMLReader reader) {
+        synchronized(readerPool) {
+            if(readerPool.size() < Integer.parseInt(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, "0", contentDeliveryConfig))) {
+                readerPool.add(reader);
+            }
+        }
+    }
+
+    public ContentDeliveryConfig getContentDeliveryConfig() {
+        return contentDeliveryConfig;
     }
 }
-              

@@ -82,8 +82,8 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
         String value = DomUtils.getAllText(element, false);
         String mapToPropertyName = mapTo.orElse(null);
 
-        if(mapToPropertyName == null) {
-            if(!mapToSpecifier.isPresent()) {
+        if (mapToPropertyName == null) {
+            if (!mapToSpecifier.isPresent()) {
                 throw new SmooksException("One of attributes 'mapTo' or 'mapToSpecifier' must be specified.");
             }
             mapToPropertyName = DomUtils.getAttributeValue(element, mapToSpecifier.get());
@@ -95,19 +95,8 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
             throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + mapToPropertyName + "' with element text value.");
         }
 
-        if (value == null) {
-            value = defaultValue.orElse(null);
-        }
-
-        if (value == null) {
-        	if(LOGGER.isDebugEnabled()) {
-        		LOGGER.debug("Not setting property '" + mapToPropertyName + "' on resource configuration.  Element '" + DomUtils.getName(element) + "' text value is null.  You may need to set a default value in the binding configuration.");
-        	}
-            return;
-        } else {
-        	if(LOGGER.isDebugEnabled()) {
-        		LOGGER.debug("Setting property '" + mapToPropertyName + "' on resource configuration to a value of '" + value + "'.");
-        	}
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Setting property '" + mapToPropertyName + "' on resource configuration to a value of '" + value + "'.");
         }
 
         ResourceConfigUtil.setProperty(config, mapToPropertyName, value, element, executionContext);

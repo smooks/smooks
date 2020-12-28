@@ -43,15 +43,15 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-					  xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
-					  default-target-profile="*">
+                      xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
+                      default-target-profile="*">
 
-	<core:interceptors>
-		<core:interceptor class="org.smooks.delivery.interceptor.EventInterceptor"/>
-		<core:interceptor class="org.smooks.delivery.interceptor.TextConsumerInterceptor"/>
-		<core:interceptor class="org.smooks.delivery.interceptor.WriterInterceptor"/>
-		<core:interceptor class="org.smooks.delivery.interceptor.ExceptionInterceptor"/>
-		<core:interceptor class="org.smooks.delivery.interceptor.StaticProxyInterceptor"/>
-	</core:interceptors>
-	
+    <core:interceptors>
+        <core:interceptor class="org.smooks.delivery.interceptor.EventInterceptor"/>
+        <core:interceptor class="org.smooks.delivery.interceptor.TextConsumerInterceptor"/>
+        <core:interceptor class="org.smooks.delivery.interceptor.StreamResultWriterInterceptor"/>
+        <core:interceptor class="org.smooks.delivery.interceptor.ExceptionInterceptor"/>
+        <core:interceptor class="org.smooks.delivery.interceptor.StaticProxyInterceptor"/>
+    </core:interceptors>
+
 </smooks-resource-list>

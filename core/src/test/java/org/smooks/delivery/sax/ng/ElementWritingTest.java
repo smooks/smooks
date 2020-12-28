@@ -62,8 +62,8 @@ public class ElementWritingTest {
         try {
             smooks.filterSource(smooks.createExecutionContext(), new StringSource("<a/>"), null);
             fail("Expected SAXWriterAccessException");
-        } catch(SmooksException e) {
-            assertEquals("Illegal access to the element writer for element 'a' by SAX visitor 'org.smooks.delivery.sax.ng.VisitorWriter02'.  Writer already acquired by SAX visitor 'org.smooks.delivery.sax.ng.VisitorWriter01'.  See Element javadocs (https://www.smooks.org).  Change Smooks visitor resource configuration.", e.getCause().getMessage());
+        } catch (SmooksException e) {
+            assertEquals("Illegal access to fragment 'a': fragment is exclusively acquired by another writer. Hint: release writer before acquiring the fragment from a different writer", e.getCause().getMessage());
         }
     }
 

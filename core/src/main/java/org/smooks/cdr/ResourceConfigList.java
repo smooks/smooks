@@ -49,6 +49,7 @@ import org.smooks.profile.ProfileSet;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -56,7 +57,7 @@ import java.util.Vector;
  * {@link ResourceConfig} list.
  * @author tfennelly
  */
-public class ResourceConfigList {
+public class ResourceConfigList implements Iterable<ResourceConfig> {
 
 	/**
 	 * Logger.
@@ -242,4 +243,9 @@ public class ResourceConfigList {
 		
 		return results;
 	}
+
+    @Override
+    public Iterator<ResourceConfig> iterator() {
+        return resourceConfigs.iterator();
+    }
 }

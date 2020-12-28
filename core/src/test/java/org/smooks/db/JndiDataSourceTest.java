@@ -306,7 +306,7 @@ public class JndiDataSourceTest {
         ExecutionContext ec = smooks.createExecutionContext(profile);
 
         if (report) {
-            ec.setEventListener(new HtmlReportGenerator("target/report/" + testName + ".html"));
+            ec.getContentDeliveryRuntime().addExecutionEventListener(new HtmlReportGenerator("target/report/" + testName + ".html"));
         }
 
         smooks.filterSource(ec, source);

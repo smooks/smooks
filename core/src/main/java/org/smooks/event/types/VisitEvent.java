@@ -47,8 +47,12 @@ import org.slf4j.LoggerFactory;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.annotation.AnnotationConstants;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.*;
-import org.smooks.event.ElementProcessingEvent;
+import org.smooks.delivery.ContentHandler;
+import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.delivery.VisitSequence;
+import org.smooks.delivery.Visitor;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.event.FragmentEvent;
 import org.smooks.event.ResourceBasedEvent;
 import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.event.report.annotation.VisitBeforeReport;
@@ -66,9 +70,9 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ElementVisitEvent<T extends Visitor> extends ElementProcessingEvent implements ResourceBasedEvent {
+public class VisitEvent<T extends Visitor> extends FragmentEvent implements ResourceBasedEvent {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ElementVisitEvent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VisitEvent.class);
 
     private final ContentHandlerBinding<T> visitorBinding;
     private final VisitSequence sequence;
@@ -77,7 +81,7 @@ public class ElementVisitEvent<T extends Visitor> extends ElementProcessingEvent
     private String reportSummary;
     private String reportDetail;
 
-    public ElementVisitEvent(Object element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext) {
+    public VisitEvent(Fragment element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext) {
         super(element);
         this.visitorBinding = visitorBinding;
         this.sequence = sequence;
@@ -92,8 +96,8 @@ public class ElementVisitEvent<T extends Visitor> extends ElementProcessingEvent
         initReport(executionContext);
     }
 
-    public ElementVisitEvent(Object element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext, Throwable error) {
-        this(element, visitorBinding, sequence, executionContext);
+    public VisitEvent(Fragment fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext, Throwable error) {
+        this(fragment, visitorBinding, sequence, executionContext);
         this.error = error;
     }
 

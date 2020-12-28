@@ -42,9 +42,9 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list 
-    xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-    xmlns:smooks-core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
+<smooks-resource-list
+        xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
+>
 
     <!--
         Filter settings...
@@ -249,4 +249,55 @@
         <param name="attribute">namespace</param>
     </resource-config>
 
+    <resource-config selector="smooks-core:smooks">
+        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.visitors.smooks.NestedSmooksVisitor</param>
+    </resource-config>
+
+    <resource-config selector="smooks-core:smooks/visit">
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromXml</resource>
+        <param name="mapTo">smooksResourceList</param>
+    </resource-config>
+
+    <resource-config selector="smooks-core:smooks">
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">filterSourceOn</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+
+    <resource-config selector="smooks-core:smooks">
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">maxNodeDepth</param>
+    </resource-config>
+    
+    <resource-config selector="smooks-core:smooks/action/inline">
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">directive</param>
+        <param name="mapTo">action</param>
+    </resource-config>
+    
+    <resource-config selector="smooks-core:smooks/action/bindTo">
+        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <param name="setOn">action</param>
+        <param name="value">BIND_TO</param>
+    </resource-config>
+
+    <resource-config selector="smooks-core:smooks/action/bindTo">
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">id</param>
+        <param name="mapTo">bindId</param>
+    </resource-config>
+
+    <resource-config selector="smooks-core:smooks/action/outputTo">
+        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <param name="setOn">action</param>
+        <param name="value">OUTPUT_TO</param>
+    </resource-config>
+    
+    <resource-config selector="smooks-core:smooks/action/outputTo">
+        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">outputStreamResource</param>
+        <param name="mapTo">outputStreamResource</param>
+    </resource-config>
+    
 </smooks-resource-list>

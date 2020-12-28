@@ -48,7 +48,7 @@ package org.smooks;
  */
 public enum StreamFilterType {
     SAX("SAX"),
-    SAX_NG("SAX-NG"),
+    SAX_NG("SAX NG"),
     DOM("DOM");
 
     private final String value;

@@ -42,8 +42,7 @@
  */
 package org.smooks.container;
 
-import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.event.ExecutionEventListener;
+import org.smooks.delivery.ContentDeliveryRuntime;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.profile.ProfileSet;
 
@@ -102,7 +101,7 @@ public interface ExecutionContext extends TypedMap {
      *
      * @return  ContentDeliveryConfig instance.
      */
-	ContentDeliveryConfig getDeliveryConfig();
+	ContentDeliveryRuntime getContentDeliveryRuntime();
 
 
     /**
@@ -118,30 +117,7 @@ public interface ExecutionContext extends TypedMap {
      * @return Character encoding to be used when parsing content.  Defaults to "UTF-8".
      */
     String getContentEncoding();
-
-    /**
-     * Set the ExecutionEventListener for the {@link ExecutionContext}.
-     * <p/>
-     * Allows calling code to listen to (and capture data on) specific
-     * context execution events e.g. the targeting of resources.
-     * <p/>
-     * Note, this is not a logging facility and should be used with care.
-     * It's overuse should be avoided as it can have a serious negative effect
-     * on performance.  By default, no listenrs are applied and so no overhead
-     * is incured.
-     *
-     * @param listener The listener instance.
-     * @see org.smooks.event.BasicExecutionEventListener
-     */
-    void setEventListener(ExecutionEventListener listener);
-
-    /**
-     * Get the ExecutionEventListener for the {@link ExecutionContext}.
-     * @return The listener instance.
-     * @see #setEventListener(ExecutionEventListener)
-     */
-    ExecutionEventListener getEventListener();
-
+    
     /**
      * Set the error/exception that caused the filter operation associated with
      * this ExecutionContext to terminate.

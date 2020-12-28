@@ -52,7 +52,7 @@ public interface ExecutionEventListener {
 
     /**
      * Receive execution event.
-     * @param event Execution event.
+     * @param executionEvent Execution event.
      */
-    void onEvent(ExecutionEvent event);
+    void onEvent(ExecutionEvent executionEvent);
 }

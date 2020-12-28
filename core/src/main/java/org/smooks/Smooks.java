@@ -51,7 +51,6 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.TypedMap;
 import org.smooks.container.standalone.DefaultApplicationContextBuilder;
-import org.smooks.container.standalone.StandaloneApplicationContext;
 import org.smooks.container.standalone.StandaloneExecutionContext;
 import org.smooks.delivery.*;
 import org.smooks.event.ExecutionEventListener;
@@ -125,8 +124,8 @@ import java.util.Properties;
 public class Smooks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Smooks.class);
-    private final StandaloneApplicationContext applicationContext;
-    private ClassLoader classLoader;
+    private final ApplicationContext applicationContext;
+
     /**
      * Manually added visitors.  In contract to those that are constructed and configured dynamically from
      * an XML configuration stream.
@@ -155,7 +154,7 @@ public class Smooks {
      * Resource configurations can be added through calls to
      * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
      */
-    public Smooks(StandaloneApplicationContext applicationContext) {
+    public Smooks(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
         visitorBindings = new ArrayList<>();
     }
@@ -200,23 +199,6 @@ public class Smooks {
         this();
         applicationContext.setResourceLocator(new URIResourceLocator());
         addConfigurations(resourceConfigStream);
-    }
-
-    /**
-     * Get the ClassLoader associated with this Smooks instance.
-     * @return The ClassLoader instance.
-     */
-    public ClassLoader getClassLoader() {
-        return applicationContext.getClassLoader();
-    }
-
-    /**
-     * Set the ClassLoader associated with this Smooks instance.
-     * @param classLoader The ClassLoader instance.
-     */
-    public void setClassLoader(ClassLoader classLoader) {        
-        this.classLoader = classLoader;
-        applicationContext.setClassLoader(classLoader);
     }
 
     /**
@@ -290,6 +272,7 @@ public class Smooks {
      * @param targetSelector The message fragment target selector.
      * @param targetSelectorNS The message fragment target selector namespace.
      */
+    @Deprecated
     public ResourceConfig addVisitor(Visitor visitor, String targetSelector, String targetSelectorNS) {
         assertIsConfigurable();
         AssertArgument.isNotNull(visitor, "visitor");
@@ -437,16 +420,16 @@ public class Smooks {
      * @throws UnknownProfileMemberException Unknown target profile.
      */
     public ExecutionContext createExecutionContext(String targetProfile) throws UnknownProfileMemberException {
-        if(classLoader != null) {
+        if (applicationContext.getClassLoader() != null) {
             ClassLoader originalTCCL = Thread.currentThread().getContextClassLoader();
             CascadingClassLoaderSet newTCCL = new CascadingClassLoaderSet();
 
-            newTCCL.addClassLoader(classLoader);
+            newTCCL.addClassLoader(applicationContext.getClassLoader());
             newTCCL.addClassLoader(originalTCCL);
 
             Thread.currentThread().setContextClassLoader(newTCCL);
             try {
-                if(isConfigurable) {
+                if (isConfigurable) {
                     setNotConfigurable();
                 }
                 return new StandaloneExecutionContext(targetProfile, applicationContext, visitorBindings);
@@ -454,7 +437,7 @@ public class Smooks {
                 Thread.currentThread().setContextClassLoader(originalTCCL);
             }
         } else {
-            if(isConfigurable) {
+            if (isConfigurable) {
                 setNotConfigurable();
             }
             return new StandaloneExecutionContext(targetProfile, applicationContext, visitorBindings);
@@ -506,9 +489,9 @@ public class Smooks {
         AssertArgument.isNotNull(source, "source");
         AssertArgument.isNotNull(executionContext, "executionContext");
 
-        if(classLoader != null) {
+        if (applicationContext.getClassLoader() != null) {
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(classLoader);
+            Thread.currentThread().setContextClassLoader(applicationContext.getClassLoader());
             try {
                 _filter(executionContext, source, results);
             } finally {
@@ -520,17 +503,17 @@ public class Smooks {
     }
 
     private void _filter(ExecutionContext executionContext, Source source, Result... results) {
-        ExecutionEventListener eventListener = executionContext.getEventListener();
+        ContentDeliveryRuntime contentDeliveryRuntime = executionContext.getContentDeliveryRuntime();
 
         try {
-            if (eventListener != null) {
-                eventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.STARTED, executionContext));
+            for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
+                executionEventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.STARTED, executionContext));
             }
 
-            ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();
+            ContentDeliveryConfig contentDeliveryConfig = contentDeliveryRuntime.getContentDeliveryConfig();
 
             if (results != null && results.length == 1 && results[0] != null) {
-                FilterBypass filterBypass = deliveryConfig.getFilterBypass();
+                FilterBypass filterBypass = contentDeliveryConfig.getFilterBypass();
                 if (filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
                     // We're done... a filter bypass was applied...
                     if (LOGGER.isDebugEnabled()) {
@@ -540,8 +523,8 @@ public class Smooks {
                 }
             }
 
-            Filter messageFilter = deliveryConfig.newFilter(executionContext);
-            Filter.setFilter(messageFilter);
+            Filter filter = contentDeliveryConfig.newFilter(executionContext);
+            Filter.setFilter(filter);
             try {
                 // Attach the source and results to the context...
                 FilterSource.setSource(executionContext, source);
@@ -556,8 +539,8 @@ public class Smooks {
                 }
 
                 try {
-                    deliveryConfig.executeHandlerInit(executionContext);
-                    messageFilter.doFilter();
+                    contentDeliveryConfig.executeHandlerInit(executionContext);
+                    filter.doFilter();
                 } finally {
                     try {
                         // We want to make sure that all the beans from the BeanContext are available in the
@@ -571,7 +554,7 @@ public class Smooks {
                         beanContext.removeBean(Time.BEAN_ID, null);
                         beanContext.removeBean(UniqueID.BEAN_ID, null);
                     } finally {
-                        deliveryConfig.executeHandlerCleanup(executionContext);
+                        contentDeliveryConfig.executeHandlerCleanup(executionContext);
                     }
                 }
             } catch (SmooksException e) {
@@ -581,12 +564,12 @@ public class Smooks {
                 executionContext.setTerminationError(t);
                 throw new SmooksException("Smooks Filtering operation failed.", t);
             } finally {
-                messageFilter.cleanup();
+                filter.cleanup();
                 Filter.removeCurrentFilter();
             }
         } finally {
-            if(eventListener != null) {
-                eventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.FINISHED, executionContext));
+            for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
+                executionEventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.FINISHED, executionContext));
             }
         }
     }
@@ -615,7 +598,7 @@ public class Smooks {
      * Assert that the instance is configurable, throwing an exception if it is not.
      */
     private void assertIsConfigurable() {
-        if(!isConfigurable) {
+        if (!isConfigurable) {
             throw new UnsupportedOperationException("Unsupported call to Smooks instance configuration method after Smooks instance has created an ExecutionContext.");
         }
     }

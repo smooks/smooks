@@ -42,23 +42,6 @@
  */
 package org.smooks.delivery;
 
-import static org.smooks.delivery.SAXHandlerTest.SAXMatchers.isSaxElementWithQName;
-import static org.smooks.delivery.SAXHandlerTest.SAXMatchers.isSaxFragmentWithQName;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import javax.xml.namespace.QName;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamSource;
-
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
@@ -66,11 +49,25 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
-import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXHandler;
 import org.smooks.delivery.sax.SAXVisitBefore;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
+
+import javax.xml.namespace.QName;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.*;
+import static org.smooks.delivery.SAXHandlerTest.SAXMatchers.isSaxElementWithQName;
+import static org.smooks.delivery.SAXHandlerTest.SAXMatchers.isSaxFragmentWithQName;
 
 /**
  * Test for {@link SAXHandler}.
@@ -212,8 +209,8 @@ public class SAXHandlerTest {
         }
 
         @Override
-        public boolean matchesSafely(Fragment element) {
-            return qname.equals(element.getSAXElement().getName());
+        public boolean matchesSafely(Fragment fragment) {
+            return qname.equals(((SAXElement) fragment.unwrap()).getName());
         }
 
         public void describeTo(Description description) {

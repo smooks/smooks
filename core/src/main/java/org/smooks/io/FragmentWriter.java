@@ -42,10 +42,18 @@
  */
 package org.smooks.io;
 
-import org.smooks.container.TypedKey;
+import org.smooks.delivery.fragment.Fragment;
 
+import java.io.IOException;
 import java.io.Writer;
 
-public interface FragmentWriter {
-    TypedKey<Writer> FRAGMENT_WRITER_TYPED_KEY = new TypedKey<>();
+public abstract class FragmentWriter extends Writer {
+
+    public abstract boolean capture() throws IOException;
+    
+    public abstract void release() throws IOException;
+
+    public abstract Writer getDelegateWriter();
+
+    public abstract Fragment getFragment();
 }

@@ -46,14 +46,15 @@ import org.smooks.SmooksException;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.TypedKey;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.ordering.Producer;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXElementVisitor;
-import org.smooks.delivery.sax.SAXText;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
-import org.smooks.delivery.sax.ng.DynamicSaxNgElementVisitorList;
-import org.smooks.delivery.sax.ng.ElementVisitor;
+import org.smooks.delivery.sax.ng.event.CharDataFragmentEvent;
+import org.smooks.event.ExecutionEvent;
+import org.smooks.event.ExecutionEventListener;
+import org.smooks.event.types.EndFragmentEvent;
+import org.smooks.event.types.StartFragmentEvent;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Document;
@@ -64,7 +65,6 @@ import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.util.Set;
 import java.util.Stack;
 
@@ -147,7 +147,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         // Push a new DOMCreator onto the DOMCreator stack and install it in the
         // Dynamic Vistor list in the SAX handler...
-         pushCreator(new DOMCreator(), executionContext);
+         pushCreator(new DOMCreator(executionContext), executionContext);
     }
 
     private void addNodeModel(Element element, ExecutionContext executionContext) {
@@ -169,25 +169,25 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
             // via SAX) because it maintains a hierarchy of model. Inner model can represent collection
             // entry instances, with a single model for a single collection entry only being held in memory
             // at any point in time i.e. old ones are overwritten and so freed for GC.
-            DynamicSaxNgElementVisitorList.removeDynamicVisitor(domCreatorStack.peek(), executionContext);
+            executionContext.getContentDeliveryRuntime().removeExecutionEventListener(domCreatorStack.peek());
         }
 
-        DynamicSaxNgElementVisitorList.addDynamicVisitor(domCreator, executionContext);
+        executionContext.getContentDeliveryRuntime().addExecutionEventListener(domCreator);
         domCreatorStack.push(domCreator);
     }
 
-    @SuppressWarnings({ "unchecked", "WeakerAccess", "UnusedReturnValue" })
+    @SuppressWarnings({"unchecked", "WeakerAccess", "UnusedReturnValue"})
     public Document popCreator(ExecutionContext executionContext) {
         Stack<DOMCreator> domCreatorStack = executionContext.get(DOM_CREATOR_STACK_TYPED_KEY);
 
-        if(domCreatorStack == null) {
+        if (domCreatorStack == null) {
             throw new IllegalStateException("No DOM Creator Stack available.");
         } else {
             try {
                 // Remove the current DOMCreators from the dynamic visitor list...
-                if(!domCreatorStack.isEmpty()) {
+                if (!domCreatorStack.isEmpty()) {
                     DOMCreator removedCreator = domCreatorStack.pop();
-                    DynamicSaxNgElementVisitorList.removeDynamicVisitor(removedCreator, executionContext);
+                    executionContext.getContentDeliveryRuntime().removeExecutionEventListener(removedCreator);
 
                     return removedCreator.document;
                 } else {
@@ -195,8 +195,8 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
                 }
             } finally {
                 // Reinstate parent DOMCreators in the dynamic visitor list...
-                if(!domCreatorStack.isEmpty()) {
-                    DynamicSaxNgElementVisitorList.addDynamicVisitor(domCreatorStack.peek(), executionContext);
+                if (!domCreatorStack.isEmpty()) {
+                    executionContext.getContentDeliveryRuntime().addExecutionEventListener(domCreatorStack.peek());
                 }
             }
         }
@@ -209,110 +209,59 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
         popCreator(executionContext);
     }
 
-    private class DOMCreator implements SAXElementVisitor, ElementVisitor {
+    private class DOMCreator implements ExecutionEventListener {
 
         private final Document document;
+        private final ExecutionContext executionContext;
         private Node currentNode;
 
-        private DOMCreator() {
+        private DOMCreator(ExecutionContext executionContext) {
             document = documentBuilder.newDocument();
             currentNode = document;
+            this.executionContext = executionContext;
         }
 
         @Override
-        public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-            Element domElement = element.toDOMElement(document);
+        public void onEvent(ExecutionEvent executionEvent) {
+            if (executionEvent instanceof StartFragmentEvent) {
+                StartFragmentEvent startFragmentEvent = (StartFragmentEvent) executionEvent;
+                Fragment fragment = startFragmentEvent.getFragment();
+                Element importNode = (Element) document.importNode((Node) fragment.unwrap(), true);
 
-            if(currentNode == document) {
-                addNodeModel(domElement, executionContext);
+                if(currentNode == document) {
+                    addNodeModel(importNode, executionContext);
+                }
+
+                currentNode.appendChild(importNode);
+                currentNode = importNode;
+            } else if (executionEvent instanceof CharDataFragmentEvent) {
+                if(currentNode == document) {
+                    // Just ignore for now...
+                    return;
+                }
+
+                Element element = (Element) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap();
+                String textContent = element.getTextContent();
+                if(textContent.trim().length() == 0) {
+                    // Ignore pure whitespace...
+                    return;
+                }
+
+                switch (element.getChildNodes().item(0).getNodeType()) {
+                    case Node.TEXT_NODE:
+                    case Node.ENTITY_NODE:
+                        currentNode.appendChild(document.createTextNode(textContent));
+                        break;
+                    case Node.CDATA_SECTION_NODE:
+                        currentNode.appendChild(document.createCDATASection(textContent));
+                        break;
+                    case Node.COMMENT_NODE:
+                        currentNode.appendChild(document.createComment(textContent));
+                        break;
+                }
+            } else if (executionEvent instanceof EndFragmentEvent) {
+                currentNode = currentNode.getParentNode();
             }
-
-            currentNode.appendChild(domElement);
-            currentNode = domElement;
-        }
-
-        @Override
-        public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
-            if(currentNode == document) {
-                // Just ignore for now...
-                return;
-            }
-
-            if(childText.getText().trim().length() == 0) {
-                // Ignore pure whitespace...
-                return;
-            }
-
-            switch (childText.getType()) {
-                case TEXT:
-                case ENTITY:
-                    currentNode.appendChild(document.createTextNode(childText.getText()));
-                    break;
-                case CDATA:
-                    currentNode.appendChild(document.createCDATASection(childText.getText()));
-                    break;
-                case COMMENT:
-                    currentNode.appendChild(document.createComment(childText.getText()));
-                    break;
-            }
-        }
-
-        @Override
-        public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-        }
-
-        @Override
-        public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-            currentNode = currentNode.getParentNode();
-        }
-
-        @Override
-        public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-            currentNode = currentNode.getParentNode();
-        }
-
-        @Override
-        public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-            Element importNode = (Element) document.importNode(element, true);
-
-            if(currentNode == document) {
-                addNodeModel(importNode, executionContext);
-            }
-
-            currentNode.appendChild(importNode);
-            currentNode = importNode;
-        }
-
-        @Override
-        public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
-            if(currentNode == document) {
-                // Just ignore for now...
-                return;
-            }
-
-            String textContent = element.getTextContent();
-            if(textContent.trim().length() == 0) {
-                // Ignore pure whitespace...
-                return;
-            }
-            
-            switch (element.getChildNodes().item(0).getNodeType()) {
-                case Node.TEXT_NODE:
-                case Node.ENTITY_NODE:
-                    currentNode.appendChild(document.createTextNode(textContent));
-                    break;
-                case Node.CDATA_SECTION_NODE:
-                    currentNode.appendChild(document.createCDATASection(textContent));
-                    break;
-                case Node.COMMENT_NODE:
-                    currentNode.appendChild(document.createComment(textContent));
-                    break;
-            }
-        }
-
-        @Override
-        public void visitChildElement(Element childElement, ExecutionContext executionContext) throws SmooksException {
-
         }
     }
 }

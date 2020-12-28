@@ -80,14 +80,14 @@ public class TerminateVisitor implements BeforeVisitor, AfterVisitor, Producer {
 	@Override
 	public void visitAfter(Element element, ExecutionContext executionContext) {
 		if (!terminateBefore) {
-			throw new TerminateException(element, false);
+			throw new TerminateException(element);
 		}
 	}
 
 	@Override
 	public void visitBefore(Element element, ExecutionContext executionContext) {
 		if (terminateBefore) {
-			throw new TerminateException(element, true);
+			throw new TerminateException(element);
 		}
 	}
 }

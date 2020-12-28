@@ -49,7 +49,7 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.sax.terminate.TerminateException;
-import org.smooks.io.FragmentWriter;
+import org.smooks.io.Stream;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
@@ -79,8 +79,8 @@ public class SmooksSAXFilter extends Filter {
 
     public SmooksSAXFilter(ExecutionContext executionContext) {
         this.executionContext = executionContext;
-        closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", executionContext.getDeliveryConfig()));
-        closeResult = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, "true", executionContext.getDeliveryConfig()));
+        closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        closeResult = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, "true", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
         parser = new SAXParser(executionContext);
     }
 
@@ -111,7 +111,7 @@ public class SmooksSAXFilter extends Filter {
 
         try {
             Writer writer = getWriter(result, executionContext);
-            executionContext.put(FragmentWriter.FRAGMENT_WRITER_TYPED_KEY, writer);
+            executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writer);
             parser.parse(source, executionContext);
             writer.flush();
         } catch (TerminateException e) {

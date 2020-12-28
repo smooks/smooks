@@ -43,18 +43,19 @@
 package org.smooks.delivery.memento;
 
 import org.smooks.delivery.Visitor;
+import org.smooks.delivery.fragment.Fragment;
 
 public class TextAccumulatorMemento extends AbstractVisitorMemento {
     
     private final StringBuilder stringBuilder = new StringBuilder();
     
-    public TextAccumulatorMemento(Visitable visitable, Visitor visitor) {
-        super(visitable, visitor);
+    public TextAccumulatorMemento(Fragment fragment, Visitor visitor) {
+        super(fragment, visitor);
     }
 
     @Override
     public VisitorMemento copy() {
-        final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(visitable, visitor);
+        final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(fragment, visitor);
         textAccumulatorMemento.accumulateText(getText());
         
         return textAccumulatorMemento;

@@ -68,7 +68,7 @@ import java.util.Stack;
  */
 public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromText.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromParentConfig.class);
 
     @Inject
     private int parentRelIndex = -1;

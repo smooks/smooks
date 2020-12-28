@@ -44,8 +44,8 @@ package org.smooks.delivery.interceptor;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Fragment;
 import org.smooks.delivery.dom.DOMElementVisitor;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.*;
@@ -53,6 +53,7 @@ import org.smooks.delivery.sax.ng.*;
 import org.smooks.lifecycle.ExecutionLifecycleCleanable;
 import org.smooks.lifecycle.ExecutionLifecycleInitializable;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -173,11 +174,11 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) {
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
         intercept(new Invocation<ChildrenVisitor>() {
             @Override
             public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildText(element, executionContext);
+                visitor.visitChildText(characterData, executionContext);
                 return null;
             }
 

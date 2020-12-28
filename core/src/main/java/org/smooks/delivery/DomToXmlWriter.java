@@ -127,18 +127,6 @@ public class DomToXmlWriter {
 			writer.write('>');
 		}
 	}
-
-	public void writeText(final Node node, final Writer writer) throws IOException {
-		final NodeList children = node.getChildNodes();
-		if (children != null && children.getLength() > 0) {
-			final int childCount = children.getLength();
-
-			for (int i = 0; i < childCount; i++) {
-				final Node childNode = children.item(i);
-				writeCharacterData(childNode, writer);
-			}
-		}
-	}
 	
 	public void writeCharacterData(final Node node, final Writer writer) throws IOException {
 		switch (node.getNodeType()) {

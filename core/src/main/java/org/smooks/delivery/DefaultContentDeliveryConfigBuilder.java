@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.*;
-import org.smooks.container.ApplicationContext;
 import org.smooks.dtd.DTDStore;
 import org.smooks.dtd.DTDStore.DTDObjectContainer;
 import org.smooks.event.types.ConfigBuilderEvent;
@@ -73,14 +72,13 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultContentDeliveryConfigBuilder.class);
 
-	/**
-	 * Profile set.
-	 */
-	private final ProfileSet profileSet;
-	/**
-	 * Container context.
-	 */
-	private final ApplicationContext applicationContext;
+    /**
+     * Profile set.
+     */
+    private final ProfileSet profileSet;
+
+	private final Registry registry;
+	
     /**
 	 * XML selector content spec definition prefix
 	 */
@@ -113,15 +111,15 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     /**
 	 * Private (hidden) constructor.
      * @param profileSet Profile set.
-	 * @param applicationContext Container context.
+	 * @param registry Container context.
 	 */
-	public DefaultContentDeliveryConfigBuilder(final ProfileSet profileSet, final ApplicationContext applicationContext, final List<FilterProvider> filterProviders) {
+	public DefaultContentDeliveryConfigBuilder(final ProfileSet profileSet, final Registry registry, final List<FilterProvider> filterProviders) {
         AssertArgument.isNotNull(profileSet, "profileSet");
-        AssertArgument.isNotNull(applicationContext, "applicationContext");
+        AssertArgument.isNotNull(registry, "registry");
         AssertArgument.isNotNull(filterProviders, "filterProviders");
-        
-		this.profileSet = profileSet;
-		this.applicationContext = applicationContext;
+
+        this.profileSet = profileSet;
+        this.registry = registry;
 		this.filterProviders = filterProviders;
     }
 
@@ -143,19 +141,18 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 
         return contentDeliveryConfig;
     }
-
+    
     private ContentDeliveryConfig buildConfig(List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) {
         if (extendedContentHandlerBindings != null) {
             visitorBindings.addAll(extendedContentHandlerBindings);
         }
-        boolean sortVisitors = ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable);
         FilterProvider filterProvider = getFilterProvider();
         
         LOGGER.debug(String.format("Activating %s filter", filterProvider.getName()));
         configBuilderEvents.add(new ConfigBuilderEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
         configBuilderEvents.add(new ConfigBuilderEvent(String.format("Activating %s filter", filterProvider.getName())));
 
-        ContentDeliveryConfig contentDeliveryConfig = filterProvider.createContentDeliveryConfig(visitorBindings, applicationContext, resourceConfigTable, configBuilderEvents, dtd, sortVisitors);
+        ContentDeliveryConfig contentDeliveryConfig = filterProvider.createContentDeliveryConfig(visitorBindings, registry, resourceConfigTable, configBuilderEvents, dtd);
         fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
 
         return contentDeliveryConfig;
@@ -226,7 +223,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 */
 	private void load(ProfileSet profileSet) {
         resourceConfigs.clear();
-        resourceConfigs.addAll(Arrays.asList(applicationContext.getRegistry().lookup(new ResourceConfigsProfileSetLookup(applicationContext.getRegistry(), profileSet))));
+        resourceConfigs.addAll(Arrays.asList(registry.lookup(new ResourceConfigsProfileSetLookup(registry, profileSet))));
 
 		// Build and sort the resourceConfigTable table - non-transforming elements.
 		buildResourceConfigTable(resourceConfigs);
@@ -387,7 +384,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * their respective tables.
 	 */
 	private void extractContentHandlers() {
-		ContentHandlerExtractionStrategy contentHandlerExtractionStrategy = new ContentHandlerExtractionStrategy(applicationContext);
+		ContentHandlerExtractionStrategy contentHandlerExtractionStrategy = new ContentHandlerExtractionStrategy(registry);
 		ResourceConfigTableIterator resourceConfigTableIterator = new ResourceConfigTableIterator(contentHandlerExtractionStrategy);
 
         resourceConfigTableIterator.iterate();
@@ -430,7 +427,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     }
 
     private void fireEvent(ContentDeliveryConfigBuilderLifecycleEvent event) {
-        for(Object object : applicationContext.getRegistry().lookup(new InstanceLookup<>(ContentDeliveryConfigBuilderLifecycleListener.class)).values()) {
+        for(Object object : registry.lookup(new InstanceLookup<>(ContentDeliveryConfigBuilderLifecycleListener.class)).values()) {
             ((ContentDeliveryConfigBuilderLifecycleListener) object).handle(event);
         }
     }
@@ -443,8 +440,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 
         private final Registry registry;
 
-        private ContentHandlerExtractionStrategy(ApplicationContext applicationContext) {
-            registry = applicationContext.getRegistry();
+        private ContentHandlerExtractionStrategy(Registry registry) {
+            this.registry = registry;
         }
 
         public void applyStrategy(String elementName, ResourceConfig resourceConfig) {
@@ -563,7 +560,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
          */
         private void processExpansionConfigurations(List<ResourceConfig> additionalConfigs) {
             for (final ResourceConfig resourceConfig : additionalConfigs) {
-                applicationContext.getRegistry().registerResourceConfig(resourceConfig);
+                registry.registerResourceConfig(resourceConfig);
                 // Try adding it as a ContentHandler instance...
                 if (!applyContentDeliveryUnitStrategy(resourceConfig)) {
                     // Else just add it to the main list...

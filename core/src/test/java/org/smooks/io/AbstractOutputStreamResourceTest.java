@@ -47,9 +47,11 @@ import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.MockExecutionContext;
 import org.smooks.container.TypedKey;
-import org.smooks.delivery.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -64,8 +66,7 @@ import static org.junit.Assert.*;
 public class AbstractOutputStreamResourceTest
 {
 	@Test
-	public void getOutputStream () throws IOException
-	{
+	public void getOutputStream () throws ParserConfigurationException {
 		AbstractOutputStreamResource resource = new MockAbstractOutputStreamResource();
 		MockExecutionContext executionContext = new MockExecutionContext();
 
@@ -85,7 +86,7 @@ public class AbstractOutputStreamResourceTest
             assertEquals("An OutputStream to the 'Mock' resource is already open.  Cannot open a Writer to this resource now!", e.getMessage());
         }
 
-        resource.executeVisitLifecycleCleanup(new Fragment((Element)null), executionContext);
+        resource.executeVisitLifecycleCleanup(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), executionContext);
 
         // Should be unbound "after" and the stream should be closed...
         assertNull(getResource(resource, executionContext));
@@ -93,8 +94,7 @@ public class AbstractOutputStreamResourceTest
 	}
 
     @Test
-    public void getOutputWriter () throws IOException
-    {
+    public void getOutputWriter () throws IOException, ParserConfigurationException {
         AbstractOutputStreamResource resource = new MockAbstractOutputStreamResource();
         MockExecutionContext executionContext = new MockExecutionContext();
 
@@ -114,7 +114,7 @@ public class AbstractOutputStreamResourceTest
             assertEquals("An Writer to the 'Mock' resource is already open.  Cannot open an OutputStream to this resource now!", e.getMessage());
         }
 
-        resource.executeVisitLifecycleCleanup(new Fragment((Element)null), executionContext);
+        resource.executeVisitLifecycleCleanup(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), executionContext);
 
         // Should be unbound "after" and the stream should be closed...
         assertNull(getResource(resource, executionContext));

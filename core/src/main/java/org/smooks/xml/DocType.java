@@ -64,7 +64,7 @@ public abstract class DocType {
     }
 
     public static DocumentTypeData getDocType(ExecutionContext executionContext) {
-        List<ResourceConfig> docTypeUDs = executionContext.getDeliveryConfig().getResourceConfigs("doctype");
+        List<ResourceConfig> docTypeUDs = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().getResourceConfigs("doctype");
         ResourceConfig docTypeResourceConfig = null;
 
         if(docTypeUDs != null && docTypeUDs.size() > 0) {

@@ -44,7 +44,7 @@ package org.smooks.delivery.sax;
 
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.AbstractParser;
-import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.delivery.ReaderPool;
 import org.smooks.delivery.XMLReaderHierarchyChangeListener;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.xml.NamespaceManager;
@@ -71,14 +71,14 @@ public class SAXParser extends AbstractParser {
     }
 
     protected void parse(Source source, ExecutionContext executionContext) throws SAXException, IOException {
-        ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();
+        ReaderPool readerPool = executionContext.getContentDeliveryRuntime().getReaderPool();
         XMLReader saxReader = getXMLReader(executionContext);
 
         saxHandler = new SAXHandler(getExecutionContext());
 
         try {
             if(saxReader == null) {
-                saxReader = deliveryConfig.getXMLReader();
+                saxReader = readerPool.getXMLReader();
             }
             if(saxReader == null) {
                 saxReader = createXMLReader();
@@ -110,7 +110,7 @@ public class SAXParser extends AbstractParser {
                         try {
                             detachXMLReader(executionContext);
                         } finally {
-                            deliveryConfig.returnXMLReader(saxReader);
+                            readerPool.returnXMLReader(saxReader);
                         }
                     }
                 } finally {
