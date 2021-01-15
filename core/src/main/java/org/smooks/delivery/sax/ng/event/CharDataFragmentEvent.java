@@ -40,25 +40,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.sax.ng;
+package org.smooks.delivery.sax.ng.event;
 
-import org.junit.Test;
-import org.smooks.Smooks;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.payload.StringSource;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.event.FragmentEvent;
 
-import static org.junit.Assert.assertEquals;
-
-public class DynamicVisitorTest {
+public class CharDataFragmentEvent extends FragmentEvent {
     
-	@Test
-    public void test() {
-        Smooks smooks = new Smooks();
-        StringSource source = new StringSource("<a><b><c>c1</c><d>c2</d><e>c3</e></b></a>");
-
-        smooks.getApplicationContext().getRegistry().registerResourceConfig(new ResourceConfig("b", DynamicVisitorLoader.class.getName()));
-        smooks.filterSource(source);
-
-        assertEquals("<b><c>c1</c><d>c2</d><e>c3</e></b>", DynamicVisitorLoader.visitor.stuff.toString());
+    public CharDataFragmentEvent(final Fragment fragment) {
+        super(fragment);
     }
 }

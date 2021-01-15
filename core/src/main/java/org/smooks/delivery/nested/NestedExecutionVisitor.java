@@ -48,13 +48,15 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.TypedKey;
 import org.smooks.delivery.AbstractParser;
-import org.smooks.delivery.Fragment;
 import org.smooks.delivery.SmooksContentHandler;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.DynamicSAXElementVisitorList;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXHandler;
 import org.smooks.delivery.sax.SAXVisitBefore;
+import org.smooks.event.ExecutionEventListener;
+import org.smooks.io.Stream;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
@@ -124,8 +126,10 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         ExecutionContext nestedExecutionContext = smooks.createExecutionContext();
 
         // In case there's an attached event listener...
-        nestedExecutionContext.setEventListener(executionContext.getEventListener());
-
+        for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
+            nestedExecutionContext.getContentDeliveryRuntime().addExecutionEventListener(executionEventListener);
+        }
+        
         // Copy over the XMLReader stack...
         AbstractParser.setReaders(AbstractParser.getReaders(executionContext), nestedExecutionContext);
 
@@ -139,7 +143,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
             throw new SmooksException("Illegal use of more than one nested content handler fired on the same element.");
         }
 
-        nestedExecutionContext.setWriter(element.getWriter(this));
+        nestedExecutionContext.put(Stream.STREAM_WRITER_TYPED_KEY, element.getWriter(this));
         SmooksContentHandler nestedContentHandler = new SAXHandler(nestedExecutionContext, parentContentHandler);
 
         DynamicSAXElementVisitorList.propogateDynamicVisitors(executionContext, nestedExecutionContext);

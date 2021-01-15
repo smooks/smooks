@@ -23,6 +23,8 @@
                     <excludes>
                         <exclude>test/java/org/smooks/delivery/sax/test-01.xml</exclude>
                         <exclude>test/java/org/smooks/delivery/sax/test-02.xml</exclude>
+                        <exclude>test/java/org/smooks/delivery/sax/ng/test-01.xml</exclude>
+                        <exclude>test/java/org/smooks/delivery/sax/ng/test-02.xml</exclude>
                         <exclude>test/java/org/smooks/delivery/dom/testxml1.xml</exclude>
                         <exclude>test/java/org/smooks/delivery/dom/testxml1-expected.xml</exclude>
                         <exclude>test/java/org/smooks/delivery/JIRAs/MILYN_203/in-message.xml</exclude>

@@ -40,37 +40,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.event;
+package org.smooks.visitors.smooks;
 
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXUtil;
-import org.smooks.xml.DomUtils;
+import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.sax.ng.BeforeVisitor;
+import org.smooks.io.FragmentWriter;
 import org.w3c.dom.Element;
 
-/**
- * An element processing related event.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public abstract class ElementProcessingEvent implements ExecutionEvent {
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
-    private final Object element;
-
-    public ElementProcessingEvent(Object element) {
-        this.element = element;
+public class BarBeforeVisitor implements BeforeVisitor   {
+    private final CountDownLatch countDownLatch = new CountDownLatch(1);
+    
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
     }
 
-    public Object getElement() {
-        return element;
-    }
-
-    public int getDepth() {
-        if(element instanceof Element) {
-            return DomUtils.getDepth((Element) element);
-        } else if(element instanceof SAXElement) {
-            return SAXUtil.getDepth((SAXElement) element);
+    @Override
+    public void visitBefore(Element element, ExecutionContext executionContext) {
+        try {
+            new FragmentWriter(executionContext, new NodeFragment(element)).write("Hello World!");
+        } catch (IOException e) {
+            throw new SmooksException(e);
         }
-
-        return 0;
+        countDownLatch.countDown();
     }
 }

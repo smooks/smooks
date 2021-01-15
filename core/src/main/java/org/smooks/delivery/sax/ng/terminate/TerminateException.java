@@ -47,16 +47,13 @@ import org.w3c.dom.Element;
 public class TerminateException extends RuntimeException {
 	
 	private final Element element;
-	private final boolean terminateBefore;
 
 	/**
 	 * Public constructor.
 	 * @param element The element on which the terminate was fired.
-	 * @param terminateBefore 
 	 */
-	public TerminateException(Element element, boolean terminateBefore) {
+	public TerminateException(Element element) {
 		this.element = element;
-		this.terminateBefore = terminateBefore;
 	}
 
 	/**
@@ -65,14 +62,5 @@ public class TerminateException extends RuntimeException {
 	 */
 	public Element getElement() {
 		return element;
-	}
-
-	/**
-	 * Is this exception a visitBefore TerminateException.
-	 * @return True if the TerminateException was thrown on the visitBefore of the
-	 * target element, otherwise false.
-	 */
-	public boolean isTerminateBefore() {
-		return terminateBefore;
 	}
 }

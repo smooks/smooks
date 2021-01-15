@@ -44,6 +44,8 @@ package org.smooks.delivery.sax.ng;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.io.FragmentWriter;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -53,7 +55,7 @@ public class TestWriter implements BeforeVisitor, AfterVisitor {
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
         try {
-            executionContext.getWriter().write("Smooks SAX Transforms!!");
+            new FragmentWriter(executionContext, new NodeFragment(element)).write("Smooks SAX Transforms!!");
         } catch (IOException e) {
             throw new SmooksException(e.getMessage(), e);
         }
@@ -63,7 +65,7 @@ public class TestWriter implements BeforeVisitor, AfterVisitor {
     public void visitAfter(Element element, ExecutionContext executionContext) {
         // Acquire ownership of the writer...
         try {
-            executionContext.getWriter().write("");
+            new FragmentWriter(executionContext, new NodeFragment(element)).write("");
         } catch (IOException e) {
             throw new SmooksException(e.getMessage(), e);
         }

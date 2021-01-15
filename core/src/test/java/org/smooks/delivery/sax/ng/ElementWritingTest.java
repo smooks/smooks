@@ -62,8 +62,8 @@ public class ElementWritingTest {
         try {
             smooks.filterSource(smooks.createExecutionContext(), new StringSource("<a/>"), null);
             fail("Expected SAXWriterAccessException");
-        } catch(SmooksException e) {
-            assertEquals("Illegal access to the element writer for element 'a' by SAX visitor 'org.smooks.delivery.sax.ng.VisitorWriter02'.  Writer already acquired by SAX visitor 'org.smooks.delivery.sax.ng.VisitorWriter01'.  See Element javadocs (https://www.smooks.org).  Change Smooks visitor resource configuration.", e.getCause().getMessage());
+        } catch (SmooksException e) {
+            assertEquals("Illegal access to fragment 'a': fragment is exclusively acquired by another writer. Hint: release fragment before acquiring it from a different writer", e.getCause().getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class ElementWritingTest {
     public void test_default_writing() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingTest.xml"));
 
-        StringSource stringSource = new StringSource("<a>aa<b>bbb<c />bbb</b>aaa</a>");
+        StringSource stringSource = new StringSource("<a>aa<b>bbb<c/>bbb</b>aaa</a>");
         StringResult stringResult = new StringResult();
 
         smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);

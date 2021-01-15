@@ -53,6 +53,7 @@ import org.smooks.delivery.sax.SAXText;
 import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.xml.DomUtils;
 import org.smooks.xml.Namespace;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 
 import java.io.IOException;
@@ -164,10 +165,10 @@ public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, SAX
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
 
     }
-
+    
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
-
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+        
     }
 
     @Override

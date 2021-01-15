@@ -63,7 +63,7 @@ public class ParameterAccessorTest {
 	@Test
     public void test_system_property() {
         Smooks smooks = new Smooks();
-        ContentDeliveryConfig deliveryConfig = smooks.createExecutionContext().getDeliveryConfig();
+        ContentDeliveryConfig deliveryConfig = smooks.createExecutionContext().getContentDeliveryRuntime().getContentDeliveryConfig();
 
         assertNull(ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
 

@@ -45,6 +45,7 @@ package org.smooks;
 import org.junit.Before;
 import org.junit.Test;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.sax.SAXElement;
@@ -78,13 +79,13 @@ public class SmooksTest {
 
 	@Test
     public void test_setClassPath() throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("test_setClassLoader_01.xml"));
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         TestClassLoader classLoader = new TestClassLoader(contextClassLoader);
+        Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setClassLoader(classLoader).build());
+        smooks.addConfigurations(getClass().getResourceAsStream("test_setClassLoader_01.xml"));
+                
         StringResult result = new StringResult();
-
-        smooks.setClassLoader(classLoader);
-
+        
         ExecutionContext execCtx = smooks.createExecutionContext();
         assertSame(contextClassLoader, Thread.currentThread().getContextClassLoader());
 

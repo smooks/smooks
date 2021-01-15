@@ -48,6 +48,7 @@ import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.sax.SmooksSAXFilter;
 import org.smooks.delivery.sax.ng.terminate.TerminateException;
+import org.smooks.io.Stream;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
@@ -90,28 +91,30 @@ public class SaxNgFilter extends SmooksSAXFilter {
     }
 
     @Override
-    protected void doFilter(Source source, Result result) {
+    protected void doFilter(final Source source, final Result result) {
+        final Source newSource;
         if (source instanceof DOMSource) {
-            String serializedDOM = XmlUtil.serialize(((DOMSource) source).getNode(), false);
-            source = new StringSource(serializedDOM);
+            newSource = new StringSource(XmlUtil.serialize(((DOMSource) source).getNode(), false));
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("DOMSource converted to a StringSource.");
             }
+        } else {
+            newSource = source;
         }
 
-        if (!(source instanceof StreamSource) && !(source instanceof JavaSource)) {
-            throw new IllegalArgumentException("Unsupported " + source.getClass().getName() + " source type: SAX-NG filter supports StreamSource and JavaSource");
+        if (!(newSource instanceof StreamSource) && !(newSource instanceof JavaSource)) {
+            throw new IllegalArgumentException("Unsupported " + newSource.getClass().getName() + " source type: SAX NG filter supports StreamSource and JavaSource");
         }
         if (!(result instanceof FilterResult)) {
             if (result != null && !(result instanceof StreamResult) && !(result instanceof DOMResult)) {
-                throw new IllegalArgumentException("Unsupported " + result.getClass().getName() + " result type: SAX-NG filter supports StreamResult and DOMResult.");
+                throw new IllegalArgumentException("Unsupported " + result.getClass().getName() + " result type: SAX NG filter supports StreamResult and DOMResult.");
             }
         }
 
         try {
             final Writer writer = getWriter(result, executionContext);
-            executionContext.setWriter(writer);
-            parser.parse(source, executionContext);
+            executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writer);
+            parser.parse(newSource, executionContext);
             
             if (result instanceof DOMResult) {
                 ((DOMResult) result).setNode(XmlUtil.parseStream(new StringReader(writer.toString())));
@@ -120,17 +123,13 @@ public class SaxNgFilter extends SmooksSAXFilter {
             }
         } catch (TerminateException e) {
             if (LOGGER.isDebugEnabled()) {
-                if (e.isTerminateBefore()) {
-                    LOGGER.debug("Terminated filtering on visitBefore of element '" + DomUtils.getXPath(e.getElement()) + "'.");
-                } else {
-                    LOGGER.debug("Terminated filtering on visitAfter of element '" + DomUtils.getXPath(e.getElement()) + "'.");
-                }
+                LOGGER.debug("Terminated filtering on element '" + DomUtils.getXPath(e.getElement()) + "'.");
             }
         } catch (Exception e) {
             throw new SmooksException("Failed to filter source", e);
         } finally {
             if (closeSource) {
-                close(source);
+                close(newSource);
             }
             if (closeResult) {
                 close(result);

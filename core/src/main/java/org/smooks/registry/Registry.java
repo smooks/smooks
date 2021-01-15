@@ -253,4 +253,8 @@ public class Registry {
             }
         }
     }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
 }

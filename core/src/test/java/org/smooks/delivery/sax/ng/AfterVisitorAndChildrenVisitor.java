@@ -44,6 +44,7 @@ package org.smooks.delivery.sax.ng;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 public class AfterVisitorAndChildrenVisitor implements AfterVisitor, ChildrenVisitor {
@@ -64,7 +65,7 @@ public class AfterVisitorAndChildrenVisitor implements AfterVisitor, ChildrenVis
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) throws SmooksException {
         onChildText = true;
     }
 

@@ -82,14 +82,14 @@ public class SerializerTest {
 		ResourceConfig configuration = new ResourceConfig(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, "deviceX", "....");
 		AddAttributeSerializer addAttributeSerializer = new AddAttributeSerializer();
 		lifecycleManager.applyPhase(addAttributeSerializer, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, addAttributeSerializer)));
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addBinding(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, configuration, addAttributeSerializer);
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorSelectorTable().put(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, configuration, addAttributeSerializer);
 
         // Don't write xxx but write its child elements
 		configuration = new ResourceConfig("xxx", "deviceX", "....");
 		RemoveTestSerializaterVisitor removeTestSerializationUnit = new RemoveTestSerializaterVisitor();
 		lifecycleManager.applyPhase(removeTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, removeTestSerializationUnit)));
 
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addBinding("xxx", configuration, removeTestSerializationUnit);
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorSelectorTable().put("xxx", configuration, removeTestSerializationUnit);
 
 		// write yyyy as a badly-formed empty element
 		configuration = new ResourceConfig("yyyy", "deviceX", "....");
@@ -97,14 +97,14 @@ public class SerializerTest {
 		EmptyElTestSerializerVisitor emptyElTestSerializationUnit = new EmptyElTestSerializerVisitor();
 		lifecycleManager.applyPhase(emptyElTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, emptyElTestSerializationUnit)));
 		
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializationVisitors().addBinding("yyyy", configuration, emptyElTestSerializationUnit);
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorSelectorTable().put("yyyy", configuration, emptyElTestSerializationUnit);
 
 		/// write zzz as a well-formed empty element
 		configuration = new ResourceConfig("zzz", "deviceX", "....");
 		EmptyElTestSerializerVisitor otherEmptyElTestSerializationUnit = new EmptyElTestSerializerVisitor();
 		lifecycleManager.applyPhase(otherEmptyElTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), configuration, otherEmptyElTestSerializationUnit)));
 
-		((MockContentDeliveryConfig) executionContext.deliveryConfig).getSerializationVisitors().addBinding("zzz", configuration, otherEmptyElTestSerializationUnit);
+		((MockContentDeliveryConfig) executionContext.deliveryConfig).getSerializerVisitorSelectorTable().put("zzz", configuration, otherEmptyElTestSerializationUnit);
 
 		Document doc = XmlUtil.parseStream(getClass().getResourceAsStream("testmarkup.xxml"), XmlUtil.VALIDATION_TYPE.NONE, true);
 		Serializer serializer = new Serializer(doc, executionContext);

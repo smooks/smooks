@@ -46,7 +46,7 @@ import org.smooks.SmooksException;
 import org.smooks.classpath.IsAnnotationPresentFilter;
 import org.smooks.classpath.Scanner;
 import org.smooks.container.ApplicationContext;
-import org.smooks.delivery.ContentDeliveryConfigBuilderFactory;
+import org.smooks.delivery.ContentDeliveryRuntimeFactory;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.DefaultProfileStore;
@@ -78,7 +78,7 @@ public class StandaloneApplicationContext implements ApplicationContext {
 	private final BeanIdStore beanIdStore = new BeanIdStore();
     private final List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
     private ClassLoader classLoader;
-    private ContentDeliveryConfigBuilderFactory contentDeliveryConfigBuilderFactory;
+    private ContentDeliveryRuntimeFactory contentDeliveryConfigBuilderFactory;
     
     /**
      * Private constructor.
@@ -137,12 +137,12 @@ public class StandaloneApplicationContext implements ApplicationContext {
         return classLoader;
     }
 
-    public void setContentDeliveryConfigBuilderFactory(final ContentDeliveryConfigBuilderFactory contentDeliveryConfigBuilderFactory) {
+    public void setContentDeliveryConfigBuilderFactory(final ContentDeliveryRuntimeFactory contentDeliveryConfigBuilderFactory) {
 		this.contentDeliveryConfigBuilderFactory = contentDeliveryConfigBuilderFactory;
 	}
     
 	@Override
-	public ContentDeliveryConfigBuilderFactory getContentDeliveryConfigBuilderFactory() {
+	public ContentDeliveryRuntimeFactory getContentDeliveryConfigBuilderFactory() {
 		return contentDeliveryConfigBuilderFactory;
 	}
 

@@ -42,15 +42,15 @@
  */
 package org.smooks.container.standalone;
 
+import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.MementoCaretaker;
 import org.smooks.container.TypedKey;
-import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.delivery.ContentDeliveryRuntime;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Visitor;
-import org.smooks.event.ExecutionEventListener;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.context.StandaloneBeanContextFactory;
 import org.smooks.profile.ProfileSet;
@@ -72,14 +72,13 @@ import java.util.Map;
 public class StandaloneExecutionContext implements ExecutionContext {
 
     private final ProfileSet targetProfileSet;
-    private final Map<TypedKey<Object>, Object> attributes = new Hashtable<>();
-    private final ContentDeliveryConfig deliveryConfig;
+	private final Map<TypedKey<Object>, Object> attributes = new Hashtable<>();
+    private final ContentDeliveryRuntime contentDeliveryRuntime;
 	private final MementoCaretaker mementoCaretaker;
 	private final ApplicationContext applicationContext;
 
 	private URI docSource;
 	private String contentEncoding;
-    private ExecutionEventListener executionListener;
     private Throwable terminationError;
     private BeanContext beanContext;
 	private Writer writer;
@@ -113,16 +112,14 @@ public class StandaloneExecutionContext implements ExecutionContext {
      * @throws UnknownProfileMemberException Unknown target profile.
 	 */
 	public StandaloneExecutionContext(String targetProfile, ApplicationContext applicationContext, String contentEncoding, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) throws UnknownProfileMemberException {
-        if(targetProfile == null) {
-            throw new IllegalArgumentException("null 'targetProfile' arg in constructor call.");
-        }
-        if(applicationContext == null) {
-            throw new IllegalArgumentException("null 'context' arg in constructor call.");
-        }
+		AssertArgument.isNotNull(targetProfile, "targetProfile");
+		AssertArgument.isNotNull(applicationContext, "applicationContext");
+
 		this.applicationContext = applicationContext;
 		setContentEncoding(contentEncoding);
         targetProfileSet = applicationContext.getProfileStore().getProfileSet(targetProfile);
-		deliveryConfig = applicationContext.getContentDeliveryConfigBuilderFactory().create(targetProfileSet).build(extendedContentHandlerBindings);
+		contentDeliveryRuntime = applicationContext.getContentDeliveryConfigBuilderFactory().create(targetProfileSet, extendedContentHandlerBindings);
+		
 		mementoCaretaker = new DefaultMementoCaretaker(this);
     }
 
@@ -150,8 +147,8 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	}
 
 	@Override
-	public ContentDeliveryConfig getDeliveryConfig() {
-		return deliveryConfig;
+	public ContentDeliveryRuntime getContentDeliveryRuntime() {
+		return contentDeliveryRuntime;
 	}
 
 	/**
@@ -182,16 +179,6 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	}
 
 	@Override
-	public void setEventListener(ExecutionEventListener listener) {
-        this.executionListener = listener;
-    }
-
-	@Override
-	public ExecutionEventListener getEventListener() {
-        return executionListener;
-    }
-
-	@Override
 	public void setTerminationError(Throwable terminationError) {
         this.terminationError = terminationError;
     }
@@ -208,7 +195,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 
 	@Override
 	public String getConfigParameter(String name, String defaultVal) {
-        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, deliveryConfig);
+        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, contentDeliveryRuntime.getContentDeliveryConfig());
     }
     
     /* (non-Javadoc)
@@ -257,17 +244,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	public void setBeanContext(BeanContext beanContext) {
         this.beanContext = beanContext;
     }
-
-	@Override
-	public void setWriter(final Writer writer) {
-		this.writer = writer;
-	}
-	
-	@Override
-	public Writer getWriter() {
-		return writer;
-	}
-
+    
 	@Override
 	public MementoCaretaker getMementoCaretaker() {
 		return mementoCaretaker;

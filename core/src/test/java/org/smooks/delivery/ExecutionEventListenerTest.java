@@ -111,7 +111,7 @@ public class ExecutionEventListenerTest {
         ExecutionContext execContext = smooks.createExecutionContext();
         StreamSource source = new StreamSource(getClass().getResourceAsStream("test-data-01.xml"));
 
-        execContext.setEventListener(eventListener);
+        execContext.getContentDeliveryRuntime().addExecutionEventListener(eventListener);
         smooks.filterSource(execContext, source, new StreamResult(new NullWriter()));
     }
 

@@ -62,7 +62,7 @@ public class SaxNgFilterTest {
     public void test_reader_writer() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
-        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("../test-01.xml")));
+        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
         StringWriter writer = new StringWriter();
 
         smooks.filterSource(execContext, new StreamSource(new StringReader(input)), new StreamResult(writer));
@@ -73,7 +73,7 @@ public class SaxNgFilterTest {
     public void test_reader_stream() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
-        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("../test-01.xml")));
+        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
         smooks.filterSource(execContext, new StreamSource(new StringReader(input)), new StreamResult(outStream));
@@ -84,7 +84,7 @@ public class SaxNgFilterTest {
     public void test_stream_stream() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
-        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("../test-01.xml")));
+        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
         smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), new StreamResult(outStream));
@@ -95,7 +95,7 @@ public class SaxNgFilterTest {
     public void test_stream_writer() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
-        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("../test-01.xml")));
+        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
         StringWriter writer = new StringWriter();
 
         smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), new StreamResult(writer));
@@ -124,7 +124,7 @@ public class SaxNgFilterTest {
     public void test_selection() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-02.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
-        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("../test-01.xml")));
+        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
         smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), null);
         assertEquals("h", Visitor01.element.getLocalName());
@@ -166,7 +166,7 @@ public class SaxNgFilterTest {
     public void test_contextual(String config) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
         ExecutionContext execContext = smooks.createExecutionContext();
-        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("../test-01.xml")));
+        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
         smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), null);
         assertEquals("h", Visitor01.element.getLocalName());
@@ -188,7 +188,7 @@ public class SaxNgFilterTest {
     public void test_document() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-04.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
-        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("../test-01.xml")));
+        String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
         smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), null);
         assertEquals("xx", Visitor01.element.getLocalName());

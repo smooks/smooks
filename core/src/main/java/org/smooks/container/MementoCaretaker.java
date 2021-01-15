@@ -42,10 +42,11 @@
  */
 package org.smooks.container;
 
-import org.smooks.delivery.memento.Visitable;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.memento.VisitorMemento;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Manages {@link VisitorMemento}s on behalf of {@link org.smooks.delivery.Visitor}s. 
@@ -54,7 +55,7 @@ public interface MementoCaretaker {
 
     /**
      * Stores a copy of a <code>VisitorMemento</code>. It is the client's responsibility to remove the saved 
-     * <code>VisitorMemento</code> once it is no longer needed either by calling {@link #forget(Visitable)} or 
+     * <code>VisitorMemento</code> once it is no longer needed either by calling {@link #forget(Fragment)} or 
      * {@link #remove(VisitorMemento)}.
      * 
      * @param visitorMemento  the <code>VisitorMemento</code> to copy and store. After saving, mutations to this 
@@ -81,11 +82,11 @@ public interface MementoCaretaker {
     void remove(VisitorMemento visitorMemento);
 
     /**
-     * Removes all <code>VisitorMemento</code>s bound to the <code>Visitable</code> parameter.
+     * Removes all <code>VisitorMemento</code>s bound to the <code>Fragment</code> parameter.
      * 
-     * @param visitable  the visitable 
+     * @param fragment  the fragment 
      */
-    void forget(Visitable visitable);
+    void forget(Fragment fragment);
 
     /**
      * Invokes a {@link Consumer} with a restored <code>VisitorMemento</code> and then saves the <code>VisitorMemento</code>. 
@@ -97,11 +98,12 @@ public interface MementoCaretaker {
      * mementoCaretaker.save(visitorMemento);
      * </pre>
      * 
-     * @param visitorMemento  the <code>VisitorMemento</code> to be restored
-     * @param consumer        the consumer acting on the restored <code>VisitorMemento</code>
+     * @param defaultVisitorMemento  the <code>VisitorMemento</code> to be restored
+     * @param function               the function acting on the restored <code>VisitorMemento</code> and returning a new 
+     *                               <code>VisitorMemento replacing the earlier memento</code>
      * 
      * @see #restore(VisitorMemento)
      * @see #save(VisitorMemento)
      */
-    <T extends VisitorMemento> void stash(final T visitorMemento, Consumer<T> consumer);
+    <T extends VisitorMemento> T stash(T defaultVisitorMemento, Function<T, T> function);
 }

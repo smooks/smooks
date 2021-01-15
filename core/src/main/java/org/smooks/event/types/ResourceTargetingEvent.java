@@ -44,7 +44,8 @@ package org.smooks.event.types;
 
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.delivery.VisitSequence;
-import org.smooks.event.ElementProcessingEvent;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.event.FragmentEvent;
 import org.smooks.event.ResourceBasedEvent;
 
 import java.util.Arrays;
@@ -54,7 +55,7 @@ import java.util.Arrays;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ResourceTargetingEvent extends ElementProcessingEvent implements ResourceBasedEvent {
+public class ResourceTargetingEvent extends FragmentEvent implements ResourceBasedEvent {
 
     private final ResourceConfig resourceConfig;
     private Object[] metadata;
@@ -62,26 +63,26 @@ public class ResourceTargetingEvent extends ElementProcessingEvent implements Re
 
     /**
      * Event constructor.
-     * @param element The element ({@link org.smooks.delivery.sax.SAXElement}/{@link org.w3c.dom.Element})
+     * @param fragment The element ({@link org.smooks.delivery.sax.SAXElement}/{@link org.w3c.dom.Element})
      * being targeted by the resource.
      * @param resourceConfig The resource configuration.
      * @param metadata Optional event metadata.
      */
-    public ResourceTargetingEvent(Object element, ResourceConfig resourceConfig, Object... metadata) {
-        super(element);
+    public ResourceTargetingEvent(Fragment fragment, ResourceConfig resourceConfig, Object... metadata) {
+        super(fragment);
         this.resourceConfig = resourceConfig;
         this.metadata = metadata;
     }
 
     /**
      * Event constructor.
-     * @param element The element ({@link org.smooks.delivery.sax.SAXElement}/{@link org.w3c.dom.Element})
+     * @param fragment The element ({@link org.smooks.delivery.sax.SAXElement}/{@link org.w3c.dom.Element})
      * being targeted by the resource.
      * @param resourceConfig The resource configuration.
      * @param metadata Optional event metadata.
      */
-    public ResourceTargetingEvent(Object element, ResourceConfig resourceConfig, VisitSequence sequence, Object... metadata) {
-        this(element, resourceConfig, metadata);
+    public ResourceTargetingEvent(Fragment fragment, ResourceConfig resourceConfig, VisitSequence sequence, Object... metadata) {
+        this(fragment, resourceConfig, metadata);
         this.sequence = sequence;
     }
 
@@ -112,7 +113,7 @@ public class ResourceTargetingEvent extends ElementProcessingEvent implements Re
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("Target: ").append(getElement()).append(". ");
+        builder.append("Target: ").append(getFragment().unwrap()).append(". ");
         builder.append("Resource: ").append(resourceConfig).append(". ");
         if(metadata != null) {
             builder.append("Event Metadata: ").append(Arrays.asList(metadata)).append(".");

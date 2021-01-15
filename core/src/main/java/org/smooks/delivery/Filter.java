@@ -50,6 +50,7 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
 import org.smooks.io.NullReader;
 import org.smooks.io.NullWriter;
+import org.smooks.io.Stream;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.thread.StackedThreadLocal;
@@ -177,9 +178,14 @@ public abstract class Filter {
         return new NullReader();
     }
 
-    protected Writer getWriter(Result result, ExecutionContext executionContext) {
+    protected Writer getWriter(final Result result, final ExecutionContext executionContext) {
         if (!(result instanceof StreamResult)) {
-            return new NullWriter();
+            final Writer writer = Stream.out(executionContext);
+            if (writer != null) {
+                return writer;
+            } else {
+                return new NullWriter();
+            }
         }
 
         StreamResult streamResult = (StreamResult) result;

@@ -107,7 +107,7 @@ public class JavaSourceTest {
         StringResult result = new StringResult();
 
         smooks.filterSource(new JavaSource(new MyBean1()), result);
-        assertEquals("<nullsource-document />", result.getResult());
+        assertEquals("<nullsource-document/>", result.getResult());
     }
 
 	@Test
@@ -121,7 +121,7 @@ public class JavaSourceTest {
         javaSource.setEventStreamRequired(false);
 
         smooks.filterSource(javaSource, result);
-        assertEquals("<nullsource-document />", result.getResult());
+        assertEquals("<nullsource-document/>", result.getResult());
     }
 
 	@Test

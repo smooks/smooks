@@ -46,9 +46,11 @@ import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.delivery.sax.annotation.TextConsumer;
 import org.smooks.delivery.sax.ng.AfterVisitor;
+import org.smooks.io.FragmentWriter;
 import org.smooks.payload.StringResult;
 import org.smooks.payload.StringSource;
 import org.w3c.dom.Element;
@@ -88,7 +90,7 @@ public class StreamResultWriterAndTextConsumerTest {
 		@Override
 		public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
 			try {
-				executionContext.getWriter().write("{{" + element.getTextContent() + "}}");
+				new FragmentWriter(executionContext, new NodeFragment(element)).write("{{" + element.getTextContent() + "}}");
 			} catch (IOException e) {
 				throw new SmooksException(e.getMessage(), e);
 			}

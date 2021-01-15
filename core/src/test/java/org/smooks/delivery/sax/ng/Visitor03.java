@@ -46,6 +46,7 @@ import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXText;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -76,9 +77,9 @@ public class Visitor03 implements ElementVisitor {
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
-        assertEquals(Visitor03.element.getUserData("id"), element.getUserData("id"));
-        childText.add(element.getTextContent());
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) throws SmooksException {
+        assertEquals(Visitor03.element.getUserData("id"), characterData.getParentNode().getUserData("id"));
+        childText.add(characterData.getTextContent());
     }
 
     @Override

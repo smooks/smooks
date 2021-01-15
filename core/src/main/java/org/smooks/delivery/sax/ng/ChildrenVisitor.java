@@ -43,6 +43,7 @@
 package org.smooks.delivery.sax.ng;
 
 import org.smooks.container.ExecutionContext;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 
@@ -58,12 +59,12 @@ public interface ChildrenVisitor extends SaxNgVisitor {
      * {@link org.smooks.delivery.memento.TextAccumulatorMemento} and restore the <code>TextAccumulatorMemento</code> in 
      * {@link AfterVisitor#visitAfter(Element, ExecutionContext)}.
      *
-     * @param element           the <code>Element</code> which includes character data but not any child 
+     * @param characterData              the <code>node</code> which includes character data but not any child 
      *                          <code>Element</code>s. The <code>Element</code>'s ancestors are traversable unless the 
      *                          global configuration parameter <code>maintain.element.stack</code> is set to false.
      * @param executionContext  the current <code>ExecutionContext</code>
      */
-    void visitChildText(Element element, ExecutionContext executionContext);
+    void visitChildText(CharacterData characterData, ExecutionContext executionContext);
 
     /**
      * Visits a child <code>Element</code>. This method is invoked once for each child <code>Element</code>.

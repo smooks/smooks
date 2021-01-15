@@ -42,13 +42,14 @@
  */
 package org.smooks.delivery.dom;
 
+import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfig;
-import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.dom.serialize.DOMSerializerVisitor;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
+import org.smooks.registry.Registry;
 import org.smooks.registry.lookup.NamespaceManagerLookup;
 
 import java.util.List;
@@ -56,18 +57,18 @@ import java.util.Map;
 
 public class DOMFilterProvider extends AbstractFilterProvider {
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final ApplicationContext applicationContext, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer, final Boolean sortVisitors) {
+    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer) {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
         for (ContentHandlerBinding<Visitor> contentHandlerBinding : visitorBindings) {
             final String targetElement = contentHandlerBinding.getResourceConfig().getSelectorPath().getTargetElement();
             final Visitor visitor = contentHandlerBinding.getContentHandler();
             final ResourceConfig resourceConfig = contentHandlerBinding.getResourceConfig();
-            resourceConfig.getSelectorPath().setNamespaces(applicationContext.getRegistry().lookup(new NamespaceManagerLookup()));
+            resourceConfig.getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
 
             if (isDOMVisitor(visitor)) {
                 if (visitor instanceof DOMSerializerVisitor) {
-                    domConfig.getSerializationVisitors().addBinding(targetElement, resourceConfig, (SerializerVisitor) visitor);
+                    domConfig.getSerializerVisitorSelectorTable().put(targetElement, resourceConfig, (SerializerVisitor) visitor);
                     configBuilderEvents.add(new ConfigBuilderEvent(resourceConfig, "Added as a DOM " + SerializerVisitor.class.getSimpleName() + " resource."));
                 } else {
                     Phase phaseAnnotation = contentHandlerBinding.getContentHandler().getClass().getAnnotation(Phase.class);
@@ -76,26 +77,26 @@ public class DOMFilterProvider extends AbstractFilterProvider {
                     if (phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
                         // It's an assembly unit...
                         if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
-                            domConfig.getAssemblyVisitBefores().addBinding(targetElement, resourceConfig, (DOMVisitBefore) visitor);
+                            domConfig.getAssemblyVisitBeforeSelectorTable().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
                         }
                         if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
-                            domConfig.getAssemblyVisitAfters().addBinding(targetElement, resourceConfig, (DOMVisitAfter) visitor);
+                            domConfig.getAssemblyVisitAfterSelectorTable().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
                         }
                     } else if (visitPhase.equalsIgnoreCase(VisitPhase.ASSEMBLY.toString())) {
                         // It's an assembly unit...
                         if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
-                            domConfig.getAssemblyVisitBefores().addBinding(targetElement, resourceConfig, (DOMVisitBefore) visitor);
+                            domConfig.getAssemblyVisitBeforeSelectorTable().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
                         }
                         if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
-                            domConfig.getAssemblyVisitAfters().addBinding(targetElement, resourceConfig, (DOMVisitAfter) visitor);
+                            domConfig.getAssemblyVisitAfterSelectorTable().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
                         }
                     } else {
                         // It's a processing unit...
                         if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
-                            domConfig.getProcessingVisitBefores().addBinding(targetElement, resourceConfig, (DOMVisitBefore) visitor);
+                            domConfig.getProcessingVisitBeforeSelectorTable().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
                         }
                         if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
-                            domConfig.getProcessingVisitAfters().addBinding(targetElement, resourceConfig, (DOMVisitAfter) visitor);
+                            domConfig.getProcessingVisitAfterSelectorTable().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
                         }
                     }
 
@@ -104,21 +105,20 @@ public class DOMFilterProvider extends AbstractFilterProvider {
             }
 
             if (visitor instanceof VisitLifecycleCleanable) {
-                domConfig.getVisitCleanables().addBinding(targetElement, resourceConfig, (VisitLifecycleCleanable) visitor);
+                domConfig.getVisitLifecycleCleanableSelectorTable().put(targetElement, resourceConfig, (VisitLifecycleCleanable) visitor);
             }
         }
 
-        domConfig.setApplicationContext(applicationContext);
+        domConfig.setRegistry(registry);
         domConfig.setResourceConfigs(resourceConfigTable);
         domConfig.setDtd(dtdObjectContainer);
         domConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
 
-        if (sortVisitors) {
+        if (ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable)) {
             domConfig.sort();
         }
 
         domConfig.addToExecutionLifecycleSets();
-        domConfig.initializeXMLReaderPool();
         domConfig.configureFilterBypass();
 
         return domConfig;

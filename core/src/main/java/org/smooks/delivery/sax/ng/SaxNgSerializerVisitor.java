@@ -44,20 +44,21 @@ package org.smooks.delivery.sax.ng;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.container.MementoCaretaker;
 import org.smooks.delivery.DomToXmlWriter;
 import org.smooks.delivery.Filter;
 import org.smooks.delivery.SerializerVisitor;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.dom.DOMElementVisitor;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.memento.AbstractVisitorMemento;
-import org.smooks.delivery.memento.NodeVisitable;
-import org.smooks.delivery.memento.Visitable;
 import org.smooks.delivery.memento.VisitorMemento;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXElementVisitor;
 import org.smooks.delivery.sax.SAXText;
-import org.smooks.io.NullWriter;
+import org.smooks.io.FragmentWriter;
+import org.smooks.io.FragmentWriterMemento;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 
 import javax.annotation.PostConstruct;
@@ -74,6 +75,11 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     private Boolean closeEmptyElements = true;
     private Boolean rewriteEntities = true;
 
+    @PostConstruct
+    public void postConstruct() {
+        domToXmlWriter = new DomToXmlWriter(closeEmptyElements, rewriteEntities);
+    }
+    
     @Inject
     public void setCloseEmptyElements(@Named(Filter.CLOSE_EMPTY_ELEMENTS) Optional<Boolean> closeEmptyElements) {
         this.closeEmptyElements = closeEmptyElements.orElse(this.closeEmptyElements);
@@ -82,11 +88,6 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     @Inject
     public void setRewriteEntities(@Named(Filter.ENTITIES_REWRITE) Optional<Boolean> rewriteEntities) {
         this.rewriteEntities = rewriteEntities.orElse(this.rewriteEntities);
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        domToXmlWriter = new DomToXmlWriter(closeEmptyElements, rewriteEntities);
     }
 
     @Override
@@ -149,22 +150,22 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
         return true;
     }
 
-    protected static class StartElementMemento extends AbstractVisitorMemento {
+    protected static class ElementMemento extends AbstractVisitorMemento {
         private Boolean isOpen;
 
-        public StartElementMemento(Visitable visitable, Visitor visitor, Boolean isOpen) {
-            super(visitable, visitor);
+        public ElementMemento(final Fragment fragment, final Visitor visitor, final Boolean isOpen) {
+            super(fragment, visitor);
             this.isOpen = isOpen;
         }
 
         @Override
         public VisitorMemento copy() {
-            return new StartElementMemento(visitable, visitor, isOpen);
+            return new ElementMemento(fragment, visitor, isOpen);
         }
 
         @Override
-        public void restore(VisitorMemento visitorMemento) {
-            isOpen = ((StartElementMemento) visitorMemento).isOpen();
+        public void restore(final VisitorMemento visitorMemento) {
+            isOpen = ((ElementMemento) visitorMemento).isOpen();
         }
 
         public Boolean isOpen() {
@@ -173,27 +174,33 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     }
 
     public void writeStartElement(final Element element, final ExecutionContext executionContext) {
-        final Writer writer = executionContext.getWriter();
-        if (!isStartWritten(element, executionContext.getMementoCaretaker())) {
-            try {
-                writeStartElement(element, writer, executionContext);
-            } catch (IOException e) {
-                throw new SmooksException(e.getMessage(), e);
+        final Fragment nodeFragment = new NodeFragment(element);
+        executionContext.getMementoCaretaker().stash(new ElementMemento(nodeFragment, this, false), elementMemento -> {
+            if (!elementMemento.isOpen()) {
+                try {
+                    writeStartElement(element, new FragmentWriter(executionContext, nodeFragment), executionContext);
+                } catch (IOException e) {
+                    throw new SmooksException(e.getMessage(), e);
+                }
+
+                return new ElementMemento(nodeFragment, SaxNgSerializerVisitor.this, true);
+            } else {
+                return elementMemento;
             }
-            executionContext.getMementoCaretaker().save(new StartElementMemento(new NodeVisitable(element), this, true));
-        }
+        });
     }
 
-    public void writeEndElement(final Element element, final ExecutionContext executionContext) {
-        final Writer writer = executionContext.getWriter();
+    public void writeEndElement(final Element element, final ExecutionContext executionContext, Writer writer) {
+        final ElementMemento elementMemento = new ElementMemento(new NodeFragment(element), this, false);
+        executionContext.getMementoCaretaker().restore(elementMemento);
         try {
-            if (closeEmptyElements && !isStartWritten(element, executionContext.getMementoCaretaker())) {
+            if (closeEmptyElements && !elementMemento.isOpen()) {
                 writer.write('<');
                 writer.write(element.getTagName());
                 domToXmlWriter.writeAttributes(element.getAttributes(), writer);
-                writer.write(" />");
+                writer.write("/>");
             } else {
-                if (!isStartWritten(element, executionContext.getMementoCaretaker())) {
+                if (!elementMemento.isOpen()) {
                     writeStartElement(element, executionContext);
                 }
                 writer.write("</");
@@ -213,50 +220,61 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     }
 
     @Override
-    public void visitChildText(final Element element, final ExecutionContext executionContext) throws SmooksException {
-        onWrite(writer -> {
-            try {
-                if (!isStartWritten(element, executionContext.getMementoCaretaker())) {
-                    writeStartElement(element, writer, executionContext);
-                    executionContext.getMementoCaretaker().save(new StartElementMemento(new NodeVisitable(element), SaxNgSerializerVisitor.this, true));
+    public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) throws SmooksException {
+        onWrite(nodeWriter -> {
+            executionContext.getMementoCaretaker().stash(new ElementMemento(new NodeFragment(characterData.getParentNode()), this, false), elementMemento -> {
+                if (!elementMemento.isOpen()) {
+                    try {
+                        writeStartElement((Element) characterData.getParentNode(), nodeWriter, executionContext);
+                    } catch (IOException e) {
+                        throw new SmooksException(e);
+                    }
+
+                    return new ElementMemento(new NodeFragment(characterData.getParentNode()), SaxNgSerializerVisitor.this, true);
+                } else {
+                    return elementMemento;
                 }
-                domToXmlWriter.writeText(element, executionContext.getWriter());
-                writer.flush();
+            });
+            try {
+                final Writer charDataWriter = new FragmentWriter(executionContext, new NodeFragment(characterData));
+                domToXmlWriter.writeCharacterData(characterData, charDataWriter);
+                charDataWriter.flush();
             } catch (IOException e) {
                 throw new SmooksException(e.getMessage(), e);
             }
-        }, executionContext);
+        }, executionContext, characterData.getParentNode());
     }
 
     @Override
     public void visitChildElement(final Element childElement, final ExecutionContext executionContext) throws SmooksException {
-        onWrite(writer -> {
-            if (!isStartWritten((Element) childElement.getParentNode(), executionContext.getMementoCaretaker())) {
+        final Element parentElement = (Element) childElement.getParentNode();
+        onWrite(nodeWriter -> executionContext.getMementoCaretaker().stash(new ElementMemento(new NodeFragment(parentElement), this, false), elementMemento -> {
+            if (!elementMemento.isOpen()) {
                 try {
-                    writeStartElement((Element) childElement.getParentNode(), writer, executionContext);
-                    writer.flush();
+                    writeStartElement(parentElement, nodeWriter, executionContext);
+                    nodeWriter.flush();
                 } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
+                    throw new SmooksException(e);
                 }
-                executionContext.getMementoCaretaker().save(new StartElementMemento(new NodeVisitable(childElement.getParentNode()), SaxNgSerializerVisitor.this, true));
+                return new ElementMemento(new NodeFragment(parentElement), SaxNgSerializerVisitor.this, true);
+            } else {
+                return elementMemento;
             }
-        }, executionContext);
+        }), executionContext, childElement.getParentNode());
     }
 
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) throws SmooksException {
-        onWrite(writer -> writeEndElement(element, executionContext), executionContext);
+        onWrite(nodeWriter -> writeEndElement(element, executionContext, nodeWriter), executionContext, element);
     }
+    
+    protected void onWrite(final Consumer<Writer> writerConsumer, final ExecutionContext executionContext, final Node node) {
+        if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig) {
+            final FragmentWriterMemento fragmentWriterMemento = executionContext.
+                    getMementoCaretaker().
+                    stash(new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(node))), restoredFragmentWriterMemento -> restoredFragmentWriterMemento);
 
-    protected boolean isStartWritten(final Element element, final MementoCaretaker mementoCaretaker) {
-        final StartElementMemento startElementMemento = new StartElementMemento(new NodeVisitable(element), this, false);
-        mementoCaretaker.restore(startElementMemento);
-        return startElementMemento.isOpen();
-    }
-
-    protected void onWrite(final Consumer<Writer> consumer, final ExecutionContext executionContext) {
-        if (executionContext.getDeliveryConfig() instanceof SaxNgContentDeliveryConfig && !(executionContext.getWriter() instanceof NullWriter)) {
-            consumer.accept(executionContext.getWriter());
+            writerConsumer.accept(fragmentWriterMemento.getFragmentWriter());
         }
     }
 }

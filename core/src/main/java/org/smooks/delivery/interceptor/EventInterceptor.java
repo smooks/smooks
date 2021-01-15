@@ -45,13 +45,18 @@ package org.smooks.delivery.interceptor;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.VisitSequence;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.fragment.SAXElementFragment;
 import org.smooks.delivery.sax.*;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ChildrenVisitor;
 import org.smooks.delivery.sax.ng.ElementVisitor;
-import org.smooks.event.types.ElementVisitEvent;
+import org.smooks.event.ExecutionEventListener;
 import org.smooks.event.types.ResourceTargetingEvent;
+import org.smooks.event.types.VisitEvent;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -77,11 +82,12 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
             }
         };
         if (getTarget() instanceof SAXVisitBefore) {
-            if (executionContext.getEventListener() != null) {
-                executionContext.getEventListener().onEvent(new ResourceTargetingEvent(element, getTarget().getResourceConfig(), VisitSequence.BEFORE));
+            final Fragment saxElementFragment = new SAXElementFragment(element);
+            for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
+                executionEventListener.onEvent(new ResourceTargetingEvent(saxElementFragment, getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }
             intercept(invocation);
-            onEvent(executionContext, element, VisitSequence.BEFORE);
+            onEvent(executionContext, saxElementFragment, VisitSequence.BEFORE);
         } else {
             intercept(invocation);
         }
@@ -107,7 +113,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
         });
         
         if (getTarget() instanceof SAXVisitAfter) {
-            onEvent(executionContext, element, VisitSequence.AFTER);
+            onEvent(executionContext, new SAXElementFragment(element), VisitSequence.AFTER);
         }
     }
     
@@ -131,7 +137,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
         });
 
         if (getTarget() instanceof SAXVisitChildren) {
-            onEvent(executionContext, element, VisitSequence.AFTER);
+            onEvent(executionContext, new SAXElementFragment(element), VisitSequence.AFTER);
         }
     }
 
@@ -155,7 +161,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
         });
         
         if (getTarget() instanceof SAXVisitChildren) {
-            onEvent(executionContext, element, VisitSequence.AFTER);
+            onEvent(executionContext, new SAXElementFragment(element), VisitSequence.AFTER);
         }
     }
 
@@ -175,11 +181,11 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
         };
 
         if (getTarget() instanceof BeforeVisitor) {
-            if (executionContext.getEventListener() != null) {
-                executionContext.getEventListener().onEvent(new ResourceTargetingEvent(element, getTarget().getResourceConfig(), VisitSequence.BEFORE));
+            for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
+                executionEventListener.onEvent(new ResourceTargetingEvent(new NodeFragment(element), getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }
             intercept(invocation);
-            onEvent(executionContext, element, VisitSequence.BEFORE);
+            onEvent(executionContext, new NodeFragment(element), VisitSequence.BEFORE);
         } else {
             intercept(invocation);
         }
@@ -201,16 +207,16 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
         });
         
         if (getTarget() instanceof AfterVisitor) {
-            onEvent(executionContext, element, VisitSequence.AFTER);
+            onEvent(executionContext, new NodeFragment(element), VisitSequence.AFTER);
         }
     }
     
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) {
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
         intercept(new Invocation<ChildrenVisitor>() {
             @Override
             public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildText(element, executionContext);
+                visitor.visitChildText(characterData, executionContext);
                 return null;
             }
 
@@ -221,7 +227,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
         });
         
         if (getTarget() instanceof ChildrenVisitor) {
-            onEvent(executionContext, element, VisitSequence.AFTER);
+            onEvent(executionContext, new NodeFragment(characterData), VisitSequence.AFTER);
         }
     }
 
@@ -240,13 +246,13 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
             }
         });
         if (getTarget() instanceof ChildrenVisitor) {
-            onEvent(executionContext, childElement.getParentNode(), VisitSequence.AFTER);
+            onEvent(executionContext, new NodeFragment(childElement.getParentNode()), VisitSequence.AFTER);
         }
     }
 
-    private void onEvent(final ExecutionContext executionContext, final Object visitable, final VisitSequence visitSequence) {
-        if (executionContext.getEventListener() != null) {
-            executionContext.getEventListener().onEvent(new ElementVisitEvent<>(visitable, getTarget(), visitSequence, executionContext));
+    private void onEvent(final ExecutionContext executionContext, final Fragment fragment, final VisitSequence visitSequence) {
+        for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
+            executionEventListener.onEvent(new VisitEvent<>(fragment, getTarget(), visitSequence, executionContext));
         }
     }
 }

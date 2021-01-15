@@ -40,28 +40,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery;
+package org.smooks.visitors.smooks;
 
-import org.smooks.container.ApplicationContext;
-import org.smooks.delivery.dom.DOMFilterProvider;
-import org.smooks.delivery.sax.SAXFilterProvider;
-import org.smooks.delivery.sax.ng.SaxNgFilterProvider;
-import org.smooks.profile.ProfileSet;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.sax.ng.AfterVisitor;
+import org.w3c.dom.Element;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
-public class DefaultContentDeliveryConfigBuilderFactory implements ContentDeliveryConfigBuilderFactory {
-    private final Map<String, ContentDeliveryConfigBuilder> contentDeliveryConfigBuilders = new ConcurrentHashMap<>();
-    private final ApplicationContext applicationContext;
-
-    public DefaultContentDeliveryConfigBuilderFactory(final ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
+public class QuuzVisitor implements AfterVisitor {
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
     
     @Override
-    public ContentDeliveryConfigBuilder create(final ProfileSet profileSet) {
-        return contentDeliveryConfigBuilders.computeIfAbsent(profileSet.getBaseProfile(), c -> new DefaultContentDeliveryConfigBuilder(profileSet, applicationContext, Arrays.asList(new SaxNgFilterProvider(), new SAXFilterProvider(), new DOMFilterProvider())));
+    public void visitAfter(Element element, ExecutionContext executionContext) {
+        countDownLatch.countDown();   
+    }
+
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
     }
 }

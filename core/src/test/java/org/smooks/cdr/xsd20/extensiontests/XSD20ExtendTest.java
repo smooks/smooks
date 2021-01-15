@@ -44,8 +44,8 @@ package org.smooks.cdr.xsd20.extensiontests;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.payload.StringResult;
@@ -127,14 +127,14 @@ public class XSD20ExtendTest {
         // config_05.1.xml defines a default profile of "xxx", so creating the context without specifying
         // a profile should exclude the "aa" resource...
         execContext = smooks.createExecutionContext();
-        deliveryConf = execContext.getDeliveryConfig();
+        deliveryConf = execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
         configList = deliveryConf.getResourceConfigs("aa");
         assertNull(configList);
 
         // config_05.1.xml defines a default profile of "xxx", so creating the context by specifying
         // a profile of "xxx" should include the "aa" resource...
         execContext = smooks.createExecutionContext("xxx");
-        deliveryConf = execContext.getDeliveryConfig();
+        deliveryConf = execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
         configList = deliveryConf.getResourceConfigs("an:aa");
         assertNotNull(configList);
 
@@ -154,7 +154,7 @@ public class XSD20ExtendTest {
 
         // config_05.2.xml defines a name attribute, so that should override the default...
         execContext = smooks.createExecutionContext("xxx");
-        deliveryConf = execContext.getDeliveryConfig();
+        deliveryConf = execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
         configList = deliveryConf.getResourceConfigs("an:j");
         assertNotNull(configList);
 

@@ -49,6 +49,7 @@ import org.smooks.delivery.sax.SAXElementVisitor;
 import org.smooks.delivery.sax.SAXText;
 import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.xml.Namespace;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -111,8 +112,8 @@ public class GhostElementSerializerVisitor extends DefaultDOMSerializerVisitor i
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
-
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+        
     }
 
     @Override

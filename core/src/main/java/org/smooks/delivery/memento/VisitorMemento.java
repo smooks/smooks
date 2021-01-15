@@ -43,12 +43,14 @@
 package org.smooks.delivery.memento;
 
 import org.smooks.delivery.Visitor;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
 
 /**
  * Holds the state of a {@link Visitor}. 
  * 
  * A <code>VisitorMemento</code> is saved and restored it at a later stage. A <code>VisitorMemento</code> is bound to a 
- * <code>Visitor<code></> and its visitable (e.g., {@link NodeVisitable}). Management of <code>VisitorMemento</code>s
+ * <code>Visitor<code></> and its fragment (e.g., {@link NodeFragment}). Management of <code>VisitorMemento</code>s
  * should be delegated to {@link org.smooks.container.MementoCaretaker}.
  */
 public interface VisitorMemento  {
@@ -73,9 +75,9 @@ public interface VisitorMemento  {
     Visitor getVisitor();
 
     /**
-     * @return the visitable which this <code>VisitorMemento</code> is bound to
+     * @return the fragment which this <code>VisitorMemento</code> is bound to
      */
-    Visitable getVisitable();
+    Fragment getFragment();
 
     /**
      * Gets the ID of this <code>VisitorMemento</code>. <code>VisitorMemento</code>s with equal IDs are considered to be 

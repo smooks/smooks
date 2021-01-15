@@ -40,20 +40,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.memento;
+package org.smooks.delivery;
 
-/**
- * Wrapper for a visited object.
- */
-public interface Visitable {
+import org.smooks.profile.ProfileSet;
 
-    /**
-     * @return an identifier unique across visited objects
-     */
-    String getId();
+import java.util.List;
 
-    /**
-     * @return the visited object
-     */
-    Object unwrap();
+public interface ContentDeliveryRuntimeFactory {
+
+    ContentDeliveryRuntime create(ProfileSet profileSet, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings);
 }

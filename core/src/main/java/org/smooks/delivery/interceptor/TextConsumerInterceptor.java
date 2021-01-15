@@ -46,10 +46,11 @@ import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Visitor;
-import org.smooks.delivery.memento.NodeVisitable;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.memento.TextAccumulatorMemento;
 import org.smooks.delivery.sax.annotation.TextConsumer;
 import org.smooks.delivery.sax.ng.*;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 public class TextConsumerInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, InterceptorVisitor {
@@ -73,7 +74,7 @@ public class TextConsumerInterceptor extends AbstractInterceptorVisitor implemen
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) throws SmooksException {
         if (isTextConsumer(getTarget())) {
-            TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeVisitable(element), this);
+            TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(element), this);
             executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
             element.setTextContent(textAccumulatorMemento.getText());
         }
@@ -95,14 +96,14 @@ public class TextConsumerInterceptor extends AbstractInterceptorVisitor implemen
     }
 
     @Override
-    public void visitChildText(final Element element, final ExecutionContext executionContext) throws SmooksException {
+    public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) throws SmooksException {
         if (isTextConsumer(getTarget())) {
-            executionContext.getMementoCaretaker().stash(new TextAccumulatorMemento(new NodeVisitable(element), this), textAccumulatorMemento -> textAccumulatorMemento.accumulateText(element.getTextContent()));
+            executionContext.getMementoCaretaker().stash(new TextAccumulatorMemento(new NodeFragment(characterData.getParentNode()), this), textAccumulatorMemento -> textAccumulatorMemento.accumulateText(characterData.getTextContent()));
         }
         intercept(new Invocation<ChildrenVisitor>() {
             @Override
             public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildText(element, executionContext);
+                visitor.visitChildText(characterData, executionContext);
                 return null;
             }
 

@@ -71,7 +71,7 @@ public class InterceptorVisitorChainFactory {
 	@Inject
 	private ApplicationContext applicationContext;
 
-	private final List<Class<InterceptorVisitor>> interceptorVisitorClasses = new ArrayList<>();
+	private final List<Class<? extends InterceptorVisitor>> interceptorVisitorClasses = new ArrayList<>();
 
 	@PostConstruct
 	public void postConstruct() throws ClassNotFoundException {
@@ -89,7 +89,7 @@ public class InterceptorVisitorChainFactory {
 		} else {
 			InterceptorVisitor interceptorVisitor = null;
 			ContentHandlerBinding<Visitor> interceptedVisitorBinding = visitorBinding;
-			for (Class<InterceptorVisitor> interceptorVisitorClass : interceptorVisitorClasses) {
+			for (Class<? extends InterceptorVisitor> interceptorVisitorClass : interceptorVisitorClasses) {
 				try {
 					interceptorVisitor = interceptorVisitorClass.newInstance();
 				} catch (InstantiationException | IllegalAccessException e) {
@@ -102,6 +102,9 @@ public class InterceptorVisitorChainFactory {
 			
 			return interceptorVisitor;
 		}
+	}
 
+	public List<Class<? extends InterceptorVisitor>> getInterceptorVisitorClasses() {
+		return interceptorVisitorClasses;
 	}
 }

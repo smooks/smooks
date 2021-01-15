@@ -101,11 +101,11 @@ public class DOMBuilder extends SmooksContentHandler {
 
         this.execContext = execContext;
         initialiseEmptyElements();
-        rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", execContext.getDeliveryConfig()));
+        rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
     }
 
     private void initialiseEmptyElements() {
-        DTDStore.DTDObjectContainer dtd = execContext.getDeliveryConfig().getDTD();
+        DTDStore.DTDObjectContainer dtd = execContext.getContentDeliveryRuntime().getContentDeliveryConfig().getDTD();
         if(dtd != null) {
             String[] emptyEls = dtd.getEmptyElements();
 

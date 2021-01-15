@@ -40,25 +40,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.memento;
+package org.smooks.delivery;
 
-import org.w3c.dom.Node;
+import org.smooks.delivery.dom.DOMFilterProvider;
+import org.smooks.delivery.sax.SAXFilterProvider;
+import org.smooks.delivery.sax.ng.SaxNgFilterProvider;
+import org.smooks.profile.ProfileSet;
+import org.smooks.registry.Registry;
 
-public class NodeVisitable implements Visitable {
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-    private final Node node;
+public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRuntimeFactory {
+    private final Map<ContentDeliveryConfigBuilder, ReaderPool> readerPools = new ConcurrentHashMap<>();
+    private final Map<String, ContentDeliveryConfigBuilder> contentDeliveryConfigBuilders = new ConcurrentHashMap<>();
+    private final Registry registry;
 
-    public NodeVisitable(final Node node) {
-        this.node = node;
+    public DefaultContentDeliveryRuntimeFactory(final Registry registry) {
+        this.registry = registry;
     }
     
     @Override
-    public String getId() {
-        return (String) node.getUserData("id");
-    }
+    public ContentDeliveryRuntime create(final ProfileSet profileSet, final List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) {
+        final ContentDeliveryConfigBuilder contentDeliveryConfigBuilder = contentDeliveryConfigBuilders.computeIfAbsent(profileSet.getBaseProfile(), p -> new DefaultContentDeliveryConfigBuilder(profileSet, registry, Arrays.asList(new SaxNgFilterProvider(), new SAXFilterProvider(), new DOMFilterProvider())));
+        final ContentDeliveryConfig contentDeliveryConfig = contentDeliveryConfigBuilder.build(extendedContentHandlerBindings);
+        final ReaderPool readerPool = readerPools.computeIfAbsent(contentDeliveryConfigBuilder, c -> new ReaderPool(contentDeliveryConfig));
 
-    @Override
-    public Object unwrap() {
-        return node;
+        return new ContentDeliveryRuntime(readerPool, contentDeliveryConfig);
     }
 }

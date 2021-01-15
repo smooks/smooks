@@ -42,11 +42,12 @@
  */
 package org.smooks;
 
+import org.osgi.framework.Bundle;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.osgi.framework.Bundle;
-import org.xml.sax.SAXException;
 
 /**
  * A factory class for creating Smooks instances in an OSGi environment.
@@ -97,8 +98,7 @@ public class SmooksOSGIFactory implements SmooksFactory
     }
     
     private Smooks createSmooksWithDelegatingClassloader() {
-        final Smooks smooks = new Smooks();
-        smooks.setClassLoader(new BundleClassLoaderDelegator(bundle, getClass().getClassLoader()));
+        final Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setClassLoader(new BundleClassLoaderDelegator(bundle, getClass().getClassLoader())).build());
         return smooks;
     }
 

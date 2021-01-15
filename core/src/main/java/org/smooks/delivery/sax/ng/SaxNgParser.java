@@ -44,7 +44,7 @@ package org.smooks.delivery.sax.ng;
 
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.AbstractParser;
-import org.smooks.delivery.ContentDeliveryConfig;
+import org.smooks.delivery.ReaderPool;
 import org.smooks.delivery.XMLReaderHierarchyChangeListener;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.xml.NamespaceManager;
@@ -54,7 +54,6 @@ import org.xml.sax.XMLReader;
 
 import javax.xml.transform.Source;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 public class SaxNgParser extends AbstractParser {
 
@@ -65,14 +64,14 @@ public class SaxNgParser extends AbstractParser {
     }
 
     protected void parse(Source source, ExecutionContext executionContext) throws SAXException, IOException {
-        ContentDeliveryConfig deliveryConfig = executionContext.getDeliveryConfig();
+        ReaderPool readerPool = executionContext.getContentDeliveryRuntime().getReaderPool();
         XMLReader saxReader = getXMLReader(executionContext);
 
         saxHandler = new SaxNgHandler(getExecutionContext());
 
         try {
             if(saxReader == null) {
-                saxReader = deliveryConfig.getXMLReader();
+                saxReader = readerPool.getXMLReader();
             }
             if(saxReader == null) {
                 saxReader = createXMLReader();
@@ -85,18 +84,14 @@ public class SaxNgParser extends AbstractParser {
             attachXMLReader(saxReader, executionContext);
 
             configureReader(saxReader, saxHandler, executionContext, source);
-            if(executionContext != null) {
-                if(saxReader instanceof HierarchyChangeReader) {
-                    ((HierarchyChangeReader)saxReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
-                }
-	            saxReader.parse(createInputSource(source, executionContext.getContentEncoding()));
-            } else {
-                saxReader.parse(createInputSource(source, Charset.defaultCharset().name()));
+            if (saxReader instanceof HierarchyChangeReader) {
+                ((HierarchyChangeReader) saxReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
             }
+            saxReader.parse(createInputSource(source, executionContext.getContentEncoding()));
         } finally {
             try {
-                if(executionContext != null && saxReader instanceof HierarchyChangeReader) {
-                    ((HierarchyChangeReader)saxReader).setHierarchyChangeListener(null);
+                if (saxReader instanceof HierarchyChangeReader) {
+                    ((HierarchyChangeReader) saxReader).setHierarchyChangeListener(null);
                 }
             } finally {
                 try {
@@ -104,7 +99,7 @@ public class SaxNgParser extends AbstractParser {
                         try {
                             detachXMLReader(executionContext);
                         } finally {
-                            deliveryConfig.returnXMLReader(saxReader);
+                            readerPool.returnXMLReader(saxReader);
                         }
                     }
                 } finally {

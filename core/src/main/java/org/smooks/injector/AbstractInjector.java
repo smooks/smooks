@@ -101,7 +101,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
     
     protected void inject(final Named namedAnnotation, final M member, final Object instance, final Scope scope) throws SmooksConfigurationException {
         final String name = getName(namedAnnotation, member);
-        Object valueInject = scope.getOrDefault(name, getDefaultParamValue(instance, member));
+        Object valueInject = scope.get(name);
         final Type realType = getRealType(member);
 
         if (valueInject == null) {
@@ -132,10 +132,12 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
                 throw new SmooksConfigurationException("Failed to set parameter configuration value on '" + ClassUtil.getLongMemberName(member) + "'.", e);
             }
         } else {
-            if (getType(member).equals(Optional.class)) {
-                setMember(member, instance, Optional.empty(), name);
-            } else {
-                throw new SmooksConfigurationException("<param> '" + name + "' not specified on resource configuration:\n" + scope);
+            if (getDefaultParamValue(instance, member) == null) {
+                if (getType(member).equals(Optional.class)) {
+                    setMember(member, instance, Optional.empty(), name);
+                } else {
+                    throw new SmooksConfigurationException("<param> '" + name + "' not specified on resource configuration:\n" + scope);
+                }
             }
         }
     }

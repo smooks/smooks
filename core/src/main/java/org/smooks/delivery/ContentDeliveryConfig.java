@@ -42,18 +42,17 @@
  */
 package org.smooks.delivery;
 
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.ResourceConfigSortComparator;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.dtd.DTDStore;
 import org.smooks.event.types.ConfigBuilderEvent;
 import org.smooks.registry.Registry;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +64,7 @@ import java.util.Map;
  * and other information for the targeted profile.
  * @author tfennelly
  */
+@NotThreadSafe
 public interface ContentDeliveryConfig {
 
     /**
@@ -105,13 +105,13 @@ public interface ContentDeliveryConfig {
 	 * Gets the {@link ResourceConfig}s specified for the selector and attempts to instanciate
 	 * a Java class instance from the resource specified by each of the {@link ResourceConfig}s.
 	 * <p/>
-	 * Implementations should use {@link Registry#getObject(ResourceConfig)} to
+	 * Implementations should use {@link Registry#lookup(Object)}} to
 	 * construct each object.
 	 * @param selector selector attribute value from the .cdrl file in the .cdrar.  This 
 	 * parameter is treated case incensitively.
 	 * @return List of Object instances.  An empty list is returned where no 
 	 * selectors exist.
-	 * @see Registry#getObject(ResourceConfig)
+	 * @see Registry#lookup(Object)
 	 * @see #getResourceConfigs(String)
 	 */
 	List getObjects(String selector);
@@ -168,21 +168,6 @@ public interface ContentDeliveryConfig {
      * @param executionContext The execution context.
      */
     void executeHandlerCleanup(ExecutionContext executionContext);
-
-    /**
-     * Get an {@link XMLReader} instance from the 
-     * reader pool associated with this ContentDelivery config instance.
-     * @return An XMLReader instance if the pool is not empty, otherwise null.
-     */
-    XMLReader getXMLReader() throws SAXException;
-    
-    /**
-     * Return an {@link XMLReader} instance to the
-     * reader pool associated with this ContentDelivery config instance.
-     * @param reader The XMLReader instance to be returned.  If the pool is full, the instance
-     * is left to the GC (i.e. lost).
-     */
-    void returnXMLReader(XMLReader reader);
     
     /**
      * Get the {@link FilterBypass} for this delivery configuration. 

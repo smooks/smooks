@@ -49,12 +49,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
 import org.smooks.cdr.xpath.evaluators.XPathExpressionEvaluator;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Filter;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.expression.ExecutionContextExpressionEvaluator;
 import org.smooks.expression.ExpressionEvaluator;
@@ -411,7 +410,7 @@ public class SelectorPath implements List<SelectorStep> {
                 // No more tokens to match and ** matches everything
                 return true;
             } else if (index.i == 1) {
-                SelectorStep parentStep = selectorSteps.get(index.i - 1);
+                SelectorStep parentStep = selectorSteps.get(0);
 
                 if (parentElement == null && parentStep.isRooted()) {
                     // we're at the root of the document and the only selector left is

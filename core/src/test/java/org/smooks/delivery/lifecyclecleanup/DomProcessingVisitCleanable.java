@@ -44,15 +44,15 @@ package org.smooks.delivery.lifecyclecleanup;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Fragment;
-import org.smooks.lifecycle.VisitLifecycleCleanable;
+import org.smooks.delivery.dom.DOMVisitAfter;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.dom.Phase;
 import org.smooks.delivery.dom.VisitPhase;
-import org.smooks.delivery.dom.DOMVisitAfter;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.w3c.dom.Element;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

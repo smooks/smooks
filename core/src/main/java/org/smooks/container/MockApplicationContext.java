@@ -43,8 +43,7 @@
 package org.smooks.container;
 
 import org.smooks.container.standalone.DefaultApplicationContextBuilder;
-import org.smooks.container.standalone.StandaloneApplicationContext;
-import org.smooks.delivery.ContentDeliveryConfigBuilderFactory;
+import org.smooks.delivery.ContentDeliveryRuntimeFactory;
 import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.profile.ProfileStore;
@@ -58,11 +57,11 @@ import java.util.Collection;
  */
 public class MockApplicationContext implements ApplicationContext {
 
-	private final StandaloneApplicationContext standaloneApplicationContext;
+	private final ApplicationContext applicationContext;
 	public final MockContainerResourceLocator containerResourceLocator = new MockContainerResourceLocator();
 
 	public MockApplicationContext() {
-		this.standaloneApplicationContext = new DefaultApplicationContextBuilder().build();
+		this.applicationContext = new DefaultApplicationContextBuilder().build();
 	}
 	
 	/* (non-Javadoc)
@@ -76,11 +75,11 @@ public class MockApplicationContext implements ApplicationContext {
 	 * @see org.smooks.container.ApplicationContext#getCdrarStore()
 	 */
 	public Registry getRegistry() {
-		return standaloneApplicationContext.getRegistry();
+		return applicationContext.getRegistry();
 	}
 
 	public ProfileStore getProfileStore() {
-		return standaloneApplicationContext.getProfileStore();
+		return applicationContext.getProfileStore();
 	}
 
 	public void setResourceLocator(ContainerResourceLocator resourceLocator) {
@@ -88,23 +87,23 @@ public class MockApplicationContext implements ApplicationContext {
 	}
 
 	public BeanIdStore getBeanIdStore() {
-		return standaloneApplicationContext.getBeanIdStore();
+		return applicationContext.getBeanIdStore();
 	}
 
 	public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
-		standaloneApplicationContext.addBeanContextLifecycleObserver(observer);
+		applicationContext.addBeanContextLifecycleObserver(observer);
 	}
 
 	public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
-		return standaloneApplicationContext.getBeanContextLifecycleObservers();
+		return applicationContext.getBeanContextLifecycleObservers();
 	}
 
 	public ClassLoader getClassLoader() {
-		return standaloneApplicationContext.getClassLoader();
+		return applicationContext.getClassLoader();
 	}
 
 	@Override
-	public ContentDeliveryConfigBuilderFactory getContentDeliveryConfigBuilderFactory() {
-		return standaloneApplicationContext.getContentDeliveryConfigBuilderFactory();
+	public ContentDeliveryRuntimeFactory getContentDeliveryConfigBuilderFactory() {
+		return applicationContext.getContentDeliveryConfigBuilderFactory();
 	}
 }

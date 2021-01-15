@@ -43,7 +43,7 @@
 package org.smooks.javabean.lifecycle;
 
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Fragment;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.javabean.repository.BeanId;
 
 /**

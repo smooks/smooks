@@ -48,8 +48,8 @@ import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.TypedKey;
-import org.smooks.delivery.Fragment;
 import org.smooks.delivery.dom.DOMVisitBefore;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXVisitBefore;
@@ -92,18 +92,15 @@ import java.nio.charset.StandardCharsets;
 public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DOMVisitBefore, Consumer, VisitLifecycleCleanable, ExecutionLifecycleCleanable, BeforeVisitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOutputStreamResource.class);
 
-    protected static final String RESOURCE_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputresource:";
-
-    private static final String OUTPUTSTREAM_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputstream:";
+    static final String RESOURCE_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputresource:";
+    static final String OUTPUTSTREAM_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputstream:";
 
     @Inject
     private String resourceName;
 
     @Inject
     private Charset writerEncoding = StandardCharsets.UTF_8;
-
-    //	public
-
+    
     /**
      * Retrieve/create an output stream that is appropriate for the concreate implementation
      *
@@ -146,7 +143,7 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
     public Charset getWriterEncoding() {
         return writerEncoding;
     }
-    
+
     @Override
     public void visitBefore(final SAXElement element, final ExecutionContext executionContext) throws SmooksException, IOException {
         bind(executionContext);
@@ -171,82 +168,6 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
 
     protected boolean closeCondition(ExecutionContext executionContext) {
         return true;
-    }
-
-    /**
-     * Get an {@link OutputStream} to the named Resource.
-     *
-     * @param resourceName     The resource name.
-     * @param executionContext The current ExececutionContext.
-     * @return An {@link OutputStream} to the named Resource.
-     * @throws SmooksException Unable to access OutputStream.
-     */
-    public static OutputStream getOutputStream(
-            final String resourceName,
-            final ExecutionContext executionContext) throws SmooksException {
-        TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
-        Object resourceIOObj = executionContext.get(resourceKey);
-
-        if (resourceIOObj == null) {
-            AbstractOutputStreamResource resource = executionContext.get(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
-            OutputStream outputStream = openOutputStream(resource, resourceName, executionContext);
-
-            executionContext.put(resourceKey, outputStream);
-            return outputStream;
-        } else {
-            if (resourceIOObj instanceof OutputStream) {
-                return (OutputStream) resourceIOObj;
-            } else if (resourceIOObj instanceof Writer) {
-                throw new SmooksException("An Writer to the '" + resourceName + "' resource is already open.  Cannot open an OutputStream to this resource now!");
-            } else {
-                throw new RuntimeException("Invalid runtime ExecutionContext state. Value stored under context key '" + resourceKey + "' must be either and OutputStream or Writer.  Is '" + resourceIOObj.getClass().getName() + "'.");
-            }
-        }
-    }
-
-    /**
-     * Get a {@link Writer} to the named {@link OutputStream} Resource.
-     * <p/>
-     * Wraps the {@link OutputStream} in a {@link Writer}.  Uses the "writerEncoding"
-     * param to set the encoding on the {@link Writer}.
-     *
-     * @param resourceName     The resource name.
-     * @param executionContext The current ExececutionContext.
-     * @return A {@link Writer} to the named {@link OutputStream} Resource.
-     * @throws SmooksException Unable to access OutputStream.
-     */
-    public static Writer getOutputWriter(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
-        TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
-        Object resourceIOObj = executionContext.get(resourceKey);
-
-        if (resourceIOObj == null) {
-            AbstractOutputStreamResource resource = executionContext.get(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
-            OutputStream outputStream = openOutputStream(resource, resourceName, executionContext);
-            Writer outputStreamWriter = new OutputStreamWriter(outputStream, resource.getWriterEncoding());
-
-            executionContext.put(resourceKey, outputStreamWriter);
-            return outputStreamWriter;
-        } else {
-            if (resourceIOObj instanceof Writer) {
-                return (Writer) resourceIOObj;
-            } else if (resourceIOObj instanceof OutputStream) {
-                throw new SmooksException("An OutputStream to the '" + resourceName + "' resource is already open.  Cannot open a Writer to this resource now!");
-            } else {
-                throw new RuntimeException("Invalid runtime ExecutionContext state. Value stored under context key '" + resourceKey + "' must be either and OutputStream or Writer.  Is '" + resourceIOObj.getClass().getName() + "'.");
-            }
-        }
-    }
-
-    private static OutputStream openOutputStream(AbstractOutputStreamResource resource, String resourceName, ExecutionContext executionContext) {
-        if (resource == null) {
-            throw new SmooksException("OutputResource '" + resourceName + "' not bound to context.  Configure an '" + AbstractOutputStreamResource.class.getName() + "' implementation, or change resource ordering.");
-        }
-
-        try {
-            return resource.getOutputStream(executionContext);
-        } catch (IOException e) {
-            throw new SmooksException("Unable to set outputstream for '" + resource.getResourceName() + "'.", e);
-        }
     }
 
     /**
@@ -280,14 +201,14 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
             try {
                 ((Flushable) closeable).flush();
             } catch (IOException e) {
-                LOGGER.debug("IOException while trying to flush output resource '" + resourceName + "': ", e);
+                LOGGER.warn("IOException while trying to flush output resource '" + resourceName + "': ", e);
             }
         }
 
         try {
             closeable.close();
         } catch (IOException e) {
-            LOGGER.debug("IOException while trying to close output resource '" + resourceName + "': ", e);
+            LOGGER.warn("IOException while trying to close output resource '" + resourceName + "': ", e);
         }
     }
 }

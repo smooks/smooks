@@ -44,6 +44,7 @@ package org.smooks.delivery.sax.ng;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -63,9 +64,9 @@ public class Visitor01 implements ElementVisitor {
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
-        assertEquals(Visitor01.element.getUserData("id"), element.getUserData("id"));
-        childText.add(element.getTextContent());
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) throws SmooksException {
+        assertEquals(Visitor01.element.getUserData("id"), characterData.getParentNode().getUserData("id"));
+        childText.add(characterData.getTextContent());
     }
 
     @Override

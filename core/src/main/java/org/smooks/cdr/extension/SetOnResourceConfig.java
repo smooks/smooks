@@ -63,7 +63,7 @@ import java.util.EmptyStackException;
  */
 public class SetOnResourceConfig implements DOMVisitBefore {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromText.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SetOnResourceConfig.class);
 
     @Inject
     private String setOn;

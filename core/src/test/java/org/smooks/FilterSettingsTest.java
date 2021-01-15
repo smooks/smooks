@@ -62,13 +62,13 @@ public class FilterSettingsTest {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("filterSettings-01.xml"));		
 		ExecutionContext execContext = smooks.createExecutionContext();
 		
-		assertEquals("DOM", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, Boolean.class, execContext.getDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, Integer.class, execContext.getDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, execContext.getDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.class, execContext.getDeliveryConfig()));
+		assertEquals("DOM", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, Boolean.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, Integer.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
 	}
 
 	@Test
@@ -76,12 +76,12 @@ public class FilterSettingsTest {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("filterSettings-02.xml"));		
 		ExecutionContext execContext = smooks.createExecutionContext();
 		
-		assertEquals("SAX", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, execContext.getDeliveryConfig()));
-		assertEquals("3", ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, execContext.getDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, execContext.getDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, execContext.getDeliveryConfig()));
+		assertEquals("SAX", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("3", ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
 	}
 }

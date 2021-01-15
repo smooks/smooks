@@ -42,13 +42,11 @@
  */
 package org.smooks.container;
 
-import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.event.ExecutionEventListener;
+import org.smooks.delivery.ContentDeliveryRuntime;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.profile.ProfileSet;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import java.io.Writer;
 import java.net.URI;
 
 /**
@@ -103,7 +101,7 @@ public interface ExecutionContext extends TypedMap {
      *
      * @return  ContentDeliveryConfig instance.
      */
-	ContentDeliveryConfig getDeliveryConfig();
+	ContentDeliveryRuntime getContentDeliveryRuntime();
 
 
     /**
@@ -119,30 +117,7 @@ public interface ExecutionContext extends TypedMap {
      * @return Character encoding to be used when parsing content.  Defaults to "UTF-8".
      */
     String getContentEncoding();
-
-    /**
-     * Set the ExecutionEventListener for the {@link ExecutionContext}.
-     * <p/>
-     * Allows calling code to listen to (and capture data on) specific
-     * context execution events e.g. the targeting of resources.
-     * <p/>
-     * Note, this is not a logging facility and should be used with care.
-     * It's overuse should be avoided as it can have a serious negative effect
-     * on performance.  By default, no listenrs are applied and so no overhead
-     * is incured.
-     *
-     * @param listener The listener instance.
-     * @see org.smooks.event.BasicExecutionEventListener
-     */
-    void setEventListener(ExecutionEventListener listener);
-
-    /**
-     * Get the ExecutionEventListener for the {@link ExecutionContext}.
-     * @return The listener instance.
-     * @see #setEventListener(ExecutionEventListener)
-     */
-    ExecutionEventListener getEventListener();
-
+    
     /**
      * Set the error/exception that caused the filter operation associated with
      * this ExecutionContext to terminate.
@@ -193,19 +168,6 @@ public interface ExecutionContext extends TypedMap {
      * @param beanContext  the <code>BeanContext</code>
      */
     void setBeanContext(BeanContext beanContext);
-
-    /**
-     * Sets output stream <code>Writer</code> for this <code>ExecutionContext</code>. Typically it is the <code>Filter</code> 
-     * that sets the <code>Writer</code>. Resources like <code>Visitor</code>s should leave this method alone.
-     * 
-     * @param writer  the output stream <code>Writer</code>
-     */
-    void setWriter(Writer writer);
-
-    /**
-     * @return  the output stream <code>Writer</code> for this <code>ExecutionContext</code>
-     */
-    Writer getWriter();
 
     /**
      * @return  the {@link MementoCaretaker} for this <code>ExecutionContext</code>
