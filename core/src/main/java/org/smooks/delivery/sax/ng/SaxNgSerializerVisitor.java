@@ -56,7 +56,7 @@ import org.smooks.delivery.memento.VisitorMemento;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXElementVisitor;
 import org.smooks.delivery.sax.SAXText;
-import org.smooks.io.DefaultFragmentWriter;
+import org.smooks.io.FragmentWriter;
 import org.smooks.io.FragmentWriterMemento;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
@@ -178,7 +178,7 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
         executionContext.getMementoCaretaker().stash(new ElementMemento(nodeFragment, this, false), elementMemento -> {
             if (!elementMemento.isOpen()) {
                 try {
-                    writeStartElement(element, new DefaultFragmentWriter(executionContext, nodeFragment), executionContext);
+                    writeStartElement(element, new FragmentWriter(executionContext, nodeFragment), executionContext);
                 } catch (IOException e) {
                     throw new SmooksException(e.getMessage(), e);
                 }
@@ -198,7 +198,7 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
                 writer.write('<');
                 writer.write(element.getTagName());
                 domToXmlWriter.writeAttributes(element.getAttributes(), writer);
-                writer.write(" />");
+                writer.write("/>");
             } else {
                 if (!elementMemento.isOpen()) {
                     writeStartElement(element, executionContext);
@@ -236,7 +236,7 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
                 }
             });
             try {
-                final Writer charDataWriter = new DefaultFragmentWriter(executionContext, new NodeFragment(characterData));
+                final Writer charDataWriter = new FragmentWriter(executionContext, new NodeFragment(characterData));
                 domToXmlWriter.writeCharacterData(characterData, charDataWriter);
                 charDataWriter.flush();
             } catch (IOException e) {
@@ -270,14 +270,10 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     
     protected void onWrite(final Consumer<Writer> writerConsumer, final ExecutionContext executionContext, final Node node) {
         if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig) {
-            final Fragment nodeFragment = new NodeFragment(node);
             final FragmentWriterMemento fragmentWriterMemento = executionContext.
                     getMementoCaretaker().
-                    stash(new FragmentWriterMemento(nodeFragment, 
-                            this, 
-                            new DefaultFragmentWriter(executionContext, nodeFragment)), 
-                            restoredFragmentWriterMemento -> restoredFragmentWriterMemento);
-            
+                    stash(new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(node))), restoredFragmentWriterMemento -> restoredFragmentWriterMemento);
+
             writerConsumer.accept(fragmentWriterMemento.getFragmentWriter());
         }
     }

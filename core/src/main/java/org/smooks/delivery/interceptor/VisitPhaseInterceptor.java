@@ -42,12 +42,8 @@
  */
 package org.smooks.delivery.interceptor;
 
-import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.TypedKey;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXElementVisitor;
-import org.smooks.delivery.sax.SAXText;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ChildrenVisitor;
@@ -55,50 +51,28 @@ import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
-
-public class SkipVisitInterceptor extends AbstractInterceptorVisitor implements SAXElementVisitor, ElementVisitor {
-    public static final TypedKey<VisitOnly> VISIT_ONLY_TYPED_KEY = new TypedKey<>();
+public class VisitPhaseInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
+    public static final TypedKey<VisitPhase> VISIT_PHASE_TYPED_KEY = new TypedKey<>();
     
-    public interface VisitOnly {
+    public interface VisitPhase {
         
     }
     
-    public static final class VisitBeforeOnly implements VisitOnly {
+    public static final class VisitBeforePhase implements VisitPhase {
         
     }
 
-    public static final class VisitAfterOnly implements VisitOnly {
+    public static final class VisitAfterPhase implements VisitPhase {
 
     }
     
-    public static final class VisitChildTextOnly implements VisitOnly {
-
-    }
-    
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        
-    }
-
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-
-    }
-
-    @Override
-    public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
-
-    }
-
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
+    public static final class VisitChildTextPhase implements VisitPhase {
 
     }
 
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) {
-        if (executionContext.get(VISIT_ONLY_TYPED_KEY) instanceof VisitAfterOnly) {
+        if (executionContext.get(VISIT_PHASE_TYPED_KEY) == null || executionContext.get(VISIT_PHASE_TYPED_KEY) instanceof VisitAfterPhase) {
             intercept(new Invocation<AfterVisitor>() {
                 @Override
                 public Object invoke(final AfterVisitor visitor) {
@@ -116,7 +90,7 @@ public class SkipVisitInterceptor extends AbstractInterceptorVisitor implements 
 
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
-        if (executionContext.get(VISIT_ONLY_TYPED_KEY) instanceof VisitBeforeOnly) {
+        if (executionContext.get(VISIT_PHASE_TYPED_KEY) == null || executionContext.get(VISIT_PHASE_TYPED_KEY) instanceof VisitBeforePhase) {
             intercept(new Invocation<BeforeVisitor>() {
                 @Override
                 public Object invoke(final BeforeVisitor visitor) {
@@ -134,7 +108,7 @@ public class SkipVisitInterceptor extends AbstractInterceptorVisitor implements 
 
     @Override
     public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) {
-        if (executionContext.get(VISIT_ONLY_TYPED_KEY) instanceof VisitChildTextOnly) {
+        if (executionContext.get(VISIT_PHASE_TYPED_KEY) == null || executionContext.get(VISIT_PHASE_TYPED_KEY) instanceof VisitChildTextPhase) {
             intercept(new Invocation<ChildrenVisitor>() {
                 @Override
                 public Object invoke(final ChildrenVisitor visitor) {
@@ -152,6 +126,17 @@ public class SkipVisitInterceptor extends AbstractInterceptorVisitor implements 
 
     @Override
     public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+        intercept(new Invocation<ChildrenVisitor>() {
+            @Override
+            public Object invoke(final ChildrenVisitor visitor) {
+                visitor.visitChildElement(childElement, executionContext);
+                return null;
+            }
 
+            @Override
+            public Class<ChildrenVisitor> getTarget() {
+                return ChildrenVisitor.class;
+            }
+        });
     }
 }

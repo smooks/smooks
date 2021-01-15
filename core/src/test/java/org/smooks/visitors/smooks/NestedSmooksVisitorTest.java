@@ -54,7 +54,7 @@ import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ElementVisitor;
-import org.smooks.io.DefaultFragmentWriter;
+import org.smooks.io.FragmentWriter;
 import org.smooks.payload.StringResult;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
@@ -70,8 +70,8 @@ import static org.junit.Assert.assertEquals;
 public class NestedSmooksVisitorTest {
     
     @Test
-    public void testVisitChildTextGivenInsertBefore() throws SAXException, IOException, URISyntaxException, DocumentException {
-        NestedSmooksVisitor smooksVisitor = new NestedSmooksVisitor();
+    public void testVisitChildTextGivenPrependBefore() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor(new ElementVisitor() {
             @Override
@@ -85,7 +85,7 @@ public class NestedSmooksVisitorTest {
             @Override
             public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
                 try {
-                    new DefaultFragmentWriter(executionContext, new NodeFragment(characterData)).write("bar");
+                    new FragmentWriter(executionContext, new NodeFragment(characterData)).write("bar");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -97,11 +97,11 @@ public class NestedSmooksVisitorTest {
             }
         }, "a");
         
-        smooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.INSERT_BEFORE));
-        smooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_BEFORE));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
         
         Smooks smooks = new Smooks();
-        smooks.addVisitor(smooksVisitor, "a");
+        smooks.addVisitor(nestedSmooksVisitor, "a");
 
         StringResult stringResult = new StringResult();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
@@ -109,184 +109,42 @@ public class NestedSmooksVisitorTest {
                 addText("foo").
                 getDocument()).getDocumentElement()), stringResult);
         
-        assertEquals("<a>foobar</a>", stringResult.toString());
-    }
-
-    @Test
-    public void testVisitChildTextGivenInsertAfter() throws SAXException, IOException, URISyntaxException, DocumentException {
-        NestedSmooksVisitor smooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
-            @Override
-            public void visitBefore(Element element, ExecutionContext executionContext) {
-            }
-
-            @Override
-            public void visitAfter(Element element, ExecutionContext executionContext) {
-            }
-
-            @Override
-            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-                try {
-                    new DefaultFragmentWriter(executionContext, new NodeFragment(characterData)).write("bar");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-
-            }
-        }, "a");
-
-        smooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.INSERT_AFTER));
-        smooksVisitor.setNestedSmooks(nestedSmooks);
-
-        Smooks smooks = new Smooks();
-        smooks.addVisitor(smooksVisitor, "a");
-
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
-                addElement("a").
-                addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
-
-        assertEquals("<a>foobar</a>", stringResult.toString());
-    }
-
-    @Test
-    @Ignore("FIXME: visitChildElement(...) is not executed")
-    public void testVisitChildElementGivenInsertBefore() throws SAXException, IOException, URISyntaxException, DocumentException {
-        NestedSmooksVisitor smooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
-            @Override
-            public void visitBefore(Element element, ExecutionContext executionContext) {
-            }
-
-            @Override
-            public void visitAfter(Element element, ExecutionContext executionContext) {
-            }
-
-            @Override
-            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-            }
-
-            @Override
-            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-                try {
-                    new DefaultFragmentWriter(executionContext, new NodeFragment(childElement)).write("bar");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, "a");
-
-        smooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.INSERT_BEFORE));
-        smooksVisitor.setNestedSmooks(nestedSmooks);
-
-        Smooks smooks = new Smooks();
-        smooks.addVisitor(smooksVisitor, "a");
-
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
-                addElement("a").
-                addText("foo").
-                addElement("b").
-                getDocument()).getDocumentElement()), stringResult);
-
-        assertEquals("<a>foobar</a>", stringResult.toString());
-    }
-
-    @Test
-    @Ignore("FIXME: visitChildElement(...) is not executed")
-    public void testVisitChildElementGivenInsertAfter() throws SAXException, IOException, URISyntaxException, DocumentException {
-        NestedSmooksVisitor smooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
-            @Override
-            public void visitBefore(Element element, ExecutionContext executionContext) {
-            }
-
-            @Override
-            public void visitAfter(Element element, ExecutionContext executionContext) {
-            }
-
-            @Override
-            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-            }
-
-            @Override
-            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-                try {
-                    new DefaultFragmentWriter(executionContext, new NodeFragment(childElement)).write("bar");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, "a");
-
-        smooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.INSERT_AFTER));
-        smooksVisitor.setNestedSmooks(nestedSmooks);
-
-        Smooks smooks = new Smooks();
-        smooks.addVisitor(smooksVisitor, "a");
-
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
-                addElement("a").
-                addText("foo").
-                addElement("b").
-                getDocument()).getDocumentElement()), stringResult);
-
-        assertEquals("<a>foobar</a>", stringResult.toString());
-    }
-    
-    @Test
-    public void testVisitBeforeGivenInsertBefore() throws DocumentException {
-        NestedSmooksVisitor smooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
-        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
-            try {
-                new DefaultFragmentWriter(executionContext, new NodeFragment(element)).write("bar");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }, "a");
-
-        smooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.INSERT_BEFORE));
-        smooksVisitor.setNestedSmooks(nestedSmooks);
-
-        Smooks smooks = new Smooks();
-        smooks.addVisitor(smooksVisitor, "a");
-
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
-                addElement("a").
-                addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
-
         assertEquals("bar<a>foo</a>", stringResult.toString());
     }
-    
+
     @Test
-    public void testVisitBeforeGivenInsertAfter() throws DocumentException {
-        NestedSmooksVisitor smooksVisitor = new NestedSmooksVisitor();
+    public void testVisitChildTextGivenPrependAfter() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
-        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
-            try {
-                new DefaultFragmentWriter(executionContext, new NodeFragment(element)).write("bar");
-            } catch (IOException e) {
-                e.printStackTrace();
+        nestedSmooks.addVisitor(new ElementVisitor() {
+            @Override
+            public void visitBefore(Element element, ExecutionContext executionContext) {
+            }
+
+            @Override
+            public void visitAfter(Element element, ExecutionContext executionContext) {
+            }
+
+            @Override
+            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+                try {
+                    new FragmentWriter(executionContext, new NodeFragment(characterData)).write("bar");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+
             }
         }, "a");
 
-        smooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.INSERT_AFTER));
-        smooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_AFTER));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
 
         Smooks smooks = new Smooks();
-        smooks.addVisitor(smooksVisitor, "a");
+        smooks.addVisitor(nestedSmooksVisitor, "a");
 
         StringResult stringResult = new StringResult();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
@@ -298,22 +156,272 @@ public class NestedSmooksVisitorTest {
     }
 
     @Test
-    public void testVisitAfterGivenInsertBefore() throws DocumentException {
-        NestedSmooksVisitor smooksVisitor = new NestedSmooksVisitor();
+    @Ignore("FIXME: visitChildElement(...) is not executed")
+    public void testVisitChildElementGivenPrependBefore() throws SAXException, IOException, URISyntaxException, DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
-        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+        nestedSmooks.addVisitor(new ElementVisitor() {
+            @Override
+            public void visitBefore(Element element, ExecutionContext executionContext) {
+            }
+
+            @Override
+            public void visitAfter(Element element, ExecutionContext executionContext) {
+            }
+
+            @Override
+            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+            }
+
+            @Override
+            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+                try {
+                    new FragmentWriter(executionContext, new NodeFragment(childElement)).write("bar");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_BEFORE));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                addElement("b").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals("<a>foobar</a>", stringResult.toString());
+    }
+
+    @Test
+    @Ignore("FIXME: visitChildElement(...) is not executed")
+    public void testVisitChildElementGivenPrependAfter() throws SAXException, IOException, URISyntaxException, DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor(new ElementVisitor() {
+            @Override
+            public void visitBefore(Element element, ExecutionContext executionContext) {
+            }
+
+            @Override
+            public void visitAfter(Element element, ExecutionContext executionContext) {
+            }
+
+            @Override
+            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+            }
+
+            @Override
+            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+                try {
+                    new FragmentWriter(executionContext, new NodeFragment(childElement)).write("bar");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_AFTER));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                addElement("b").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals("<a>foobar</a>", stringResult.toString());
+    }
+    
+    @Test
+    public void testVisitBeforeGivenPrependBefore() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
-                new DefaultFragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }, "a");
 
-        smooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.INSERT_BEFORE));
-        smooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_BEFORE));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
 
         Smooks smooks = new Smooks();
-        smooks.addVisitor(smooksVisitor, "a");
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals("bar<a>foo</a>", stringResult.toString());
+    }
+    
+    @Test
+    public void testVisitBeforeGivenPrependAfter() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+            try {
+                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_AFTER));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals("<a>barfoo</a>", stringResult.toString());
+    }
+
+    @Test
+    public void testVisitAfterGivenPrependBefore() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+            try {
+                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_BEFORE));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals("bar<a>foo</a>", stringResult.toString());
+    }
+
+    @Test
+    public void testVisitAfterGivenPrependAfter() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+            try {
+                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_AFTER));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals("<a>barfoo</a>", stringResult.toString());
+    }
+    
+    @Test
+    public void testVisitBeforeGivenAppendBefore() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+            try {
+                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.APPEND_BEFORE));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals("<a>foo</a>", stringResult.toString());
+    }
+
+    @Test
+    public void testVisitBeforeGivenAppendAfter() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+            try {
+                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.APPEND_AFTER));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals("<a>foo</a>", stringResult.toString());
+    }
+
+    @Test
+    public void testVisitAfterGivenAppendBefore() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+            try {
+                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.APPEND_BEFORE));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
 
         StringResult stringResult = new StringResult();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
@@ -325,22 +433,22 @@ public class NestedSmooksVisitorTest {
     }
 
     @Test
-    public void testVisitAfterGivenInsertAfter() throws DocumentException {
-        NestedSmooksVisitor smooksVisitor = new NestedSmooksVisitor();
+    public void testVisitAfterGivenAppendAfter() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
-                new DefaultFragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }, "a");
 
-        smooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.INSERT_AFTER));
-        smooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.APPEND_AFTER));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
 
         Smooks smooks = new Smooks();
-        smooks.addVisitor(smooksVisitor, "a");
+        smooks.addVisitor(nestedSmooksVisitor, "a");
 
         StringResult stringResult = new StringResult();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().

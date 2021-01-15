@@ -49,13 +49,13 @@
         <core:action>
             <core:bindTo id="output"/>
         </core:action>
-        <core:visit>
+        <core:config>
             <smooks-resource-list>
                 <resource-config selector="b">
-                    <resource>org.smooks.visitors.smooks.BarVisitor</resource>
+                    <resource>org.smooks.visitors.smooks.BarBeforeVisitor</resource>
                 </resource-config>
             </smooks-resource-list>
-        </core:visit>
+        </core:config>
     </core:smooks>
 
 </smooks-resource-list>

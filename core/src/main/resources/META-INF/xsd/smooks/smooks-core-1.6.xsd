@@ -140,7 +140,7 @@
             <xs:extension base="smooks:element-visitor" >
                 <xs:sequence>
                     <xs:element name="action" type="smooks-core:action" minOccurs="0" />
-                    <xs:element name="visit">
+                    <xs:element name="config">
                         <xs:complexType>
                             <xs:sequence>
                                 <xs:element ref="smooks:smooks-resource-list"/>
@@ -218,8 +218,10 @@
     <xs:simpleType name="inlineDirective">
         <xs:restriction base="xs:string">
             <xs:enumeration value="REPLACE"/>
-            <xs:enumeration value="INSERT_BEFORE"/>
-            <xs:enumeration value="INSERT_AFTER"/>
+            <xs:enumeration value="PREPEND_BEFORE"/>
+            <xs:enumeration value="PREPEND_AFTER"/>
+            <xs:enumeration value="APPEND_BEFORE"/>
+            <xs:enumeration value="APPEND_AFTER"/>
         </xs:restriction>
     </xs:simpleType>
     

@@ -49,7 +49,6 @@ import org.smooks.StreamFilterType;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.ResourceConfigList;
-import org.smooks.cdr.SystemResourceConfigListFactory;
 import org.smooks.cdr.XMLConfigDigester;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
@@ -59,20 +58,21 @@ import org.smooks.delivery.Filter;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.interceptor.SkipVisitInterceptor;
+import org.smooks.delivery.interceptor.InterceptorVisitorChainFactory;
+import org.smooks.delivery.interceptor.VisitPhaseInterceptor;
 import org.smooks.delivery.memento.AbstractVisitorMemento;
 import org.smooks.delivery.memento.VisitorMemento;
+import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.ng.ParameterizedVisitor;
 import org.smooks.delivery.sax.ng.event.CharDataFragmentEvent;
 import org.smooks.event.ExecutionEvent;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.event.types.EndFragmentEvent;
 import org.smooks.event.types.StartFragmentEvent;
-import org.smooks.io.AbstractOutputStreamResource;
-import org.smooks.io.DefaultFragmentWriter;
-import org.smooks.io.FragmentWriter;
-import org.smooks.io.FragmentWriterMemento;
+import org.smooks.io.*;
 import org.smooks.javabean.repository.BeanId;
+import org.smooks.util.CollectionsUtil;
+import org.smooks.xml.XmlUtil;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -89,14 +89,17 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
-public class NestedSmooksVisitor implements ParameterizedVisitor {
+public class NestedSmooksVisitor implements ParameterizedVisitor, Producer {
     
-    protected enum Action {
+    public enum Action {
         REPLACE,
-        INSERT_BEFORE,
-        INSERT_AFTER,
+        PREPEND_BEFORE,
+        PREPEND_AFTER,
+        APPEND_BEFORE,
+        APPEND_AFTER,
         BIND_TO,
         OUTPUT_TO
     }
@@ -203,15 +206,15 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
             if (executionEvent instanceof StartFragmentEvent) {
                 currentNodeDepth++;
                 if (maxNodeDepth != 0 && currentNodeDepth > maxNodeDepth && !selectorElement.equals(((StartFragmentEvent) executionEvent).getFragment().unwrap())) {
-                    filterSource(selectorElement, (Element) ((StartFragmentEvent) executionEvent).getFragment().unwrap(), selectorWriter, executionContext, new SkipVisitInterceptor.VisitBeforeOnly());
+                    filterSource(selectorElement, (Element) ((StartFragmentEvent) executionEvent).getFragment().unwrap(), selectorWriter, executionContext, new VisitPhaseInterceptor.VisitBeforePhase());
                 }
             } else if (executionEvent instanceof CharDataFragmentEvent) {
                 if (maxNodeDepth != 0 && currentNodeDepth + 1 > maxNodeDepth) {
-                    filterSource(selectorElement, (Element) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap(), selectorWriter, executionContext, new SkipVisitInterceptor.VisitChildTextOnly());
+                    filterSource(selectorElement, (Element) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap(), selectorWriter, executionContext, new VisitPhaseInterceptor.VisitChildTextPhase());
                 }
             } else if (executionEvent instanceof EndFragmentEvent) {
                 if (maxNodeDepth != 0 && currentNodeDepth > maxNodeDepth && !selectorElement.equals(((EndFragmentEvent) executionEvent).getFragment().unwrap())) {
-                    filterSource(selectorElement, (Element) ((EndFragmentEvent) executionEvent).getFragment().unwrap(), selectorWriter, executionContext, new SkipVisitInterceptor.VisitAfterOnly());
+                    filterSource(selectorElement, (Element) ((EndFragmentEvent) executionEvent).getFragment().unwrap(), selectorWriter, executionContext, new VisitPhaseInterceptor.VisitAfterPhase());
                 }
                 currentNodeDepth--;
             }
@@ -219,7 +222,7 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
     }
 
     @PostConstruct
-    public void postConstruct() throws SAXException, IOException, URISyntaxException {
+    public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
         if (nestedSmooks == null) {
             final ByteArrayInputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
             resourceConfigList = XMLConfigDigester.digestConfig(smooksResourceList, "./", new HashMap<>(), applicationContext.getClassLoader());
@@ -230,7 +233,10 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
             }
         }
 
-        nestedSmooks.getApplicationContext().getRegistry().registerResourceConfigList(new SystemResourceConfigListFactory("/smooks-visitor-interceptors.xml", nestedSmooks.getApplicationContext().getRegistry().getClassLoader()).create());
+        final InterceptorVisitorChainFactory interceptorVisitorChainFactory = new InterceptorVisitorChainFactory();
+        interceptorVisitorChainFactory.getInterceptorVisitorClasses().add(VisitPhaseInterceptor.class);
+        
+        nestedSmooks.getApplicationContext().getRegistry().registerObject(interceptorVisitorChainFactory);
         nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
 
         action = actionOptional.orElse(null);
@@ -238,7 +244,7 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
             AssertArgument.isNotEmpty(bindIdOptional.orElse(null), "bindId");
             bindBeanId = this.applicationContext.getBeanIdStore().register(bindIdOptional.get()); 
         }
-
+        
         nestedSmooksVisitorWriter = new DomToXmlWriter(false, rewriteEntities);
     }
     
@@ -246,20 +252,37 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
         final Writer nodeWriter;
         if (action == null) {
-            filterSource(element, element, null, executionContext, new SkipVisitInterceptor.VisitBeforeOnly());
+            filterSource(element, element, null, executionContext, new VisitPhaseInterceptor.VisitBeforePhase());
             nodeWriter = null;
         } else {
             if (action == Action.OUTPUT_TO) {
-                nodeWriter = AbstractOutputStreamResource.getOutputWriter(outputStreamResourceOptional.get(), executionContext);
-                filterSource(element, element, nodeWriter, executionContext, new SkipVisitInterceptor.VisitBeforeOnly());
+                final ResourceWriter resourceWriter = new ResourceWriter(executionContext, outputStreamResourceOptional.get());
+                if (resourceWriter.getDelegateWriter() == null) {
+                    filterSource(element, element, null, executionContext, new VisitPhaseInterceptor.VisitBeforePhase());
+                    nodeWriter = null;
+                } else {
+                    filterSource(element, element, resourceWriter, executionContext, new VisitPhaseInterceptor.VisitBeforePhase());
+                    nodeWriter = resourceWriter;
+                }
             } else {
-                if (action == Action.INSERT_BEFORE || action == Action.INSERT_AFTER) {
-                    nodeWriter = insertBefore(action, element, executionContext);
+                if (action == Action.PREPEND_BEFORE || action == Action.PREPEND_AFTER) {
+                    nodeWriter = prependOnVisitBefore(action, element, executionContext);
+                } else if (action == Action.APPEND_BEFORE || action == Action.APPEND_AFTER) {
+                    final FragmentWriter fragmentWriter = new FragmentWriter(executionContext, new NodeFragment(element));
+                    if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn()) {
+                        try {
+                            nestedSmooksVisitorWriter.writeStartElement(element, fragmentWriter);
+                        } catch (IOException e) {
+                            throw new SmooksException(e);
+                        }
+                    }
+                    executionContext.getMementoCaretaker().save(new FragmentWriterMemento(this, fragmentWriter));
+                    nodeWriter = fragmentWriter;
                 } else if (action == Action.REPLACE) {
                     nodeWriter = replaceBefore(element, executionContext);
                 } else if (action == Action.BIND_TO) {
                     nodeWriter = new StringWriter();
-                    filterSource(element, element, nodeWriter, executionContext, new SkipVisitInterceptor.VisitBeforeOnly());
+                    filterSource(element, element, nodeWriter, executionContext, new VisitPhaseInterceptor.VisitBeforePhase());
                     executionContext.getBeanContext().addBean(bindBeanId, nodeWriter.toString(), new NodeFragment(element));
                 } else {
                     throw new UnsupportedOperationException();
@@ -267,27 +290,30 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
             }
         }
 
-        final DescendantEventListener descendantEventListener = new DescendantEventListener(nodeWriter, element, executionContext);
-        executionContext.getMementoCaretaker().save(new DescendantEventListenerMemento(new NodeFragment(element), this, descendantEventListener));
-        executionContext.getContentDeliveryRuntime().addExecutionEventListener(descendantEventListener);
+        if (action != Action.APPEND_BEFORE && action != Action.APPEND_AFTER && action != Action.PREPEND_BEFORE && action != Action.PREPEND_AFTER) {
+            final DescendantEventListener descendantEventListener = new DescendantEventListener(nodeWriter, element, executionContext);
+            executionContext.getMementoCaretaker().save(new DescendantEventListenerMemento(new NodeFragment(element), this, descendantEventListener));
+            executionContext.getContentDeliveryRuntime().addExecutionEventListener(descendantEventListener);
+        }
     }
     
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) {
         if (action == null) {
-            filterSource(element, element, null, executionContext, new SkipVisitInterceptor.VisitAfterOnly());
+            filterSource(element, element, null, executionContext, new VisitPhaseInterceptor.VisitAfterPhase());
         } else {
             if (action == Action.OUTPUT_TO) {
-                final Writer writer = AbstractOutputStreamResource.getOutputWriter(outputStreamResourceOptional.get(), executionContext);
-                filterSource(element, element, writer, executionContext, new SkipVisitInterceptor.VisitAfterOnly());
+                filterSource(element, element, new ResourceWriter(executionContext, outputStreamResourceOptional.get()), executionContext, new VisitPhaseInterceptor.VisitAfterPhase());
             } else {
-                if (action == Action.INSERT_BEFORE || action == Action.INSERT_AFTER) {
-                    insertAfter(action, element, executionContext);
+                if (action == Action.APPEND_BEFORE || action == Action.APPEND_AFTER) {
+                    append(action, element, executionContext);
+                } else if (action == Action.PREPEND_BEFORE || action == Action.PREPEND_AFTER) {
+                    prependOnVisitAfter(element, executionContext);
                 } else if (action == Action.REPLACE) {
                     replaceAfter(element, executionContext);
                 } else if (action == Action.BIND_TO) {
                     final Writer writer = new StringWriter();
-                    filterSource(element, element, writer, executionContext, new SkipVisitInterceptor.VisitAfterOnly());
+                    filterSource(element, element, writer, executionContext, new VisitPhaseInterceptor.VisitAfterPhase());
                     executionContext.getBeanContext().addBean(bindBeanId, executionContext.getBeanContext().getBean(bindBeanId).toString() + writer.toString());
                 } else {
                     throw new UnsupportedOperationException();
@@ -301,58 +327,51 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
     }
 
     protected Writer replaceBefore(final Element element, final ExecutionContext executionContext) {
-        final Fragment nodeFragment = new NodeFragment(element, true);
-        final FragmentWriter fragmentWriter = new DefaultFragmentWriter(executionContext, nodeFragment, false);
+        final FragmentWriter fragmentWriter = new FragmentWriter(executionContext, new NodeFragment(element, true), false);
         try {
             fragmentWriter.capture();
         } catch (IOException e) {
             throw new SmooksException(e);
         }
-        executionContext.getMementoCaretaker().save(new FragmentWriterMemento(nodeFragment, this, fragmentWriter));
+        executionContext.getMementoCaretaker().save(new FragmentWriterMemento(this, fragmentWriter));
 
-        filterSource(element, element, fragmentWriter.getDelegateWriter(), executionContext, new SkipVisitInterceptor.VisitBeforeOnly());
+        filterSource(element, element, fragmentWriter.getDelegateWriter(), executionContext, new VisitPhaseInterceptor.VisitBeforePhase());
 
         return fragmentWriter;
     }
 
     protected void replaceAfter(final Element element, final ExecutionContext executionContext) {
-        final Fragment nodeFragment = new NodeFragment(element);
-        final FragmentWriterMemento fragmentWriterVisitorMemento = new FragmentWriterMemento(nodeFragment, this, new DefaultFragmentWriter(executionContext, nodeFragment));
+        final FragmentWriterMemento fragmentWriterVisitorMemento = new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(element)));
         executionContext.getMementoCaretaker().restore(fragmentWriterVisitorMemento);
 
-        filterSource(element, element, fragmentWriterVisitorMemento.getFragmentWriter(), executionContext, new SkipVisitInterceptor.VisitAfterOnly());
+        filterSource(element, element, fragmentWriterVisitorMemento.getFragmentWriter(), executionContext, new VisitPhaseInterceptor.VisitAfterPhase());
     }
     
-    protected Writer insertBefore(final Action action, final Element element, final ExecutionContext executionContext) {
-        final NodeFragment nodeFragment = new NodeFragment(element);
-        final FragmentWriter fragmentWriter = new DefaultFragmentWriter(executionContext, nodeFragment);
+    protected Writer prependOnVisitBefore(final Action action, final Element element, final ExecutionContext executionContext) {
+        final FragmentWriter fragmentWriter = new FragmentWriter(executionContext, new NodeFragment(element, true), false);
         try {
-            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.INSERT_AFTER) {
+            fragmentWriter.capture();
+            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.PREPEND_AFTER) {
                 nestedSmooksVisitorWriter.writeStartElement(element, fragmentWriter);
             }
-            executionContext.getMementoCaretaker().save(new FragmentWriterMemento(nodeFragment, this, fragmentWriter));
-            filterSource(element, element, fragmentWriter, executionContext, new SkipVisitInterceptor.VisitBeforeOnly());
-            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.INSERT_BEFORE) {
-                nestedSmooksVisitorWriter.writeStartElement(element, fragmentWriter);
-            }
+            executionContext.getMementoCaretaker().save(new FragmentWriterMemento(this, fragmentWriter));
         } catch (IOException e) {
             throw new SmooksException(e);
         }
 
         return fragmentWriter;
     }
-
-    protected void insertAfter(final Action action, final Element element, final ExecutionContext executionContext) {
-        final NodeFragment nodeFragment = new NodeFragment(element);
-        final FragmentWriterMemento fragmentWriterMemento = new FragmentWriterMemento(nodeFragment, this, new DefaultFragmentWriter(executionContext, nodeFragment));
+    
+    protected void prependOnVisitAfter(final Element element, final ExecutionContext executionContext) {
+        final FragmentWriterMemento fragmentWriterMemento = new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(element)));
         executionContext.getMementoCaretaker().restore(fragmentWriterMemento);
-
+        filterSource(element, element, fragmentWriterMemento.getFragmentWriter(), executionContext, null);
         try {
-            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.INSERT_AFTER) {
-                nestedSmooksVisitorWriter.writeEndElement(element, fragmentWriterMemento.getFragmentWriter());
+            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.PREPEND_BEFORE) {
+                nestedSmooksVisitorWriter.writeStartElement(element, fragmentWriterMemento.getFragmentWriter());
             }
-            filterSource(element, element, fragmentWriterMemento.getFragmentWriter(), executionContext, new SkipVisitInterceptor.VisitAfterOnly());
-            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.INSERT_BEFORE) {
+            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn()) {
+                fragmentWriterMemento.getFragmentWriter().write(XmlUtil.serialize(element.getChildNodes(), false));
                 nestedSmooksVisitorWriter.writeEndElement(element, fragmentWriterMemento.getFragmentWriter());
             }
         } catch (IOException e) {
@@ -360,7 +379,24 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
         }
     }
 
-    protected void filterSource(final Element selectorElement, final Element visitedElement, final Writer writer, final ExecutionContext executionContext, final SkipVisitInterceptor.VisitOnly visitOnly) {
+    protected void append(final Action action, final Element element, final ExecutionContext executionContext) {
+        final FragmentWriterMemento fragmentWriterMemento = new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(element)));
+        executionContext.getMementoCaretaker().restore(fragmentWriterMemento);
+
+        try {
+            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.APPEND_AFTER) {
+                nestedSmooksVisitorWriter.writeEndElement(element, fragmentWriterMemento.getFragmentWriter());
+            }
+            filterSource(element, element, fragmentWriterMemento.getFragmentWriter(), executionContext, new VisitPhaseInterceptor.VisitAfterPhase());
+            if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.APPEND_BEFORE) {
+                nestedSmooksVisitorWriter.writeEndElement(element, fragmentWriterMemento.getFragmentWriter());
+            }
+        } catch (IOException e) {
+            throw new SmooksException(e);
+        }
+    }
+
+    protected void filterSource(final Element selectorElement, final Element visitedElement, final Writer writer, final ExecutionContext executionContext, final VisitPhaseInterceptor.VisitPhase visitPhase) {
         final ExecutionContext nestedExecutionContext = nestedSmooks.createExecutionContext();
         for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
             nestedExecutionContext.getContentDeliveryRuntime().addExecutionEventListener(executionEventListener);
@@ -370,7 +406,9 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
         final ExecutionContextVisitorMemento executionContextVisitorMemento = executionContext.getMementoCaretaker().stash(new ExecutionContextVisitorMemento(new NodeFragment(selectorElement), this, nestedExecutionContext), new Function<ExecutionContextVisitorMemento, ExecutionContextVisitorMemento>() {
             @Override
             public ExecutionContextVisitorMemento apply(ExecutionContextVisitorMemento executionContextVisitorMemento) {
-                executionContextVisitorMemento.getExecutionContext().put(SkipVisitInterceptor.VISIT_ONLY_TYPED_KEY, visitOnly);
+                if (visitPhase != null) {
+                    executionContextVisitorMemento.getExecutionContext().put(VisitPhaseInterceptor.VISIT_PHASE_TYPED_KEY, visitPhase);
+                }
                 return executionContextVisitorMemento;
             }
         });
@@ -384,7 +422,20 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
     
     @Override
     public int getMaxNodeDepth() {
-        return maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth;
+        if (action != null && (action.equals(Action.PREPEND_BEFORE) || action.equals(Action.PREPEND_AFTER))) {
+            return Integer.MAX_VALUE;
+        } else {
+            return maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth;
+        }
+    }
+
+    @Override
+    public Set<String> getProducts() {
+        return outputStreamResourceOptional.map(CollectionsUtil::toSet).orElseGet(CollectionsUtil::toSet);
+    }
+
+    public void setMaxNodeDepth(Integer maxNodeDepth) {
+        this.maxNodeDepth = maxNodeDepth;
     }
 
     public Smooks getNestedSmooks() {
@@ -410,7 +461,19 @@ public class NestedSmooksVisitor implements ParameterizedVisitor {
     public void setAction(Optional<Action> actionOptional) {
         this.actionOptional = actionOptional;
     }
-    
+
+    public void setBindIdOptional(Optional<String> bindIdOptional) {
+        this.bindIdOptional = bindIdOptional;
+    }
+
+    public Optional<String> getOutputStreamResourceOptional() {
+        return outputStreamResourceOptional;
+    }
+
+    public void setOutputStreamResourceOptional(Optional<String> outputStreamResourceOptional) {
+        this.outputStreamResourceOptional = outputStreamResourceOptional;
+    }
+
     @PreDestroy
     public void preDestroy() {
         if (nestedSmooks != null) {

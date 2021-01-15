@@ -46,14 +46,12 @@ import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.dom.DOMElementVisitor;
-import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ChildrenVisitor;
 import org.smooks.delivery.sax.ng.ElementVisitor;
-import org.smooks.io.DefaultFragmentWriter;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.FragmentWriterMemento;
 import org.smooks.io.Stream;
@@ -132,9 +130,7 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
     
     protected <N extends Node, T extends Visitor> void intercept(final StreamResultWriterInvocation<N, T> invocation, final ExecutionContext executionContext, final Node mementoNode) {
         if (getTarget().getContentHandler().getClass().isAnnotationPresent(StreamResultWriter.class)) {
-            final Fragment nodeFragment = new NodeFragment(mementoNode);
-            final FragmentWriter fragmentWriter = new DefaultFragmentWriter(executionContext, nodeFragment, false);
-            executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(nodeFragment, this, fragmentWriter), writerMemento -> {
+            executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(mementoNode), false)), writerMemento -> {
                 try {
                     writerMemento.getFragmentWriter().capture();
                 } catch (IOException e) {
@@ -380,7 +376,7 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
             final Object userData = node.getUserData(key);
             if (NodeFragment.RESERVATIONS_USER_DATA_KEY.equals(key)) {
                 final Map<Long, Object> reservedTokens = new HashMap<>((Map<Long, Object>) userData);
-                reservedTokens.remove(DefaultFragmentWriter.RESERVED_WRITE_FRAGMENT_ID);
+                reservedTokens.remove(FragmentWriter.RESERVED_WRITE_FRAGMENT_ID);
                 return reservedTokens;
             } else {
                 return userData;

@@ -65,7 +65,7 @@ public class NestedSmooksVisitorFunctionalTest {
 		smooks.filterSource(new StringSource("<a><b><c></c></b></a>"), stringResult);
 		NestedSmooksVisitor smooksVisitor = smooks.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(NestedSmooksVisitor.class)).values().stream().findFirst().get();
 		Registry registry = smooksVisitor.getNestedSmooks().getApplicationContext().getRegistry();
-		assertEquals(0, registry.lookup(new InstanceLookup<>(BarVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());
+		assertEquals(0, registry.lookup(new InstanceLookup<>(BarBeforeVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());
 		assertEquals(0, registry.lookup(new InstanceLookup<>(FooVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());
 		assertEquals(0, registry.lookup(new InstanceLookup<>(QuxVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());
 		assertEquals(1, registry.lookup(new InstanceLookup<>(QuuzVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());
@@ -75,24 +75,40 @@ public class NestedSmooksVisitorFunctionalTest {
 	public void testReplaceAction() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("replace-nested-smooks-visitor-config.xml"));
 		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b><c /></b></a>"), stringResult);
+		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringResult);
 		assertEquals("<a>Hello World!</a>", stringResult.getResult());
 	}
 	
 	@Test
-	public void testInsertAfterAction() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("insertAfter-nested-smooks-visitor-config.xml"));
+	public void testPrependAfterAction() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("prependAfter-nested-smooks-visitor-config.xml"));
 		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b><c /></b></a>"), stringResult);
-		assertEquals("<a><b>Hello World!<c /></b></a>", stringResult.getResult());
+		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
+		assertEquals("<a><b>Hello World!c<d/></b></a>", stringResult.getResult());
 	}
 
 	@Test
-	public void testInsertBeforeAction() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("insertBefore-nested-smooks-visitor-config.xml"));
+	public void testAppendAfterAction() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("appendAfter-nested-smooks-visitor-config.xml"));
 		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b><c /></b></a>"), stringResult);
-		assertEquals("<a>Hello World!<b><c /></b></a>", stringResult.getResult());
+		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
+		assertEquals("<a><b>c<d/></b>Hello World!</a>", stringResult.getResult());
+	}
+
+	@Test
+	public void testAppendBeforeAction() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("appendBefore-nested-smooks-visitor-config.xml"));
+		StringResult stringResult = new StringResult();
+		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
+		assertEquals("<a><b>c<d/>Hello World!</b></a>", stringResult.getResult());
+	}
+	
+	@Test
+	public void testPrependBeforeAction() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("prependBefore-nested-smooks-visitor-config.xml"));
+		StringResult stringResult = new StringResult();
+		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
+		assertEquals("<a>Hello World!<b>c<d/></b></a>", stringResult.getResult());
 	}
 	
 	@Test
@@ -100,8 +116,8 @@ public class NestedSmooksVisitorFunctionalTest {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("bindTo-nested-smooks-visitor-config.xml"));
 		ExecutionContext executionContext = smooks.createExecutionContext();
 		StringResult stringResult = new StringResult();
-		smooks.filterSource(executionContext, new StringSource("<a><b><c /></b></a>"), stringResult);
-		assertEquals("<a><b><c /></b></a>", stringResult.getResult());
+		smooks.filterSource(executionContext, new StringSource("<a><b><c/></b></a>"), stringResult);
+		assertEquals("<a><b><c/></b></a>", stringResult.getResult());
 		assertEquals("Hello World!", executionContext.getBeanContext().getBean("output"));
 	}
 	
@@ -111,8 +127,8 @@ public class NestedSmooksVisitorFunctionalTest {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		smooks.getApplicationContext().getRegistry().registerObject("Output Stream", outputStream);
 		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b><c /></b></a>"), stringResult);
-		assertEquals("<a><b><c /></b></a>", stringResult.getResult());
+		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringResult);
+		assertEquals("<a><b><c/></b></a>", stringResult.getResult());
 		assertEquals("Hello World!", outputStream.toString());
 	}
 }

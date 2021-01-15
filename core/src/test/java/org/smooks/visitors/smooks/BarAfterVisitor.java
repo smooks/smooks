@@ -40,76 +40,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io;
+package org.smooks.visitors.smooks;
 
+import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.sax.ng.AfterVisitor;
+import org.smooks.io.FragmentWriter;
+import org.w3c.dom.Element;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.util.concurrent.CountDownLatch;
 
-public class FragmentWriter extends Writer {
-
-    public static final long RESERVED_WRITE_FRAGMENT_ID = 0L;
+public class BarAfterVisitor implements AfterVisitor {
+    private final CountDownLatch countDownLatch = new CountDownLatch(1);
     
-    private final Writer delegateWriter;
-    private final Fragment fragment;
-    private final ExecutionContext executionContext;
-    private final Boolean tryCapture;
-    
-    public FragmentWriter(final ExecutionContext executionContext, final Fragment fragment) {
-        this(executionContext, fragment, true);
-    }
-
-    public FragmentWriter(final ExecutionContext executionContext, final Fragment fragment, final boolean tryCapture) {
-        this.executionContext = executionContext;
-        this.delegateWriter = Stream.out(executionContext);
-        this.fragment = fragment;
-        this.tryCapture = tryCapture;
-    }
-    
-    @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {
-        if (capture()) {
-            delegateWriter.write(cbuf, off, len);
-        }
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
     }
 
     @Override
-    public void flush() throws IOException {
-        delegateWriter.flush();
-    }
-
-    @Override
-    public void close() throws IOException {
-        delegateWriter.close();
-    }
-    
-    public Writer getDelegateWriter() {
-        return delegateWriter;
-    }
-    
-    public boolean capture() throws IOException {
-        if (fragment.reserve(RESERVED_WRITE_FRAGMENT_ID, this)) {
-            return true;
+    public void visitAfter(Element element, ExecutionContext executionContext) {
+        try {
+            new FragmentWriter(executionContext, new NodeFragment(element)).write("Hello World!");
+        } catch (IOException e) {
+            throw new SmooksException(e);
         }
-
-        if (tryCapture) {
-            return false;
-        }
-        
-        throw new IOException(String.format("Illegal access to fragment '%s': fragment is exclusively acquired by another writer. Hint: release fragment before acquiring it from a different writer", fragment.toString()));
-    }
-
-    public void release() throws IOException {
-        fragment.release(RESERVED_WRITE_FRAGMENT_ID, this);
-    }
-
-    public Fragment getFragment() {
-        return fragment;
-    }
-
-    public ExecutionContext getExecutionContext() {
-        return executionContext;
+        countDownLatch.countDown();
     }
 }

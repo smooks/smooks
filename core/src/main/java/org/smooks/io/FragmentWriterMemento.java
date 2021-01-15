@@ -43,21 +43,20 @@
 package org.smooks.io;
 
 import org.smooks.delivery.Visitor;
-import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.memento.AbstractVisitorMemento;
 import org.smooks.delivery.memento.VisitorMemento;
 
 public class FragmentWriterMemento extends AbstractVisitorMemento {
     private FragmentWriter fragmentWriter;
 
-    public FragmentWriterMemento(Fragment fragment, Visitor visitor, FragmentWriter fragmentWriter) {
-        super(fragment, visitor);
+    public FragmentWriterMemento(Visitor visitor, FragmentWriter fragmentWriter) {
+        super(fragmentWriter.getFragment(), visitor);
         this.fragmentWriter = fragmentWriter;
     }
 
     @Override
     public VisitorMemento copy() {
-        return new FragmentWriterMemento(fragment, visitor, fragmentWriter);
+        return new FragmentWriterMemento(visitor, fragmentWriter);
     }
 
     @Override

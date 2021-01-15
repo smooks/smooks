@@ -43,12 +43,19 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-					  xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
-					  default-target-profile="*">
+                      xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
 
-	<core:interceptors>
-		<core:interceptor class="org.smooks.delivery.interceptor.SkipVisitInterceptor"/>
-		<core:interceptor class="org.smooks.delivery.interceptor.StaticProxyInterceptor"/>
-	</core:interceptors>
-	
+    <core:smooks filterSourceOn="b">
+        <core:action>
+            <core:inline directive="PREPEND_AFTER"/>
+        </core:action>
+        <core:config>
+            <smooks-resource-list>
+                <resource-config selector="b">
+                    <resource>org.smooks.visitors.smooks.BarBeforeVisitor</resource>
+                </resource-config>
+            </smooks-resource-list>
+        </core:config>
+    </core:smooks>
+
 </smooks-resource-list>

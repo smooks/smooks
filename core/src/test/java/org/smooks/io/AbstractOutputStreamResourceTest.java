@@ -74,13 +74,14 @@ public class AbstractOutputStreamResourceTest
         resource.visitBefore( (Element)null, executionContext );
         assertNotNull(getResource(resource, executionContext));
 
-		OutputStream outputStream = AbstractOutputStreamResource.getOutputStream( resource.getResourceName(), executionContext);
-		assertNotNull( outputStream );
-		assertTrue( outputStream instanceof ByteArrayOutputStream );
+        ResourceOutputStream outputStreamWriter = new ResourceOutputStream(executionContext, resource.getResourceName());
+        OutputStream outputStream = outputStreamWriter.getDelegateOutputStream();
+        assertNotNull(outputStream);
+        assertTrue(outputStream instanceof ByteArrayOutputStream);
 
         // Should get an error now if we try get a writer to the same resource...
         try {
-            AbstractOutputStreamResource.getOutputWriter( resource.getResourceName(), executionContext);
+            new ResourceWriter(executionContext, resource.getResourceName());
             fail("Expected SmooksException");
         } catch(SmooksException e) {
             assertEquals("An OutputStream to the 'Mock' resource is already open.  Cannot open a Writer to this resource now!", e.getMessage());
@@ -94,7 +95,7 @@ public class AbstractOutputStreamResourceTest
 	}
 
     @Test
-    public void getOutputWriter () throws IOException, ParserConfigurationException {
+    public void getOutputWriter () throws ParserConfigurationException {
         AbstractOutputStreamResource resource = new MockAbstractOutputStreamResource();
         MockExecutionContext executionContext = new MockExecutionContext();
 
@@ -102,13 +103,13 @@ public class AbstractOutputStreamResourceTest
         resource.visitBefore( (Element)null, executionContext );
         assertNotNull(getResource(resource, executionContext));
 
-        Writer writer = AbstractOutputStreamResource.getOutputWriter(resource.getResourceName(), executionContext);
-        assertNotNull( writer );
-        assertTrue( writer instanceof OutputStreamWriter);
+        Writer writer = new ResourceWriter(executionContext, resource.getResourceName()).getDelegateWriter();
+        assertNotNull(writer);
+        assertTrue( writer instanceof java.io.OutputStreamWriter);
 
         // Should get an error now if we try get an OutputStream to the same resource...
         try {
-            AbstractOutputStreamResource.getOutputStream( resource.getResourceName(), executionContext);
+            new ResourceOutputStream(executionContext, resource.getResourceName());
             fail("Expected SmooksException");
         } catch(SmooksException e) {
             assertEquals("An Writer to the 'Mock' resource is already open.  Cannot open an OutputStream to this resource now!", e.getMessage());

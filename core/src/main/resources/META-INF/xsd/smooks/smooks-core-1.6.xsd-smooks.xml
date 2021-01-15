@@ -254,7 +254,7 @@
         <param name="resource">org.smooks.visitors.smooks.NestedSmooksVisitor</param>
     </resource-config>
 
-    <resource-config selector="smooks-core:smooks/visit">
+    <resource-config selector="smooks-core:smooks/config">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromXml</resource>
         <param name="mapTo">smooksResourceList</param>
     </resource-config>

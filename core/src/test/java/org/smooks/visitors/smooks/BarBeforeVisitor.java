@@ -46,13 +46,13 @@ import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
-import org.smooks.io.DefaultFragmentWriter;
+import org.smooks.io.FragmentWriter;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-public class BarVisitor implements BeforeVisitor {
+public class BarBeforeVisitor implements BeforeVisitor   {
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
     
     public CountDownLatch getCountDownLatch() {
@@ -62,7 +62,7 @@ public class BarVisitor implements BeforeVisitor {
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
         try {
-            new DefaultFragmentWriter(executionContext, new NodeFragment(element)).write("Hello World!");
+            new FragmentWriter(executionContext, new NodeFragment(element)).write("Hello World!");
         } catch (IOException e) {
             throw new SmooksException(e);
         }

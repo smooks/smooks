@@ -58,7 +58,7 @@ import org.smooks.event.report.AbstractReportGenerator;
 import org.smooks.event.types.ResourceTargetingEvent;
 import org.smooks.event.types.StartFragmentEvent;
 import org.smooks.event.types.VisitEvent;
-import org.smooks.io.DefaultFragmentWriter;
+import org.smooks.io.FragmentWriter;
 import org.smooks.io.NullWriter;
 import org.smooks.io.Stream;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
@@ -197,7 +197,7 @@ public class SAXHandler extends SmooksContentHandler {
                 onChildElement(element);
             } else {
                 element = new WriterManagedSAXElement(elementQName, startEvent.attributes, null);
-                element.setWriter(new DefaultFragmentWriter(executionContext, new SAXElementFragment(element)));
+                element.setWriter(new FragmentWriter(executionContext, new SAXElementFragment(element)));
             }
 
             // Register the "presence" of the element...

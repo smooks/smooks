@@ -45,7 +45,7 @@ package org.smooks.delivery.sax.ng;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.io.DefaultFragmentWriter;
+import org.smooks.io.FragmentWriter;
 import org.smooks.io.FragmentWriterMemento;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
@@ -56,7 +56,7 @@ public class VisitorWriter01 implements ElementVisitor {
     
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
-        executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(new NodeFragment(element), this, new DefaultFragmentWriter(executionContext, new NodeFragment(element))), fragmentWriterVisitorMemento -> {
+        executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(element))), fragmentWriterVisitorMemento -> {
             try {
                 fragmentWriterVisitorMemento.getFragmentWriter().write("");
             } catch (IOException e) {
@@ -69,7 +69,7 @@ public class VisitorWriter01 implements ElementVisitor {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
-        executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(new NodeFragment(element), this, new DefaultFragmentWriter(executionContext, new NodeFragment(element))), fragmentWriterVisitorMemento -> {
+        executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(element))), fragmentWriterVisitorMemento -> {
             try {
                 fragmentWriterVisitorMemento.getFragmentWriter().write("");
             } catch (IOException e) {
