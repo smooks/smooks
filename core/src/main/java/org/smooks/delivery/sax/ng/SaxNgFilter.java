@@ -45,7 +45,9 @@ package org.smooks.delivery.sax.ng;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
+import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.Filter;
 import org.smooks.delivery.sax.SmooksSAXFilter;
 import org.smooks.delivery.sax.ng.terminate.TerminateException;
 import org.smooks.io.Stream;
@@ -93,8 +95,10 @@ public class SaxNgFilter extends SmooksSAXFilter {
     @Override
     protected void doFilter(final Source source, final Result result) {
         final Source newSource;
+        boolean closeEmptyElements = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+
         if (source instanceof DOMSource) {
-            newSource = new StringSource(XmlUtil.serialize(((DOMSource) source).getNode(), false));
+            newSource = new StringSource(XmlUtil.serialize(((DOMSource) source).getNode(), false, closeEmptyElements));
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("DOMSource converted to a StringSource.");
             }

@@ -81,7 +81,7 @@ public class MapToResourceConfigFromXml implements DOMVisitBefore {
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ResourceConfig config;
-        String value = XmlUtil.serialize((NodeList) element);
+        String value = XmlUtil.serialize((NodeList) element, true);
         String mapToPropertyName = mapTo.orElse(null);
 
         if (mapToPropertyName == null) {

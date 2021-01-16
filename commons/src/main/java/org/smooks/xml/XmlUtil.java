@@ -521,7 +521,7 @@ public class XmlUtil {
                 return "";
             }
         } else {
-            return serialize(nodeList);
+            return serialize(nodeList, false);
         }
     }
 
@@ -554,8 +554,8 @@ public class XmlUtil {
      * @return The subtree in serailised form.
      * @throws DOMException Unable to serialise the DOM.
      */
-    public static String serialize(NodeList nodeList) throws DOMException {
-        return serialize(nodeList, false);
+    public static String serialize(NodeList nodeList, boolean closeEmptyElements) throws DOMException {
+        return serialize(nodeList, false, closeEmptyElements);
     }
 
     /**
@@ -566,9 +566,9 @@ public class XmlUtil {
      * @return The subtree in serailised form.
      * @throws DOMException Unable to serialise the DOM.
      */
-    public static String serialize(final Node node, boolean format) throws DOMException {
+    public static String serialize(final Node node, boolean format, boolean closeEmptyElements) throws DOMException {
         StringWriter writer = new StringWriter();
-        serialize(node, format, writer);
+        serialize(node, format, writer, closeEmptyElements);
         return writer.toString();
     }
 
@@ -580,9 +580,9 @@ public class XmlUtil {
      * @param writer The target writer for serialization.
      * @throws DOMException Unable to serialise the DOM.
      */
-    public static void serialize(final Node node, boolean format, Writer writer) throws DOMException {
+    public static void serialize(final Node node, boolean format, Writer writer, boolean closeEmptyElements) throws DOMException {
         if(node.getNodeType() == Node.DOCUMENT_NODE) {
-            serialize(node.getChildNodes(), format, writer);
+            serialize(node.getChildNodes(), format, writer, closeEmptyElements);
         } else {
             serialize(new NodeList() {
                 public Node item(int index) {
@@ -592,7 +592,7 @@ public class XmlUtil {
                 public int getLength() {
                     return 1;
                 }
-            }, format, writer);
+            }, format, writer, closeEmptyElements);
         }
     }
 
@@ -604,9 +604,9 @@ public class XmlUtil {
      * @return The subtree in serailised form.
      * @throws DOMException Unable to serialise the DOM.
      */
-    public static String serialize(NodeList nodeList, boolean format) throws DOMException {
+    public static String serialize(NodeList nodeList, boolean format, boolean closeEmptyElements) throws DOMException {
         StringWriter writer = new StringWriter();
-        serialize(nodeList, format, writer);
+        serialize(nodeList, format, writer, closeEmptyElements);
         return writer.toString();
     }
 
@@ -618,7 +618,7 @@ public class XmlUtil {
      * @param writer The target writer for serialization.
      * @throws DOMException Unable to serialise the DOM.
      */
-    public static void serialize(NodeList nodeList, boolean format, Writer writer) throws DOMException {
+    public static void serialize(NodeList nodeList, boolean format, Writer writer, boolean closeEmptyElements) throws DOMException {
 
         if (nodeList == null) {
             throw new IllegalArgumentException(
@@ -639,6 +639,9 @@ public class XmlUtil {
             }
             transformer = factory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            if (!closeEmptyElements) {
+                transformer.setOutputProperty(OutputKeys.METHOD, "html");
+            }
             if (format) {
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "4");
