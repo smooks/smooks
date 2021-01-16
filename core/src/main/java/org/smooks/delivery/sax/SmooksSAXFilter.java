@@ -93,7 +93,7 @@ public class SmooksSAXFilter extends Filter {
 
     protected void doFilter(Source source, Result result) {
         if(source instanceof DOMSource) {
-            String serializedDOM = XmlUtil.serialize(((DOMSource)source).getNode(), false);
+            String serializedDOM = XmlUtil.serialize(((DOMSource)source).getNode(), false, true);
             source = new StringSource(serializedDOM);
             if(LOGGER.isDebugEnabled()) {
                 LOGGER.debug("DOMSource converted to a StringSource.");

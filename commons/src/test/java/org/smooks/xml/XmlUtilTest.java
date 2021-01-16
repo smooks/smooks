@@ -594,7 +594,7 @@ public class XmlUtilTest {
 		assertEquals("zval", XmlUtil.getString(doc, "/x/z/text()"));
 		assertEquals("y", XmlUtil.getString(doc, "/x/*[1]/name()"));
 		assertEquals("z", XmlUtil.getString(doc, "/x/*[2]/name()"));
-		assertEquals("<x><y attrib=\"attribval\"/><z>zval</z></x>", XmlUtil.getString(doc, "/x"));
+		assertEquals("<x><y attrib=\"attribval\"></y><z>zval</z></x>", XmlUtil.getString(doc, "/x"));
 	}
 
 	@Test

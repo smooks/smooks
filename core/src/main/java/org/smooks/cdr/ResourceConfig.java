@@ -940,7 +940,7 @@ public class ResourceConfig {
                     Object value;
 
                     if (element != null) {
-                        value = XmlUtil.serialize(element.getChildNodes());
+                        value = XmlUtil.serialize(element.getChildNodes(), true);
                     } else {
                         value = ((Parameter) param).getValue();
                     }

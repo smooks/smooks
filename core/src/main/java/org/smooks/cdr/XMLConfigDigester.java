@@ -379,7 +379,7 @@ public final class XMLConfigDigester {
 
                         for (Element importParam : importParams) {
                             String paramName = DomUtils.getAttributeValue(importParam, "name");
-                            String paramValue = XmlUtil.serialize(importParam.getChildNodes());
+                            String paramValue = XmlUtil.serialize(importParam.getChildNodes(), true);
 
                             importConfig = importConfig.replaceAll("@" + paramName + "@", paramValue);
                         }

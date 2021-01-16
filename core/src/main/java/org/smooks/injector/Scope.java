@@ -73,7 +73,7 @@ public class Scope implements Map<Object, Object> {
         }
         
         if (instance instanceof SaxNgVisitor) {
-            final boolean closeEmptyElements = Boolean.parseBoolean(resourceConfig.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "true"));
+            final boolean closeEmptyElements = Boolean.parseBoolean(resourceConfig.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false"));
             scope.put(DomToXmlWriter.class, new DomToXmlWriter(closeEmptyElements, entitiesRewrite));
         }
     }

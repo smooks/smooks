@@ -84,7 +84,7 @@ public class NestedSmooksVisitorFunctionalTest {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("prependAfter-nested-smooks-visitor-config.xml"));
 		StringResult stringResult = new StringResult();
 		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
-		assertEquals("<a><b>Hello World!c<d/></b></a>", stringResult.getResult());
+		assertEquals("<a><b>Hello World!c<d></d></b></a>", stringResult.getResult());
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class NestedSmooksVisitorFunctionalTest {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("prependBefore-nested-smooks-visitor-config.xml"));
 		StringResult stringResult = new StringResult();
 		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
-		assertEquals("<a>Hello World!<b>c<d/></b></a>", stringResult.getResult());
+		assertEquals("<a>Hello World!<b>c<d></d></b></a>", stringResult.getResult());
 	}
 	
 	@Test
