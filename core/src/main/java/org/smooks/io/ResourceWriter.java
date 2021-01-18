@@ -55,12 +55,10 @@ import static org.smooks.io.AbstractOutputStreamResource.RESOURCE_CONTEXT_KEY_PR
 
 public class ResourceWriter extends Writer {
     
-    private final ExecutionContext executionContext;
     private final String resourceName;
     private Writer delegateWriter;
     
     public ResourceWriter(final ExecutionContext executionContext, final String resourceName) {
-        this.executionContext = executionContext;
         this.resourceName = resourceName;
         this.delegateWriter = getOutputWriter(resourceName, executionContext);
     }
@@ -94,7 +92,7 @@ public class ResourceWriter extends Writer {
      * @return A {@link Writer} to the named {@link OutputStream} Resource.
      * @throws SmooksException Unable to access OutputStream.
      */
-    private Writer getOutputWriter(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
+    protected Writer getOutputWriter(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
         final TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
         final Object resourceIOObj = executionContext.get(resourceKey);
 
@@ -118,8 +116,8 @@ public class ResourceWriter extends Writer {
             }
         }
     }
-    
-    private OutputStream openOutputStream(AbstractOutputStreamResource resource, ExecutionContext executionContext) {
+
+    protected OutputStream openOutputStream(AbstractOutputStreamResource resource, ExecutionContext executionContext) {
         if (resource != null) {
             try {
                 return resource.getOutputStream(executionContext);
@@ -133,9 +131,5 @@ public class ResourceWriter extends Writer {
 
     public Writer getDelegateWriter() {
         return delegateWriter;
-    }
-
-    public ExecutionContext getExecutionContext() {
-        return executionContext;
     }
 }
