@@ -60,12 +60,12 @@ import java.util.Map;
 public class SaxNgFilterProvider extends AbstractFilterProvider {
 
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents, DTDStore.DTDObjectContainer dtdObjectContainer) {
-        SaxNgContentDeliveryConfig saxNgContentDeliveryConfig = new SaxNgContentDeliveryConfig();
-        InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorFactoryLookup());
+    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents, final DTDStore.DTDObjectContainer dtdObjectContainer) {
+        final SaxNgContentDeliveryConfig saxNgContentDeliveryConfig = new SaxNgContentDeliveryConfig();
+        final InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorFactoryLookup());
 
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
-            String selector = visitorBinding.getResourceConfig().getSelectorPath().getTargetElement();
+            final String selector = visitorBinding.getResourceConfig().getSelectorPath().getTargetElement();
             visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
 
             if (visitorBinding.getContentHandler() instanceof BeforeVisitor || visitorBinding.getContentHandler() instanceof AfterVisitor) {
@@ -91,6 +91,7 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
         saxNgContentDeliveryConfig.setDtd(dtdObjectContainer);
         saxNgContentDeliveryConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
         saxNgContentDeliveryConfig.assertSelectorsNotAccessingText();
+        saxNgContentDeliveryConfig.addToExecutionLifecycleSets();
         
         return saxNgContentDeliveryConfig;
     }
