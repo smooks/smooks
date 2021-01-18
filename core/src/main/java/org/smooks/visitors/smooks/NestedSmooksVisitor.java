@@ -47,6 +47,7 @@ import org.smooks.Smooks;
 import org.smooks.SmooksException;
 import org.smooks.StreamFilterType;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.ResourceConfigList;
 import org.smooks.cdr.XMLConfigDigester;
@@ -374,7 +375,7 @@ public class NestedSmooksVisitor implements ParameterizedVisitor, Producer {
                 nestedSmooksVisitorWriter.writeStartElement(element, fragmentWriterMemento.getFragmentWriter());
             }
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn()) {
-                fragmentWriterMemento.getFragmentWriter().write(XmlUtil.serialize(element.getChildNodes(), false));
+                fragmentWriterMemento.getFragmentWriter().write(XmlUtil.serialize(element.getChildNodes(), Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()))));
                 nestedSmooksVisitorWriter.writeEndElement(element, fragmentWriterMemento.getFragmentWriter());
             }
         } catch (IOException e) {
