@@ -69,10 +69,13 @@ import org.smooks.event.ExecutionEvent;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.event.types.EndFragmentEvent;
 import org.smooks.event.types.StartFragmentEvent;
-import org.smooks.io.*;
+import org.smooks.io.FragmentWriter;
+import org.smooks.io.FragmentWriterMemento;
+import org.smooks.io.ResourceWriter;
 import org.smooks.javabean.repository.BeanId;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.XmlUtil;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -210,7 +213,7 @@ public class NestedSmooksVisitor implements ParameterizedVisitor, Producer {
                 }
             } else if (executionEvent instanceof CharDataFragmentEvent) {
                 if (maxNodeDepth != 0 && currentNodeDepth + 1 > maxNodeDepth) {
-                    filterSource(selectorElement, (Element) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap(), selectorWriter, executionContext, new VisitPhaseInterceptor.VisitChildTextPhase());
+                    filterSource(selectorElement, (Element) ((CharacterData) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap()).getParentNode(), selectorWriter, executionContext, new VisitPhaseInterceptor.VisitChildTextPhase());
                 }
             } else if (executionEvent instanceof EndFragmentEvent) {
                 if (maxNodeDepth != 0 && currentNodeDepth > maxNodeDepth && !selectorElement.equals(((EndFragmentEvent) executionEvent).getFragment().unwrap())) {
