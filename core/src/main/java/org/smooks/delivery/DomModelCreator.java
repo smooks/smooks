@@ -57,6 +57,7 @@ import org.smooks.event.types.EndFragmentEvent;
 import org.smooks.event.types.StartFragmentEvent;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.DomUtils;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -240,14 +241,14 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
                     return;
                 }
 
-                Element element = (Element) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap();
-                String textContent = element.getTextContent();
+                CharacterData characterData = (CharacterData) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap();
+                String textContent = characterData.getTextContent();
                 if(textContent.trim().length() == 0) {
                     // Ignore pure whitespace...
                     return;
                 }
 
-                switch (element.getChildNodes().item(0).getNodeType()) {
+                switch (characterData.getNodeType()) {
                     case Node.TEXT_NODE:
                     case Node.ENTITY_NODE:
                         currentNode.appendChild(document.createTextNode(textContent));

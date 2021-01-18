@@ -366,7 +366,7 @@ public class SaxNgHandler extends SmooksContentHandler {
                 }
             }
             
-            final CharDataFragmentEvent charFragmentEvent = new CharDataFragmentEvent(new NodeFragment(clonedParentElement));
+            final CharDataFragmentEvent charFragmentEvent = new CharDataFragmentEvent(new NodeFragment(clonedParentElement.getFirstChild()));
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                 executionEventListener.onEvent(charFragmentEvent);
             }
