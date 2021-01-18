@@ -100,6 +100,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
         afterVisitors.sort(Sorter.SortOrder.CONSUMERS_FIRST);
     }
 
+    @Override
     public void addToExecutionLifecycleSets() throws SmooksConfigurationException {
         addToExecutionLifecycleSets(beforeVisitors);
         addToExecutionLifecycleSets(afterVisitors);
@@ -175,7 +176,6 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
         if (ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, this)) {
             sort();
         }
-        addToExecutionLifecycleSets();
 
         addIndexCounters(reducedSelectorTable);
 

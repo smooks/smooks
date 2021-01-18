@@ -192,12 +192,12 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     public <T extends Visitor> void addToExecutionLifecycleSets(SelectorTable<T> selectorTable) {
         Collection<List<ContentHandlerBinding<T>>> selectorTableContentHandlerBindings = selectorTable.values();
 
-        for(List<ContentHandlerBinding<T>> contentHandlerBindings : selectorTableContentHandlerBindings) {
-            for(ContentHandlerBinding<T> contentHandlerBinding : contentHandlerBindings) {
-                if(contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleInitializable) {
+        for (List<ContentHandlerBinding<T>> contentHandlerBindings : selectorTableContentHandlerBindings) {
+            for (ContentHandlerBinding<T> contentHandlerBinding : contentHandlerBindings) {
+                if (contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleInitializable) {
                     execInitializableHandlers.add((ExecutionLifecycleInitializable) contentHandlerBinding.getContentHandler());
                 }
-                if(contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleCleanable) {
+                if (contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleCleanable) {
                     execCleanableHandlers.add((ExecutionLifecycleCleanable) contentHandlerBinding.getContentHandler());
                 }
             }
