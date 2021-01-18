@@ -76,7 +76,7 @@ public class ResourceOutputStream extends OutputStream {
      * @return An {@link OutputStream} to the named Resource.
      * @throws SmooksException Unable to access OutputStream.
      */
-    public OutputStream getOutputStream(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
+    private OutputStream getOutputStream(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
         TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
         Object resourceIOObj = executionContext.get(resourceKey);
 
