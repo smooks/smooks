@@ -55,11 +55,9 @@ import static org.smooks.io.AbstractOutputStreamResource.RESOURCE_CONTEXT_KEY_PR
 
 public class ResourceOutputStream extends OutputStream {
 
-    private final ExecutionContext executionContext;
     private final OutputStream delegateOutputStream;
 
     public ResourceOutputStream(final ExecutionContext executionContext, final String resourceName) {
-        this.executionContext = executionContext;
         this.delegateOutputStream = getOutputStream(resourceName, executionContext);
     }
     
@@ -76,7 +74,7 @@ public class ResourceOutputStream extends OutputStream {
      * @return An {@link OutputStream} to the named Resource.
      * @throws SmooksException Unable to access OutputStream.
      */
-    private OutputStream getOutputStream(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
+    protected OutputStream getOutputStream(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
         TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
         Object resourceIOObj = executionContext.get(resourceKey);
 
@@ -97,7 +95,7 @@ public class ResourceOutputStream extends OutputStream {
         }
     }
 
-    private OutputStream openOutputStream(AbstractOutputStreamResource resource, String resourceName, ExecutionContext executionContext) {
+    protected OutputStream openOutputStream(AbstractOutputStreamResource resource, String resourceName, ExecutionContext executionContext) {
         if (resource == null) {
             throw new SmooksException("OutputResource '" + resourceName + "' not bound to context.  Configure an '" + AbstractOutputStreamResource.class.getName() + "' implementation, or change resource ordering.");
         }
