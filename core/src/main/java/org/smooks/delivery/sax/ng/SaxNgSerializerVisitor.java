@@ -52,12 +52,12 @@ import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.memento.AbstractVisitorMemento;
+import org.smooks.delivery.memento.Memento;
 import org.smooks.delivery.memento.VisitorMemento;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXElementVisitor;
 import org.smooks.delivery.sax.SAXText;
 import org.smooks.io.FragmentWriter;
-import org.smooks.io.FragmentWriterMemento;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 
@@ -270,11 +270,12 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     
     protected void onWrite(final Consumer<Writer> writerConsumer, final ExecutionContext executionContext, final Node node) {
         if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig) {
-            final FragmentWriterMemento fragmentWriterMemento = executionContext.
+            final NodeFragment nodeFragment = new NodeFragment(node);
+            final Memento<FragmentWriter> fragmentWriterMemento = executionContext.
                     getMementoCaretaker().
-                    stash(new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(node))), restoredFragmentWriterMemento -> restoredFragmentWriterMemento);
+                    stash(new Memento<>(nodeFragment, this, new FragmentWriter(executionContext, new NodeFragment(node))), restoredFragmentWriterMemento -> restoredFragmentWriterMemento);
 
-            writerConsumer.accept(fragmentWriterMemento.getFragmentWriter());
+            writerConsumer.accept(fragmentWriterMemento.getState());
         }
     }
 }

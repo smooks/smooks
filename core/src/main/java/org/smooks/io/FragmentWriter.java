@@ -55,22 +55,22 @@ public class FragmentWriter extends Writer {
     private final Writer delegateWriter;
     private final Fragment fragment;
     private final ExecutionContext executionContext;
-    private final Boolean tryCapture;
+    private final Boolean tryPark;
     
     public FragmentWriter(final ExecutionContext executionContext, final Fragment fragment) {
         this(executionContext, fragment, true);
     }
 
-    public FragmentWriter(final ExecutionContext executionContext, final Fragment fragment, final boolean tryCapture) {
+    public FragmentWriter(final ExecutionContext executionContext, final Fragment fragment, final boolean tryPark) {
         this.executionContext = executionContext;
         this.delegateWriter = Stream.out(executionContext);
         this.fragment = fragment;
-        this.tryCapture = tryCapture;
+        this.tryPark = tryPark;
     }
     
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
-        if (capture()) {
+        if (park()) {
             delegateWriter.write(cbuf, off, len);
         }
     }
@@ -89,19 +89,19 @@ public class FragmentWriter extends Writer {
         return delegateWriter;
     }
     
-    public boolean capture() throws IOException {
+    public boolean park() throws IOException {
         if (fragment.reserve(RESERVED_WRITE_FRAGMENT_ID, this)) {
             return true;
         }
 
-        if (tryCapture) {
+        if (tryPark) {
             return false;
         }
         
         throw new IOException(String.format("Illegal access to fragment '%s': fragment is exclusively acquired by another writer. Hint: release fragment before acquiring it from a different writer", fragment.toString()));
     }
 
-    public void release() throws IOException {
+    public void unpark() throws IOException {
         fragment.release(RESERVED_WRITE_FRAGMENT_ID, this);
     }
 

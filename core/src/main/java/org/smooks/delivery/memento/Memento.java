@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Smooks Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -42,37 +42,36 @@
  */
 package org.smooks.delivery.memento;
 
-import org.smooks.assertion.AssertArgument;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.fragment.Fragment;
 
-public abstract class AbstractVisitorMemento implements VisitorMemento {
-    protected final Fragment fragment;
-    protected final Visitor visitor;
-    protected String anchor;
-
-    public AbstractVisitorMemento(final Fragment fragment, final Visitor visitor) {
-        AssertArgument.isNotNull(fragment, "fragment");
-        AssertArgument.isNotNull(visitor, "visitor");
-        
-        this.fragment = fragment;
-        this.visitor = visitor;
-    }
+public class Memento<T> extends AbstractVisitorMemento {
     
-    @Override
-    public Visitor getVisitor() {
-        return visitor;
+    private T state;
+    
+    public Memento(Fragment fragment, Visitor visitor, T state) {
+        super(fragment, visitor);
+        this.state = state;
     }
 
     @Override
-    public Fragment getFragment() {
-        return fragment;
+    public VisitorMemento copy() {
+        return new Memento<>(fragment, visitor, state);
+    }
+
+    @Override
+    public void restore(VisitorMemento visitorMemento) {
+        state = (T) ((Memento) visitorMemento).getState();
+    }
+
+    public T getState() {
+        return state;
     }
 
     @Override
     public String getAnchor() {
         if (anchor == null) {
-            anchor = fragment.getId() + "@" + visitor.getClass().getName() + "@" + getClass().getName() + "@" + System.identityHashCode(visitor);
+            anchor = state.getClass().getName() + "@" + fragment.getId() + "@" + visitor.getClass().getName() + "@" + getClass().getName() + "@" + System.identityHashCode(visitor);
         }
         return anchor;
     }

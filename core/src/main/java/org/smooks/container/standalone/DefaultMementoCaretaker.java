@@ -64,23 +64,23 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
     }
     
     @Override
-    public void save(final VisitorMemento visitorMemento) {
-        mementoIds.computeIfAbsent(visitorMemento.getFragment(), o -> new HashSet<>()).add(visitorMemento.getId());
-        typedMap.put(new TypedKey<>(visitorMemento.getId()), visitorMemento.copy());
+    public void capture(final VisitorMemento visitorMemento) {
+        mementoIds.computeIfAbsent(visitorMemento.getFragment(), o -> new HashSet<>()).add(visitorMemento.getAnchor());
+        typedMap.put(new TypedKey<>(visitorMemento.getAnchor()), visitorMemento.copy());
     }
 
     @Override
     public <T extends VisitorMemento> T stash(final T defaultVisitorMemento, final Function<T, T> function) {
         restore(defaultVisitorMemento);
         T newVisitorMemento = function.apply(defaultVisitorMemento);
-        save(newVisitorMemento);
+        capture(newVisitorMemento);
         
         return newVisitorMemento;
     }
     
     @Override
     public void restore(final VisitorMemento visitorMemento) {
-        final String visitorMementoId = visitorMemento.getId();
+        final String visitorMementoId = visitorMemento.getAnchor();
         final TypedKey<VisitorMemento> visitorMementoTypedKey = new TypedKey<>(visitorMementoId);
         final VisitorMemento restoredVisitorMemento = typedMap.get(visitorMementoTypedKey);
         if (restoredVisitorMemento != null) {
@@ -89,11 +89,16 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
             typedMap.put(visitorMementoTypedKey, visitorMemento);
         }
     }
-    
+
     @Override
-    public void remove(final VisitorMemento visitorMemento) {
-        typedMap.remove(new TypedKey<>(visitorMemento.getId()) );
-        mementoIds.getOrDefault(visitorMemento.getFragment(), new HashSet<>()).remove(visitorMemento.getId());
+    public boolean exists(VisitorMemento visitorMemento) {
+        return typedMap.get(new TypedKey<>(visitorMemento.getAnchor())) != null;
+    }
+
+    @Override
+    public void forget(final VisitorMemento visitorMemento) {
+        typedMap.remove(new TypedKey<>(visitorMemento.getAnchor()) );
+        mementoIds.getOrDefault(visitorMemento.getFragment(), new HashSet<>()).remove(visitorMemento.getAnchor());
     }
 
     @Override

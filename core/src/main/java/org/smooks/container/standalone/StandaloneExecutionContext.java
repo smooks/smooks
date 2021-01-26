@@ -56,7 +56,6 @@ import org.smooks.javabean.context.StandaloneBeanContextFactory;
 import org.smooks.profile.ProfileSet;
 import org.smooks.profile.UnknownProfileMemberException;
 
-import java.io.Writer;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
@@ -81,7 +80,6 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	private String contentEncoding;
     private Throwable terminationError;
     private BeanContext beanContext;
-	private Writer writer;
 
 	/**
 	 * Public Constructor.
@@ -175,7 +173,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	 */
 	@Override
 	public String getContentEncoding() {
-		return (contentEncoding == null)?"UTF-8":contentEncoding;
+		return (contentEncoding == null) ? "UTF-8" : contentEncoding;
 	}
 
 	@Override
@@ -214,6 +212,11 @@ public class StandaloneExecutionContext implements ExecutionContext {
 		return (T) attributes.get(key);
 	}
 
+	@Override
+	public <T> T getOrDefault(TypedKey<T> key, T value) {
+		return (T) attributes.getOrDefault(key, value);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.smooks.container.BoundAttributeStore#removeAttribute(java.lang.Object)
 	 */
@@ -234,7 +237,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 
 	@Override
 	public BeanContext getBeanContext() {
-		if(beanContext == null) {
+		if (beanContext == null) {
 			beanContext = StandaloneBeanContextFactory.create(this);
 		}
 		return beanContext;

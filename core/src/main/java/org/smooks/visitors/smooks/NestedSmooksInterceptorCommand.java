@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Smooks Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,31 +40,46 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io;
+package org.smooks.visitors.smooks;
 
-import org.smooks.delivery.Visitor;
-import org.smooks.delivery.memento.AbstractVisitorMemento;
-import org.smooks.delivery.memento.VisitorMemento;
+import org.smooks.delivery.fragment.NodeFragment;
 
-public class FragmentWriterMemento extends AbstractVisitorMemento {
-    private FragmentWriter fragmentWriter;
+class NestedSmooksInterceptorCommand {
 
-    public FragmentWriterMemento(Visitor visitor, FragmentWriter fragmentWriter) {
-        super(fragmentWriter.getFragment(), visitor);
-        this.fragmentWriter = fragmentWriter;
+    private final int requiredNodeDepth;
+    private final VisitPhase requiredVisitPhase;
+    private final NodeFragment nodeFragment;
+
+    public interface VisitPhase {
     }
 
-    @Override
-    public VisitorMemento copy() {
-        return new FragmentWriterMemento(visitor, fragmentWriter);
+    public static final class VisitBeforePhase implements VisitPhase {
+        
     }
 
-    @Override
-    public void restore(VisitorMemento visitorMemento) {
-        this.fragmentWriter = ((FragmentWriterMemento) visitorMemento).getFragmentWriter();
+    public static final class VisitAfterPhase implements VisitPhase {
+        
     }
 
-    public FragmentWriter getFragmentWriter() {
-        return fragmentWriter;
+    public static final class VisitChildTextPhase implements VisitPhase {
+        
+    }
+
+    public NestedSmooksInterceptorCommand(int requiredNodeDepth, VisitPhase requiredVisitPhase, NodeFragment nodeFragment) {
+        this.requiredNodeDepth = requiredNodeDepth;
+        this.requiredVisitPhase = requiredVisitPhase;
+        this.nodeFragment = nodeFragment;
+    }
+
+    public int getRequiredNodeDepth() {
+        return requiredNodeDepth;
+    }
+
+    public VisitPhase getRequiredVisitPhase() {
+        return requiredVisitPhase;
+    }
+
+    public NodeFragment getNodeFragment() {
+        return nodeFragment;
     }
 }
