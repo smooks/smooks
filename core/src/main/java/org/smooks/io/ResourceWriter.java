@@ -73,12 +73,16 @@ public class ResourceWriter extends Writer {
 
     @Override
     public void flush() throws IOException {
-        delegateWriter.flush();
+        if (delegateWriter != null) {
+            delegateWriter.flush();
+        }
     }
 
     @Override
     public void close() throws IOException {
-        delegateWriter.close();
+        if (delegateWriter != null) {
+            delegateWriter.close();
+        }
     }
 
     /**

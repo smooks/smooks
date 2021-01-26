@@ -165,6 +165,11 @@ public class MockExecutionContext implements ExecutionContext {
 	}
 
 	@Override
+	public <T> T getOrDefault(TypedKey<T> key, T value) {
+		return executionContext.getOrDefault(key, value);
+	}
+
+	@Override
 	public Map<TypedKey<Object>, Object> getAll() {
 		return executionContext.getAll();
 	}

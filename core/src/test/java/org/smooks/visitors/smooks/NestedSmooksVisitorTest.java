@@ -48,9 +48,11 @@ import org.dom4j.io.DOMWriter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.smooks.Smooks;
+import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.memento.Memento;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ElementVisitor;
@@ -64,10 +66,163 @@ import javax.xml.transform.dom.DOMSource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class NestedSmooksVisitorTest {
+
+    private NestedSmooksVisitor.Action getRandomActions() {
+        return NestedSmooksVisitor.Action.values()[ThreadLocalRandom.current().nextInt(NestedSmooksVisitor.Action.values().length)];
+    }
+
+    @Test
+    public void testVisitGivenMemento() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor(new ElementVisitor() {
+            @Override
+            public void visitBefore(Element element, ExecutionContext executionContext) {
+                executionContext.getMementoCaretaker().capture(new Memento<>(new NodeFragment(element), this, "Hello World!"));
+            }
+            
+            @Override
+            public void visitAfter(Element element, ExecutionContext executionContext) {
+                Memento<String> memento = new Memento<>(new NodeFragment(element), this, "");
+                executionContext.getMementoCaretaker().restore(memento);
+                assertEquals("Hello World!", memento.getState());
+            }
+
+            @Override
+            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+                Memento<String> memento = new Memento<>(new NodeFragment(characterData.getParentNode()), this, "");
+                executionContext.getMementoCaretaker().restore(memento);
+                assertEquals("Hello World!", memento.getState());
+            }
+
+            @Override
+            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+                // TODO
+            }
+        }, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").addText("bar").
+                getDocument()).getDocumentElement()), stringResult);
+    }
+
+    @Test
+    public void testVisitBeforeGivenAncestors() throws DocumentException {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+            assertEquals("b", element.getParentNode().getNodeName());
+            assertEquals(element.getOwnerDocument(), element.getParentNode().getParentNode());
+            assertNull(element.getParentNode().getParentNode().getParentNode());
+            countDownLatch.countDown();
+        }, "c");
+        
+        nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "b");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").addElement("b").addElement("c").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals(0, countDownLatch.getCount());
+    }
+
+    @Test
+    public void testVisitAfterGivenAncestors() throws DocumentException {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+            assertEquals("b", element.getParentNode().getNodeName());
+            assertEquals(element.getOwnerDocument(), element.getParentNode().getParentNode());
+            assertNull(element.getParentNode().getParentNode().getParentNode());
+            countDownLatch.countDown();
+        }, "c");
+
+        nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "b");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").addElement("b").addElement("c").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals(0, countDownLatch.getCount());
+    }
+
+    @Test
+    public void testVisitChildTextGivenAncestors() throws DocumentException {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        nestedSmooks.addVisitor(new ElementVisitor() {
+            @Override
+            public void visitBefore(Element element, ExecutionContext executionContext) {
+
+            }
+
+            @Override
+            public void visitAfter(Element element, ExecutionContext executionContext) {
+                
+            }
+
+            @Override
+            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+                assertEquals("c", characterData.getParentNode().getNodeName());
+                assertEquals("b", characterData.getParentNode().getParentNode().getNodeName());
+                assertEquals(characterData.getOwnerDocument(), characterData.getParentNode().getParentNode().getParentNode());
+                assertNull(characterData.getParentNode().getParentNode().getParentNode().getParentNode());
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+
+            }
+        }, "c");
+
+        nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "b");
+
+        StringResult stringResult = new StringResult();
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").addElement("b").addElement("c").addText("Hello World!").
+                getDocument()).getDocumentElement()), stringResult);
+
+        assertEquals(0, countDownLatch.getCount());
+    }
     
     @Test
     public void testVisitChildTextGivenPrependBefore() throws DocumentException {
@@ -87,7 +242,7 @@ public class NestedSmooksVisitorTest {
                 try {
                     new FragmentWriter(executionContext, new NodeFragment(characterData)).write("bar");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new SmooksException(e);
                 }
             }
 
@@ -130,7 +285,7 @@ public class NestedSmooksVisitorTest {
                 try {
                     new FragmentWriter(executionContext, new NodeFragment(characterData)).write("bar");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new SmooksException(e);
                 }
             }
 
@@ -156,7 +311,7 @@ public class NestedSmooksVisitorTest {
     }
 
     @Test
-    @Ignore("FIXME: visitChildElement(...) is not executed")
+    @Ignore("TODO: undefined behaviour")
     public void testVisitChildElementGivenPrependBefore() throws SAXException, IOException, URISyntaxException, DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
@@ -178,7 +333,7 @@ public class NestedSmooksVisitorTest {
                 try {
                     new FragmentWriter(executionContext, new NodeFragment(childElement)).write("bar");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new SmooksException(e);
                 }
             }
         }, "a");
@@ -200,7 +355,7 @@ public class NestedSmooksVisitorTest {
     }
 
     @Test
-    @Ignore("FIXME: visitChildElement(...) is not executed")
+    @Ignore("TODO: undefined behaviour")
     public void testVisitChildElementGivenPrependAfter() throws SAXException, IOException, URISyntaxException, DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
@@ -222,7 +377,7 @@ public class NestedSmooksVisitorTest {
                 try {
                     new FragmentWriter(executionContext, new NodeFragment(childElement)).write("bar");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new SmooksException(e);
                 }
             }
         }, "a");
@@ -251,7 +406,7 @@ public class NestedSmooksVisitorTest {
             try {
                 new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new SmooksException(e);
             }
         }, "a");
 
@@ -278,7 +433,7 @@ public class NestedSmooksVisitorTest {
             try {
                 new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new SmooksException(e);
             }
         }, "a");
 
@@ -305,7 +460,7 @@ public class NestedSmooksVisitorTest {
             try {
                 new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new SmooksException(e);
             }
         }, "a");
 
@@ -332,7 +487,7 @@ public class NestedSmooksVisitorTest {
             try {
                 new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new SmooksException(e);
             }
         }, "a");
 
@@ -359,7 +514,7 @@ public class NestedSmooksVisitorTest {
             try {
                 new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new SmooksException(e);
             }
         }, "a");
 
@@ -375,7 +530,7 @@ public class NestedSmooksVisitorTest {
                 addText("foo").
                 getDocument()).getDocumentElement()), stringResult);
 
-        assertEquals("<a>foo</a>", stringResult.toString());
+        assertEquals("<a>barfoo</a>", stringResult.toString());
     }
 
     @Test
@@ -386,7 +541,7 @@ public class NestedSmooksVisitorTest {
             try {
                 new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new SmooksException(e);
             }
         }, "a");
 
@@ -402,7 +557,7 @@ public class NestedSmooksVisitorTest {
                 addText("foo").
                 getDocument()).getDocumentElement()), stringResult);
 
-        assertEquals("<a>foo</a>", stringResult.toString());
+        assertEquals("<a>barfoo</a>", stringResult.toString());
     }
 
     @Test
@@ -413,7 +568,7 @@ public class NestedSmooksVisitorTest {
             try {
                 new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new SmooksException(e);
             }
         }, "a");
 
@@ -440,7 +595,7 @@ public class NestedSmooksVisitorTest {
             try {
                 new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new SmooksException(e);
             }
         }, "a");
 

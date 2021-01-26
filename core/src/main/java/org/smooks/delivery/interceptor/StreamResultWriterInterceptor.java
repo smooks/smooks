@@ -47,13 +47,13 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.memento.Memento;
 import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ChildrenVisitor;
 import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.io.FragmentWriter;
-import org.smooks.io.FragmentWriterMemento;
 import org.smooks.io.Stream;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
@@ -130,13 +130,14 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
     
     protected <N extends Node, T extends Visitor> void intercept(final StreamResultWriterInvocation<N, T> invocation, final ExecutionContext executionContext, final Node mementoNode) {
         if (getTarget().getContentHandler().getClass().isAnnotationPresent(StreamResultWriter.class)) {
-            executionContext.getMementoCaretaker().stash(new FragmentWriterMemento(this, new FragmentWriter(executionContext, new NodeFragment(mementoNode), false)), writerMemento -> {
+            NodeFragment nodeFragment = new NodeFragment(mementoNode);
+            executionContext.getMementoCaretaker().stash(new Memento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment, false)), writerMemento -> {
                 try {
-                    writerMemento.getFragmentWriter().capture();
+                    writerMemento.getState().park();
                 } catch (IOException e) {
                     throw new SmooksException(e);
                 }
-                executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writerMemento.getFragmentWriter());
+                executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writerMemento.getState());
                 intercept(new Invocation<T>() {
                     @Override
                     public Object invoke(T visitor) {
@@ -148,7 +149,7 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
                         return invocation.getTarget();
                     }
                 });
-                executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writerMemento.getFragmentWriter().getDelegateWriter());
+                executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writerMemento.getState().getDelegateWriter());
 
                 return writerMemento;
             });

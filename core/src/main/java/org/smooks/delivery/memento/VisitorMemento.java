@@ -80,11 +80,11 @@ public interface VisitorMemento  {
     Fragment getFragment();
 
     /**
-     * Gets the ID of this <code>VisitorMemento</code>. <code>VisitorMemento</code>s with equal IDs are considered to be 
-     * capturing the state of the same object but at different points in time.
+     * Gets the anchor value of this <code>VisitorMemento</code>. <code>VisitorMemento</code>s with equal anchor values 
+     * are considered to be capturing the state of the same object but at different points in time.
      * 
      * @return the ID of this <code>VisitorMemento</code>
      */
-    String getId();
+    String getAnchor();
     
 }

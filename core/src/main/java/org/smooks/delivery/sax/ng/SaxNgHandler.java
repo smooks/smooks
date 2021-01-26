@@ -347,12 +347,7 @@ public class SaxNgHandler extends SmooksContentHandler {
                     characterData = factory.createTextNode(new String(ch, start, length));
             }
             
-            final Element clonedParentElement = (Element) currentNodeState.getElement().cloneNode(false);
-            final CharacterData clonedCharacterData = (CharacterData) clonedParentElement.appendChild(characterData.cloneNode(false));
-
-            if ((DomUtils.getDepth(currentNodeState.getElement()) + 1) < Math.max(globalMaxNodeDepth, findMaxNodeDepth(currentNodeState))) {
-                currentNodeState.getElement().appendChild(characterData);
-            }
+            currentNodeState.getElement().appendChild(characterData);
             
             if (!currentNodeState.isNullProcessor() && currentNodeState.getVisitorBindings() != null) {
                 final List<ContentHandlerBinding<ChildrenVisitor>> childVisitorBindings = currentNodeState.getVisitorBindings().getChildVisitors();
@@ -360,15 +355,19 @@ public class SaxNgHandler extends SmooksContentHandler {
                 if (childVisitorBindings != null) {
                     for (final ContentHandlerBinding<ChildrenVisitor> childrenVisitorBinding : childVisitorBindings) {
                         if (childrenVisitorBinding.getResourceConfig().getSelectorPath().isTargetedAtElement(currentNodeState.getElement(), executionContext)) {
-                            childrenVisitorBinding.getContentHandler().visitChildText(clonedCharacterData, executionContext);
+                            childrenVisitorBinding.getContentHandler().visitChildText(characterData, executionContext);
                         }
                     }
                 }
             }
             
-            final CharDataFragmentEvent charFragmentEvent = new CharDataFragmentEvent(new NodeFragment(clonedParentElement.getFirstChild()));
+            final CharDataFragmentEvent charFragmentEvent = new CharDataFragmentEvent(new NodeFragment(characterData));
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                 executionEventListener.onEvent(charFragmentEvent);
+            }
+
+            if ((DomUtils.getDepth(currentNodeState.getElement()) + 1) >= Math.max(globalMaxNodeDepth, findMaxNodeDepth(currentNodeState))) {
+                currentNodeState.getElement().removeChild(characterData);
             }
         }
     }

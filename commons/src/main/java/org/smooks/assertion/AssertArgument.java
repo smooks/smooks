@@ -65,8 +65,7 @@ public abstract class AssertArgument {
 	public static void isNotNull(Object arg, String argName)
 			throws IllegalArgumentException {
 		if (arg == null) {
-			throw new IllegalArgumentException("null '" + argName
-					+ "' arg in method call.");
+			throw new IllegalArgumentException("Undefined '" + argName + "' argument in method call.");
 		}
 	}
 
@@ -83,8 +82,7 @@ public abstract class AssertArgument {
 	public static void isNotEmpty(String arg, String argName)
 			throws IllegalArgumentException {
 		if (arg != null && arg.trim().length() == 0) {
-			throw new IllegalArgumentException("Not null, but empty '"
-					+ argName + "' arg in method call.");
+			throw new IllegalArgumentException("Not undefined, but empty '" + argName + "' argument in method call.");
 		}
 	}
 
@@ -101,8 +99,7 @@ public abstract class AssertArgument {
 	public static void isNotNullAndNotEmpty(String arg, String argName)
 			throws IllegalArgumentException {
 		if (arg == null || arg.trim().length() == 0) {
-			throw new IllegalArgumentException("null or empty '" + argName
-					+ "' arg in method call.");
+			throw new IllegalArgumentException("Undefined or empty '" + argName + "' argument in method call.");
 		}
 	}
 
@@ -115,7 +112,7 @@ public abstract class AssertArgument {
 	 */
 	public static void isNotNullAndNotEmpty(Object[] arg, String argName) throws IllegalArgumentException {
 		if (arg == null || arg.length == 0) {
-			throw new IllegalArgumentException("null or empty '" + argName + "' arg in method call.");
+			throw new IllegalArgumentException("Undefined or empty '" + argName + "' argument in method call.");
 		}
 	}
 
@@ -128,7 +125,7 @@ public abstract class AssertArgument {
 	 */
 	public static void isNotNullAndNotEmpty(Collection<?> arg, String argName) throws IllegalArgumentException {
 		if (arg == null || arg.isEmpty()) {
-			throw new IllegalArgumentException("null or empty '" + argName + "' arg in method call.");
+			throw new IllegalArgumentException("Undefined or empty '" + argName + "' argument in method call.");
 		}
 	}
 
@@ -141,7 +138,7 @@ public abstract class AssertArgument {
 	 */
 	public static void isNotNullAndNotEmpty(Map<?, ?> arg, String argName) throws IllegalArgumentException {
 		if (arg == null || arg.isEmpty()) {
-			throw new IllegalArgumentException("null or empty '" + argName + "' arg in method call.");
+			throw new IllegalArgumentException("Undefined or empty '" + argName + "' argument in method call.");
 		}
 	}
 

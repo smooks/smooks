@@ -72,6 +72,8 @@ public interface TypedMap {
 	 */
     <T> T get(TypedKey<T> key);
 
+	<T> T getOrDefault(TypedKey<T> key, T value);
+	
 	/**
 	 * Returns the Map of attributes bound in this {@link TypedMap}
 	 * @return Map of all objects bound in this {@link TypedMap}

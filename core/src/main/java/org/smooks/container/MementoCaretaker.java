@@ -56,30 +56,32 @@ public interface MementoCaretaker {
     /**
      * Stores a copy of a <code>VisitorMemento</code>. It is the client's responsibility to remove the saved 
      * <code>VisitorMemento</code> once it is no longer needed either by calling {@link #forget(Fragment)} or 
-     * {@link #remove(VisitorMemento)}.
+     * {@link #forget(VisitorMemento)}.
      * 
      * @param visitorMemento  the <code>VisitorMemento</code> to copy and store. After saving, mutations to this 
      *                        <code>VisitorMemento</code> should not alter the saved copy.
      */
-    void save(VisitorMemento visitorMemento);
+    void capture(VisitorMemento visitorMemento);
 
     /**
      * Mutates a <code>VisitorMemento</code> to match the state of a saved <code>VisitorMemento</code>. The 
      * <code>VisitorMemento</code> parameter is restored from a saved <code>VisitorMemento</code> having an ID equal to 
-     * its ID as returned by {@link VisitorMemento#getId()}. The <code>VisitorMemento</code> parameter remains unchanged 
+     * its ID as returned by {@link VisitorMemento#getAnchor()}. The <code>VisitorMemento</code> parameter remains unchanged 
      * if no such saved <code>VisitorMemento</code> exists. 
      * 
      * @param visitorMemento  the <code>VisitorMemento</code> to restore
      */
     void restore(VisitorMemento visitorMemento);
 
+    boolean exists(VisitorMemento visitorMemento);
+
     /**
      * Removes the <code>VisitorMemento</code> having an ID equal to the <code>VisitorMemento</code> parameter's ID as 
-     * returned by {@link VisitorMemento#getId()}.
+     * returned by {@link VisitorMemento#getAnchor()}.
      * 
      * @param visitorMemento  the <code>VisitorMemento</code> to be removed
      */
-    void remove(VisitorMemento visitorMemento);
+    void forget(VisitorMemento visitorMemento);
 
     /**
      * Removes all <code>VisitorMemento</code>s bound to the <code>Fragment</code> parameter.
@@ -103,7 +105,7 @@ public interface MementoCaretaker {
      *                               <code>VisitorMemento replacing the earlier memento</code>
      * 
      * @see #restore(VisitorMemento)
-     * @see #save(VisitorMemento)
+     * @see #capture(VisitorMemento)
      */
     <T extends VisitorMemento> T stash(T defaultVisitorMemento, Function<T, T> function);
 }
