@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Smooks Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,55 +40,47 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.delivery.sax.ng;
+package org.smooks.delivery.sax.ng.session;
 
-import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.memento.SimpleVisitorMemento;
-import org.smooks.io.FragmentWriter;
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Element;
+import org.smooks.delivery.sax.ng.event.CharDataFragmentEvent;
+import org.smooks.event.ExecutionEvent;
+import org.smooks.event.ExecutionEventListener;
+import org.smooks.event.FragmentEvent;
+import org.smooks.event.types.EndFragmentEvent;
+import org.smooks.event.types.StartFragmentEvent;
+import org.w3c.dom.Node;
 
-import java.io.IOException;
+public abstract class SessionAwareExecutionEventListener implements ExecutionEventListener {
 
-public class VisitorWriter01 implements ElementVisitor {
+    protected final ExecutionContext executionContext;
+
+    public SessionAwareExecutionEventListener(ExecutionContext executionContext) {
+        this.executionContext = executionContext;
+    }
     
     @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) {
-        final NodeFragment nodeFragment = new NodeFragment(element);
-        executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment)), fragmentWriterVisitorMemento -> {
-            try {
-                fragmentWriterVisitorMemento.getState().write("");
-            } catch (IOException e) {
-                throw new SmooksException(e.getMessage(), e);
+    public void onEvent(ExecutionEvent executionEvent) {
+        if (executionEvent instanceof FragmentEvent<?> && ((FragmentEvent<?>) executionEvent).getFragment() instanceof NodeFragment) {
+            Node node = (Node) ((FragmentEvent<?>) executionEvent).getFragment().unwrap();
+            if (Session.isSession(node)) {
+                if (executionEvent instanceof StartFragmentEvent<?>) {
+                    Session session = new Session(node);
+                    if (session.getVisit().equals("visitBefore")) {
+                        doOnEvent(new StartFragmentEvent<>(new NodeFragment(executionContext.get(session.getSourceKey()))));
+                    } else if (session.getVisit().equals("visitChildText")) {
+                        doOnEvent(new CharDataFragmentEvent(new NodeFragment(executionContext.get(session.getSourceKey()))));
+                    } else if (session.getVisit().equals("visitAfter")) {
+                        doOnEvent(new EndFragmentEvent(new NodeFragment(executionContext.get(session.getSourceKey()))));
+                    }
+                }
+                return;
             }
+        }
 
-            return fragmentWriterVisitorMemento;
-        });
+        doOnEvent(executionEvent);
     }
-
-    @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) {
-        final NodeFragment nodeFragment = new NodeFragment(element);
-        executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment)), fragmentWriterVisitorMemento -> {
-            try {
-                fragmentWriterVisitorMemento.getState().write("");
-            } catch (IOException e) {
-                throw new SmooksException(e.getMessage(), e);
-            }           
-            
-            return fragmentWriterVisitorMemento;
-        });
-    }
-
-    @Override
-    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-
-    }
-
-    @Override
-    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-
-    }
+    
+    public abstract void doOnEvent(ExecutionEvent executionEvent);
 }

@@ -43,52 +43,52 @@
 package org.smooks.container;
 
 import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.memento.VisitorMemento;
+import org.smooks.delivery.memento.Memento;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Manages {@link VisitorMemento}s on behalf of {@link org.smooks.delivery.Visitor}s. 
+ * Manages {@link Memento}s on behalf of {@link org.smooks.delivery.Visitor}s. 
  */
 public interface MementoCaretaker {
 
     /**
      * Stores a copy of a <code>VisitorMemento</code>. It is the client's responsibility to remove the saved 
      * <code>VisitorMemento</code> once it is no longer needed either by calling {@link #forget(Fragment)} or 
-     * {@link #forget(VisitorMemento)}.
+     * {@link #forget(Memento)}.
      * 
      * @param visitorMemento  the <code>VisitorMemento</code> to copy and store. After saving, mutations to this 
      *                        <code>VisitorMemento</code> should not alter the saved copy.
      */
-    void capture(VisitorMemento visitorMemento);
+    void capture(Memento visitorMemento);
 
     /**
-     * Mutates a <code>VisitorMemento</code> to match the state of a saved <code>VisitorMemento</code>. The 
+     * Mutates a <code>Memento</code> to match the state of a saved <code>VisitorMemento</code>. The 
      * <code>VisitorMemento</code> parameter is restored from a saved <code>VisitorMemento</code> having an ID equal to 
-     * its ID as returned by {@link VisitorMemento#getAnchor()}. The <code>VisitorMemento</code> parameter remains unchanged 
+     * its ID as returned by {@link Memento#getAnchor()}. The <code>VisitorMemento</code> parameter remains unchanged 
      * if no such saved <code>VisitorMemento</code> exists. 
      * 
      * @param visitorMemento  the <code>VisitorMemento</code> to restore
      */
-    void restore(VisitorMemento visitorMemento);
+     void restore(Memento visitorMemento);
 
-    boolean exists(VisitorMemento visitorMemento);
+     boolean exists(Memento visitorMemento);
 
     /**
      * Removes the <code>VisitorMemento</code> having an ID equal to the <code>VisitorMemento</code> parameter's ID as 
-     * returned by {@link VisitorMemento#getAnchor()}.
+     * returned by {@link Memento#getAnchor()}.
      * 
      * @param visitorMemento  the <code>VisitorMemento</code> to be removed
      */
-    void forget(VisitorMemento visitorMemento);
+     void forget(Memento visitorMemento);
 
     /**
      * Removes all <code>VisitorMemento</code>s bound to the <code>Fragment</code> parameter.
      * 
      * @param fragment  the fragment 
      */
-    void forget(Fragment fragment);
+     void forget(Fragment<?> fragment);
 
     /**
      * Invokes a {@link Consumer} with a restored <code>VisitorMemento</code> and then saves the <code>VisitorMemento</code>. 
@@ -104,8 +104,8 @@ public interface MementoCaretaker {
      * @param function               the function acting on the restored <code>VisitorMemento</code> and returning a new 
      *                               <code>VisitorMemento replacing the earlier memento</code>
      * 
-     * @see #restore(VisitorMemento)
-     * @see #capture(VisitorMemento)
+     * @see #restore(Memento)
+     * @see #capture(Memento)
      */
-    <T extends VisitorMemento> T stash(T defaultVisitorMemento, Function<T, T> function);
+    <T extends Memento> T stash(T defaultVisitorMemento, Function<T, T> function);
 }

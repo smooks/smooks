@@ -42,53 +42,72 @@
  */
 package org.smooks.delivery.sax.ng;
 
+import org.junit.Test;
+import org.smooks.Smooks;
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.memento.SimpleVisitorMemento;
+import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.io.FragmentWriter;
+import org.smooks.payload.StringSource;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
+import java.io.StringWriter;
 
-public class VisitorWriter01 implements ElementVisitor {
-    
-    @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) {
-        final NodeFragment nodeFragment = new NodeFragment(element);
-        executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment)), fragmentWriterVisitorMemento -> {
+import static org.junit.Assert.assertEquals;
+
+public class NodeReaderFunctionalTest {
+
+    public static class NodeReaderResource implements ElementVisitor {
+        private final TypedKey<FragmentWriter> fragmentWriterTypedKey = new TypedKey<>();
+
+        @Override
+        public void visitBefore(Element element, ExecutionContext executionContext) {
+            FragmentWriter fragmentWriter = new FragmentWriter(executionContext, new NodeFragment(element), false);
+            executionContext.put(fragmentWriterTypedKey, fragmentWriter);
             try {
-                fragmentWriterVisitorMemento.getState().write("");
+                fragmentWriter.write("<bar>");
             } catch (IOException e) {
-                throw new SmooksException(e.getMessage(), e);
+                throw new SmooksException(e);
             }
+        }
 
-            return fragmentWriterVisitorMemento;
-        });
-    }
-
-    @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) {
-        final NodeFragment nodeFragment = new NodeFragment(element);
-        executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment)), fragmentWriterVisitorMemento -> {
+        @Override
+        public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
             try {
-                fragmentWriterVisitorMemento.getState().write("");
+                executionContext.get(fragmentWriterTypedKey).write(characterData.getParentNode().getNodeName());
             } catch (IOException e) {
-                throw new SmooksException(e.getMessage(), e);
-            }           
-            
-            return fragmentWriterVisitorMemento;
-        });
+                throw new SmooksException(e);
+            }
+        }
+
+        @Override
+        public void visitAfter(Element element, ExecutionContext executionContext) {
+            try {
+                executionContext.get(fragmentWriterTypedKey).write("</bar>");
+            } catch (IOException e) {
+                throw new SmooksException(e);
+            }
+        }
+
+        @Override
+        public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+
+        }
     }
+    
+    @Test
+    public void test() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-node-reader.xml"));
+        ExecutionContext execContext = smooks.createExecutionContext();
+        StringWriter result = new StringWriter();
 
-    @Override
-    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-
-    }
-
-    @Override
-    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-
+        smooks.filterSource(execContext, new StringSource("<helloWorld>bar</helloWorld>"), new StreamResult(result));
+        assertEquals("<bar>helloWorld</bar>", result.toString());
     }
 }

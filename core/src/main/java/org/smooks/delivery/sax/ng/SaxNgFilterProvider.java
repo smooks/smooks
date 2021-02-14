@@ -65,24 +65,25 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
         final InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorFactoryLookup());
 
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
-            final String selector = visitorBinding.getResourceConfig().getSelectorPath().getTargetElement();
             visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
 
             if (visitorBinding.getContentHandler() instanceof BeforeVisitor || visitorBinding.getContentHandler() instanceof AfterVisitor) {
-                final Visitor interceptorChain = interceptorVisitorChainFactory.createInterceptorChain(visitorBinding);
-                if (interceptorChain instanceof BeforeVisitor && visitBeforeAnnotationsOK(visitorBinding.getContentHandler())) {
-                    saxNgContentDeliveryConfig.getBeforeVisitorSelectorTable().put(selector, visitorBinding.getResourceConfig(), (BeforeVisitor) interceptorChain);
-                    if (interceptorChain instanceof ChildrenVisitor) {
-                        saxNgContentDeliveryConfig.getChildVisitorSelectorTable().put(selector, visitorBinding.getResourceConfig(), (ChildrenVisitor) interceptorChain);
+                final ContentHandlerBinding<Visitor> interceptorChain = interceptorVisitorChainFactory.createInterceptorChain(visitorBinding);
+                final String selector = interceptorChain.getResourceConfig().getSelectorPath().getTargetElement();
+                final Visitor interceptorChainVisitor = interceptorChain.getContentHandler();
+                if (interceptorChainVisitor instanceof BeforeVisitor && visitBeforeAnnotationsOK(visitorBinding.getContentHandler())) {
+                    saxNgContentDeliveryConfig.getBeforeVisitorSelectorTable().put(selector, interceptorChain.getResourceConfig(), (BeforeVisitor) interceptorChainVisitor);
+                    if (interceptorChainVisitor instanceof ChildrenVisitor) {
+                        saxNgContentDeliveryConfig.getChildVisitorSelectorTable().put(selector, interceptorChain.getResourceConfig(), (ChildrenVisitor) interceptorChainVisitor);
                     }
                 }
-                if (interceptorChain instanceof AfterVisitor && visitAfterAnnotationsOK(visitorBinding.getContentHandler())) {
-                    saxNgContentDeliveryConfig.getAfterVisitorSelectorTable().put(selector, visitorBinding.getResourceConfig(), (AfterVisitor) interceptorChain);
-                    if (!(interceptorChain instanceof BeforeVisitor) && interceptorChain instanceof ChildrenVisitor) {
-                        saxNgContentDeliveryConfig.getChildVisitorSelectorTable().put(selector, visitorBinding.getResourceConfig(), (ChildrenVisitor) interceptorChain);
+                if (interceptorChainVisitor instanceof AfterVisitor && visitAfterAnnotationsOK(visitorBinding.getContentHandler())) {
+                    saxNgContentDeliveryConfig.getAfterVisitorSelectorTable().put(selector, interceptorChain.getResourceConfig(), (AfterVisitor) interceptorChainVisitor);
+                    if (!(interceptorChainVisitor instanceof BeforeVisitor) && interceptorChainVisitor instanceof ChildrenVisitor) {
+                        saxNgContentDeliveryConfig.getChildVisitorSelectorTable().put(selector, interceptorChain.getResourceConfig(), (ChildrenVisitor) interceptorChainVisitor);
                     }
                 }
-                configBuilderEvents.add(new ConfigBuilderEvent(visitorBinding.getResourceConfig(), "Added as a SAX NG visitor."));
+                configBuilderEvents.add(new ConfigBuilderEvent(interceptorChain.getResourceConfig(), "Added as a SAX NG visitor."));
             }
         }
         

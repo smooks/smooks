@@ -167,21 +167,24 @@
         </xs:choice>
     </xs:complexType>
 
+    <xs:element name="directive" abstract="true"/>
+
     <xs:complexType name="inline">
         <xs:annotation>
             <xs:documentation xml:lang="en">
-                Inline the templating result into the <b>Smooks.filter</b> Result message.
+                Inline the result into the <b>Smooks.filter</b> Result message.
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="directive" type="smooks-core:inlineDirective" use="required">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">
-                    How the templating result is to be used (relative to the element on which it
-                    is applied).
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
+        <xs:sequence>
+            <xs:element ref="smooks-core:directive"/>
+        </xs:sequence>
     </xs:complexType>
+    
+    <xs:element name="replace" substitutionGroup="smooks-core:directive"/>
+    <xs:element name="prepend-before" substitutionGroup="smooks-core:directive"/>
+    <xs:element name="prepend-after" substitutionGroup="smooks-core:directive"/>
+    <xs:element name="append-before" substitutionGroup="smooks-core:directive"/>
+    <xs:element name="append-after" substitutionGroup="smooks-core:directive"/>
     
     <xs:complexType name="bindTo">
         <xs:annotation>
@@ -214,16 +217,6 @@
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
-
-    <xs:simpleType name="inlineDirective">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="REPLACE"/>
-            <xs:enumeration value="PREPEND_BEFORE"/>
-            <xs:enumeration value="PREPEND_AFTER"/>
-            <xs:enumeration value="APPEND_BEFORE"/>
-            <xs:enumeration value="APPEND_AFTER"/>
-        </xs:restriction>
-    </xs:simpleType>
     
     <xs:complexType name="result">
         <xs:annotation>
@@ -283,7 +276,8 @@
     </xs:complexType>
 
     <xs:complexType name="interceptor">
-        <xs:attribute name="class" type="xs:string" use="required" />
+        <xs:attribute name="class" type="xs:string" use="required"/>
+        <xs:attribute name="selector" type="xs:string"/>
     </xs:complexType>
     
     <xs:complexType name="terminate">
@@ -424,4 +418,19 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:element name="node-reader" substitutionGroup="smooks:abstract-reader">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="smooks:abstract-reader">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">Stream Reader</xs:documentation>
+                    </xs:annotation>
+                    <xs:sequence>
+                        <xs:element ref="smooks:abstract-resource-config" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    
 </xs:schema>

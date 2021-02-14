@@ -104,17 +104,17 @@ public class XmlUtil {
         }
     }
 
-    private static final Set<String> xmlReservedNamespaces = new HashSet<String>();
+    private static final Set<String> XML_RESERVED_NAMESPACES = new HashSet<>();
     
     static {
-    	xmlReservedNamespaces.add(XMLConstants.NULL_NS_URI);
-    	xmlReservedNamespaces.add(XMLConstants.RELAXNG_NS_URI);
-    	xmlReservedNamespaces.add(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-    	xmlReservedNamespaces.add(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-    	xmlReservedNamespaces.add(XMLConstants.W3C_XPATH_DATATYPE_NS_URI);
-    	xmlReservedNamespaces.add(XMLConstants.XML_DTD_NS_URI);
-    	xmlReservedNamespaces.add(XMLConstants.XML_NS_URI);
-    	xmlReservedNamespaces.add(XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
+    	XML_RESERVED_NAMESPACES.add(XMLConstants.NULL_NS_URI);
+    	XML_RESERVED_NAMESPACES.add(XMLConstants.RELAXNG_NS_URI);
+    	XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+    	XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    	XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XPATH_DATATYPE_NS_URI);
+    	XML_RESERVED_NAMESPACES.add(XMLConstants.XML_DTD_NS_URI);
+    	XML_RESERVED_NAMESPACES.add(XMLConstants.XML_NS_URI);
+    	XML_RESERVED_NAMESPACES.add(XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
     }
 
     public static final char[] LT = new char[] {'&', 'l', 't', ';'};
@@ -129,7 +129,7 @@ public class XmlUtil {
     private static final String CDATA_END     = "]]>";
     
 	public static boolean isXMLReservedNamespace(String namespace) {
-		return xmlReservedNamespaces.contains(namespace);
+		return XML_RESERVED_NAMESPACES.contains(namespace);
 	}
 
     /**
@@ -142,8 +142,8 @@ public class XmlUtil {
      */
     public static void removeEntities(Reader reader, Writer writer)
             throws IOException {
-        int curChar = -1;
-        StringBuffer ent = null;
+        int curChar;
+        StringBuffer ent;
 
         if (reader == null) {
             throw new IllegalArgumentException("null reader arg");
@@ -193,7 +193,7 @@ public class XmlUtil {
                                 .getCharacterCode(ent.substring(1));
 
                         if (character != null) {
-                            writer.write(character.charValue());
+                            writer.write(character);
                         } else {
                             // bogus entity ref - leave as is.
                             writer.write(ent.toString());
@@ -253,7 +253,7 @@ public class XmlUtil {
      */
     public static void rewriteEntities(Reader reader, Writer writer)
             throws IOException {
-        int curChar = -1;
+        int curChar;
         StringBuffer ent;
         char[] entBuf;
 
@@ -287,8 +287,7 @@ public class XmlUtil {
 
                         if (character != null) {
                             writer.write("&#");
-                            writer.write(String.valueOf((int) character
-                                    .charValue()));
+                            writer.write(String.valueOf((int) character));
                             writer.write(";");
                         } else {
                             // bogus entity ref - leave as is.
@@ -421,16 +420,15 @@ public class XmlUtil {
      *                      the default error handler will be used.
      * @return Document instance.
      */
-    public static Document parseStream(Reader stream, final ErrorHandler errorHandler) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder;
+    public static Document parseStream(final Reader stream, final ErrorHandler errorHandler) throws ParserConfigurationException, IOException, SAXException {
+        final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
 
-        factory.setNamespaceAware(true);
-        docBuilder = factory.newDocumentBuilder();
+        final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         if (errorHandler != null) {
-            docBuilder.setErrorHandler(errorHandler);
+            documentBuilder.setErrorHandler(errorHandler);
         }
-        return docBuilder.parse(new InputSource(stream));
+        return documentBuilder.parse(new InputSource(stream));
     }
 
     private static Schema getSchema(EntityResolver entityResolver) throws SAXException, IOException {
@@ -545,6 +543,10 @@ public class XmlUtil {
         return document.createElementNS(namespace, localPart);
     }
 
+    public static String serialize(Node node) throws DOMException {
+        return serialize(node, false, false);
+    }
+    
     /**
      * Serialise the supplied W3C DOM subtree.
      * <p/>
@@ -631,7 +633,7 @@ public class XmlUtil {
 
             if (format) {
                 try {
-                    factory.setAttribute("indent-number", new Integer(4));
+                    factory.setAttribute("indent-number", 4);
                 } catch (Exception e) {
                     // Ignore... Xalan may throw on this!!
                     // We handle Xalan indentation below (yeuckkk) ...
@@ -682,7 +684,7 @@ public class XmlUtil {
      * @return The indented XML string.
      */
     public static String indent(String xml, int indent) {
-        StringBuffer indentedXml = new StringBuffer();
+        StringBuilder indentedXml = new StringBuilder();
         int xmlLen = xml.length();
         char[] indentChars = new char[indent];
 
@@ -707,13 +709,13 @@ public class XmlUtil {
                     // We're at the start of a new line.  Need to determine
                     // if the next sequence of non-whitespace characters are the start/end of
                     // an XML element.  If it is... add an indent before....
-                    while(i < xmlLen) {
+                    while (true) {
                         i++;
 
                         char preXmlChar = xml.charAt(i);
-                        if(!Character.isWhitespace(preXmlChar)) {
-                            if(preXmlChar == '<') {
-                                if(!isStartOf(xml, i, COMMENT_START) && !isStartOf(xml, i, CDATA_START)) {
+                        if (!Character.isWhitespace(preXmlChar)) {
+                            if (preXmlChar == '<') {
+                                if (!isStartOf(xml, i, COMMENT_START) && !isStartOf(xml, i, CDATA_START)) {
                                     indentedXml.append(indentChars);
                                 }
                             }

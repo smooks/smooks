@@ -46,26 +46,28 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.fragment.Fragment;
 
-public abstract class AbstractVisitorMemento implements VisitorMemento {
-    protected final Fragment fragment;
+public abstract class AbstractVisitorMemento implements Memento {
+    protected final Fragment<?> fragment;
     protected final Visitor visitor;
     protected String anchor;
 
-    public AbstractVisitorMemento(final Fragment fragment, final Visitor visitor) {
+    public AbstractVisitorMemento(final Fragment<?> fragment, final Visitor visitor) {
         AssertArgument.isNotNull(fragment, "fragment");
         AssertArgument.isNotNull(visitor, "visitor");
         
         this.fragment = fragment;
         this.visitor = visitor;
     }
-    
-    @Override
+
+    /**
+     * @return the <code>Visitor</code> which this <code>VisitorMemento</code> is bound to
+     */
     public Visitor getVisitor() {
         return visitor;
     }
 
     @Override
-    public Fragment getFragment() {
+    public Fragment<?> getFragment() {
         return fragment;
     }
 

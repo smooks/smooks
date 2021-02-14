@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Smooks Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,39 +40,39 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.event;
+package org.smooks.delivery.sax.ng.session;
 
-import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXUtil;
-import org.smooks.xml.DomUtils;
+import org.smooks.SmooksException;
+import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
+import org.smooks.xml.Namespace;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-/**
- * An element processing related event.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public abstract class FragmentEvent<T> implements ExecutionEvent {
+public class Session {
 
-    private final Fragment<T> fragment;
+    private final Node node;
 
-    public FragmentEvent(Fragment<T> fragment) {
-        this.fragment = fragment;
-    }
-
-    public Fragment<T> getFragment() {
-        return fragment;
-    }
-
-    public int getDepth() {
-        T unwrappedFragment = fragment.unwrap();
-        if (unwrappedFragment instanceof Element) {
-            return DomUtils.getDepth((Element) unwrappedFragment);
-        } else if (unwrappedFragment instanceof SAXElement) {
-            return SAXUtil.getDepth((SAXElement) unwrappedFragment);
+    public Session(Node node) {
+        if (!isSession(node)) {
+            throw new SmooksException("Node is not a Smooks session");
         }
+        this.node = node;
+    }
+    
+    public static boolean isSession(Node node) {
+        return node instanceof Element && node.getNamespaceURI() != null && node.getNamespaceURI().equals(Namespace.SMOOKS_URI) && node.getLocalName().equals("session");
+    }
 
-        return 0;
+    public TypedKey<Node> getSourceKey() {
+        return new TypedKey<>(node.getAttributes().getNamedItem("source").getNodeValue());
+    }
+
+    public String getVisit() {
+        return node.getAttributes().getNamedItem("visit").getNodeValue();
+    }
+    
+    public Node getSourceValue(ExecutionContext executionContext) {
+        return executionContext.get(new TypedKey<>(node.getAttributes().getNamedItem("source").getNodeValue()));
     }
 }

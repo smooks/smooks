@@ -105,7 +105,7 @@ public class Export implements ContentHandler {
     }
 
     @PostConstruct
-    public void addToExportsInApplicationContext() {
+    public void postConstruct() {
         initExtractSet();
         Exports exports = applicationContext.getRegistry().lookup(new ExportsLookup());
         exports.addExport(this);

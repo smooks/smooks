@@ -57,5 +57,7 @@ public enum ContentDeliveryConfigBuilderLifecycleEvent {
      * <p/>
      * The builder instance (for the profile) is now created and ready to be used.
      */
-    CONFIG_BUILDER_CREATED
+    CONTENT_DELIVERY_BUILDER_CREATED,
+
+    CONTENT_DELIVERY_CONFIG_CREATED
 }

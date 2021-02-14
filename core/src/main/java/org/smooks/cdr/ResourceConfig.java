@@ -270,6 +270,12 @@ public class ResourceConfig {
         setSelector(selector);
         setTargetProfile(Profile.DEFAULT_PROFILE);
     }
+    
+    public ResourceConfig(ResourceConfig resourceConfig) {
+        setTargetProfile(resourceConfig.getTargetProfile());
+        setResource(resourceConfig.getResource());
+        setSelectorPath(resourceConfig.getSelectorPath().clone());
+    }
 
     /**
      * Public constructor.

@@ -45,16 +45,13 @@ package org.smooks.delivery.sax.ng;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
-import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Filter;
 import org.smooks.delivery.sax.SmooksSAXFilter;
 import org.smooks.delivery.sax.ng.terminate.TerminateException;
 import org.smooks.io.Stream;
 import org.smooks.payload.FilterResult;
 import org.smooks.payload.FilterSource;
 import org.smooks.payload.JavaSource;
-import org.smooks.payload.StringSource;
 import org.smooks.xml.DomUtils;
 import org.smooks.xml.XmlUtil;
 
@@ -65,7 +62,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
 
 public class SaxNgFilter extends SmooksSAXFilter {
@@ -94,20 +90,8 @@ public class SaxNgFilter extends SmooksSAXFilter {
 
     @Override
     protected void doFilter(final Source source, final Result result) {
-        final Source newSource;
-        boolean closeEmptyElements = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-
-        if (source instanceof DOMSource) {
-            newSource = new StringSource(XmlUtil.serialize(((DOMSource) source).getNode(), false, closeEmptyElements));
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("DOMSource converted to a StringSource.");
-            }
-        } else {
-            newSource = source;
-        }
-
-        if (!(newSource instanceof StreamSource) && !(newSource instanceof JavaSource)) {
-            throw new IllegalArgumentException("Unsupported " + newSource.getClass().getName() + " source type: SAX NG filter supports StreamSource and JavaSource");
+        if (!(source instanceof StreamSource || source instanceof JavaSource || source instanceof DOMSource)) {
+            throw new IllegalArgumentException("Unsupported " + source.getClass().getName() + " source type: SAX NG filter supports StreamSource, JavaSource, and DOMSource");
         }
         if (!(result instanceof FilterResult)) {
             if (result != null && !(result instanceof StreamResult) && !(result instanceof DOMResult)) {
@@ -118,7 +102,7 @@ public class SaxNgFilter extends SmooksSAXFilter {
         try {
             final Writer writer = getWriter(result, executionContext);
             executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writer);
-            parser.parse(newSource, executionContext);
+            parser.parse(source, executionContext);
             
             if (result instanceof DOMResult) {
                 ((DOMResult) result).setNode(XmlUtil.parseStream(new StringReader(writer.toString())));
@@ -133,20 +117,11 @@ public class SaxNgFilter extends SmooksSAXFilter {
             throw new SmooksException("Failed to filter source", e);
         } finally {
             if (closeSource) {
-                close(newSource);
+                close(source);
             }
             if (closeResult) {
                 close(result);
             }
-        }
-    }
-
-    @Override
-    protected Writer getWriter(Result result, ExecutionContext executionContext) {
-        if (result instanceof DOMResult) {
-            return new StringWriter();
-        } else {
-            return super.getWriter(result, executionContext);
         }
     }
 }

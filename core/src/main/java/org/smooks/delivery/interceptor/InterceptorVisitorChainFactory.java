@@ -43,18 +43,15 @@
 package org.smooks.delivery.interceptor;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.Parameter;
 import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandlerBinding;
 import org.smooks.delivery.Visitor;
-import org.smooks.util.ClassUtil;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Namespace Mappings.
@@ -71,40 +68,38 @@ public class InterceptorVisitorChainFactory {
 	@Inject
 	private ApplicationContext applicationContext;
 
-	private final List<Class<? extends InterceptorVisitor>> interceptorVisitorClasses = new ArrayList<>();
-
-	@PostConstruct
-	public void postConstruct() throws ClassNotFoundException {
-		final List<Parameter<?>> interceptorClasses = resourceConfig.getParameters("class");
-		if (interceptorClasses != null) {
-			for (String interceptorClassName : interceptorClasses.stream().map(Parameter::toString).collect(Collectors.toList())) {
-				interceptorVisitorClasses.add(ClassUtil.forName(interceptorClassName, this.getClass()));
-			}
-		}
-	}
-
-	public Visitor createInterceptorChain(final ContentHandlerBinding<Visitor> visitorBinding) {
-		if (interceptorVisitorClasses.isEmpty()) {
-			return visitorBinding.getContentHandler();
+	protected final List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = new ArrayList<>();
+	
+	public ContentHandlerBinding<Visitor> createInterceptorChain(final ContentHandlerBinding<Visitor> visitorBinding) {
+		if (interceptorVisitorDefinitions.isEmpty()) {
+			return visitorBinding;
 		} else {
-			InterceptorVisitor interceptorVisitor = null;
 			ContentHandlerBinding<Visitor> interceptedVisitorBinding = visitorBinding;
-			for (Class<? extends InterceptorVisitor> interceptorVisitorClass : interceptorVisitorClasses) {
+			for (InterceptorVisitorDefinition interceptorVisitorDefinition : interceptorVisitorDefinitions) {
+				InterceptorVisitor interceptorVisitor;
 				try {
-					interceptorVisitor = interceptorVisitorClass.newInstance();
+					interceptorVisitor = interceptorVisitorDefinition.getInterceptorVisitorClass().newInstance();
 				} catch (InstantiationException | IllegalAccessException e) {
 					throw new SmooksException(e.getMessage(), e);
 				}
 				interceptorVisitor.setVisitorBinding(interceptedVisitorBinding);
 				interceptorVisitor.setApplicationContext(applicationContext);
-				interceptedVisitorBinding = new ContentHandlerBinding<>(interceptorVisitor, visitorBinding.getResourceConfig());
+
+				final ResourceConfig interceptorResourceConfig = new ResourceConfig(visitorBinding.getResourceConfig());
+				if (interceptorVisitorDefinition.getSelector().isPresent()) {
+					interceptorResourceConfig.getSelectorPath().setSelector(interceptorVisitorDefinition.getSelector().get());
+					for (SelectorStep selectorStep : interceptorResourceConfig.getSelectorPath()) {
+						selectorStep.buildPredicatesEvaluator(interceptorResourceConfig.getSelectorPath().getNamespaces());
+					}
+				}
+				interceptedVisitorBinding = new ContentHandlerBinding<>(interceptorVisitor, interceptorResourceConfig);
 			}
 			
-			return interceptorVisitor;
+			return interceptedVisitorBinding;
 		}
 	}
 
-	public List<Class<? extends InterceptorVisitor>> getInterceptorVisitorClasses() {
-		return interceptorVisitorClasses;
+	public List<InterceptorVisitorDefinition> getInterceptorVisitorDefinitions() {
+		return interceptorVisitorDefinitions;
 	}
 }

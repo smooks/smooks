@@ -94,7 +94,6 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
         Stack<ResourceConfig> resourceStack = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack();
         ResourceConfig currentConfig;
         ResourceConfig parentConfig;
-        String value;
 
         String actualMapTo = mapTo.orElse(null);
 

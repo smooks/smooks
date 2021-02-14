@@ -110,9 +110,8 @@ public class JavaSourceTest {
         assertEquals("<nullsource-document/>", result.getResult());
     }
 
-	@Test
-    public void test_streamingOff_02()
-  {
+    @Test
+    public void test_streamingOff_02() {
         Smooks smooks = new Smooks();
         JavaSource javaSource = new JavaSource(new MyBean1());
         StringResult result = new StringResult();

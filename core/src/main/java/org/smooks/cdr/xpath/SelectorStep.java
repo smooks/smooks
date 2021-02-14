@@ -42,12 +42,11 @@
  */
 package org.smooks.cdr.xpath;
 
-import javassist.CannotCompileException;
-import javassist.NotFoundException;
 import org.jaxen.expr.NameStep;
 import org.jaxen.expr.Step;
 import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
+import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
@@ -57,9 +56,6 @@ import org.smooks.cdr.xpath.evaluators.XPathExpressionEvaluator;
 import org.smooks.cdr.xpath.evaluators.equality.AbstractEqualityEvaluator;
 import org.smooks.cdr.xpath.evaluators.logical.AbstractLogicalEvaluator;
 import org.smooks.cdr.xpath.evaluators.value.TextValue;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.xml.DomUtils;
-import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -177,11 +173,7 @@ public class SelectorStep {
     @SuppressWarnings("WeakerAccess")
     public void setAttributeStep(Step attributeStep) {
         this.attributeStep = attributeStep;
-        try {
-            attribute = toQName(attributeStep, null);
-        } catch (SAXPathException e) {
-            throw new IllegalStateException("Unexpected SAXPathException setting attribute SelectorStep.", e);
-        }
+        attribute = toQName(attributeStep, null);
     }
 
     @Override
@@ -252,7 +244,7 @@ public class SelectorStep {
         return isStarStar;
     }
 
-    public void buildPredicatesEvaluator(Properties namespaces) throws SAXPathException, NotFoundException, CannotCompileException, IllegalAccessException, InstantiationException {
+    public void buildPredicatesEvaluator(Properties namespaces) {
         AssertArgument.isNotNull(namespaces, "namespaces");
         if(predicatesEvaluator != null) {
             return;
@@ -263,7 +255,7 @@ public class SelectorStep {
             try {
                 predicatesEvaluator = builder.build();
             } catch (SAXPathException e) {
-                throw new SAXPathException("Error processing XPath selector expression '" + xpathExpression + "'.", e);
+                throw new SmooksException("Error processing XPath selector expression '" + xpathExpression + "'.", e);
             }
 
             // And update the QNames again now that we have the namespaces...
@@ -275,35 +267,7 @@ public class SelectorStep {
             predicatesEvaluator = PassThruEvaluator.INSTANCE;
         }
     }
-
-    public boolean isTargetedAtElement(SAXElement element) {
-        QName qname = element.getName();
-
-        if(isStar || isStarStar) {
-            return true;
-        }
-
-        if(!qname.getLocalPart().equalsIgnoreCase(this.element.getLocalPart())) {
-            return false;
-        }
-
-        return isTargetedAtNamespace(qname.getNamespaceURI());
-    }
-
-    public boolean isTargetedAtElement(Element element) {
-        String elementName = DomUtils.getName(element);
-
-        if(isStar || isStarStar) {
-            return true;
-        }
-
-        if(!elementName.equalsIgnoreCase(this.element.getLocalPart())) {
-            return false;
-        }
-
-        return isTargetedAtNamespace(element.getNamespaceURI());
-    }
-
+    
     /**
      * Is this StepSelector instance targeted at the specified namespace.
      * <p/>
@@ -394,13 +358,17 @@ public class SelectorStep {
         }
     }
 
-    private QName toQName(Step step, PredicatesEvaluatorBuilder evaluatorCompiler) throws SAXPathException {
+    private QName toQName(Step step, PredicatesEvaluatorBuilder evaluatorCompiler) throws SmooksException {
         String nsPrefix = ((NameStep) step).getPrefix();
         String localPart = ((NameStep) step).getLocalName();
 
         if(nsPrefix != null && !nsPrefix.trim().equals("")) {
             if(evaluatorCompiler != null) {
-                return new QName(evaluatorCompiler.getNamespace(nsPrefix), localPart, nsPrefix);
+                try {
+                    return new QName(evaluatorCompiler.getNamespace(nsPrefix), localPart, nsPrefix);
+                } catch (SAXPathException e) {
+                    throw new SmooksException(e);
+                }
             } else {
                 // Will need to update the namespace later... when we have the
                 // namespace prefix-to-uri mappings...

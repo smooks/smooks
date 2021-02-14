@@ -42,8 +42,6 @@
  */
 package org.smooks.cdr.xpath;
 
-import javassist.CannotCompileException;
-import javassist.NotFoundException;
 import org.jaxen.saxpath.SAXPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,13 +51,8 @@ import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.xpath.evaluators.PassThruEvaluator;
 import org.smooks.cdr.xpath.evaluators.XPathExpressionEvaluator;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.sax.SAXElement;
 import org.smooks.expression.ExecutionContextExpressionEvaluator;
 import org.smooks.expression.ExpressionEvaluator;
-import org.smooks.xml.DomUtils;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -87,7 +80,7 @@ public class SelectorPath implements List<SelectorStep> {
      */
     private ExpressionEvaluator expressionEvaluator;
 
-    private List<SelectorStep> selectorSteps = new ArrayList<>();
+    private final List<SelectorStep> selectorSteps = new ArrayList<>();
 
     /**
      * Get the selector definition for this ResourceConfig.
@@ -148,7 +141,7 @@ public class SelectorPath implements List<SelectorStep> {
         return selectorPath;
     }
 
-    private class LegacySelectorStep extends SelectorStep {
+    private static class LegacySelectorStep extends SelectorStep {
         public LegacySelectorStep(String selector, String targetElementName) {
             super(selector, targetElementName);
         }
@@ -161,8 +154,7 @@ public class SelectorPath implements List<SelectorStep> {
             return PassThruEvaluator.INSTANCE;
         }
 
-        @SuppressWarnings("RedundantThrows")
-        public void buildPredicatesEvaluator(Properties namespaces) throws SAXPathException, NotFoundException, CannotCompileException, IllegalAccessException, InstantiationException {
+        public void buildPredicatesEvaluator(Properties namespaces) {
             // Ignore this.
         }
     }
@@ -283,363 +275,6 @@ public class SelectorPath implements List<SelectorStep> {
     public ExpressionEvaluator getConditionEvaluator() {
         return expressionEvaluator;
     }
-    
-    /**
-     * Is this resource configuration targeted at the specified DOM element
-     * in context.
-     * <p/>
-     * See details about the "selector" attribute in the
-     * <a href="#attribdefs">Attribute Definitions</a> section.
-     * <p/>
-     * Note this doesn't perform any namespace checking.
-     *
-     * @param element          The element to check against.
-     * @param executionContext The current execution context.
-     * @return True if this resource configuration is targeted at the specified
-     * element in context, otherwise false.
-     */
-    private boolean isTargetedAtElementContext(Element element, ExecutionContext executionContext) {
-        Node currentNode = element;
-        ContextIndex index = new ContextIndex(executionContext);
-
-        index.i = selectorSteps.size() - 1;
-
-        // Unless it's **, start at the parent because the current element
-        // has already been tested...
-        if (!selectorSteps.get(index.i).isStarStar()) {
-            index.i = selectorSteps.size() - 2;
-            currentNode = element.getParentNode();
-        } else {
-            // The target selector step is "**".  If the parent one is "#document" and we're at
-            // the root now, then fail...
-            if (selectorSteps.size() == 2 && selectorSteps.get(0).isRooted() && element.getParentNode() == null) {
-                return false;
-            }
-        }
-
-        if (currentNode == null || currentNode.getNodeType() != Node.ELEMENT_NODE) {
-            return false;
-        }
-
-        // Check the element name(s).
-        while (index.i >= 0) {
-            Element currentElement = (Element) currentNode;
-            Node parentNode;
-
-            parentNode = currentElement.getParentNode();
-            if (parentNode == null || parentNode.getNodeType() != Node.ELEMENT_NODE) {
-                parentNode = null;
-            }
-
-            if (!isTargetedAtElementContext(currentElement, (Element) parentNode, index)) {
-                return false;
-            }
-
-            if (parentNode == null) {
-                return true;
-            }
-
-            currentNode = parentNode;
-        }
-
-        return true;
-    }
-
-    /**
-     * Is this resource configuration targeted at the specified SAX element
-     * in context.
-     * <p/>
-     * See details about the "selector" attribute in the
-     * <a href="#attribdefs">Attribute Definitions</a> section.
-     * <p/>
-     * Note this doesn't perform any namespace checking.
-     *
-     * @param element          The element to check against.
-     * @param executionContext The current execution context.
-     * @return True if this resource configuration is targeted at the specified
-     * element in context, otherwise false.
-     */
-    private boolean isTargetedAtElementContext(SAXElement element, ExecutionContext executionContext) {
-        SAXElement currentElement = element;
-        ContextIndex index = new ContextIndex(executionContext);
-
-        index.i = selectorSteps.size() - 1;
-
-        // Unless it's **, start at the parent because the current element
-        // has already been tested...
-        if (!selectorSteps.get(index.i).isStarStar()) {
-            index.i = selectorSteps.size() - 2;
-            currentElement = element.getParent();
-        } else {
-            // The target selector step is "**".  If the parent one is "#document" and we're at
-            // the root now, then fail...
-            if (selectorSteps.size() == 2 && selectorSteps.get(0).isRooted() && element.getParent() == null) {
-                return false;
-            }
-        }
-
-        if (currentElement == null) {
-            return false;
-        }
-
-        // Check the element name(s).
-        while (index.i >= 0) {
-            SAXElement parentElement = currentElement.getParent();
-
-            if (!isTargetedAtElementContext(currentElement, parentElement, index)) {
-                return false;
-            }
-
-            if (parentElement == null) {
-                return true;
-            }
-
-            currentElement = parentElement;
-        }
-
-        return true;
-    }
-
-    private boolean isTargetedAtElementContext(Element element, Element parentElement, ContextIndex index) {
-        if (selectorSteps.get(index.i).isRooted() && parentElement != null) {
-            return false;
-        } else if (selectorSteps.get(index.i).isStar()) {
-            index.i--;
-        } else if (selectorSteps.get(index.i).isStarStar()) {
-            if (index.i == 0) {
-                // No more tokens to match and ** matches everything
-                return true;
-            } else if (index.i == 1) {
-                SelectorStep parentStep = selectorSteps.get(0);
-
-                if (parentElement == null && parentStep.isRooted()) {
-                    // we're at the root of the document and the only selector left is
-                    // the document selector.  Pass..
-                    return true;
-                } else if (parentElement == null) {
-                    // we're at the root of the document, yet there are still
-                    // unmatched tokens in the selector.  Fail...
-                    return false;
-                }
-            } else if (parentElement == null) {
-                // we're at the root of the document, yet there are still
-                // unmatched tokens in the selector.  Fail...
-                return false;
-            }
-
-            SelectorStep parentStep = selectorSteps.get(index.i - 1);
-
-            if (parentStep.isTargetedAtElement(parentElement)) {
-                if (!parentStep.isStarStar()) {
-                    XPathExpressionEvaluator evaluator = parentStep.getPredicatesEvaluator();
-                    if (evaluator == null) {
-                        LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-                    } else if (!evaluator.evaluate(parentElement, index.executionContext)) {
-                        return false;
-                    }
-                }
-                index.i--;
-            }
-        } else if (!selectorSteps.get(index.i).isTargetedAtElement(element)) {
-            return false;
-        } else {
-            if (!selectorSteps.get(index.i).isStarStar()) {
-                XPathExpressionEvaluator evaluator = selectorSteps.get(index.i).getPredicatesEvaluator();
-                if (evaluator == null) {
-                    LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-                } else if (!evaluator.evaluate(element, index.executionContext)) {
-                    return false;
-                }
-            }
-            index.i--;
-        }
-
-        if (parentElement == null) {
-            if (index.i >= 0 && !selectorSteps.get(index.i).isStarStar()) {
-                return selectorSteps.get(index.i).isRooted();
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isTargetedAtElementContext(SAXElement element, SAXElement parentElement, ContextIndex index) {
-        if (selectorSteps.get(index.i).isRooted() && parentElement != null) {
-            return false;
-        } else if (selectorSteps.get(index.i).isStar()) {
-            index.i--;
-        } else if (selectorSteps.get(index.i).isStarStar()) {
-            if (index.i == 0) {
-                // No more tokens to match and ** matches everything
-                return true;
-            } else if (index.i == 1) {
-                SelectorStep parentStep = selectorSteps.get(index.i - 1);
-
-                if (parentElement == null && parentStep.isRooted()) {
-                    // we're at the root of the document and the only selector left is
-                    // the document selector.  Pass..
-                    return true;
-                } else if (parentElement == null) {
-                    // we're at the root of the document, yet there are still
-                    // unmatched tokens in the selector.  Fail...
-                    return false;
-                }
-            } else if (parentElement == null) {
-                // we're at the root of the document, yet there are still
-                // unmatched tokens in the selector.  Fail...
-                return false;
-            }
-
-            SelectorStep parentStep = selectorSteps.get(index.i - 1);
-
-            if (parentStep.isTargetedAtElement(parentElement)) {
-                if (!parentStep.isStarStar()) {
-                    XPathExpressionEvaluator evaluator = parentStep.getPredicatesEvaluator();
-                    if (evaluator == null) {
-                        LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-                    } else if (!evaluator.evaluate(parentElement, index.executionContext)) {
-                        return false;
-                    }
-                }
-                index.i--;
-            }
-        } else if (!selectorSteps.get(index.i).isTargetedAtElement(element)) {
-            return false;
-        } else {
-            if (!selectorSteps.get(index.i).isStarStar()) {
-                XPathExpressionEvaluator evaluator = selectorSteps.get(index.i).getPredicatesEvaluator();
-                if (evaluator == null) {
-                    LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-                } else if (!evaluator.evaluate(element, index.executionContext)) {
-                    return false;
-                }
-            }
-            index.i--;
-        }
-
-        if (parentElement == null) {
-            if (index.i >= 0 && !selectorSteps.get(index.i).isStarStar()) {
-                return selectorSteps.get(index.i).isRooted();
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Is this configuration targeted at the supplied DOM element.
-     * <p/>
-     * Checks that the element is in the correct namespace and is a contextual
-     * match for the configuration.
-     *
-     * @param element          The element to be checked.
-     * @param executionContext The current execution context.
-     * @return True if this configuration is targeted at the supplied element, otherwise false.
-     */
-    public boolean isTargetedAtElement(Element element, ExecutionContext executionContext) {
-        if (!assertConditionTrue(executionContext)) {
-            return false;
-        }
-
-        if (namespaceURI != null) {
-            if (!isTargetedAtNamespace(element.getNamespaceURI())) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + getSelectorNamespaceURI() + "].");
-                }
-                return false;
-            }
-        } else {
-            // We don't test the SelectorStep namespace if a namespace is configured on the
-            // resource configuration.  This is why we have this code inside the else block.
-            if (!getTargetSelectorStep().isTargetedAtNamespace(element.getNamespaceURI())) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  Element not in namespace [" + getTargetSelectorStep().getElement().getNamespaceURI() + "].");
-                }
-                return false;
-            }
-        }
-
-        XPathExpressionEvaluator evaluator = getTargetSelectorStep().getPredicatesEvaluator();
-        if (evaluator == null) {
-            LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-        } else if (!evaluator.evaluate(element, executionContext)) {
-            return false;
-        }
-
-        if (selectorSteps.size() > 1 && !isTargetedAtElementContext(element, executionContext)) {
-            // Note: If the selector is not contextual, there's no need to perform the
-            // isTargetedAtElementContext check because we already know the unit is targeted at the
-            // element by name - because we looked it up by name in the 1st place (at least that's the assumption).
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(element) + "].  This resource is only targeted at '" + DomUtils.getName(element) + "' when in the following context '" + getSelector() + "'.");
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Is this configuration targeted at the supplied SAX element.
-     * <p/>
-     * Checks that the element is in the correct namespace and is a contextual
-     * match for the configuration.
-     *
-     * @param element          The element to be checked.
-     * @param executionContext The current execution context.
-     * @return True if this configuration is targeted at the supplied element, otherwise false.
-     */
-    public boolean isTargetedAtElement(SAXElement element, ExecutionContext executionContext) {
-        if (expressionEvaluator != null && !assertConditionTrue(executionContext)) {
-            return false;
-        }
-
-        if (namespaceURI != null) {
-            if (!isTargetedAtNamespace(element.getName().getNamespaceURI())) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + namespaceURI + "].");
-                }
-                return false;
-            }
-        } else {
-            // We don't test the SelectorStep namespace if a namespace is configured on the
-            // resource configuration.  This is why we have this code inside the else block.
-            if (!getTargetSelectorStep().isTargetedAtNamespace(element.getName().getNamespaceURI())) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  Element not in namespace [" + getTargetSelectorStep().getElement().getNamespaceURI() + "].");
-                }
-                return false;
-            }
-        }
-
-        XPathExpressionEvaluator evaluator = getTargetSelectorStep().getPredicatesEvaluator();
-        if (evaluator == null) {
-            LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-        } else if (!evaluator.evaluate(element, executionContext)) {
-            return false;
-        }
-
-        if (selectorSteps.size() > 1 && !isTargetedAtElementContext(element, executionContext)) {
-            // Note: If the selector is not contextual, there's no need to perform the
-            // isTargetedAtElementContext check because we already know the visitor is targeted at the
-            // element by name - because we looked it up by name in the 1st place (at least that's the assumption).
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Not applying resource [" + this + "] to element [" + element.getName() + "].  This resource is only targeted at '" + element.getName().getLocalPart() + "' when in the following context '" + getSelector() + "'.");
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean assertConditionTrue(ExecutionContext executionContext) {
-        if (expressionEvaluator == null) {
-            return true;
-        }
-        
-        return ((ExecutionContextExpressionEvaluator) expressionEvaluator).eval(executionContext);
-    }
 
     /**
      * Set the namespace URI to which the selector is associated.
@@ -691,8 +326,6 @@ public class SelectorPath implements List<SelectorStep> {
             SelectorStep step = selectorSteps.get(i);
             try {
                 step.buildPredicatesEvaluator(this.namespaces);
-            } catch (SAXPathException e) {
-                throw new SmooksException("Error configuring resource selector", e);
             } catch (Exception e) {
                 throw new SmooksException("Error compiling PredicatesEvaluator.", e);
             }
@@ -837,14 +470,5 @@ public class SelectorPath implements List<SelectorStep> {
     @Override
     public List<SelectorStep> subList(int fromIndex, int toIndex) {
         return selectorSteps.subList(fromIndex, toIndex);
-    }
-
-    private static class ContextIndex {
-        private int i;
-        private final ExecutionContext executionContext;
-
-        public ContextIndex(ExecutionContext executionContext) {
-            this.executionContext = executionContext;
-        }
     }
 }

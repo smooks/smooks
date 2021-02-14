@@ -88,7 +88,6 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     private final List<ExecutionEvent> processingEvents = new ArrayList<>();
     private final Stack<ReportNode> reportNodeStack = new Stack<>();
     private final List<ReportNode> allNodes = new ArrayList<>();
-    protected static final DefaultDOMSerializerVisitor DOM_SERIALIZER = new DefaultDOMSerializerVisitor();
 
     protected AbstractReportGenerator(ReportConfiguration reportConfiguration) {
         AssertArgument.isNotNull(reportConfiguration, "reportConfiguration");

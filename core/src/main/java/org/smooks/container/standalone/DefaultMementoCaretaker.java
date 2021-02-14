@@ -46,7 +46,7 @@ import org.smooks.container.MementoCaretaker;
 import org.smooks.container.TypedKey;
 import org.smooks.container.TypedMap;
 import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.memento.VisitorMemento;
+import org.smooks.delivery.memento.Memento;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,33 +56,24 @@ import java.util.function.Function;
 
 public class DefaultMementoCaretaker implements MementoCaretaker {
 
-    private final Map<Fragment, Set<String>> mementoIds = new HashMap<>();
+    private final Map<Fragment<?>, Set<String>> mementoIds = new HashMap<>();
     private final TypedMap typedMap;
 
     public DefaultMementoCaretaker(final TypedMap typedMap) {
         this.typedMap = typedMap;
     }
-    
+
     @Override
-    public void capture(final VisitorMemento visitorMemento) {
+    public void capture(Memento visitorMemento) {
         mementoIds.computeIfAbsent(visitorMemento.getFragment(), o -> new HashSet<>()).add(visitorMemento.getAnchor());
         typedMap.put(new TypedKey<>(visitorMemento.getAnchor()), visitorMemento.copy());
     }
 
     @Override
-    public <T extends VisitorMemento> T stash(final T defaultVisitorMemento, final Function<T, T> function) {
-        restore(defaultVisitorMemento);
-        T newVisitorMemento = function.apply(defaultVisitorMemento);
-        capture(newVisitorMemento);
-        
-        return newVisitorMemento;
-    }
-    
-    @Override
-    public void restore(final VisitorMemento visitorMemento) {
+    public void restore(Memento visitorMemento) {
         final String visitorMementoId = visitorMemento.getAnchor();
-        final TypedKey<VisitorMemento> visitorMementoTypedKey = new TypedKey<>(visitorMementoId);
-        final VisitorMemento restoredVisitorMemento = typedMap.get(visitorMementoTypedKey);
+        final TypedKey<Memento> visitorMementoTypedKey = new TypedKey<>(visitorMementoId);
+        final Memento restoredVisitorMemento = typedMap.get(visitorMementoTypedKey);
         if (restoredVisitorMemento != null) {
             visitorMemento.restore(restoredVisitorMemento);
         } else {
@@ -91,21 +82,30 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
     }
 
     @Override
-    public boolean exists(VisitorMemento visitorMemento) {
+    public boolean exists(Memento visitorMemento) {
         return typedMap.get(new TypedKey<>(visitorMemento.getAnchor())) != null;
     }
 
     @Override
-    public void forget(final VisitorMemento visitorMemento) {
+    public void forget(Memento visitorMemento) {
         typedMap.remove(new TypedKey<>(visitorMemento.getAnchor()) );
         mementoIds.getOrDefault(visitorMemento.getFragment(), new HashSet<>()).remove(visitorMemento.getAnchor());
     }
 
     @Override
-    public void forget(final Fragment fragment) {
+    public void forget(Fragment<?> fragment) {
         for (final String id : mementoIds.getOrDefault(fragment, new HashSet<>())) {
             typedMap.remove(new TypedKey<>(id));
         }
         mementoIds.remove(fragment);
+    }
+
+    @Override
+    public <T extends Memento> T stash(T defaultVisitorMemento, Function<T, T> function) {
+        restore(defaultVisitorMemento);
+        T newVisitorMemento = function.apply(defaultVisitorMemento);
+        capture(newVisitorMemento);
+
+        return newVisitorMemento;
     }
 }

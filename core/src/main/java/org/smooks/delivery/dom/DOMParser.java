@@ -158,7 +158,7 @@ public class DOMParser extends AbstractParser {
 
 	  		try {
                 if(domReader == null) {
-                    domReader = readerPool.getXMLReader();
+                    domReader = readerPool.borrowXMLReader();
                 }
                 if(domReader == null) {
                     domReader = createXMLReader();

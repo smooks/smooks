@@ -49,12 +49,12 @@ public class TextAccumulatorMemento extends AbstractVisitorMemento {
     
     private final StringBuilder stringBuilder = new StringBuilder();
     
-    public TextAccumulatorMemento(Fragment fragment, Visitor visitor) {
+    public TextAccumulatorMemento(Fragment<?> fragment, Visitor visitor) {
         super(fragment, visitor);
     }
 
     @Override
-    public VisitorMemento copy() {
+    public Memento copy() {
         final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(fragment, visitor);
         textAccumulatorMemento.accumulateText(getText());
         
@@ -62,8 +62,8 @@ public class TextAccumulatorMemento extends AbstractVisitorMemento {
     }
 
     @Override
-    public void restore(final VisitorMemento visitorMemento) {
-        stringBuilder.append(((TextAccumulatorMemento) visitorMemento).getText());
+    public void restore(final Memento memento) {
+        stringBuilder.append(((TextAccumulatorMemento) memento).getText());
     }
 
     public TextAccumulatorMemento accumulateText(final String text) {
