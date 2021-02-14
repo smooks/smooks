@@ -52,9 +52,11 @@ public class ReaderPool {
 
     private final List<XMLReader> readerPool = new CopyOnWriteArrayList<>();
     private final ContentDeliveryConfig contentDeliveryConfig;
+    private final int readerPoolSize;
 
-    public ReaderPool(ContentDeliveryConfig contentDeliveryConfig) {
+    public ReaderPool(final ContentDeliveryConfig contentDeliveryConfig) {
         this.contentDeliveryConfig = contentDeliveryConfig;
+        this.readerPoolSize = Integer.parseInt(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, "0", contentDeliveryConfig));
     }
 
     /**
@@ -62,7 +64,7 @@ public class ReaderPool {
      * reader pool associated with this ContentDelivery config instance.
      * @return An XMLReader instance if the pool is not empty, otherwise null.
      */
-    public XMLReader getXMLReader() {
+    public XMLReader borrowXMLReader() {
         synchronized (readerPool) {
             if (!readerPool.isEmpty()) {
                 return readerPool.remove(0);
@@ -80,7 +82,7 @@ public class ReaderPool {
      */
     public void returnXMLReader(XMLReader reader) {
         synchronized(readerPool) {
-            if(readerPool.size() < Integer.parseInt(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, "0", contentDeliveryConfig))) {
+            if(readerPool.size() < readerPoolSize) {
                 readerPool.add(reader);
             }
         }

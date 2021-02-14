@@ -40,46 +40,45 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.visitors.smooks;
+package org.smooks.delivery.interceptor;
 
-import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.container.ApplicationContext;
+import org.smooks.registry.lookup.InterceptorVisitorFactoryLookup;
 
-class NestedSmooksInterceptorCommand {
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.util.Optional;
 
-    private final int requiredNodeDepth;
-    private final VisitPhase requiredVisitPhase;
-    private final NodeFragment nodeFragment;
-
-    public interface VisitPhase {
+public class InterceptorVisitorDefinition {
+    
+    @Inject
+    private Class<? extends InterceptorVisitor> clazz;
+    
+    @Inject
+    private Optional<String> selector = Optional.empty();
+    
+    @Inject
+    private ApplicationContext applicationContext;
+    
+    @PostConstruct
+    public void postConstruct() {
+        InterceptorVisitorChainFactory interceptorVisitorChainFactory = applicationContext.getRegistry().lookup(new InterceptorVisitorFactoryLookup());
+        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(this);
     }
 
-    public static final class VisitBeforePhase implements VisitPhase {
-        
+    public Class<? extends InterceptorVisitor> getInterceptorVisitorClass() {
+        return clazz;
     }
 
-    public static final class VisitAfterPhase implements VisitPhase {
-        
+    public Optional<String> getSelector() {
+        return selector;
     }
 
-    public static final class VisitChildTextPhase implements VisitPhase {
-        
+    public void setClass(Class<? extends InterceptorVisitor> clazz) {
+        this.clazz = clazz;
     }
 
-    public NestedSmooksInterceptorCommand(int requiredNodeDepth, VisitPhase requiredVisitPhase, NodeFragment nodeFragment) {
-        this.requiredNodeDepth = requiredNodeDepth;
-        this.requiredVisitPhase = requiredVisitPhase;
-        this.nodeFragment = nodeFragment;
-    }
-
-    public int getRequiredNodeDepth() {
-        return requiredNodeDepth;
-    }
-
-    public VisitPhase getRequiredVisitPhase() {
-        return requiredVisitPhase;
-    }
-
-    public NodeFragment getNodeFragment() {
-        return nodeFragment;
+    public void setSelector(Optional<String> selector) {
+        this.selector = selector;
     }
 }

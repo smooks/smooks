@@ -45,19 +45,10 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
 
-    <core:smooks filterSourceOn="b">
-        <core:action>
-            <core:inline>
-                <core:replace/>
-            </core:inline>
-        </core:action>
-        <core:config>
-            <smooks-resource-list>
-                <resource-config selector="b">
-                    <resource>org.smooks.visitors.smooks.BarBeforeVisitor</resource>
-                </resource-config>
-            </smooks-resource-list>
-        </core:config>
-    </core:smooks>
+    <core:node-reader>
+        <resource-config selector="#document">
+            <resource>org.smooks.delivery.sax.ng.NodeReaderFunctionalTest$NodeReaderResource</resource>
+        </resource-config>
+    </core:node-reader>
 
 </smooks-resource-list>

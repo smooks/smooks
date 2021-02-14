@@ -43,6 +43,8 @@
 package org.smooks.cdr;
 
 import org.junit.Test;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.fragment.SAXElementFragment;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.util.DomUtil;
 import org.smooks.xml.XmlUtil;
@@ -106,12 +108,14 @@ public class ResourceConfigTest {
         ResourceConfig rc5 = new ResourceConfig("xx/b/c/d/e", "blah");
         ResourceConfig rc7 = new ResourceConfig("/c/d/e", "blah");
 
-        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc4.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc7.getSelectorPath().isTargetedAtElement(e, null));
+        NodeFragment nodeFragment = new NodeFragment(e);
+        
+        assertTrue(nodeFragment.isMatch(rc1.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc2.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc3.getSelectorPath(), null));
+        assertFalse(nodeFragment.isMatch(rc4.getSelectorPath(), null));
+        assertFalse(nodeFragment.isMatch(rc5.getSelectorPath(), null));
+        assertFalse(nodeFragment.isMatch(rc7.getSelectorPath(), null));
     }
 
 	@Test
@@ -126,15 +130,18 @@ public class ResourceConfigTest {
 
         assertEquals("e", rc8.getSelectorPath().getTargetElement());
         assertEquals("attrib1", rc8.getSelectorPath().getTargetAttribute());
-        assertTrue(rc8.getSelectorPath().isTargetedAtElement(e, null));
+
+        NodeFragment nodeFragment = new NodeFragment(e);
+
+        assertTrue(nodeFragment.isMatch(rc8.getSelectorPath(), null));
 
         assertEquals("e", rc9.getSelectorPath().getTargetElement());
         assertEquals("attrib1", rc9.getSelectorPath().getTargetAttribute());
-        assertTrue(rc9.getSelectorPath().isTargetedAtElement(e, null));
-
+        assertTrue(nodeFragment.isMatch(rc9.getSelectorPath(), null));
+        
         assertEquals("e", rc10.getSelectorPath().getTargetElement());
         assertEquals("attrib1", rc10.getSelectorPath().getTargetAttribute());
-        assertFalse(rc10.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(nodeFragment.isMatch(rc10.getSelectorPath(), null));
     }
 
 	@Test
@@ -166,34 +173,36 @@ public class ResourceConfigTest {
         ResourceConfig rc22 = new ResourceConfig("*/e", "blah");
         ResourceConfig rc23 = new ResourceConfig("/*/e", "blah");
 
-        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
+        NodeFragment nodeFragment = new NodeFragment(e);
+        
+        assertTrue(nodeFragment.isMatch(rc1.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc2.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc3.getSelectorPath(), null));
 
-        assertFalse(rc4.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(nodeFragment.isMatch(rc4.getSelectorPath(), null));
+        assertFalse(nodeFragment.isMatch(rc5.getSelectorPath(), null));
 
-        assertTrue(rc6.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc7.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc8.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc9.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc10.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc11.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc12.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc13.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc14.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc15.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc16.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(nodeFragment.isMatch(rc6.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc7.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc8.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc9.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc10.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc11.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc12.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc13.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc14.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc15.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc16.getSelectorPath(), null));
 
-        assertFalse(rc17.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc18.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc19.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(nodeFragment.isMatch(rc17.getSelectorPath(), null));
+        assertFalse(nodeFragment.isMatch(rc18.getSelectorPath(), null));
+        assertFalse(nodeFragment.isMatch(rc19.getSelectorPath(), null));
 
-        assertTrue(rc20.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc21.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc22.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(nodeFragment.isMatch(rc20.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc21.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc22.getSelectorPath(), null));
 
-        assertFalse(rc23.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(nodeFragment.isMatch(rc23.getSelectorPath(), null));
     }
 
 	@Test
@@ -214,11 +223,13 @@ public class ResourceConfigTest {
             assertEquals("Invalid selector 'xx/#document/a/b/c/a/d/e'.  '#document' token can only exist at the start of the selector.", ex.getMessage());
         }
 
-        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc2.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc4.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
+        NodeFragment nodeFragment = new NodeFragment(e);
+
+        assertTrue(nodeFragment.isMatch(rc1.getSelectorPath(), null));
+        assertFalse(nodeFragment.isMatch(rc2.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc3.getSelectorPath(), null));
+        assertTrue(nodeFragment.isMatch(rc4.getSelectorPath(), null));
+        assertFalse(nodeFragment.isMatch(rc5.getSelectorPath(), null));
     }
 
 	@Test
@@ -231,11 +242,13 @@ public class ResourceConfigTest {
         ResourceConfig rc4 = new ResourceConfig("xx/a/b/c/d/e", "blah");
         ResourceConfig rc5 = new ResourceConfig("xx/b/c/d/e", "blah");
 
-        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc4.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
+        SAXElementFragment saxElementFragment = new SAXElementFragment(e);
+        
+        assertTrue(saxElementFragment.isMatch(rc1.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc2.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc3.getSelectorPath(), null));
+        assertFalse(saxElementFragment.isMatch(rc4.getSelectorPath(), null));
+        assertFalse(saxElementFragment.isMatch(rc5.getSelectorPath(), null));
     }
 
 	@Test
@@ -268,36 +281,38 @@ public class ResourceConfigTest {
         ResourceConfig rc22 = new ResourceConfig("*/e", "blah");
         ResourceConfig rc23 = new ResourceConfig("/*/e", "blah");
 
-        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc2.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
+        SAXElementFragment saxElementFragment = new SAXElementFragment(e);
 
-        assertFalse(rc4.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(saxElementFragment.isMatch(rc1.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc2.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc3.getSelectorPath(), null));
 
-        assertTrue(rc6.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc7.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc8.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc9.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc10.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc11.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc12.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc13.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc14.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc15.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc16.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc15_1.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc16_1.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(saxElementFragment.isMatch(rc4.getSelectorPath(), null));
+        assertFalse(saxElementFragment.isMatch(rc5.getSelectorPath(), null));
 
-        assertFalse(rc17.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc18.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc19.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(saxElementFragment.isMatch(rc6.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc7.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc8.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc9.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc10.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc11.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc12.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc13.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc14.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc15.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc16.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc15_1.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc16_1.getSelectorPath(), null));
 
-        assertTrue(rc20.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc21.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc22.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(saxElementFragment.isMatch(rc17.getSelectorPath(), null));
+        assertFalse(saxElementFragment.isMatch(rc18.getSelectorPath(), null));
+        assertFalse(saxElementFragment.isMatch(rc19.getSelectorPath(), null));
 
-        assertFalse(rc23.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(saxElementFragment.isMatch(rc20.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc21.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc22.getSelectorPath(), null));
+
+        assertFalse(saxElementFragment.isMatch(rc23.getSelectorPath(), null));
     }
 
 	@Test
@@ -317,11 +332,13 @@ public class ResourceConfigTest {
         ResourceConfig rc4 = new ResourceConfig("/a/b/**/d/e", "blah");
         ResourceConfig rc5 = new ResourceConfig("/a/b/*/d/e", "blah");
 
-        assertTrue(rc1.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc2.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc3.getSelectorPath().isTargetedAtElement(e, null));
-        assertTrue(rc4.getSelectorPath().isTargetedAtElement(e, null));
-        assertFalse(rc5.getSelectorPath().isTargetedAtElement(e, null));
+        SAXElementFragment saxElementFragment = new SAXElementFragment(e);
+
+        assertTrue(saxElementFragment.isMatch(rc1.getSelectorPath(), null));
+        assertFalse(saxElementFragment.isMatch(rc2.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc3.getSelectorPath(), null));
+        assertTrue(saxElementFragment.isMatch(rc4.getSelectorPath(), null));
+        assertFalse(saxElementFragment.isMatch(rc5.getSelectorPath(), null));
     }
 
 	@Test
@@ -336,17 +353,19 @@ public class ResourceConfigTest {
         ResourceConfig rc9 = new ResourceConfig("a/b/c/a/d/e/@attrib1", "blah");
         ResourceConfig rc10 = new ResourceConfig("/a/d/e/@attrib1", "blah");
 
+        SAXElementFragment saxElementFragment = new SAXElementFragment(e);
+
         assertEquals("e", rc8.getSelectorPath().getTargetElement());
         assertEquals("attrib1", rc8.getSelectorPath().getTargetAttribute());
-        assertTrue(rc8.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(saxElementFragment.isMatch(rc8.getSelectorPath(), null));
 
         assertEquals("e", rc9.getSelectorPath().getTargetElement());
         assertEquals("attrib1", rc9.getSelectorPath().getTargetAttribute());
-        assertTrue(rc9.getSelectorPath().isTargetedAtElement(e, null));
+        assertTrue(saxElementFragment.isMatch(rc9.getSelectorPath(), null));
 
         assertEquals("e", rc10.getSelectorPath().getTargetElement());
         assertEquals("attrib1", rc10.getSelectorPath().getTargetAttribute());
-        assertFalse(rc10.getSelectorPath().isTargetedAtElement(e, null));
+        assertFalse(saxElementFragment.isMatch(rc10.getSelectorPath(), null));
     }
 
     private SAXElement buildE() {

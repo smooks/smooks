@@ -47,6 +47,7 @@ import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.TypedKey;
 import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
@@ -156,7 +157,6 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
         nodeModel.getModels().put(DomUtils.getName(element), element);
     }
 
-    @SuppressWarnings("unchecked")
     private void pushCreator(DOMCreator domCreator, ExecutionContext executionContext) {
         Stack<DOMCreator> domCreatorStack = executionContext.get(DOM_CREATOR_STACK_TYPED_KEY);
 
@@ -177,7 +177,6 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
         domCreatorStack.push(domCreator);
     }
 
-    @SuppressWarnings({"unchecked", "WeakerAccess", "UnusedReturnValue"})
     public Document popCreator(ExecutionContext executionContext) {
         Stack<DOMCreator> domCreatorStack = executionContext.get(DOM_CREATOR_STACK_TYPED_KEY);
 
@@ -225,8 +224,8 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
         @Override
         public void onEvent(ExecutionEvent executionEvent) {
             if (executionEvent instanceof StartFragmentEvent) {
-                StartFragmentEvent startFragmentEvent = (StartFragmentEvent) executionEvent;
-                Fragment fragment = startFragmentEvent.getFragment();
+                StartFragmentEvent<NodeFragment> startFragmentEvent = (StartFragmentEvent<NodeFragment>) executionEvent;
+                Fragment<NodeFragment> fragment = startFragmentEvent.getFragment();
                 Element importNode = (Element) document.importNode((Node) fragment.unwrap(), true);
 
                 if(currentNode == document) {

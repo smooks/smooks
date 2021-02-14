@@ -48,6 +48,7 @@ import org.smooks.Smooks;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.standalone.DefaultApplicationContextBuilder;
+import org.smooks.delivery.AbstractParser;
 import org.smooks.expression.ExpressionEvaluator;
 import org.smooks.io.StreamUtils;
 import org.smooks.net.URIUtil;
@@ -404,10 +405,7 @@ public final class XMLConfigDigester {
 
     	String readerClass = DomUtils.getAttributeValue(configElement, "class");
 
-        ResourceConfig resourceConfig = new ResourceConfig(
-        		"org.xml.sax.driver",
-        		(profiles != null ? profiles : defaultProfile),
-        		readerClass);
+        ResourceConfig resourceConfig = new ResourceConfig(AbstractParser.ORG_XML_SAX_DRIVER, (profiles != null ? profiles : defaultProfile), readerClass);
 
         // Add the reader resource...
         configureHandlers(configElement, resourceConfig);
@@ -475,14 +473,14 @@ public final class XMLConfigDigester {
 
         final ResourceConfig resourceConfig;
         try {
-            final Class<? extends ResourceConfigFactory> resourceConfigFactoryClass;
+            final Class<?> resourceConfigFactoryClass;
             if (factory != null) {
-                resourceConfigFactoryClass = (Class<ResourceConfigFactory>) Class.forName(factory, true, classLoader);
+                resourceConfigFactoryClass = Class.forName(factory, true, classLoader);
             } else {
                 resourceConfigFactoryClass = DefaultResourceConfigFactory.class;
             }
             try {
-                ResourceConfigFactory resourceConfigFactory = resourceConfigFactoryClass.newInstance();
+                ResourceConfigFactory resourceConfigFactory = (ResourceConfigFactory) resourceConfigFactoryClass.newInstance();
                 resourceConfig = resourceConfigFactory.createConfiguration(defaultSelector, defaultNamespace, defaultProfile, configElement);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new SmooksConfigurationException(e.getMessage(), e);

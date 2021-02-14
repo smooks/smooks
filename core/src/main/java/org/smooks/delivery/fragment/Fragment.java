@@ -42,13 +42,16 @@
  */
 package org.smooks.delivery.fragment;
 
+import org.smooks.cdr.xpath.SelectorPath;
+import org.smooks.container.ExecutionContext;
+
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * Wrapper for a fragment object.
  */
 @NotThreadSafe
-public interface Fragment {
+public interface Fragment<T> {
 
     /**
      * @return an identifier unique across fragments
@@ -58,9 +61,21 @@ public interface Fragment {
     /**
      * @return the wrapped fragment
      */
-    Object unwrap();
+    T unwrap();
     
     boolean reserve(long id, Object token);
     
     boolean release(long id, Object token);
+
+    /**
+     * Is the supplied <code>SelectorPath</code> targeting this <code>Fragment</code>.
+     * <p/>
+     * Checks that this fragment is in the correct namespace and is a contextual
+     * match for the configuration.
+     *
+     * @param selectorPath     The selector path to be checked.
+     * @param executionContext The current execution context.
+     * @return True if this configuration is targeted at the supplied element, otherwise false.
+     */
+    boolean isMatch(SelectorPath selectorPath, ExecutionContext executionContext);
 }

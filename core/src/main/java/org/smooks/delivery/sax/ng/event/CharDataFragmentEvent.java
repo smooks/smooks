@@ -44,10 +44,11 @@ package org.smooks.delivery.sax.ng.event;
 
 import org.smooks.delivery.fragment.Fragment;
 import org.smooks.event.FragmentEvent;
+import org.w3c.dom.Node;
 
-public class CharDataFragmentEvent extends FragmentEvent {
+public class CharDataFragmentEvent extends FragmentEvent<Node> {
     
-    public CharDataFragmentEvent(final Fragment fragment) {
+    public CharDataFragmentEvent(final Fragment<Node> fragment) {
         super(fragment);
     }
 }

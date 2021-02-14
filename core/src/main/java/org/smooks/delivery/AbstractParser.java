@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.Parameter;
+import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.ResourceConfig;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.TypedKey;
@@ -70,6 +71,7 @@ import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -263,6 +265,9 @@ public class AbstractParser {
             inputSource.setCharacterStream(reader);
 
             return inputSource;
+        } else if (source instanceof DOMSource)  {
+            boolean closeEmptyElements = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+            return new DOMInputSource(((DOMSource) source).getNode(), closeEmptyElements);
         } else {
             return new InputSource(getReader(source, contentEncoding));
         }
@@ -386,13 +391,8 @@ public class AbstractParser {
 
     private Object createHandler(String handlerName) throws SAXException {
         try {
-            Class handlerClass = ClassUtil.forName(handlerName, getClass());
-            return handlerClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new SAXException("Failed to create SAX Handler '" + handlerName + "'.", e);
-        } catch (IllegalAccessException e) {
-            throw new SAXException("Failed to create SAX Handler '" + handlerName + "'.", e);
-        } catch (InstantiationException e) {
+            return ClassUtil.forName(handlerName, getClass()).newInstance();
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new SAXException("Failed to create SAX Handler '" + handlerName + "'.", e);
         }
     }
@@ -477,6 +477,4 @@ public class AbstractParser {
         }
         return false;
     }
-
-
 }

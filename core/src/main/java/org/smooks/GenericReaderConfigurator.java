@@ -57,10 +57,10 @@ import java.util.*;
  */
 public class GenericReaderConfigurator implements ReaderConfigurator {
 
-    private Class readerClass;
+    private Class<?> readerClass;
     private Properties parameters = new Properties();
-    private final List<String> featuresOn = new ArrayList<String>();
-    private final List<String> featuresOff = new ArrayList<String>();
+    private final List<String> featuresOn = new ArrayList<>();
+    private final List<String> featuresOff = new ArrayList<>();
     private String targetProfile;
 
     public GenericReaderConfigurator() {
@@ -94,37 +94,36 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
     }
 
     public List<ResourceConfig> toConfig() {
-        ResourceConfig smooksConfig = new ResourceConfig();
-        
-        smooksConfig.setSelector(AbstractParser.ORG_XML_SAX_DRIVER);        
+        ResourceConfig resourceConfig = new ResourceConfig();
+        resourceConfig.setSelector(AbstractParser.ORG_XML_SAX_DRIVER);        
 
         if(readerClass != null) {
-            smooksConfig.setResource(readerClass.getName());
+            resourceConfig.setResource(readerClass.getName());
         }
 
         if(targetProfile != null) {
-            smooksConfig.setTargetProfile(targetProfile);
+            resourceConfig.setTargetProfile(targetProfile);
         }
 
         // Add the parameters...
         Set<Map.Entry<Object, Object>> entries = parameters.entrySet();
         for (Map.Entry<Object, Object> entry : entries) {
-            smooksConfig.setParameter((String)entry.getKey(), (String)entry.getValue());
+            resourceConfig.setParameter((String)entry.getKey(), (String)entry.getValue());
         }
 
         // Add the "on" features...
         for(String featureOn : featuresOn) {
-            smooksConfig.setParameter(AbstractParser.FEATURE_ON, featureOn);
+            resourceConfig.setParameter(AbstractParser.FEATURE_ON, featureOn);
         }
 
         // Add the "off" features...
         for(String featureOff : featuresOff) {
-            smooksConfig.setParameter(AbstractParser.FEATURE_OFF, featureOff);
+            resourceConfig.setParameter(AbstractParser.FEATURE_OFF, featureOff);
         }
 
-        List<ResourceConfig> configList = new ArrayList<ResourceConfig>();
-        configList.add(smooksConfig);
+        List<ResourceConfig> resourceConfigs = new ArrayList<>();
+        resourceConfigs.add(resourceConfig);
 
-        return configList;
+        return resourceConfigs;
     }
 }

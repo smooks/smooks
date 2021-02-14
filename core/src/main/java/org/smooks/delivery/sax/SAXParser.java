@@ -78,7 +78,7 @@ public class SAXParser extends AbstractParser {
 
         try {
             if(saxReader == null) {
-                saxReader = readerPool.getXMLReader();
+                saxReader = readerPool.borrowXMLReader();
             }
             if(saxReader == null) {
                 saxReader = createXMLReader();

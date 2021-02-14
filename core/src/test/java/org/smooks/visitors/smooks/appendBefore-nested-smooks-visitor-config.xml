@@ -47,7 +47,9 @@
 
     <core:smooks filterSourceOn="b">
         <core:action>
-            <core:inline directive="APPEND_BEFORE"/>
+            <core:inline>
+                <core:append-before/>
+            </core:inline>
         </core:action>
         <core:config>
             <smooks-resource-list>

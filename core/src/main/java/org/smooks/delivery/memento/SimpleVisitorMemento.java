@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Smooks Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,39 +40,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.event;
+package org.smooks.delivery.memento;
 
+import org.smooks.container.TypedKey;
+import org.smooks.delivery.Visitor;
 import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXUtil;
-import org.smooks.xml.DomUtils;
-import org.w3c.dom.Element;
 
-/**
- * An element processing related event.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public abstract class FragmentEvent<T> implements ExecutionEvent {
-
-    private final Fragment<T> fragment;
-
-    public FragmentEvent(Fragment<T> fragment) {
-        this.fragment = fragment;
-    }
-
-    public Fragment<T> getFragment() {
-        return fragment;
-    }
-
-    public int getDepth() {
-        T unwrappedFragment = fragment.unwrap();
-        if (unwrappedFragment instanceof Element) {
-            return DomUtils.getDepth((Element) unwrappedFragment);
-        } else if (unwrappedFragment instanceof SAXElement) {
-            return SAXUtil.getDepth((SAXElement) unwrappedFragment);
-        }
-
-        return 0;
+public class SimpleVisitorMemento<T> extends VisitorMemento<T> {
+    
+    public SimpleVisitorMemento(final Fragment<?> fragment, final Visitor visitor, final T state) {
+        super(fragment, visitor, new TypedKey<>(state.getClass().getName()), state);
     }
 }

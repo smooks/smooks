@@ -70,7 +70,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class VisitEvent<T extends Visitor> extends FragmentEvent implements ResourceBasedEvent {
+public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implements ResourceBasedEvent {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VisitEvent.class);
 
@@ -81,8 +81,8 @@ public class VisitEvent<T extends Visitor> extends FragmentEvent implements Reso
     private String reportSummary;
     private String reportDetail;
 
-    public VisitEvent(Fragment element, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext) {
-        super(element);
+    public VisitEvent(Fragment<F> fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext) {
+        super(fragment);
         this.visitorBinding = visitorBinding;
         this.sequence = sequence;
         try {
@@ -96,7 +96,7 @@ public class VisitEvent<T extends Visitor> extends FragmentEvent implements Reso
         initReport(executionContext);
     }
 
-    public VisitEvent(Fragment fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext, Throwable error) {
+    public VisitEvent(Fragment<F> fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext, Throwable error) {
         this(fragment, visitorBinding, sequence, executionContext);
         this.error = error;
     }
@@ -105,7 +105,7 @@ public class VisitEvent<T extends Visitor> extends FragmentEvent implements Reso
         return visitorBinding.getResourceConfig();
     }
 
-    public ContentHandlerBinding getVisitorBinding() {
+    public ContentHandlerBinding<T> getVisitorBinding() {
         return visitorBinding;
     }
 

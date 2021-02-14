@@ -44,9 +44,8 @@ package org.smooks.visitors.smooks;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
-import org.smooks.io.FragmentWriter;
+import org.smooks.io.Stream;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -62,7 +61,7 @@ public class BarBeforeVisitor implements BeforeVisitor   {
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
         try {
-            new FragmentWriter(executionContext, new NodeFragment(element)).write("Hello World!");
+            Stream.out(executionContext).write("Hello World!");
         } catch (IOException e) {
             throw new SmooksException(e);
         }

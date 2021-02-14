@@ -70,10 +70,10 @@ public class SaxNgParser extends AbstractParser {
         saxHandler = new SaxNgHandler(getExecutionContext());
 
         try {
-            if(saxReader == null) {
-                saxReader = readerPool.getXMLReader();
+            if (saxReader == null) {
+                saxReader = readerPool.borrowXMLReader();
             }
-            if(saxReader == null) {
+            if (saxReader == null) {
                 saxReader = createXMLReader();
             }
 
@@ -95,7 +95,7 @@ public class SaxNgParser extends AbstractParser {
                 }
             } finally {
                 try {
-                    if(saxReader != null) {
+                    if (saxReader != null) {
                         try {
                             detachXMLReader(executionContext);
                         } finally {
@@ -110,7 +110,7 @@ public class SaxNgParser extends AbstractParser {
     }
 
     public void cleanup() {
-        if(saxHandler != null) {
+        if (saxHandler != null) {
             saxHandler.cleanup();
         }
     }

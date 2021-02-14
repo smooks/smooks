@@ -196,17 +196,11 @@ public class StandaloneExecutionContext implements ExecutionContext {
         return ParameterAccessor.getParameterValue(name, String.class, defaultVal, contentDeliveryRuntime.getContentDeliveryConfig());
     }
     
-    /* (non-Javadoc)
-      * @see org.smooks.container.BoundAttributeStore#setAttribute(java.lang.Object, java.lang.Object)
-      */
 	@Override
 	public <T> void put(TypedKey<T> key, T value) {
 		attributes.put((TypedKey<Object>) key, value);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#getAttribute(java.lang.Object)
-	 */
+	
 	@Override
 	public <T> T get(TypedKey<T> key) {
 		return (T) attributes.get(key);
@@ -216,10 +210,7 @@ public class StandaloneExecutionContext implements ExecutionContext {
 	public <T> T getOrDefault(TypedKey<T> key, T value) {
 		return (T) attributes.getOrDefault(key, value);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.smooks.container.BoundAttributeStore#removeAttribute(java.lang.Object)
-	 */
+	
 	@Override
 	public <T> void remove(TypedKey<T> key) {
 		attributes.remove(key);

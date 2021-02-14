@@ -134,6 +134,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             synchronized (DefaultContentDeliveryConfigBuilder.class) {
                 if (contentDeliveryConfig == null) {
                     load(profileSet);
+                    fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONTENT_DELIVERY_BUILDER_CREATED);
                     contentDeliveryConfig = buildConfig(extendedContentHandlerBindings);
                 }
             }
@@ -153,7 +154,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         configBuilderEvents.add(new ConfigBuilderEvent(String.format("Activating %s filter", filterProvider.getName())));
 
         ContentDeliveryConfig contentDeliveryConfig = filterProvider.createContentDeliveryConfig(visitorBindings, registry, resourceConfigTable, configBuilderEvents, dtd);
-        fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED);
+        fireEvent(ContentDeliveryConfigBuilderLifecycleEvent.CONTENT_DELIVERY_CONFIG_CREATED);
 
         return contentDeliveryConfig;
     }
@@ -284,9 +285,9 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	 * Build the basic ResourceConfig table from the list.
 	 * @param resourceConfigsList List of ResourceConfigs.
 	 */
-    private void buildResourceConfigTable(List resourceConfigsList) {
-        for (final Object resourceConfig : resourceConfigsList) {
-            addResourceConfiguration((ResourceConfig) resourceConfig);
+    private void buildResourceConfigTable(List<ResourceConfig> resourceConfigsList) {
+        for (final ResourceConfig resourceConfig : resourceConfigsList) {
+            addResourceConfig(resourceConfig);
         }
     }
 
@@ -295,7 +296,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * resource configuration list.
      * @param config The configuration to be added.
      */
-    private void addResourceConfiguration(ResourceConfig config) {
+    private void addResourceConfig(ResourceConfig config) {
         String target = config.getSelectorPath().getSelector();
 
         // If it's contextual, it's targeting an XML element...
@@ -303,29 +304,24 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             target = config.getSelectorPath().getTargetElement();
         }
 
-        addResourceConfiguration(target, config);
+        addResourceConfig(target, config);
     }
 
     /**
      * Add the config for the specified element.
      * @param element The element to which the config is to be added.
-     * @param resourceConfiguration The Object to be added.
+     * @param resourceConfig The Object to be added.
      */
-    @SuppressWarnings("unchecked")
-    private void addResourceConfiguration(String element, ResourceConfig resourceConfiguration) {
+    private void addResourceConfig(String element, ResourceConfig resourceConfig) {
         // Add it to the unsorted list...
-        if(!resourceConfigs.contains(resourceConfiguration)) {
-            resourceConfigs.add(resourceConfiguration);
+        if(!resourceConfigs.contains(resourceConfig)) {
+            resourceConfigs.add(resourceConfig);
         }
 
         // Add it to the sorted resourceConfigTable...
-        List elementConfigList = resourceConfigTable.get(element);
-        if(elementConfigList == null) {
-            elementConfigList = new Vector();
-            resourceConfigTable.put(element, elementConfigList);
-        }
-        if(!elementConfigList.contains(resourceConfiguration)) {
-            elementConfigList.add(resourceConfiguration);
+        final List<ResourceConfig> elementConfigList = resourceConfigTable.computeIfAbsent(element, k -> new Vector<>());
+        if(!elementConfigList.contains(resourceConfig)) {
+            elementConfigList.add(resourceConfig);
         }
     }
 
@@ -344,7 +340,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                 if (resourceConfig.isXmlDef()) {
                     String[] elements = getDTDElements(resourceConfig.getSelectorPath().getSelector().substring(ResourceConfig.XML_DEF_PREFIX.length()));
                     for (final String element : elements) {
-                        addResourceConfiguration(element, resourceConfig);
+                        addResourceConfig(element, resourceConfig);
                     }
                 }
 
@@ -450,7 +446,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 
         private boolean applyContentDeliveryUnitStrategy(final ResourceConfig resourceConfig) {
             // Try it as a Java class before trying anything else.  This is to
-            // accomodate specification of the class in the standard
+            // accommodate specification of the class in the standard
             // Java form e.g. java.lang.String Vs java/lang/String.class
             if (resourceConfig.isJavaResource()) {
                 final ContentHandlerFactory<?> contentHandlerFactory = registry.lookup(new ContentHandlerFactoryLookup("class"));
@@ -564,7 +560,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                 // Try adding it as a ContentHandler instance...
                 if (!applyContentDeliveryUnitStrategy(resourceConfig)) {
                     // Else just add it to the main list...
-                    addResourceConfiguration(resourceConfig);
+                    addResourceConfig(resourceConfig);
                 }
             }
         }

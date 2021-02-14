@@ -47,7 +47,7 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.memento.Memento;
+import org.smooks.delivery.memento.SimpleVisitorMemento;
 import org.smooks.delivery.sax.annotation.StreamResultWriter;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
@@ -131,7 +131,7 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
     protected <N extends Node, T extends Visitor> void intercept(final StreamResultWriterInvocation<N, T> invocation, final ExecutionContext executionContext, final Node mementoNode) {
         if (getTarget().getContentHandler().getClass().isAnnotationPresent(StreamResultWriter.class)) {
             NodeFragment nodeFragment = new NodeFragment(mementoNode);
-            executionContext.getMementoCaretaker().stash(new Memento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment, false)), writerMemento -> {
+            executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment, false)), writerMemento -> {
                 try {
                     writerMemento.getState().park();
                 } catch (IOException e) {

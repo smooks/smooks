@@ -52,8 +52,9 @@ import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.memento.AbstractVisitorMemento;
-import org.smooks.delivery.memento.Memento;
+import org.smooks.delivery.memento.SimpleVisitorMemento;
 import org.smooks.delivery.memento.VisitorMemento;
+import org.smooks.delivery.memento.Memento;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXElementVisitor;
 import org.smooks.delivery.sax.SAXText;
@@ -153,19 +154,19 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     protected static class ElementMemento extends AbstractVisitorMemento {
         private Boolean isOpen;
 
-        public ElementMemento(final Fragment fragment, final Visitor visitor, final Boolean isOpen) {
+        public ElementMemento(final Fragment<?> fragment, final Visitor visitor, final Boolean isOpen) {
             super(fragment, visitor);
             this.isOpen = isOpen;
         }
 
         @Override
-        public VisitorMemento copy() {
+        public Memento copy() {
             return new ElementMemento(fragment, visitor, isOpen);
         }
 
         @Override
-        public void restore(final VisitorMemento visitorMemento) {
-            isOpen = ((ElementMemento) visitorMemento).isOpen();
+        public void restore(final Memento memento) {
+            isOpen = ((ElementMemento) memento).isOpen();
         }
 
         public Boolean isOpen() {
@@ -174,7 +175,7 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     }
 
     public void writeStartElement(final Element element, final ExecutionContext executionContext) {
-        final Fragment nodeFragment = new NodeFragment(element);
+        final Fragment<Node> nodeFragment = new NodeFragment(element);
         executionContext.getMementoCaretaker().stash(new ElementMemento(nodeFragment, this, false), elementMemento -> {
             if (!elementMemento.isOpen()) {
                 try {
@@ -271,9 +272,9 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     protected void onWrite(final Consumer<Writer> writerConsumer, final ExecutionContext executionContext, final Node node) {
         if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig) {
             final NodeFragment nodeFragment = new NodeFragment(node);
-            final Memento<FragmentWriter> fragmentWriterMemento = executionContext.
+            final VisitorMemento<FragmentWriter> fragmentWriterMemento = executionContext.
                     getMementoCaretaker().
-                    stash(new Memento<>(nodeFragment, this, new FragmentWriter(executionContext, new NodeFragment(node))), restoredFragmentWriterMemento -> restoredFragmentWriterMemento);
+                    stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment)), restoredFragmentWriterMemento -> restoredFragmentWriterMemento);
 
             writerConsumer.accept(fragmentWriterMemento.getState());
         }

@@ -42,11 +42,8 @@
  */
 package org.smooks.delivery;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 /**
  * Smooks resource and a target of content delivery.
  */
-@NotThreadSafe
 public interface ContentHandler {
 }

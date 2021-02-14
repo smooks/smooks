@@ -43,9 +43,11 @@
 package org.smooks.delivery.sax.ng;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.container.ExecutionContext;
+import org.smooks.event.report.FlatReportGenerator;
 import org.smooks.io.StreamUtils;
 import org.smooks.lang.LangUtil;
 import org.xml.sax.SAXException;
@@ -58,6 +60,24 @@ import static org.junit.Assert.*;
 
 public class SaxNgFilterTest {
 
+    @Before
+    public void before() throws Exception {
+        Visitor01.element = null;
+        Visitor01.children.clear();
+        Visitor01.childText.clear();
+        Visitor02.element = null;
+        Visitor02.children.clear();
+        Visitor02.childText.clear();
+        Visitor03.element = null;
+        Visitor03.children.clear();
+        Visitor03.childText.clear();
+
+        VisitBeforeVisitor.visited = false;
+        BeforeVisitorAndChildrenVisitor.reset();
+        VisitAfterVisitor.visited = false;
+        AfterVisitorAndChildrenVisitor.reset();
+    }
+    
 	@Test
     public void test_reader_writer() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
@@ -100,24 +120,6 @@ public class SaxNgFilterTest {
 
         smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), new StreamResult(writer));
         assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(writer.toString())).toString());
-    }
-
-	@Before
-    public void setUp() throws Exception {
-        Visitor01.element = null;
-        Visitor01.children.clear();
-        Visitor01.childText.clear();
-        Visitor02.element = null;
-        Visitor02.children.clear();
-        Visitor02.childText.clear();
-        Visitor03.element = null;
-        Visitor03.children.clear();
-        Visitor03.childText.clear();
-
-        VisitBeforeVisitor.visited = false;
-        BeforeVisitorAndChildrenVisitor.reset();
-        VisitAfterVisitor.visited = false;
-        AfterVisitorAndChildrenVisitor.reset();
     }
 
 	@Test
@@ -278,21 +280,17 @@ public class SaxNgFilterTest {
         assertTrue(AfterVisitorAndChildrenVisitor.onChildElement);
         AfterVisitorAndChildrenVisitor.reset();
     }
-
+    
     @Test
+    @Ignore("FIXME")
     public void test_report() throws IOException, SAXException {
-        System.out.println("********* FIX TEST!!");
-        /*
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-04.xml"));
         ExecutionContext executionContext = smooks.createExecutionContext();
         StringWriter reportWriter = new StringWriter();
 
-        executionContext.setEventListener(new FlatReportGenerator(reportWriter));
-        smooks.filter(new StreamSource(new StringReader("<c/>")), null, executionContext);
+        executionContext.getContentDeliveryRuntime().addExecutionEventListener(new FlatReportGenerator(reportWriter));
+        smooks.filterSource(executionContext, new StreamSource(new StringReader("<c/>")), null);
 
-        assertTrue(StreamUtils.compareCharStreams(
-                getClass().getResourceAsStream("report-expected.txt"),
-                new ByteArrayInputStream(reportWriter.toString().getBytes())));
-        */
+        assertTrue(StreamUtils.compareCharStreams(getClass().getResourceAsStream("report-expected.txt"), new ByteArrayInputStream(reportWriter.toString().getBytes())));
     }
 }

@@ -56,6 +56,7 @@ public interface Namespace {
 
     class SmooksNamespaceMappings extends Properties {
         private static final String SMOOKS_URI = "https://www.smooks.org";
+
         private SmooksNamespaceMappings() {
             setProperty("param-type", SMOOKS_URI + "/param-type");
             setProperty("decoder", SMOOKS_URI + "/decoder");

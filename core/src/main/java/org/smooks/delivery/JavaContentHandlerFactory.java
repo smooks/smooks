@@ -43,8 +43,8 @@
 package org.smooks.delivery;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.classpath.ClasspathUtils;
 import org.smooks.container.ApplicationContext;
 import org.smooks.injector.Scope;
@@ -55,9 +55,6 @@ import org.smooks.util.ClassUtil;
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /**
  * Java ContentHandler instance creator.
@@ -70,9 +67,7 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory<Object> 
 
     @Inject
     private ApplicationContext applicationContext;
-
-    private final Map<ResourceConfig, Object> javaContentHandlers = new ConcurrentHashMap<>();
-
+    
     /**
      * Create a Java based ContentHandler instance.
      *
@@ -80,31 +75,25 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory<Object> 
      *                                    to be created.
      * @return Java {@link ContentHandler} instance.
      */
-    @SuppressWarnings("unchecked")
     public Object create(final ResourceConfig resourceConfig) throws SmooksConfigurationException {
-        return javaContentHandlers.computeIfAbsent(resourceConfig, new Function<ResourceConfig, Object>() {
-            @Override
-            public Object apply(final ResourceConfig resourceConfig) {
-                Object contentHandler;
-                try {
-                    final String className = ClasspathUtils.toClassName(resourceConfig.getResource());
-                    final Class<?> classRuntime = ClassUtil.forName(className, getClass());
-                    final Constructor<?> constructor;
-                    try {
-                        constructor = classRuntime.getConstructor(ResourceConfig.class);
-                        contentHandler = constructor.newInstance(resourceConfig);
-                    } catch (NoSuchMethodException e) {
-                        contentHandler = classRuntime.newInstance();
-                    }
-                    applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), resourceConfig, contentHandler)));
-                    applicationContext.getRegistry().registerObject(contentHandler);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
-                    throw new SmooksException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause...", e);
-                }
-
-                return contentHandler;
+        Object contentHandler;
+        try {
+            final String className = ClasspathUtils.toClassName(resourceConfig.getResource());
+            final Class<?> classRuntime = ClassUtil.forName(className, getClass());
+            final Constructor<?> constructor;
+            try {
+                constructor = classRuntime.getConstructor(ResourceConfig.class);
+                contentHandler = constructor.newInstance(resourceConfig);
+            } catch (NoSuchMethodException e) {
+                contentHandler = classRuntime.newInstance();
             }
-        });
+            applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(contentHandler, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), resourceConfig, contentHandler)));
+            applicationContext.getRegistry().registerObject(contentHandler);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+            throw new SmooksException("Failed to create an instance of Java ContentHandler [" + resourceConfig.getResource() + "].  See exception cause...", e);
+        }
+
+        return contentHandler;
     }
 
     @Override

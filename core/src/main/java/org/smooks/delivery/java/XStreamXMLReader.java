@@ -68,7 +68,7 @@ public class XStreamXMLReader implements JavaXMLReader {
     private SaxWriter xstreamReader;
     
     @PostConstruct
-    public void intialize() {
+    public void postConstruct() {
         xstreamReader = new SaxWriter(includeEnclosingDocument);
     }
 

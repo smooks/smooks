@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Smooks Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -42,49 +42,45 @@
  */
 package org.smooks.delivery.memento;
 
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.Visitor;
 import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.fragment.NodeFragment;
 
-/**
- * Holds the state of a {@link Visitor}. 
- * 
- * A <code>VisitorMemento</code> is saved and restored it at a later stage. A <code>VisitorMemento</code> is bound to a 
- * <code>Visitor<code></> and its fragment (e.g., {@link NodeFragment}). Management of <code>VisitorMemento</code>s
- * should be delegated to {@link org.smooks.container.MementoCaretaker}.
- */
-public interface VisitorMemento  {
+public class VisitorMemento<T> extends AbstractVisitorMemento {
 
-    /**
-     * Performs a deep clone of this <code>VisitorMemento</code>.
-     * 
-     * @return a deep clone of this <code>VisitorMemento</code>
-     */
-    VisitorMemento copy();
-
-    /**
-     * Combines a <code>VisitorMemento</code> state with this <code>VisitorMemento</code>
-     * 
-     * @param visitorMemento  the <code>VisitorMemento</code> restoring this <code>VisitorMemento</code>
-     */
-    void restore(VisitorMemento visitorMemento);
-
-    /**
-     * @return the <code>Visitor</code> which this <code>VisitorMemento</code> is bound to
-     */
-    Visitor getVisitor();
-
-    /**
-     * @return the fragment which this <code>VisitorMemento</code> is bound to
-     */
-    Fragment getFragment();
-
-    /**
-     * Gets the anchor value of this <code>VisitorMemento</code>. <code>VisitorMemento</code>s with equal anchor values 
-     * are considered to be capturing the state of the same object but at different points in time.
-     * 
-     * @return the ID of this <code>VisitorMemento</code>
-     */
-    String getAnchor();
+    protected TypedKey<?> typedKey;
+    protected T state;
     
+    public VisitorMemento(final Fragment<?> fragment, final Visitor visitor, final TypedKey<?> typedKey, final T state) {
+        super(fragment, visitor);
+        this.state = state;
+        this.typedKey = typedKey;
+    }
+    
+    @Override
+    public Memento copy() {
+        return new VisitorMemento<>(fragment, visitor, typedKey, state);
+    }
+
+    @Override
+    public void restore(Memento memento) {
+        state = ((VisitorMemento<T>) memento).getState();
+        typedKey = ((VisitorMemento<T>) memento).getTypedKey();
+    }
+
+    public T getState() {
+        return state;
+    }
+
+    public TypedKey<?> getTypedKey() {
+        return typedKey;
+    }
+
+    @Override
+    public String getAnchor() {
+        if (anchor == null) {
+            anchor = typedKey.getName() + "@" + fragment.getId() + "@" + visitor.getClass().getName() + "@" + getClass().getName() + "@" + System.identityHashCode(visitor);
+        }
+        return anchor;
+    }
 }

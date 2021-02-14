@@ -49,6 +49,7 @@ import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.fragment.SAXElementFragment;
 import org.smooks.delivery.replay.EndElementEvent;
 import org.smooks.delivery.replay.StartElementEvent;
@@ -61,7 +62,10 @@ import org.smooks.event.types.VisitEvent;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.NullWriter;
 import org.smooks.io.Stream;
+import org.smooks.lifecycle.LifecycleManager;
 import org.smooks.lifecycle.VisitLifecycleCleanable;
+import org.smooks.lifecycle.phase.VisitCleanupPhase;
+import org.smooks.registry.lookup.LifecycleManagerLookup;
 import org.smooks.xml.DocType;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -82,28 +86,31 @@ import java.util.Optional;
 public class SAXHandler extends SmooksContentHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SAXHandler.class);
+    private static final ContentHandlerBinding<SAXElementVisitor> DEFAULT_SERIALIZER_MAPPING;
+
     private final ExecutionContext executionContext;
-    private ElementProcessor currentProcessor = null;
-    private TextType currentTextType = TextType.TEXT;
     private final SAXContentDeliveryConfig deliveryConfig;
     private final Map<String, SAXElementVisitorMap> visitorConfigMap;
     private final SAXElementVisitorMap globalVisitorConfig;
     private final Boolean rewriteEntities;
-    private boolean defaultSerializationOn;
     private final Boolean maintainElementStack;
     private final Boolean reverseVisitOrderOnVisitAfter;
     private final DefaultSAXElementSerializer defaultSerializer = new DefaultSAXElementSerializer();
-    private static final ContentHandlerBinding defaultSerializerMapping;
     private final ContentDeliveryRuntime contentDeliveryRuntime;
-    private DynamicSAXElementVisitorList dynamicVisitorList;
     private final StringBuilder cdataNodeBuilder = new StringBuilder();
-    private Boolean terminateOnVisitorException;
+    private final LifecycleManager lifecycleManager;
+
+    private boolean defaultSerializationOn;
+    private boolean terminateOnVisitorException;
+    private ElementProcessor currentProcessor = null;
+    private TextType currentTextType = TextType.TEXT;
+    private DynamicSAXElementVisitorList dynamicVisitorList;
 
     static {
         // Configure the default handler mapping...
         ResourceConfig resource = new ResourceConfig("*", DefaultSAXElementSerializer.class.getName());
         resource.setDefaultResource(true);
-        defaultSerializerMapping = new ContentHandlerBinding(new DefaultSAXElementSerializer(), resource);
+        DEFAULT_SERIALIZER_MAPPING = new ContentHandlerBinding<>(new DefaultSAXElementSerializer(), resource);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -117,6 +124,7 @@ public class SAXHandler extends SmooksContentHandler {
         this.executionContext = executionContext;
         contentDeliveryRuntime = executionContext.getContentDeliveryRuntime();
 
+        lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
         deliveryConfig = ((SAXContentDeliveryConfig) executionContext.getContentDeliveryRuntime().getContentDeliveryConfig());
         visitorConfigMap = deliveryConfig.getOptimizedVisitorConfig();
 
@@ -141,8 +149,9 @@ public class SAXHandler extends SmooksContentHandler {
 
         reverseVisitOrderOnVisitAfter = deliveryConfig.isReverseVisitOrderOnVisitAfter();
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            if ((executionEventListener instanceof AbstractReportGenerator)) {
+            if (executionEventListener instanceof AbstractReportGenerator) {
                 terminateOnVisitorException = false;
+                break;
             }
         }
 
@@ -157,7 +166,6 @@ public class SAXHandler extends SmooksContentHandler {
     public void cleanup() {
     }
 
-    @SuppressWarnings("RedundantThrows")
     public void startElement(StartElementEvent startEvent) throws SAXException {
         WriterManagedSAXElement element;
         boolean isRoot = (currentProcessor == null);
@@ -210,8 +218,8 @@ public class SAXHandler extends SmooksContentHandler {
         }
     }
 
-    @SuppressWarnings("RedundantThrows")
-    public void endElement(EndElementEvent endEvent) throws SAXException {
+    @Override
+    public void endElement(EndElementEvent endEvent) {
         boolean flush = false;
 
         // Apply the dynamic visitors...
@@ -250,11 +258,12 @@ public class SAXHandler extends SmooksContentHandler {
             flush = true;
         }
 
-        if(defaultSerializationOn && applyDefaultSerialization()) {
+        final Fragment<SAXElement> saxElementFragment = new SAXElementFragment(currentProcessor.element);
+        if (defaultSerializationOn && applyDefaultSerialization()) {
             try {
                 defaultSerializer.visitAfter(currentProcessor.element, executionContext);
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new VisitEvent(new SAXElementFragment(currentProcessor.element), defaultSerializerMapping, VisitSequence.AFTER, executionContext));
+                    executionEventListener.onEvent(new VisitEvent<>(saxElementFragment, DEFAULT_SERIALIZER_MAPPING, VisitSequence.AFTER, executionContext));
                 }
             } catch (IOException e) {
                 throw new SmooksException("Unexpected exception applying defaultSerializer.", e);
@@ -262,23 +271,21 @@ public class SAXHandler extends SmooksContentHandler {
             flush = true;
         }
 
-        if(flush) {
+        if (flush) {
             flushCurrentWriter();
         }
 
         // Process cleanables after applying all the visit afters...
-        if(currentProcessor.elementVisitorConfig != null) {
+        if (currentProcessor.elementVisitorConfig != null) {
             List<ContentHandlerBinding<VisitLifecycleCleanable>> visitCleanables = currentProcessor.elementVisitorConfig.getVisitCleanables();
 
-            if(visitCleanables != null) {
-                for (final ContentHandlerBinding<VisitLifecycleCleanable> visitCleanable : visitCleanables)
-                {
-                    final boolean targetedAtElement
-                        = visitCleanable.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, executionContext);
+            if (visitCleanables != null) {
+                final VisitCleanupPhase visitCleanupPhase = new VisitCleanupPhase(saxElementFragment, executionContext);
+                for (final ContentHandlerBinding<VisitLifecycleCleanable> visitCleanable : visitCleanables) {
+                    final boolean targetedAtElement = saxElementFragment.isMatch(visitCleanable.getResourceConfig().getSelectorPath(), executionContext);
 
-                    if (targetedAtElement)
-                    {
-                        visitCleanable.getContentHandler().executeVisitLifecycleCleanup(new SAXElementFragment(currentProcessor.element), executionContext);
+                    if (targetedAtElement) {
+                        lifecycleManager.applyPhase(visitCleanable.getContentHandler(), visitCleanupPhase);
                     }
                 }
             }
@@ -308,7 +315,6 @@ public class SAXHandler extends SmooksContentHandler {
     }
 
     private void visitBefore(WriterManagedSAXElement element, SAXElementVisitorMap elementVisitorConfig) {
-
         // Now create the new "current" processor...
         ElementProcessor processor = new ElementProcessor();
 
@@ -317,12 +323,13 @@ public class SAXHandler extends SmooksContentHandler {
         processor.elementVisitorConfig = elementVisitorConfig;
 
         currentProcessor = processor;
+        final SAXElementFragment saxElementFragment = new SAXElementFragment(element);
         if (currentProcessor.elementVisitorConfig != null) {
             // And visit it with the targeted visitor...
             List<ContentHandlerBinding<SAXVisitBefore>> visitBeforeMappings = currentProcessor.elementVisitorConfig.getVisitBefores();
 
             if (elementVisitorConfig.accumulateText()) {
-                currentProcessor.element.accumulateText();
+                element.accumulateText();
             }
             SAXVisitor acquireWriterFor = elementVisitorConfig.acquireWriterFor();
             if (acquireWriterFor != null) {
@@ -332,10 +339,9 @@ public class SAXHandler extends SmooksContentHandler {
             if (visitBeforeMappings != null) {
                 for (final ContentHandlerBinding<SAXVisitBefore> mapping : visitBeforeMappings) {
                     try {
-                        if (mapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, executionContext)) {
-                            mapping.getContentHandler().visitBefore(currentProcessor.element, executionContext);
+                        if (saxElementFragment.isMatch(mapping.getResourceConfig().getSelectorPath(), executionContext)) {
+                            mapping.getContentHandler().visitBefore(element, executionContext);
                             // Register the targeting event.  No need to register this event again on the visitAfter...
-                            final SAXElementFragment saxElementFragment = new SAXElementFragment(element);
                             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                                 executionEventListener.onEvent(new ResourceTargetingEvent(saxElementFragment, mapping.getResourceConfig(), VisitSequence.BEFORE));
                                 executionEventListener.onEvent(new VisitEvent<>(saxElementFragment, mapping, VisitSequence.BEFORE, executionContext));
@@ -343,7 +349,7 @@ public class SAXHandler extends SmooksContentHandler {
                         }
                     } catch (Throwable t) {
                         String errorMsg = "Error in '" + mapping.getContentHandler().getClass().getName() + "' while processing the visitBefore event.";
-                        processVisitorException(currentProcessor.element, t, mapping, VisitSequence.BEFORE, errorMsg);
+                        processVisitorException(element, t, mapping, VisitSequence.BEFORE, errorMsg);
                     }
                 }
             }
@@ -351,9 +357,9 @@ public class SAXHandler extends SmooksContentHandler {
 
         if (defaultSerializationOn && applyDefaultSerialization()) {
             try {
-                defaultSerializer.visitBefore(currentProcessor.element, executionContext);
+                defaultSerializer.visitBefore(element, executionContext);
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new VisitEvent(new SAXElementFragment(element), defaultSerializerMapping, VisitSequence.BEFORE, executionContext));
+                    executionEventListener.onEvent(new VisitEvent<>(saxElementFragment, DEFAULT_SERIALIZER_MAPPING, VisitSequence.BEFORE, executionContext));
                 }
 
             } catch (IOException e) {
@@ -366,7 +372,7 @@ public class SAXHandler extends SmooksContentHandler {
         if (!dynamicVisitBefores.isEmpty()) {
             for (SAXVisitBefore dynamicVisitBefore : dynamicVisitBefores) {
                 try {
-                    dynamicVisitBefore.visitBefore(currentProcessor.element, executionContext);
+                    dynamicVisitBefore.visitBefore(element, executionContext);
                 } catch (Throwable t) {
                     String errorMsg = "Error in '" + dynamicVisitBefore.getClass().getName() + "' while processing the visitBefore event.";
                     processVisitorException(t, errorMsg);
@@ -376,20 +382,16 @@ public class SAXHandler extends SmooksContentHandler {
     }
 
     private void onChildElement(SAXElement childElement) {
-        if(currentProcessor.elementVisitorConfig != null) {
+        if (currentProcessor.elementVisitorConfig != null) {
             List<ContentHandlerBinding<SAXVisitChildren>> visitChildMappings = currentProcessor.elementVisitorConfig.getChildVisitors();
 
-            if(visitChildMappings != null) {
-                for (final ContentHandlerBinding<SAXVisitChildren> mapping : visitChildMappings)
-                {
-                    if (mapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, executionContext))
-                    {
-                        try
-                        {
+            if (visitChildMappings != null) {
+                final Fragment<SAXElement> saxElementFragment = new SAXElementFragment(childElement);
+                for (final ContentHandlerBinding<SAXVisitChildren> mapping : visitChildMappings) {
+                    if (saxElementFragment.isMatch(mapping.getResourceConfig().getSelectorPath(), executionContext)) {
+                        try {
                             mapping.getContentHandler().onChildElement(currentProcessor.element, childElement, executionContext);
-                        }
-                        catch (Throwable t)
-                        {
+                        } catch (Throwable t) {
                             String errorMsg = "Error in '" + mapping.getContentHandler().getClass().getName() + "' while processing the onChildElement event.";
                             processVisitorException(currentProcessor.element, t, mapping, VisitSequence.AFTER, errorMsg);
                         }
@@ -398,7 +400,7 @@ public class SAXHandler extends SmooksContentHandler {
             }
         }
 
-        if(defaultSerializationOn && applyDefaultSerialization()) {
+        if (defaultSerializationOn && applyDefaultSerialization()) {
             try {
                 defaultSerializer.onChildElement(currentProcessor.element, childElement, executionContext);
             } catch (IOException e) {
@@ -408,11 +410,11 @@ public class SAXHandler extends SmooksContentHandler {
 
         // Apply the dynamic visitors...
         List<SAXVisitChildren> dynamicChildVisitors = dynamicVisitorList.getChildVisitors();
-        if(!dynamicChildVisitors.isEmpty()) {
+        if (!dynamicChildVisitors.isEmpty()) {
             for (SAXVisitChildren dynamicChildVisitor : dynamicChildVisitors) {
                 try {
                     dynamicChildVisitor.onChildElement(currentProcessor.element, childElement, executionContext);
-                } catch(Throwable t) {
+                } catch (Throwable t) {
                     String errorMsg = "Error in '" + dynamicChildVisitor.getClass().getName() + "' while processing the onChildElement event.";
                     processVisitorException(t, errorMsg);
                 }
@@ -421,22 +423,22 @@ public class SAXHandler extends SmooksContentHandler {
     }
 
     private void visitAfter(ContentHandlerBinding<SAXVisitAfter> afterMapping) {
-
         try {
-            if(afterMapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, executionContext)) {
+            final Fragment<SAXElement> saxElementFragment = new SAXElementFragment(currentProcessor.element);
+            if (saxElementFragment.isMatch(afterMapping.getResourceConfig().getSelectorPath(), executionContext)) {
                 afterMapping.getContentHandler().visitAfter(currentProcessor.element, executionContext);
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new VisitEvent(new SAXElementFragment(currentProcessor.element), afterMapping, VisitSequence.AFTER, executionContext));
+                    executionEventListener.onEvent(new VisitEvent<>(saxElementFragment, afterMapping, VisitSequence.AFTER, executionContext));
                 }
             }
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             String errorMsg = "Error in '" + afterMapping.getContentHandler().getClass().getName() + "' while processing the visitAfter event.";
             processVisitorException(currentProcessor.element, t, afterMapping, VisitSequence.AFTER, errorMsg);
         }
     }
 
     private final SAXText textWrapper = new SAXText();
-    @SuppressWarnings("RedundantThrows")
+
     public void characters(char[] ch, int start, int length) throws SAXException {
         if(currentTextType != TextType.CDATA) {
             _characters(ch, start, length);
@@ -446,12 +448,12 @@ public class SAXHandler extends SmooksContentHandler {
     }
 
     private final StringBuilder entityBuilder = new StringBuilder(10);
-    private void _characters(char[] ch, int start, int length) {
 
-        if(!rewriteEntities && currentTextType == TextType.ENTITY) {
+    private void _characters(char[] ch, int start, int length) {
+        if (!rewriteEntities && currentTextType == TextType.ENTITY) {
             entityBuilder.setLength(0);
 
-            entityBuilder.append("&#").append((int)ch[start]).append(';');
+            entityBuilder.append("&#").append((int) ch[start]).append(';');
             char[] newBuf = new char[entityBuilder.length()];
             entityBuilder.getChars(0, newBuf.length, newBuf, 0);
 
@@ -460,31 +462,27 @@ public class SAXHandler extends SmooksContentHandler {
             textWrapper.setText(ch, start, length, currentTextType);
         }
 
-        if(currentProcessor != null) {
+        if (currentProcessor != null) {
             // Accumulate the text...
-            if(currentProcessor.element != null) {
+            if (currentProcessor.element != null) {
                 List<SAXText> saxTextObjects = currentProcessor.element.getText();
-                if(saxTextObjects != null) {
+                if (saxTextObjects != null) {
                     saxTextObjects.add(textWrapper);
                 }
             }
 
-            if(!currentProcessor.isNullProcessor) {
-                if(currentProcessor.elementVisitorConfig != null) {
+            if (!currentProcessor.isNullProcessor) {
+                if (currentProcessor.elementVisitorConfig != null) {
                     List<ContentHandlerBinding<SAXVisitChildren>> visitChildMappings = currentProcessor.elementVisitorConfig.getChildVisitors();
 
-                    if(visitChildMappings != null) {
-                        for (final ContentHandlerBinding<SAXVisitChildren> mapping : visitChildMappings)
-                        {
-                            try
-                            {
-                                if (mapping.getResourceConfig().getSelectorPath().isTargetedAtElement(currentProcessor.element, executionContext))
-                                {
+                    if (visitChildMappings != null) {
+                        final Fragment<SAXElement> saxElementFragment = new SAXElementFragment(currentProcessor.element);
+                        for (final ContentHandlerBinding<SAXVisitChildren> mapping : visitChildMappings) {
+                            try {
+                                if (saxElementFragment.isMatch(mapping.getResourceConfig().getSelectorPath(), executionContext)) {
                                     mapping.getContentHandler().onChildText(currentProcessor.element, textWrapper, executionContext);
                                 }
-                            }
-                            catch (Throwable t)
-                            {
+                            } catch (Throwable t) {
                                 String errorMsg = "Error in '" + mapping.getContentHandler().getClass().getName() + "' while processing the onChildText event.";
                                 processVisitorException(currentProcessor.element, t, mapping, VisitSequence.AFTER, errorMsg);
                             }
@@ -492,7 +490,7 @@ public class SAXHandler extends SmooksContentHandler {
                     }
                 }
 
-                if(defaultSerializationOn && applyDefaultSerialization()) {
+                if (defaultSerializationOn && applyDefaultSerialization()) {
                     try {
                         defaultSerializer.onChildText(currentProcessor.element, textWrapper, executionContext);
                     } catch (IOException e) {
@@ -503,11 +501,11 @@ public class SAXHandler extends SmooksContentHandler {
 
             // Apply the dynamic visitors...
             List<SAXVisitChildren> dynamicChildVisitors = dynamicVisitorList.getChildVisitors();
-            if(!dynamicChildVisitors.isEmpty()) {
+            if (!dynamicChildVisitors.isEmpty()) {
                 for (SAXVisitChildren dynamicChildVisitor : dynamicChildVisitors) {
                     try {
                         dynamicChildVisitor.onChildText(currentProcessor.element, textWrapper, executionContext);
-                    } catch(Throwable t) {
+                    } catch (Throwable t) {
                         String errorMsg = "Error in '" + dynamicChildVisitor.getClass().getName() + "' while processing the onChildText event.";
                         processVisitorException(t, errorMsg);
                     }
@@ -564,13 +562,11 @@ public class SAXHandler extends SmooksContentHandler {
         }
     }
 
-    @SuppressWarnings("RedundantThrows")
     public void startEntity(String name) throws SAXException {
         currentTextType = TextType.ENTITY;
     }
 
-    @SuppressWarnings("RedundantThrows")
-    public void endEntity(String name) throws SAXException {
+    public void endEntity(String name) {
         currentTextType = TextType.TEXT;
     }
 
@@ -597,9 +593,10 @@ public class SAXHandler extends SmooksContentHandler {
         private SAXElementVisitorMap elementVisitorConfig;
     }
 
-    private void processVisitorException(SAXElement element, Throwable error, ContentHandlerBinding contentHandlerBinding, VisitSequence visitSequence, String errorMsg) throws SmooksException {
+    private void processVisitorException(SAXElement element, Throwable error, ContentHandlerBinding<? extends Visitor> visitorBinding, VisitSequence visitSequence, String errorMsg) throws SmooksException {
+        VisitEvent<SAXElement, ? extends Visitor> visitEvent = new VisitEvent<>(new SAXElementFragment(element), visitorBinding, visitSequence, executionContext, error);
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new VisitEvent(new SAXElementFragment(element), contentHandlerBinding, visitSequence, executionContext, error));
+            executionEventListener.onEvent(visitEvent);
         }
         
         processVisitorException(error, errorMsg);

@@ -51,6 +51,7 @@ import org.smooks.cdr.ResourceConfigurationNotFoundException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.*;
 import org.smooks.delivery.dom.DOMContentDeliveryConfig;
+import org.smooks.delivery.fragment.Fragment;
 import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.event.ExecutionEventListener;
 import org.smooks.event.types.DOMFilterLifecycleEvent;
@@ -258,44 +259,45 @@ public class Serializer {
     @SuppressWarnings("unchecked")
     private SerializerVisitor getSerializationUnit(Element element, boolean isRoot) {
         String elementName = DomUtils.getName(element);
-        List<ContentHandlerBinding<SerializerVisitor>> elementSUs;
+        List<ContentHandlerBinding<SerializerVisitor>> serializerVisitorBindings;
 
+        final Fragment<Node> nodeFragment = new NodeFragment(element);
         // Register the "presence" of the element...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new StartFragmentEvent(new NodeFragment(element)));
+            executionEventListener.onEvent(new StartFragmentEvent(nodeFragment));
         }
 
         if (isRoot) {
             // The document as a whole (root node) can also be targeted through the "#document" selector.
-            elementSUs = serializerVisitorSelectorTable.get(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            serializerVisitorBindings = serializerVisitorSelectorTable.get(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
-            elementSUs = serializerVisitorSelectorTable.get(elementName);
+            serializerVisitorBindings = serializerVisitorSelectorTable.get(elementName);
         }
 
-        if (elementSUs == null || elementSUs.isEmpty()) {
-            elementSUs = globalSUs;
+        if (serializerVisitorBindings == null || serializerVisitorBindings.isEmpty()) {
+            serializerVisitorBindings = globalSUs;
         }
 
-        if (elementSUs != null) {
-            for (final ContentHandlerBinding<SerializerVisitor> elementSU : elementSUs) {
-                ResourceConfig config = elementSU.getResourceConfig();
+        if (serializerVisitorBindings != null) {
+            for (final ContentHandlerBinding<SerializerVisitor> serializerVisitorBinding : serializerVisitorBindings) {
+                final ResourceConfig resourceConfig = serializerVisitorBinding.getResourceConfig();
 
                 // Make sure the serialization unit is targeted at this element.
-                if (!config.getSelectorPath().isTargetedAtElement(element, executionContext)) {
+                if (!nodeFragment.isMatch(resourceConfig.getSelectorPath(), executionContext)) {
                     continue;
                 }
 
                 // Register the targeting event...
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new ResourceTargetingEvent(new NodeFragment(element), config));
+                    executionEventListener.onEvent(new ResourceTargetingEvent(nodeFragment, resourceConfig));
                 }
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Applying serialisation resource [" + config + "] to element [" + DomUtils.getXPath(element) + "].");
+                    LOGGER.debug("Applying serialisation resource [" + resourceConfig + "] to element [" + DomUtils.getXPath(element) + "].");
                 }
 
                 // This is the one, return it...
-                return (SerializerVisitor) ((ContentHandlerBinding) elementSU).getContentHandler();
+                return serializerVisitorBinding.getContentHandler();
             }
         }
 

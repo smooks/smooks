@@ -52,9 +52,9 @@ import org.smooks.event.FragmentEvent;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class StartFragmentEvent extends FragmentEvent {
+public class StartFragmentEvent<T> extends FragmentEvent<T> {
     
-    public StartFragmentEvent(final Fragment fragment) {
+    public StartFragmentEvent(final Fragment<T> fragment) {
         super(fragment);
     }
 }

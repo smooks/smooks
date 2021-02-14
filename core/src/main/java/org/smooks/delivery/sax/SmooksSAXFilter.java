@@ -103,7 +103,7 @@ public class SmooksSAXFilter extends Filter {
         if (!(source instanceof StreamSource) && !(source instanceof JavaSource)) {
             throw new IllegalArgumentException(source.getClass().getName() + " Source types not yet supported by the SAX Filter. Only supports StreamSource and JavaSource at present.");
         }
-        if(!(result instanceof FilterResult)) {
+        if (!(result instanceof FilterResult)) {
             if (!(result instanceof StreamResult) && result != null) {
                 throw new IllegalArgumentException(result.getClass().getName() + " Result types not yet supported by the SAX Filter. Only supports StreamResult at present.");
             }

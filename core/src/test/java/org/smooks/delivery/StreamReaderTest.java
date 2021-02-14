@@ -73,25 +73,22 @@ public class StreamReaderTest
     private Smooks smooks;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         smooks = new Smooks();
-        smooks.addConfiguration(new ResourceConfig( "org.xml.sax.driver", MockReader.class.getName()));
+        smooks.addConfiguration(new ResourceConfig("org.xml.sax.driver", MockReader.class.getName()));
     }
 
-    @Test public void verifyByteStream()
-    {
+    @Test
+    public void verifyByteStream() {
         smooks.filterSource(new StreamSource(new ByteArrayInputStream(bytes)));
         assertArrayEquals(bytes, MockReader.readBytes);
     }
 
-    public static class MockReader implements SmooksXMLReader
-    {
+    public static class MockReader implements SmooksXMLReader {
         private ContentHandler handler;
         private static byte[] readBytes;
 
-        public void parse(final InputSource inputSource) throws IOException, SAXException
-        {
+        public void parse(final InputSource inputSource) throws IOException, SAXException {
             final InputStream bin = inputSource.getByteStream();
 
             MockReader.readBytes = StreamUtils.readStream(bin);
@@ -99,67 +96,53 @@ public class StreamReaderTest
             handler.endDocument();
         }
 
-        public void setContentHandler(ContentHandler arg0)
-        {
+        public void setContentHandler(ContentHandler arg0) {
             this.handler = arg0;
         }
 
-        public void setExecutionContext(ExecutionContext executionContext)
-        {
+        public void setExecutionContext(ExecutionContext executionContext) {
         }
 
-        public ContentHandler getContentHandler()
-        {
+        public ContentHandler getContentHandler() {
             return null;
         }
 
-        public DTDHandler getDTDHandler()
-        {
+        public DTDHandler getDTDHandler() {
             return null;
         }
 
-        public EntityResolver getEntityResolver()
-        {
+        public EntityResolver getEntityResolver() {
             return null;
         }
 
-        public ErrorHandler getErrorHandler()
-        {
+        public ErrorHandler getErrorHandler() {
             return null;
         }
 
-        public boolean getFeature(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException
-        {
+        public boolean getFeature(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException {
             return false;
         }
 
-        public Object getProperty(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException
-        {
+        public Object getProperty(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException {
             return null;
         }
 
-        public void parse(String string) throws IOException, SAXException
-        {
+        public void parse(String string) throws IOException, SAXException {
         }
 
-        public void setDTDHandler(DTDHandler arg0)
-        {
+        public void setDTDHandler(DTDHandler arg0) {
         }
 
-        public void setEntityResolver(EntityResolver arg0)
-        {
+        public void setEntityResolver(EntityResolver arg0) {
         }
 
-        public void setErrorHandler(ErrorHandler arg0)
-        {
+        public void setErrorHandler(ErrorHandler arg0) {
         }
 
-        public void setFeature(String arg0, boolean arg1) throws SAXNotRecognizedException, SAXNotSupportedException
-        {
+        public void setFeature(String arg0, boolean arg1) throws SAXNotRecognizedException, SAXNotSupportedException {
         }
 
-        public void setProperty(String arg0, Object arg1) throws SAXNotRecognizedException, SAXNotSupportedException
-        {
+        public void setProperty(String arg0, Object arg1) throws SAXNotRecognizedException, SAXNotSupportedException {
         }
 
     }

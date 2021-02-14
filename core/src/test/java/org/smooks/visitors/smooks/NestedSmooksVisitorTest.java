@@ -52,11 +52,13 @@ import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.memento.Memento;
+import org.smooks.delivery.memento.SimpleVisitorMemento;
+import org.smooks.delivery.memento.VisitorMemento;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.io.FragmentWriter;
+import org.smooks.io.Stream;
 import org.smooks.payload.StringResult;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
@@ -84,19 +86,19 @@ public class NestedSmooksVisitorTest {
         nestedSmooks.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
-                executionContext.getMementoCaretaker().capture(new Memento<>(new NodeFragment(element), this, "Hello World!"));
+                executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(new NodeFragment(element), this, "Hello World!"));
             }
             
             @Override
             public void visitAfter(Element element, ExecutionContext executionContext) {
-                Memento<String> memento = new Memento<>(new NodeFragment(element), this, "");
+                VisitorMemento<String> memento = new SimpleVisitorMemento<>(new NodeFragment(element), this, "");
                 executionContext.getMementoCaretaker().restore(memento);
                 assertEquals("Hello World!", memento.getState());
             }
 
             @Override
             public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-                Memento<String> memento = new Memento<>(new NodeFragment(characterData.getParentNode()), this, "");
+                VisitorMemento<String> memento = new SimpleVisitorMemento<>(new NodeFragment(characterData.getParentNode()), this, "");
                 executionContext.getMementoCaretaker().restore(memento);
                 assertEquals("Hello World!", memento.getState());
             }
@@ -122,7 +124,7 @@ public class NestedSmooksVisitorTest {
     }
 
     @Test
-    public void testVisitBeforeGivenAncestors() throws DocumentException {
+    public void testVisitBeforeGivenSelectorHasAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
@@ -150,7 +152,7 @@ public class NestedSmooksVisitorTest {
     }
 
     @Test
-    public void testVisitAfterGivenAncestors() throws DocumentException {
+    public void testVisitAfterGivenSelectorHasAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
@@ -178,7 +180,7 @@ public class NestedSmooksVisitorTest {
     }
 
     @Test
-    public void testVisitChildTextGivenAncestors() throws DocumentException {
+    public void testVisitChildTextGivenSelectorAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
@@ -240,7 +242,7 @@ public class NestedSmooksVisitorTest {
             @Override
             public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
                 try {
-                    new FragmentWriter(executionContext, new NodeFragment(characterData)).write("bar");
+                    Stream.out(executionContext).write("bar");
                 } catch (IOException e) {
                     throw new SmooksException(e);
                 }
@@ -283,7 +285,7 @@ public class NestedSmooksVisitorTest {
             @Override
             public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
                 try {
-                    new FragmentWriter(executionContext, new NodeFragment(characterData)).write("bar");
+                    Stream.out(executionContext).write("bar");
                 } catch (IOException e) {
                     throw new SmooksException(e);
                 }
@@ -404,7 +406,7 @@ public class NestedSmooksVisitorTest {
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
-                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                Stream.out(executionContext).write("bar");
             } catch (IOException e) {
                 throw new SmooksException(e);
             }
@@ -431,7 +433,7 @@ public class NestedSmooksVisitorTest {
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
-                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                Stream.out(executionContext).write("bar");
             } catch (IOException e) {
                 throw new SmooksException(e);
             }
@@ -458,7 +460,7 @@ public class NestedSmooksVisitorTest {
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
-                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                Stream.out(executionContext).write("bar");
             } catch (IOException e) {
                 throw new SmooksException(e);
             }
@@ -485,7 +487,7 @@ public class NestedSmooksVisitorTest {
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
-                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                Stream.out(executionContext).write("bar");
             } catch (IOException e) {
                 throw new SmooksException(e);
             }
@@ -512,7 +514,7 @@ public class NestedSmooksVisitorTest {
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
-                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                Stream.out(executionContext).write("bar");
             } catch (IOException e) {
                 throw new SmooksException(e);
             }
@@ -539,7 +541,7 @@ public class NestedSmooksVisitorTest {
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
-                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                Stream.out(executionContext).write("bar");
             } catch (IOException e) {
                 throw new SmooksException(e);
             }
@@ -566,7 +568,7 @@ public class NestedSmooksVisitorTest {
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
-                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                Stream.out(executionContext).write("bar");
             } catch (IOException e) {
                 throw new SmooksException(e);
             }
@@ -593,7 +595,7 @@ public class NestedSmooksVisitorTest {
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
-                new FragmentWriter(executionContext, new NodeFragment(element)).write("bar");
+                Stream.out(executionContext).write("bar");
             } catch (IOException e) {
                 throw new SmooksException(e);
             }
