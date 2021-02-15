@@ -200,7 +200,7 @@ public class NodeFragment implements Fragment<Node> {
         return true;
     }
 
-    protected boolean isTarget(Node node, SelectorStep selectorStep) {
+    protected boolean isMaybeTarget(Node node, SelectorStep selectorStep) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             if (selectorStep.isStar() || selectorStep.isStarStar()) {
                 return true;
@@ -231,21 +231,12 @@ public class NodeFragment implements Fragment<Node> {
      * element in context, otherwise false.
      */
     protected boolean isTarget(Node node, SelectorPath selectorPath, ExecutionContext executionContext) {
-        if (selectorPath.size() == 1) {
-            return isTarget(node, selectorPath.get(0));
-        }
-        
         Node currentNode = node;
         ContextIndex index = new ContextIndex(executionContext);
 
         index.i = selectorPath.size() - 1;
-
-        // Unless it's **, start at the parent because the current element
-        // has already been tested...
-        if (!selectorPath.get(index.i).isStarStar()) {
-            index.i = selectorPath.size() - 2;
-            currentNode = node.getParentNode();
-        } else {
+        
+        if (selectorPath.get(index.i).isStarStar()) {
             // The target selector step is "**".  If the parent one is "#document" and we're at
             // the root now, then fail...
             if (selectorPath.size() == 2 && selectorPath.get(0).isRooted() && node.getParentNode() == null) {
@@ -310,7 +301,7 @@ public class NodeFragment implements Fragment<Node> {
 
             SelectorStep parentStep = selectorPath.get(index.i - 1);
 
-            if (isTarget(parentElement, parentStep)) {
+            if (isMaybeTarget(parentElement, parentStep)) {
                 if (!parentStep.isStarStar()) {
                     XPathExpressionEvaluator evaluator = parentStep.getPredicatesEvaluator();
                     if (evaluator == null) {
@@ -321,7 +312,7 @@ public class NodeFragment implements Fragment<Node> {
                 }
                 index.i--;
             }
-        } else if (!isTarget(element, selectorPath.get(index.i))) {
+        } else if (!isMaybeTarget(element, selectorPath.get(index.i))) {
             return false;
         } else {
             if (!selectorPath.get(index.i).isStarStar()) {
