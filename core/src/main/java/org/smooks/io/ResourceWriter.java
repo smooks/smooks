@@ -42,9 +42,9 @@
  */
 package org.smooks.io;
 
-import org.smooks.SmooksException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.TypedKey;
+import org.smooks.api.SmooksException;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.TypedKey;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -43,11 +43,11 @@
 package org.smooks.io;
 
 import org.junit.Test;
-import org.smooks.SmooksException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.MockExecutionContext;
-import org.smooks.container.TypedKey;
-import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.api.SmooksException;
+import org.smooks.api.ExecutionContext;
+import org.smooks.tck.MockExecutionContext;
+import org.smooks.api.TypedKey;
+import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;

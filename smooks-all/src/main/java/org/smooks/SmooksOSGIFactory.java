@@ -43,7 +43,7 @@
 package org.smooks;
 
 import org.osgi.framework.Bundle;
-import org.smooks.container.standalone.DefaultApplicationContextBuilder;
+import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

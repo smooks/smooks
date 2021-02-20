@@ -42,8 +42,8 @@
  */
 package org.smooks;
 
-import org.smooks.cdr.ParameterAccessor;
-import org.smooks.delivery.Filter;
+import org.smooks.api.delivery.Filter;
+import org.smooks.engine.resource.config.ParameterAccessor;
 
 /**
  * Smooks filter settings for programmatic configuration of the {@link Smooks} instance.

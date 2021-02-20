@@ -44,17 +44,19 @@ package org.smooks;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.standalone.DefaultApplicationContextBuilder;
-import org.smooks.delivery.dom.DOMVisitAfter;
-import org.smooks.delivery.dom.DOMVisitBefore;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXVisitAfter;
-import org.smooks.delivery.sax.SAXVisitBefore;
-import org.smooks.payload.StringResult;
-import org.smooks.payload.StringSource;
-import org.smooks.profile.DefaultProfileSet;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.delivery.sax.SAXElement;
+import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
+import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.io.payload.StringResult;
+import org.smooks.io.payload.StringSource;
+import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.resource.URIResourceLocator;
+import org.smooks.support.SmooksUtil;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -137,35 +139,35 @@ public class SmooksTest {
 		assertEquals("classpath:/org/smooks/somethingelse.xml", resourceLocator.getBaseURI().resolve("somethingelse.xml").toString());
     }
 
-    private class TestDOMVisitorBefore implements DOMVisitBefore {
+    private static class TestDOMVisitorBefore implements DOMVisitBefore {
         private int callCount = 0;
         public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
             callCount++;
         }
     }
 
-    private class TestDOMVisitorAfter implements DOMVisitAfter {
+    private static class TestDOMVisitorAfter implements DOMVisitAfter {
         private int callCount = 0;
         public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
             callCount++;
         }
     }
 
-    private class TestSAXVisitorBefore implements SAXVisitBefore {
+    private static class TestSAXVisitorBefore implements SAXVisitBefore {
         private int callCount = 0;
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             callCount++;
         }
     }
 
-    private class TestSAXVisitorAfter implements SAXVisitAfter {
+    private static class TestSAXVisitorAfter implements SAXVisitAfter {
         private int callCount = 0;
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             callCount++;
         }
     }
 
-    private class TestClassLoader extends ClassLoader {
+    private static class TestClassLoader extends ClassLoader {
 
         private final Set<String> requests = new HashSet<String>();
 

@@ -44,7 +44,7 @@ package org.smooks.archive;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.SmooksException;
+import org.smooks.api.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.io.FileUtils;
 import org.smooks.io.StreamUtils;

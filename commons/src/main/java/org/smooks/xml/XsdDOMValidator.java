@@ -42,10 +42,10 @@
  */
 package org.smooks.xml;
 
-import org.smooks.SmooksException;
+import org.smooks.api.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.io.StreamUtils;
-import org.smooks.util.ClassUtil;
+import org.smooks.support.ClassUtil;
 import org.w3c.dom.*;
 import org.w3c.dom.ls.LSInput;
 import org.xml.sax.SAXException;
