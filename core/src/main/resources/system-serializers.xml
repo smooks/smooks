@@ -47,20 +47,20 @@
                       default-target-profile="*">
 
     <resource-config selector="smooks:context-object">
-        <resource>org.smooks.delivery.dom.serialize.ContextObjectSerializerVisitor</resource>
+        <resource>org.smooks.engine.delivery.dom.serialize.ContextObjectSerializerVisitor</resource>
     </resource-config>
 
     <resource-config selector="smooks:ghost-element">
-        <resource>org.smooks.delivery.dom.serialize.GhostElementSerializerVisitor</resource>
+        <resource>org.smooks.engine.delivery.dom.serialize.GhostElementSerializerVisitor</resource>
     </resource-config>
 
     <resource-config selector="smooks:text">
-        <resource>org.smooks.delivery.dom.serialize.TextSerializerVisitor</resource>
+        <resource>org.smooks.engine.delivery.dom.serialize.TextSerializerVisitor</resource>
         <param name="entities.rewrite">false</param>
     </resource-config>
 
     <resource-config selector="*">
-        <resource>org.smooks.delivery.sax.ng.SystemSaxNgSerializerVisitor</resource>
+        <resource>org.smooks.engine.delivery.sax.ng.SystemSaxNgSerializerVisitor</resource>
     </resource-config>
     
 </smooks-resource-list>

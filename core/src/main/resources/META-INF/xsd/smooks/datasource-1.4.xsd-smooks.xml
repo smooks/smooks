@@ -50,49 +50,49 @@
     -->
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.db.DirectDataSource</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.db.DirectDataSource</param>
     </resource-config>
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">bindOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">bindOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">datasource</param>
     </resource-config>
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">autoCommit</param>
     </resource-config>
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">driver</param>
     </resource-config>
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">url</param>
     </resource-config>
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">username</param>
     </resource-config>
 
     <resource-config selector="ds:direct">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">password</param>
     </resource-config>
 
@@ -101,43 +101,43 @@
     -->
 
     <resource-config selector="ds:JNDI">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.db.JndiDataSource</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.db.JndiDataSource</param>
     </resource-config>
 
     <resource-config selector="ds:JNDI">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">bindOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="ds:JNDI">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">datasource</param>
     </resource-config>
 
     <resource-config selector="ds:JNDI">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">datasourceJndi</param>
     </resource-config>
 
     <resource-config selector="ds:JNDI">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">transactionJndi</param>
     </resource-config>
 
     <resource-config selector="ds:JNDI">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">transactionManager</param>
     </resource-config>
 
     <resource-config selector="ds:JNDI">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">autoCommit</param>
     </resource-config>
 
     <resource-config selector="ds:JNDI">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">setAutoCommitAllowed</param>
     </resource-config>
 

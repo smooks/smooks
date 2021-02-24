@@ -43,7 +43,7 @@
 package org.smooks.classpath;
 
 /**
- * Classpath resource filter.
+ * Classpath resource filter.m
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */

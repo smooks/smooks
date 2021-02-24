@@ -45,15 +45,15 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" default-target-profile="*"> 
 
 	<resource-config selector="param-type:string-list">
-	    <resource>org.smooks.cdr.TokenizedStringParameterDecoder</resource>
+	    <resource>org.smooks.engine.resource.config.TokenizedStringParameterDecoder</resource>
 		<param name="param-type">string-list</param>
 	</resource-config>
 	<resource-config selector="param-type:string-hashset">
-	    <resource>org.smooks.cdr.TokenizedStringParameterDecoder</resource>
+	    <resource>org.smooks.engine.resource.config.TokenizedStringParameterDecoder</resource>
 		<param name="param-type">string-hashset</param>
 	</resource-config>
 	<resource-config selector="param-type:properties">
-	    <resource>org.smooks.cdr.PropertyListParameterDecoder</resource>
+	    <resource>org.smooks.engine.resource.config.PropertyListParameterDecoder</resource>
 		<param name="param-type">properties</param>
 	</resource-config>
 	

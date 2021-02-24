@@ -45,11 +45,13 @@ package org.smooks;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.standalone.PreconfiguredSmooks;
-import org.smooks.profile.DefaultProfileSet;
-import org.smooks.util.DomUtil;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.api.ExecutionContext;
+import org.smooks.engine.PreconfiguredSmooks;
+import org.smooks.engine.profile.DefaultProfileSet;
+import org.smooks.support.DomUtil;
+import org.smooks.support.SmooksUtil;
 import org.smooks.xml.XmlUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -87,11 +89,11 @@ public class SmooksStandaloneTest {
         SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
-        ResourceConfig profile1AndNotProfile3ResourceConfig = new ResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
+        ResourceConfig profile1AndNotProfile3ResourceConfig = new DefaultResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
         profile1AndNotProfile3ResourceConfig.setParameter("new-name", "xxx");
         smooks.getApplicationContext().getRegistry().registerResourceConfig(profile1AndNotProfile3ResourceConfig);
 
-        ResourceConfig profile2ResourceConfig = new ResourceConfig("aaa", "profile2", RenameElementTrans.class.getName());
+        ResourceConfig profile2ResourceConfig = new DefaultResourceConfig("aaa", "profile2", RenameElementTrans.class.getName());
         profile2ResourceConfig.setParameter("new-name", "zzz");
         smooks.getApplicationContext().getRegistry().registerResourceConfig(profile2ResourceConfig);
 
@@ -116,10 +118,10 @@ public class SmooksStandaloneTest {
         SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
-        ResourceConfig resourceConfig = new ResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
+        ResourceConfig resourceConfig = new DefaultResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "xxx");
         smooks.getApplicationContext().getRegistry().registerResourceConfig(resourceConfig);
-        resourceConfig = new ResourceConfig("aaa", "profile2", RenameElementTrans.class.getName());
+        resourceConfig = new DefaultResourceConfig("aaa", "profile2", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "zzz");
         smooks.getApplicationContext().getRegistry().registerResourceConfig(resourceConfig);
 

@@ -45,18 +45,18 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd">
 
     <resource-config selector="renameElement">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.RenameElementTrans</param>
     </resource-config>
 
     <resource-config selector="renameElement">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="renameElement">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">newName</param>
         <param name="mapTo">new-name</param>
     </resource-config>

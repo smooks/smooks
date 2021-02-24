@@ -43,9 +43,9 @@
 package org.smooks;
 
 import org.junit.Test;
-import org.smooks.cdr.ParameterAccessor;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Filter;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.delivery.Filter;
+import org.smooks.engine.resource.config.ParameterAccessor;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

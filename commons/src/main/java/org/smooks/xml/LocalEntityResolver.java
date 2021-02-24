@@ -43,7 +43,7 @@
 package org.smooks.xml;
 
 import org.smooks.io.StreamUtils;
-import org.smooks.util.ClassUtil;
+import org.smooks.support.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -129,7 +129,7 @@ public abstract class LocalEntityResolver implements EntityResolver {
 			// full path.
 			// If this fails, try locate it in the root of the Entity folder
 			// directly. If
-			// this too fails try the classpath - specifically the org.smooks.dtd
+			// this too fails try the classpath - specifically the org.smooks.engine.dtd
 			// package.
 			if (localEntityFolder != null) {
 				fileSysEntity = new File(localEntityFolder, entityPath);

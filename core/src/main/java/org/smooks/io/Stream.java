@@ -42,8 +42,8 @@
  */
 package org.smooks.io;
 
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.TypedKey;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.TypedKey;
 
 import java.io.Writer;
 

@@ -44,34 +44,39 @@ package org.smooks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.*;
+import org.smooks.api.delivery.*;
+import org.smooks.api.profile.Profile;
+import org.smooks.api.profile.ProfileSet;
+import org.smooks.api.profile.UnknownProfileMemberException;
+import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.resource.config.ReaderConfigurator;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.ResourceConfig;
 import org.smooks.classpath.CascadingClassLoaderSet;
-import org.smooks.container.ApplicationContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.TypedMap;
-import org.smooks.container.standalone.DefaultApplicationContextBuilder;
-import org.smooks.container.standalone.StandaloneExecutionContext;
-import org.smooks.delivery.*;
-import org.smooks.event.ExecutionEventListener;
-import org.smooks.event.types.FilterLifecycleEvent;
-import org.smooks.injector.Scope;
-import org.smooks.javabean.context.BeanContext;
-import org.smooks.javabean.context.preinstalled.Time;
-import org.smooks.javabean.context.preinstalled.UniqueID;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.lifecycle.phase.PostConstructLifecyclePhase;
-import org.smooks.net.URIUtil;
-import org.smooks.payload.Exports;
-import org.smooks.payload.FilterResult;
-import org.smooks.payload.FilterSource;
-import org.smooks.payload.JavaResult;
-import org.smooks.profile.Profile;
-import org.smooks.profile.ProfileSet;
-import org.smooks.profile.UnknownProfileMemberException;
-import org.smooks.registry.lookup.LifecycleManagerLookup;
+import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.DefaultExecutionContext;
+import org.smooks.engine.delivery.*;
+import org.smooks.api.delivery.event.ExecutionEventListener;
+import org.smooks.engine.delivery.event.FilterLifecycleEvent;
+import org.smooks.engine.injector.Scope;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.engine.bean.context.preinstalled.Time;
+import org.smooks.engine.bean.context.preinstalled.UniqueID;
+import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
+import org.smooks.support.URIUtil;
+import org.smooks.io.payload.Exports;
+import org.smooks.io.payload.FilterResult;
+import org.smooks.io.payload.FilterSource;
+import org.smooks.io.payload.JavaResult;
+import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.resource.URIResourceLocator;
-import org.smooks.xml.NamespaceManager;
+import org.smooks.engine.xml.NamespaceManager;
+import org.smooks.support.SmooksUtil;
 import org.xml.sax.SAXException;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -91,15 +96,15 @@ import java.util.Properties;
  * Smooks executor class.
  * <p/>
  * Additional configurations can be carried out on the {@link org.smooks.Smooks} instance
- * through the {@link org.smooks.SmooksUtil} class.
+ * through the {@link SmooksUtil} class.
  * <p/>
  * The basic usage scenario for this class might be as follows:
  * <ol>
- * <li>Develop (or reuse) an implementation of {@link org.smooks.delivery.dom.DOMElementVisitor}/{@link org.smooks.delivery.sax.SAXElementVisitor} to
+ * <li>Develop (or reuse) an implementation of {@link DOMElementVisitor}/{@link SAXElementVisitor} to
  * perform some transformation/analysis operation on a message.  There are a number of prebuilt
  * and reuseable implemntations available as
  * "<a target="new" href="https://www.smooks.org#Smooks-smookscartridges">Smooks Cartridges</a>".</li>
- * <li>Write a {@link ResourceConfig resource configuration} to target the {@link org.smooks.delivery.dom.DOMElementVisitor}/{@link org.smooks.delivery.sax.SAXElementVisitor}
+ * <li>Write a {@link ResourceConfig resource configuration} to target the {@link DOMElementVisitor}/{@link SAXElementVisitor}
  * implementation at the target fragment of the message being processed.</li>
  * <li>Apply the logic as follows:
  * <pre>
@@ -111,9 +116,9 @@ import java.util.Properties;
  * </pre>
  * </li>
  * </ol>
- * Remember, you can implement and apply multiple {@link org.smooks.delivery.dom.DOMElementVisitor DOMElementVisitors}/{@link org.smooks.delivery.sax.SAXElementVisitor}
+ * Remember, you can implement and apply multiple {@link DOMElementVisitor DOMElementVisitors}/{@link SAXElementVisitor}
  * within the context of a single filtering operation.  You can also target
- * {@link org.smooks.delivery.dom.DOMElementVisitor DOMElementVisitors}/{@link org.smooks.delivery.sax.SAXElementVisitor} based on target profiles, and so use a single
+ * {@link DOMElementVisitor DOMElementVisitors}/{@link SAXElementVisitor} based on target profiles, and so use a single
  * configuration to process multiple messages by sharing profiles across your message set.
  * <p/>
  * See <a target="new" href="http://milyn.codehaus.org/Tutorials">Smooks Tutorials</a>.
@@ -227,10 +232,10 @@ public class Smooks {
      * @param readerConfigurator {@link ReaderConfigurator} instance.
      */
     public void setReaderConfig(ReaderConfigurator readerConfigurator) {
-        List<ResourceConfig> configList = readerConfigurator.toConfig();
+        List<ResourceConfig> resourceConfigs = readerConfigurator.toConfig();
 
-        for(ResourceConfig config : configList) {
-            addConfiguration(config);
+        for(ResourceConfig resourceConfig : resourceConfigs) {
+            addConfiguration(resourceConfig);
         }
     }
 
@@ -278,7 +283,7 @@ public class Smooks {
         AssertArgument.isNotNull(visitor, "visitor");
         AssertArgument.isNotNull(targetSelector, "targetSelector");
         
-        ContentHandlerBinding<Visitor> contentHandlerBinding = new ContentHandlerBinding<>(visitor, targetSelector, targetSelectorNS, applicationContext.getRegistry());
+        ContentHandlerBinding<Visitor> contentHandlerBinding = new DefaultContentHandlerBinding<>(visitor, targetSelector, targetSelectorNS, applicationContext.getRegistry());
         visitorBindings.add(contentHandlerBinding);
         
         return contentHandlerBinding.getResourceConfig();
@@ -389,11 +394,11 @@ public class Smooks {
      * The created context is profile agnostic and should be used where profile based targeting is not in use.
      * <p/>
      * The context returned from this method is used in subsequent calls to
-     * {@link #filterSource(org.smooks.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}
+     * {@link #filterSource(ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}
      * It allows access to the execution context instance
      * before and after calls on this method.  This means the caller has an opportunity to set and get data
      * {@link TypedMap bound} to the execution context (before and after the calls), providing the
-     * caller with a mechanism for interacting with the content {@link org.smooks.delivery.dom.SmooksDOMFilter filtering} phases.
+     * caller with a mechanism for interacting with the content {@link org.smooks.engine.delivery.dom.SmooksDOMFilter filtering} phases.
      *
      * @return Execution context instance.
      */
@@ -408,11 +413,11 @@ public class Smooks {
      * the transfromation/analysis resources must be configured with profile targeting information.
      * <p/>
      * The context returned from this method is used in subsequent calls to
-     * {@link #filterSource(org.smooks.container.ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}.
+     * {@link #filterSource(ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}.
      * It allows access to the execution context instance
      * before and after calls on this method.  This means the caller has an opportunity to set and get data
      * {@link TypedMap bound} to the execution context (before and after the calls), providing the
-     * caller with a mechanism for interacting with the content {@link org.smooks.delivery.dom.SmooksDOMFilter filtering} phases.
+     * caller with a mechanism for interacting with the content {@link org.smooks.engine.delivery.dom.SmooksDOMFilter filtering} phases.
      *
      * @param targetProfile The target profile ({@link ProfileSet base profile}) on behalf of whom the filtering/serialisation
      *                      filter is to be executed.
@@ -432,7 +437,7 @@ public class Smooks {
                 if (isConfigurable) {
                     setNotConfigurable();
                 }
-                return new StandaloneExecutionContext(targetProfile, applicationContext, visitorBindings);
+                return new DefaultExecutionContext(targetProfile, applicationContext, visitorBindings);
             } finally {
                 Thread.currentThread().setContextClassLoader(originalTCCL);
             }
@@ -440,7 +445,7 @@ public class Smooks {
             if (isConfigurable) {
                 setNotConfigurable();
             }
-            return new StandaloneExecutionContext(targetProfile, applicationContext, visitorBindings);
+            return new DefaultExecutionContext(targetProfile, applicationContext, visitorBindings);
         }
     }
 
@@ -524,7 +529,7 @@ public class Smooks {
             }
 
             Filter filter = contentDeliveryConfig.newFilter(executionContext);
-            Filter.setFilter(filter);
+            AbstractFilter.setFilter(filter);
             try {
                 // Attach the source and results to the context...
                 FilterSource.setSource(executionContext, source);
@@ -565,7 +570,7 @@ public class Smooks {
                 throw new SmooksException("Smooks Filtering operation failed.", t);
             } finally {
                 filter.cleanup();
-                Filter.removeCurrentFilter();
+                AbstractFilter.removeCurrentFilter();
             }
         } finally {
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
@@ -575,10 +580,10 @@ public class Smooks {
     }
 
     /**
-     * Get the Smooks {@link org.smooks.container.ApplicationContext} associated with
+     * Get the Smooks {@link ApplicationContext} associated with
      * this Smooks instance.
      *
-     * @return The Smooks {@link org.smooks.container.ApplicationContext}.
+     * @return The Smooks {@link ApplicationContext}.
      */
     public ApplicationContext getApplicationContext() {
         return applicationContext;
@@ -588,7 +593,7 @@ public class Smooks {
      * Close this Smooks instance and all associated resources.
      * <p/>
      * Should result in the {@link javax.annotation.PostConstruct uninitialization}
-     * of all allocated {@link org.smooks.delivery.ContentHandler} instances.
+     * of all allocated {@link ContentHandler} instances.
      */
     public void close() {
         applicationContext.getRegistry().close();

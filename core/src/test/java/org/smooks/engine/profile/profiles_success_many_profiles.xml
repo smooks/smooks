@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!--
+  ========================LICENSE_START=================================
+  Smooks Core
+  %%
+  Copyright (C) 2020 Smooks
+  %%
+  Licensed under the terms of the Apache License Version 2.0, or
+  the GNU Lesser General Public License version 3.0 or later.
+  
+  SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
+  
+  ======================================================================
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+  ======================================================================
+  
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program; if not, write to the Free Software Foundation,
+  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  =========================LICENSE_END==================================
+  -->
+
+<!DOCTYPE device-profiles PUBLIC "-//MILYN//DTD TINAK 1.0//EN" "http://www.milyn.org/dtd/device-profile-1.0.dtd">
+
+<device-profiles>
+	<device-profile name="html" list="MSIE6,MSIE5,IPAQ,Unknown-HTML4,Unknown-HTML"/>
+	<device-profile name="wml" list="Nokia3350,Nokia9210,EricssonA2618,UPBrowser,Unknown-WML"/>
+	<device-profile name="html4" list="MSIE6,MSIE5,Unknown-HTML4"/>
+	<device-profile name="html32" list="IPAQ"/>
+	<device-profile name="css-enabled" list="MSIE6,MSIE5"/>
+
+	<device-profile name="nokia" list="Nokia3350,Nokia9210"/>
+	<device-profile name="msie" list="MSIE6,MSIE5"/>
+	<device-profile name="PDA" list="IPAQ"/>
+
+	<device-profile name="large" list="MSIE6,MSIE5,Unknown-HTML4,Unknown-HTML"/>
+	<device-profile name="medium" list="IPAQ"/>
+	<device-profile name="small" list="Nokia3350,Nokia9210,EricssonA2618,UPBrowser,Unknown-WML"/>
+</device-profiles>

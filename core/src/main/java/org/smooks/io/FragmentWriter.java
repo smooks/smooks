@@ -42,8 +42,8 @@
  */
 package org.smooks.io;
 
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.fragment.Fragment;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.delivery.fragment.Fragment;
 
 import java.io.IOException;
 import java.io.Writer;

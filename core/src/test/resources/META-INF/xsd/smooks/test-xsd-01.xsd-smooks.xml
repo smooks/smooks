@@ -46,24 +46,24 @@
                       xmlns:smooks-test01="http://www.milyn.org/xsd/smooks/test-xsd-01.xsd">
 
     <resource-config selector="smooks-test01:renameElement">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.RenameElementTrans</param>
     </resource-config>
 
     <resource-config selector="smooks-test01:renameElement">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
     <resource-config selector="smooks-test01:renameElement">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">newName</param>
         <param name="mapTo">new-name</param>
     </resource-config>
 
     <resource-config selector="smooks-test01:renameElement/conditionRef">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromText</resource>
         <param name="mapTo">conditionRef</param>
     </resource-config>
 

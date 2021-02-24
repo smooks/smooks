@@ -42,7 +42,7 @@
  */
 package org.smooks.xml;
 
-import org.smooks.util.ClassUtil;
+import org.smooks.support.ClassUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

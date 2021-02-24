@@ -45,6 +45,7 @@ package org.smooks;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.smooks.Smooks;
 import org.xml.sax.SAXException;
 
 /**

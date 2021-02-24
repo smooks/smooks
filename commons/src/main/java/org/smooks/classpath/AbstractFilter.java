@@ -44,7 +44,7 @@ package org.smooks.classpath;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.util.ClassUtil;
+import org.smooks.support.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.List;

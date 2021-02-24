@@ -184,7 +184,7 @@
                     </xs:sequence>
                     <xs:attribute name="selector" type="xs:string"/>
                     <xs:attribute name="target-profile" type="xs:string"/>
-                    <xs:attribute name="factory" type="xs:string" default="org.smooks.cdr.DefaultResourceConfigFactory"/>
+                    <xs:attribute name="factory" type="xs:string" default="org.smooks.engine.resource.config.DefaultResourceConfigFactory"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -223,7 +223,7 @@
                 <xs:extension base="xs:string">
                     <xs:attribute name="id" type="xs:string" />
                     <xs:attribute name="idRef" type="xs:string" />
-                    <xs:attribute name="evaluator" type="xs:string" default="org.smooks.javabean.expression.BeanMapExpressionEvaluator" />
+                    <xs:attribute name="evaluator" type="xs:string" default="org.smooks.engine.bean.expression.BeanMapExpressionEvaluator" />
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>

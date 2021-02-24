@@ -49,251 +49,251 @@
 
   
     <resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
     </resource-config>
     <resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">global-parameters</param>
     </resource-config>
     <resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">type</param>
         <param name="mapTo">stream.filter.type</param>
     </resource-config>
     <resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">defaultSerialization</param>
         <param name="mapTo">default.serialization.on</param>
     </resource-config>
 	<resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">terminateOnException</param>
         <param name="mapTo">terminate.on.visitor.exception</param>
     </resource-config>
     <resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">closeSource</param>
         <param name="mapTo">close.source</param>
     </resource-config>
     <resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">closeResult</param>
         <param name="mapTo">close.result</param>
     </resource-config>
     <resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">rewriteEntities</param>
         <param name="mapTo">entities.rewrite</param>
     </resource-config>
 	<resource-config selector="smooks-core:filterSettings">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">readerPoolSize</param>
         <param name="mapTo">reader.pool.size</param>
     </resource-config>
     
  
     <resource-config selector="smooks-core:exports">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.payload.Exports</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.io.payload.Exports</param>
     </resource-config>
     <resource-config selector="smooks-core:exports/result">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.payload.Export</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.io.payload.Export</param>
     </resource-config>
     <resource-config selector="smooks-core:exports/result">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">type</param>
         <param name="mapTo">type</param>
     </resource-config>
     <resource-config selector="smooks-core:exports/result">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
         <param name="mapTo">name</param>
     </resource-config>
     <resource-config selector="smooks-core:exports/result">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">extract</param>
         <param name="mapTo">extract</param>
     </resource-config>
 
 
     <resource-config selector="smooks-core:namespaces">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.xml.NamespaceManager</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.xml.NamespaceManager</param>
     </resource-config>
     <resource-config selector="smooks-core:namespace">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">uri</param>
         <param name="mapToSpecifier">prefix</param>
     </resource-config>
 
 
     <resource-config selector="smooks-core:interceptors">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.delivery.interceptor.InterceptorVisitorChainFactory</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory</param>
     </resource-config>
     <resource-config selector="smooks-core:interceptors/interceptor">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.delivery.interceptor.InterceptorVisitorDefinition</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition</param>
     </resource-config>
     <resource-config selector="smooks-core:interceptors/interceptor">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">class</param>
         <param name="mapTo">clazz</param>
     </resource-config>
     <resource-config selector="smooks-core:interceptors/interceptor">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">selector</param>
     </resource-config>
     
 
     <resource-config selector="smooks-core:terminate">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.delivery.sax.ng.terminate.TerminateVisitor</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.delivery.sax.ng.terminate.TerminateVisitor</param>
     </resource-config>
     <resource-config selector="smooks-core:terminate">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">onElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
     <resource-config selector="smooks-core:terminate">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">terminateBefore</param>
     </resource-config>
 
   
     <resource-config selector="smooks-core:setElementData">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.visitors.set.SetElementData</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.resource.visitor.set.SetElementData</param>
     </resource-config>
     <resource-config selector="smooks-core:setElementData">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">onElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
     <resource-config selector="smooks-core:setElementData">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
     </resource-config>
     <resource-config selector="smooks-core:setElementData">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">namespace</param>
     </resource-config>
     <resource-config selector="smooks-core:setElementData/attribute">
-        <resource>org.smooks.visitors.set.SetElementDataConfigDigester</resource>
+        <resource>org.smooks.engine.resource.visitor.set.SetElementDataConfigDigester</resource>
     </resource-config>
 
 
     <resource-config selector="smooks-core:remove">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.visitors.remove.RemoveElement</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.resource.visitor.remove.RemoveElement</param>
     </resource-config>
     <resource-config selector="smooks-core:remove">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">element</param>
         <param name="mapTo">selector</param>
     </resource-config>
     <resource-config selector="smooks-core:remove">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">keepChildren</param>
     </resource-config>
     
     
     <resource-config selector="smooks-core:removeAttribute">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.visitors.remove.RemoveAttribute</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.resource.visitor.remove.RemoveAttribute</param>
     </resource-config>
     <resource-config selector="smooks-core:removeAttribute">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">onElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
     <resource-config selector="smooks-core:removeAttribute">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">name</param>
     </resource-config>
     <resource-config selector="smooks-core:removeAttribute">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">namespace</param>
     </resource-config>
     
     
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.visitors.smooks.NestedSmooksVisitor</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.resource.visitor.smooks.NestedSmooksVisitor</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/config">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromXml</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromXml</resource>
         <param name="mapTo">smooksResourceList</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">filterSourceOn</param>
         <param name="mapTo">selector</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">maxNodeDepth</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/inline/replace">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">action</param>
         <param name="value">REPLACE</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/inline/prepend-before">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">action</param>
         <param name="value">PREPEND_BEFORE</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/inline/prepend-after">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">action</param>
         <param name="value">PREPEND_AFTER</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/inline/append-before">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">action</param>
         <param name="value">APPEND_BEFORE</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/inline/append-after">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">action</param>
         <param name="value">APPEND_AFTER</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/bindTo">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">action</param>
         <param name="value">BIND_TO</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/bindTo">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">id</param>
         <param name="mapTo">bindId</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/outputTo">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">action</param>
         <param name="value">OUTPUT_TO</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks/action/outputTo">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">outputStreamResource</param>
         <param name="mapTo">outputStreamResource</param>
     </resource-config>
 
     
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:node-reader">
-        <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.delivery.sax.ng.NodeReader</param>
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.resource.reader.NodeReader</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:node-reader">
-        <resource>org.smooks.cdr.extension.SetOnResourceConfig</resource>
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">org.xml.sax.driver</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:node-reader">
-        <resource>org.smooks.cdr.extension.MapToResourceConfigFromXml</resource>
+        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromXml</resource>
         <param name="mapTo">resourceConfigs</param>
     </resource-config>
     

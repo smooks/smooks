@@ -57,8 +57,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.smooks.util.ClassUtil.containsAssignableClass;
-import static org.smooks.util.ClassUtil.indexOfFirstAssignableClass;
+import static org.smooks.support.ClassUtil.containsAssignableClass;
+import static org.smooks.support.ClassUtil.indexOfFirstAssignableClass;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>

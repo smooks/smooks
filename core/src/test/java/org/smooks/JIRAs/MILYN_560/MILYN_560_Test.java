@@ -43,19 +43,20 @@
 package org.smooks.JIRAs.MILYN_560;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
-import org.smooks.SmooksException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitAfter;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXVisitAfter;
-import org.smooks.delivery.sax.annotation.TextConsumer;
-import org.smooks.payload.StringResult;
-import org.smooks.payload.StringSource;
+import org.smooks.api.SmooksException;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.delivery.sax.SAXElement;
+import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
+import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
+import org.smooks.api.delivery.sax.TextConsumer;
+import org.smooks.io.payload.StringResult;
+import org.smooks.io.payload.StringSource;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
