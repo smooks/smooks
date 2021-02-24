@@ -46,7 +46,6 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.config.Parameter;
-import org.smooks.engine.bean.expression.BeanMapExpressionEvaluator;
 import org.w3c.dom.Element;
 
 /**
@@ -73,8 +72,6 @@ public final class ResourceConfigUtil {
             resourceConfig.setDefaultResource(Boolean.parseBoolean((String) value));
         } else if(setOn.equals("targetProfile")) {
             resourceConfig.setTargetProfile((String) value);
-        } else if(setOn.equals("condition") && ((String) value).length() > 0) {
-            resourceConfig.getSelectorPath().setConditionEvaluator(new BeanMapExpressionEvaluator((String) value));
         } else if(setOn.equals("conditionRef")) {
             ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
             resourceConfig.getSelectorPath().setConditionEvaluator(extensionContext.getXmlConfigDigester().getConditionEvaluator((String) value));

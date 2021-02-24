@@ -69,7 +69,7 @@ public class StandaloneBeanContextFactory  {
 
 
 	/* (non-Javadoc)
-	 * @see org.smooks.engine.javabean.context.BeanContextFactory#createBeanRepository(org.smooks.engine.container.ExecutionContext)
+	 * @see org.smooks.engine.bean.context.BeanContextFactory#createBeanRepository(org.smooks.engine.container.ExecutionContext)
 	 */
 	public static StandaloneBeanContext create(ExecutionContext executionContext) {
 		StandaloneBeanContext beanContext;
