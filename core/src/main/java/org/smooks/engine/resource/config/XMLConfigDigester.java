@@ -650,10 +650,6 @@ public final class XMLConfigDigester {
         } else {
             String evaluatorClassName = DomUtils.getAttributeValue(conditionElement, "evaluator");
 
-            if(evaluatorClassName == null || evaluatorClassName.trim().equals("")) {
-                evaluatorClassName = "org.smooks.engine.javabean.expression.BeanMapExpressionEvaluator";
-            }
-
             String evaluatorConditionExpression = DomUtils.getAllText(conditionElement, true);
             if(evaluatorConditionExpression == null || evaluatorConditionExpression.trim().equals("")) {
                 throw new SmooksConfigException("smooks-resource/condition must specify a condition expression as child text e.g. <condition evaluator=\"....\">A + B > C</condition>.");

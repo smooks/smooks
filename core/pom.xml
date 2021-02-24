@@ -26,7 +26,7 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>**/tck/*</include>
+                                <include>**/tck/**</include>
                             </includes>
                         </configuration>
                     </execution>
