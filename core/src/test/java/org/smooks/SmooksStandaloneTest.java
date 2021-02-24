@@ -85,8 +85,8 @@ public class SmooksStandaloneTest {
         Smooks smooks = new Smooks();
 
         // Add profile sets...
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target1", new String[]{"profile1", "profile2"}), smooks);
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target2", new String[]{"profile2", "profile3"}), smooks);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("message-target1", new String[]{"profile1", "profile2"}), smooks);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
         ResourceConfig profile1AndNotProfile3ResourceConfig = new DefaultResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
@@ -114,8 +114,8 @@ public class SmooksStandaloneTest {
         Smooks smooks = new Smooks();
 
         // Add 2 useragents and configure them with profiles...
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target1", new String[]{"profile1", "profile2"}), smooks);
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("message-target2", new String[]{"profile2", "profile3"}), smooks);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("message-target1", new String[]{"profile1", "profile2"}), smooks);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
         ResourceConfig resourceConfig = new DefaultResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());

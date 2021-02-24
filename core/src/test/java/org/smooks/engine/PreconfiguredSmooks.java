@@ -42,7 +42,6 @@
  */
 package org.smooks.engine;
 
-
 import java.io.IOException;
 
 import org.smooks.Smooks;
@@ -58,10 +57,10 @@ public class PreconfiguredSmooks extends Smooks {
 	 * @throws SAXException 
 	 */
 	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("firefox", new String[] {"html4", "html"}), this);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
 
         addConfigurations("/cdr/parameters.cdrl", getClass().getResourceAsStream("/cdr/parameters.cdrl"));
         addConfigurations("/cdr/test.cdrl", getClass().getResourceAsStream("/cdr/test.cdrl"));

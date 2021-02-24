@@ -53,7 +53,7 @@ import java.util.LinkedHashMap;
  * 
  * @author tfennelly
  */
-public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
+public class DefaultProfileSet extends LinkedHashMap<String, Profile> implements ProfileSet {
 
 	private static final long serialVersionUID = 1L;
     private final String baseProfile;
@@ -65,6 +65,11 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
     public DefaultProfileSet(String baseProfile) {
         this.baseProfile = baseProfile;
     }
+
+	public DefaultProfileSet(String baseProfile, String[] subProfiles) {
+		this(baseProfile);
+		addProfiles(subProfiles);
+	}
 
     /**
      * Get the base profile for this profile set.
@@ -108,7 +113,6 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 	 * @param profile
 	 *            The profile to add.
 	 */
-	@SuppressWarnings("unchecked")
 	public void addProfile(Profile profile) {
 		if (profile == null) {
 			throw new IllegalArgumentException(
@@ -127,7 +131,7 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 	 *         the {@link ProfileSet}.
 	 */
 	public Profile getProfile(String profile) {
-		return (Profile) get(profile);
+		return get(profile);
 	}
 
 	/**
@@ -137,7 +141,7 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 	 * @return An {@link Iterator} that allows iteration over the
 	 *         {@link Profile Profiles}in this {@link ProfileSet}.
 	 */
-	public Iterator iterator() {
+	public Iterator<Profile> iterator() {
 		return values().iterator();
 	}
 
@@ -147,7 +151,6 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 	 * @param profileSet
 	 *            The DefaultProfileSet whose profiles are to be added.
 	 */
-	@SuppressWarnings("unchecked")
 	protected void addProfileSet(DefaultProfileSet profileSet) {
 		if (profileSet == null) {
 			throw new IllegalArgumentException(
@@ -169,9 +172,9 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
             return;
         }
 
-        for (int i = 0; i < subProfiles.length; i++) {
-            addProfile(new BasicProfile(subProfiles[i]));
-        }
+		for (String subProfile : subProfiles) {
+			addProfile(new BasicProfile(subProfile));
+		}
     }
 
 	/*
@@ -179,12 +182,13 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
-		StringBuffer setDescription = new StringBuffer();
-		Iterator iterator = keySet().iterator();
+		StringBuilder setDescription = new StringBuilder();
+		Iterator<String> iterator = keySet().iterator();
 
 		while (iterator.hasNext()) {
-			String profile = (String) iterator.next();
+			String profile = iterator.next();
 
 			setDescription.append(profile);
 			if (iterator.hasNext()) {
@@ -194,16 +198,4 @@ public class DefaultProfileSet extends LinkedHashMap implements ProfileSet {
 
 		return setDescription.toString();
 	}
-
-    /**
-     * Utility method for creating a profile set.
-     * @param baseProfile The base profile.
-     * @param subProfiles The sub profiles.
-     * @return The profile set.
-     */
-    public static DefaultProfileSet create(String baseProfile, String[] subProfiles) {
-        DefaultProfileSet profileSet = new DefaultProfileSet(baseProfile);
-        profileSet.addProfiles(subProfiles);
-        return profileSet;
-    }
 }
