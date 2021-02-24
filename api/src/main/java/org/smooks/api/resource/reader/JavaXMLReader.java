@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Smooks API
  * %%
  * Copyright (C) 2020 Smooks
  * %%
