@@ -76,7 +76,7 @@ public class SmooksTest {
 	@Before
     public void setUp() throws Exception {
         Smooks smooks = new Smooks();
-        SmooksUtil.registerProfileSet(DefaultProfileSet.create("device1", new String[] {"profile1"}), smooks);
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("device1", new String[] {"profile1"}), smooks);
     }
 
 	@Test
