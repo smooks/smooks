@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.resource;
+package org.smooks.api.delivery;
 
 /**
  * Smooks resource and a target of content delivery.

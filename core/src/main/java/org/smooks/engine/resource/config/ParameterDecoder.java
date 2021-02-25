@@ -43,7 +43,7 @@
 package org.smooks.engine.resource.config;
 
 import org.smooks.api.resource.config.ParameterDecodeException;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 
 /**
  * Abstract Parameter Decoder.

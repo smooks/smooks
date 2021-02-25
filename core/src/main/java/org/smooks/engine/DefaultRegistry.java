@@ -49,7 +49,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.Registry;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.engine.converter.TypeConverterFactoryLoader;

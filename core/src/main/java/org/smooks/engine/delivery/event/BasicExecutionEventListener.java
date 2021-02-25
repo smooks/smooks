@@ -44,7 +44,7 @@ package org.smooks.engine.delivery.event;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.resource.visitor.VisitAfterReport;

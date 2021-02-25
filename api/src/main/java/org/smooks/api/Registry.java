@@ -43,7 +43,7 @@
 package org.smooks.api;
 
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.xml.sax.SAXException;
 

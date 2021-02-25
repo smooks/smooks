@@ -42,7 +42,7 @@
  */
 package org.smooks.api.resource.visitor;
 
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 
 /**
  * Applies operations on events. 

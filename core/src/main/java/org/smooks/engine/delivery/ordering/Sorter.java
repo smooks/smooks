@@ -46,7 +46,7 @@ import org.smooks.api.delivery.ordering.Consumer;
 import org.smooks.api.delivery.ordering.Producer;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
 
 import java.util.*;

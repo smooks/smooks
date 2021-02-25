@@ -43,7 +43,7 @@
 package org.smooks.io.payload;
 
 import org.smooks.api.ApplicationContext;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.engine.lookup.ExportsLookup;
 import org.smooks.support.CollectionsUtil;
 

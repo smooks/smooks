@@ -44,7 +44,7 @@ package org.smooks.engine.delivery;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.SmooksConfigException;

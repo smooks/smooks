@@ -49,7 +49,7 @@ import org.smooks.api.delivery.*;
 import org.smooks.api.profile.Profile;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.UnknownProfileMemberException;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ReaderConfigurator;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;

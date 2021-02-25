@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.api.delivery.event.ResourceBasedEvent;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.resource.visitor.VisitReport;

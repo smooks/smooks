@@ -50,7 +50,7 @@ import org.smooks.api.delivery.*;
 import org.smooks.api.delivery.event.ContentDeliveryConfigBuilderLifecycleEvent;
 import org.smooks.api.delivery.event.ContentDeliveryConfigBuilderLifecycleListener;
 import org.smooks.api.profile.ProfileSet;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.Registry;
