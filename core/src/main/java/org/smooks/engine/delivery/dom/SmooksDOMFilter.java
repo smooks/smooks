@@ -48,7 +48,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.ContentDeliveryRuntime;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;

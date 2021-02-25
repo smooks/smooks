@@ -45,7 +45,7 @@ package org.smooks.io.payload;
 import org.smooks.api.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ApplicationContext;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.support.ClassUtil;
 
 import javax.inject.Inject;

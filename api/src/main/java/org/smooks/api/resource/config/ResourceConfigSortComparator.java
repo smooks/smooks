@@ -42,7 +42,7 @@
  */
 package org.smooks.api.resource.config;
 
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.resource.visitor.SerializerVisitor;
 

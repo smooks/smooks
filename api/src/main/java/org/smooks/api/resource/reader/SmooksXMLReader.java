@@ -43,7 +43,7 @@
 package org.smooks.api.resource.reader;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.xml.sax.XMLReader;
 
 /**

@@ -44,7 +44,7 @@ package org.smooks.engine.resource.config;
 
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery;
 
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.FilterProvider;
 import org.smooks.api.resource.visitor.VisitAfterIf;
 import org.smooks.api.resource.visitor.VisitBeforeIf;
