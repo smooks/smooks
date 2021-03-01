@@ -46,24 +46,24 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.smooks.scribe.Dao;
 import org.smooks.scribe.MapObjectStore;
 import org.smooks.scribe.MappingDao;
 import org.smooks.scribe.ObjectStore;
 import org.smooks.scribe.test.dao.FullAnnotatedDao;
 import org.smooks.scribe.test.util.BaseTestCase;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-@Test(groups = "unit")
-public class DaoInvokerFactoryTest extends BaseTestCase {
+public class DaoInvokerFactoryTestCase extends BaseTestCase {
 
 	ObjectStore objectStore;
 
+	@Test
 	public void test_getInstance() {
 
 		DaoInvokerFactory factory  = DaoInvokerFactory.getInstance();
@@ -76,6 +76,7 @@ public class DaoInvokerFactoryTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_create_with_dao_interface() {
 
 		DaoInvokerFactory factory  = DaoInvokerFactory.getInstance();
@@ -95,6 +96,7 @@ public class DaoInvokerFactoryTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_create_with_mapping_dao_interface() {
 
 		DaoInvokerFactory factory  = DaoInvokerFactory.getInstance();
@@ -114,6 +116,7 @@ public class DaoInvokerFactoryTest extends BaseTestCase {
 
 	}
 
+	@Test
 	public void test_create_with_annotated_dao() {
 
 		DaoInvokerFactory factory  = DaoInvokerFactory.getInstance();
@@ -134,7 +137,7 @@ public class DaoInvokerFactoryTest extends BaseTestCase {
 
 	}
 
-	@BeforeMethod
+	@Before
 	public void setup() {
 		objectStore = new MapObjectStore();
 	}

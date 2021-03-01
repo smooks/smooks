@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Scribe :: Ibatis adapter
+ * Scribe :: Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,34 +40,94 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.scribe.adapter.ibatis;
+package org.smooks.scribe.register;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertSame;
-import org.smooks.scribe.adapter.ibatis.test.util.BaseTestCase;
-import org.mockito.Mock;
-import org.testng.annotations.Test;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
+ *
  */
-public class SqlMapClientRegisterTest extends BaseTestCase {
+public class AbstractDaoAdapterRegisterTestCase {
+	
+	@Test
+	public void test_default_adaptable() {
+		Object adaptable = new Object();
 
-    @Mock
-    SqlMapClient sqlMapClient;
+		Mock mock = new Mock(adaptable);
 
-    @Test(groups = "unit")
-    public void test_getDao() {
+		assertSame(adaptable, mock.getDefaultDao());
+		assertSame(adaptable, mock.getDao(null));
+	}
 
-        SqlMapClientRegister register = new SqlMapClientRegister(sqlMapClient);
+	@Test
+	public void test_mapped_adaptable() {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("1", new Object());
+		map.put("2", new Object());
 
-        SqlMapClientDaoAdapter entityManagerDaoAdapter = register.getDefaultDao();
+		Mock mock = new Mock(map);
 
-        assertNotNull(entityManagerDaoAdapter);
+		assertSame(map.get("1"), mock.getDao("1"));
+		assertSame(map.get("2"), mock.getDao("2"));
+	}
 
-        assertSame(sqlMapClient, entityManagerDaoAdapter.getSqlMapClient());
+	@Test
+	public void test_mapped_and_default_adaptable() {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("1", new Object());
 
-    }
+		Object adaptable = new Object();
+
+		Mock mock = new Mock(adaptable, map);
+
+		assertSame(map.get("1"), mock.getDao("1"));
+		assertSame(adaptable, mock.getDefaultDao());
+		assertSame(adaptable, mock.getDao(null));
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void test_no_default_adaptable() {
+		Mock mock = new Mock(new HashMap<String, Object>());
+
+		mock.getDefaultDao();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void test_unknown_mapped_adaptable() {
+		Mock mock = new Mock(new HashMap<String, Object>());
+
+		mock.getDao("");
+	}
+
+	private static class Mock extends AbstractDaoAdapterRegister<Object, Object> {
+
+		public Mock(Map<String, ?> adaptableMap) {
+			super(adaptableMap);
+		}
+
+		public Mock(Object defaultAdaptable,
+					Map<String, ?> adaptableMap) {
+			super(defaultAdaptable, adaptableMap);
+		}
+
+		public Mock(Object defaultAdaptable) {
+			super(defaultAdaptable);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.smooks.scribe.register.AbstractDaoAdapterRegister#createAdapter(java.lang.Object)
+		 */
+		@Override
+		protected Object createAdapter(Object adaptable) {
+			return adaptable;
+		}
+
+	}
 
 }

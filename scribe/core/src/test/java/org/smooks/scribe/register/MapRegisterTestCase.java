@@ -42,7 +42,7 @@
  */
 package org.smooks.scribe.register;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,10 +53,9 @@ import static org.junit.Assert.*;
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-@Test(groups = "unit")
-public class MapRegisterTest {
-
-
+public class MapRegisterTestCase {
+	
+	@Test
 	public void test_builder() {
 		Map<String, Object> hashMap = new HashMap<String, Object>();
 		hashMap.put("1", new Object());
@@ -81,6 +80,7 @@ public class MapRegisterTest {
 		assertSame(hashMap2.get("4"), mapRegister.getDao("4"));
 	}
 
+	@Test
 	public void test_getDAO() {
 		Map<String, Object> hashMap = new HashMap<String, Object>();
 		hashMap.put("1", new Object());
@@ -92,8 +92,8 @@ public class MapRegisterTest {
 		assertSame(hashMap.get("1"), mapRegister.getDao("1"));
 		assertSame(hashMap.get("2"), mapRegister.getDao("2"));
 	}
-
-
+	
+	@Test
 	public void test_put_and_getDAO() {
 		Object bean = new Object();
 
@@ -104,6 +104,7 @@ public class MapRegisterTest {
 	}
 
 
+	@Test
 	public void test_containsKey() {
 		MapDaoRegister<Object> mapRegister = MapDaoRegister.builder().put("1", new Object()).build();
 
@@ -112,6 +113,7 @@ public class MapRegisterTest {
 	}
 
 
+	@Test
 	public void test_containsDAO() {
 		Object bean1 = new Object();
 		Object bean2 = new Object();
@@ -121,8 +123,8 @@ public class MapRegisterTest {
 		assertTrue(mapRegister.containsDAO(bean1));
 		assertFalse(mapRegister.containsDAO(bean2));
 	}
-
-
+	
+	@Test
 	public void test_getAll() {
 		Object bean1 = new Object();
 		Object bean2 = new Object();
@@ -139,7 +141,7 @@ public class MapRegisterTest {
 		assertSame(bean2, all.get("2"));
 	}
 
-
+	@Test
 	public void test_equals() {
 		Object bean1 = new Object();
 		Object bean2 = new Object();

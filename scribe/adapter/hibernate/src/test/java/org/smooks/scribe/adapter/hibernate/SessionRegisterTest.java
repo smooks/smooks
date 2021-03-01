@@ -45,9 +45,9 @@ package org.smooks.scribe.adapter.hibernate;
 import static org.junit.Assert.*;
 
 import org.hibernate.Session;
+import org.junit.Test;
 import org.smooks.scribe.adapter.hibernate.test.util.BaseTestCase;
 import org.mockito.Mock;
-import org.testng.annotations.Test;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -58,7 +58,7 @@ public class SessionRegisterTest extends BaseTestCase {
 	@Mock
 	Session session;
 
-	@Test( groups = "unit" )
+	@Test
 	public void test_getDao() {
 
 		SessionRegister register = new SessionRegister(session);
@@ -70,6 +70,4 @@ public class SessionRegisterTest extends BaseTestCase {
 		assertSame(session, sessionDaoAdapter.getSession());
 
 	}
-
-
 }

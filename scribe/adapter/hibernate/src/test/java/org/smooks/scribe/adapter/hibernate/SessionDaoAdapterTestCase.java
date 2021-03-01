@@ -44,10 +44,10 @@ package org.smooks.scribe.adapter.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.junit.Before;
+import org.junit.Test;
 import org.smooks.scribe.adapter.hibernate.test.util.BaseTestCase;
 import org.mockito.Mock;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class SessionDaoAdapterTest extends BaseTestCase {
+public class SessionDaoAdapterTestCase extends BaseTestCase {
 
     @Mock
     private Session session;
@@ -72,7 +72,7 @@ public class SessionDaoAdapterTest extends BaseTestCase {
 
     private SessionDaoAdapter adapter;
 
-    @Test(groups = "unit")
+    @Test
     public void test_persist() {
 
         // EXECUTE
@@ -87,7 +87,7 @@ public class SessionDaoAdapterTest extends BaseTestCase {
 
     }
 
-    @Test(groups = "unit")
+    @Test
     public void test_merge() {
 
         // EXECUTE
@@ -104,7 +104,7 @@ public class SessionDaoAdapterTest extends BaseTestCase {
 
     }
 
-    @Test(groups = "unit")
+    @Test
     public void test_flush() {
 
         // EXECUTE
@@ -117,7 +117,7 @@ public class SessionDaoAdapterTest extends BaseTestCase {
 
     }
 
-    @Test(groups = "unit")
+    @Test
     public void test_lookupByQuery_map_parameters() {
 
         // STUB
@@ -147,7 +147,7 @@ public class SessionDaoAdapterTest extends BaseTestCase {
 
     }
 
-    @Test(groups = "unit")
+    @Test
     public void test_lookupByQuery_array_parameters() {
 
         // STUB
@@ -177,7 +177,7 @@ public class SessionDaoAdapterTest extends BaseTestCase {
 
     }
 
-    @Test(groups = "unit")
+    @Test
     public void test_lookup_map_parameters() {
 
         // STUB
@@ -207,7 +207,7 @@ public class SessionDaoAdapterTest extends BaseTestCase {
 
     }
 
-    @Test(groups = "unit")
+    @Test
     public void test_lookup_array_parameters() {
 
         // STUB
@@ -241,13 +241,12 @@ public class SessionDaoAdapterTest extends BaseTestCase {
     /* (non-Javadoc)
      * @see org.smooks.scribe.test.util.BaseTestCase#beforeMethod()
      */
-    @BeforeMethod(alwaysRun = true)
+    @Before
     @Override
     public void beforeMethod() {
         super.beforeMethod();
 
         adapter = new SessionDaoAdapter(session);
     }
-
 
 }

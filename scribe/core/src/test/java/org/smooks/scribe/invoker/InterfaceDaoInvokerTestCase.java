@@ -48,18 +48,17 @@ import static org.mockito.Mockito.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
 import org.smooks.scribe.Dao;
 import org.smooks.scribe.test.dao.FullInterfaceDao;
 import org.smooks.scribe.test.util.BaseTestCase;
 import org.mockito.Mock;
-import org.testng.annotations.Test;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-@Test(groups = "unit")
-public class InterfaceDaoInvokerTest extends BaseTestCase {
+public class InterfaceDaoInvokerTestCase extends BaseTestCase {
 
 	@Mock
 	private FullInterfaceDao<Object> fullDao;
@@ -67,7 +66,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 	@Mock
 	private Dao<Object> minimumDao;
 
-	@Test(groups = "unit")
+	@Test
 	public void test_insert() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(fullDao);
@@ -161,7 +160,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
-	@Test(expectedExceptions = UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void test_flush_non_flushable_dao() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(minimumDao);
@@ -184,7 +183,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 	}
 
 
-	@Test(expectedExceptions = UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void test_findBy_non_finder_dao() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(minimumDao);
@@ -220,7 +219,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 	}
 
 
-	@Test(expectedExceptions = UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void test_lookupByQuery_non_query_finder_dao_map_params() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(minimumDao);
@@ -231,7 +230,7 @@ public class InterfaceDaoInvokerTest extends BaseTestCase {
 
 	}
 
-	@Test(expectedExceptions = UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void test_lookupByQuery_non_query_finder_dao_array_params() {
 
 		DaoInvoker invoker = new InterfaceDaoInvoker(minimumDao);

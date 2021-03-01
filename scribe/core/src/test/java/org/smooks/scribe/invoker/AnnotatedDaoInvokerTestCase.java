@@ -42,6 +42,7 @@
  */
 package org.smooks.scribe.invoker;
 
+import org.junit.Test;
 import org.mockito.Mock;
 import org.smooks.scribe.NoMethodWithAnnotationFoundException;
 import org.smooks.scribe.reflection.AnnotatedDaoRuntimeInfo;
@@ -51,7 +52,6 @@ import org.smooks.scribe.test.dao.FullAnnotatedDao;
 import org.smooks.scribe.test.dao.MinimumAnnotatedDao;
 import org.smooks.scribe.test.dao.OnlyDefaultAnnotatedDao;
 import org.smooks.scribe.test.util.BaseTestCase;
-import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,8 +68,7 @@ import static org.mockito.Mockito.when;
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-@Test(groups = "unit")
-public class AnnotatedDaoInvokerTest extends BaseTestCase {
+public class AnnotatedDaoInvokerTestCase extends BaseTestCase {
 
 	@Mock
 	FullAnnotatedDao fullDao;
@@ -157,7 +156,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		assertNull(result);
 	}
 
-	@Test(groups = "unit", expectedExceptions = NoMethodWithAnnotationFoundException.class)
+	@Test(expected = NoMethodWithAnnotationFoundException.class)
 	public void test_insert_no_annotation() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(minimumDao, minimumDaoRuntimeInfo);
@@ -221,7 +220,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		verify(fullDao).updateItDiff(same(toUpdate));
 	}
 
-	@Test(groups = "unit", expectedExceptions = NoMethodWithAnnotationFoundException.class)
+	@Test(expected = NoMethodWithAnnotationFoundException.class)
 	public void test_update_no_annotation() {
 
 
@@ -301,7 +300,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		verify(fullDao).deleteItDiff(same(toDelete));
 	}
 
-	@Test(groups = "unit", expectedExceptions = NoMethodWithAnnotationFoundException.class)
+	@Test(expected = NoMethodWithAnnotationFoundException.class)
 	public void test_delete_no_annotation() {
 
 
@@ -340,7 +339,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
-	@Test(groups = "unit", expectedExceptions = NoMethodWithAnnotationFoundException.class)
+	@Test(expected = NoMethodWithAnnotationFoundException.class)
 	public void test_flush_no_annotation() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(minimumDao, minimumDaoRuntimeInfo);
@@ -398,7 +397,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 	}
 
 
-	@Test(expectedExceptions = NoMethodWithAnnotationFoundException.class)
+	@Test(expected = NoMethodWithAnnotationFoundException.class)
 	public void test_lookup_no_annotation() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(minimumDao, minimumDaoRuntimeInfo);
@@ -433,7 +432,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
-	@Test(expectedExceptions = NoMethodWithAnnotationFoundException.class)
+	@Test(expected = NoMethodWithAnnotationFoundException.class)
 	public void test_lookupByQuery_non_query_finder_dao_map_params() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(minimumDao, minimumDaoRuntimeInfo);
@@ -444,7 +443,7 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 
 	}
 
-	@Test(expectedExceptions = NoMethodWithAnnotationFoundException.class)
+	@Test(expected = NoMethodWithAnnotationFoundException.class)
 	public void test_lookupByQuery_non_query_finder_dao_array_params() {
 
 		DaoInvoker invoker = new AnnotatedDaoInvoker(minimumDao, minimumDaoRuntimeInfo);
@@ -454,6 +453,4 @@ public class AnnotatedDaoInvokerTest extends BaseTestCase {
 		invoker.lookupByQuery("id", params);
 
 	}
-
-
 }

@@ -19,9 +19,5 @@
             <groupId>org.smooks</groupId>
             <artifactId>smooks-commons</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-        </dependency>
     </dependencies>
 </project>
