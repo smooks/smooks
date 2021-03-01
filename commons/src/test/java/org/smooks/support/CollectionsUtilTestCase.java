@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Smooks Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,30 +40,59 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.support;
 
-import java.io.IOException;
+import org.junit.Test;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public class CollectionsUtilTestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_Set_01() {
+        Set<String> strings = CollectionsUtil.toSet("1", "2", "3");
+        assertTrue(strings.contains("1"));
+        assertTrue(strings.contains("2"));
+        assertTrue(strings.contains("3"));
+    }
 
+	@Test
+    public void test_Set_02() {
+        Set<Integer> integers = CollectionsUtil.toSet(1, 2, 3);
+        assertTrue(integers.contains(1));
+        assertTrue(integers.contains(2));
+        assertTrue(integers.contains(3));
+    }
+
+	@Test
+    public void test_Set_03() {
+        Set<Integer> integers = Collections.emptySet();
+        assertEquals(0, integers.size());
+        Set<String> strings = Collections.emptySet();
+        assertEquals(0, strings.size());
+    }
+
+	@Test
+    public void test_List_01() {
+        List<String> strings = CollectionsUtil.toList("1", "2", "3");
+        assertTrue(strings.contains("1"));
+        assertTrue(strings.contains("2"));
+        assertTrue(strings.contains("3"));
+    }
+
+	@Test
+    public void test_List_02() {
+        List<Integer> integers = CollectionsUtil.toList(1, 2, 3);
+        assertTrue(integers.contains(1));
+        assertTrue(integers.contains(2));
+        assertTrue(integers.contains(3));
+    }
 }

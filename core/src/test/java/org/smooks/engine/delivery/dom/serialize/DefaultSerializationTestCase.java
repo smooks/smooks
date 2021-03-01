@@ -40,30 +40,54 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.dom.serialize;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
 import org.xml.sax.SAXException;
+import org.smooks.Smooks;
+import org.smooks.io.payload.StringResult;
+import org.smooks.io.payload.StringSource;
 
-public class PreconfiguredSmooks extends Smooks {
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class DefaultSerializationTestCase {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_default_writing_off_no_serializers() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_No_Serializers_Test.xml"));
 
+        StringSource stringSource = new StringSource("<a>aa<b>bbb<c />bbb</b>aaa</a>");
+        StringResult stringResult = new StringResult();
+
+        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);
+
+        // The "default.serialization.on" global param is set to "false" in the config, so
+        // nothing should get writen to the result because there are no configured
+        // serialization Visitors.
+        assertEquals("", stringResult.getResult());
+
+        assertTrue(SimpleDOMVisitor.visited);
+    }
+
+	@Test
+    public void test_default_writing_off_one_serializer() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_One_Serializer_Test.xml"));
+
+        StringSource stringSource = new StringSource("<a>aa<b>bbb<c />bbb</b>aaa</a>");
+        StringResult stringResult = new StringResult();
+
+        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);
+
+        // The "default.serialization.on" global param is set to "false" in the config.
+        // There's just a single result writing visitor configured on the "b" element...
+        assertEquals("<b>bbbbbb</b>", stringResult.getResult());
+
+        assertTrue(SimpleDOMVisitor.visited);
+    }
 }

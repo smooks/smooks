@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Smooks Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,30 +40,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.archive;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.smooks.io.StreamUtils;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class ArchiveClassLoaderTestCase {
 
-public class PreconfiguredSmooks extends Smooks {
+	@Test
+    public void test_produced_zip() throws IOException, ClassNotFoundException {
+        Archive archive = new Archive("testarchive");
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+        archive.addEntry("//my/resource.txt", new ByteArrayInputStream("Hi!!".getBytes()));
+        archive.addEntry(Archive.class);
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+        ArchiveClassLoader classLoader = new ArchiveClassLoader(archive);
 
+        Class<?> clazzInst = classLoader.loadClass(Archive.class.getName());
+
+        // Classes are loaded by different classloaders, so shouldn't be the same class instance...
+        assertNotSame(Archive.class, clazzInst);
+        // But should be the same class...
+        assertEquals(Archive.class.getName(), clazzInst.getName());
+
+        String hiString = StreamUtils.readStreamAsString(classLoader.getResourceAsStream("my/resource.txt"), "UTF-8");
+        assertEquals("Hi!!", hiString);
+    }
 }

@@ -40,30 +40,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.resource.config;
 
-import java.io.IOException;
-
+import org.junit.After;
+import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.smooks.api.delivery.ContentDeliveryConfig;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public class ParameterAccessorTestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@After
+    public void tearDown() throws Exception {
+        System.getProperties().remove("test.parameter");
+    }
 
+	@Test
+    public void test_system_property() {
+        Smooks smooks = new Smooks();
+        ContentDeliveryConfig deliveryConfig = smooks.createExecutionContext().getContentDeliveryRuntime().getContentDeliveryConfig();
+
+        assertNull(ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
+
+        System.setProperty("test.parameter", "xxxxxxx");
+        assertEquals("xxxxxxx", ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
+    }
 }

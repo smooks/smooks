@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Smooks :: All
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,30 +40,39 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks;
 
-import java.io.IOException;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import java.net.URL;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertNotNull;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
-
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
-
+/**
+ * Unit test for {@link BundleClassLoaderDelegator}.
+ * 
+ * @author Daniel Bevenius
+ *
+ */
+public class BundleClassLoaderDelegatorTestCase
+{
+    @Rule
+    public final TemporaryFolder folder = new TemporaryFolder();
+    
+    @Test
+    public void getResourceFromBundle() throws Exception
+    {
+        final JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "bundle.jar");
+        jar.addAsResource(folder.newFile("test.properties"));
+        
+        BundleClassLoaderDelegator bcl = new BundleClassLoaderDelegator(new MockBundle(jar), getClass().getClassLoader());
+        
+        URL resource = bcl.getResource("test.properties");
+        assertNotNull(resource);
+    }
+    
 }

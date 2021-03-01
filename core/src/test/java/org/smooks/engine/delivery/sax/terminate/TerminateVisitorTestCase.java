@@ -40,30 +40,67 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.sax.terminate;
 
-import java.io.IOException;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
+import org.smooks.engine.delivery.sax.SAXVisitBeforeVisitor;
 import org.xml.sax.SAXException;
 
-public class PreconfiguredSmooks extends Smooks {
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.util.Optional;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+/**
+ * 
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class TerminateVisitorTestCase {
+	
+	@Before
+	public void setUp() throws Exception {
+		SAXVisitBeforeVisitor.visited = false;
 	}
 
+	@Test
+	public void test_terminate_prog_after() {
+		Smooks smooks = new Smooks();
+		
+		smooks.addVisitor(new TerminateVisitor(), "customer");
+		smooks.addVisitor(new SAXVisitBeforeVisitor().setInjectedParam("blah"), "user");
+		
+		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		assertTrue(SAXVisitBeforeVisitor.visited);
+	}
+
+	@Test
+	public void test_terminate_prog_before() {
+		Smooks smooks = new Smooks();
+		
+		smooks.addVisitor(new TerminateVisitor().setTerminateBefore(Optional.of(true)), "customer");
+		smooks.addVisitor(new SAXVisitBeforeVisitor().setInjectedParam("blah"), "user");
+		
+		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		assertFalse(SAXVisitBeforeVisitor.visited);
+	}
+
+	@Test
+	public void test_terminate_xml_after() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
+		
+		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		assertTrue(SAXVisitBeforeVisitor.visited);
+	}
+
+	@Test
+	public void test_terminate_xml_before() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-02.xml"));
+		
+		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		assertFalse(SAXVisitBeforeVisitor.visited);
+	}
 }

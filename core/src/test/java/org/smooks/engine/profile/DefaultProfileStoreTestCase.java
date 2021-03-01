@@ -40,30 +40,54 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.profile;
 
-import java.io.IOException;
+import org.junit.Test;
+import org.smooks.api.profile.ProfileStore;
+import org.smooks.api.profile.UnknownProfileMemberException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.*;
 
-public class PreconfiguredSmooks extends Smooks {
+/**
+ * 
+ * @author tfennelly
+ */
+public class DefaultProfileStoreTestCase {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+	@Test
+	public void testAddGetProfileSet() {
+		ProfileStore store = new DefaultProfileStore();
+		DefaultProfileSet set1 = new DefaultProfileSet("device1");
+		DefaultProfileSet set2 = new DefaultProfileSet("device2");
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+		try {
+			DefaultProfileStore.UnitTest.addProfileSet(store, null);
+			fail("no IllegalArgumentException on null devicename");
+		} catch (IllegalArgumentException e) {
+		}
+
+		DefaultProfileStore.UnitTest.addProfileSet(store, set1);
+		DefaultProfileStore.UnitTest.addProfileSet(store, set2);
+		try {
+			store.getProfileSet("device3");
+			fail("no UnknownProfileMemberException");
+		} catch (UnknownProfileMemberException e) {
+		}
+		try {
+			assertEquals(set1, store.getProfileSet("device1"));
+		} catch (UnknownProfileMemberException e1) {
+			fail("failed to get set");
+		}
+		try {
+			assertEquals(set2, store.getProfileSet("device2"));
+		} catch (UnknownProfileMemberException e1) {
+			fail("failed to get set");
+		}
+		try {
+			DefaultProfileStore.UnitTest.addProfileSet(store, set1);
+			assertEquals(set1, store.getProfileSet("device2"));
+		} catch (UnknownProfileMemberException e1) {
+			fail("failed to get set");
+		}
 	}
-
 }

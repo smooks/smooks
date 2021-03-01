@@ -40,30 +40,41 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.JIRAs.MILYN_203;
 
-import java.io.IOException;
-
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
+import org.smooks.io.StreamUtils;
+import org.smooks.io.payload.StringResult;
 import org.xml.sax.SAXException;
 
-public class PreconfiguredSmooks extends Smooks {
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public class MILYN_203_TestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_DOM() throws IOException, SAXException {
+        test_CDATA("dom.xml");
+    }
+
+	@Test
+    public void test_SAX() throws IOException, SAXException {
+        test_CDATA("sax.xml");
+    }
+
+    public void test_CDATA(String config) throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
+        StringResult result = new StringResult();
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("in-message.xml")), result);
+        assertTrue(StreamUtils.compareCharStreams(new InputStreamReader(getClass().getResourceAsStream("in-message.xml")), new StringReader(result.getResult())));
+    }
 
 }

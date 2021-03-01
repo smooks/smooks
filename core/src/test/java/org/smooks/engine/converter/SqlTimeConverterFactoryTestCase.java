@@ -40,30 +40,43 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.converter;
 
-import java.io.IOException;
+import org.junit.Test;
+import org.smooks.api.resource.config.Configurable;
+import org.smooks.api.converter.TypeConverter;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import java.sql.Time;
+import java.util.Properties;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.*;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * Tests for the SqlTimeDecoder class
+ * 
+ * @author <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a>
+ */
+public class SqlTimeConverterFactoryTestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_DateDecoder() {
+        Properties config = new Properties();
+        config.setProperty(DateToStringLocaleAwareConverter.FORMAT, "EEE MMM dd HH:mm:ss z yyyy");
 
+        SqlTimeConverterFactory sqlTimeConverterFactory = new SqlTimeConverterFactory();
+        config.setProperty(DateToStringLocaleAwareConverter.LOCALE_LANGUAGE_CODE, "en");
+	    config.setProperty(DateToStringLocaleAwareConverter.LOCALE_COUNTRY_CODE, "IE");
+        
+	    TypeConverter<String, Time> typeConverter = sqlTimeConverterFactory.createTypeConverter();
+        ((Configurable) typeConverter).setConfiguration(config);
+
+        Object object = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        assertTrue(object instanceof Time);
+        
+        Time time_a = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        assertEquals(1163616328000L, time_a.getTime());
+        Time date_b = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        assertNotSame(time_a, date_b);
+    }
+    
 }

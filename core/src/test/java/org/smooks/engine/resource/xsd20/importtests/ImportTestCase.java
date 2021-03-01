@@ -40,30 +40,42 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.resource.xsd20.importtests;
+
+import org.junit.Test;
+import org.smooks.Smooks;
+import org.smooks.engine.delivery.dom.serialize.SimpleDOMVisitor;
+import org.smooks.io.payload.StringSource;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.*;
 
-public class PreconfiguredSmooks extends Smooks {
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class ImportTestCase {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+    @Test
+    public void test_12_imports_20() throws IOException, SAXException {
+        testConfig("12_import_20.xml");
+    }
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+    @Test
+    public void test_20_imports_12() throws IOException, SAXException {
+        testConfig("20_import_12.xml");
+    }
 
+    @Test
+    public void test_paramaterized_import() throws IOException, SAXException {
+        SimpleDOMVisitor.visited = false;
+        testConfig("paramaterized_import_main.xml");
+        assertTrue("Parameters not properly injected into import.", SimpleDOMVisitor.visited);
+    }
+
+    private void testConfig(String config) throws IOException, SAXException {
+        Smooks smooks = new Smooks("/org/smooks/engine/resource/xsd20/importtests/" + config);
+        smooks.filterSource(new StringSource("<a/>"), null);
+    }
 }

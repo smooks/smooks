@@ -40,30 +40,52 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.io.payload;
 
-import java.io.IOException;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertEquals;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * Unit test for {@link JavaResult}.
+ * </p>
+ *
+ * @author Daniel Bevenius
+ */
+@SuppressWarnings("unchecked")
+public class JavaResultTestCase
+{
+    private HashMap<String, Object> beans;
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+    @Before
+    public void createBeanMap()
+    {
+        beans = new HashMap<String, Object>();
+        beans.put("first", "bean1");
+        beans.put("second", "bean2");
+        beans.put("third", "bean3");
+    }
 
+    @Test
+    public void extractSpecificBean()
+    {
+        JavaResult javaResult = new JavaResult(beans);
+        Object result = javaResult.extractFromResult(javaResult, new Export(JavaResult.class, null, "second"));
+        assertEquals("bean2", result);
+    }
+
+    @Test
+    public void extractSpecificBeans()
+    {
+        JavaResult javaResult = new JavaResult(beans);
+        Map<String, Object> result = (Map<String, Object>) javaResult.extractFromResult(javaResult, new Export(JavaResult.class, null, "second,first"));
+        Assert.assertTrue(result.containsKey("first"));
+        Assert.assertTrue(result.containsKey("second"));
+        Assert.assertFalse(result.containsKey("third"));
+    }
 }

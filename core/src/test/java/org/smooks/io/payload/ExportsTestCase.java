@@ -40,30 +40,44 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.io.payload;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-public class PreconfiguredSmooks extends Smooks {
+import org.junit.Test;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * Unit test for {@link Exports}.
+ * 
+ * @author Daniel Bevenius
+ * 
+ */
+public class ExportsTestCase
+{
+    @Test
+    public void createSingleExports()
+    {
+        Exports exports = new Exports(StringResult.class);
+        Collection<Export> exportTypes = exports.getExports();
+        assertFalse(exportTypes.isEmpty());
+        assertEquals(exportTypes.iterator().next().getType(), StringResult.class);
+    }
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+    @Test
+    public void createMultipleExports()
+    {
+        Set<Export> results = new HashSet<Export>();
+        results.add(new Export(StringResult.class));
+        results.add(new Export(JavaResult.class));
+        Exports exports = new Exports(results);
+
+        Collection<Export> exportTypes = exports.getExports();
+        assertEquals(2, exportTypes.size());
+    }
 
 }

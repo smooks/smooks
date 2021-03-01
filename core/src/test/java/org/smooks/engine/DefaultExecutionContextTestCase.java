@@ -42,28 +42,42 @@
  */
 package org.smooks.engine;
 
-import java.io.IOException;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.support.SmooksUtil;
+import org.smooks.api.TypedKey;
 import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
 
-public class PreconfiguredSmooks extends Smooks {
+import java.util.Map;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+import static org.junit.Assert.assertTrue;
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+/**
+ * Unit test for {@link DefaultExecutionContext}
+ * 
+ * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
+ *
+ */
+public class DefaultExecutionContextTestCase {
+    private DefaultExecutionContext context;
 
+    @Test
+    public void testGetAttributes() {
+        final TypedKey<String> key = new TypedKey<>("testKey");
+        final String value = "testValue";
+        context.put(key, value);
+
+        Map<TypedKey<Object>, Object> attributes = context.getAll();
+
+        assertTrue(attributes.containsKey(key));
+        assertTrue(attributes.containsValue(value));
+    }
+
+    @Before
+    public void setup() {
+        Smooks smooks = new Smooks();
+        SmooksUtil.registerProfileSet(new DefaultProfileSet("device1", new String[]{"profile1"}), smooks);
+        context = new DefaultExecutionContext("device1", smooks.getApplicationContext(), null);
+    }
 }

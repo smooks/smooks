@@ -40,30 +40,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.xml;
 
-import java.io.IOException;
-
+import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.xml.sax.SAXException;
 
-public class PreconfiguredSmooks extends Smooks {
+import java.io.IOException;
+import java.util.Properties;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+import static org.junit.Assert.assertEquals;
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+/**
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public class NamespaceManagerTestCase {
+
+	@Test
+	public void test_01() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));		
+		ExecutionContext execContext = smooks.createExecutionContext();
+		ApplicationContext appContext = execContext.getApplicationContext();
+		Properties mappings = appContext.getRegistry().lookup(new NamespaceManagerLookup());
+
+		assertEquals("http://a", mappings.getProperty("a"));
+		assertEquals("http://b", mappings.getProperty("b"));
+		assertEquals("http://c", mappings.getProperty("c"));
 	}
-
 }

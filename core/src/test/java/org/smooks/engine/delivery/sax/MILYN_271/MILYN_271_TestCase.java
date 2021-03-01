@@ -40,30 +40,68 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.sax.MILYN_271;
 
-import java.io.IOException;
+import javax.xml.transform.stream.StreamSource;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.smooks.FilterSettings;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.smooks.engine.delivery.sax.MockVisitBefore;
 
-public class PreconfiguredSmooks extends Smooks {
-
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
-
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+/**
+ * http://jira.codehaus.org/browse/MILYN-271
+ * 
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class MILYN_271_TestCase {
+	
+	@Test
+	public void test_01_DOM() {
+		test_01(FilterSettings.DEFAULT_DOM);
 	}
+	
+	@Test
+	public void test_01_SAX() {
+		test_01(FilterSettings.DEFAULT_SAX);
+	}
+	
+	public void test_01(FilterSettings filterSettings) {
+		Smooks smooks = new Smooks();		
+		MockVisitBefore visitor = new MockVisitBefore();
+		
+		smooks.setFilterSettings(filterSettings);
+		
+		smooks.addVisitor(visitor, "order-item/*");		
+		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		
+		assertEquals("[product, quantity, price]", visitor.getElements().toString());
+	}
+		
+	@Test
+	public void test_02_DOM() {
+		test_02(FilterSettings.DEFAULT_DOM);
+	}
+	
+	@Test
+	public void test_02_SAX() {
+		test_02(FilterSettings.DEFAULT_SAX);
+	}
+	
+	public void test_02(FilterSettings filterSettings) {
+		Smooks smooks = new Smooks();		
+		MockVisitBefore visitor1 = new MockVisitBefore();
+		MockVisitBefore visitor2 = new MockVisitBefore();
+		
+		smooks.setFilterSettings(filterSettings);
 
+		smooks.addVisitor(visitor1, "order-item/*");
+		smooks.addVisitor(visitor2, "order-item/price");
+		
+		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		
+		assertEquals("[product, quantity, price]", visitor1.getElements().toString());
+		assertEquals("[price]", visitor2.getElements().toString());
+	}
 }

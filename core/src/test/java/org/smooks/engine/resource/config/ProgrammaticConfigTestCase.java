@@ -40,30 +40,40 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.resource.config;
 
-import java.io.IOException;
-
+import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.smooks.api.SmooksConfigException;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.*;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public class ProgrammaticConfigTestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_properly_configured() {
+        Smooks smooks = new Smooks();
+        ConfigurableVisitor visitor = new ConfigurableVisitor().setStringParam("hi");
 
+        smooks.addVisitor(visitor);
+
+        assertEquals("hi", visitor.getStringParam());
+        assertEquals(Integer.valueOf(5), visitor.getIntParam());
+        assertNull(visitor.getOptionalStringParam());
+    }
+
+	@Test
+    public void test_not_configed() {
+        Smooks smooks = new Smooks();
+
+        try {
+            smooks.addVisitor(new ConfigurableVisitor());
+            fail("Expected SmooksConfigurationException");
+        } catch(SmooksConfigException e) {
+            assertEquals("Property 'stringParam' not configured on class org.smooks.engine.resource.config.ConfigurableVisitor'.", e.getMessage());
+        }
+    }
 }
