@@ -99,12 +99,12 @@ public class URIResourceLocatorTest {
         InputStream stream;
 
         // Resource exists - no scheme - should get it from the filesystem ...
-        stream = locator.getResource("src/test/java/org/smooks/resource/somefile.txt");
+        stream = locator.getResource("src/test/resources/org/smooks/resource/somefile.txt");
         assertNotNull(stream);
 
         // Try it again now with a non-default base URI...
         locator.setBaseURI(new URI("src/test"));
-        stream = locator.getResource("java/org/smooks/resource/somefile.txt");
+        stream = locator.getResource("resources/org/smooks/resource/somefile.txt");
         assertNotNull(stream);
     }
 

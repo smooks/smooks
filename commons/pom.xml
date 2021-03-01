@@ -49,7 +49,7 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>test/java/org/smooks/xml/*.xml</exclude>
+                        <exclude>test/resources/org/smooks/xml/*.xml</exclude>
                         <exclude>test/java/org/smooks/annotation/TestAnnotation.java</exclude>
                         <exclude>main/java/org/smooks/annotation/*.java</exclude>
                     </excludes>

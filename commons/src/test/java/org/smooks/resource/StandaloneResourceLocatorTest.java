@@ -54,7 +54,7 @@ public class StandaloneResourceLocatorTest {
 	public void testGetResourceLocator() {
 		URIResourceLocator standAloneResLocator = new URIResourceLocator();
 
-		standAloneResLocator.setBaseURI((new File("src/test/java")).toURI());
+		standAloneResLocator.setBaseURI((new File("src/test/resources")).toURI());
 
 		try {
 			standAloneResLocator.getResource(
