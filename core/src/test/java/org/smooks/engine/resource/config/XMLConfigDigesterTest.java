@@ -94,7 +94,7 @@ public class XMLConfigDigesterTest {
 
 	@Test
     public void test_import_filesys() throws IOException, SAXException, URISyntaxException {
-        Smooks smooks = new Smooks("src/test/java/org/smooks/engine/resource/config/testconfig3.cdrl");
+        Smooks smooks = new Smooks("src/test/resources/org/smooks/engine/resource/config/testconfig3.cdrl");
         Iterator<ResourceConfigSeq> listIt = smooks.getApplicationContext().getRegistry().lookup(new ResourceConfigListsLookup()).iterator();
         ResourceConfigSeq list = null;
 

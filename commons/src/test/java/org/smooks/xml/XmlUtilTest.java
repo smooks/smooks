@@ -553,7 +553,7 @@ public class XmlUtilTest {
 	public void testParseStream() {
 		try {
 			Document doc = XmlUtil.parseStream(getClass().getResourceAsStream(
-					"/a.adf"), new LocalDTDEntityResolver(getDTDfolder()), XmlUtil.VALIDATION_TYPE.DTD,
+                    "/a.adf"), new LocalDTDEntityResolver(getDTDfolder()), XmlUtil.VALIDATION_TYPE.DTD,
 					true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -561,7 +561,7 @@ public class XmlUtilTest {
 		}
 		try {
 			Document doc = XmlUtil.parseStream(getClass().getResourceAsStream(
-					"/b.adf"), new LocalDTDEntityResolver(getDTDfolder()), XmlUtil.VALIDATION_TYPE.DTD,
+                    "/b.adf"), new LocalDTDEntityResolver(getDTDfolder()), XmlUtil.VALIDATION_TYPE.DTD,
 					true);
 			fail("No failure for invalid document.");
 		} catch (SAXException e) {
