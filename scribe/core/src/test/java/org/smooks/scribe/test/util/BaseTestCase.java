@@ -42,8 +42,8 @@
  */
 package org.smooks.scribe.test.util;
 
+import org.junit.Before;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -51,7 +51,7 @@ import org.testng.annotations.BeforeMethod;
  */
 public abstract class BaseTestCase {
 
-	@BeforeMethod(alwaysRun=true)
+	@Before
 	public void beforeMethod() {
 		MockitoAnnotations.initMocks(this);
 	}

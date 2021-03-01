@@ -44,23 +44,23 @@ package org.smooks.scribe.adapter.jpa;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+
+import org.junit.Test;
 import org.smooks.scribe.adapter.jpa.test.util.BaseTestCase;
 import org.mockito.Mock;
-import org.testng.annotations.Test;
 
 import javax.persistence.EntityManager;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class EntityManagerRegisterTest extends BaseTestCase {
+public class EntityManagerRegisterTestCase extends BaseTestCase {
 
     @Mock
     EntityManager entityManager;
 
-    @Test(groups = "unit")
+    @Test
     public void test_getDao() {
-
         EntityManagerRegister register = new EntityManagerRegister(entityManager);
 
         EntityManagerDaoAdapter entityManagerDaoAdapter = register.getDefaultDao();
@@ -68,8 +68,5 @@ public class EntityManagerRegisterTest extends BaseTestCase {
         assertNotNull(entityManagerDaoAdapter);
 
         assertSame(entityManager, entityManagerDaoAdapter.getEntityManager());
-
     }
-
-
 }

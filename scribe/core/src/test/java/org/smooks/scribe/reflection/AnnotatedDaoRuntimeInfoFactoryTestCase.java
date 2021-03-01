@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Scribe :: JPA Adapter
+ * Scribe :: Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,20 +40,35 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.scribe.adapter.jpa.test.util;
+package org.smooks.scribe.reflection;
 
-import org.junit.Before;
-import org.mockito.MockitoAnnotations;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.smooks.scribe.test.dao.FullAnnotatedDao;
+import org.smooks.scribe.test.dao.MinimumAnnotatedDao;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-public abstract class BaseTestCase {
+public class AnnotatedDaoRuntimeInfoFactoryTestCase {
+	
+	@Test
+	public void test_create() {
 
-	@Before
-	public void beforeMethod() {
-		MockitoAnnotations.initMocks(this);
+		AnnotatedDaoRuntimeInfoFactory factory = new AnnotatedDaoRuntimeInfoFactory();
+		AnnotatedDaoRuntimeInfo runtimeInfo = factory.create(FullAnnotatedDao.class);
+
+		assertNotNull(runtimeInfo);
+
+		AnnotatedDaoRuntimeInfo runtimeInfo2 = factory.create(FullAnnotatedDao.class);
+
+		assertSame(runtimeInfo, runtimeInfo2);
+
+		AnnotatedDaoRuntimeInfo runtimeInfo3 = factory.create(MinimumAnnotatedDao.class);
+
+		assertNotSame(runtimeInfo, runtimeInfo3);
 	}
 
 }

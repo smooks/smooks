@@ -45,6 +45,9 @@ package org.smooks.scribe.adapter.ibatis;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.smooks.scribe.adapter.ibatis.test.util.BaseTestCase;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -53,8 +56,6 @@ import static org.mockito.Matchers.same;
 import org.mockito.Mock;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -66,14 +67,14 @@ import java.util.Map;
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class SqlMapClientDaoAdapterTest extends BaseTestCase {
+public class SqlMapClientDaoAdapterTestCase extends BaseTestCase {
 
     @Mock
     private SqlMapClient sqlMapClient;
 
     private SqlMapClientDaoAdapter adapter;
 
-    @Test(groups = "unit")
+    @Test
     public void test_persist() throws SQLException {
 
         // EXECUTE
@@ -88,7 +89,7 @@ public class SqlMapClientDaoAdapterTest extends BaseTestCase {
 
     }
 
-    @Test(groups = "unit")
+    @Test
     public void test_merge() throws SQLException {
 
         // EXECUTE
@@ -106,7 +107,7 @@ public class SqlMapClientDaoAdapterTest extends BaseTestCase {
     }
 
 
-    @Test(groups = "unit")
+    @Test
     public void test_lookup_map_parameters() throws SQLException {
 
         // STUB
@@ -132,7 +133,7 @@ public class SqlMapClientDaoAdapterTest extends BaseTestCase {
 
     }
 
-    @Test(groups = "unit")
+    @Test
     public void test_lookup_array_parameters() throws SQLException {
 
         // STUB
@@ -161,7 +162,7 @@ public class SqlMapClientDaoAdapterTest extends BaseTestCase {
     /* (non-Javadoc)
      * @see org.smooks.scribe.test.util.BaseTestCase#beforeMethod()
      */
-    @BeforeMethod(alwaysRun = true)
+    @Before
     @Override
     public void beforeMethod() {
         super.beforeMethod();

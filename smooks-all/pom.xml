@@ -26,12 +26,6 @@
         <dependency>
             <groupId>org.smooks</groupId>
             <artifactId>smooks-scribe-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.testng</groupId>
-                    <artifactId>testng</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.smooks</groupId>

@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Scribe :: Core
+ * Scribe :: Ibatis adapter
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,36 +40,35 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.scribe.reflection;
+package org.smooks.scribe.adapter.ibatis;
 
-import static org.junit.Assert.*;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
-import org.smooks.scribe.test.dao.FullAnnotatedDao;
-import org.smooks.scribe.test.dao.MinimumAnnotatedDao;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.smooks.scribe.adapter.ibatis.test.util.BaseTestCase;
+import org.mockito.Mock;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
- *
  */
-@Test( groups = "unit" )
-public class AnnotatedDaoRuntimeInfoFactoryTest {
+public class SqlMapClientRegisterTestCase extends BaseTestCase {
 
+    @Mock
+    SqlMapClient sqlMapClient;
 
-	public void test_create() {
+    @Test
+    public void test_getDao() {
 
-		AnnotatedDaoRuntimeInfoFactory factory = new AnnotatedDaoRuntimeInfoFactory();
-		AnnotatedDaoRuntimeInfo runtimeInfo = factory.create(FullAnnotatedDao.class);
+        SqlMapClientRegister register = new SqlMapClientRegister(sqlMapClient);
 
-		assertNotNull(runtimeInfo);
+        SqlMapClientDaoAdapter entityManagerDaoAdapter = register.getDefaultDao();
 
-		AnnotatedDaoRuntimeInfo runtimeInfo2 = factory.create(FullAnnotatedDao.class);
+        assertNotNull(entityManagerDaoAdapter);
 
-		assertSame(runtimeInfo, runtimeInfo2);
+        assertSame(sqlMapClient, entityManagerDaoAdapter.getSqlMapClient());
 
-		AnnotatedDaoRuntimeInfo runtimeInfo3 = factory.create(MinimumAnnotatedDao.class);
-
-		assertNotSame(runtimeInfo, runtimeInfo3);
-	}
+    }
 
 }

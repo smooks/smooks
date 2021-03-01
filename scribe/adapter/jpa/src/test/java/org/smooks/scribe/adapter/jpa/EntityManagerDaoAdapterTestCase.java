@@ -55,15 +55,16 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.smooks.scribe.adapter.jpa.test.util.BaseTestCase;
 import org.mockito.Mock;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-public class EntityManagerDaoAdapterTest extends BaseTestCase {
+public class EntityManagerDaoAdapterTestCase extends BaseTestCase {
 
 	@Mock
 	private EntityManager entityManager;
@@ -73,7 +74,7 @@ public class EntityManagerDaoAdapterTest extends BaseTestCase {
 
 	private EntityManagerDaoAdapter adapter;
 
-	@Test( groups = "unit" )
+	@Test
 	public void test_persist() {
 
 		// EXECUTE
@@ -88,7 +89,7 @@ public class EntityManagerDaoAdapterTest extends BaseTestCase {
 
 	}
 
-	@Test( groups = "unit" )
+	@Test
 	public void test_merge() {
 
 		// EXECUTE
@@ -103,7 +104,7 @@ public class EntityManagerDaoAdapterTest extends BaseTestCase {
 
 	}
 
-	@Test( groups = "unit" )
+	@Test
 	public void test_flush() {
 
 		// EXECUTE
@@ -116,7 +117,7 @@ public class EntityManagerDaoAdapterTest extends BaseTestCase {
 
 	}
 
-	@Test( groups = "unit" )
+	@Test
 	public void test_lookupByQuery_map_parameters() {
 
 		// STUB
@@ -146,7 +147,7 @@ public class EntityManagerDaoAdapterTest extends BaseTestCase {
 
 	}
 
-	@Test( groups = "unit" )
+	@Test
 	public void test_lookupByQuery_array_parameters() {
 
 		// STUB
@@ -176,7 +177,7 @@ public class EntityManagerDaoAdapterTest extends BaseTestCase {
 
 	}
 
-	@Test( groups = "unit" )
+	@Test
 	public void test_lookup_map_parameters() {
 
 		// STUB
@@ -206,7 +207,7 @@ public class EntityManagerDaoAdapterTest extends BaseTestCase {
 
 	}
 
-	@Test( groups = "unit" )
+	@Test
 	public void test_lookup_array_parameters() {
 
 		// STUB
@@ -240,7 +241,7 @@ public class EntityManagerDaoAdapterTest extends BaseTestCase {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.test.util.BaseTestCase#beforeMethod()
 	 */
-	@BeforeMethod(alwaysRun = true)
+	@Before
 	@Override
 	public void beforeMethod() {
 		super.beforeMethod();

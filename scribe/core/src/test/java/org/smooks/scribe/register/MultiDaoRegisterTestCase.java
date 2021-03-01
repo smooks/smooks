@@ -42,7 +42,7 @@
  */
 package org.smooks.scribe.register;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,9 +53,9 @@ import static org.junit.Assert.*;
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  *
  */
-@Test(groups = "unit")
-public class MultiDaoRegisterTest {
+public class MultiDaoRegisterTestCase {
 
+	@Test
 	public void test_builder() {
 		Map<String, SingleDaoRegister<Object>> map = new HashMap<String, SingleDaoRegister<Object>>();
 		map.put("1", new SingleDaoRegister<Object>(new Object()));
@@ -87,6 +87,7 @@ public class MultiDaoRegisterTest {
 
 	}
 
+	@Test
 	public void test_getDAO() {
 		MapDaoRegister<Object> mapRegister1 = MapDaoRegister.builder().put("1", new Object()).build();
 		MapDaoRegister<Object> mapRegister2 = MapDaoRegister.builder().put("1", new Object()).build();
@@ -104,7 +105,7 @@ public class MultiDaoRegisterTest {
 		assertNull(multiRegister.getDao(".1"));
 	}
 
-
+	@Test
 	public void test_get() {
 		DaoRegister<Object> register1 = new SingleDaoRegister<Object>(new Object());
 		DaoRegister<Object> register2 = new SingleDaoRegister<Object>(new Object());
@@ -120,7 +121,7 @@ public class MultiDaoRegisterTest {
 		assertEquals(in, regMap);
 	}
 
-
+	@Test
 	public void test_equals() {
 		DaoRegister<Object> register1 = new SingleDaoRegister<Object>(new Object());
 		DaoRegister<Object> register2 = new SingleDaoRegister<Object>(new Object());
