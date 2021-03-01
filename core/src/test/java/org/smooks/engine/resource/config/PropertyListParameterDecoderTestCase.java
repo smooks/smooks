@@ -40,30 +40,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.resource.config;
 
-import java.io.IOException;
+import org.junit.Test;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.tck.MockApplicationContext;
+import org.smooks.engine.injector.Scope;
+import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
+import org.smooks.engine.lookup.LifecycleManagerLookup;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import java.util.Properties;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertEquals;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+public class PropertyListParameterDecoderTestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+	@Test
+	public void test_decodeValue() {
+		ResourceConfig resourceConfig = new DefaultResourceConfig("x", "x");
+		MockApplicationContext mockApplicationContext = new MockApplicationContext();
+		PropertyListParameterDecoder propertyListParameterDecoder = new PropertyListParameterDecoder();
+		mockApplicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(propertyListParameterDecoder, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), resourceConfig, propertyListParameterDecoder)));
+		
+		Properties properties = (Properties) propertyListParameterDecoder.decodeValue("x=111\ny=222");
+		assertEquals(2, properties.size());
+		assertEquals("111", properties.getProperty("x"));
+		assertEquals("222", properties.getProperty("y"));
 	}
 
 }

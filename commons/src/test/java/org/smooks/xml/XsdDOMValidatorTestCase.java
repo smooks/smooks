@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Smooks Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,30 +40,49 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.xml;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class XsdDOMValidatorTestCase {
 
-public class PreconfiguredSmooks extends Smooks {
+	@Test
+    public void test_namespace_gathering() throws IOException, SAXException, ParserConfigurationException {
+        Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
+        XsdDOMValidator validator = new XsdDOMValidator(document);
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+        assertEquals("http://www.milyn.org/xsd/test-xsd-01.xsd", validator.getDefaultNamespace().toString());
+        assertEquals("[http://www.milyn.org/xsd/test-xsd-01.xsd, http://www.milyn.org/xsd/test-xsd-02.xsd]", validator.getNamespaces().toString());
+    }
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_validation_validdoc() throws IOException, SAXException, ParserConfigurationException {
+        Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
+        XsdDOMValidator validator = new XsdDOMValidator(document);
 
+        validator.validate();
+    }
+
+	@Test
+    public void test_validation_invaliddoc() throws IOException, SAXException, ParserConfigurationException {
+        Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-02.xml"));
+        XsdDOMValidator validator = new XsdDOMValidator(document);
+
+        try {
+            validator.validate();
+            fail("Expected SAXParseException");
+        } catch(SAXParseException e) {
+            assertEquals("cvc-complex-type.4: Attribute 'myName' must appear on element 'a:myNVP'.", e.getMessage());
+        }
+    }
 }

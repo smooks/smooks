@@ -40,30 +40,49 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.resource.xsd20.readertests;
 
-import java.io.IOException;
-
+import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.engine.delivery.AbstractParser;
 import org.xml.sax.SAXException;
 
-public class PreconfiguredSmooks extends Smooks {
+import java.io.IOException;
+import java.util.List;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+import static org.junit.Assert.assertEquals;
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class ReaderConfigTestCase {
 
+	@Test
+    public void test_01() throws IOException, SAXException {
+        // Should allow reader config without a defined reader class i.e. config the default... 
+        new Smooks(getClass().getResourceAsStream("config_01.xml"));
+    }
+
+	@Test
+    public void test_02() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("config_02.xml"));
+        ResourceConfig readerConfig = AbstractParser.getSAXParserConfiguration(smooks.createExecutionContext("A").getContentDeliveryRuntime().getContentDeliveryConfig());
+
+        assertEquals("com.ZZZZReader", readerConfig.getResource());
+
+        assertEquals("A", readerConfig.getTargetProfile());
+
+        List handlers = readerConfig.getParameters("sax-handler");
+        assertEquals("[com.X, com.Y]", handlers.toString());
+
+        List featuresOn = readerConfig.getParameters("feature-on");
+        assertEquals("[http://a, http://b]", featuresOn.toString());
+
+        List featuresOff = readerConfig.getParameters("feature-off");
+        assertEquals("[http://c, http://d]", featuresOff.toString());
+
+        assertEquals("val1", readerConfig.getParameterValue("param1", String.class));
+        assertEquals("val2", readerConfig.getParameterValue("param2", String.class));
+    }
 }

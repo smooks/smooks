@@ -40,30 +40,24 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.converter;
 
-import java.io.IOException;
+import org.junit.Test;
+import org.smooks.api.converter.TypeConverterException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.assertEquals;
 
-public class PreconfiguredSmooks extends Smooks {
-
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
-
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
-
+public class CharsetConverterFactoryTestCase {
+    
+    @Test
+    public void test_CharsetDecoder() {
+        // valid charset
+        new CharsetConverterFactory().createTypeConverter().convert("UTF-8");
+        try {
+            // invalid charset
+            new CharsetConverterFactory().createTypeConverter().convert("XXXXXX");
+        } catch(TypeConverterException e) {
+            assertEquals("Unsupported character set 'XXXXXX'.", e.getMessage());
+        }
+    }
 }

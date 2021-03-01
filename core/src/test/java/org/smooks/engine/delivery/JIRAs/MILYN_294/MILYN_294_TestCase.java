@@ -40,30 +40,59 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.JIRAs.MILYN_294;
 
-import java.io.IOException;
-
+import org.junit.Test;
+import org.smooks.FilterSettings;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.smooks.api.SmooksException;
+import org.smooks.engine.delivery.dom.ProcessorVisitor1;
+import org.smooks.engine.delivery.sax.SAXVisitor01;
+import org.smooks.io.payload.StringSource;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * http://jira.codehaus.org/browse/MILYN-294
+ *
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public class MILYN_294_TestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_setting_sax() {
+        Smooks smooks = new Smooks();
 
+        // Set the Smooks instance to use the SAX filter...
+        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
+
+        // Add a DOM-only visitor
+        smooks.addVisitor(new ProcessorVisitor1(), "a");
+
+        try {
+            smooks.filterSource(new StringSource("<a/>"));
+            fail("Expected SmooksException.");
+        } catch (SmooksException e) {
+            assertEquals("The configured Filter ('SAX') cannot be used: [DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
+        }
+    }
+
+	@Test
+    public void test_setting_dom() {
+        Smooks smooks = new Smooks();
+
+        // Set the Smooks instance to use the DOM filter...
+        smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
+
+        // Add a SAX-only visitor
+        smooks.addVisitor(new SAXVisitor01(), "a");
+
+        try {
+            smooks.filterSource(new StringSource("<a/>"));
+            fail("Expected SmooksException.");
+        } catch (SmooksException e) {
+            assertEquals("The configured Filter ('DOM') cannot be used: [SAX] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
+        }
+    }
 }

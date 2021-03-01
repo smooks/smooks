@@ -40,30 +40,39 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.support;
 
-import java.io.IOException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.smooks.api.delivery.sax.SAXElement;
+import org.smooks.engine.delivery.sax.DefaultSAXElement;
+import org.smooks.support.SAXUtil;
+import org.xml.sax.helpers.AttributesImpl;
 
-public class PreconfiguredSmooks extends Smooks {
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class SAXUtilTestCase {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+	@Test
+    public void test_getXPath() {
+        SAXElement a = new DefaultSAXElement("http://x", "a", "a", new AttributesImpl(), null);
+        SAXElement b = new DefaultSAXElement("http://x", "b", "b", new AttributesImpl(), a);
+        SAXElement c = new DefaultSAXElement("http://x", "c", "c", new AttributesImpl(), b);
+        assertEquals("a/b/c", SAXUtil.getXPath(c));
+    }
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_getAttribute() {
+        AttributesImpl attributes = new AttributesImpl();
 
+        attributes.addAttribute("", "a", "", "", "1");
+        attributes.addAttribute("http://a", "a", "", "", "a");
+        attributes.addAttribute("http://b", "a", "", "", "b");
+
+        assertEquals("1", SAXUtil.getAttribute("a", attributes));
+        assertEquals("a", SAXUtil.getAttribute("http://a", "a", attributes, ""));
+        assertEquals("b", SAXUtil.getAttribute("http://b", "a", attributes, ""));
+    }
 }

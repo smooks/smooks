@@ -40,30 +40,36 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.converter;
 
-import java.io.IOException;
+import org.junit.Test;
+import org.smooks.api.converter.TypeConverterException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-public class PreconfiguredSmooks extends Smooks {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * Test for the ByteDecoder
+ * 
+ * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
+ *
+ */
+public class ByteConverterFactoryTestCase {
+	private final ByteConverterFactory byteConverterFactory = new ByteConverterFactory();
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+	@Test
+    public void test_empty_ok_value() {
+        assertEquals(new Byte((byte) 1), byteConverterFactory.createTypeConverter().convert("1"));
+    }
 
+	@Test
+    public void test_empty_data_string() {
+        try {
+            byteConverterFactory.createTypeConverter().convert("");
+            fail("Expected DataDecodeException");
+        } catch (TypeConverterException e) {
+            assertEquals("Failed to decode Byte value ''.", e.getMessage());
+        }
+    }
 }

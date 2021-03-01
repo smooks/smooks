@@ -40,30 +40,58 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.db;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import org.smooks.Smooks;
+import org.smooks.api.SmooksException;
+import org.smooks.io.payload.StringSource;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class DatasourceCleanupTestCase {
 
-public class PreconfiguredSmooks extends Smooks {
+    @Before
+    public void setUp() throws Exception {
+        MockDatasource.cleanupCallCount = 0;
+    }
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+    @Test
+    public void test_normal() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("normal-ds-lifecycle.xml"));
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+        // Cleanup should get called twice.  Once for the visitAfter event and once for the
+        // executeExecutionLifecycleCleanup event...
+        smooks.filterSource(new StringSource("<a></a>"));
+        assertEquals(2, MockDatasource.cleanupCallCount);
+        assertTrue(MockDatasource.committed);
+    }
 
+    @Test
+    public void test_exception() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("exception-ds-lifecycle.xml"));
+
+        try {
+            smooks.filterSource(new StringSource("<a><b/><c/></a>"));
+            fail("Expected exception...");
+        } catch(SmooksException e) {
+            // Expected
+        }
+
+        // Test that even after an exception is thrown, the DataSource cleanup takes place...
+        // Cleanup should only get called once for the executeExecutionLifecycleCleanup event.
+        // The visitAfter event doesn't call it because of the exception thrown by a nested
+        // visitor...
+        assertTrue(ExceptionVisitor.exceptionThrown);
+        assertEquals(1, MockDatasource.cleanupCallCount);
+        assertTrue(MockDatasource.rolledBack);
+    }
 }

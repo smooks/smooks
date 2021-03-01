@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Smooks Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,30 +40,46 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+// HTMLEntityLookupTest.java
 
-import java.io.IOException;
+package org.smooks.xml;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class PreconfiguredSmooks extends Smooks {
+/**
+ * HTMLEntityLookupTest
+ * <p>
+ * Relations: HTMLEntityLookup extends java.lang.Object <br>
+ *
+ * @author Tom Fennelly
+ * @see org.smooks.xml.HTMLEntityLookup
+ */
+
+public class HTMLEntityLookupTestCase {
+
 
 	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
+	 * Test method: java.lang.Character getCharacterCode(String)
 	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
-
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+	@Test
+	public void testGetCharacterCode() {
+		assertEquals('\u00A4', HTMLEntityLookup.getCharacterCode("curren") .charValue());
+		assertEquals('\u0026', HTMLEntityLookup.getCharacterCode("amp") .charValue());
+		assertEquals('\u00A0', HTMLEntityLookup.getCharacterCode("nbsp") .charValue());
+        assertEquals('\'', HTMLEntityLookup.getCharacterCode("apos").charValue());
+        assertEquals('\u0022', HTMLEntityLookup.getCharacterCode("quot").charValue());
 	}
 
+	/**
+	 * Test method: String getEntityRef(char)
+	 */
+	@Test
+	public void testGetEntityRef() {
+		assertEquals("curren", HTMLEntityLookup.getEntityRef('\u00A4'));
+		assertEquals("amp", HTMLEntityLookup.getEntityRef('\u0026'));
+		assertEquals("nbsp", HTMLEntityLookup.getEntityRef('\u00A0'));
+        assertEquals("apos", HTMLEntityLookup.getEntityRef('\''));
+		assertEquals("quot", HTMLEntityLookup.getEntityRef('\u0022'));
+	}
 }

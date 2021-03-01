@@ -40,30 +40,58 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.converter;
 
-import java.io.IOException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.smooks.api.resource.config.Configurable;
+import org.smooks.api.converter.TypeConverter;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import java.util.Locale;
+import java.util.Properties;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertEquals;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class FloatToStringConverterFactoryTestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+    private Locale defaultLocale;
+
+    @Before
+    public void setUp() {
+        defaultLocale = Locale.getDefault();
+		Locale.setDefault( new Locale("en", "IE") );
 	}
 
+    @After
+    public void tearDown() throws Exception {
+        Locale.setDefault(defaultLocale);
+    }
+
+    @Test
+    public void test_encode_format_config() {
+        FloatToStringConverterFactory floatToStringConverterFactory = new FloatToStringConverterFactory();
+        Properties config = new Properties();
+
+        config.setProperty(NumberTypeConverter.FORMAT, "#,###.##");
+        TypeConverter<Float, String> typeConverter = floatToStringConverterFactory.createTypeConverter();
+        ((Configurable) typeConverter).setConfiguration(config);
+        
+        assertEquals("1,234.45", typeConverter.convert(1234.45f));
+    }
+
+    @Test
+    public void test_encode_locale_config() {
+        FloatToStringConverterFactory floatToStringConverterFactory = new FloatToStringConverterFactory();
+        Properties config = new Properties();
+
+        config.setProperty(NumberTypeConverter.LOCALE, "de-DE");
+        TypeConverter<Float, String> typeConverter = floatToStringConverterFactory.createTypeConverter();
+        ((Configurable) typeConverter).setConfiguration(config);
+        
+        assertEquals("1234,45", typeConverter.convert(1234.45f));
+    }
 }

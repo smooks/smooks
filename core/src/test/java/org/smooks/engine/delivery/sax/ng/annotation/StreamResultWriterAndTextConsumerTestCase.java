@@ -40,30 +40,60 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.sax.ng.annotation;
+
+import org.junit.Test;
+import org.smooks.Smooks;
+import org.smooks.api.SmooksException;
+import org.smooks.api.ExecutionContext;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.api.delivery.sax.StreamResultWriter;
+import org.smooks.api.delivery.sax.TextConsumer;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.io.FragmentWriter;
+import org.smooks.io.payload.StringResult;
+import org.smooks.io.payload.StringSource;
+import org.w3c.dom.Element;
 
 import java.io.IOException;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.assertEquals;
 
-public class PreconfiguredSmooks extends Smooks {
+public class StreamResultWriterAndTextConsumerTestCase {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
-
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+	@Test
+	public void testSingleCharacterChunk() {
+		Smooks smooks = new Smooks();
+		StringResult stringResult = new StringResult();
+		
+		smooks.addVisitor(new MyAnnotatedVisitor(), "b");
+		smooks.filterSource(new StringSource("<a><b>sometext</b></a>"), stringResult);
+		
+		assertEquals("<a>{{sometext}}</a>", stringResult.getResult());
 	}
 
+	@Test
+	public void testMultipleCharacterChunks() {
+		Smooks smooks = new Smooks();
+		StringResult stringResult = new StringResult();
+
+		smooks.addVisitor(new MyAnnotatedVisitor(), "b");
+		smooks.filterSource(new StringSource("<a><b>sometext &amp; moretext</b></a>"), stringResult);
+
+		assertEquals("<a>{{sometext & moretext}}</a>", stringResult.getResult());
+	}
+
+	@TextConsumer
+	@StreamResultWriter	
+	private static class MyAnnotatedVisitor implements AfterVisitor {
+
+		@Override
+		public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+			try {
+				new FragmentWriter(executionContext, new NodeFragment(element)).write("{{" + element.getTextContent() + "}}");
+			} catch (IOException e) {
+				throw new SmooksException(e.getMessage(), e);
+			}
+		}
+	}
 }

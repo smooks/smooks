@@ -40,30 +40,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.sax;
 
-import java.io.IOException;
-
+import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.io.payload.StringSource;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertEquals;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class DynamicVisitorTestCase {
+    
+	@Test
+    public void test() {
+        Smooks smooks = new Smooks();
+        StringSource source = new StringSource("<a><b><c>c1</c><d>c2</d><e>c3</e></b></a>");
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+        smooks.getApplicationContext().getRegistry().registerResourceConfig(new DefaultResourceConfig("b", DynamicVisitorLoader.class.getName()));
+        smooks.filterSource(source);
 
+        assertEquals("<b><c>c1</c><d>c2</d><e>c3</e></b>", DynamicVisitorLoader.visitor.stuff.toString());
+    }
 }

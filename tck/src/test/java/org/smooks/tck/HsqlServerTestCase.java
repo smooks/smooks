@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Smooks Test Kit
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,30 +40,33 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.tck;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.hsqldb.ServerConstants;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class PreconfiguredSmooks extends Smooks {
+/**
+ * Unit test for {@link HsqlServer}.
+ *
+ * @author <a href="mailto:danielbevenius@gmail.com">Daniel Bevenius</a>
+ *
+ */
+public class HsqlServerTestCase {
+    @Test
+    @Ignore("want to see if there might be a restriction on the bamboo machines that cause this test to sometimes fail.")
+    public void startStop() throws Exception {
+        for (int i = 0; i < 50; i++) {
+            startStopCycle();
+        }
+    }
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
-
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+    private void startStopCycle() throws Exception {
+        HsqlServer hsqlServer = new HsqlServer(1999);
+        hsqlServer.stop();
+        assertEquals(ServerConstants.SERVER_STATE_SHUTDOWN, hsqlServer.getState());
+    }
 
 }

@@ -40,30 +40,51 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.dom;
 
-import java.io.IOException;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
 import org.xml.sax.SAXException;
 
-public class PreconfiguredSmooks extends Smooks {
+import javax.xml.transform.stream.StreamSource;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+import java.io.IOException;
+import java.io.StringReader;
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class VisitorEventsTestCase {
 
+	@Before
+    public void setUp() throws Exception {
+        reset();
+    }
+
+    @Test
+    public void test() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("config3.xml"));
+
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<x/>")), null);
+        assertFalse(VisitBeforeDOMVisitor.visited);
+        assertFalse(VisitAfterDOMVisitor.visited);
+        reset();
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<a/>")), null);
+        assertTrue(VisitBeforeDOMVisitor.visited);
+        assertFalse(VisitAfterDOMVisitor.visited);
+        reset();
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<a><b/></a>")), null);
+        assertTrue(VisitBeforeDOMVisitor.visited);
+        assertTrue(VisitAfterDOMVisitor.visited);
+        assertEquals("Hi There!", VisitAfterDOMVisitor.staticInjectedParam);
+    }
+
+    private void reset() {
+        VisitBeforeDOMVisitor.visited = false;
+        VisitAfterDOMVisitor.visited = false;
+    }
 }

@@ -40,30 +40,47 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.resource.xsd20.globalparamstests;
 
 import java.io.IOException;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
+import org.smooks.api.ExecutionContext;
+import org.smooks.io.payload.StringSource;
 import org.xml.sax.SAXException;
 
-public class PreconfiguredSmooks extends Smooks {
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class GlobalParamsTestCase {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+	@Test
+    public void test() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("config_01.xml"));
+        ExecutionContext execContext = smooks.createExecutionContext();
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+        assertEquals("SAX", execContext.getConfigParameter("stream.filter.type"));
+        assertEquals("zzzzval", execContext.getConfigParameter("zzzz"));
+    }
 
+	@Test
+    public void test_globalAnnotatedConfig_01() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("config_02.xml"));
+
+        smooks.filterSource(new StringSource("<a/>"));
+        assertEquals("blah", MyZapVisitor.configuredXP);
+        assertEquals(1, MyZapVisitor.configuredZapCount);
+    }
+
+	@Test
+    public void test_globalAnnotatedConfig_02() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("config_03.xml"));
+
+        smooks.filterSource(new StringSource("<a/>"));
+        assertEquals("blah", MyZapVisitor.configuredXP);
+        assertEquals(2, MyZapVisitor.configuredZapCount);
+    }
 }

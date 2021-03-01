@@ -40,30 +40,32 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.io.payload;
 
-import java.io.IOException;
+import org.junit.Test;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import java.io.StringWriter;
 
-public class PreconfiguredSmooks extends Smooks {
+import static org.junit.Assert.assertEquals;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * Unit test for StringResult
+ * 
+ * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>			
+ *
+ */
+public class StringResultTestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+	@Test
+	public void tostring() {
+		final String expectedString = "testing";
+		StringResult stringResult = new StringResult();
+		StringWriter writer = new StringWriter();
+		writer.write(expectedString);
+
+		stringResult.setWriter(writer);
+		assertEquals(expectedString, stringResult.getWriter().toString());
+		assertEquals(expectedString, stringResult.toString());
 	}
 
 }

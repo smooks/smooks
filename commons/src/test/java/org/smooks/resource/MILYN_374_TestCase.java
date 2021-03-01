@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Smooks Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,30 +40,45 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.resource;
 
-import java.io.IOException;
+import java.net.URI;
 
-import org.smooks.Smooks;
-import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class PreconfiguredSmooks extends Smooks {
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+/**
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ */
+public class MILYN_374_TestCase {
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+	@Test
+	public void test_nobase() {
+		URIResourceLocator locator = new URIResourceLocator();
+		
+		URI uri = locator.resolveURI("/lesson_05/_json_configs/smooks-config-reader-only.xml");
+		
+		assertEquals("lesson_05/_json_configs/smooks-config-reader-only.xml", uri.toString());
 	}
 
+	@Test
+	public void test_base_01() {
+		URIResourceLocator locator = new URIResourceLocator();
+		
+		locator.setBaseURI(URI.create("lesson_05/_json_configs/"));
+		URI uri = locator.resolveURI("/lesson_05/_json_configs/smooks-config-reader-only.xml");
+		
+		assertEquals("lesson_05/_json_configs/smooks-config-reader-only.xml", uri.toString());
+	}
+
+	@Test
+	public void test_base_02() {
+		URIResourceLocator locator = new URIResourceLocator();
+		
+		locator.setBaseURI(URI.create("lesson_05/_json_configs/"));
+		URI uri = locator.resolveURI("lesson_05/_json_configs/smooks-config-reader-only.xml");
+		
+		assertEquals("lesson_05/_json_configs/lesson_05/_json_configs/smooks-config-reader-only.xml", uri.toString());
+	}
 }

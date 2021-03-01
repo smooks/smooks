@@ -40,30 +40,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine;
+package org.smooks.engine.delivery.dom.serialize;
 
-import java.io.IOException;
-
+import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.support.SmooksUtil;
-import org.smooks.engine.profile.DefaultProfileSet;
-import org.xml.sax.SAXException;
+import org.smooks.api.delivery.Filter;
+import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.TypedKey;
+import org.smooks.engine.xml.Namespace;
 
-public class PreconfiguredSmooks extends Smooks {
+import java.io.ByteArrayInputStream;
 
-	/**
-	 * Public Constructor.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public PreconfiguredSmooks() throws SAXException, IOException {
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6w", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6m", new String[] {"msie6", "html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
-        SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
+import static org.junit.Assert.assertEquals;
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
-	}
+/**
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class ContextObjectSerializationUnitTestCase {
 
+	@Test
+    public void test() {
+        Smooks smooks = new Smooks();
+        ExecutionContext context;
+
+        ParameterAccessor.setParameter(Filter.STREAM_FILTER_TYPE, "DOM", smooks);
+
+        context = smooks.createExecutionContext();
+        context.put(new TypedKey<>("object-x"), "Hi there!");
+
+        String result = SmooksUtil.filterAndSerialize(context, new ByteArrayInputStream(("<context-object key='object-x' xmlns=\"" + Namespace.SMOOKS_URI + "\" />").getBytes()), smooks);
+        assertEquals("Hi there!", result);
+    }
 }
