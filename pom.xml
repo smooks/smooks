@@ -65,7 +65,6 @@
         <persistence-api.version>1.0.2</persistence-api.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <xalan.version>2.7.2</xalan.version>
-        <xerces.version>2.12.0</xerces.version>
         <xmlunit.version>1.6</xmlunit.version>
         <xstream.version>1.4.14</xstream.version>
     </properties>
@@ -78,6 +77,7 @@
         <module>core</module>
         <module>scribe</module>
         <module>smooks-all</module>
+        <module>benchmark</module>
     </modules>
     
     <build>
@@ -99,20 +99,7 @@
                     <version>2.22.2</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
-                        <environmentVariables>
-                            <org.smooks.xml.XsdValidator.SchemaFactory>
-                                org.apache.xerces.jaxp.validation.XMLSchemaFactory
-                            </org.smooks.xml.XsdValidator.SchemaFactory>
-                        </environmentVariables>
-                        <excludes>
-                            <exclude>**/Test*.java</exclude>
-                        </excludes>
-                        <argLine>-Xms128m -Xmx256m</argLine>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
@@ -202,12 +189,6 @@
                         <arg>-Xlint:deprecation</arg>
                         <arg>-Xlint:unchecked</arg>
                     </compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptor>assemblies.xml</descriptor>
                 </configuration>
             </plugin>
             <plugin>
@@ -397,13 +378,7 @@
                 <artifactId>mockito-core</artifactId>
                 <version>${mockito.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>xerces</groupId>
-                <artifactId>xercesImpl</artifactId>
-                <version>${xerces.version}</version>
-            </dependency>
-
+            
             <dependency>
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker</artifactId>

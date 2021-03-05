@@ -206,7 +206,7 @@ public class SAXHandler extends SmooksContentHandler {
             currentProcessor = processor;
             // Register the "presence" of the element...
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                executionEventListener.onEvent(new StartFragmentEvent(new SAXElementFragment(new WriterManagedSAXElement(elementQName, startEvent.attributes, currentProcessor.element))));
+                executionEventListener.onEvent(new StartFragmentEvent<>(new SAXElementFragment(new WriterManagedSAXElement(elementQName, startEvent.attributes, currentProcessor.element))));
             }
         } else {
             if(!isRoot) {
@@ -221,7 +221,7 @@ public class SAXHandler extends SmooksContentHandler {
             }
 
             // Register the "presence" of the element...
-            final StartFragmentEvent startFragmentEvent = new StartFragmentEvent(new SAXElementFragment(element));
+            final StartFragmentEvent<SAXElement> startFragmentEvent = new StartFragmentEvent<>(new SAXElementFragment(element));
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                 executionEventListener.onEvent(startFragmentEvent);
             }

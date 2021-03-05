@@ -87,7 +87,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
             }
         };
         if (getTarget() instanceof SAXVisitBefore) {
-            final Fragment saxElementFragment = new SAXElementFragment(element);
+            final Fragment<SAXElement> saxElementFragment = new SAXElementFragment(element);
             for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
                 executionEventListener.onEvent(new ResourceTargetingEvent(saxElementFragment, getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }

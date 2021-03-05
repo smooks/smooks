@@ -56,7 +56,7 @@ import java.util.function.Function;
 
 public class DefaultMementoCaretaker implements MementoCaretaker {
 
-    private final Map<Fragment<?>, Set<String>> mementoIds = new HashMap<>();
+    private final Map<Fragment<?>, Set<String>> mementoAnchors = new HashMap<>();
     private final TypedMap typedMap;
 
     public DefaultMementoCaretaker(final TypedMap typedMap) {
@@ -64,46 +64,45 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
     }
 
     @Override
-    public void capture(Memento visitorMemento) {
-        mementoIds.computeIfAbsent(visitorMemento.getFragment(), o -> new HashSet<>()).add(visitorMemento.getAnchor());
-        typedMap.put(new TypedKey<>(visitorMemento.getAnchor()), visitorMemento.copy());
+    public void capture(Memento memento) {
+        mementoAnchors.computeIfAbsent(memento.getFragment(), o -> new HashSet<>()).add(memento.getAnchor());
+        typedMap.put(new TypedKey<>(memento.getAnchor()), memento.copy());
     }
 
     @Override
-    public void restore(Memento visitorMemento) {
-        final String visitorMementoId = visitorMemento.getAnchor();
-        final TypedKey<Memento> visitorMementoTypedKey = new TypedKey<>(visitorMementoId);
+    public void restore(Memento memento) {
+        final TypedKey<Memento> visitorMementoTypedKey = new TypedKey<>(memento.getAnchor());
         final Memento restoredVisitorMemento = typedMap.get(visitorMementoTypedKey);
         if (restoredVisitorMemento != null) {
-            visitorMemento.restore(restoredVisitorMemento);
+            memento.restore(restoredVisitorMemento);
         } else {
-            typedMap.put(visitorMementoTypedKey, visitorMemento);
+            typedMap.put(visitorMementoTypedKey, memento);
         }
     }
 
     @Override
-    public boolean exists(Memento visitorMemento) {
-        return typedMap.get(new TypedKey<>(visitorMemento.getAnchor())) != null;
+    public boolean exists(Memento memento) {
+        return typedMap.get(new TypedKey<>(memento.getAnchor())) != null;
     }
 
     @Override
     public void forget(Memento visitorMemento) {
-        typedMap.remove(new TypedKey<>(visitorMemento.getAnchor()) );
-        mementoIds.getOrDefault(visitorMemento.getFragment(), new HashSet<>()).remove(visitorMemento.getAnchor());
+        typedMap.remove(new TypedKey<>(visitorMemento.getAnchor()));
+        mementoAnchors.getOrDefault(visitorMemento.getFragment(), new HashSet<>()).remove(visitorMemento.getAnchor());
     }
 
     @Override
     public void forget(Fragment<?> fragment) {
-        for (final String id : mementoIds.getOrDefault(fragment, new HashSet<>())) {
-            typedMap.remove(new TypedKey<>(id));
+        for (final String anchor : mementoAnchors.getOrDefault(fragment, new HashSet<>())) {
+            typedMap.remove(new TypedKey<>(anchor));
         }
-        mementoIds.remove(fragment);
+        mementoAnchors.remove(fragment);
     }
 
     @Override
-    public <T extends Memento> T stash(T defaultVisitorMemento, Function<T, T> function) {
-        restore(defaultVisitorMemento);
-        T newVisitorMemento = function.apply(defaultVisitorMemento);
+    public <T extends Memento> T stash(T defaultMemento, Function<T, T> function) {
+        restore(defaultMemento);
+        T newVisitorMemento = function.apply(defaultMemento);
         capture(newVisitorMemento);
 
         return newVisitorMemento;

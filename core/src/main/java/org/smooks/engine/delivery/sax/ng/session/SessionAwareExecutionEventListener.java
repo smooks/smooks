@@ -61,9 +61,9 @@ public abstract class SessionAwareExecutionEventListener implements ExecutionEve
     }
     
     @Override
-    public void onEvent(ExecutionEvent executionEvent) {
+    public void onEvent(final ExecutionEvent executionEvent) {
         if (executionEvent instanceof FragmentEvent<?> && ((FragmentEvent<?>) executionEvent).getFragment() instanceof NodeFragment) {
-            Node node = (Node) ((FragmentEvent<?>) executionEvent).getFragment().unwrap();
+            final Node node = (Node) ((FragmentEvent<?>) executionEvent).getFragment().unwrap();
             if (Session.isSession(node)) {
                 if (executionEvent instanceof StartFragmentEvent<?>) {
                     Session session = new Session(node);

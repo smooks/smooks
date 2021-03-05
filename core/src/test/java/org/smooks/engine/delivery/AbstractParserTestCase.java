@@ -42,9 +42,9 @@
  */
 package org.smooks.engine.delivery;
 
-import org.apache.xerces.parsers.SAXParser;
 import org.junit.Test;
 import org.smooks.FilterSettings;
+import org.smooks.engine.delivery.sax.ng.org.apache.xerces.parsers.SAXParser;
 import org.smooks.engine.resource.config.GenericReaderConfigurator;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;

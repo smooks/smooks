@@ -42,46 +42,35 @@
  */
 package org.smooks.engine.delivery.sax.ng;
 
-import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.sax.TextType;
-import org.w3c.dom.Node;
 
-class NodeState {
+class ContentHandlerState {
     private TextType textType = TextType.TEXT;
-    private NodeState parentNodeState;
+    private ContentHandlerState previousContentHandlerState;
     private boolean isNullProcessor = false;
-    private Fragment<Node> nodeFragment;
     private SaxNgVisitorBindings visitorBindings;
     private int maxDepth = 1;
 
-    public NodeState getParentNodeState() {
-        return parentNodeState;
+    public ContentHandlerState getPreviousContentHandlerState() {
+        return previousContentHandlerState;
     }
 
     public boolean isNullProcessor() {
         return isNullProcessor;
     }
 
-    public void setParentNodeState(NodeState parentNodeState) {
-        this.parentNodeState = parentNodeState;
+    public void setPreviousContentHandlerState(ContentHandlerState previousContentHandlerState) {
+        this.previousContentHandlerState = previousContentHandlerState;
     }
 
     public void setNullProcessor(boolean nullProcessor) {
         isNullProcessor = nullProcessor;
     }
 
-    public void setNodeFragment(Fragment<Node> nodeFragment) {
-        this.nodeFragment = nodeFragment;
-    }
-
     public void setVisitorBindings(SaxNgVisitorBindings visitorBindings) {
         this.visitorBindings = visitorBindings;
     }
-
-    public Fragment<Node> getNodeFragment() {
-        return nodeFragment;
-    }
-
+    
     public SaxNgVisitorBindings getVisitorBindings() {
         return visitorBindings;
     }
