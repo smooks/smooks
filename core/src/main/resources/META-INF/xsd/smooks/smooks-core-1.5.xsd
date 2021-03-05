@@ -8,7 +8,7 @@
     <xs:import namespace="https://www.smooks.org/xsd/smooks-1.2.xsd"/>
 
     <xs:annotation>
-        <xs:documentation xml:lang="en">Smooks Core Settings Configuration</xs:documentation>
+        <xs:documentation xml:lang="en">Core Settings Configuration</xs:documentation>
     </xs:annotation>
 
     <xs:element name="filterSettings" type="smooks-core:filterSettings" substitutionGroup="smooks:abstract-resource-config" >

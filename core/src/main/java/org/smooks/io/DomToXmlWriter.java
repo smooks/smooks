@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -42,7 +42,7 @@
  */
 package org.smooks.io;
 
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 import org.w3c.dom.*;
 
 import java.io.IOException;

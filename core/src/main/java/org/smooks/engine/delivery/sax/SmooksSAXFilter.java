@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -56,7 +56,7 @@ import org.smooks.io.payload.FilterSource;
 import org.smooks.io.payload.JavaSource;
 import org.smooks.io.payload.StringSource;
 import org.smooks.support.SAXUtil;
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;

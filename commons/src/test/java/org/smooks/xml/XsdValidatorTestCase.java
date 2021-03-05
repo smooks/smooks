@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Commons
+ * Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -44,6 +44,7 @@ package org.smooks.xml;
 
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
 import org.junit.Test;
+import org.smooks.support.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;

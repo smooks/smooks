@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -46,7 +46,6 @@ import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.api.delivery.sax.SAXText;
 import org.smooks.api.delivery.sax.TextType;
 import org.smooks.xml.HTMLEntityLookup;
-import org.smooks.xml.XmlUtil;
 import org.xml.sax.Attributes;
 
 import javax.xml.XMLConstants;

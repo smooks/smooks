@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Commons
+ * Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%

@@ -47,7 +47,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
 
-        <ant.version>1.10.9</ant.version>
         <commons-lang.version>2.6</commons-lang.version>
         <freemarker.version>2.3.31</freemarker.version>
         <hamcrest-all.version>1.3</hamcrest-all.version>
@@ -64,19 +63,16 @@
         <mvel.version>2.4.12.Final</mvel.version>
         <persistence-api.version>1.0.2</persistence-api.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
-        <xalan.version>2.7.2</xalan.version>
         <xmlunit.version>1.6</xmlunit.version>
         <xstream.version>1.4.14</xstream.version>
     </properties>
     
     <modules>
-        <module>testres</module>
         <module>api</module>
         <module>commons</module>
         <module>tck</module>
         <module>core</module>
         <module>scribe</module>
-        <module>smooks-all</module>
         <module>benchmark</module>
     </modules>
     
@@ -112,11 +108,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.1.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -278,19 +269,6 @@
         <dependencies>
             <dependency>
                 <groupId>org.smooks</groupId>
-                <artifactId>testres</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.smooks</groupId>
-                <artifactId>smooks-all</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.smooks</groupId>
                 <artifactId>smooks-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -366,13 +344,7 @@
                 <artifactId>log4j-api</artifactId>
                 <version>${log4j2.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant</artifactId>
-                <version>${ant.version}</version>
-            </dependency>
-
+            
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
@@ -432,13 +404,7 @@
                 <artifactId>mockejb</artifactId>
                 <version>${mockejb.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>${xalan.version}</version>
-            </dependency>
-
+            
             <dependency>
                 <groupId>javax.persistence</groupId>
                 <artifactId>persistence-api</artifactId>
@@ -461,36 +427,6 @@
                 <groupId>org.apache.ibatis</groupId>
                 <artifactId>ibatis-sqlmap</artifactId>
                 <version>${ibatis-sqlmap.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi</artifactId>
-                <version>3.0.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>osgi_R4_core</artifactId>
-                <version>1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>osgi_R4_compendium</artifactId>
-                <version>1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-api</artifactId>
-                <version>1.2.6</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-impl-base</artifactId>
-                <version>1.2.6</version>
             </dependency>
 
             <dependency>
