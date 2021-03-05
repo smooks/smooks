@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -49,7 +49,7 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.support.DomUtils;
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

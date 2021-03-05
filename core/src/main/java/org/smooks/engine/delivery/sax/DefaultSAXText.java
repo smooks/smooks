@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 - 2021 Smooks
  * %%
@@ -46,7 +46,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.sax.SAXText;
 import org.smooks.api.delivery.sax.TextType;
 import org.smooks.xml.HTMLEntityLookup;
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;

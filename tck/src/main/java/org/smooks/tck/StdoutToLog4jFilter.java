@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Test Kit
+ * Test Kit
  * %%
  * Copyright (C) 2020 Smooks
  * %%

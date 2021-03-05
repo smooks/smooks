@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -47,7 +47,6 @@ import java.io.InputStream;
 
 import static org.junit.Assert.*;
 
-import org.smooks.xml.XmlUtil;
 import org.w3c.dom.Document;
 
 public abstract class DomUtil {

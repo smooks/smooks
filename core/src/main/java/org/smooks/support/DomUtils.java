@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Cores
+ * Cores
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -45,7 +45,6 @@ package org.smooks.support;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.xml.XmlUtil;
 import org.w3c.dom.*;
 
 import javax.xml.XMLConstants;

@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -58,7 +58,7 @@ import org.smooks.engine.delivery.sax.DefaultSAXElementSerializer;
 import org.smooks.io.StreamUtils;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.ClassUtil;
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 import org.w3c.dom.Element;
 
 import java.io.File;

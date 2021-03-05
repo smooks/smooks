@@ -10,7 +10,7 @@
         <version>2.0.0-M3-SNAPSHOT</version>
     </parent>
 
-    <name>Smooks Commons</name>
+    <name>Commons</name>
     <artifactId>smooks-commons</artifactId>
     <packaging>bundle</packaging>
 
@@ -52,6 +52,7 @@
                 <configuration>
                     <excludes>
                         <exclude>test/resources/org/smooks/xml/*.xml</exclude>
+                        <exclude>test/resources/org/smooks/support/*.xml</exclude>
                         <exclude>test/java/org/smooks/annotation/TestAnnotation.java</exclude>
                         <exclude>main/java/org/smooks/annotation/*.java</exclude>
                     </excludes>

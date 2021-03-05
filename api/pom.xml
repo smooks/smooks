@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Smooks API</name>
+    <name>API</name>
     <artifactId>smooks-api</artifactId>
 
 </project>

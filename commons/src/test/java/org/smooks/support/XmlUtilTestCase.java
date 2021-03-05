@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Commons
+ * Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -42,7 +42,7 @@
  */
 // XmlUtilTest.java
 
-package org.smooks.xml;
+package org.smooks.support;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -55,6 +55,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.smooks.io.StreamUtils;
+import org.smooks.support.XmlUtil;
+import org.smooks.xml.LocalDTDEntityResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -64,7 +66,7 @@ import org.xml.sax.SAXException;
  * Relations: XmlUtil extends java.lang.Object <br>
  * 
  * @author Tom Fennelly
- * @see org.smooks.xml.XmlUtil
+ * @see XmlUtil
  */
 
 public class XmlUtilTestCase {

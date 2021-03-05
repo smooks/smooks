@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -73,7 +73,7 @@ import org.smooks.io.FragmentWriter;
 import org.smooks.io.ResourceWriter;
 import org.smooks.io.Stream;
 import org.smooks.support.CollectionsUtil;
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

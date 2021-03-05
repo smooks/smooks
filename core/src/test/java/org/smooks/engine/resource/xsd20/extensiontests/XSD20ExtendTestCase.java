@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Core
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -50,7 +50,7 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.io.payload.StringResult;
 import org.smooks.io.payload.StringSource;
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 import org.smooks.xml.XsdDOMValidator;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Smooks Commons
+ * Commons
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,9 +40,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.xml;
+package org.smooks.support;
 
 import org.smooks.io.StreamUtils;
+import org.smooks.xml.HTMLEntityLookup;
+import org.smooks.xml.LocalDTDEntityResolver;
+import org.smooks.xml.LocalXSDEntityResolver;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
