@@ -71,12 +71,12 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
 
     @Override
     public void restore(Memento memento) {
-        final TypedKey<Memento> visitorMementoTypedKey = new TypedKey<>(memento.getAnchor());
-        final Memento restoredVisitorMemento = typedMap.get(visitorMementoTypedKey);
-        if (restoredVisitorMemento != null) {
-            memento.restore(restoredVisitorMemento);
+        final TypedKey<Memento> anchorTypedKey = new TypedKey<>(memento.getAnchor());
+        final Memento restoredMemento = typedMap.get(anchorTypedKey);
+        if (restoredMemento != null) {
+            memento.restore(restoredMemento);
         } else {
-            typedMap.put(visitorMementoTypedKey, memento);
+            typedMap.put(anchorTypedKey, memento);
         }
     }
 
