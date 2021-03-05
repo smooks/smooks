@@ -10,7 +10,7 @@
         <version>2.0.0-M3-SNAPSHOT</version>
     </parent>
 
-    <name>Smooks Core</name>
+    <name>Core</name>
     <artifactId>smooks-core</artifactId>
     <packaging>bundle</packaging>
 
@@ -42,6 +42,7 @@
                         <exclude>test/resources/org/smooks/engine/delivery/dom/testxml1.xml</exclude>
                         <exclude>test/resources/org/smooks/engine/delivery/dom/testxml1-expected.xml</exclude>
                         <exclude>test/resources/org/smooks/engine/delivery/JIRAs/MILYN_203/in-message.xml</exclude>
+                        <exclude>main/java/org/smooks/engine/delivery/sax/ng/org/apache/**/*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -70,10 +71,6 @@
             <artifactId>jta</artifactId>
         </dependency>
         <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml</groupId>
             <artifactId>classmate</artifactId>
             <version>1.5.1</version>
@@ -82,6 +79,11 @@
             <groupId>com.fasterxml</groupId>
             <artifactId>aalto-xml</artifactId>
             <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
         </dependency>
         <dependency>
             <groupId>javassist</groupId>

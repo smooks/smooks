@@ -53,15 +53,15 @@ public class FragmentWriter extends Writer {
     public static final long RESERVED_WRITE_FRAGMENT_ID = 0L;
     
     private final Writer delegateWriter;
-    private final Fragment fragment;
+    private final Fragment<?> fragment;
     private final ExecutionContext executionContext;
     private final Boolean tryPark;
     
-    public FragmentWriter(final ExecutionContext executionContext, final Fragment fragment) {
+    public FragmentWriter(final ExecutionContext executionContext, final Fragment<?> fragment) {
         this(executionContext, fragment, true);
     }
 
-    public FragmentWriter(final ExecutionContext executionContext, final Fragment fragment, final boolean tryPark) {
+    public FragmentWriter(final ExecutionContext executionContext, final Fragment<?> fragment, final boolean tryPark) {
         this.executionContext = executionContext;
         this.delegateWriter = Stream.out(executionContext);
         this.fragment = fragment;
@@ -105,7 +105,7 @@ public class FragmentWriter extends Writer {
         fragment.release(RESERVED_WRITE_FRAGMENT_ID, this);
     }
 
-    public Fragment getFragment() {
+    public Fragment<?> getFragment() {
         return fragment;
     }
 

@@ -58,6 +58,7 @@ import org.w3c.dom.UserDataHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -70,6 +71,7 @@ public class NodeFragment implements Fragment<Node> {
 
     private final Node node;
     private final boolean isReservationInheritable;
+    private String id;
 
     static class CopyUserDataHandler implements UserDataHandler {
         CopyUserDataHandler() {
@@ -107,16 +109,11 @@ public class NodeFragment implements Fragment<Node> {
     public NodeFragment(final Node node, final boolean isReservationInheritable) {
         this.node = node;
         this.isReservationInheritable = isReservationInheritable;
-
-        final CopyUserDataHandler copyUserDataHandler = new CopyUserDataHandler();
-        if (node.getUserData(ID_USER_DATA_KEY) == null) {
-            node.setUserData(ID_USER_DATA_KEY, String.valueOf(Math.abs(ThreadLocalRandom.current().nextLong())), copyUserDataHandler);
-        }
-
+        
         Map<Long, Reservation> reservations = (Map<Long, Reservation>) node.getUserData(RESERVATIONS_USER_DATA_KEY);
         if (reservations == null) {
             reservations = new HashMap<>();
-            node.setUserData(RESERVATIONS_USER_DATA_KEY, reservations, copyUserDataHandler);
+            node.setUserData(RESERVATIONS_USER_DATA_KEY, reservations, new CopyUserDataHandler());
         } else {
             reservations = new HashMap<>();
         }
@@ -133,7 +130,14 @@ public class NodeFragment implements Fragment<Node> {
 
     @Override
     public String getId() {
-        return (String) node.getUserData(ID_USER_DATA_KEY);
+        if (id == null) {
+            id = (String) node.getUserData(ID_USER_DATA_KEY);
+            if (id == null) {
+                id = String.valueOf(Math.abs(ThreadLocalRandom.current().nextLong()));
+                node.setUserData(ID_USER_DATA_KEY, id, new CopyUserDataHandler());
+            }
+        }
+        return id;
     }
 
     @Override
@@ -365,6 +369,11 @@ public class NodeFragment implements Fragment<Node> {
     @Override
     public String toString() {
         return node.getNodeName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override

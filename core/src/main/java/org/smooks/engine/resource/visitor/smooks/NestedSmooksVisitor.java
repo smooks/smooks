@@ -177,7 +177,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         nestedSmooksVisitorWriter = new DomToXmlWriter(false, rewriteEntities);
     }
     
-    protected Node deattach(final Node node) {
+    protected Node deAttach(final Node node) {
         final Document document;
         try {
             document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -192,7 +192,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
-        final Node sourceTreeNode = deattach(element);
+        final Node sourceTreeNode = deAttach(element);
         final NodeFragment visitedFragment = new NodeFragment(element);
         executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(visitedFragment, this, sourceTreeNode));
 

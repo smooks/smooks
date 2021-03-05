@@ -480,7 +480,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
         // Register the "presence" of the element...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new StartFragmentEvent(new NodeFragment(element)));
+            executionEventListener.onEvent(new StartFragmentEvent<>(new NodeFragment(element)));
         }
         
         List<ContentHandlerBinding<DOMVisitBefore>> elementVisitBefores;
@@ -607,7 +607,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
         // Register the "presence" of the element...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new StartFragmentEvent(new NodeFragment(element)));
+            executionEventListener.onEvent(new StartFragmentEvent<>(new NodeFragment(element)));
         }
 
         elementName = DomUtils.getName(element);
@@ -868,7 +868,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         }
     }
 
-    private void processVisitorException(Fragment fragment, Throwable error, ContentHandlerBinding<? extends Visitor> configMapping, VisitSequence visitSequence, String errorMsg) throws SmooksException {
+    private void processVisitorException(Fragment<?> fragment, Throwable error, ContentHandlerBinding<? extends Visitor> configMapping, VisitSequence visitSequence, String errorMsg) throws SmooksException {
         for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
             executionEventListener.onEvent(new VisitEvent<>(fragment, configMapping, visitSequence, executionContext, error));
         }

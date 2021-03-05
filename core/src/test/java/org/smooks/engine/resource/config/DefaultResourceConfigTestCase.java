@@ -72,11 +72,11 @@ public class DefaultResourceConfigTestCase {
 		resourceConfig.setParameter("y", "val y 2");
 		assertEquals("Expected y to be 'val y 1'", "val y 1", resourceConfig.getParameter("y", String.class).getValue());
 
-		List yParams = resourceConfig.getParameters("y");
-		assertEquals("val y 1", ((Parameter)yParams.get(0)).getValue());
-		assertEquals("val y 2", ((Parameter)yParams.get(1)).getValue());
+        List<Parameter<?>> yParams = resourceConfig.getParameters("y");
+		assertEquals("val y 1", yParams.get(0).getValue());
+		assertEquals("val y 2", yParams.get(1).getValue());
 
-		List allParams = resourceConfig.getParameterValues();
+        List<?> allParams = resourceConfig.getParameterValues();
 		assertEquals(2, allParams.size());
 		assertEquals("x", ((Parameter)allParams.get(0)).getName());
 		assertEquals(yParams, allParams.get(1));
