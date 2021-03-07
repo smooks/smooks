@@ -60,8 +60,9 @@ public class VisitAfterWrittingVisitor implements SAXVisitAfter {
 	@Inject	
 	private SAXToXMLWriter writer;
 	
-	public static String elementText = null;
-	
+	public static String elementText;
+
+	@Override
 	public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 		writer.writeStartElement(element);
 		writer.writeText("{{", element);

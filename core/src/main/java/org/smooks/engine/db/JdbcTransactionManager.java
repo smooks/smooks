@@ -61,6 +61,7 @@ class JdbcTransactionManager implements TransactionManager {
 		this.autoCommit = autoCommit;
 	}
 
+	@Override
 	public void begin() {
 		try {
 			if(connection.getAutoCommit() != autoCommit) {
@@ -75,6 +76,7 @@ class JdbcTransactionManager implements TransactionManager {
 	 * (non-Javadoc)
 	 * @see org.smooks.engine.db.TransactionManager#commit()
 	 */
+	@Override
 	public void commit() {
 		try {
 			connection.commit();
@@ -87,6 +89,7 @@ class JdbcTransactionManager implements TransactionManager {
 	 * (non-Javadoc)
 	 * @see org.smooks.engine.db.TransactionManager#rollback()
 	 */
+	@Override
 	public void rollback() {
 		try {
 			connection.rollback();

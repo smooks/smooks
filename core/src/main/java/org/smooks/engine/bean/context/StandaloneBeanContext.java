@@ -115,10 +115,12 @@ public class StandaloneBeanContext implements BeanContext {
         this.notifyObserverEventQueue = parentContext.notifyObserverEventQueue;
     }
 
-    public void addBean(BeanId beanId, Object bean) {
+	@Override
+	public void addBean(BeanId beanId, Object bean) {
         addBean(beanId, bean, null);
     }
 
+	@Override
 	public void addBean(BeanId beanId, Object bean, Fragment source) {
 		AssertArgument.isNotNull(beanId, "beanId");
 		AssertArgument.isNotNull(bean, "bean");
@@ -147,12 +149,14 @@ public class StandaloneBeanContext implements BeanContext {
 				BeanLifecycle.ADD, beanId, bean));
 	}
 
-    public void addBean(String beanId, Object bean) {
+	@Override
+	public void addBean(String beanId, Object bean) {
         AssertArgument.isNotNull(beanId, "beanId");
 
         addBean(getBeanId(beanId), bean, null);
     }
 
+	@Override
 	public void addBean(String beanId, Object bean, Fragment source) {
 		AssertArgument.isNotNull(beanId, "beanId");
 
@@ -166,6 +170,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * org.smooks.engine.javabean.context.BeanContext#containsBean(org.smooks.engine.javabean
 	 * .repository.BeanId)
 	 */
+	@Override
 	public boolean containsBean(BeanId beanId) {
 		AssertArgument.isNotNull(beanId, "beanId");
 
@@ -179,6 +184,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 *
 	 * @see org.smooks.engine.javabean.context.BeanContext#getBeanId(java.lang.String)
 	 */
+	@Override
 	public BeanId getBeanId(String beanId) {
 		AssertArgument.isNotNull(beanId, "beanId");
 		BeanId beanIdObj = beanIdStore.getBeanId(beanId);
@@ -197,6 +203,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * org.smooks.engine.javabean.context.BeanContext#getBean(org.smooks.engine.javabean.repository
 	 * .BeanId)
 	 */
+	@Override
 	public Object getBean(BeanId beanId) {
 		AssertArgument.isNotNull(beanId, "beanId");
 
@@ -214,6 +221,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 *
 	 * @see org.smooks.engine.javabean.context.BeanContext#getBean(java.lang.String)
 	 */
+	@Override
 	public Object getBean(String beanId) {
 		return beanMap.get(beanId);
 	}
@@ -223,6 +231,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 *
 	 * @see org.smooks.engine.javabean.context.BeanContext#getBean(java.lang.Class)
 	 */
+	@Override
 	public <T> T getBean(Class<T> beanType) {
 		return getBean(beanType, beanMap);
 	}
@@ -248,6 +257,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * org.smooks.engine.javabean.context.BeanContext#changeBean(org.smooks.engine.javabean.
 	 * repository.BeanId, java.lang.Object)
 	 */
+	@Override
 	public void changeBean(BeanId beanId, Object bean, Fragment source) {
 		AssertArgument.isNotNull(beanId, "beanId");
 		AssertArgument.isNotNull(bean, "bean");
@@ -272,6 +282,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * org.smooks.engine.javabean.context.BeanContext#removeBean(org.smooks.engine.javabean.
 	 * repository.BeanId)
 	 */
+	@Override
 	public Object removeBean(BeanId beanId, Fragment source) {
 		AssertArgument.isNotNull(beanId, "beanId");
 
@@ -292,6 +303,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 *
 	 * @see org.smooks.engine.javabean.context.BeanContext#removeBean(java.lang.String)
 	 */
+	@Override
 	public Object removeBean(String beanId, Fragment source) {
 		BeanId beanIDObj = getBeanId(beanId);
 
@@ -307,6 +319,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 *
 	 * @see org.smooks.engine.javabean.context.BeanContext#clear()
 	 */
+	@Override
 	public void clear() {
 
 		for (ContextEntry entry : entries) {
@@ -319,6 +332,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 *
 	 * @see org.smooks.engine.javabean.context.BeanContext#getBeanMap()
 	 */
+	@Override
 	public Map<String, Object> getBeanMap() {
 		return repositoryBeanMapAdapter;
 	}
@@ -417,7 +431,8 @@ public class StandaloneBeanContext implements BeanContext {
 		return MultiLineToStringBuilder.toString(getBeanMap());
 	}
 
-    public BeanContext newSubContext(ExecutionContext executionContext) {
+	@Override
+	public BeanContext newSubContext(ExecutionContext executionContext) {
         return new StandaloneBeanContext(executionContext, this);
     }
 
@@ -440,7 +455,7 @@ public class StandaloneBeanContext implements BeanContext {
 
 		private final List<Integer> lifecycleAssociation = new ArrayList<Integer>();
 
-		private boolean cleaning = false;
+		private boolean cleaning;
 
 		private boolean beanInContext = true;
 
@@ -520,6 +535,7 @@ public class StandaloneBeanContext implements BeanContext {
 			this.beanInContext = beanInContext;
 		}
 
+		@Override
 		public String toString() {
 			return ContextEntry.class.getSimpleName() + ": Idx ("
 					+ beanId.getIndex() + "), Name (" + beanId.getName()
@@ -559,6 +575,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#clear()
 		 */
+		@Override
 		public void clear() {
 			StandaloneBeanContext.this.clear();
 		}
@@ -568,6 +585,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#containsKey(java.lang.Object)
 		 */
+		@Override
 		public boolean containsKey(Object key) {
 			return beanMap.containsKey(key);
 		}
@@ -577,6 +595,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#containsValue(java.lang.Object)
 		 */
+		@Override
 		public boolean containsValue(Object value) {
 			return beanMap.containsValue(value);
 		}
@@ -586,6 +605,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#entrySet()
 		 */
+		@Override
 		public Set<java.util.Map.Entry<String, Object>> entrySet() {
 			return Collections.unmodifiableSet(beanMap.entrySet());
 		}
@@ -595,6 +615,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#get(java.lang.Object)
 		 */
+		@Override
 		public Object get(Object key) {
 			return beanMap.get(key);
 		}
@@ -604,6 +625,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#isEmpty()
 		 */
+		@Override
 		public boolean isEmpty() {
 			return beanMap.isEmpty();
 		}
@@ -613,6 +635,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#keySet()
 		 */
+		@Override
 		public Set<String> keySet() {
 			return beanMap.keySet();
 		}
@@ -622,6 +645,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#put(java.lang.Object, java.lang.Object)
 		 */
+		@Override
 		public Object put(String key, Object value) {
 			AssertArgument.isNotNull(key, "key");
 
@@ -644,6 +668,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#putAll(java.util.Map)
 		 */
+		@Override
 		public void putAll(Map<? extends String, ?> map) {
 			AssertArgument.isNotNull(map, "map");
 
@@ -660,6 +685,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#remove(java.lang.Object)
 		 */
+		@Override
 		public Object remove(Object key) {
 			AssertArgument.isNotNull(key, "key");
 
@@ -676,6 +702,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#size()
 		 */
+		@Override
 		public int size() {
 			return beanMap.size();
 		}
@@ -685,6 +712,7 @@ public class StandaloneBeanContext implements BeanContext {
 		 *
 		 * @see java.util.Map#values()
 		 */
+		@Override
 		public Collection<Object> values() {
 			return beanMap.values();
 		}
@@ -698,6 +726,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * org.smooks.engine.javabean.context.BeanContext#addObserver(org.smooks.engine.javabean
 	 * .lifecycle.BeanContextLifecycleObserver)
 	 */
+	@Override
 	public void addObserver(BeanContextLifecycleObserver observer) {
 		if (lifecycleObservers != null) {
 			lifecycleObservers.add(observer);
@@ -714,6 +743,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * org.smooks.engine.javabean.context.BeanContext#notifyObservers(org.smooks.engine.javabean
 	 * .lifecycle.BeanContextLifecycleEvent)
 	 */
+	@Override
 	public void notifyObservers(BeanContextLifecycleEvent event) {
 		if (lifecycleObservers != null) {
 			List<BeanContextLifecycleObserver> localObserverListCopy = lifecycleObservers;
@@ -765,6 +795,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * org.smooks.engine.javabean.context.BeanContext#removeObserver(org.smooks.engine.javabean
 	 * .lifecycle.BeanContextLifecycleObserver)
 	 */
+	@Override
 	public void removeObserver(BeanContextLifecycleObserver observer) {
 		if (lifecycleObservers != null) {
 			lifecycleObservers.remove(observer);
@@ -777,8 +808,8 @@ public class StandaloneBeanContext implements BeanContext {
 	private void syncObserverList() {
 		int addObserverCount = addObserversQueue.size();
 		if (addObserverCount > 0) {
-			for (int i = 0; i < addObserverCount; i++) {
-				lifecycleObservers.add(addObserversQueue.get(i));
+			for (BeanContextLifecycleObserver beanContextLifecycleObserver : addObserversQueue) {
+				lifecycleObservers.add(beanContextLifecycleObserver);
 			}
 			addObserversQueue.clear();
 		}

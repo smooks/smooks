@@ -59,6 +59,7 @@ import java.util.Map;
  */
 public class JavaObjectSetter implements SAXVisitBefore {
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         Result result = FilterResult.getResult(executionContext, JavaResult.class);
         if(result != null) {

@@ -66,7 +66,8 @@ public class ExternalTransactionManager implements TransactionManager {
         this.isSetAutoCommitAllowed = isSetAutoCommitAllowed;
     }
 
-    public void begin() {
+	@Override
+	public void begin() {
     	if(isSetAutoCommitAllowed) {
 	    	try {
 				if(connection.getAutoCommit() != autoCommit) {
@@ -78,9 +79,11 @@ public class ExternalTransactionManager implements TransactionManager {
     	}
     }
 
+	@Override
 	public void commit() {
 	}
 
+	@Override
 	public void rollback() {
 	}
 

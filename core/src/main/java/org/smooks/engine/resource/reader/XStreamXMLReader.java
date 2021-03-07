@@ -73,6 +73,7 @@ public class XStreamXMLReader implements JavaXMLReader {
         xstreamReader = new SaxWriter(includeEnclosingDocument);
     }
 
+    @Override
     public void setSourceObjects(List<Object> sourceObjects) throws SmooksConfigException {
         try {
             xstreamReader.setProperty(SaxWriter.SOURCE_OBJECT_LIST_PROPERTY, sourceObjects);
@@ -83,13 +84,16 @@ public class XStreamXMLReader implements JavaXMLReader {
         }
     }
 
+    @Override
     public void setExecutionContext(ExecutionContext executionContext) {
     }
 
+    @Override
     public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         return xstreamReader.getFeature(name);
     }
 
+    @Override
     public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
         // Need to ignore some features....
         if(name.equals(JavaSource.FEATURE_GENERATE_EVENT_STREAM)) {
@@ -98,50 +102,62 @@ public class XStreamXMLReader implements JavaXMLReader {
         xstreamReader.setFeature(name, value);
     }
 
+    @Override
     public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         return xstreamReader.getProperty(name);
     }
 
+    @Override
     public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
         xstreamReader.setProperty(name, value);
     }
 
+    @Override
     public void setEntityResolver(EntityResolver resolver) {
         xstreamReader.setEntityResolver(resolver);
     }
 
+    @Override
     public EntityResolver getEntityResolver() {
         return xstreamReader.getEntityResolver();
     }
 
+    @Override
     public void setDTDHandler(DTDHandler handler) {
         xstreamReader.setDTDHandler(handler);
     }
 
+    @Override
     public DTDHandler getDTDHandler() {
         return xstreamReader.getDTDHandler();
     }
 
+    @Override
     public void setContentHandler(ContentHandler handler) {
         xstreamReader.setContentHandler(handler);
     }
 
+    @Override
     public ContentHandler getContentHandler() {
         return xstreamReader.getContentHandler();
     }
 
+    @Override
     public void setErrorHandler(ErrorHandler handler) {
         xstreamReader.setErrorHandler(handler);
     }
 
+    @Override
     public ErrorHandler getErrorHandler() {
         return xstreamReader.getErrorHandler();
     }
 
+    @Override
     public void parse(InputSource input) throws IOException, SAXException {
         xstreamReader.parse(input);
     }
 
+    @Override
     public void parse(String systemId) throws IOException, SAXException {
         xstreamReader.parse(systemId);
     }

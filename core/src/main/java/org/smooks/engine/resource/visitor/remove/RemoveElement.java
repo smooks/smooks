@@ -63,7 +63,7 @@ import java.util.Optional;
  */
 public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAfter {
 
-    private boolean keepChildren = false;
+    private boolean keepChildren;
 
     @Inject
     public RemoveElement setKeepChildren(Optional<Boolean> keepChildren) {

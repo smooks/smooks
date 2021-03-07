@@ -118,10 +118,11 @@ public class AbstractParserTestCase {
     
     public static class PooledSAXParser extends SAXParser {
     	
-    	public static int numSetHandlerCalls = 0;
+    	public static int numSetHandlerCalls;
     	public static PooledSAXParser lastParserInstance;
     	public static ContentHandler lastHandlerInstance;
-    	
+
+		@Override
 		public void setContentHandler(ContentHandler handler) {
 			if(lastParserInstance == null) {
 				lastParserInstance = this;
@@ -141,10 +142,11 @@ public class AbstractParserTestCase {
     
     public static class UnpooledSAXParser extends SAXParser {
     	
-    	public static int numSetHandlerCalls = 0;
+    	public static int numSetHandlerCalls;
     	public static UnpooledSAXParser lastParserInstance;
     	public static ContentHandler lastHandlerInstance;
-    	
+
+		@Override
 		public void setContentHandler(ContentHandler handler) {
 			if(this == lastParserInstance) {
 				fail("Shouldn't be just 1 parser instanse (unpooled).");

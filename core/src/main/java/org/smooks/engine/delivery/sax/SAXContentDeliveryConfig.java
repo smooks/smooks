@@ -119,20 +119,24 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         return optimizedVisitorConfig;
     }
 
+    @Override
     public FilterBypass getFilterBypass() {
     	return filterBypass;
     }
 
+    @Override
     public Filter newFilter(ExecutionContext executionContext) {
         return new SmooksSAXFilter(executionContext);
     }
 
+    @Override
     public void sort() throws SmooksConfigException {
         visitBeforeSelectorTable.sort(Sorter.SortOrder.PRODUCERS_FIRST);
         childVisitorSelectorTable.sort(Sorter.SortOrder.PRODUCERS_FIRST);
         visitAfterSelectorTable.sort(Sorter.SortOrder.CONSUMERS_FIRST);
     }
 
+    @Override
     public void addToExecutionLifecycleSets() throws SmooksConfigException {
         addToExecutionLifecycleSets(visitBeforeSelectorTable);
         addToExecutionLifecycleSets(visitAfterSelectorTable);

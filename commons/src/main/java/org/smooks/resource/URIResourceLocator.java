@@ -96,12 +96,14 @@ public class URIResourceLocator implements ContainerResourceLocator {
 
     private URI baseURI = getSystemBaseURI();
 
+    @Override
     public InputStream getResource(String configName, String defaultUri)
             throws IllegalArgumentException, IOException {
         return getResource(defaultUri);
     }
 
-	public InputStream getResource(String uri) throws IllegalArgumentException, IOException {
+    @Override
+    public InputStream getResource(String uri) throws IllegalArgumentException, IOException {
         ResolvedURI resolvedURI = new ResolvedURI(uri, resolveURI(uri));
 
         return getResource(resolvedURI);
@@ -242,6 +244,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
      * Get the base URI for this locator instance.
      * @return The base URI for the locator instance.
      */
+    @Override
     public URI getBaseURI() {
     	return baseURI;
     }

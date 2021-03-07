@@ -52,8 +52,9 @@ import org.w3c.dom.Element;
  */
 public class SimpleDOMVisitor implements DOMVisitAfter {
 
-    public static boolean visited = false;
+    public static boolean visited;
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         visited = true;
     }

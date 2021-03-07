@@ -260,6 +260,7 @@ public class DefaultProfileTargetingExpression implements ProfileTargetingExpres
 			}
 		}
 
+		@Override
 		public String toString() {
 			return expressionToken;
 		}

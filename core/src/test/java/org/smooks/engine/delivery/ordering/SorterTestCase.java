@@ -231,7 +231,7 @@ public class SorterTestCase {
     }
 
     private void addVisitor(Visitor visitor) {
-        ContentHandlerBinding<Visitor> contentHandlerBinding = new DefaultContentHandlerBinding<>(visitor, new DefaultResourceConfig("" + sortedContentHandlerBindings.size(), visitor.getClass().getName()));
+        ContentHandlerBinding<Visitor> contentHandlerBinding = new DefaultContentHandlerBinding<>(visitor, new DefaultResourceConfig(String.valueOf(sortedContentHandlerBindings.size()), visitor.getClass().getName()));
         sortedContentHandlerBindings.add(contentHandlerBinding);
         unsortedContentHandlerBindings.add(contentHandlerBinding);
     }

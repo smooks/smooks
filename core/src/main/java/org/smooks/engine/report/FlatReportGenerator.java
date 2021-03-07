@@ -63,6 +63,7 @@ public class FlatReportGenerator extends AbstractReportGenerator {
         super(reportConfiguration);
     }
 
+    @Override
     public void applyTemplate(Report report) throws IOException {
     }
 }

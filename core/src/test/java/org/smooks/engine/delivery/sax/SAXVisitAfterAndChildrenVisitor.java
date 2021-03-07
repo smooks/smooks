@@ -56,18 +56,21 @@ import java.io.IOException;
  */
 public class SAXVisitAfterAndChildrenVisitor implements SAXVisitAfter, SAXVisitChildren {
 
-    public static boolean visited = false;
-    public static boolean onChildText = false;
-    public static boolean onChildElement = false;
+    public static boolean visited;
+    public static boolean onChildText;
+    public static boolean onChildElement;
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         visited = true;
     }
 
+    @Override
     public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
         onChildText = true;
     }
 
+    @Override
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
         onChildElement = true;
     }

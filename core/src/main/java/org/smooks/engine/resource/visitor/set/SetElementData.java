@@ -204,6 +204,7 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
         return newElement;
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if (elementQName.isPresent() || elementNamespace.isPresent()) {
             String newElementName = (elementQName.isPresent() ? elementQName.get() : element.getTagName());

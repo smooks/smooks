@@ -85,10 +85,12 @@ public abstract class FilterResult implements Result {
         return null;
     }
 
+    @Override
     public void setSystemId(String systemId) {
         this.systemId = systemId;
     }
 
+    @Override
     public String getSystemId() {
         return systemId;
     }

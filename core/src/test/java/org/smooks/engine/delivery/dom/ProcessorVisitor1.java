@@ -55,11 +55,13 @@ import org.w3c.dom.Element;
  */
 @Phase(VisitPhase.PROCESSING)
 public class ProcessorVisitor1 implements DOMElementVisitor {
-    
+
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
         element.setAttribute("visitedby-" + getClass().getSimpleName(), "true");
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
     }
 

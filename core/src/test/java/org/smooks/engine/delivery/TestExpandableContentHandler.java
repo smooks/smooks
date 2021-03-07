@@ -62,6 +62,7 @@ public class TestExpandableContentHandler implements DOMElementVisitor, Configur
     public void setConfiguration(ResourceConfig resourceConfig) throws SmooksConfigException {
     }
 
+    @Override
     public List<ResourceConfig> expandConfigurations() {
 
         List<ResourceConfig> expansionConfigs = new ArrayList<ResourceConfig>();
@@ -73,9 +74,11 @@ public class TestExpandableContentHandler implements DOMElementVisitor, Configur
         return expansionConfigs;
     }
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
     }
 }

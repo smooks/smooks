@@ -77,6 +77,7 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
     @Inject
     private Optional<String> defaultValue;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ResourceConfig config;
         String value = DomUtils.getAllText(element, false);

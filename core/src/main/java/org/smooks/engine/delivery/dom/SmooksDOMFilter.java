@@ -93,8 +93,8 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Smooks DOM based content filtering class.
@@ -254,6 +254,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         }
     }
 
+    @Override
     public void doFilter() throws SmooksException {
         Source source = FilterSource.getSource(executionContext);
         Result result;
@@ -318,6 +319,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         }
     }
 
+    @Override
     public void cleanup() {
     }
 
@@ -445,7 +447,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         }
 
         int transListLength;
-        Vector<ElementProcessor> transList = new Vector<>();
+        List<ElementProcessor> transList = new ArrayList<>();
 
         buildProcessingList(transList, element, true);
         transListLength = transList.size();
@@ -709,7 +711,7 @@ public class SmooksDOMFilter extends AbstractFilter {
      * @return List copy.
      */
     private List<Node> copyList(NodeList nodeList) {
-        Vector<Node> copy = new Vector<>(nodeList.getLength());
+        List<Node> copy = new ArrayList<>(nodeList.getLength());
         int nodeCount = nodeList.getLength();
 
         for (int i = 0; i < nodeCount; i++) {

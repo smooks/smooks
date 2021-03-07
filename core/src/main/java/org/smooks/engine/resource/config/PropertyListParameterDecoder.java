@@ -82,6 +82,7 @@ import java.util.Properties;
  */
 public class PropertyListParameterDecoder extends ParameterDecoder<String> {
 
+	@Override
 	public Object decodeValue(String value) throws ParameterDecodeException {
 		Properties properties = new Properties();
 		

@@ -74,6 +74,7 @@ class SessionDaoAdapter implements Dao<Object>, Locator, Queryable, Flushable {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.DAO#flush()
 	 */
+	@Override
 	public void flush() {
 		session.flush();
 	}
@@ -81,6 +82,7 @@ class SessionDaoAdapter implements Dao<Object>, Locator, Queryable, Flushable {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.DAO#merge(java.lang.Object)
 	 */
+	@Override
 	public Object update(final Object entity) {
 		AssertArgument.isNotNull(entity, "entity");
 
@@ -114,6 +116,7 @@ class SessionDaoAdapter implements Dao<Object>, Locator, Queryable, Flushable {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.Finder#findBy(java.lang.String, java.lang.Object[])
 	 */
+	@Override
 	public Object lookup(final String name, final Object ... parameters) {
 
 		AssertArgument.isNotNullAndNotEmpty(name, "name");
@@ -134,6 +137,7 @@ class SessionDaoAdapter implements Dao<Object>, Locator, Queryable, Flushable {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.Finder#findBy(java.lang.String, java.util.Map)
 	 */
+	@Override
 	public Object lookup(final String name, final Map<String, ?> parameters) {
 		AssertArgument.isNotNullAndNotEmpty(name, "name");
 		AssertArgument.isNotNull(parameters, "parameters");
@@ -151,6 +155,7 @@ class SessionDaoAdapter implements Dao<Object>, Locator, Queryable, Flushable {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.QueryFinder#findByQuery(java.lang.String, java.lang.Object[])
 	 */
+	@Override
 	public Object lookupByQuery(final String query, final Object ... parameters) {
 		AssertArgument.isNotNullAndNotEmpty(query, "query");
 		AssertArgument.isNotNull(parameters, "parameters");
@@ -174,6 +179,7 @@ class SessionDaoAdapter implements Dao<Object>, Locator, Queryable, Flushable {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.QueryFinder#findByQuery(java.lang.String, java.util.Map)
 	 */
+	@Override
 	public Object lookupByQuery(final String query,
 			final Map<String, ?> parameters) {
 

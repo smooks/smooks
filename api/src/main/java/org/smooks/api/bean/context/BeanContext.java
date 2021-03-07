@@ -244,11 +244,6 @@ public interface BeanContext {
 	 */
     void setBeanInContext(BeanId beanId, boolean inContext);
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-    String toString();
-
     /**
      * Create a sub-{@link BeanContext} of this {@link BeanContext}, associated
      * with the supplied {@link ExecutionContext}.

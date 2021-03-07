@@ -77,7 +77,7 @@ public class DOMBuilder extends SmooksContentHandler {
     private final ExecutionContext execContext;
     private Document ownerDocument;
     private final Stack nodeStack = new Stack();
-    private boolean inEntity = false;
+    private boolean inEntity;
     private final HashSet emptyElements = new HashSet();
     private final StringBuilder cdataNodeBuilder = new StringBuilder();
     private final boolean rewriteEntities;
@@ -101,6 +101,7 @@ public class DOMBuilder extends SmooksContentHandler {
         rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
     }
 
+    @Override
     public void startDocument() throws SAXException {
         super.startDocument();
         if(ownerDocument == null) {
@@ -134,10 +135,12 @@ public class DOMBuilder extends SmooksContentHandler {
         nodeStack.push(appendElement);
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void endDocument() throws SAXException {
     }
 
+    @Override
     @SuppressWarnings({ "unchecked", "RedundantThrows" })
     public void startElement(StartElementEvent startEvent) throws SAXException {
         Element newElement;
@@ -186,6 +189,7 @@ public class DOMBuilder extends SmooksContentHandler {
         }
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void endElement(EndElementEvent endEvent) throws SAXException {
         String elName;
@@ -238,6 +242,7 @@ public class DOMBuilder extends SmooksContentHandler {
         return -1;
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void characters(char[] ch, int start, int length) throws SAXException {
         try {
@@ -263,10 +268,12 @@ public class DOMBuilder extends SmooksContentHandler {
         }
     }
 
+    @Override
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
         characters(ch, start, length);
     }
 
+    @Override
     @SuppressWarnings({ "unchecked", "RedundantThrows" })
     public void startCDATA() throws SAXException {
         CDATASection newCDATASection = ownerDocument.createCDATASection("dummy");
@@ -278,6 +285,7 @@ public class DOMBuilder extends SmooksContentHandler {
         cdataNodeBuilder.setLength(0);
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void endCDATA() throws SAXException {
         CDATASection cdata = (CDATASection) nodeStack.pop();
@@ -285,6 +293,7 @@ public class DOMBuilder extends SmooksContentHandler {
         cdataNodeBuilder.setLength(0);
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void comment(char[] ch, int start, int length) throws SAXException {
         try {
@@ -300,16 +309,19 @@ public class DOMBuilder extends SmooksContentHandler {
         }
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void startEntity(String name) throws SAXException {
         inEntity = true;
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void endEntity(String name) throws SAXException {
         inEntity = false;
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void startDTD(String name, String publicId, String systemId) throws SAXException {
         DocumentType docType = documentBuilder.getDOMImplementation().createDocumentType(name, publicId, systemId);

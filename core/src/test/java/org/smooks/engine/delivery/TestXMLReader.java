@@ -59,55 +59,69 @@ public class TestXMLReader implements XMLReader {
     public ErrorHandler errorHandler;
     public EntityResolver entityResolver;
 
+    @Override
     public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         return false;
     }
 
+    @Override
     public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
         features.put(name, value);
     }
 
+    @Override
     public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         return null;
     }
 
+    @Override
     public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
     }
 
+    @Override
     public void setEntityResolver(EntityResolver resolver) {
         entityResolver = resolver;
     }
 
+    @Override
     public EntityResolver getEntityResolver() {
         return null;
     }
 
+    @Override
     public void setDTDHandler(DTDHandler handler) {
         dtdHandler = handler;
     }
 
+    @Override
     public DTDHandler getDTDHandler() {
         return null;
     }
 
+    @Override
     public void setContentHandler(ContentHandler handler) {
     }
 
+    @Override
     public ContentHandler getContentHandler() {
         return null;
     }
 
+    @Override
     public void setErrorHandler(ErrorHandler handler) {
         errorHandler = handler;
     }
 
+    @Override
     public TestErrorHandler getErrorHandler() {
         return null;
     }
 
+    @Override
     public void parse(InputSource input) throws IOException, SAXException {
     }
 
+    @Override
     public void parse(String systemId) throws IOException, SAXException {
     }
 }

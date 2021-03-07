@@ -78,6 +78,7 @@ public class DOMFilterLifecycleEvent extends FilterLifecycleEvent {
         return eventType;
     }
 
+    @Override
     public String toString() {
         return eventType.toString();
     }

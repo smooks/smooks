@@ -47,7 +47,7 @@ import org.smooks.api.delivery.sax.TextType;
 class ContentHandlerState {
     private TextType textType = TextType.TEXT;
     private ContentHandlerState previousContentHandlerState;
-    private boolean isNullProcessor = false;
+    private boolean isNullProcessor;
     private SaxNgVisitorBindings visitorBindings;
     private int maxDepth = 1;
 

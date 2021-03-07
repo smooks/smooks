@@ -362,6 +362,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             this.registry = registry;
         }
 
+        @Override
         public void applyStrategy(String elementName, ResourceConfig resourceConfig) {
             applyContentDeliveryUnitStrategy(resourceConfig);
         }

@@ -60,30 +60,36 @@ public class ExceptionVisitor implements SAXElementVisitor, DOMElementVisitor {
     public static SmooksException beforeException;
     public static SmooksException afterException;
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(beforeException != null) {
             throw beforeException;
         }
     }
 
+    @Override
     public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
     }
 
+    @Override
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(afterException != null) {
             throw afterException;
         }
     }
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if(beforeException != null) {
             throw beforeException;
         }
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(afterException != null) {
             throw afterException;

@@ -59,6 +59,7 @@ public abstract class AbstractDaoRegister<D> implements DaoRegister<D> {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.DaoRegister#getDao()
 	 */
+	@Override
 	public D getDefaultDao() {
 		throw new UnsupportedOperationException("The getDefaultDao() method is not supported by this '" + this.getClass().getName() + "' DaoRegister.");
 	}
@@ -66,10 +67,12 @@ public abstract class AbstractDaoRegister<D> implements DaoRegister<D> {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.DaoRegister#getDao(java.lang.String)
 	 */
+	@Override
 	public D getDao(String name) {
 		throw new UnsupportedOperationException("The getDao(String) method is not supported by this '" + this.getClass().getName() + "' DaoRegister.");
 	}
 
+	@Override
 	public void returnDao(D dao) {}
 
 }

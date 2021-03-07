@@ -59,10 +59,12 @@ public class XPathAfterVisitor implements SAXVisitAfter, DOMVisitAfter {
     public static SAXElement saxVisitedAfterElement;
     public static Element domVisitedAfterElement;
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         saxVisitedAfterElement = element;
     }
-
+    
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         domVisitedAfterElement = element;
     }

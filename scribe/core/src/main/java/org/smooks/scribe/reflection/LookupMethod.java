@@ -65,7 +65,7 @@ public class LookupMethod {
 
 	Map<String, Integer> parameterPositions;
 
-	private boolean namedParameters = false;
+	private boolean namedParameters;
 
 	/**
 	 *

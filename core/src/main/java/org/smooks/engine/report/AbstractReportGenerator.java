@@ -79,8 +79,8 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     private Report report;
 
     private ExecutionContext executionContext;
-    private int messageNodeCounter = 0;
-    private int reportInfoNodeCounter = 0;
+    private int messageNodeCounter;
+    private int reportInfoNodeCounter;
     private final List<ExecutionEvent> preProcessingEvents = new ArrayList<>();
     private final List<ExecutionEvent> processingEvents = new ArrayList<>();
     private final Stack<ReportNode> reportNodeStack = new Stack<>();
@@ -105,6 +105,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
      *
      * @param executionEvent The {@link ExecutionEvent}.
      */
+    @Override
     public void onEvent(ExecutionEvent executionEvent) {
         AssertArgument.isNotNull(executionEvent, "executionEvent");
 
@@ -137,6 +138,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         }
     }
 
+    @Override
     protected boolean ignoreEvent(ExecutionEvent event) {
         if(!super.ignoreEvent(event)) {
             if (event instanceof ResourceBasedEvent) {
@@ -358,6 +360,8 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
             }
         }
 
+        
+        @Override
         public String toString() {
             return (element + " (depth " + depth + ")");
         }

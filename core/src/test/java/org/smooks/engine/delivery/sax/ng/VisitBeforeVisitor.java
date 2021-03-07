@@ -51,7 +51,7 @@ import javax.inject.Inject;
 
 public class VisitBeforeVisitor implements BeforeVisitor {
 
-    public static boolean visited = false;
+    public static boolean visited;
     public static String staticInjectedParam;
 
     @Inject

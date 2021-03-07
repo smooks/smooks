@@ -69,6 +69,7 @@ public class MockApplicationContext implements ApplicationContext {
 	/* (non-Javadoc)
 	 * @see org.smooks.engine.container.ApplicationContext#getResourceLocator()
 	 */
+	@Override
 	public ContainerResourceLocator getResourceLocator() {
 		return containerResourceLocator;
 	}
@@ -76,30 +77,37 @@ public class MockApplicationContext implements ApplicationContext {
 	/* (non-Javadoc)
 	 * @see org.smooks.engine.container.ApplicationContext#getCdrarStore()
 	 */
+	@Override
 	public Registry getRegistry() {
 		return applicationContext.getRegistry();
 	}
 
+	@Override
 	public ProfileStore getProfileStore() {
 		return applicationContext.getProfileStore();
 	}
 
+	@Override
 	public void setResourceLocator(ContainerResourceLocator resourceLocator) {
 		throw new UnsupportedOperationException("Can't set the locator on the Mock using this method.  Set it through the publicly accessible  property.");
 	}
 
+	@Override
 	public BeanIdStore getBeanIdStore() {
 		return applicationContext.getBeanIdStore();
 	}
 
+	@Override
 	public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
 		applicationContext.addBeanContextLifecycleObserver(observer);
 	}
 
+	@Override
 	public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
 		return applicationContext.getBeanContextLifecycleObservers();
 	}
 
+	@Override
 	public ClassLoader getClassLoader() {
 		return applicationContext.getClassLoader();
 	}

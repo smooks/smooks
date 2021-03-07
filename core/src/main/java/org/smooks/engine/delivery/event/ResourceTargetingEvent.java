@@ -88,6 +88,7 @@ public class ResourceTargetingEvent extends FragmentEvent implements ResourceBas
      * Get the tagreted resource configuration.
      * @return The targeted resource configuration.
      */
+    @Override
     public ResourceConfig getResourceConfig() {
         return resourceConfig;
     }
@@ -108,6 +109,7 @@ public class ResourceTargetingEvent extends FragmentEvent implements ResourceBas
         return metadata;
     }
 
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
 

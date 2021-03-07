@@ -93,7 +93,8 @@ public class VisitIfAndIfNotTestCase {
         public MySAXVisitBeforeVisitor1(String visitBefore) {
             this.visitBefore = visitBefore;
         }
-        
+
+        @Override
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         }
 
@@ -109,7 +110,8 @@ public class VisitIfAndIfNotTestCase {
         public MySAXVisitAfterVisitor1(String visitBefore) {
             this.visitBefore = visitBefore;
         }
-        
+
+        @Override
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         }
 

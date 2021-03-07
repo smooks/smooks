@@ -105,19 +105,23 @@ public class SAXToXMLWriterTestCase {
 			this.rightWrapping = rightWrapping;
 			return this;
 		}
-		
+
+		@Override
 		public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 			writer.writeText(leftWrapping, element);
 			writer.writeStartElement(element);
 		}
 
+		@Override
 		public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
 		}
 
+		@Override
 		public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
 			writer.writeText(childText, element);
-		}		
-		
+		}
+
+		@Override
 		public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 			writer.writeEndElement(element);
 			writer.writeText(rightWrapping, element);

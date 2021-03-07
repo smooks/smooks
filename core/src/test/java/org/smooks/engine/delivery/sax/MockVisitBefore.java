@@ -64,6 +64,7 @@ public class MockVisitBefore implements SAXVisitBefore, DOMVisitBefore {
 	/* (non-Javadoc)
 	 * @see org.smooks.engine.delivery.sax.SAXVisitBefore#visitBefore(org.smooks.engine.delivery.sax.SAXElement, org.smooks.engine.container.ExecutionContext)
 	 */
+	@Override
 	public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 		elements.add(element.getName().getLocalPart());
 	}
@@ -71,6 +72,7 @@ public class MockVisitBefore implements SAXVisitBefore, DOMVisitBefore {
 	/* (non-Javadoc)
 	 * @see org.smooks.engine.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.engine.container.ExecutionContext)
 	 */
+	@Override
 	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
 		elements.add(element.getLocalName());
 	}

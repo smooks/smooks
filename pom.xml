@@ -257,9 +257,9 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <configuration>
                     <linkXref>true</linkXref>
-                    <sourceEncoding>utf-8</sourceEncoding>
+                    <sourceEncoding>UTF-8</sourceEncoding>
                     <format>html</format>
-                    <targetJdk>1.6</targetJdk>
+                    <targetJdk>1.8</targetJdk>
                 </configuration>
             </plugin>
         </plugins>

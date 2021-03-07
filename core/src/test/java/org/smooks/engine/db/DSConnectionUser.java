@@ -59,10 +59,12 @@ public class DSConnectionUser implements SAXVisitAfter, Consumer {
 	@Inject
 	private String datasource = MockDatasource.MOCK_DS_NAME;
 
+    @Override
 	public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         AbstractDataSource.getConnection(datasource, executionContext);
     }
 
+    @Override
     public boolean consumes(Object object) {
         return object.equals(datasource);
     }

@@ -68,10 +68,12 @@ public class TestProducerConsumer implements Producer, Consumer {
         return this;
     }
 
+    @Override
     public Set<?> getProducts() {
         return products;
     }
 
+    @Override
     public boolean consumes(Object object) {
         if(consumes == null) {
             return false;

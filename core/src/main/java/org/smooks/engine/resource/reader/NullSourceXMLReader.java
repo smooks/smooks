@@ -62,12 +62,16 @@ public class NullSourceXMLReader implements SmooksXMLReader {
 
     public static final String NULLSOURCE_DOCUMENT_ELEMENT_LOCALNAME = "nullsource-document";
     
+    private static final Attributes EMPTY_ATTRIBS = new AttributesImpl();
+
     private ContentHandler handler;
 
+    @Override
     public void setContentHandler(ContentHandler handler) {
         this.handler = handler;
     }
 
+    @Override
     public void parse(InputSource input) throws IOException, SAXException {
         handler.startDocument();
         handler.startElement(XMLConstants.NULL_NS_URI, NULLSOURCE_DOCUMENT_ELEMENT_LOCALNAME, "", EMPTY_ATTRIBS);
@@ -75,50 +79,61 @@ public class NullSourceXMLReader implements SmooksXMLReader {
         handler.endDocument();
     }
 
+    @Override
     public void setExecutionContext(ExecutionContext executionContext) {
     }
 
+    @Override
     public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         return false;
     }
 
+    @Override
     public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
     }
 
+    @Override
     public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         return null;
     }
 
+    @Override
     public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
     }
 
+    @Override
     public void setEntityResolver(EntityResolver resolver) {
     }
 
+    @Override
     public EntityResolver getEntityResolver() {
         return null;
     }
 
+    @Override
     public void setDTDHandler(DTDHandler handler) {
     }
-
+    
+    @Override
     public DTDHandler getDTDHandler() {
         return null;
     }
 
+    @Override
     public ContentHandler getContentHandler() {
         return null;
     }
 
+    @Override
     public void setErrorHandler(ErrorHandler handler) {
     }
 
+    @Override
     public ErrorHandler getErrorHandler() {
         return null;
     }
-
-    private static final Attributes EMPTY_ATTRIBS = new AttributesImpl();
-
+    
+    @Override
     public void parse(String systemId) throws IOException, SAXException {
     }
 }

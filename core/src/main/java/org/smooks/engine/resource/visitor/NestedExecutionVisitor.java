@@ -122,6 +122,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         }
     }
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         Smooks smooks = getSmooksInstance();
         ExecutionContext nestedExecutionContext = smooks.createExecutionContext();
@@ -161,6 +162,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         // the content handler and redirect the reader events to it...
     }
 
+    @Override
     public Set<?> getProducts() {
         return CollectionsUtil.toSet(mapBeans);
     }
@@ -181,6 +183,7 @@ public class NestedExecutionVisitor implements SAXVisitBefore, VisitLifecycleCle
         return smooksInstance;
     }
 
+    @Override
     public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
         try {
             ExecutionContext nestedExecutionContext = executionContext.get(NESTED_EXECUTION_CONTEXT_TYPED_KEY);

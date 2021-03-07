@@ -60,6 +60,7 @@ public class SaxVisitBefore implements SAXVisitBefore, ExecutionLifecycleInitial
     public static boolean initialized;
     public static boolean cleaned;
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(!initialized) {
             fail("Resource should be initialized!");
@@ -69,10 +70,12 @@ public class SaxVisitBefore implements SAXVisitBefore, ExecutionLifecycleInitial
         }
     }
 
+    @Override
     public void executeExecutionLifecycleInitialize(ExecutionContext executionContext) {
         initialized = true;
     }
 
+    @Override
     public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
         cleaned = true;
     }

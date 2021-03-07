@@ -82,6 +82,7 @@ public class FilterLifecycleEvent implements ExecutionEvent {
         return eventType;
     }
 
+    @Override
     public String toString() {
         return eventType.toString();
     }

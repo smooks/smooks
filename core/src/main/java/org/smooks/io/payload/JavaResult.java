@@ -139,6 +139,7 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
      * @return XML Serialized form of the bean Map associate with the
      * result instance.
      */
+    @Override
     public String toString() {
         StringWriter stringBuilder = new StringWriter();
         XStream xstream = new XStream();
@@ -155,6 +156,7 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
         return stringBuilder.toString();
     }
 
+    @Override
     public Object extractFromResult(JavaResult result, Export export)
     {
         Set<String> extractSet = export.getExtractSet();

@@ -78,6 +78,7 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory<Object> 
      *                                    to be created.
      * @return Java {@link ContentHandler} instance.
      */
+    @Override
     public Object create(final ResourceConfig resourceConfig) throws SmooksConfigException {
         Object contentHandler;
         try {

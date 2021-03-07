@@ -59,12 +59,14 @@ public class DomProcessingAfter implements DOMVisitAfter, ExecutionLifecycleClea
 
     public static boolean cleaned;
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
             fail("Resource shouldn't be cleaned yet!");
         }
     }
 
+    @Override
     public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
         cleaned = true;
     }

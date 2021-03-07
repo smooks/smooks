@@ -80,6 +80,7 @@ class EntityManagerDaoAdapter implements Dao<Object>, Locator, Queryable, Flusha
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.DAO#flush()
 	 */
+	@Override
 	public void flush() {
 		entityManager.flush();
 	}
@@ -87,6 +88,7 @@ class EntityManagerDaoAdapter implements Dao<Object>, Locator, Queryable, Flusha
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.DAO#merge(java.lang.Object)
 	 */
+	@Override
 	public Object update(final Object entity) {
 		AssertArgument.isNotNull(entity, "entity");
 
@@ -96,6 +98,7 @@ class EntityManagerDaoAdapter implements Dao<Object>, Locator, Queryable, Flusha
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.DAO#persist(java.lang.Object)
 	 */
+	@Override
 	public Object insert(final Object entity) {
 		AssertArgument.isNotNull(entity, "entity");
 
@@ -107,6 +110,7 @@ class EntityManagerDaoAdapter implements Dao<Object>, Locator, Queryable, Flusha
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.Dao#delete(java.lang.Object)
 	 */
+	@Override
 	public Object delete(Object entity) {
 		AssertArgument.isNotNull(entity, "entity");
 
@@ -119,6 +123,7 @@ class EntityManagerDaoAdapter implements Dao<Object>, Locator, Queryable, Flusha
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.Finder#findBy(java.lang.String, java.util.Map)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<Object> lookup(final String name, final Object ... parameters) {
 		AssertArgument.isNotNullAndNotEmpty(name, "name");
@@ -139,6 +144,7 @@ class EntityManagerDaoAdapter implements Dao<Object>, Locator, Queryable, Flusha
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.Finder#findBy(java.lang.String, java.util.Map)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<Object> lookup(final String name, final Map<String, ?> parameters) {
 		AssertArgument.isNotNullAndNotEmpty(name, "name");
@@ -158,6 +164,7 @@ class EntityManagerDaoAdapter implements Dao<Object>, Locator, Queryable, Flusha
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.QueryFinder#findByQuery(java.lang.String, java.util.List)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<Object> lookupByQuery(final String query, final Object ... parameters) {
 		AssertArgument.isNotNullAndNotEmpty(query, "query");
@@ -182,6 +189,7 @@ class EntityManagerDaoAdapter implements Dao<Object>, Locator, Queryable, Flusha
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.QueryFinder#findByQuery(java.lang.String, java.util.Map)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<Object> lookupByQuery(final String query, final Map<String, ?> parameters) {
 		AssertArgument.isNotNullAndNotEmpty(query, "query");

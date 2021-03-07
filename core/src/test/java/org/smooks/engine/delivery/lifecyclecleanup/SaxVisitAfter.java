@@ -58,12 +58,14 @@ public class SaxVisitAfter implements SAXVisitAfter, ExecutionLifecycleCleanable
 
     public static boolean cleaned;
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(cleaned) {
             fail("Resource shouldn't be cleaned yet!");
         }
     }
 
+    @Override
     public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
         cleaned = true;
     }

@@ -55,11 +55,13 @@ import java.io.IOException;
  */
 public class SAXTestWriter implements SAXVisitBefore, SAXVisitAfter {
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         // Acquire ownership of the writer...
         element.getWriter(this);
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         element.getWriter(this).write("Smooks SAX Transforms!!");
     }

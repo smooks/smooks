@@ -75,6 +75,7 @@ public class DefaultProfileSet extends LinkedHashMap<String, Profile> implements
      * Get the base profile for this profile set.
      * @return Base profile name.
      */
+    @Override
     public String getBaseProfile() {
         return baseProfile;
     }
@@ -84,6 +85,7 @@ public class DefaultProfileSet extends LinkedHashMap<String, Profile> implements
 	 * 
 	 * @see org.smooks.useragent.profile.ProfileSet#isMember(java.lang.String)
 	 */
+	@Override
 	public boolean isMember(String profile) {
 		if (profile == null) {
 			throw new IllegalArgumentException(
@@ -113,6 +115,7 @@ public class DefaultProfileSet extends LinkedHashMap<String, Profile> implements
 	 * @param profile
 	 *            The profile to add.
 	 */
+	@Override
 	public void addProfile(Profile profile) {
 		if (profile == null) {
 			throw new IllegalArgumentException(
@@ -130,6 +133,7 @@ public class DefaultProfileSet extends LinkedHashMap<String, Profile> implements
 	 * @return The requested Profile, or null if the profile is not a member of
 	 *         the {@link ProfileSet}.
 	 */
+	@Override
 	public Profile getProfile(String profile) {
 		return get(profile);
 	}
@@ -141,6 +145,7 @@ public class DefaultProfileSet extends LinkedHashMap<String, Profile> implements
 	 * @return An {@link Iterator} that allows iteration over the
 	 *         {@link Profile Profiles}in this {@link ProfileSet}.
 	 */
+	@Override
 	public Iterator<Profile> iterator() {
 		return values().iterator();
 	}

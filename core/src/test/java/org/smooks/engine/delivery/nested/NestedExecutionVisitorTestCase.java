@@ -73,11 +73,9 @@ public class NestedExecutionVisitorTestCase {
         JavaResult beans = new JavaResult();
         final List<String> orderItems = new ArrayList<String>();
 
-        smooks.getApplicationContext().addBeanContextLifecycleObserver(new BeanContextLifecycleObserver() {
-            public void onBeanLifecycleEvent(BeanContextLifecycleEvent event) {
-                if(event.getLifecycle() == BeanLifecycle.REMOVE && event.getBeanId().getName().equals("orderItem")) {
-                    orderItems.add((String) event.getBean());
-                }
+        smooks.getApplicationContext().addBeanContextLifecycleObserver(event -> {
+            if(event.getLifecycle() == BeanLifecycle.REMOVE && event.getBeanId().getName().equals("orderItem")) {
+                orderItems.add((String) event.getBean());
             }
         });
 

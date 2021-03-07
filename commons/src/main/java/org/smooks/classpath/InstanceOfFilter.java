@@ -64,6 +64,7 @@ public class InstanceOfFilter extends AbstractFilter {
         this.searchType = searchType;
     }
 
+    @Override
     protected boolean addClass(Class<?> clazz) {
         return searchType.isAssignableFrom(clazz);
     }

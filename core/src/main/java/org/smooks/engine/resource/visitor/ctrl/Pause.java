@@ -68,10 +68,12 @@ public class Pause implements SAXVisitAfter, DOMVisitAfter {
         return this;
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         pause();
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         pause();
     }

@@ -55,12 +55,13 @@ import java.io.IOException;
  */
 public class SAXVisitBeforeVisitor implements SAXVisitBefore {
 
-    public static boolean visited = false;
+    public static boolean visited;
     public static String staticInjectedParam;
 
     @Inject
     private String injectedParam;
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         visited = true;
         staticInjectedParam = injectedParam;

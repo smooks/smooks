@@ -58,6 +58,7 @@ public class MapObjectStore implements ObjectStore {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.ObjectStore#get(java.lang.Object)
 	 */
+	@Override
 	public Object get(Object key) {
 		return store.get(key);
 	}
@@ -65,6 +66,7 @@ public class MapObjectStore implements ObjectStore {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.ObjectStore#getAll()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Map<Object, Object> getAll() {
 		return (Map<Object, Object>) store.clone();
@@ -73,6 +75,7 @@ public class MapObjectStore implements ObjectStore {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.ObjectStore#remove(java.lang.Object)
 	 */
+	@Override
 	public void remove(Object key) {
 		store.remove(key);
 	}
@@ -80,6 +83,7 @@ public class MapObjectStore implements ObjectStore {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.ObjectStore#set(java.lang.Object, java.lang.Object)
 	 */
+	@Override
 	public void set(Object key, Object value) {
 		store.put(key, value);
 	}

@@ -113,7 +113,7 @@ public abstract class DocType {
         private final String publicId;
         private final String systemId;
         private String xmlns;
-        private boolean omit = false;
+        private boolean omit;
 
         public DocumentTypeData(String name, String publicId, String systemId, String xmlns) {
             this.name = name;

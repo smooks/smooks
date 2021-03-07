@@ -84,6 +84,7 @@ public class DirectDataSource extends AbstractDataSource {
     @Inject
     private String password;
 
+    @Override
     public String getName() {
         return name;
     }
@@ -143,10 +144,12 @@ public class DirectDataSource extends AbstractDataSource {
         DriverManager.registerDriver(driverInstance);
     }
 
+    @Override
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }
 
+    @Override
     public boolean isAutoCommit() {
         return autoCommit;
     }

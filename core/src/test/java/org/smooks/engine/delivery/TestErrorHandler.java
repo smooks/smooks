@@ -50,12 +50,15 @@ import org.xml.sax.SAXException;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class TestErrorHandler implements ErrorHandler {
+    @Override
     public void warning(SAXParseException exception) throws SAXException {
     }
 
+    @Override
     public void error(SAXParseException exception) throws SAXException {
     }
 
+    @Override
     public void fatalError(SAXParseException exception) throws SAXException {
     }
 }

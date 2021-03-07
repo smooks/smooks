@@ -68,11 +68,11 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
     private final SmooksContentHandler parentContentHandler;
     private SmooksContentHandler nestedContentHandler;
     private NamespaceDeclarationStack namespaceDeclarationStack;
-    private boolean endReplayed = false;
-    private SAXEventReplay lastEvent = null;
+    private boolean endReplayed;
+    private SAXEventReplay lastEvent;
     private final StartElementEvent startEvent = new StartElementEvent();
     private final EndElementEvent endEvent = new EndElementEvent();
-    private int depth = 0;
+    private int depth;
 
     public SmooksContentHandler(ExecutionContext executionContext, SmooksContentHandler parentContentHandler) {
         this.executionContext = executionContext;
@@ -143,6 +143,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
 
     public abstract void endElement(EndElementEvent endEvent) throws SAXException;
 
+    @Override
     public void replay(org.xml.sax.ContentHandler handler) throws SmooksException {
         if(lastEvent != null) {
             lastEvent.replay(handler);

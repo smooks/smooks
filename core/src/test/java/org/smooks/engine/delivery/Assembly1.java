@@ -55,9 +55,11 @@ import org.w3c.dom.Element;
  */
 @Phase(VisitPhase.ASSEMBLY)
 public class Assembly1 implements DOMElementVisitor {
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
     }
 

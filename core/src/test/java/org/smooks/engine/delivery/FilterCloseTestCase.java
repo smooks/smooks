@@ -87,14 +87,16 @@ public class FilterCloseTestCase {
         smooks.filterSource(execContext, new StreamSource(reader), new StreamResult(writer));
     }
 
-    private class TestInputStream extends ByteArrayInputStream {
-        private int closeCallCount = 0;
+    private static class TestInputStream extends ByteArrayInputStream {
+        private int closeCallCount;
         private final int expectedCloseCallCount;
 
         public TestInputStream(byte[] buf, int expectedCloseCallCount) {
             super(buf);
             this.expectedCloseCallCount = expectedCloseCallCount;
         }
+
+        @Override
         public void close() throws IOException {
             closeCallCount++;
             super.close();
@@ -104,12 +106,14 @@ public class FilterCloseTestCase {
         }
     }
 
-    private class TestOutputStream extends ByteArrayOutputStream {
-        private int closeCallCount = 0;
+    private static class TestOutputStream extends ByteArrayOutputStream {
+        private int closeCallCount;
         private final int expectedCloseCallCount;
         public TestOutputStream(int expectedCloseCallCount) {
             this.expectedCloseCallCount = expectedCloseCallCount;
         }
+
+        @Override
         public void close() throws IOException {
             closeCallCount++;
             super.close();
@@ -119,13 +123,15 @@ public class FilterCloseTestCase {
         }
     }
 
-    private class TestReader extends StringReader {
-        private int closeCallCount = 0;
+    private static class TestReader extends StringReader {
+        private int closeCallCount;
         private final int expectedCloseCallCount;
         public TestReader(String s, int expectedCloseCallCount) {
             super(s);
             this.expectedCloseCallCount = expectedCloseCallCount;
         }
+
+        @Override
         public void close() {
             closeCallCount++;
             super.close();
@@ -135,13 +141,15 @@ public class FilterCloseTestCase {
         }
     }
 
-    private class TestWriter extends StringWriter {
-        private int closeCallCount = 0;
+    private static class TestWriter extends StringWriter {
+        private int closeCallCount;
         private final int expectedCloseCallCount;
 
         public TestWriter(int expectedCloseCallCount) {
             this.expectedCloseCallCount = expectedCloseCallCount;
         }
+
+        @Override
         public void close() throws IOException {
             closeCallCount++;
             super.close();

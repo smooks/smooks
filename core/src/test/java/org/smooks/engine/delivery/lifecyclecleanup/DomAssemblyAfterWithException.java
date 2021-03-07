@@ -60,12 +60,14 @@ public class DomAssemblyAfterWithException implements DOMVisitAfter, ExecutionLi
 
     public static boolean cleaned;
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
             fail("Resource shouldn't be clened yet!");
         }
     }
 
+    @Override
     public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
         cleaned = true;
         throw new RuntimeException("Blah");

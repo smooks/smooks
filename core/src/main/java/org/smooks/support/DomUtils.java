@@ -48,6 +48,7 @@ import org.smooks.assertion.AssertArgument;
 import org.w3c.dom.*;
 
 import javax.xml.XMLConstants;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -365,7 +366,7 @@ public final class DomUtils {
 	 * @return List copy.
 	 */
 	public static List copyNodeList(NodeList nodeList) {
-		Vector<Node> copy = new Vector<Node>();
+		List<Node> copy = new ArrayList<>();
 		
 		if(nodeList != null) {
 			int nodeCount = nodeList.getLength();
@@ -1047,7 +1048,7 @@ public final class DomUtils {
 		AssertArgument.isNotEmpty(namespaceURI, "namespaceURI");
 
 		int count = nodeList.getLength();
-		Vector<Element> elements = new Vector<Element>();
+		List<Element> elements = new ArrayList<>();
 		
 		for(int i = 0; i < count; i++) {
 			Node node = nodeList.item(i);

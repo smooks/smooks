@@ -53,12 +53,15 @@ import java.io.IOException;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class TestEntityAndDTDHandler implements DTDHandler, EntityResolver {
+    @Override
     public void notationDecl(String name, String publicId, String systemId) throws SAXException {
     }
 
+    @Override
     public void unparsedEntityDecl(String name, String publicId, String systemId, String notationName) throws SAXException {
     }
 
+    @Override
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         return null;
     }

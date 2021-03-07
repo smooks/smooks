@@ -141,6 +141,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
 
+    @Override
     public Set<String> getProducts() {
         return CollectionsUtil.toSet(resourceConfig.getSelectorPath().getTargetElement());
     }

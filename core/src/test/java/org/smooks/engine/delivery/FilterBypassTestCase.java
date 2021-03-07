@@ -140,18 +140,21 @@ public class FilterBypassTestCase {
 		public MyVisitBypass(boolean expectsVisitCall) {
 			this.expectsVisitCall = expectsVisitCall;
 		}
-		
+
+		@Override
 		public boolean bypass(ExecutionContext executionContext, Source source, Result result) {
 			bypassCalled = true;
 			return true;
 		}
 
+		@Override
 		public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
 			if(!expectsVisitCall) {
 				fail("Unexpected call to filter visit method.");
 			}
 		}
-		
+
+		@Override
 		public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 			if(!expectsVisitCall) {
 				fail("Unexpected call to filter visit method.");
@@ -159,9 +162,12 @@ public class FilterBypassTestCase {
 		}		
 	}
 	
-	private class SimpleVisitor implements DOMVisitAfter, SAXVisitBefore {
+	private static class SimpleVisitor implements DOMVisitAfter, SAXVisitBefore {
+		@Override
 		public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 		}
+		
+		@Override
 		public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
 		}
 	}

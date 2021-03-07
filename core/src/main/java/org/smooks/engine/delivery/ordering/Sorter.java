@@ -123,6 +123,7 @@ public class Sorter {
         // - Visitors (non Producers and non Consumers), followed by...
         // - Consumers (only)...
         Arrays.sort(array, new Comparator<DependencySpec>() {
+            @Override
             public int compare(DependencySpec left, DependencySpec right) {
                 int leftScore = score(left);
                 int rightScore = score(right);

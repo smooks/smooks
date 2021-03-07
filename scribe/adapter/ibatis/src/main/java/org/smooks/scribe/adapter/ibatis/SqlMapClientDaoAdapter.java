@@ -70,6 +70,7 @@ class SqlMapClientDaoAdapter implements MappingDao<Object>, Locator  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.NamedDAO#merge(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object update(String id, Object entity) {
 		try {
 			sqlMapClient.update(id, entity);
@@ -82,6 +83,7 @@ class SqlMapClientDaoAdapter implements MappingDao<Object>, Locator  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.NamedDAO#persist(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object insert(String id, Object entity) {
 		try {
 			sqlMapClient.insert(id, entity);
@@ -96,6 +98,7 @@ class SqlMapClientDaoAdapter implements MappingDao<Object>, Locator  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.MappingDao#delete(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object delete(String id, Object entity) {
 		try {
 			sqlMapClient.delete(id, entity);
@@ -109,6 +112,7 @@ class SqlMapClientDaoAdapter implements MappingDao<Object>, Locator  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.Finder#findBy(java.lang.String, java.util.Map)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<Object> lookup(String id, Map<String, ?> parameters) {
 		try {
@@ -121,6 +125,7 @@ class SqlMapClientDaoAdapter implements MappingDao<Object>, Locator  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.Finder#findBy(java.lang.String, java.util.Map)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<Object> lookup(String id, Object ... parameters) {
 		try {

@@ -90,6 +90,7 @@ public abstract class DateLocaleAwareTypeConverter<S, T> extends LocaleAwareType
      */
     protected DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
 
+    @Override
     public void setConfiguration(Properties properties) throws SmooksConfigException {
         super.setConfiguration(properties);
 

@@ -116,6 +116,7 @@ public class TokenizedStringParameterDecoder extends ParameterDecoder<String> {
 	/**
 	 * Decodes the value based on the smooks-resource configuration passed in the constructor.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Object decodeValue(String value) throws ParameterDecodeException {
 		Collection returnVal;
