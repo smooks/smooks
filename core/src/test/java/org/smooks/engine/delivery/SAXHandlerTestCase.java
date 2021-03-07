@@ -195,6 +195,7 @@ public class SAXHandlerTestCase {
             return qname.equals(element.getName());
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendText("is a SAXElement with the qualified name " + qname);
         }
@@ -213,6 +214,7 @@ public class SAXHandlerTestCase {
             return qname.equals(((SAXElement) fragment.unwrap()).getName());
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendText("is a SAX fragment with the qualified name " + qname);
         }

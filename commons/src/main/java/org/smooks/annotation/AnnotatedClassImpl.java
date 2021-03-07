@@ -20,10 +20,10 @@ import java.util.Map;
  */
 class AnnotatedClassImpl implements AnnotatedClass {
 	private final Class<?> theClass;
-	private Map<Class<?>, Annotation> classToAnnotationMap = null;
-	private Map<Method, AnnotatedMethod> methodToAnnotatedMap = null;
-	private Annotation[] annotations = null;
-	private AnnotatedMethod[] annotatedMethods = null;
+	private Map<Class<?>, Annotation> classToAnnotationMap;
+	private Map<Method, AnnotatedMethod> methodToAnnotatedMap;
+	private Annotation[] annotations;
+	private AnnotatedMethod[] annotatedMethods;
 
 	AnnotatedClassImpl (final Class<?> theClass){
 		super();
@@ -97,10 +97,12 @@ class AnnotatedClassImpl implements AnnotatedClass {
 		}
 	}
 
+	@Override
 	public Class<?> getTheClass() {
 		return theClass;
 	}
 
+	@Override
 	public Annotation[] getAllAnnotations() {
 		if (annotations == null) {
 			annotations = getAllAnnotationsCalculated();
@@ -112,6 +114,7 @@ class AnnotatedClassImpl implements AnnotatedClass {
 		return getAllAnnotationMap().values().toArray(new Annotation[0]);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
 		return (T) getAllAnnotationMap().get(annotationClass);
@@ -134,10 +137,12 @@ class AnnotatedClassImpl implements AnnotatedClass {
 		return result;
 	}
 
+	@Override
 	public AnnotatedMethod getAnnotatedMethod(final Method method) {
 		return getMethodMap().get(method);
 	}
 
+	@Override
 	public AnnotatedMethod[] getAnnotatedMethods() {
 		if (annotatedMethods == null) {
 			annotatedMethods = getAnnotatedMethodsCalculated();
@@ -151,6 +156,7 @@ class AnnotatedClassImpl implements AnnotatedClass {
 	}
 
 
+	@Override
 	public AnnotatedMethod getAnnotatedMethod(final String name, final Class<?>[] parameterType) {
 		try {
 			return getAnnotatedMethod(getTheClass().getMethod(name, parameterType));
@@ -164,6 +170,7 @@ class AnnotatedClassImpl implements AnnotatedClass {
 	/* (non-Javadoc)
 	 * @see com.fusionsoft.annotation.AnnotatedClass#isAnnotationPresent(java.lang.Class)
 	 */
+	@Override
 	public boolean isAnnotationPresent(
 			final Class<? extends Annotation> annotationClass) {
 

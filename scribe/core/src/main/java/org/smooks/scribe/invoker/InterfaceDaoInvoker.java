@@ -83,6 +83,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#persist(java.lang.Object)
 	 */
+	@Override
 	public Object insert(final Object obj) {
 		if(dao == null) {
 			throw new UnsupportedOperationException("The DAO '" + dao.getClass().getName() + "' doesn't implement the '" + Dao.class.getName() + "' interface and there for can't insert the entity.");
@@ -93,6 +94,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DaoInvoker#insert(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object insert(String name, Object obj) {
 		if(mappingDao == null) {
 			throw new UnsupportedOperationException("The DAO '" + mappingDao.getClass().getName() + "' doesn't implement the '" + MappingDao.class.getName() + "' interface and there for can't insert the entity under the name '"+ name +"'.");
@@ -103,6 +105,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#merge(java.lang.Object)
 	 */
+	@Override
 	public Object update(final Object obj) {
 		if(dao == null) {
 			throw new UnsupportedOperationException("The DAO '" + dao.getClass().getName() + "' doesn't implement the '" + Dao.class.getName() + "' interface and there for can't insert the entity.");
@@ -113,6 +116,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DaoInvoker#update(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object update(String name, Object obj) {
 		if(mappingDao == null) {
 			throw new UnsupportedOperationException("The DAO '" + mappingDao.getClass().getName() + "' doesn't implement the '" + MappingDao.class.getName() + "' interface and there for can't update the entity under the name '"+ name +"'.");
@@ -123,6 +127,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DaoInvoker#delete(java.lang.String, java.lang.Object[])
 	 */
+	@Override
 	public Object delete(Object entity) {
 		if(dao == null) {
 			throw new UnsupportedOperationException("The DAO '" + dao.getClass().getName() + "' doesn't implement the '" + Dao.class.getName() + "' interface and there for can't delete the entity.");
@@ -133,6 +138,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DaoInvoker#delete(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object delete(String name, Object entity) {
 		if(mappingDao == null) {
 			throw new UnsupportedOperationException("The DAO '" + mappingDao.getClass().getName() + "' doesn't implement the '" + MappingDao.class.getName() + "' interface and there for can't delete the entity under the name '"+ name +"'.");
@@ -144,6 +150,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#flush()
 	 */
+	@Override
 	public void flush() {
 		if(flushableDAO == null) {
 			throw new UnsupportedOperationException("The DAO '" + dao.getClass().getName() + "' doesn't implement the '" + Flushable.class.getName() + "' interface and there for can't flush the DAO.");
@@ -154,6 +161,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#findByQuery(java.lang.String, java.lang.Object[])
 	 */
+	@Override
 	public Object lookupByQuery(final String query, final Object ... parameters) {
 		if(queryFinderDAO == null) {
 			throw new UnsupportedOperationException("The DAO '" + dao.getClass().getName() + "' doesn't implement the '" + Queryable.class.getName() + "' interface and there for can't find by query.");
@@ -164,6 +172,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#findByQuery(java.lang.String, java.util.Map)
 	 */
+	@Override
 	public Object lookupByQuery(final String query, final Map<String, ?> parameters) {
 		if(queryFinderDAO == null) {
 			throw new UnsupportedOperationException("The DAO '" + dao.getClass().getName() + "' doesn't implement the '" + Queryable.class.getName() + "' interface and there for can't find by query.");
@@ -174,6 +183,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#findByQuery(java.lang.String, java.lang.Object[])
 	 */
+	@Override
 	public Object lookup(final String name, final Object ... parameters) {
 		if(finderDAO == null) {
 			throw new UnsupportedOperationException("The DAO '" + dao.getClass().getName() + "' doesn't implement the '" + Locator.class.getName() + "' interface and there for can't find by query.");
@@ -184,6 +194,7 @@ public class InterfaceDaoInvoker implements DaoInvoker  {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#findByQuery(java.lang.String, java.util.Map)
 	 */
+	@Override
 	public Object lookup(final String name, final Map<String, ?> parameters) {
 		if(finderDAO == null) {
 			throw new UnsupportedOperationException("The DAO '" + dao.getClass().getName() + "' doesn't implement the '" + Locator.class.getName() + "' interface and there for can't find by query.");

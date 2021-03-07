@@ -66,27 +66,33 @@ public class XPathVisitor implements SAXElementVisitor, DOMElementVisitor {
     public Element domVisitedBeforeElement;
     public Element domVisitedAfterElement;
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         saxVisitedBeforeElementStatic = element;
         saxVisitedBeforeElement = element;
     }
 
+    @Override
     public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
     }
 
+    @Override
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         saxVisitedAfterElementStatic = element;
         saxVisitedAfterElement = element;
     }
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         domVisitedBeforeElementStatic = element;
         domVisitedBeforeElement = element;
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         domVisitedAfterElementStatic = element;
         domVisitedAfterElement = element;

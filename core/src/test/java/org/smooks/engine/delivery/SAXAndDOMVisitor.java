@@ -57,28 +57,34 @@ import java.io.IOException;
  */
 public class SAXAndDOMVisitor implements DOMElementVisitor, SAXElementVisitor {
 
-    public static boolean visited = false;
-    
+    public static boolean visited;
+
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         visited = true;
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         visited = true;
     }
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         visited = true;
     }
 
+    @Override
     public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
         visited = true;
     }
 
+    @Override
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
         visited = true;
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         visited = true;
     }

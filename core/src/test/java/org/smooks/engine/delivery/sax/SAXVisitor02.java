@@ -63,20 +63,24 @@ public class SAXVisitor02 implements SAXElementVisitor {
     public static final List<SAXElement> children = new ArrayList<SAXElement>();
     public static final List<String> childText = new ArrayList<String>();
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         SAXVisitor02.element = element;
     }
 
+    @Override
     public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
         assertEquals(SAXVisitor02.element, element);
         childText.add(text.getText());
     }
 
+    @Override
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
         assertEquals(SAXVisitor02.element, element);
         children.add(childElement);
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         assertEquals(SAXVisitor02.element, element);
     }

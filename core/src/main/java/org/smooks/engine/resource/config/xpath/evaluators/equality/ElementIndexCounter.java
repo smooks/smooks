@@ -101,7 +101,7 @@ public class ElementIndexCounter implements SAXVisitBefore {
         return null;
     }
 
-    private class ElementIndex {
+    private static class ElementIndex {
         private int i = 0;
     }
 }

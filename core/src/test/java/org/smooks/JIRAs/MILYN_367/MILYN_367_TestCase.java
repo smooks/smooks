@@ -197,19 +197,21 @@ public class MILYN_367_TestCase {
 		return new InputStreamReader(getClass().getResourceAsStream(name));
 	}
 	
-	private class DOMVBefore implements DOMVisitBefore {
+	private static class DOMVBefore implements DOMVisitBefore {
 		
 		private final StringBuilder stringBuilder = new StringBuilder();
-		
+
+		@Override
 		public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
 			stringBuilder.append(element.getLocalName()).append("-");		
 		}		
 	}
 	
-	private class DOMVAfter implements DOMVisitAfter {
+	private static class DOMVAfter implements DOMVisitAfter {
 		
 		private final StringBuilder stringBuilder = new StringBuilder();
-		
+
+		@Override
 		public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
 			stringBuilder.append(element.getLocalName()).append("-");		
 		}		

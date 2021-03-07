@@ -98,6 +98,7 @@ public abstract class AbstractDaoAdapterRegister<D, A> extends AbstractDaoRegist
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.AbstractDaoRegister#getDao()
 	 */
+	@Override
 	public D getDefaultDao() {
 		if(defaultDao == null) {
 			throw new IllegalStateException("No default DAO is set on this '" + this.getClass().getName() + "' DaoRegister.");
@@ -108,6 +109,7 @@ public abstract class AbstractDaoAdapterRegister<D, A> extends AbstractDaoRegist
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.register.AbstractDaoRegister#getDao(java.lang.String)
 	 */
+	@Override
 	public D getDao(String name) {
 		if(name == null) {
 			return getDefaultDao();

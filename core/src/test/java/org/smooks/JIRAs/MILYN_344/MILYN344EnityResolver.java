@@ -53,6 +53,7 @@ import java.io.IOException;
  */
 public class MILYN344EnityResolver implements EntityResolver {
 
+    @Override
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         if("http://x.com/x.dtd".equals(systemId)) {
             return new InputSource(getClass().getResourceAsStream("x.dtd"));

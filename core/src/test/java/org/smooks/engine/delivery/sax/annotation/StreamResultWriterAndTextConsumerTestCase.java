@@ -80,6 +80,7 @@ public class StreamResultWriterAndTextConsumerTestCase {
 	@StreamResultWriter	
 	private class MyAnnotatedVisitor implements SAXVisitAfter {
 
+		@Override
 		public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 			Writer writer = element.getWriter(this);
 			writer.write("{{" + element.getTextContent() + "}}");

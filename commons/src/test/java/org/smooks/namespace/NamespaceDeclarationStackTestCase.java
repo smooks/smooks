@@ -131,53 +131,67 @@ public class NamespaceDeclarationStackTestCase {
             this.contentHandler = contentHandler;
         }
 
-        public boolean getFeature(String s) throws SAXNotRecognizedException, SAXNotSupportedException {
+		@Override
+		public boolean getFeature(String s) throws SAXNotRecognizedException, SAXNotSupportedException {
             return false;
         }
 
-        public void setFeature(String s, boolean b) throws SAXNotRecognizedException, SAXNotSupportedException {
+		@Override
+		public void setFeature(String s, boolean b) throws SAXNotRecognizedException, SAXNotSupportedException {
         }
 
-        public Object getProperty(String s) throws SAXNotRecognizedException, SAXNotSupportedException {
+		@Override
+		public Object getProperty(String s) throws SAXNotRecognizedException, SAXNotSupportedException {
             return null;
         }
 
-        public void setProperty(String s, Object o) throws SAXNotRecognizedException, SAXNotSupportedException {
+		@Override
+		public void setProperty(String s, Object o) throws SAXNotRecognizedException, SAXNotSupportedException {
         }
 
-        public void setEntityResolver(EntityResolver entityResolver) {
+		@Override
+		public void setEntityResolver(EntityResolver entityResolver) {
         }
 
-        public EntityResolver getEntityResolver() {
+		@Override
+		public EntityResolver getEntityResolver() {
             return null;
         }
 
-        public void setDTDHandler(DTDHandler dtdHandler) {
+		@Override
+		public void setDTDHandler(DTDHandler dtdHandler) {
         }
 
-        public DTDHandler getDTDHandler() {
+		@Override
+		public DTDHandler getDTDHandler() {
             return null;
         }
 
-        public void setContentHandler(ContentHandler contentHandler) {
+		@Override
+		public void setContentHandler(ContentHandler contentHandler) {
             this.contentHandler = contentHandler;
         }
 
-        public ContentHandler getContentHandler() {
+		@Override
+		public ContentHandler getContentHandler() {
             return contentHandler;
         }
 
-        public void setErrorHandler(ErrorHandler errorHandler) {
+		@Override
+		public void setErrorHandler(ErrorHandler errorHandler) {
         }
 
-        public ErrorHandler getErrorHandler() {
+		@Override
+		public ErrorHandler getErrorHandler() {
             return null;
         }
 
-        public void parse(InputSource inputSource) throws IOException, SAXException {
+		@Override
+		public void parse(InputSource inputSource) throws IOException, SAXException {
         }
 
-        public void parse(String s) throws IOException, SAXException {
+		@Override
+		public void parse(String s) throws IOException, SAXException {
         }
     }
 }

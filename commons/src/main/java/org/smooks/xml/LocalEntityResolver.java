@@ -67,7 +67,7 @@ public abstract class LocalEntityResolver implements EntityResolver {
     /**
 	 * Local Entity folder.
 	 */
-	private File localEntityFolder = null;
+	private File localEntityFolder;
 
 	/**
 	 * Entity entity lookup table. <p/> Contains preread Entity entity byte arrays.
@@ -114,6 +114,7 @@ public abstract class LocalEntityResolver implements EntityResolver {
 	 * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String,
 	 *      java.lang.String)
 	 */
+	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 		byte[] cachedBytes = entities.get(systemId);
 		InputSource entityInputSource = null;

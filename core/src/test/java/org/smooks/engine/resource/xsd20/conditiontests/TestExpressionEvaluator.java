@@ -56,27 +56,33 @@ public class TestExpressionEvaluator implements ExecutionContextExpressionEvalua
     public static final Object valVal = null;
     private String expression;
 
+    @Override
     public boolean eval(ExecutionContext context) throws ExpressionEvaluationException {
         return Boolean.parseBoolean(expression);
     }
 
+    @Override
     public Object getValue(ExecutionContext context) throws ExpressionEvaluationException {
         return valVal;
     }
 
+    @Override
     public ExpressionEvaluator setExpression(String expression) throws SmooksConfigException {
         this.expression = expression;
         return this;
     }
 
+    @Override
     public String getExpression() {
         return expression;
     }
 
+    @Override
     public boolean eval(Object contextObject) throws ExpressionEvaluationException {
         return Boolean.parseBoolean(expression);
     }
 
+    @Override
     public Object getValue(Object contextObject) throws ExpressionEvaluationException {
         return valVal;
     }

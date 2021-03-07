@@ -118,14 +118,17 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
         this.visitLifecycleCleanableSelectorTable = visitLifecycleCleanableSelectorTable;
     }
 
+    @Override
     public Filter newFilter(ExecutionContext executionContext) {
         return new SmooksDOMFilter(executionContext);
     }
 
+    @Override
     public FilterBypass getFilterBypass() {
     	return filterBypass;
     }
 
+    @Override
     public void sort() throws SmooksConfigException {
         assemblyVisitBeforeSelectorTable.sort(Sorter.SortOrder.PRODUCERS_FIRST);
         assemblyVisitAfterSelectorTable.sort(Sorter.SortOrder.CONSUMERS_FIRST);
@@ -133,6 +136,7 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
         processingVisitAfterSelectorTable.sort(Sorter.SortOrder.CONSUMERS_FIRST);
     }
 
+    @Override
     public void addToExecutionLifecycleSets() throws SmooksConfigException {
         addToExecutionLifecycleSets(assemblyVisitBeforeSelectorTable);
         addToExecutionLifecycleSets(assemblyVisitAfterSelectorTable);

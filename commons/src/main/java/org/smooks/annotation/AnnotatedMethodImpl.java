@@ -109,6 +109,7 @@ class AnnotatedMethodImpl implements AnnotatedMethod {
 		}
 	}
 
+	@Override
 	public Annotation[] getAllAnnotations() {
 		if (annotations == null) {
 			annotations = getAllAnnotationsCalculated();
@@ -122,15 +123,18 @@ class AnnotatedMethodImpl implements AnnotatedMethod {
 	}
 
 
+	@Override
 	public AnnotatedClass getAnnotatedClass() {
 		return annotatedClass;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
 		return (T) getAllAnnotationMap().get(annotationClass);
 	}
 
+	@Override
 	public Method getMethod() {
 		return method;
 	}
@@ -139,6 +143,7 @@ class AnnotatedMethodImpl implements AnnotatedMethod {
 	 * (non-Javadoc)
 	 * @see com.fusionsoft.annotation.AnnotatedMethod#isAnnotationPresent(java.lang.Class)
 	 */
+	@Override
 	public boolean isAnnotationPresent(
 			final Class<? extends Annotation> annotationClass) {
 

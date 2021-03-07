@@ -47,6 +47,7 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.Registry;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -70,7 +71,7 @@ public class ResourceConfigsProfileSetLookup implements Function<Map<Object, Obj
     
     @Override
     public ResourceConfig[] apply(final Map<Object, Object> registryEntries) {
-        final List<ResourceConfig> profileSetResourceConfigs = new Vector<>();
+        final List<ResourceConfig> profileSetResourceConfigs = new ArrayList<>();
 
         for (final ResourceConfigSeq resourceConfigList : registry.lookup(new ResourceConfigListsLookup())) {
             final List<ResourceConfig> resourceConfigs = resourceConfigList.getAll(profileSet);

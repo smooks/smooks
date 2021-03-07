@@ -51,9 +51,9 @@ import org.w3c.dom.Element;
 
 public class BeforeVisitorAndChildrenVisitor implements BeforeVisitor, ChildrenVisitor {
 
-    public static boolean visited = false;
-    public static boolean onChildText = false;
-    public static boolean onChildElement = false;
+    public static boolean visited;
+    public static boolean onChildText;
+    public static boolean onChildElement;
 
     public static void reset() {
         visited = false;

@@ -79,6 +79,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     	setExpression(expression);
     }
 
+    @Override
     public ExpressionEvaluator setExpression(String expression) throws SmooksConfigException {
         this.expression = expression.trim();
         compiled = MVEL.compileExpression(this.expression);
@@ -88,6 +89,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         return this;
     }
 
+    @Override
     public String getExpression() {
         return expression;
     }
@@ -96,6 +98,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
 		this.toType = toType;
 	}
 
+	@Override
 	public boolean eval(Object contextObject) throws ExpressionEvaluationException {
         return (Boolean) exec(contextObject);
     }
@@ -144,6 +147,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         return exec(contextObject, new HashMap<String, Object>());
     }
 
+    @Override
 	public Object getValue(final Object contextObject) throws ExpressionEvaluationException {
     	return exec(contextObject);
     }

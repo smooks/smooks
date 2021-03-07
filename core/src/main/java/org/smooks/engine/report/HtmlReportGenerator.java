@@ -79,6 +79,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
         super(reportConfiguration);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void applyTemplate(Report report) throws IOException {
         FreeMarkerTemplate template;

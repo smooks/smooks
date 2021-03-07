@@ -90,6 +90,7 @@ public abstract class LocaleAwareTypeConverter<S, T> implements TypeConverter<S,
     private boolean verifyLocale;
     private Properties configuration;
 
+    @Override
     public void setConfiguration(Properties properties) throws SmooksConfigException {
         if (properties != null) {
             final String locale = properties.getProperty(LOCALE);
@@ -124,6 +125,7 @@ public abstract class LocaleAwareTypeConverter<S, T> implements TypeConverter<S,
         }
     }
 
+    @Override
     public Properties getConfiguration() {
         return configuration;
     }

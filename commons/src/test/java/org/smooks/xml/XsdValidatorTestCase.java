@@ -108,10 +108,11 @@ public class XsdValidatorTestCase {
         validator.validate(new StreamSource(getClass().getResourceAsStream("xsdDomValidator-test-01.xml")));
     }
 
-    public class MyLSResourceResolver implements LSResourceResolver {
+    public static class MyLSResourceResolver implements LSResourceResolver {
 
         private final Map<String, StreamSourceLSInput> resources = new HashMap<String, StreamSourceLSInput>();
 
+        @Override
         public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
             return resources.get(namespaceURI);
         }

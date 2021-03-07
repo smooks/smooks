@@ -174,6 +174,7 @@ public class DefaultSAXElement implements SAXElement {
     public void accumulateText() {
         if(text == null) {
             text = new ArrayList<SAXText>() {
+                @Override
                 public boolean add(SAXText saxText) {
                     if(textAccumulator != null) {
                         // Clear the accumulatedText object so as any subsequent calls to the

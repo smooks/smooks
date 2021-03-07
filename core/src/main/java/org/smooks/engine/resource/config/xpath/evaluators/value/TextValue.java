@@ -69,6 +69,7 @@ public class TextValue extends Value {
         return typeConverter.convert(element.getTextContent());
     }
 
+    @Override
     public String toString() {
         return "text()";
     }

@@ -55,6 +55,7 @@ import java.io.IOException;
  */
 public class SaxVisitCleanableChecker implements SAXVisitBefore {
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(!SaxVisitCleanable.cleaned) {
             fail("Resource should have been cleaned!");

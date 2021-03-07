@@ -60,12 +60,14 @@ public class DomAssemblyBefore implements DOMVisitBefore, ExecutionLifecycleClea
 
     public static boolean cleaned;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
             fail("Resource shouldn't be cleaned yet!");
         }
     }
 
+    @Override
     public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
         cleaned = true;
     }

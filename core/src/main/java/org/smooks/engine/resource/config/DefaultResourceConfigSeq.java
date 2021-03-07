@@ -73,11 +73,11 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
     /**
      * Is the config list one of the "system" installed config lists.
      */
-    private boolean isSystemConfigList = false;
+    private boolean isSystemConfigList;
     /**
      * {@link ProfileSet} list.
      */
-    private final List<ProfileSet> profiles = new Vector<>();
+    private final List<ProfileSet> profiles = new ArrayList<>();
     /**
      * {@link ResourceConfig} list.
      */
@@ -203,7 +203,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
      */
     @Override
     public List<ResourceConfig> getAll(ProfileSet profileSet) {
-        List<ResourceConfig> matchingResourceConfigsColl = new Vector<>();
+        List<ResourceConfig> matchingResourceConfigsColl = new ArrayList<>();
 
         // Iterate over the ResourceConfigs defined on this list.
         for(int i = 0; i < size(); i++) {

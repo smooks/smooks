@@ -63,6 +63,7 @@ public class EndElementEvent implements SAXEventReplay {
         this.qName = qName;
     }
 
+    @Override
     public void replay(ContentHandler handler) throws SmooksException {
         try {
             handler.endElement(uri, localName, qName);

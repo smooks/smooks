@@ -95,7 +95,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     private final Set<ExecutionLifecycleInitializable> execInitializableHandlers = new LinkedHashSet<>();
     private final Set<ExecutionLifecycleCleanable> execCleanableHandlers = new LinkedHashSet<>();
 
-    private Boolean isDefaultSerializationOn = null;
+    private Boolean isDefaultSerializationOn;
     
     public void setRegistry(Registry registry) {
         this.registry = registry;
@@ -106,6 +106,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      * @param selector The configuration "selector" attribute value from the .cdrl file in the .cdrar.
      * @return List of ResourceConfig instances, or null.
      */
+    @Override
     public List getResourceConfigs(String selector) {
         return resourceConfigTable.get(selector);
     }
@@ -124,6 +125,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      * {@link ResourceConfig#getSelector() selector}, with each value being a
      * {@link List} of preordered {@link ResourceConfig} instances.
      */
+    @Override
     public Map<String, List<ResourceConfig>> getResourceConfigs() {
         return resourceConfigTable;
     }
@@ -138,6 +140,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      * @return List of Object instances.  An empty list is returned where no
      * selectors exist.
      */
+    @Override
     public List getObjects(String selector) {
         Vector objects;
 
@@ -165,11 +168,13 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
         return objects;
     }
-    
+
+    @Override
     public List<ConfigBuilderEvent> getConfigBuilderEvents() {
         return configBuilderEvents;
     }
 
+    @Override
     public boolean isDefaultSerializationOn() {
         if (isDefaultSerializationOn == null) {
             isDefaultSerializationOn = Boolean.valueOf(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", this));
@@ -194,12 +199,14 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         }
     }
 
+    @Override
     public void executeHandlerInit(ExecutionContext executionContext) {
         for(ExecutionLifecycleInitializable handler : execInitializableHandlers) {
             handler.executeExecutionLifecycleInitialize(executionContext);
         }
     }
 
+    @Override
     public void executeHandlerCleanup(ExecutionContext executionContext) {
         for(ExecutionLifecycleCleanable handler : execCleanableHandlers) {
             try {

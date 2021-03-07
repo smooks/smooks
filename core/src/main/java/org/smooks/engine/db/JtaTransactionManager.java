@@ -72,6 +72,7 @@ class JtaTransactionManager implements TransactionManager {
 		this.setAutoCommitAllowed = setAutoCommitAllowed;
 	}
 
+	@Override
 	public void begin() {
 		try {
 			newTransaction = transaction.getStatus() == Status.STATUS_NO_TRANSACTION;
@@ -92,6 +93,7 @@ class JtaTransactionManager implements TransactionManager {
 		}
 	}
 
+	@Override
 	public void commit() {
 		if(newTransaction) {
 			try {
@@ -102,6 +104,7 @@ class JtaTransactionManager implements TransactionManager {
 		}
 	}
 
+	@Override
 	public void rollback() {
 		if(newTransaction) {
 			try {

@@ -69,8 +69,8 @@ public class SAXElementVisitorMap {
     private List<ContentHandlerBinding<SAXVisitChildren>> childVisitors;
     private List<ContentHandlerBinding<SAXVisitAfter>> visitAfters;
     private List<ContentHandlerBinding<VisitLifecycleCleanable>> visitCleanables;
-    private boolean accumulateText = false;
-    private SAXVisitor acquireWriterFor = null;
+    private boolean accumulateText;
+    private SAXVisitor acquireWriterFor;
 
     public List<ContentHandlerBinding<SAXVisitBefore>> getVisitBefores() {
         return visitBefores;

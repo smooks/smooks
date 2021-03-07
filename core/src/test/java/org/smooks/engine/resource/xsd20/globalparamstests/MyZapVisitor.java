@@ -64,6 +64,7 @@ public class MyZapVisitor implements SAXVisitBefore {
     public static String configuredXP;
     public static int configuredZapCount;
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         configuredXP = xp;
         configuredZapCount = zapCount;

@@ -55,7 +55,7 @@ import java.util.Set;
 
 public class TerminateVisitor implements BeforeVisitor, AfterVisitor, Producer {
 
-	private boolean terminateBefore = false;
+	private boolean terminateBefore;
 
 	/**
 	 * @param terminateBefore the terminateBefore to set
@@ -70,6 +70,7 @@ public class TerminateVisitor implements BeforeVisitor, AfterVisitor, Producer {
 	/* (non-Javadoc)
 	 * @see org.smooks.engine.delivery.ordering.Producer#getProducts()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Set<?> getProducts() {
 		// Doesn't actually produce anything.  Just using the Producer/Consumer mechanism to

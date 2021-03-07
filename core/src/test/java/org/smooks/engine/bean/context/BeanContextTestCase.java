@@ -237,9 +237,9 @@ public class BeanContextTestCase {
 	}
 
 
-    public class MockRepositoryBeanLifecycleObserver implements BeanContextLifecycleObserver {
+    public static class MockRepositoryBeanLifecycleObserver implements BeanContextLifecycleObserver {
 
-    	private boolean fired = false;
+    	private boolean fired;
 
     	public boolean isFired() {
     		return fired;
@@ -249,6 +249,7 @@ public class BeanContextTestCase {
     		fired = false;
     	}
 
+		@Override
 		public void onBeanLifecycleEvent(BeanContextLifecycleEvent event) {
 			fired = true;
 		}

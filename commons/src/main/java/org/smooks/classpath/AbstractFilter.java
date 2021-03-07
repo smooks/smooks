@@ -59,7 +59,7 @@ abstract class AbstractFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(InstanceOfFilter.class);
 
     private final List<Class> classes = new ArrayList<Class>();
-    private String[] includeList = null;
+    private String[] includeList;
     private String[] igrnoreList = defaultIgnoreList;
     private static final String[] defaultIgnoreList = new String[] {
             "charsets.jar", "javaws.jar", "jce.jar", "jsse.jar", "rt.jar", "dnsns.jar", "sunjce_provider.jar", "sunpkcs11.jar", "junit-", "servlet-api-", "idea_rt.jar",
@@ -76,6 +76,7 @@ abstract class AbstractFilter implements Filter {
         this.includeList = includeList;
     }
 
+    @Override
     public void filter(String resourceName) {
         if(resourceName.endsWith(".class") && !isIgnorable(resourceName)) {
             String className = ClasspathUtils.toClassName(resourceName);
@@ -93,6 +94,7 @@ abstract class AbstractFilter implements Filter {
 
     protected abstract boolean addClass(Class<?> clazz);
 
+    @Override
     public boolean isIgnorable(String resourceName) {
         boolean isJar = resourceName.endsWith(".jar");
 

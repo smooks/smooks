@@ -62,8 +62,8 @@ public class ReportConfiguration {
     public static final File TEMP_DIR = new File(System.getProperty("java.io.tmpdir"));
 
     private Writer outputWriter;
-    private boolean escapeXMLChars = false;
-    private boolean showDefaultAppliedResources = false;
+    private boolean escapeXMLChars;
+    private boolean showDefaultAppliedResources;
     private Class<? extends ExecutionEvent>[] filterEvents;
     private boolean autoCloseWriter = true;
     private File tempOutDir = TEMP_DIR;

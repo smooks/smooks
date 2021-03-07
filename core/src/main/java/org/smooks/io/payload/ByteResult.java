@@ -60,6 +60,7 @@ public class ByteResult extends StreamResult {
         super.setOutputStream(result);
     }
 
+    @Override
     public final void setOutputStream(OutputStream outputStream) {
         throw new UnsupportedOperationException("Cannot reset the OutputStream for this Result type.");
     }
@@ -68,6 +69,7 @@ public class ByteResult extends StreamResult {
         return result.toByteArray();
     }
 
+    @Override
     public String toString() {
         return result.toString();
     }

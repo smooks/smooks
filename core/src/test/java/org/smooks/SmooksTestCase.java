@@ -140,28 +140,36 @@ public class SmooksTestCase {
     }
 
     private static class TestDOMVisitorBefore implements DOMVisitBefore {
-        private int callCount = 0;
+        private int callCount;
+
+        @Override
         public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
             callCount++;
         }
     }
 
     private static class TestDOMVisitorAfter implements DOMVisitAfter {
-        private int callCount = 0;
+        private int callCount;
+
+        @Override
         public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
             callCount++;
         }
     }
 
     private static class TestSAXVisitorBefore implements SAXVisitBefore {
-        private int callCount = 0;
+        private int callCount;
+
+        @Override
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             callCount++;
         }
     }
 
     private static class TestSAXVisitorAfter implements SAXVisitAfter {
-        private int callCount = 0;
+        private int callCount;
+
+        @Override
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             callCount++;
         }
@@ -175,6 +183,7 @@ public class SmooksTestCase {
             super(contextClassLoader);
         }
 
+        @Override
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             requests.add(name);
             return super.loadClass(name);

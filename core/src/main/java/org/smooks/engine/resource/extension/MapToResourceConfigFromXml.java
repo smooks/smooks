@@ -79,6 +79,7 @@ public class MapToResourceConfigFromXml implements DOMVisitBefore {
     @Inject
     private Optional<String> defaultValue;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ResourceConfig config;
         String value = XmlUtil.serialize((NodeList) element, true);

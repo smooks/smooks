@@ -61,7 +61,7 @@ class ChildEventListener extends SessionAwareExecutionEventListener {
     private final NestedSmooksVisitor nestedSmooksVisitor;
     private final NodeFragment visitedFragment;
     private final Writer selectorWriter;
-    private int currentNodeDepth = 0;
+    private int currentNodeDepth;
 
     public ChildEventListener(final NestedSmooksVisitor nestedSmooksVisitor, final Writer selectorWriter, final NodeFragment visitedFragment, final ExecutionContext executionContext) {
         super(executionContext);

@@ -54,12 +54,13 @@ import javax.inject.Inject;
  */
 public class DOMVisitAfterVisitor implements DOMVisitAfter {
 
-    public static boolean visited = false;
+    public static boolean visited ;
     public static String staticInjectedParam;
 
     @Inject
     private String injectedParam;
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         visited = true;
         staticInjectedParam = injectedParam;

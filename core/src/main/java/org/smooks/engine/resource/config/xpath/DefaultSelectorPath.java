@@ -154,10 +154,12 @@ public class DefaultSelectorPath implements SelectorPath {
             super(xpathExpression, targetElementName, targetAttributeName);
         }
 
+        @Override
         public XPathExpressionEvaluator getPredicatesEvaluator() {
             return PassThruEvaluator.INSTANCE;
         }
 
+        @Override
         public void buildPredicatesEvaluator(Properties namespaces) {
             // Ignore this.
         }

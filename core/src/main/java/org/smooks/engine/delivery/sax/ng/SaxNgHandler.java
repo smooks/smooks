@@ -97,8 +97,8 @@ public class SaxNgHandler extends SmooksContentHandler {
     private final LifecycleManager lifecycleManager;
     private final StringBuilder entityBuilder = new StringBuilder(10);
 
-    private ContentHandlerState currentContentHandlerState = null;
-    private Node currentNode = null;
+    private ContentHandlerState currentContentHandlerState;
+    private Node currentNode;
     private Document factory;
     
     @SuppressWarnings("WeakerAccess")

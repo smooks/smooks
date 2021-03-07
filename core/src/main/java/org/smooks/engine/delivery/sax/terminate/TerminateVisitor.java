@@ -62,11 +62,12 @@ import java.util.Set;
  */
 public class TerminateVisitor implements SAXVisitBefore, SAXVisitAfter, Producer {
 
-	private boolean terminateBefore = false;
+	private boolean terminateBefore;
 
 	/* (non-Javadoc)
 	 * @see org.smooks.engine.delivery.sax.SAXVisitBefore#visitBefore(org.smooks.engine.delivery.sax.SAXElement, org.smooks.engine.container.ExecutionContext)
 	 */
+	@Override
 	public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 		if(terminateBefore) {
 			throw new TerminateException(element, true);
@@ -76,6 +77,7 @@ public class TerminateVisitor implements SAXVisitBefore, SAXVisitAfter, Producer
 	/* (non-Javadoc)
 	 * @see org.smooks.engine.delivery.sax.SAXVisitAfter#visitAfter(org.smooks.engine.delivery.sax.SAXElement, org.smooks.engine.container.ExecutionContext)
 	 */
+	@Override
 	public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
 		if(!terminateBefore) {
 			throw new TerminateException(element, false);
@@ -95,6 +97,7 @@ public class TerminateVisitor implements SAXVisitBefore, SAXVisitAfter, Producer
 	/* (non-Javadoc)
 	 * @see org.smooks.engine.delivery.ordering.Producer#getProducts()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Set<?> getProducts() {
 		// Doesn't actually produce anything.  Just using the Producer/Consumer mechanism to

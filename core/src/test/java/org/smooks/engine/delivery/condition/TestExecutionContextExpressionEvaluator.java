@@ -57,29 +57,35 @@ public class TestExecutionContextExpressionEvaluator implements ExecutionContext
     public boolean evalResult = true;
     public static ExecutionContext context;
 
+    @Override
     public ExpressionEvaluator setExpression(String conditionExpression) throws SmooksConfigException {
         condition = conditionExpression;
         evalResult = conditionExpression.trim().equals("true");
         return this;
     }
 
+    @Override
     public String getExpression() {
         return condition;
     }
 
+    @Override
     public boolean eval(Object contextObject) throws ExpressionEvaluationException {
         return false;
     }
 
+    @Override
     public Object getValue(Object contextObject) throws ExpressionEvaluationException {
         return null;
     }
 
+    @Override
     public boolean eval(ExecutionContext context) {
         TestExecutionContextExpressionEvaluator.context = context;
         return evalResult;
     }
 
+    @Override
     public Object getValue(ExecutionContext context) throws ExpressionEvaluationException {
         return null;
     }

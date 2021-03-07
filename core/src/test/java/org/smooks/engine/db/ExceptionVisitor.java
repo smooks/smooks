@@ -55,6 +55,7 @@ import java.io.IOException;
 public class ExceptionVisitor implements SAXVisitAfter {
     public static boolean exceptionThrown;
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         exceptionThrown = true;
         throw new RuntimeException("Blah");

@@ -56,18 +56,22 @@ import org.smooks.api.expression.ExpressionEvaluationException;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class InvalidEvaluator implements ExpressionEvaluator {
+    @Override
     public ExpressionEvaluator setExpression(String conditionExpression) throws SmooksConfigException {
         return this;
     }
 
+    @Override
     public String getExpression() {
         return null;
     }
 
+    @Override
     public boolean eval(Object contextObject) throws ExpressionEvaluationException {
         return false;
     }
 
+    @Override
     public Object getValue(Object contextObject) throws ExpressionEvaluationException {
         return null;
     }

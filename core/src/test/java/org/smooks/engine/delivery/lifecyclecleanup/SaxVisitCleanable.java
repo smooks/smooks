@@ -61,18 +61,21 @@ public class SaxVisitCleanable implements SAXVisitBefore, SAXVisitAfter, VisitLi
 
     public static boolean cleaned;
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(cleaned) {
             fail("Resource shouldn't be cleaned yet!");
         }
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(cleaned) {
             fail("Resource shouldn't be cleaned yet!");
         }
     }
 
+    @Override
     public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
         cleaned = true;
     }

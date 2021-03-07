@@ -61,20 +61,25 @@ public class StreamSourceLSInput implements LSInput {
         this.input = input;
     }
 
+    @Override
     public Reader getCharacterStream() {
         return input.getReader();
     }
 
+    @Override
     public void setCharacterStream(Reader reader) {
     }
 
+    @Override
     public InputStream getByteStream() {
         return input.getInputStream();
     }
 
+    @Override
     public void setByteStream(InputStream inputStream) {
     }
 
+    @Override
     public String getStringData() {
         return null;
     }
@@ -82,38 +87,48 @@ public class StreamSourceLSInput implements LSInput {
     public void setStringData(String s) {
     }
 
+    @Override
     public String getSystemId() {
         return input.getSystemId();
     }
 
+    @Override
     public void setSystemId(String s) {
     }
 
+    @Override
     public String getPublicId() {
         return input.getPublicId();
     }
 
+    @Override
     public void setPublicId(String s) {
     }
 
+    @Override
     public String getBaseURI() {
         return null;
     }
 
+    @Override
     public void setBaseURI(String s) {
     }
 
+    @Override
     public String getEncoding() {
         return null;
     }
 
+    @Override
     public void setEncoding(String s) {
     }
 
+    @Override
     public boolean getCertifiedText() {
         return false;
     }
 
+    @Override
     public void setCertifiedText(boolean b) {
     }
 }

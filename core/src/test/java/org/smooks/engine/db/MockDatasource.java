@@ -57,32 +57,32 @@ public class MockDatasource extends AbstractDataSource {
 
     public static boolean committed;
     public static boolean rolledBack;
-    public static int cleanupCallCount = 0;
+    public static int cleanupCallCount;
     public static final String MOCK_DS_NAME = "mockDS";
 
+    @Override
     public String getName() {
         return MOCK_DS_NAME;
     }
 
+    @Override
     public Connection getConnection() throws SQLException {
-        InvocationHandler handler = new InvocationHandler() {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if(method.getName().equals("commit")) {
-                    committed = true;
-                    return null;
-                } else if(method.getName().equals("rollback")) {
-                    rolledBack = true;
-                    return null;
-                } else if(method.getName().equals("setAutoCommit")) {
-                    return null;
-                } else if(method.getName().equals("close")) {
-                    return null;
-                }  else if(method.getName().equals("getAutoCommit")) {
-                    return true;
-                }
-
-                throw new RuntimeException("Unexpected call to method: " + method);
+        InvocationHandler handler = (proxy, method, args) -> {
+            if(method.getName().equals("commit")) {
+                committed = true;
+                return null;
+            } else if(method.getName().equals("rollback")) {
+                rolledBack = true;
+                return null;
+            } else if(method.getName().equals("setAutoCommit")) {
+                return null;
+            } else if(method.getName().equals("close")) {
+                return null;
+            }  else if(method.getName().equals("getAutoCommit")) {
+                return true;
             }
+
+            throw new RuntimeException("Unexpected call to method: " + method);
         };
 
         return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(),
@@ -90,10 +90,12 @@ public class MockDatasource extends AbstractDataSource {
                 handler);
     }
 
+    @Override
     public boolean isAutoCommit() {
         return false;
     }
 
+    @Override
     protected void unbind(ExecutionContext executionContext) {
         cleanupCallCount++;
         super.unbind(executionContext);

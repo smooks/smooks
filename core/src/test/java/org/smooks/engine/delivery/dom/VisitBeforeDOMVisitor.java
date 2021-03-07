@@ -52,7 +52,7 @@ import org.smooks.api.SmooksException;
  */
 public class VisitBeforeDOMVisitor implements DOMVisitBefore {
 
-    public static boolean visited = false;
+    public static boolean visited;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         visited = true;

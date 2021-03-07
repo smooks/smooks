@@ -97,6 +97,7 @@ public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
         return this;
     }
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         if(namespace .isPresent()) {
             element.removeAttributeNS(namespace.orElse(null), qName);
@@ -105,6 +106,7 @@ public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
         }
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(namespace .isPresent()) {
             element.removeAttributeNS(namespace.orElse(null), localPart);

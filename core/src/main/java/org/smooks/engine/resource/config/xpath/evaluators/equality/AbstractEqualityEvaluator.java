@@ -96,6 +96,7 @@ public abstract class AbstractEqualityEvaluator implements XPathExpressionEvalua
         return rhs;
     }
 
+    @Override
     public String toString() {
         return "(" + lhs + " " + op + " " +  rhs + ")";
     }
@@ -127,6 +128,7 @@ public abstract class AbstractEqualityEvaluator implements XPathExpressionEvalua
     static class FailEquals {
         static final FailEquals INSTANCE = new FailEquals();
 
+        @Override
         public boolean equals(Object obj) {
             return false;
         }

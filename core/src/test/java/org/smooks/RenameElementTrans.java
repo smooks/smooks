@@ -66,9 +66,11 @@ public class RenameElementTrans implements DOMElementVisitor {
 		newElementName = resourceConfig.getParameterValue("new-name", String.class);
 	}
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
     }
 
+    @Override
 	public void visitAfter(Element element, ExecutionContext executionContext) {
 		// Rename the element to the configured new name.
 		DomUtils.renameElement(element, newElementName, true, true);

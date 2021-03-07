@@ -58,6 +58,7 @@ public class OrderItemVisitor implements SAXVisitBefore {
     @Inject
     private String beanId;
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         Object bean = executionContext.getBeanContext().getBean(beanId);
 

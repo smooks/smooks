@@ -76,12 +76,14 @@ public class DefaultSAXElementSerializer implements SAXElementVisitor {
         this.rewriteEntities = rewriteEntities.orElse(this.rewriteEntities);
     }
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         // Do nothing here apart from acquiring ownership of the element writer.
         // See is there any child text/elements first...
         element.getWriter(writerOwner);
     }
 
+    @Override
     public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
         writeStartElement(element, executionContext.getBeanContext());
         if(element.isWriterOwner(writerOwner)) {
@@ -89,11 +91,13 @@ public class DefaultSAXElementSerializer implements SAXElementVisitor {
         }
     }
 
+    @Override
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
         writeStartElement(element, executionContext.getBeanContext());
         // The child element is responsible for writing itself...
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         writeEndElement(element, executionContext.getBeanContext());
     }

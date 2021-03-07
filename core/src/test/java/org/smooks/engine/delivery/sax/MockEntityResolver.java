@@ -54,6 +54,7 @@ import java.io.StringReader;
  */
 public class MockEntityResolver implements EntityResolver {
 
+    @Override
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         return new InputSource(new StringReader(""));
     }

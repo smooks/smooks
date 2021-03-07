@@ -29,10 +29,14 @@ public class TestAnnotation  {
 		public void method2(){}
 	}
 
-	static public class Derived extends BaseClass implements BaseInterface{
-		public void method1(){}
+	static public class Derived extends BaseClass implements BaseInterface {
 		@Override
-		public void method2(){}
+		public void method1() {
+		}
+
+		@Override
+		public void method2() {
+		}
 	}
 
 	/**

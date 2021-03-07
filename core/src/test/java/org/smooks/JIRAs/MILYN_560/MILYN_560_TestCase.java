@@ -42,6 +42,7 @@
  */
 package org.smooks.JIRAs.MILYN_560;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
@@ -67,11 +68,9 @@ public class MILYN_560_TestCase {
     public void test_DOM() {
         Smooks smooks = new Smooks();
 
-        smooks.addVisitor(new DOMVisitAfter() {
-            public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-                assertEquals("&tomfennelly", element.getAttribute("attrib"));
-                assertEquals("&tomfennelly", element.getTextContent());
-            }
+        smooks.addVisitor((DOMVisitAfter) (element, executionContext) -> {
+            assertEquals("&tomfennelly", element.getAttribute("attrib"));
+            assertEquals("&tomfennelly", element.getTextContent());
         }, "element");
 
         StringResult serializedRes = new StringResult();
@@ -93,7 +92,7 @@ public class MILYN_560_TestCase {
     }
 
     @TextConsumer
-    private class MockSAX implements SAXVisitAfter {
+    private static class MockSAX implements SAXVisitAfter {
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             assertEquals("&tomfennelly", element.getAttribute("attrib"));
             assertEquals("&tomfennelly", element.getTextContent());

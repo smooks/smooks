@@ -114,7 +114,7 @@ public class SAXHandler extends SmooksContentHandler {
 
     private boolean defaultSerializationOn;
     private boolean terminateOnVisitorException;
-    private ElementProcessor currentProcessor = null;
+    private ElementProcessor currentProcessor;
     private TextType currentTextType = TextType.TEXT;
     private DynamicSAXElementVisitorList dynamicVisitorList;
 
@@ -175,9 +175,11 @@ public class SAXHandler extends SmooksContentHandler {
         }
     }
 
+    @Override
     public void cleanup() {
     }
 
+    @Override
     public void startElement(StartElementEvent startEvent) throws SAXException {
         WriterManagedSAXElement element;
         boolean isRoot = (currentProcessor == null);
@@ -451,6 +453,7 @@ public class SAXHandler extends SmooksContentHandler {
 
     private final SAXText textWrapper = new DefaultSAXText();
 
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         if(currentTextType != TextType.CDATA) {
             _characters(ch, start, length);
@@ -545,10 +548,12 @@ public class SAXHandler extends SmooksContentHandler {
         }
     }
 
+    @Override
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
         characters(ch, start, length);
     }
 
+    @Override
     public void comment(char[] ch, int start, int length) throws SAXException {
         currentTextType = TextType.COMMENT;
         characters(ch, start, length);
@@ -561,6 +566,7 @@ public class SAXHandler extends SmooksContentHandler {
         cdataNodeBuilder.setLength(0);
     }
 
+    @Override
     @SuppressWarnings("RedundantThrows")
     public void endCDATA() throws SAXException {
         try {
@@ -574,14 +580,17 @@ public class SAXHandler extends SmooksContentHandler {
         }
     }
 
+    @Override
     public void startEntity(String name) throws SAXException {
         currentTextType = TextType.ENTITY;
     }
 
+    @Override
     public void endEntity(String name) {
         currentTextType = TextType.TEXT;
     }
 
+    @Override
     public void startDTD(String name, String publicId, String systemId) throws SAXException {
         DocType.setDocType(name, publicId, systemId, null, executionContext);
 
@@ -600,7 +609,7 @@ public class SAXHandler extends SmooksContentHandler {
 
     private static class ElementProcessor {
         private ElementProcessor parentProcessor;
-        private boolean isNullProcessor = false;
+        private boolean isNullProcessor;
         private WriterManagedSAXElement element;
         private SAXElementVisitorMap elementVisitorConfig;
     }

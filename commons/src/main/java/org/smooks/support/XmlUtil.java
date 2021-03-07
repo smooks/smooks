@@ -590,10 +590,12 @@ public class XmlUtil {
             serialize(node.getChildNodes(), format, writer, closeEmptyElements);
         } else {
             serialize(new NodeList() {
+                @Override
                 public Node item(int index) {
                     return node;
                 }
 
+                @Override
                 public int getLength() {
                     return 1;
                 }
@@ -834,6 +836,7 @@ public class XmlUtil {
            *
            * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
            */
+        @Override
         public void warning(SAXParseException arg0) throws SAXException {
             throw arg0;
         }
@@ -843,6 +846,7 @@ public class XmlUtil {
            *
            * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
            */
+        @Override
         public void error(SAXParseException arg0) throws SAXException {
 			throw arg0;
 		}
@@ -852,7 +856,8 @@ public class XmlUtil {
 		 *
 		 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 		 */
-		public void fatalError(SAXParseException arg0) throws SAXException {
+        @Override
+        public void fatalError(SAXParseException arg0) throws SAXException {
 			throw arg0;
 		}
 	}

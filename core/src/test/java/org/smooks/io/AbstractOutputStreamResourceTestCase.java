@@ -131,13 +131,14 @@ public class AbstractOutputStreamResourceTestCase
 	 */
 	private static class MockAbstractOutputStreamResource extends AbstractOutputStreamResource
 	{
-        public static boolean isClosed = false;
+        public static boolean isClosed;
 
 		@Override
 		public OutputStream getOutputStream( final ExecutionContext executionContext )
 		{
             isClosed = false;
             return new ByteArrayOutputStream() {
+                @Override
                 public void close() throws IOException {
                     isClosed = true;
                     super.close();
@@ -151,6 +152,7 @@ public class AbstractOutputStreamResourceTestCase
 			return "Mock";
 		}
 
+        @Override
         public Charset getWriterEncoding() {
             return StandardCharsets.UTF_8;
         }

@@ -108,6 +108,7 @@ public class SelectorTable<T extends ContentHandler> implements Map<String, List
      * Is the table empty.
      * @return True if the table is empty, otherwise false.
      */
+    @Override
     public boolean isEmpty() {
         return contentHandlerBindingsBySelector.isEmpty();
     }

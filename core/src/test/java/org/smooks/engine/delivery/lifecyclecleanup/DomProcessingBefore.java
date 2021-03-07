@@ -62,6 +62,7 @@ public class DomProcessingBefore implements DOMVisitBefore, ExecutionLifecycleIn
     public static boolean initialized;
     public static boolean cleaned;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if(!initialized) {
             fail("Resource should be initialized!");
@@ -71,10 +72,12 @@ public class DomProcessingBefore implements DOMVisitBefore, ExecutionLifecycleIn
         }
     }
 
+    @Override
     public void executeExecutionLifecycleInitialize(ExecutionContext executionContext) {
         initialized = true;
     }
 
+    @Override
     public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
         cleaned = true;
     }

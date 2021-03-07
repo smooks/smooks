@@ -74,6 +74,7 @@ public class BasicProfile implements Profile {
 	 * 
 	 * @return Profile name.
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}

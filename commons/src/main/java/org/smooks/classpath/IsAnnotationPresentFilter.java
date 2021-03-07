@@ -66,6 +66,7 @@ public class IsAnnotationPresentFilter extends AbstractFilter {
         this.searchType = searchType;
     }
 
+    @Override
     protected boolean addClass(Class<?> clazz) {
         return clazz.isAnnotationPresent(searchType);
     }

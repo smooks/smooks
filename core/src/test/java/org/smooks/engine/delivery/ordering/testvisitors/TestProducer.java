@@ -59,6 +59,7 @@ public class TestProducer implements Producer {
         this.products.addAll(Arrays.asList(products));
     }
 
+    @Override
     public Set<?> getProducts() {
         return products;
     }

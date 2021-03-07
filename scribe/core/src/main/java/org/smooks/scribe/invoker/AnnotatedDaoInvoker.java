@@ -84,6 +84,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#flush()
 	 */
+	@Override
 	public void flush() {
 		final FlushMethod method = daoRuntimeInfo.getFlushMethod();
 
@@ -95,6 +96,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#merge(java.lang.Object)
 	 */
+	@Override
 	public Object update(final Object entity) {
 		final EntityMethod method = daoRuntimeInfo.getDefaultUpdateMethod();
 
@@ -106,6 +108,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DaoInvoker#update(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object update(String name, Object entity) {
 		final EntityMethod method = daoRuntimeInfo.getUpdateMethod(name);
 
@@ -117,6 +120,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#persist(java.lang.Object)
 	 */
+	@Override
 	public Object insert(final Object entity) {
 		final EntityMethod method = daoRuntimeInfo.getDefaultInsertMethod();
 
@@ -128,6 +132,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DaoInvoker#insert(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object insert(String name, Object entity) {
 		final EntityMethod method = daoRuntimeInfo.getInsertMethod(name);
 
@@ -139,6 +144,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DaoInvoker#delete(java.lang.Object[])
 	 */
+	@Override
 	public Object delete(final Object entity) {
 		final EntityMethod method = daoRuntimeInfo.getDefaultDeleteMethod();
 
@@ -150,6 +156,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DaoInvoker#delete(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Object delete(String name, Object entity) {
 		final EntityMethod method = daoRuntimeInfo.getDeleteMethod(name);
 
@@ -162,6 +169,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#findByQuery(java.lang.String, java.lang.Object[])
 	 */
+	@Override
 	public Object lookupByQuery(final String query, final Object ... parameters) {
 
 		final LookupWithPositionalQueryMethod method = daoRuntimeInfo.getLookupByPositionalQueryMethod();
@@ -178,6 +186,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#findByQuery(java.lang.String, java.util.Map)
 	 */
+	@Override
 	public Object lookupByQuery(final String query, final Map<String, ?> parameters) {
 
 		final LookupWithNamedQueryMethod method = daoRuntimeInfo.getLookupByNamedQueryMethod();
@@ -193,6 +202,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#findBy(java.lang.String, java.util.Map)
 	 */
+	@Override
 	public Object lookup(final String name, final Map<String, ?> parameters) {
 
 		final LookupMethod method = daoRuntimeInfo.getLookupWithNamedParametersMethod(name);
@@ -206,6 +216,7 @@ public class AnnotatedDaoInvoker implements DaoInvoker {
 	/* (non-Javadoc)
 	 * @see org.smooks.scribe.invoker.DAOInvoker#findBy(java.lang.String, java.util.Map)
 	 */
+	@Override
 	public Object lookup(final String name, final Object ... parameters) {
 
 		final LookupMethod method = daoRuntimeInfo.getLookupWithNamedParametersMethod(name);

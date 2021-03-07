@@ -88,6 +88,7 @@ public class StreamReaderTestCase
         private ContentHandler handler;
         private static byte[] readBytes;
 
+        @Override
         public void parse(final InputSource inputSource) throws IOException, SAXException {
             final InputStream bin = inputSource.getByteStream();
 
@@ -96,54 +97,67 @@ public class StreamReaderTestCase
             handler.endDocument();
         }
 
+        @Override
         public void setContentHandler(ContentHandler arg0) {
             this.handler = arg0;
         }
 
+        @Override
         public void setExecutionContext(ExecutionContext executionContext) {
         }
 
+        @Override
         public ContentHandler getContentHandler() {
             return null;
         }
 
+        @Override
         public DTDHandler getDTDHandler() {
             return null;
         }
 
+        @Override
         public EntityResolver getEntityResolver() {
             return null;
         }
 
+        @Override
         public ErrorHandler getErrorHandler() {
             return null;
         }
 
+        @Override
         public boolean getFeature(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException {
             return false;
         }
 
+        @Override
         public Object getProperty(String arg0) throws SAXNotRecognizedException, SAXNotSupportedException {
             return null;
         }
 
+        @Override
         public void parse(String string) throws IOException, SAXException {
         }
 
+        @Override
         public void setDTDHandler(DTDHandler arg0) {
         }
 
+        @Override
         public void setEntityResolver(EntityResolver arg0) {
         }
 
+        @Override
         public void setErrorHandler(ErrorHandler arg0) {
         }
 
+        @Override
         public void setFeature(String arg0, boolean arg1) throws SAXNotRecognizedException, SAXNotSupportedException {
         }
 
+        @Override
         public void setProperty(String arg0, Object arg1) throws SAXNotRecognizedException, SAXNotSupportedException {
         }
-
     }
 }

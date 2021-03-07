@@ -62,7 +62,7 @@ public class FilterSettings {
     private boolean maintainElementStack = true;
     private boolean closeSource = true;
     private boolean closeResult = true;
-    private int readerPoolSize = 0;
+    private int readerPoolSize;
     private int maxNodeDepth = 1;
 
     public FilterSettings() {

@@ -59,11 +59,13 @@ public class DynamicVisitorLoader implements SAXVisitBefore, SAXVisitAfter {
 
     public static final DynamicVisitor visitor = new DynamicVisitor();
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         visitor.stuff.setLength(0);
         DynamicSAXElementVisitorList.addDynamicVisitor(visitor, executionContext);
     }
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         DynamicSAXElementVisitorList.removeDynamicVisitor(visitor, executionContext);
     }
@@ -72,17 +74,21 @@ public class DynamicVisitorLoader implements SAXVisitBefore, SAXVisitAfter {
 
         public final StringBuilder stuff = new StringBuilder();
 
+        @Override
         public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             stuff.append("<").append(element.getName()).append(">");
         }
 
+        @Override
         public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
             stuff.append(childText.getText());
         }
 
+        @Override
         public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
         }
 
+        @Override
         public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
             stuff.append("</").append(element.getName()).append(">");
         }

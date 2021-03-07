@@ -62,18 +62,21 @@ public class DomProcessingVisitCleanable implements DOMVisitBefore, DOMVisitAfte
 
     public static boolean cleaned;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
             fail("Resource shouldn't be cleaned yet!");
         }
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
             fail("Resource shouldn't be cleaned yet!");
         }
     }
 
+    @Override
     public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
         cleaned = true;
     }

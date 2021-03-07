@@ -86,6 +86,7 @@ public class SmooksSAXFilter extends AbstractFilter {
         parser = new SAXParser(executionContext);
     }
 
+    @Override
     public void doFilter() throws SmooksException {
         Source source = FilterSource.getSource(executionContext);
         Result result = FilterResult.getResult(executionContext, StreamResult.class);
@@ -136,6 +137,7 @@ public class SmooksSAXFilter extends AbstractFilter {
         }
     }
 
+    @Override
     public void cleanup() {
         parser.cleanup();
     }

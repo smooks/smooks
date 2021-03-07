@@ -54,6 +54,7 @@ import java.io.IOException;
  */
 public class SAXVisitorWriter02 implements SAXVisitAfter {
 
+    @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         element.getWriter(this);
     }

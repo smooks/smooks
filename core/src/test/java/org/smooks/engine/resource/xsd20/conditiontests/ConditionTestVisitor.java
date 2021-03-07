@@ -62,6 +62,7 @@ public class ConditionTestVisitor implements SAXVisitBefore {
 
     public static final List<String> messagesUsed = new ArrayList<String>();
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         messagesUsed.add(message);
     }

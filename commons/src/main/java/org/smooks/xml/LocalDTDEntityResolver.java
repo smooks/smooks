@@ -84,6 +84,7 @@ public class LocalDTDEntityResolver extends LocalEntityResolver {
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String,
      *      java.lang.String)
      */
+    @Override
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         setDocType(systemId);
         return super.resolveEntity(publicId, systemId);

@@ -91,6 +91,7 @@ public class ConfigurableVisitor implements SAXVisitBefore {
         return optionalStringParam.orElse(null);
     }
 
+    @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
     }
 }

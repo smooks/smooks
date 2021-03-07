@@ -117,6 +117,7 @@ public class IndexEvaluator implements XPathExpressionEvaluator {
         return (index == count);
     }
 
+    @Override
     public String toString() {
         return "[" + index + "]";
     }

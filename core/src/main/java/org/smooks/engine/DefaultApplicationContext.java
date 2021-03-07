@@ -97,11 +97,13 @@ public class DefaultApplicationContext implements ApplicationContext {
         ((URIResourceLocator)resourceLocator).setBaseURI(URI.create(URIResourceLocator.SCHEME_CLASSPATH + ":/"));
     }
 
+	@Override
 	public ContainerResourceLocator getResourceLocator() {
 		return resourceLocator;
 	}
 
-    public void setResourceLocator(ContainerResourceLocator resourceLocator) {
+	@Override
+	public void setResourceLocator(ContainerResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
     }
 
@@ -114,10 +116,12 @@ public class DefaultApplicationContext implements ApplicationContext {
 	 * Get the ProfileStore in use within the Standalone Context.
 	 * @return The ProfileStore.
 	 */
+	@Override
 	public ProfileStore getProfileStore() {
 		return profileStore;
 	}
-	
+
+	@Override
 	public BeanIdStore getBeanIdStore() {
 		return beanIdStore;
 	}
@@ -126,7 +130,8 @@ public class DefaultApplicationContext implements ApplicationContext {
         beanContextObservers.add(observer);
     }
 
-    public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
+	@Override
+	public Collection<BeanContextLifecycleObserver> getBeanContextLifecycleObservers() {
         return Collections.unmodifiableCollection(beanContextObservers);
     }
 
@@ -134,7 +139,8 @@ public class DefaultApplicationContext implements ApplicationContext {
         this.classLoader = classLoader;
     }
 
-    public ClassLoader getClassLoader() {
+	@Override
+	public ClassLoader getClassLoader() {
         return classLoader;
     }
 

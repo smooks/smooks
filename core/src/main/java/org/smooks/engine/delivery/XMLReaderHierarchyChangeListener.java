@@ -59,10 +59,12 @@ public class XMLReaderHierarchyChangeListener implements HierarchyChangeListener
         this.executionContext = executionContext;
     }
 
+    @Override
     public void attachXMLReader(XMLReader xmlReader) {
         AbstractParser.attachXMLReader(xmlReader, executionContext);
     }
 
+    @Override
     public void detachXMLReader() {
         AbstractParser.detachXMLReader(executionContext);
     }

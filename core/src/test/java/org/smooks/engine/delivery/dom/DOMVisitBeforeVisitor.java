@@ -52,8 +52,9 @@ import org.w3c.dom.Element;
  */
 public class DOMVisitBeforeVisitor implements DOMVisitBefore {
 
-    public static boolean visited = false;
+    public static boolean visited;
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         visited = true;
     }

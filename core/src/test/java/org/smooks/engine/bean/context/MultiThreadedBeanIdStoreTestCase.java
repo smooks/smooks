@@ -71,39 +71,36 @@ public class MultiThreadedBeanIdStoreTestCase {
 		final CyclicBarrier barrier = new CyclicBarrier(parties);
 		final CountDownLatch countDownLatch = new CountDownLatch(parties);
 
-		Runnable runnable = new Runnable() {
-			public void run() {
+		Runnable runnable = () -> {
+			try {
+				MockExecutionContext execContext = new MockExecutionContext();
+				execContext.setApplicationContext(applicationContext);
 
-				try {
-					MockExecutionContext execContext = new MockExecutionContext();
-					execContext.setApplicationContext(applicationContext);
+				BeanContext beanContext = execContext.getBeanContext();
 
-					BeanContext beanContext = execContext.getBeanContext();
+				barrier.await();
+				for(int i = 0; i < 1000; i++) {
 
-					barrier.await();
-					for(int i = 0; i < 1000; i++) {
+					Object bean = new Object();
 
-						Object bean = new Object();
+					//log.info(threadName + " Add bean " + beanId);
+					BeanId beanId = beanContext.getBeanId("beanId" + i);
+					beanContext.addBean(beanId, bean, null);
+					beanContext.addBean(beanId, bean, null);
 
-						//log.info(threadName + " Add bean " + beanId);
-						BeanId beanId = beanContext.getBeanId("beanId" + i);
-						beanContext.addBean(beanId, bean, null);
-						beanContext.addBean(beanId, bean, null);
+					//log.info(threadName + " Get bean " + beanId);
 
-						//log.info(threadName + " Get bean " + beanId);
+					Object retrievedBean = beanContext.getBean(beanId);
 
-						Object retrievedBean = beanContext.getBean(beanId);
+					assertSame(bean, retrievedBean);
 
-						assertSame(bean, retrievedBean);
-
-					}
-				} catch (Exception e) {
-					LOGGER.error("Exception thrown", e);
-
-					exceptionsThrown.set(true);
-				} finally {
-					countDownLatch.countDown();
 				}
+			} catch (Exception e) {
+				LOGGER.error("Exception thrown", e);
+
+				exceptionsThrown.set(true);
+			} finally {
+				countDownLatch.countDown();
 			}
 		};
 

@@ -77,6 +77,7 @@ public abstract class AbstractLogicalEvaluator implements XPathExpressionEvaluat
         return rhs;
     }
 
+    @Override
     public String toString() {
         return "(" + lhs + " " + op + " " +  rhs + ")";
     }

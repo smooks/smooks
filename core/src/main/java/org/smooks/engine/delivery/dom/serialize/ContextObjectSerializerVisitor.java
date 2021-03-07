@@ -71,6 +71,7 @@ public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, SAX
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextObjectSerializerVisitor.class);
 
+    @Override
     public void writeStartElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
         String key = getContextKey(element);
 

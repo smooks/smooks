@@ -48,10 +48,7 @@ import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.profile.UnknownProfileMemberException;
 import org.smooks.assertion.AssertArgument;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Default ProfileStore implementation.
@@ -70,6 +67,7 @@ public class DefaultProfileStore implements ProfileStore {
 	 * 
 	 * @see org.smooks.useragent.profile.ProfileStore#getProfileSet(java.lang.String)
 	 */
+	@Override
 	public ProfileSet getProfileSet(String profileMember) throws UnknownProfileMemberException {
 		ProfileSet set = null;
 
@@ -91,6 +89,7 @@ public class DefaultProfileStore implements ProfileStore {
 	 * @param profileSet
 	 *            The ProfileSet.
 	 */
+	@Override
 	public void addProfileSet(ProfileSet profileSet) {
         AssertArgument.isNotNull(profileSet, "profileSet");
 
@@ -121,7 +120,7 @@ public class DefaultProfileStore implements ProfileStore {
 			Map.Entry entry = (Map.Entry) storeIterator.next();
 			DefaultProfileSet profileSet = (DefaultProfileSet) entry.getValue();
 			Iterator iterator = profileSet.values().iterator();
-			Vector<DefaultProfileSet> addOns = new Vector<DefaultProfileSet>();
+			List<DefaultProfileSet> addOns = new ArrayList<>();
 
 			while (iterator.hasNext()) {
 				Profile profile = (Profile) iterator.next();
@@ -162,6 +161,7 @@ public class DefaultProfileStore implements ProfileStore {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		StringBuffer storeDescription = new StringBuffer();
 		Iterator iterator = store.entrySet().iterator();

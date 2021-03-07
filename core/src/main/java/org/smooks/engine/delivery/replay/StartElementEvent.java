@@ -66,6 +66,7 @@ public class StartElementEvent implements SAXEventReplay {
         this.attributes = atts;
     }
 
+    @Override
     public void replay(ContentHandler handler) throws SmooksException {
         try {
             handler.startElement(uri, localName, qName, attributes);

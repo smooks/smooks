@@ -99,6 +99,7 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
         this.error = error;
     }
 
+    @Override
     public ResourceConfig getResourceConfig() {
         return visitorBinding.getResourceConfig();
     }

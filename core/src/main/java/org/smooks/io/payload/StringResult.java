@@ -62,10 +62,12 @@ public class StringResult extends StreamResult implements ResultExtractor<String
         return getWriter().toString();
     }
 
+    @Override
     public String toString() {
         return getResult();
     }
 
+    @Override
     public Object extractFromResult(StringResult result, Export export) {
         return getResult();
     }

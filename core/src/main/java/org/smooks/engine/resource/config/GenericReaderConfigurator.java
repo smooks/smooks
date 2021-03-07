@@ -94,6 +94,7 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
         return this;
     }
 
+    @Override
     public List<ResourceConfig> toConfig() {
         ResourceConfig resourceConfig = new DefaultResourceConfig();
         resourceConfig.setSelector(AbstractParser.ORG_XML_SAX_DRIVER);        

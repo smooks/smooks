@@ -45,10 +45,7 @@ package org.smooks.tck.delivery.dom;
 import org.smooks.engine.delivery.SelectorTable;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Mock ContentDeliveryConfig for DOM.
@@ -80,7 +77,7 @@ public class MockContentDeliveryConfig extends DOMContentDeliveryConfig {
     List objects = (List) objectsHash.get(selector);
 
     if (objects == null) {
-      objects = new Vector();
+      objects = new ArrayList<>();
       objectsHash.put(selector, objects);
     }
     objects.add(object);

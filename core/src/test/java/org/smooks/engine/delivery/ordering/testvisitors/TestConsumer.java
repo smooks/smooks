@@ -58,6 +58,7 @@ public class TestConsumer implements Consumer {
         this.consumes = Arrays.asList(consumes);
     }
 
+    @Override
     public boolean consumes(Object object) {
         return consumes.contains(object);
     }

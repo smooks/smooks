@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
 
 public class VisitAfterVisitor implements AfterVisitor {
 
-    public static boolean visited = false;
+    public static boolean visited;
     
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {

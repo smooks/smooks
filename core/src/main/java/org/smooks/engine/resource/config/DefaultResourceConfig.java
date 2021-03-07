@@ -202,7 +202,7 @@ public class DefaultResourceConfig implements ResourceConfig {
      * Is this resource defined inline in the configuration, or is it
      * referenced through a URI.
      */
-    private boolean isInline = false;
+    private boolean isInline;
   
     /**
      * The type of the resource.  "class", "groovy", "xsl" etc....
@@ -220,7 +220,7 @@ public class DefaultResourceConfig implements ResourceConfig {
      * e.g. {@link DefaultDOMSerializerVisitor} or
      * {@link DefaultSAXElementSerializer}.
      */
-    private boolean defaultResource = false;
+    private boolean defaultResource;
     /**
      * The extended config namespace from which the  resource was created.
      */
