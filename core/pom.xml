@@ -15,6 +15,18 @@
     <packaging>bundle</packaging>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/java/org/smooks/engine/delivery/sax/ng/org/apache</directory>
+                <targetPath>org/smooks/engine/delivery/sax/ng/org/apache</targetPath>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
