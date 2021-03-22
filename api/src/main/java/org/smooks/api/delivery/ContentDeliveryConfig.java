@@ -51,7 +51,7 @@ import org.smooks.api.delivery.ordering.Consumer;
 import org.smooks.api.delivery.ordering.Producer;
 import org.smooks.api.Registry;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +63,7 @@ import java.util.Map;
  * and other information for the targeted profile.
  * @author tfennelly
  */
-@NotThreadSafe
+@ThreadSafe
 public interface ContentDeliveryConfig {
 
     /**
@@ -113,7 +113,7 @@ public interface ContentDeliveryConfig {
 	 * @see Registry#lookup(Object)
 	 * @see #getResourceConfigs(String)
 	 */
-	List getObjects(String selector);
+	List<?> getObjects(String selector);
 
     /**
      * Get a new stream filter for the content delivery configuration.

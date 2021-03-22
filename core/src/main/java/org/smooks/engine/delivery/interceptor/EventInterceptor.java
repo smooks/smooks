@@ -67,12 +67,11 @@ import org.w3c.dom.Element;
 import java.io.IOException;
 
 public class EventInterceptor extends AbstractInterceptorVisitor implements SAXElementVisitor, ElementVisitor {
-
     @Override
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws IOException {
         final Invocation<SAXVisitBefore> invocation = new Invocation<SAXVisitBefore>() {
             @Override
-            public Object invoke(SAXVisitBefore visitor) {
+            public Object invoke(SAXVisitBefore visitor, Object... args) {
                 try {
                     visitor.visitBefore(element, executionContext);
                 } catch (IOException e) {
@@ -102,7 +101,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws IOException {
         intercept(new Invocation<SAXVisitAfter>() {
             @Override
-            public Object invoke(SAXVisitAfter visitor) {
+            public Object invoke(SAXVisitAfter visitor, Object... args) {
                 try {
                     visitor.visitAfter(element, executionContext);
                 } catch (IOException e) {
@@ -126,7 +125,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
     public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws IOException {
         intercept(new Invocation<SAXVisitChildren>() {
             @Override
-            public Object invoke(SAXVisitChildren visitor) {
+            public Object invoke(SAXVisitChildren visitor, Object... args) {
                 try {
                     visitor.onChildText(element, childText, executionContext);
                 } catch (IOException e) {
@@ -150,7 +149,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws IOException {
         intercept(new Invocation<SAXVisitChildren>() {
             @Override
-            public Object invoke(SAXVisitChildren visitor) {
+            public Object invoke(SAXVisitChildren visitor, Object... args) {
                 try {
                     visitor.onChildElement(element, childElement, executionContext);
                 } catch (IOException e) {
@@ -172,44 +171,20 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
-        final Invocation<BeforeVisitor> invocation = new Invocation<BeforeVisitor>() {
-            @Override
-            public Object invoke(BeforeVisitor visitor) {
-                visitor.visitBefore(element, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<BeforeVisitor> getTarget() {
-                return BeforeVisitor.class;
-            }
-        };
-
         if (getTarget() instanceof BeforeVisitor) {
             for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
                 executionEventListener.onEvent(new ResourceTargetingEvent(new NodeFragment(element), getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }
-            intercept(invocation);
+            intercept(visitBeforeInvocation, element, executionContext);
             onEvent(executionContext, new NodeFragment(element), VisitSequence.BEFORE);
         } else {
-            intercept(invocation);
+            intercept(visitBeforeInvocation, element, executionContext);
         }
     }
 
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
-        intercept(new Invocation<AfterVisitor>() {
-            @Override
-            public Object invoke(AfterVisitor visitor) {
-                visitor.visitAfter(element, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<AfterVisitor> getTarget() {
-                return AfterVisitor.class;
-            }
-        });
+        intercept(visitAfterInvocation, element, executionContext);
         
         if (getTarget() instanceof AfterVisitor) {
             onEvent(executionContext, new NodeFragment(element), VisitSequence.AFTER);
@@ -218,18 +193,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
     
     @Override
     public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-        intercept(new Invocation<ChildrenVisitor>() {
-            @Override
-            public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildText(characterData, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        });
+        intercept(visitChildTextInvocation, characterData, executionContext);
         
         if (getTarget() instanceof ChildrenVisitor) {
             onEvent(executionContext, new NodeFragment(characterData), VisitSequence.AFTER);
@@ -238,18 +202,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
 
     @Override
     public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-        intercept(new Invocation<ChildrenVisitor>() {
-            @Override
-            public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildElement(childElement, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        });
+        intercept(visitChildElementInvocation, childElement, executionContext);
         if (getTarget() instanceof ChildrenVisitor) {
             onEvent(executionContext, new NodeFragment(childElement.getParentNode()), VisitSequence.AFTER);
         }

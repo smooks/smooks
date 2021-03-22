@@ -49,15 +49,16 @@ import org.smooks.engine.delivery.dom.DOMFilterProvider;
 import org.smooks.engine.delivery.sax.SAXFilterProvider;
 import org.smooks.engine.delivery.sax.ng.SaxNgFilterProvider;
 import org.smooks.api.Registry;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRuntimeFactory {
-    private final Map<ContentDeliveryConfigBuilder, ReaderPool> readerPools = new ConcurrentHashMap<>();
-    private final Map<String, ContentDeliveryConfigBuilder> contentDeliveryConfigBuilders = new ConcurrentHashMap<>();
+    private final Map<ContentDeliveryConfigBuilder, ReaderPool> readerPools = new HashMap<>();
+    private final Map<String, ContentDeliveryConfigBuilder> contentDeliveryConfigBuilders = new HashMap<>();
     private final Registry registry;
 
     public DefaultContentDeliveryRuntimeFactory(final Registry registry) {
@@ -66,10 +67,23 @@ public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRunt
     
     @Override
     public ContentDeliveryRuntime create(final ProfileSet profileSet, final List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) {
-        final ContentDeliveryConfigBuilder contentDeliveryConfigBuilder = contentDeliveryConfigBuilders.computeIfAbsent(profileSet.getBaseProfile(), p -> new DefaultContentDeliveryConfigBuilder(profileSet, registry, Arrays.asList(new SaxNgFilterProvider(), new SAXFilterProvider(), new DOMFilterProvider())));
-        final ContentDeliveryConfig contentDeliveryConfig = contentDeliveryConfigBuilder.build(extendedContentHandlerBindings);
-        final ReaderPool readerPool = readerPools.computeIfAbsent(contentDeliveryConfigBuilder, c -> new DefaultReaderPool(contentDeliveryConfig));
-
-        return new DefaultContentDeliveryRuntime(readerPool, contentDeliveryConfig);
+        ContentDeliveryConfigBuilder contentDeliveryConfigBuilder = contentDeliveryConfigBuilders.get(profileSet.getBaseProfile());
+        if (contentDeliveryConfigBuilder == null) {
+            synchronized (this) {
+                if (contentDeliveryConfigBuilders.get(profileSet.getBaseProfile()) == null) {
+                    contentDeliveryConfigBuilder = new DefaultContentDeliveryConfigBuilder(profileSet, registry, Arrays.asList(new SaxNgFilterProvider(), new SAXFilterProvider(), new DOMFilterProvider()));
+                    final int readerPoolSize = Integer.parseInt(registry.lookup(new GlobalParamsLookup(registry)).getParameterValue(Filter.READER_POOL_SIZE, String.class, "0"));
+                    if (readerPoolSize == -1) {
+                        readerPools.put(contentDeliveryConfigBuilder, new DynamicReaderPool());
+                    } else {
+                        readerPools.put(contentDeliveryConfigBuilder, new DefaultReaderPool(readerPoolSize));
+                    }
+                    contentDeliveryConfigBuilders.put(profileSet.getBaseProfile(), contentDeliveryConfigBuilder);
+                } else {
+                    contentDeliveryConfigBuilder = contentDeliveryConfigBuilders.get(profileSet.getBaseProfile());
+                }
+            }
+        }
+        return new DefaultContentDeliveryRuntime(readerPools.get(contentDeliveryConfigBuilder), contentDeliveryConfigBuilder.build(extendedContentHandlerBindings));
     }
 }

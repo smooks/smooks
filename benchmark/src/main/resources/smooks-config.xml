@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--
   ========================LICENSE_START=================================
-  Core
+  Benchmark
   %%
-  Copyright (C) 2020 Smooks
+  Copyright (C) 2020 - 2021 Smooks
   %%
   Licensed under the terms of the Apache License Version 2.0, or
   the GNU Lesser General Public License version 3.0 or later.
@@ -45,10 +45,35 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
 
-    <core:node-reader>
-        <resource-config selector="#document">
-            <resource>org.smooks.engine.resource.reader.NodeReaderFunctionalTestCase$NodeReaderResource</resource>
-        </resource-config>
-    </core:node-reader>
+    <resource-config selector="org.xml.sax.driver">
+        <resource>com.fasterxml.aalto.sax.BenchmarkAaltoXMLReader</resource>
+    </resource-config>
+
+    <resource-config selector="global-parameters">
+        <param name="entities.rewrite">false</param>
+        <param name="default.serialization.on">false</param>
+    </resource-config>
+    
+    <resource-config selector="author">
+        <resource>org.smooks.benchmark.CounterVisitor</resource>
+    </resource-config>
+    
+    <core:smooks filterSourceOn="article,inproceedings,proceedings,book,incollection,phdthesis,mastersthesis,www" maxNodeDepth="0">
+        <core:config>
+            <smooks-resource-list>
+                <core:delegate-reader>
+                    <resource-config selector="#document">
+                        <resource>org.smooks.benchmark.BibliographyVisitor</resource>
+                    </resource-config>
+                </core:delegate-reader>
+                <resource-config selector="author">
+                    <resource>org.smooks.benchmark.BenchmarkVisitor</resource>
+                </resource-config>
+                <resource-config selector="title">
+                    <resource>org.smooks.benchmark.BenchmarkVisitor</resource>
+                </resource-config>
+            </smooks-resource-list>
+        </core:config>
+    </core:smooks>
 
 </smooks-resource-list>

@@ -569,8 +569,12 @@ public class Smooks {
                 executionContext.setTerminationError(t);
                 throw new SmooksException("Smooks Filtering operation failed.", t);
             } finally {
-                filter.cleanup();
                 AbstractFilter.removeCurrentFilter();
+                try {
+                    filter.close();
+                } catch (IOException e) {
+                    throw new SmooksException(e);
+                }
             }
         } finally {
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {

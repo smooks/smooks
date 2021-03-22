@@ -55,7 +55,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.smooks.io.StreamUtils;
-import org.smooks.support.XmlUtil;
 import org.smooks.xml.LocalDTDEntityResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

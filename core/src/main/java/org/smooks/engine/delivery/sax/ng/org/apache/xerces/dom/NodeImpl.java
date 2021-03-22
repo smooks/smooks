@@ -20,13 +20,8 @@ package org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
-import org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.*;
-import org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.AttrImpl;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -168,7 +163,7 @@ public abstract class NodeImpl
     protected final static short ID           = 0x1<<9;
 
     /** Table for user data attached to this document nodes. */
-    protected Hashtable userData;  // serialized as Hashtable
+    protected Map userData;  // serialized as Hashtable
     //
     // Constructors
     //
@@ -310,7 +305,7 @@ public abstract class NodeImpl
         }
         //Hashtable t = (Hashtable) userData.get(n);
         if(n instanceof NodeImpl){
-            Hashtable t = ((NodeImpl)n).getUserDataRecord();
+            Map t = ((NodeImpl)n).getUserDataRecord();
             if (t == null || t.isEmpty()) {
                 return;
             }
@@ -325,7 +320,7 @@ public abstract class NodeImpl
      * @param operation The operation - import, clone, or delete.
      * @param handlers Data associated with n.
      */
-    void callUserDataHandlers(Node n, Node c, short operation, Hashtable userData) {
+    void callUserDataHandlers(Node n, Node c, short operation, Map userData) {
         if (userData == null || userData.isEmpty()) {
             return;
         }
@@ -1840,7 +1835,7 @@ public abstract class NodeImpl
             }
         } else {
             if (userData == null) {
-                userData = new Hashtable<>();
+                userData = new HashMap();
             }
             Object o = userData.put(key, new ParentNode.UserDataRecord(data, handler));
             if (o != null) {
@@ -1872,7 +1867,7 @@ public abstract class NodeImpl
         return null;
     }
 
-	protected Hashtable getUserDataRecord(){
+	protected Map getUserDataRecord(){
         return userData;
 	}
 

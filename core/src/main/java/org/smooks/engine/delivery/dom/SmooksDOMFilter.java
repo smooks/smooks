@@ -320,7 +320,7 @@ public class SmooksDOMFilter extends AbstractFilter {
     }
 
     @Override
-    public void cleanup() {
+    public void close() {
     }
 
     /**

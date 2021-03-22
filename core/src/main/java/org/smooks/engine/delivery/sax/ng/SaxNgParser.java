@@ -52,37 +52,33 @@ import org.smooks.xml.hierarchy.HierarchyChangeReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Source;
+import java.io.Closeable;
 import java.io.IOException;
 
-public class SaxNgParser extends AbstractParser {
+public class SaxNgParser extends AbstractParser implements Closeable {
 
+    private final DocumentBuilder documentBuilder;
     private SaxNgHandler saxHandler;
 
-    public SaxNgParser(ExecutionContext execContext) {
-        super(execContext);
+    public SaxNgParser(final ExecutionContext executionContext, final DocumentBuilder documentBuilder) {
+        super(executionContext);
+        this.documentBuilder = documentBuilder;
     }
 
     protected void parse(Source source, ExecutionContext executionContext) throws SAXException, IOException {
+        saxHandler = new SaxNgHandler(getExecutionContext(), documentBuilder);
         ReaderPool readerPool = executionContext.getContentDeliveryRuntime().getReaderPool();
-        XMLReader saxReader = getXMLReader(executionContext);
-
-        saxHandler = new SaxNgHandler(getExecutionContext());
-
+        
+        XMLReader saxReader = null;
         try {
-            if (saxReader == null) {
-                saxReader = readerPool.borrowXMLReader();
-            }
+            saxReader = readerPool.borrowXMLReader();
             if (saxReader == null) {
                 saxReader = createXMLReader();
             }
 
-            NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
-            executionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, namespaceDeclarationStack);
-
-            attachNamespaceDeclarationStack(saxReader, executionContext);
-            attachXMLReader(saxReader, executionContext);
-
+            executionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, new NamespaceDeclarationStack());
             configureReader(saxReader, saxHandler, executionContext, source);
             if (saxReader instanceof HierarchyChangeReader) {
                 ((HierarchyChangeReader) saxReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
@@ -109,9 +105,10 @@ public class SaxNgParser extends AbstractParser {
         }
     }
 
-    public void cleanup() {
+    @Override
+    public void close() {
         if (saxHandler != null) {
-            saxHandler.cleanup();
+            saxHandler.close();
         }
     }
 }

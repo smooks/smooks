@@ -70,29 +70,27 @@ public class SmooksSAXFilterTestCase
 	private byte[] input;
 	private ExecutionContext context;
 	private SmooksSAXFilter saxFilter;
-	
+
 	@Test
-	public void doFilter_verify_that_flush_is_called() throws IOException
-	{
+	public void doFilter_verify_that_flush_is_called() throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		StreamResult result = new StreamResult( baos );
-		
-		saxFilter.doFilter( new StreamSource( new ByteArrayInputStream( input ) ), result );
-		
+		StreamResult result = new StreamResult(baos);
+
+		saxFilter.doFilter(new StreamSource(new ByteArrayInputStream(input)), result);
+
 		OutputStream outputStream = result.getOutputStream();
-		assertTrue( outputStream instanceof ByteArrayOutputStream );
-		
-		byte[] byteArray = ((ByteArrayOutputStream)outputStream).toByteArray();
-		assertTrue ( byteArray.length > 0 );
+		assertTrue(outputStream instanceof ByteArrayOutputStream);
+
+		byte[] byteArray = ((ByteArrayOutputStream) outputStream).toByteArray();
+		assertTrue(byteArray.length > 0);
 	}
-	
+
 	@Before
-	public void setup() throws IOException, SAXException
-	{
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
-        context = smooks.createExecutionContext();
-		input = StreamUtils.readStream( getClass().getResourceAsStream( "test-01.xml") );
-		saxFilter = new SmooksSAXFilter( context );
+	public void setup() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
+		context = smooks.createExecutionContext();
+		input = StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml"));
+		saxFilter = new SmooksSAXFilter(context, true, true);
 	}
 
 }

@@ -53,6 +53,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import javax.xml.transform.Source;
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -62,7 +63,7 @@ import java.nio.charset.Charset;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SAXParser extends AbstractParser {
+public class SAXParser extends AbstractParser implements Closeable {
 
     private SAXHandler saxHandler;
 
@@ -120,9 +121,10 @@ public class SAXParser extends AbstractParser {
         }
     }
 
-    public void cleanup() {
-        if(saxHandler != null) {
-            saxHandler.cleanup();
+    @Override
+    public void close() {
+        if (saxHandler != null) {
+            saxHandler.close();
         }
     }
 }

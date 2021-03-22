@@ -72,11 +72,11 @@ public class MILYN_247_TestCase {
     public void test_MILYN_247_02() {
         Smooks smooks = new Smooks();
 
-        smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.DOM).setRewriteEntities(false));
+        smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.DOM).setRewriteEntities(true));
 
         StringResult stringResult = new StringResult();
         smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringResult);
-        assertEquals("<a attrib=\"an & 'attribute\">Bigger &#62; is better!</a>", stringResult.getResult());
+        assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringResult.getResult());
     }
 
 	@Test
@@ -98,6 +98,6 @@ public class MILYN_247_TestCase {
 
         StringResult stringResult = new StringResult();
         smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringResult);
-        assertEquals("<a attrib=\"an & 'attribute\">Bigger &#62; is better!</a>", stringResult.getResult());
+        assertEquals("<a attrib=\"an & 'attribute\">Bigger > is better!</a>", stringResult.getResult());
     }
 }

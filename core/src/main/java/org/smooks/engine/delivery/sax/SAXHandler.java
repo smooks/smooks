@@ -176,7 +176,7 @@ public class SAXHandler extends SmooksContentHandler {
     }
 
     @Override
-    public void cleanup() {
+    public void close() {
     }
 
     @Override

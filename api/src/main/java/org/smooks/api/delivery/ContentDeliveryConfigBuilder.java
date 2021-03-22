@@ -44,8 +44,10 @@ package org.smooks.api.delivery;
 
 import org.smooks.api.resource.visitor.Visitor;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.List;
 
+@ThreadSafe
 public interface ContentDeliveryConfigBuilder {
 
     ContentDeliveryConfig build(List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings);

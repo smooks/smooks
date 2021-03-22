@@ -66,11 +66,63 @@ import java.util.Collections;
 import java.util.Set;
 
 public class StaticProxyInterceptor extends AbstractInterceptorVisitor implements SAXElementVisitor, ElementVisitor, DOMElementVisitor, VisitLifecycleCleanable, Producer, Consumer, ParameterizedVisitor, ExecutionLifecycleInitializable, ExecutionLifecycleCleanable {
+    
+    protected Invocation<VisitLifecycleCleanable> executeVisitLifecycleCleanupInvocation = new Invocation<VisitLifecycleCleanable>() {
+        @Override
+        public Object invoke(VisitLifecycleCleanable visitor, Object... args) {
+            visitor.executeVisitLifecycleCleanup((Fragment<?>) args[0], (ExecutionContext) args[1]);
+            return null;
+        }
+
+        @Override
+        public Class<VisitLifecycleCleanable> getTarget() {
+            return VisitLifecycleCleanable.class;
+        }
+    };
+
+    protected Invocation<ExecutionLifecycleInitializable> executionLifecycleInitializableInvocation = new Invocation<ExecutionLifecycleInitializable>() {
+        @Override
+        public Object invoke(ExecutionLifecycleInitializable visitor, Object... args) {
+            visitor.executeExecutionLifecycleInitialize((ExecutionContext) args[0]);
+            return null;
+        }
+
+        @Override
+        public Class<ExecutionLifecycleInitializable> getTarget() {
+            return ExecutionLifecycleInitializable.class;
+        }
+    };
+
+    protected Invocation<ExecutionLifecycleCleanable> executionLifecycleCleanableInvocation = new Invocation<ExecutionLifecycleCleanable>() {
+        @Override
+        public Object invoke(ExecutionLifecycleCleanable visitor, Object... args) {
+            visitor.executeExecutionLifecycleCleanup((ExecutionContext) args[0]);
+            return null;
+        }
+
+        @Override
+        public Class<ExecutionLifecycleCleanable> getTarget() {
+            return ExecutionLifecycleCleanable.class;
+        }
+    };
+
+    protected Invocation<ParameterizedVisitor> getMaxNodeInvocation = new Invocation<ParameterizedVisitor>() {
+        @Override
+        public Object invoke(ParameterizedVisitor visitor, Object... args) {
+            return visitor.getMaxNodeDepth();
+        }
+
+        @Override
+        public Class<ParameterizedVisitor> getTarget() {
+            return ParameterizedVisitor.class;
+        }
+    };
+    
     @Override
     public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         intercept(new Invocation<SAXVisitAfter>() {
             @Override
-            public Object invoke(SAXVisitAfter visitor) {
+            public Object invoke(SAXVisitAfter visitor, Object... args) {
                 try {
                     visitor.visitAfter(element, executionContext);
                 } catch (IOException e) {
@@ -90,7 +142,7 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
     public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
         intercept(new Invocation<SAXVisitBefore>() {
             @Override
-            public Object invoke(SAXVisitBefore visitor) {
+            public Object invoke(SAXVisitBefore visitor, Object... args) {
                 try {
                     visitor.visitBefore(element, executionContext);
                 } catch (IOException e) {
@@ -110,7 +162,7 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
     public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException {
         intercept(new Invocation<SAXVisitChildren>() {
             @Override
-            public Object invoke(SAXVisitChildren visitor) {
+            public Object invoke(SAXVisitChildren visitor, Object... args) {
                 try {
                     visitor.onChildText(element, childText, executionContext);
                 } catch (IOException e) {
@@ -130,7 +182,7 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
     public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
         intercept(new Invocation<SAXVisitChildren>() {
             @Override
-            public Object invoke(SAXVisitChildren visitor) {
+            public Object invoke(SAXVisitChildren visitor, Object... args) {
                 try {
                     visitor.onChildElement(element, childElement, executionContext);
                 } catch (IOException e) {
@@ -148,89 +200,34 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
-        intercept(new Invocation<BeforeVisitor>() {
-            @Override
-            public Object invoke(BeforeVisitor visitor) {
-                visitor.visitBefore(element, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<BeforeVisitor> getTarget() {
-                return BeforeVisitor.class;
-            }
-        });
+        intercept(visitBeforeInvocation, element, executionContext);
     }
 
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) {
-        intercept(new Invocation<AfterVisitor>() {
-            @Override
-            public Object invoke(AfterVisitor visitor) {
-                visitor.visitAfter(element, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<AfterVisitor> getTarget() {
-                return AfterVisitor.class;
-            }
-        });
+        intercept(visitAfterInvocation, element, executionContext);
     }
 
     @Override
     public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-        intercept(new Invocation<ChildrenVisitor>() {
-            @Override
-            public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildText(characterData, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        });
+        intercept(visitChildTextInvocation, characterData, executionContext);
     }
 
     @Override
     public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-        intercept(new Invocation<ChildrenVisitor>() {
-            @Override
-            public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildElement(childElement, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        });
+        intercept(visitChildElementInvocation, childElement, executionContext);
     }
 
     @Override
-    public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
-        intercept(new Invocation<VisitLifecycleCleanable>() {
-            @Override
-            public Object invoke(VisitLifecycleCleanable visitor) {
-                visitor.executeVisitLifecycleCleanup(fragment, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<VisitLifecycleCleanable> getTarget() {
-                return VisitLifecycleCleanable.class;
-            }
-        });
+    public void executeVisitLifecycleCleanup(Fragment<?> fragment, ExecutionContext executionContext) {
+        intercept(executeVisitLifecycleCleanupInvocation, fragment, executionContext);
     }
 
     @Override
     public boolean consumes(Object object) {
         final Object result = intercept(new Invocation<Consumer>() {
             @Override
-            public Object invoke(Consumer visitor) {
+            public Object invoke(Consumer visitor, Object... args) {
                 return visitor.consumes(object);
             }
 
@@ -249,9 +246,9 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
 
     @Override
     public Set<?> getProducts() {
-        Object result = intercept(new Invocation<Producer>() {
+        final Object result = intercept(new Invocation<Producer>() {
             @Override
-            public Object invoke(Producer visitor) {
+            public Object invoke(Producer visitor, Object... args) {
                 return visitor.getProducts();
             }
 
@@ -270,50 +267,17 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
 
     @Override
     public int getMaxNodeDepth() {
-        Object depth = intercept(new Invocation<ParameterizedVisitor>() {
-            @Override
-            public Object invoke(ParameterizedVisitor visitor) {
-                return visitor.getMaxNodeDepth();
-            }
-
-            @Override
-            public Class<ParameterizedVisitor> getTarget() {
-                return ParameterizedVisitor.class;
-            }
-        });
-        
+        final Object depth = intercept(getMaxNodeInvocation);
         return depth == null ? 1 : (int) depth;
     }
 
     @Override
-    public void executeExecutionLifecycleInitialize(ExecutionContext executionContext) {
-        intercept(new Invocation<ExecutionLifecycleInitializable>() {
-            @Override
-            public Object invoke(ExecutionLifecycleInitializable visitor) {
-                visitor.executeExecutionLifecycleInitialize(executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ExecutionLifecycleInitializable> getTarget() {
-                return ExecutionLifecycleInitializable.class;
-            }
-        });
+    public void executeExecutionLifecycleInitialize(final ExecutionContext executionContext) {
+        intercept(executionLifecycleInitializableInvocation, executionContext);
     }
 
     @Override
-    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
-        intercept(new Invocation<ExecutionLifecycleCleanable>() {
-            @Override
-            public Object invoke(ExecutionLifecycleCleanable visitor) {
-                visitor.executeExecutionLifecycleCleanup(executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ExecutionLifecycleCleanable> getTarget() {
-                return ExecutionLifecycleCleanable.class;
-            }
-        });
+    public void executeExecutionLifecycleCleanup(final ExecutionContext executionContext) {
+        intercept(executionLifecycleCleanableInvocation, executionContext);
     }
 }

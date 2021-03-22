@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultBeanIdStore implements BeanIdStore {
-    private volatile HashMap<String, BeanId> beanIdMap = new  HashMap<String, BeanId>();
+    private volatile HashMap<String, BeanId> beanIdMap = new HashMap<>();
 
     /**
      * registers a beanId name and returns the {@link BeanId} object.
@@ -116,7 +116,7 @@ public class DefaultBeanIdStore implements BeanIdStore {
      *
      */
     @Override
-    public synchronized Map<String, BeanId> getBeanIdMap() {
+    public Map<String, BeanId> getBeanIdMap() {
         return Collections.unmodifiableMap(beanIdMap);
     }
 

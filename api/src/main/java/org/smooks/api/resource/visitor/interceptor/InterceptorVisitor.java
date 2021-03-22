@@ -42,7 +42,6 @@
  */
 package org.smooks.api.resource.visitor.interceptor;
 
-import org.smooks.api.ApplicationContext;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.resource.visitor.Visitor;
 
@@ -53,6 +52,4 @@ public interface InterceptorVisitor extends Visitor {
     ContentHandlerBinding<Visitor> getVisitorBinding();
 
     ContentHandlerBinding<Visitor> getTarget();
-
-    void setApplicationContext(ApplicationContext applicationContext);
 }

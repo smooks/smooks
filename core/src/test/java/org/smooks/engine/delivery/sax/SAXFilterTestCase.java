@@ -151,7 +151,7 @@ public class SAXFilterTestCase {
         assertEquals("", SAXVisitor03.element.getName().getPrefix());
         assertEquals("http://x", SAXVisitor03.element.getName().getNamespaceURI());
         assertEquals(1, SAXVisitor03.children.size());
-        assertEquals(7, SAXVisitor03.childText.size());
+        assertEquals(2, SAXVisitor03.childText.size());
     }
 
 	@Test

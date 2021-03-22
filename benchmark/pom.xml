@@ -22,7 +22,7 @@
                     <finalName>benchmark-app</finalName>
                     <archive>
                         <manifest>
-                            <mainClass>org.smooks.BenchmarkApp</mainClass>
+                            <mainClass>org.smooks.benchmark.BenchmarkApp</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -37,6 +37,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>main/java/com/fasterxml/**/*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

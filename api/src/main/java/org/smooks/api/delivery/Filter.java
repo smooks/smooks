@@ -46,8 +46,9 @@ import org.smooks.api.SmooksException;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import java.io.Closeable;
 
-public interface Filter {
+public interface Filter extends Closeable {
     /**
      * Stream filter type config parameter.
      */
@@ -83,9 +84,4 @@ public interface Filter {
      * @throws SmooksException Failed to filter.
      */
     void doFilter() throws SmooksException;
-
-    /**
-     * Cleanup the Filter.
-     */
-    void cleanup();
 }

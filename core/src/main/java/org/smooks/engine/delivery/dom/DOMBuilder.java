@@ -211,7 +211,7 @@ public class DOMBuilder extends SmooksContentHandler {
     }
 
     @Override
-    public void cleanup() {
+    public void close() {
     }
 
     private String getCurPath() {

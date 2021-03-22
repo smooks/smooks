@@ -77,9 +77,7 @@ public class XStreamXMLReader implements JavaXMLReader {
     public void setSourceObjects(List<Object> sourceObjects) throws SmooksConfigException {
         try {
             xstreamReader.setProperty(SaxWriter.SOURCE_OBJECT_LIST_PROPERTY, sourceObjects);
-        } catch (SAXNotRecognizedException e) {
-            throw new SmooksConfigException("Unable to set source Java Objects on the underlying XStream SaxWriter.", e);
-        } catch (SAXNotSupportedException e) {
+        } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
             throw new SmooksConfigException("Unable to set source Java Objects on the underlying XStream SaxWriter.", e);
         }
     }

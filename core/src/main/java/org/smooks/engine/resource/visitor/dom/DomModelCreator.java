@@ -218,6 +218,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
 
         private DOMCreator(ExecutionContext executionContext) {
             document = documentBuilder.newDocument();
+            document.setStrictErrorChecking(false);
             currentNode = document;
             this.executionContext = executionContext;
         }

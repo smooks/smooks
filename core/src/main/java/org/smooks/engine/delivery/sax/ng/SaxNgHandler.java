@@ -76,8 +76,7 @@ import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.DocumentBuilder;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -96,46 +95,45 @@ public class SaxNgHandler extends SmooksContentHandler {
     private final boolean rewriteEntities;
     private final LifecycleManager lifecycleManager;
     private final StringBuilder entityBuilder = new StringBuilder(10);
+    private final DocumentBuilder documentBuilder;
 
     private ContentHandlerState currentContentHandlerState;
-    private Node currentNode;
-    private Document factory;
-    
+    private NodeFragment currentNodeFragment;
+    private Document document;
+
     @SuppressWarnings("WeakerAccess")
-    public SaxNgHandler(final ExecutionContext executionContext) {
-        this(executionContext, null);
+    public SaxNgHandler(final ExecutionContext executionContext, final DocumentBuilder documentBuilder) {
+        this(executionContext, documentBuilder, null);
     }
 
-    public SaxNgHandler(final ExecutionContext executionContext, final SmooksContentHandler parentContentHandler) {
+    public SaxNgHandler(final ExecutionContext executionContext, final DocumentBuilder documentBuilder, final SmooksContentHandler parentContentHandler) {
         super(executionContext, parentContentHandler);
 
         this.executionContext = executionContext;
+        this.documentBuilder = documentBuilder;
         this.writer = Stream.out(executionContext);
         contentDeliveryRuntime = executionContext.getContentDeliveryRuntime();
         lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
         deliveryConfig = ((SaxNgContentDeliveryConfig) contentDeliveryRuntime.getContentDeliveryConfig());
-        
+
         final SaxNgVisitorBindings starVisitorBindings = deliveryConfig.get("*");
         final SaxNgVisitorBindings starStarVisitorBindings = deliveryConfig.get("**");
 
-        globalVisitorBindings = starVisitorBindings != null ? starVisitorBindings.merge(starStarVisitorBindings) : starStarVisitorBindings;
-        rewriteEntities = deliveryConfig.isRewriteEntities();
+        globalVisitorBindings = starVisitorBindings != null ? starVisitorBindings.merge(starStarVisitorBindings) : starStarVisitorBindings;        rewriteEntities = deliveryConfig.isRewriteEntities();
         maintainElementStack = deliveryConfig.isMaintainElementStack();
         globalMaxNodeDepth = deliveryConfig.getMaxNodeDepth() == 0 ? Integer.MAX_VALUE : deliveryConfig.getMaxNodeDepth();
         reverseVisitOrderOnVisitAfter = deliveryConfig.isReverseVisitOrderOnVisitAfter();
     }
 
     @Override
-    public void cleanup() {
+    public void close() {
     }
 
     @Override
     public void startDocument() {
-        try {
-            factory = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new SmooksException(e.getMessage(), e);
-        }
+        document = documentBuilder.newDocument();
+        document.setStrictErrorChecking(false);
+        currentNodeFragment = null;
         currentContentHandlerState = new ContentHandlerState();
     }
 
@@ -161,12 +159,12 @@ public class SaxNgHandler extends SmooksContentHandler {
             contentHandlerState.setNullProcessor(true);
             contentHandlerState.setPreviousContentHandlerState(currentContentHandlerState);
             currentContentHandlerState = contentHandlerState;
-            final StartFragmentEvent<Node> startFragmentEvent = new StartFragmentEvent<>(new NodeFragment(currentNode));
+            final StartFragmentEvent<Node> startFragmentEvent = new StartFragmentEvent<>(currentNodeFragment);
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                 executionEventListener.onEvent(startFragmentEvent);
             }
         } else {
-            final Element element = factory.createElementNS(elementQName.getNamespaceURI(), elementQName.getPrefix().equals("") ? elementQName.getLocalPart() : elementQName.getPrefix() + ":" + elementQName.getLocalPart());
+            final Element element = document.createElementNS(elementQName.getNamespaceURI(), elementQName.getPrefix().equals("") ? elementQName.getLocalPart() : elementQName.getPrefix() + ":" + elementQName.getLocalPart());
             for (int i = 0; i < startEvent.attributes.getLength(); i++) {
                 if (XMLConstants.NULL_NS_URI.equals(startEvent.attributes.getURI(i))) {
                     element.setAttribute(startEvent.attributes.getLocalName(i), startEvent.attributes.getValue(i));
@@ -176,12 +174,12 @@ public class SaxNgHandler extends SmooksContentHandler {
             }
             
             if (isRoot) {
-                if (factory.getFirstChild() != null) {
-                    factory.removeChild(factory.getFirstChild());
+                if (document.getFirstChild() != null) {
+                    document.removeChild(document.getFirstChild());
                 }
-                factory.appendChild(element);
+                document.appendChild(element);
             } else {
-                currentNode.appendChild(element);
+                currentNodeFragment.unwrap().appendChild(element);
                 onChildElement(element);
             }
 
@@ -192,10 +190,11 @@ public class SaxNgHandler extends SmooksContentHandler {
     @SuppressWarnings("RedundantThrows")
     @Override
     public void endElement(final EndElementEvent endEvent) throws SAXException {
-        final Fragment<Node> currentNodeFragment = new NodeFragment(currentNode);
-        final EndFragmentEvent endFragmentEvent = new EndFragmentEvent(currentNodeFragment);
-        for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(endFragmentEvent);
+        if (!contentDeliveryRuntime.getExecutionEventListeners().isEmpty()) {
+            final EndFragmentEvent endFragmentEvent = new EndFragmentEvent(currentNodeFragment);
+            for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
+                executionEventListener.onEvent(endFragmentEvent);
+            }
         }
         
         if (currentContentHandlerState.getVisitorBindings() != null) {
@@ -225,7 +224,7 @@ public class SaxNgHandler extends SmooksContentHandler {
         }
 
         if (currentContentHandlerState.getVisitorBindings() != null) {
-            final List<ContentHandlerBinding<? extends Visitor>> visitorBindings = currentContentHandlerState.getVisitorBindings().getVisitorBindings();
+            final List<ContentHandlerBinding<? extends Visitor>> visitorBindings = currentContentHandlerState.getVisitorBindings().getAll();
             final VisitCleanupPhase visitCleanupPhase = new VisitCleanupPhase(currentNodeFragment, executionContext);
             for (final ContentHandlerBinding<? extends Visitor> visitorBinding : visitorBindings) {
                 if (currentNodeFragment.isMatch(visitorBinding.getResourceConfig().getSelectorPath(), executionContext)) {
@@ -237,11 +236,12 @@ public class SaxNgHandler extends SmooksContentHandler {
         executionContext.getMementoCaretaker().forget(currentNodeFragment);
         
         final ContentHandlerState previousContentHandlerState = currentContentHandlerState.getPreviousContentHandlerState();
+        final Node currentNode = this.currentNodeFragment.unwrap();
         final Node parentNode = currentNode.getParentNode();
         if (DomUtils.getDepth(currentNode) >= Math.max(globalMaxNodeDepth, findMaxNodeDepth(currentContentHandlerState))) {
             parentNode.removeChild(currentNode);
         }
-        currentNode = parentNode;
+        this.currentNodeFragment = new NodeFragment(parentNode);
         currentContentHandlerState = previousContentHandlerState;
     }
     
@@ -256,12 +256,11 @@ public class SaxNgHandler extends SmooksContentHandler {
         return maxNodeDepth;
     }
 
-    private void visitBefore(final Element element, final SaxNgVisitorBindings saxNgElementVisitorMap) {
-        currentNode = element;
-        final Fragment<Node> nodeFragment = new NodeFragment(element);
+    private void visitBefore(final Element element, final SaxNgVisitorBindings saxNgVisitorBindings) {
+        currentNodeFragment = new NodeFragment(element);
         final ContentHandlerState contentHandlerState = new ContentHandlerState();
         contentHandlerState.setPreviousContentHandlerState(currentContentHandlerState);
-        contentHandlerState.setVisitorBindings(saxNgElementVisitorMap);
+        contentHandlerState.setVisitorBindings(saxNgVisitorBindings);
 
         currentContentHandlerState = contentHandlerState;
         if (currentContentHandlerState.getVisitorBindings() != null) {
@@ -274,7 +273,7 @@ public class SaxNgHandler extends SmooksContentHandler {
             if (visitBeforeBindings != null) {
                 int maxNodeDepth = 1;
                 for (final ContentHandlerBinding<BeforeVisitor> visitBeforeBinding : visitBeforeBindings) {
-                    if (nodeFragment.isMatch(visitBeforeBinding.getResourceConfig().getSelectorPath(), executionContext)) {
+                    if (currentNodeFragment.isMatch(visitBeforeBinding.getResourceConfig().getSelectorPath(), executionContext)) {
                         if (visitBeforeBinding.getContentHandler() instanceof ParameterizedVisitor) {
                             maxNodeDepth = Math.max(maxNodeDepth, ((ParameterizedVisitor) visitBeforeBinding.getContentHandler()).getMaxNodeDepth());
                         }
@@ -285,9 +284,11 @@ public class SaxNgHandler extends SmooksContentHandler {
             }
         }
 
-        final StartFragmentEvent<Node> startFragmentEvent = new StartFragmentEvent<>(nodeFragment);
-        for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(startFragmentEvent);
+        if (!contentDeliveryRuntime.getExecutionEventListeners().isEmpty()) {
+            final StartFragmentEvent<Node> startFragmentEvent = new StartFragmentEvent<>(currentNodeFragment);
+            for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
+                executionEventListener.onEvent(startFragmentEvent);
+            }
         }
     }
 
@@ -299,7 +300,6 @@ public class SaxNgHandler extends SmooksContentHandler {
             }
             
             if (childVisitorBindings != null) {
-                final Fragment<Node> currentNodeFragment = new NodeFragment(currentNode);
                 for (final ContentHandlerBinding<ChildrenVisitor> contentHandlerBinding : childVisitorBindings) {
                     if (currentNodeFragment.isMatch(contentHandlerBinding.getResourceConfig().getSelectorPath(), executionContext)) {
                         contentHandlerBinding.getContentHandler().visitChildElement(childElement, executionContext);
@@ -310,8 +310,8 @@ public class SaxNgHandler extends SmooksContentHandler {
     }
 
     private void visitAfter(final ContentHandlerBinding<AfterVisitor> afterVisitorBinding) {
-        if (new NodeFragment(currentNode).isMatch(afterVisitorBinding.getResourceConfig().getSelectorPath(), executionContext)) {
-            afterVisitorBinding.getContentHandler().visitAfter((Element) currentNode, executionContext);
+        if (currentNodeFragment.isMatch(afterVisitorBinding.getResourceConfig().getSelectorPath(), executionContext)) {
+            afterVisitorBinding.getContentHandler().visitAfter((Element) currentNodeFragment.unwrap(), executionContext);
         }
     }
     
@@ -327,20 +327,18 @@ public class SaxNgHandler extends SmooksContentHandler {
     private void doCharacters(final char[] ch, final int start, final int length) {
         if (!rewriteEntities && currentContentHandlerState.getTextType() == TextType.ENTITY) {
             entityBuilder.setLength(0);
-
             entityBuilder.append("&#").append((int) ch[start]).append(';');
-            char[] newBuf = new char[entityBuilder.length()];
-            entityBuilder.getChars(0, newBuf.length, newBuf, 0);
+            entityBuilder.getChars(0, entityBuilder.length(), new char[entityBuilder.length()], 0);
         }
 
-        if (currentNode != null) {
+        if (currentNodeFragment != null) {
             final CharacterData characterData;
             switch (currentContentHandlerState.getTextType()) {
                 case CDATA:
-                    characterData = factory.createCDATASection(new String(ch, start, length));
+                    characterData = document.createCDATASection(new String(ch, start, length));
                     break;
                 case COMMENT:
-                    characterData = factory.createComment(new String(ch, start, length));
+                    characterData = document.createComment(new String(ch, start, length));
                     break;
                 case ENTITY:
                     if (!rewriteEntities) {
@@ -350,20 +348,20 @@ public class SaxNgHandler extends SmooksContentHandler {
                         char[] newBuf = new char[entityBuilder.length()];
                         entityBuilder.getChars(0, newBuf.length, newBuf, 0);
 
-                        characterData = factory.createTextNode(new String(newBuf, 0, newBuf.length));
+                        characterData = document.createTextNode(new String(newBuf, 0, newBuf.length));
                         break;
                     }
                 default:
-                    characterData = factory.createTextNode(new String(ch, start, length));
+                    characterData = document.createTextNode(new String(ch, start, length));
             }
-            
-            currentNode.appendChild(characterData);
 
+            final Node currentNode = currentNodeFragment.unwrap();
+            currentNode.appendChild(characterData);
+            
             if (!currentContentHandlerState.isNullProcessor() && currentContentHandlerState.getVisitorBindings() != null) {
                 final List<ContentHandlerBinding<ChildrenVisitor>> childVisitorBindings = currentContentHandlerState.getVisitorBindings().getChildVisitors();
 
                 if (childVisitorBindings != null) {
-                    final NodeFragment currentNodeFragment = new NodeFragment(currentNode);
                     for (final ContentHandlerBinding<ChildrenVisitor> childrenVisitorBinding : childVisitorBindings) {
                         if (currentNodeFragment.isMatch(childrenVisitorBinding.getResourceConfig().getSelectorPath(), executionContext)) {
                             childrenVisitorBinding.getContentHandler().visitChildText(characterData, executionContext);
@@ -372,9 +370,11 @@ public class SaxNgHandler extends SmooksContentHandler {
                 }
             }
             
-            final CharDataFragmentEvent charFragmentEvent = new CharDataFragmentEvent(new NodeFragment(characterData));
-            for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                executionEventListener.onEvent(charFragmentEvent);
+            if (!contentDeliveryRuntime.getExecutionEventListeners().isEmpty()) {
+                final CharDataFragmentEvent charFragmentEvent = new CharDataFragmentEvent(new NodeFragment(characterData));
+                for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
+                    executionEventListener.onEvent(charFragmentEvent);
+                }
             }
 
             if ((DomUtils.getDepth(currentNode) + 1) >= Math.max(globalMaxNodeDepth, findMaxNodeDepth(currentContentHandlerState))) {

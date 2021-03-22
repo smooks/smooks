@@ -126,7 +126,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
     @Override
     public Filter newFilter(ExecutionContext executionContext) {
-        return new SmooksSAXFilter(executionContext);
+        return new SmooksSAXFilter(executionContext, getCloseSource(), getCloseResult());
     }
 
     @Override
@@ -226,7 +226,7 @@ public class SAXContentDeliveryConfig extends AbstractContentDeliveryConfig {
         reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, String.class, "true", this));
         terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", this));
 
-		filterBypass = getFilterBypass(visitBeforeSelectorTable, visitAfterSelectorTable);
+        filterBypass = getFilterBypass(visitBeforeSelectorTable, visitAfterSelectorTable);
     }
 
     public void assertSelectorsNotAccessingText() {

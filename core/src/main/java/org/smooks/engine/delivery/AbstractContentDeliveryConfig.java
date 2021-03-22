@@ -92,11 +92,13 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      */
     private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<>();
 
-    private final Set<ExecutionLifecycleInitializable> execInitializableHandlers = new LinkedHashSet<>();
-    private final Set<ExecutionLifecycleCleanable> execCleanableHandlers = new LinkedHashSet<>();
+    private final Set<ExecutionLifecycleInitializable> executionLifecycleInitializables = new LinkedHashSet<>();
+    private final Set<ExecutionLifecycleCleanable> executionLifecycleCleanables = new LinkedHashSet<>();
 
     private Boolean isDefaultSerializationOn;
-    
+    private Boolean closeSource;
+    private Boolean closeResult;
+
     public void setRegistry(Registry registry) {
         this.registry = registry;
     }
@@ -107,7 +109,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      * @return List of ResourceConfig instances, or null.
      */
     @Override
-    public List getResourceConfigs(String selector) {
+    public List<ResourceConfig> getResourceConfigs(String selector) {
         return resourceConfigTable.get(selector);
     }
 
@@ -129,9 +131,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     public Map<String, List<ResourceConfig>> getResourceConfigs() {
         return resourceConfigTable;
     }
-
-    private static final Vector EMPTY_LIST = new Vector();
-
+    
     /**
      * Get a list {@link Object}s from the supplied {@link ResourceConfig} selector value.
      * <p/>
@@ -141,15 +141,15 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      * selectors exist.
      */
     @Override
-    public List getObjects(String selector) {
-        Vector objects;
+    public List<?> getObjects(String selector) {
+        List objects;
 
-        objects = (Vector) objectsTable.get(selector);
+        objects = (List) objectsTable.get(selector);
         if (objects == null) {
             List unitDefs = resourceConfigTable.get(selector);
 
             if (unitDefs != null && unitDefs.size() > 0) {
-                objects = new Vector(unitDefs.size());
+                objects = new ArrayList<>(unitDefs.size());
 
                 if (registry == null) {
                     throw new IllegalStateException("Call to getObjects() before the setRegistry() was called.");
@@ -160,7 +160,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
                     objects.add(registry.lookup(new ContentHandlerFactoryLookup("class")).create(resourceConfig));
                 }
             } else {
-                objects = EMPTY_LIST;
+                objects = Collections.EMPTY_LIST;
             }
 
             objectsTable.put(selector, objects);
@@ -190,28 +190,28 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         for (List<ContentHandlerBinding<T>> contentHandlerBindings : selectorTableContentHandlerBindings) {
             for (ContentHandlerBinding<T> contentHandlerBinding : contentHandlerBindings) {
                 if (contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleInitializable) {
-                    execInitializableHandlers.add((ExecutionLifecycleInitializable) contentHandlerBinding.getContentHandler());
+                    executionLifecycleInitializables.add((ExecutionLifecycleInitializable) contentHandlerBinding.getContentHandler());
                 }
                 if (contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleCleanable) {
-                    execCleanableHandlers.add((ExecutionLifecycleCleanable) contentHandlerBinding.getContentHandler());
+                    executionLifecycleCleanables.add((ExecutionLifecycleCleanable) contentHandlerBinding.getContentHandler());
                 }
             }
         }
     }
 
     @Override
-    public void executeHandlerInit(ExecutionContext executionContext) {
-        for(ExecutionLifecycleInitializable handler : execInitializableHandlers) {
-            handler.executeExecutionLifecycleInitialize(executionContext);
+    public void executeHandlerInit(final ExecutionContext executionContext) {
+        for (ExecutionLifecycleInitializable executionLifecycleInitializable : executionLifecycleInitializables) {
+            executionLifecycleInitializable.executeExecutionLifecycleInitialize(executionContext);
         }
     }
 
     @Override
-    public void executeHandlerCleanup(ExecutionContext executionContext) {
-        for(ExecutionLifecycleCleanable handler : execCleanableHandlers) {
+    public void executeHandlerCleanup(final ExecutionContext executionContext) {
+        for (ExecutionLifecycleCleanable handler : executionLifecycleCleanables) {
             try {
                 handler.executeExecutionLifecycleCleanup(executionContext);
-            } catch(Throwable t) {
+            } catch (Throwable t) {
                 LOGGER.error("Error during Visit handler cleanup.", t);
             }
         }
@@ -285,5 +285,21 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         }
 
     	return null;
+    }
+    
+    protected boolean getCloseSource() {
+        if (closeSource == null) {
+            closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", this));
+        }
+        
+        return closeSource;
+    }
+
+    protected boolean getCloseResult() {
+        if (closeResult == null) {
+            closeResult = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, "true", this));
+        }
+
+        return closeResult;
     }
 }

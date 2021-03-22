@@ -79,10 +79,10 @@ public class SmooksSAXFilter extends AbstractFilter {
     protected final boolean closeSource;
     protected final boolean closeResult;
 
-    public SmooksSAXFilter(ExecutionContext executionContext) {
+    public SmooksSAXFilter(ExecutionContext executionContext, boolean closeSource, boolean closeResult) {
         this.executionContext = executionContext;
-        closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-        closeResult = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, "true", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        this.closeSource = closeSource;
+        this.closeResult = closeResult;
         parser = new SAXParser(executionContext);
     }
 
@@ -95,10 +95,10 @@ public class SmooksSAXFilter extends AbstractFilter {
     }
 
     protected void doFilter(Source source, Result result) {
-        if(source instanceof DOMSource) {
-            String serializedDOM = XmlUtil.serialize(((DOMSource)source).getNode(), false, true);
+        if (source instanceof DOMSource) {
+            String serializedDOM = XmlUtil.serialize(((DOMSource) source).getNode(), false, true);
             source = new StringSource(serializedDOM);
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("DOMSource converted to a StringSource.");
             }
         }
@@ -118,27 +118,27 @@ public class SmooksSAXFilter extends AbstractFilter {
             parser.parse(source, executionContext);
             writer.flush();
         } catch (TerminateException e) {
-            if(LOGGER.isDebugEnabled()) {
-            	if(e.isTerminateBefore()) {
-            		LOGGER.debug("Terminated filtering on visitBefore of element '" + SAXUtil.getXPath(e.getElement()) + "'.");
-            	} else {
-            		LOGGER.debug("Terminated filtering on visitAfter of element '" + SAXUtil.getXPath(e.getElement()) + "'.");            		
-            	}
+            if (LOGGER.isDebugEnabled()) {
+                if (e.isTerminateBefore()) {
+                    LOGGER.debug("Terminated filtering on visitBefore of element '" + SAXUtil.getXPath(e.getElement()) + "'.");
+                } else {
+                    LOGGER.debug("Terminated filtering on visitAfter of element '" + SAXUtil.getXPath(e.getElement()) + "'.");
+                }
             }
         } catch (Exception e) {
             throw new SmooksException("Failed to filter source.", e);
         } finally {
-            if(closeSource) {
+            if (closeSource) {
                 close(source);
             }
-            if(closeResult) {
+            if (closeResult) {
                 close(result);
             }
         }
     }
 
     @Override
-    public void cleanup() {
-        parser.cleanup();
+    public void close() {
+        parser.close();
     }
 }

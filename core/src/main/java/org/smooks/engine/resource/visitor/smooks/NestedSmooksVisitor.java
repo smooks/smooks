@@ -46,6 +46,8 @@ import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.StreamFilterType;
+import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
+import org.smooks.api.memento.MementoCaretaker;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
@@ -83,6 +85,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
@@ -96,8 +99,8 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
 
-public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer {
-
+public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer, ExecutionLifecycleInitializable {
+    
     public enum Action {
         REPLACE,
         PREPEND_BEFORE,
@@ -109,6 +112,8 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     }
 
     private static final TypedKey<Node> SOURCE_SESSION_TYPED_KEY = new TypedKey<>();
+    private static final TypedKey<DocumentBuilder> CACHED_DOCUMENT_BUILDER_TYPED_KEY = new TypedKey<>();
+    private static final TypedKey<ExecutionContext> NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = new TypedKey<>();
 
     private BeanId bindBeanId;
 
@@ -139,30 +144,32 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     @Named(Filter.ENTITIES_REWRITE)
     private Boolean rewriteEntities = true;
     
-    private ResourceConfigSeq resourceConfigList;
+    private ResourceConfigSeq resourceConfigSeq;
     private Smooks nestedSmooks;
     private DomToXmlWriter nestedSmooksVisitorWriter;
-
+    
     @PostConstruct
     public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
         if (nestedSmooks == null) {
             final ByteArrayInputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
-            resourceConfigList = XMLConfigDigester.digestConfig(smooksResourceList, "./", new HashMap<>(), applicationContext.getClassLoader());
+            resourceConfigSeq = XMLConfigDigester.digestConfig(smooksResourceList, "./", new HashMap<>(), applicationContext.getClassLoader());
             nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
 
-            for (ResourceConfig resourceConfig : resourceConfigList) {
+            for (ResourceConfig resourceConfig : resourceConfigSeq) {
                 nestedSmooks.addConfiguration(resourceConfig);
             }
         }
         
         final InterceptorVisitorChainFactory interceptorVisitorChainFactory = new InterceptorVisitorChainFactory();
+        interceptorVisitorChainFactory.setApplicationContext(applicationContext);
+        
         InterceptorVisitorDefinition interceptorVisitorDefinition = new InterceptorVisitorDefinition();
         interceptorVisitorDefinition.setSelector(Optional.of("*"));
         interceptorVisitorDefinition.setClass(SessionInterceptor.class);
         interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(interceptorVisitorDefinition);
 
         nestedSmooks.getApplicationContext().getRegistry().registerObject(interceptorVisitorChainFactory);
-        nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
+        nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
 
         action = actionOptional.orElse(null);
         if (action != null) {
@@ -176,14 +183,21 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         
         nestedSmooksVisitorWriter = new DomToXmlWriter(false, rewriteEntities);
     }
-    
-    protected Node deAttach(final Node node) {
-        final Document document;
+
+    @Override
+    public void executeExecutionLifecycleInitialize(final ExecutionContext executionContext) {
+        final DocumentBuilder documentBuilder;
         try {
-            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new SmooksException(e);
         }
+        executionContext.put(CACHED_DOCUMENT_BUILDER_TYPED_KEY, documentBuilder);
+    }
+    
+    protected Node deAttach(final Node node, ExecutionContext executionContext) {
+        final Document document = executionContext.get(CACHED_DOCUMENT_BUILDER_TYPED_KEY).newDocument();
+        document.setStrictErrorChecking(false);
         final Node copyNode = document.importNode(node, true);
         document.appendChild(copyNode);
         
@@ -192,7 +206,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
-        final Node rootNode = deAttach(element);
+        final Node rootNode = deAttach(element, executionContext);
         final NodeFragment visitedFragment = new NodeFragment(element);
         executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(visitedFragment, this, rootNode));
 
@@ -357,28 +371,31 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     }
 
     protected void filterSource(final Fragment<Node> visitedNodeFragment, final Fragment<Node> rootNodeFragment, final Writer writer, final ExecutionContext executionContext, final String visit) {
-        final ExecutionContext nestedExecutionContext = nestedSmooks.createExecutionContext();
-        nestedExecutionContext.setBeanContext(executionContext.getBeanContext().newSubContext(nestedExecutionContext));
+        final VisitorMemento<ExecutionContext> nestedExecutionContextMemento;
+        final MementoCaretaker mementoCaretaker = executionContext.getMementoCaretaker();
+        if (mementoCaretaker.exists(new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY))) {
+            nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY);
+            mementoCaretaker.restore(nestedExecutionContextMemento);
+        } else {
+            final ExecutionContext nestedExecutionContext = nestedSmooks.createExecutionContext();
+            nestedExecutionContext.setBeanContext(executionContext.getBeanContext().newSubContext(nestedExecutionContext));
+            nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY, nestedExecutionContext);
+            mementoCaretaker.capture(nestedExecutionContextMemento);
+        }
+        
+        final Document document = executionContext.get(CACHED_DOCUMENT_BUILDER_TYPED_KEY).newDocument();
+        document.setStrictErrorChecking(false);
+        final Element smooksSessionElement = document.createElementNS(Namespace.SMOOKS_URI, "session");
+        smooksSessionElement.setAttribute("visit", visit);
+        smooksSessionElement.setAttribute("source", SOURCE_SESSION_TYPED_KEY.getName());
+        document.appendChild(smooksSessionElement);
 
-        executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(visitedNodeFragment, this, nestedExecutionContext), nestedExecutionContextMemento -> {
-            final Element smooksSessionElement;
-            try {
-                smooksSessionElement = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument().createElementNS(Namespace.SMOOKS_URI, "session");
-            } catch (ParserConfigurationException e) {
-                throw new SmooksException(e);
-            }
-            smooksSessionElement.setAttribute("visit", visit);
-            smooksSessionElement.setAttribute("source", SOURCE_SESSION_TYPED_KEY.getName());
-
-            nestedExecutionContextMemento.getState().put(SOURCE_SESSION_TYPED_KEY, rootNodeFragment.unwrap());
-            if (writer == null) {
-                nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(smooksSessionElement));
-            } else {
-                nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(smooksSessionElement), new StreamResult(writer));
-            }
-            
-            return nestedExecutionContextMemento;
-        });
+        nestedExecutionContextMemento.getState().put(SOURCE_SESSION_TYPED_KEY, rootNodeFragment.unwrap());
+        if (writer == null) {
+            nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document));
+        } else {
+            nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document), new StreamResult(writer));
+        }
     }
     
     public int getMaxNodeDepth() {
@@ -414,8 +431,8 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         this.applicationContext = applicationContext;
     }
 
-    public void setResourceConfigList(ResourceConfigSeq resourceConfigList) {
-        this.resourceConfigList = resourceConfigList;
+    public void setResourceConfigSeq(ResourceConfigSeq resourceConfigSeq) {
+        this.resourceConfigSeq = resourceConfigSeq;
     }
 
     public void setAction(Optional<Action> actionOptional) {

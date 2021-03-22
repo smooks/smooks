@@ -46,7 +46,18 @@ import org.xml.sax.XMLReader;
 
 public interface ReaderPool {
 
+    /**
+     * Get an {@link XMLReader} instance from the 
+     * reader pool associated with this ContentDelivery config instance.
+     * @return An XMLReader instance if the pool is not empty, otherwise null.
+     */
     XMLReader borrowXMLReader();
 
-    void returnXMLReader(XMLReader reader);
+    /**
+     * Return an {@link XMLReader} instance to the
+     * reader pool associated with this ContentDelivery config instance.
+     * @param xmlReader The XMLReader instance to be returned.  If the pool is full, the instance
+     * is left to the GC (i.e. lost).
+     */
+    void returnXMLReader(XMLReader xmlReader);
 }

@@ -77,7 +77,7 @@ import java.util.Set;
  * @author Tom Fennelly
  */
 
-public class XmlUtil {
+public final class XmlUtil {
 
     /**
      * Document validation types.
@@ -96,17 +96,7 @@ public class XmlUtil {
          */
         XSD,
     }
-
-    public static final DocumentBuilder documentBuilder;
-
-    static {
-        try {
-            documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new IllegalStateException("Error creating DOM DocumentBuilder instance.", e);
-        }
-    }
-
+    
     private static final Set<String> XML_RESERVED_NAMESPACES = new HashSet<>();
     
     static {
@@ -130,6 +120,10 @@ public class XmlUtil {
     private static final String COMMENT_END   = "-->";
     private static final String CDATA_START   = "<![CDATA[";
     private static final String CDATA_END     = "]]>";
+    
+    private XmlUtil() {
+        
+    }
     
 	public static boolean isXMLReservedNamespace(String namespace) {
 		return XML_RESERVED_NAMESPACES.contains(namespace);
@@ -445,8 +439,7 @@ public class XmlUtil {
     }
 
     private static final String ELEMENT_NAME_FUNC = "/name()";
-
-    private static final XPathFactory xPathFactory = XPathFactory.newInstance();
+    private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
 
     /**
      * Get the W3C NodeList instance associated with the XPath selection
@@ -466,7 +459,7 @@ public class XmlUtil {
                     "null 'xpath' arg in method call.");
         }
         try {
-            XPath xpathEvaluater = xPathFactory.newXPath();
+            XPath xpathEvaluater = XPATH_FACTORY.newXPath();
 
             if (xpath.endsWith(ELEMENT_NAME_FUNC)) {
                 return (NodeList) xpathEvaluater.evaluate(xpath.substring(0,
@@ -525,27 +518,7 @@ public class XmlUtil {
             return serialize(nodeList, false);
         }
     }
-
-    /**
-     * Create an element with the specified name.
-     * @param localPart The localPart name.
-     * @return Element instance.
-     */
-    public static Element createElement(String localPart) {
-        return createElementNS(XMLConstants.NULL_NS_URI, localPart);
-    }
-
-    /**
-     * Create an element with the specified name and namespace.
-     * @param namespace The namespace.
-     * @param localPart The localPart name.
-     * @return Element instance.
-     */
-    public static Element createElementNS(String namespace, String localPart) {
-        Document document = documentBuilder.newDocument();
-        return document.createElementNS(namespace, localPart);
-    }
-
+    
     public static String serialize(Node node) throws DOMException {
         return serialize(node, false, false);
     }
@@ -626,25 +599,23 @@ public class XmlUtil {
      * @throws DOMException Unable to serialise the DOM.
      */
     public static void serialize(NodeList nodeList, boolean format, Writer writer, boolean closeEmptyElements) throws DOMException {
-
         if (nodeList == null) {
-            throw new IllegalArgumentException(
-                    "null 'subtree' NodeIterator arg in method call.");
+            throw new IllegalArgumentException("null 'subtree' NodeIterator arg in method call.");
         }
 
         try {
-            TransformerFactory factory = TransformerFactory.newInstance();
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer;
 
             if (format) {
                 try {
-                    factory.setAttribute("indent-number", 4);
+                    transformerFactory.setAttribute("indent-number", 4);
                 } catch (Exception e) {
                     // Ignore... Xalan may throw on this!!
                     // We handle Xalan indentation below (yeuckkk) ...
                 }
             }
-            transformer = factory.newTransformer();
+            transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             if (!closeEmptyElements) {
                 transformer.setOutputProperty(OutputKeys.METHOD, "html");
@@ -669,9 +640,7 @@ public class XmlUtil {
                 }
             }
         } catch (Exception e) {
-            DOMException domExcep = new DOMException(
-                    DOMException.INVALID_ACCESS_ERR,
-                    "Unable to serailise DOM subtree.");
+            DOMException domExcep = new DOMException(DOMException.INVALID_ACCESS_ERR, "Unable to serailise DOM subtree.");
             domExcep.initCause(e);
             throw domExcep;
         }

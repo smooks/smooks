@@ -18,11 +18,8 @@
 package org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom;
 
 import java.util.Hashtable;
+import java.util.Map;
 
-import org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.*;
-import org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.CoreDocumentImpl;
-import org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.NodeImpl;
-import org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.ParentNode;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
@@ -481,7 +478,7 @@ public class DocumentTypeImpl
         return null;
     }
     
-    protected Hashtable getUserDataRecord(){
+    protected Map getUserDataRecord(){
         return userData;
     }
     

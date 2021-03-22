@@ -61,5 +61,5 @@ public interface VisitLifecycleCleanable extends Visitor {
      * @param fragment The fragment.
      * @param executionContext The ExecutionContext.
      */
-    void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext);
+    void executeVisitLifecycleCleanup(Fragment<?> fragment, ExecutionContext executionContext);
 }

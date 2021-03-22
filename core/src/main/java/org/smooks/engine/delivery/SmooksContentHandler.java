@@ -178,5 +178,5 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
         nestedContentHandler = null;
     }
 
-    public abstract void cleanup();
+    public abstract void close();
 }
