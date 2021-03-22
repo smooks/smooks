@@ -1531,7 +1531,7 @@ extends org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.ParentNode imple
     HashMap reversedIdentifiers)
     throws DOMException {
         Node newnode=null;
-		Hashtable userData = null;
+		Map userData = null;
 
         // Sigh. This doesn't work; too many nodes have private data that
         // would have to be manually tweaked. May be able to add local
@@ -1777,7 +1777,7 @@ extends org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.ParentNode imple
      **/
     public Node adoptNode(Node source) {
         org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.NodeImpl node;
-		Hashtable userData = null;
+		Map userData = null;
         try {
             node = (org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.NodeImpl) source;
         } catch (ClassCastException e) {
@@ -2436,7 +2436,7 @@ extends org.smooks.engine.delivery.sax.ng.org.apache.xerces.dom.ParentNode imple
      * @param n The node this operation applies to.
      * @param data The user data table.
      */
-    void setUserDataTable(Node n, Hashtable data) {
+    void setUserDataTable(Node n, Map data) {
         if (userData == null) {
             userData = new WeakHashMap();
         }

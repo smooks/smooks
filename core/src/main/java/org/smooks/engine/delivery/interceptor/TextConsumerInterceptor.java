@@ -54,92 +54,56 @@ import org.smooks.api.delivery.sax.TextConsumer;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
+import javax.annotation.PostConstruct;
+
 public class TextConsumerInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, InterceptorVisitor {
+    
+    protected boolean isTextConsumer;
+
+    @PostConstruct
+    public void postConstruct() {
+        final ContentHandlerBinding<Visitor> visitorBinding = getTarget();
+        if (!(visitorBinding.getContentHandler() instanceof ParameterizedVisitor) || (((ParameterizedVisitor) visitorBinding.getContentHandler()).getMaxNodeDepth() == 1)) {
+            if (visitorBinding.getContentHandler().getClass().isAnnotationPresent(TextConsumer.class)) {
+                isTextConsumer = true;
+            } else if (visitorBinding.getContentHandler() instanceof AfterVisitor) {
+                isTextConsumer = visitorBinding.getResourceConfig().getSelectorPath().getTargetSelectorStep().accessesText();
+            } else {
+                isTextConsumer = false;
+            }
+        } else {
+            isTextConsumer = false;
+        }
+    }
     
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) throws SmooksException {
-        intercept(new Invocation<BeforeVisitor>() {
-            @Override
-            public Object invoke(BeforeVisitor visitor) {
-                visitor.visitBefore(element, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<BeforeVisitor> getTarget() {
-                return BeforeVisitor.class;
-            }
-        });
+        intercept(visitBeforeInvocation, element, executionContext);
     }
 
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) throws SmooksException {
-        if (isTextConsumer(getTarget())) {
-            TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(element), this);
+        if (isTextConsumer) {
+            final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(element), this);
             executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
             element.setTextContent(textAccumulatorMemento.getText());
         }
-        intercept(new Invocation<AfterVisitor>() {
-            @Override
-            public Object invoke(AfterVisitor visitor) {
-                visitor.visitAfter(element, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<AfterVisitor> getTarget() {
-                return AfterVisitor.class;
-            }
-        });
-        if (isTextConsumer(getTarget())) {
+        intercept(visitAfterInvocation, element, executionContext);
+        if (isTextConsumer) {
             element.setTextContent("");
         }
     }
 
     @Override
     public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) throws SmooksException {
-        if (isTextConsumer(getTarget())) {
+        if (isTextConsumer) {
             executionContext.getMementoCaretaker().stash(new TextAccumulatorMemento(new NodeFragment(characterData.getParentNode()), this), textAccumulatorMemento -> textAccumulatorMemento.accumulateText(characterData.getTextContent()));
         }
-        intercept(new Invocation<ChildrenVisitor>() {
-            @Override
-            public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildText(characterData, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        });
+        intercept(visitChildTextInvocation, characterData, executionContext);
     }
 
     @Override
     public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-        intercept(new Invocation<ChildrenVisitor>() {
-            @Override
-            public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildElement(childElement, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        });
-    }
-
-    protected boolean isTextConsumer(final ContentHandlerBinding<Visitor> visitorBinding) {
-        if (!(visitorBinding.getContentHandler() instanceof ParameterizedVisitor) || (((ParameterizedVisitor) visitorBinding.getContentHandler()).getMaxNodeDepth() == 1)) {
-            if (visitorBinding.getContentHandler().getClass().isAnnotationPresent(TextConsumer.class)) {
-                return true;
-            } else if (visitorBinding.getContentHandler() instanceof AfterVisitor) {
-                return visitorBinding.getResourceConfig().getSelectorPath().getTargetSelectorStep().accessesText();
-            }
-        }
-        
-        return false;
+        intercept(visitChildElementInvocation, childElement, executionContext);
     }
 }

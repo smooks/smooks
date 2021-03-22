@@ -91,6 +91,17 @@
             <groupId>com.fasterxml</groupId>
             <artifactId>aalto-xml</artifactId>
             <version>1.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.woodstox</groupId>
+                    <artifactId>stax2-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <version>6.2.3</version>
         </dependency>
         <dependency>
             <groupId>xml-apis</groupId>

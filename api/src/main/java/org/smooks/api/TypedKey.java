@@ -47,6 +47,7 @@ import java.util.UUID;
 
 public final class TypedKey<T> {
     private final String name;
+    private int hash;
 
     public TypedKey() {
         this(UUID.randomUUID().toString());
@@ -75,7 +76,10 @@ public final class TypedKey<T> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        if (hash == 0) {
+            hash = Objects.hash(name);
+        }
+        return hash;
     }
 
     @Override

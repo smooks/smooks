@@ -42,148 +42,84 @@
  */
 package org.smooks.engine.delivery.interceptor;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.delivery.sax.StreamResultWriter;
 import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.SimpleVisitorMemento;
-import org.smooks.api.delivery.sax.StreamResultWriter;
-import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
-import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
-import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.Stream;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor, InterceptorVisitor {
     
+    protected boolean isStreamResultWriter;
+
+    @PostConstruct
+    public void postConstruct() {
+        isStreamResultWriter = getTarget().getContentHandler().getClass().isAnnotationPresent(StreamResultWriter.class);
+    }
+    
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) {
-        intercept(new StreamResultWriterInvocation<Element, AfterVisitor>(new StreamResultWriterDelegateElement(element)) {
-            @Override
-            public Object invoke(final AfterVisitor visitor, Element newVisitorNode) {
-                visitor.visitAfter(newVisitorNode, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<AfterVisitor> getTarget() {
-                return AfterVisitor.class;
-            }
-        }, executionContext, element);
+        if (isStreamResultWriter) {
+            intercept(visitAfterInvocation, new StreamResultWriterDelegateElement(element), executionContext);
+        } else {
+            intercept(visitAfterInvocation, element, executionContext);
+        }
     }
 
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
-        intercept(new StreamResultWriterInvocation<Element, BeforeVisitor>(new StreamResultWriterDelegateElement(element)) {
-            @Override
-            public Object invoke(final BeforeVisitor visitor, Element newVisitorElement) {
-                visitor.visitBefore(newVisitorElement, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<BeforeVisitor> getTarget() {
-                return BeforeVisitor.class;
-            }
-        }, executionContext, element);
+        if (isStreamResultWriter) {
+            intercept(visitBeforeInvocation, new StreamResultWriterDelegateElement(element), executionContext);
+        } else {
+            intercept(visitBeforeInvocation, element, executionContext);
+        }
     }
 
     @Override
     public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) {
-        intercept(new StreamResultWriterInvocation<CharacterData, ChildrenVisitor>(new StreamResultWriterDelegateCharacterData(characterData)) {
-            @Override
-            public Object invoke(ChildrenVisitor visitor, CharacterData newVisitorNode) {
-                visitor.visitChildText(newVisitorNode, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        }, executionContext, characterData);
+        if (isStreamResultWriter) {
+            intercept(visitChildTextInvocation, new StreamResultWriterDelegateCharacterData(characterData), executionContext);
+        } else {
+            intercept(visitChildTextInvocation, characterData, executionContext);
+        }
     }
 
     @Override
     public void visitChildElement(final Element childElement, final ExecutionContext executionContext) {
-        intercept(new StreamResultWriterInvocation<Element, ChildrenVisitor>(new StreamResultWriterDelegateElement(childElement)) {
-            @Override
-            public Object invoke(final ChildrenVisitor visitor, final Element newVisitorElement) {
-                visitor.visitChildElement(newVisitorElement, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        }, executionContext, childElement);
+        if (isStreamResultWriter) {
+            intercept(visitChildElementInvocation, new StreamResultWriterDelegateElement(childElement), executionContext);
+        } else {
+            intercept(visitChildElementInvocation, childElement, executionContext);
+        }
     }
     
-    protected <N extends Node, T extends Visitor> void intercept(final StreamResultWriterInvocation<N, T> invocation, final ExecutionContext executionContext, final Node mementoNode) {
-        if (getTarget().getContentHandler().getClass().isAnnotationPresent(StreamResultWriter.class)) {
-            NodeFragment nodeFragment = new NodeFragment(mementoNode);
-            executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment, false)), writerMemento -> {
-                try {
-                    writerMemento.getState().park();
-                } catch (IOException e) {
-                    throw new SmooksException(e);
-                }
-                executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writerMemento.getState());
-                intercept(new Invocation<T>() {
-                    @Override
-                    public Object invoke(T visitor) {
-                        return invocation.invoke(visitor, (N) invocation.getStreamResultWriterDelegateNode());
-                    }
+    protected <T extends Visitor> void intercept(final Invocation<T> invocation, final StreamResultWriterDelegateNode streamResultWriterDelegateNode, final ExecutionContext executionContext) {
+        final NodeFragment nodeFragment = new NodeFragment(streamResultWriterDelegateNode.getDelegateNode());
+        executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment, false)), writerMemento -> {
+            try {
+                writerMemento.getState().park();
+            } catch (IOException e) {
+                throw new SmooksException(e);
+            }
+            executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writerMemento.getState());
+            super.intercept(invocation, streamResultWriterDelegateNode, executionContext);
+            executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writerMemento.getState().getDelegateWriter());
 
-                    @Override
-                    public Class<T> getTarget() {
-                        return invocation.getTarget();
-                    }
-                });
-                executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writerMemento.getState().getDelegateWriter());
-
-                return writerMemento;
-            });
-        } else {
-            intercept(new Invocation<T>() {
-                @Override
-                public Object invoke(T visitor) {
-                    return invocation.invoke(visitor, (N) invocation.getStreamResultWriterDelegateNode().getDelegateNode());
-                }
-
-                @Override
-                public Class<T> getTarget() {
-                    return invocation.getTarget();
-                }
-            });
-        }
-    }
-
-    abstract static class StreamResultWriterInvocation<N extends Node, T extends Visitor> {
-
-        private final StreamResultWriterDelegateNode streamResultWriterDelegateNode;
-
-        StreamResultWriterInvocation(final StreamResultWriterDelegateNode visitorNode) {
-            this.streamResultWriterDelegateNode = visitorNode;
-        }
-
-        abstract Object invoke(T visitor, N newVisitorNode);
-
-        abstract Class<T> getTarget();
-
-        StreamResultWriterDelegateNode getStreamResultWriterDelegateNode() {
-            return streamResultWriterDelegateNode;
-        }
+            return writerMemento;
+        });
     }
 
     abstract static class StreamResultWriterDelegateNode implements Node {

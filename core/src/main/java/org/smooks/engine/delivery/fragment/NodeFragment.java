@@ -65,26 +65,22 @@ import java.util.stream.Collectors;
 public class NodeFragment implements Fragment<Node> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeFragment.class);
-
+    protected static final UserDataHandler COPY_USER_DATA_HANDLER = new UserDataHandler() {
+        @Override
+        public void handle(final short operation, final String key, final Object data, final Node src, final Node dst) {
+            dst.setUserData(key, data, this);
+        }
+    };
+    
     public static final String RESERVATIONS_USER_DATA_KEY = "reservations";
     public static final String ID_USER_DATA_KEY = "id";
 
     private final Node node;
     private final boolean isReservationInheritable;
     private String id;
-
-    static class CopyUserDataHandler implements UserDataHandler {
-        CopyUserDataHandler() {
-            
-        }
-        
-        @Override
-        public void handle(final short operation, final String key, final Object data, final Node src, final Node dst) {
-            dst.setUserData(key, data, new CopyUserDataHandler());
-        }
-    }
-
-    static class Reservation {
+    private int hash;
+    
+    protected static class Reservation {
         private final Object token;
         private final boolean inheritable;
 
@@ -113,15 +109,13 @@ public class NodeFragment implements Fragment<Node> {
         Map<Long, Reservation> reservations = (Map<Long, Reservation>) node.getUserData(RESERVATIONS_USER_DATA_KEY);
         if (reservations == null) {
             reservations = new HashMap<>();
-            node.setUserData(RESERVATIONS_USER_DATA_KEY, reservations, new CopyUserDataHandler());
-        } else {
-            reservations = new HashMap<>();
-        }
-
+            node.setUserData(RESERVATIONS_USER_DATA_KEY, reservations, COPY_USER_DATA_HANDLER);
+        } 
+        
         Node parentNode = node.getParentNode();
         while (parentNode != null) {
             final Map<Long, Reservation> parentNodeReservations = (Map<Long, Reservation>) parentNode.getUserData(RESERVATIONS_USER_DATA_KEY);
-            if (parentNodeReservations != null) {
+            if (parentNodeReservations != null && !parentNodeReservations.isEmpty()) {
                 reservations.putAll(parentNodeReservations.entrySet().stream().filter(e -> e.getValue().isInheritable()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
             }
             parentNode = parentNode.getParentNode();
@@ -134,7 +128,7 @@ public class NodeFragment implements Fragment<Node> {
             id = (String) node.getUserData(ID_USER_DATA_KEY);
             if (id == null) {
                 id = String.valueOf(Math.abs(ThreadLocalRandom.current().nextLong()));
-                node.setUserData(ID_USER_DATA_KEY, id, new CopyUserDataHandler());
+                node.setUserData(ID_USER_DATA_KEY, id, COPY_USER_DATA_HANDLER);
             }
         }
         return id;
@@ -373,7 +367,10 @@ public class NodeFragment implements Fragment<Node> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        if (hash == 0) {
+            hash = Objects.hash(getId());
+        }
+        return hash;
     }
 
     @Override

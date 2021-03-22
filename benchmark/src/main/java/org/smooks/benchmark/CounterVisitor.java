@@ -40,32 +40,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks;
+package org.smooks.benchmark;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.TypedKey;
+import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.w3c.dom.Element;
 
-import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.GZIPInputStream;
+public class CounterVisitor implements BeforeVisitor, ExecutionLifecycleInitializable {
+    
+    private final TypedKey<Long> counterTypedKey = new TypedKey<>();
+    
+    @Override
+    public void visitBefore(Element element, ExecutionContext executionContext) {
+        executionContext.put(counterTypedKey, executionContext.get(counterTypedKey) + 1);
+    }
 
-public class BenchmarkApp {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkApp.class);
-
-    public static void main(String... args) throws IOException {
-        final URL url = new URL("https://dblp.org/xml/release/dblp-2015-03-02.xml.gz");
-        final URLConnection connection = url.openConnection();
-        connection.setDoOutput(true);
-
-        final Smooks smooks = new Smooks();
-        final long startTime = System.currentTimeMillis();
-        LOGGER.info("Filtering...");
-        smooks.filterSource(new StreamSource(new GZIPInputStream(connection.getInputStream())));
-        final long duration = System.currentTimeMillis() - startTime;
-        LOGGER.info("Filtering completed in {} minutes", TimeUnit.MILLISECONDS.toMinutes(duration));
+    @Override
+    public void executeExecutionLifecycleInitialize(ExecutionContext executionContext) {
+        executionContext.put(counterTypedKey, 0L);
     }
 }

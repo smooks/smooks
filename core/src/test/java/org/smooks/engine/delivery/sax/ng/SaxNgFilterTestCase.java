@@ -144,7 +144,7 @@ public class SaxNgFilterTestCase {
         assertNull(Visitor03.element.getPrefix());
         assertEquals("http://x", Visitor03.element.getNamespaceURI());
         assertEquals(1, Visitor03.children.size());
-        assertEquals(7, Visitor03.childText.size());
+        assertEquals(2, Visitor03.childText.size());
     }
 
 	@Test

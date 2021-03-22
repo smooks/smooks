@@ -50,9 +50,12 @@ import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.fragment.SAXElementFragment;
 import org.smooks.engine.delivery.sax.DefaultSAXElement;
-import org.smooks.support.XmlUtil;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.Properties;
 
 import static org.junit.Assert.*;
@@ -161,31 +164,31 @@ public class SelectorStepBuilderTestCase {
         SelectorPath selectorPath = SelectorStepBuilder.buildSteps("x/y[(@d = 23 or text() = 'ddd') and @h = 'rrr']", namespaces);
         assertEquals("x/y(((@d = 23.0) or (text() = 'ddd')) and (@h = 'rrr'))", selectorPath.toString());
 
-        Element y = XmlUtil.createElement("y");
+        Element y = createElement("y");
         y.setAttribute("d", "2");
         y.appendChild(y.getOwnerDocument().createTextNode("dd"));
         y.setAttribute("h", "rr");
         assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new NodeFragment(y), null));
 
-        y = XmlUtil.createElement("y");
+        y = createElement("y");
         y.setAttribute("d", "23");
         y.appendChild(y.getOwnerDocument().createTextNode("dd"));
         y.setAttribute("h", "rr");
         assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new NodeFragment(y), null));
 
-        y = XmlUtil.createElement("y");
+        y = createElement("y");
         y.setAttribute("d", "23");
         y.appendChild(y.getOwnerDocument().createTextNode("dd"));
         y.setAttribute("h", "rrr");
         assertTrue(selectorPath.get(1).getPredicatesEvaluator().evaluate(new NodeFragment(y), null));
 
-        y = XmlUtil.createElement("y");
+        y = createElement("y");
         y.setAttribute("d", "2");
         y.appendChild(y.getOwnerDocument().createTextNode("dd"));
         y.setAttribute("h", "rrr");
         assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new NodeFragment(y), null));
 
-        y = XmlUtil.createElement("y");
+        y = createElement("y");
         y.setAttribute("d", "2");
         y.appendChild(y.getOwnerDocument().createTextNode("ddd"));
         y.setAttribute("h", "rrr");
@@ -494,5 +497,15 @@ public class SelectorStepBuilderTestCase {
         } catch(SmooksException e) {
             assertEquals("Unsupported XPath selector expression 'a[text() = 123]/b'.  XPath 'text()' tokens are only supported in the last step.", e.getMessage());
         }
+    }
+
+    protected Element createElement(String localPart) {
+        final Document document;
+        try {
+            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new SmooksException(e);
+        }
+        return document.createElementNS(XMLConstants.NULL_NS_URI, localPart);
     }
 }

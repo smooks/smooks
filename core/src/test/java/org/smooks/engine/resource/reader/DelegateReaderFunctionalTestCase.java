@@ -61,9 +61,9 @@ import java.io.StringWriter;
 
 import static org.junit.Assert.assertEquals;
 
-public class NodeReaderFunctionalTestCase {
+public class DelegateReaderFunctionalTestCase {
 
-    public static class NodeReaderResource implements ElementVisitor {
+    public static class DelegateReaderResource implements ElementVisitor {
         private final TypedKey<FragmentWriter> fragmentWriterTypedKey = new TypedKey<>();
 
         @Override
@@ -103,7 +103,7 @@ public class NodeReaderFunctionalTestCase {
     
     @Test
     public void test() throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-node-reader.xml"));
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-delegate-reader.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         StringWriter result = new StringWriter();
 

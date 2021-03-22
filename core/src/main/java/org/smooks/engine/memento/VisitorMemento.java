@@ -51,7 +51,11 @@ public class VisitorMemento<T> extends AbstractVisitorMemento {
 
     protected TypedKey<?> typedKey;
     protected T state;
-    
+
+    public VisitorMemento(final Fragment<?> fragment, final Visitor visitor, final TypedKey<?> typedKey) {
+        this(fragment, visitor, typedKey, null);
+    }
+        
     public VisitorMemento(final Fragment<?> fragment, final Visitor visitor, final TypedKey<?> typedKey, final T state) {
         super(fragment, visitor);
         this.state = state;

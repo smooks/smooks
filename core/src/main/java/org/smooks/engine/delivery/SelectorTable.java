@@ -47,6 +47,7 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.engine.delivery.ordering.Sorter;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.*;
 
 /**
@@ -54,6 +55,7 @@ import java.util.*;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
+@NotThreadSafe
 public class SelectorTable<T extends ContentHandler> implements Map<String, List<ContentHandlerBinding<T>>> {
 
     private final Map<String, List<ContentHandlerBinding<T>>> contentHandlerBindingsBySelector = new LinkedHashMap<>();
@@ -76,7 +78,7 @@ public class SelectorTable<T extends ContentHandler> implements Map<String, List
      * @param contentHandlerBinding The mapping instance to be added.
      */
     public void put(String selector, ContentHandlerBinding<T> contentHandlerBinding) {
-        List<ContentHandlerBinding<T>> contentHandlerBindings = contentHandlerBindingsBySelector.computeIfAbsent(selector, k -> new Vector<>());
+        List<ContentHandlerBinding<T>> contentHandlerBindings = contentHandlerBindingsBySelector.computeIfAbsent(selector, k -> new ArrayList<>());
         contentHandlerBindings.add(contentHandlerBinding);
     }
     
@@ -86,7 +88,7 @@ public class SelectorTable<T extends ContentHandler> implements Map<String, List
      * @return The combined {@link ContentHandlerBinding} list for the supplied list of selector strings,
      * or an empty list if there are none.
      */
-    public List<ContentHandlerBinding<T>> get(String[] selectors) {
+    public List<ContentHandlerBinding<T>> get(String... selectors) {
         List<ContentHandlerBinding<T>> collectedContentHandlerBindings = new ArrayList<>();
 
         for (String selector : selectors) {

@@ -110,7 +110,7 @@ public class AbstractParserTestCase {
     	assertEquals(3, UnpooledSAXParser.numSetHandlerCalls);
     }
 
-    private class TestParser extends AbstractParser {
+    private static class TestParser extends AbstractParser {
         public TestParser(ExecutionContext execContext) {
             super(execContext);
         }
@@ -128,10 +128,10 @@ public class AbstractParserTestCase {
 				lastParserInstance = this;
 			}
 			if(this != lastParserInstance) {
-				fail("Should only be 1 parser instanse (pooled).");
+				fail("Should only be 1 parser instance (pooled).");
 			}
 			if(handler == lastHandlerInstance) {
-				fail("Shouldn't be just 1 handler instanse (pooled or unpooled).");
+				fail("Shouldn't be just 1 handler instance (pooled or unpooled).");
 			}
 			numSetHandlerCalls++;
 			lastParserInstance = this;
@@ -149,10 +149,10 @@ public class AbstractParserTestCase {
 		@Override
 		public void setContentHandler(ContentHandler handler) {
 			if(this == lastParserInstance) {
-				fail("Shouldn't be just 1 parser instanse (unpooled).");
+				fail("Shouldn't be just 1 parser instance (unpooled).");
 			}
 			if(handler == lastHandlerInstance) {
-				fail("Shouldn't be just 1 handler instanse (pooled or unpooled).");
+				fail("Shouldn't be just 1 handler instance (pooled or unpooled).");
 			}
 			numSetHandlerCalls++;
 			lastParserInstance = this;

@@ -120,7 +120,7 @@ public class NestedSmooksVisitorTestCase {
         StringResult stringResult = new StringResult();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addText("bar").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
     }
 
     @Test
@@ -146,7 +146,7 @@ public class NestedSmooksVisitorTestCase {
         StringResult stringResult = new StringResult();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals(0, countDownLatch.getCount());
     }
@@ -174,7 +174,7 @@ public class NestedSmooksVisitorTestCase {
         StringResult stringResult = new StringResult();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals(0, countDownLatch.getCount());
     }
@@ -221,7 +221,7 @@ public class NestedSmooksVisitorTestCase {
         StringResult stringResult = new StringResult();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").addText("Hello World!").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals(0, countDownLatch.getCount());
     }
@@ -264,7 +264,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
         
         assertEquals("bar<a>foo</a>", stringResult.toString());
     }
@@ -307,7 +307,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>barfoo</a>", stringResult.toString());
     }
@@ -351,7 +351,7 @@ public class NestedSmooksVisitorTestCase {
                 addElement("a").
                 addText("foo").
                 addElement("b").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>foobar</a>", stringResult.toString());
     }
@@ -395,7 +395,7 @@ public class NestedSmooksVisitorTestCase {
                 addElement("a").
                 addText("foo").
                 addElement("b").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>foobar</a>", stringResult.toString());
     }
@@ -422,7 +422,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("bar<a>foo</a>", stringResult.toString());
     }
@@ -449,7 +449,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>barfoo</a>", stringResult.toString());
     }
@@ -476,7 +476,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("bar<a>foo</a>", stringResult.toString());
     }
@@ -503,7 +503,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>barfoo</a>", stringResult.toString());
     }
@@ -530,7 +530,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>barfoo</a>", stringResult.toString());
     }
@@ -557,7 +557,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>barfoo</a>", stringResult.toString());
     }
@@ -584,7 +584,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>foobar</a>", stringResult.toString());
     }
@@ -611,7 +611,7 @@ public class NestedSmooksVisitorTestCase {
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument()).getDocumentElement()), stringResult);
+                getDocument())), stringResult);
 
         assertEquals("<a>foo</a>bar", stringResult.toString());
     }

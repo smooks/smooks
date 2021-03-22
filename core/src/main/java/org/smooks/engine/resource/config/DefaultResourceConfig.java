@@ -709,11 +709,11 @@ public class DefaultResourceConfig implements ResourceConfig {
         Object parameter = parameters.get(name);
 
         if (parameter instanceof List) {
-            return (List) parameter;
+            return (List<Parameter<?>>) parameter;
         } else if (parameter instanceof Parameter) {
-            Vector paramList = new Vector();
-            paramList.add(parameter);
-            //parameters.put(name, paramList);
+            List<Parameter<?>> paramList = new ArrayList<>();
+            paramList.add((Parameter<?>) parameter);
+
             return paramList;
         }
 

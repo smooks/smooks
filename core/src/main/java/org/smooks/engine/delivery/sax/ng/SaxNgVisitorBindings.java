@@ -52,11 +52,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SaxNgVisitorBindings {
+class SaxNgVisitorBindings {
 
     private List<ContentHandlerBinding<BeforeVisitor>> beforeVisitors;
     private List<ContentHandlerBinding<ChildrenVisitor>> childVisitors;
     private List<ContentHandlerBinding<AfterVisitor>> afterVisitors;
+    public List<ContentHandlerBinding<? extends Visitor>> visitors;
 
     public List<ContentHandlerBinding<BeforeVisitor>> getBeforeVisitors() {
         return beforeVisitors;
@@ -82,19 +83,26 @@ public class SaxNgVisitorBindings {
         this.afterVisitors = afterVisitors;
     }
 
-    public List<ContentHandlerBinding<? extends Visitor>> getVisitorBindings() {
-        List<ContentHandlerBinding<? extends Visitor>> visitors = new ArrayList<>();
-        if (beforeVisitors != null) {
-            visitors.addAll(beforeVisitors);
-        }
-        if (afterVisitors != null) {
-            visitors.addAll(afterVisitors);
-        }
-        if (childVisitors != null) {
-            visitors.addAll(childVisitors);
+    public List<ContentHandlerBinding<? extends Visitor>> getAll() {
+        if (visitors == null) {
+            synchronized (this) {
+                if (visitors == null) {
+                    List<ContentHandlerBinding<? extends Visitor>> distinctVisitors = new ArrayList<>();
+                    if (beforeVisitors != null) {
+                        distinctVisitors.addAll(beforeVisitors);
+                    }
+                    if (afterVisitors != null) {
+                        distinctVisitors.addAll(afterVisitors);
+                    }
+                    if (childVisitors != null) {
+                        distinctVisitors.addAll(childVisitors);
+                    }
+                    visitors = distinctVisitors.stream().distinct().collect(Collectors.toList());
+                }
+            }
         }
         
-        return visitors.stream().distinct().collect(Collectors.toList());
+        return visitors;
     }
     
     public SaxNgVisitorBindings merge(SaxNgVisitorBindings map) {

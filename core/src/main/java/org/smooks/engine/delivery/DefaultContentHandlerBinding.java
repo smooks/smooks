@@ -57,6 +57,7 @@ import java.util.Objects;
 public class DefaultContentHandlerBinding<T extends ContentHandler> implements ContentHandlerBinding<T> {
     private final T contentHandler;
     private final ResourceConfig resourceConfig;
+    private int hash;
 
     /**
      * Public constructor.
@@ -112,6 +113,10 @@ public class DefaultContentHandlerBinding<T extends ContentHandler> implements C
 
     @Override
     public int hashCode() {
-        return Objects.hash(contentHandler, resourceConfig);
+        if (hash == 0) {
+            hash = Objects.hash(contentHandler, resourceConfig);
+        }
+
+        return hash;
     }
 }

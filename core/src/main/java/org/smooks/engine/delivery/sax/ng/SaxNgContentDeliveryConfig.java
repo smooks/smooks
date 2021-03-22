@@ -42,31 +42,40 @@
  */
 package org.smooks.engine.delivery.sax.ng;
 
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.xpath.SelectorStep;
-import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor;
-import org.smooks.api.SmooksConfigException;
-import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.delivery.AbstractContentDeliveryConfig;
+import org.smooks.engine.delivery.DefaultContentHandlerBinding;
+import org.smooks.engine.delivery.SelectorTable;
+import org.smooks.engine.delivery.ordering.Sorter;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.xpath.evaluators.equality.ElementIndexCounter;
 import org.smooks.engine.resource.config.xpath.evaluators.equality.IndexEvaluator;
-import org.smooks.engine.delivery.*;
-import org.smooks.engine.delivery.ordering.Sorter;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
     
+    private final Map<String, SaxNgVisitorBindings> saxNgVisitorBindingsCache = new ConcurrentHashMap<>();
+    private final ThreadLocal<DocumentBuilder> cachedDocumentBuilder = new ThreadLocal<>();
     private final SelectorTable<ChildrenVisitor> childVisitors = new SelectorTable<>();
     private final SelectorTable<BeforeVisitor> beforeVisitors = new SelectorTable<>();
     private final SelectorTable<AfterVisitor> afterVisitors = new SelectorTable<>();
@@ -76,8 +85,8 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
     private Boolean maintainElementStack;
     private Boolean reverseVisitOrderOnVisitAfter;
     private Boolean terminateOnVisitorException;
-    private FilterBypass filterBypass;
-
+    private Optional<FilterBypass> filterBypass;
+    
     public SelectorTable<BeforeVisitor> getBeforeVisitorSelectorTable() {
         return beforeVisitors;
     }
@@ -93,14 +102,24 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
     @Override
     public FilterBypass getFilterBypass() {
         if (filterBypass == null) {
-            filterBypass = getFilterBypass(beforeVisitors, afterVisitors);
+            filterBypass = Optional.ofNullable(getFilterBypass(beforeVisitors, afterVisitors));
         }
-        return filterBypass;
+        return filterBypass.orElse(null);
     }
 
     @Override
     public Filter newFilter(final ExecutionContext executionContext) {
-        return new SaxNgFilter(executionContext);
+        DocumentBuilder documentBuilder = cachedDocumentBuilder.get();
+        if (documentBuilder == null) {
+            try {
+                documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                cachedDocumentBuilder.set(documentBuilder);
+            } catch (ParserConfigurationException e) {
+                throw new SmooksException(e);
+            }
+        }
+
+        return new SaxNgFilter(executionContext, documentBuilder, getCloseSource(), getCloseResult());
     }
 
     @Override
@@ -118,7 +137,11 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
     public SaxNgVisitorBindings get(String selector) {
         if (reducedSelectorTable == null) {
-            this.reducedSelectorTable = reduceSelectorTables();
+            synchronized (this) {
+                if (reducedSelectorTable == null) {
+                    reducedSelectorTable = reduceSelectorTables();
+                }
+            }
         }
 
         return reducedSelectorTable.get(selector);
@@ -212,7 +235,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
         }
     }
 
-    public void addIndexCounters(Map<String, SaxNgVisitorBindings> reducedSelectorTable) {
+    protected void addIndexCounters(Map<String, SaxNgVisitorBindings> reducedSelectorTable) {
         final Map<String, SaxNgVisitorBindings> reducedSelectorTableCopy = new LinkedHashMap<>(reducedSelectorTable);
         Collection<SaxNgVisitorBindings> elementVisitorMaps = reducedSelectorTableCopy.values();
 
@@ -270,46 +293,40 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
     }
 
     public SaxNgVisitorBindings get(String... selectors) {
-        SaxNgVisitorBindings combinedVisitorBindings = new SaxNgVisitorBindings();
+        SaxNgVisitorBindings saxNgVisitorBindings = saxNgVisitorBindingsCache.get(String.join(":", selectors));
+        if (saxNgVisitorBindings == null) {
+            saxNgVisitorBindings = new SaxNgVisitorBindings();
+            saxNgVisitorBindings.setBeforeVisitors(new ArrayList<>());
+            saxNgVisitorBindings.setChildVisitors(new ArrayList<>());
+            saxNgVisitorBindings.setAfterVisitors(new ArrayList<>());
 
-        combinedVisitorBindings.setBeforeVisitors(new ArrayList<>());
-        combinedVisitorBindings.setChildVisitors(new ArrayList<>());
-        combinedVisitorBindings.setAfterVisitors(new ArrayList<>());
+            for (String selector : selectors) {
+                final SaxNgVisitorBindings visitorBindings = get(selector);
 
-        for (String selector : selectors) {
-            final SaxNgVisitorBindings visitorBindings = get(selector);
+                if (visitorBindings != null) {
+                    final List<ContentHandlerBinding<BeforeVisitor>> beforeVisitorBindings = visitorBindings.getBeforeVisitors();
+                    final List<ContentHandlerBinding<ChildrenVisitor>> childVisitorBindings = visitorBindings.getChildVisitors();
+                    final List<ContentHandlerBinding<AfterVisitor>> afterVisitorBindings = visitorBindings.getAfterVisitors();
 
-            if (visitorBindings != null) {
-                final List<ContentHandlerBinding<BeforeVisitor>> beforeVisitorBindings = visitorBindings.getBeforeVisitors();
-                final List<ContentHandlerBinding<ChildrenVisitor>> childVisitorBindings = visitorBindings.getChildVisitors();
-                final List<ContentHandlerBinding<AfterVisitor>> afterVisitorBindings = visitorBindings.getAfterVisitors();
-
-                if (beforeVisitorBindings != null) {
-                    combinedVisitorBindings.getBeforeVisitors().addAll(beforeVisitorBindings);
-                }
-                if (childVisitorBindings != null) {
-                    combinedVisitorBindings.getChildVisitors().addAll(childVisitorBindings);
-                }
-                if (afterVisitorBindings != null) {
-                    combinedVisitorBindings.getAfterVisitors().addAll(afterVisitorBindings);
+                    if (beforeVisitorBindings != null) {
+                        saxNgVisitorBindings.getBeforeVisitors().addAll(beforeVisitorBindings);
+                    }
+                    if (childVisitorBindings != null) {
+                        saxNgVisitorBindings.getChildVisitors().addAll(childVisitorBindings);
+                    }
+                    if (afterVisitorBindings != null) {
+                        saxNgVisitorBindings.getAfterVisitors().addAll(afterVisitorBindings);
+                    }
                 }
             }
+            
+            saxNgVisitorBindingsCache.put(String.join(":", selectors), saxNgVisitorBindings);
         }
-
-        if (combinedVisitorBindings.getBeforeVisitors().isEmpty()) {
-            combinedVisitorBindings.setBeforeVisitors(null);
-        }
-        if (combinedVisitorBindings.getChildVisitors().isEmpty()) {
-            combinedVisitorBindings.setChildVisitors(null);
-        }
-        if (combinedVisitorBindings.getAfterVisitors().isEmpty()) {
-            combinedVisitorBindings.setAfterVisitors(null);
-        }
-
-        if (combinedVisitorBindings.getBeforeVisitors() == null && combinedVisitorBindings.getChildVisitors() == null && combinedVisitorBindings.getAfterVisitors() == null) {
+        
+        if (saxNgVisitorBindings.getBeforeVisitors().isEmpty() && saxNgVisitorBindings.getChildVisitors().isEmpty() && saxNgVisitorBindings.getAfterVisitors().isEmpty()) {
             return null;
         } else {
-            return combinedVisitorBindings;
+            return saxNgVisitorBindings;
         }
     }
 

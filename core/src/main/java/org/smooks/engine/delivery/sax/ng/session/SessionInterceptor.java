@@ -72,33 +72,11 @@ public class SessionInterceptor extends AbstractInterceptorVisitor implements El
         if (Session.isSession(element)) {
             if (doVisit(element, "visitBefore", executionContext)) {
                 Object source = executionContext.get(new TypedKey<>(element.getAttribute("source")));
-                intercept(new Invocation<BeforeVisitor>() {
-                    @Override
-                    public Object invoke(final BeforeVisitor visitor) {
-                        visitor.visitBefore((Element) source, executionContext);
-                        return null;
-                    }
-
-                    @Override
-                    public Class<BeforeVisitor> getTarget() {
-                        return BeforeVisitor.class;
-                    }
-                });
+                intercept(visitBeforeInvocation, source, executionContext);
             }
         } else {
             if (new NodeFragment(element).isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext)) {
-                intercept(new Invocation<BeforeVisitor>() {
-                    @Override
-                    public Object invoke(final BeforeVisitor visitor) {
-                        visitor.visitBefore(element, executionContext);
-                        return null;
-                    }
-
-                    @Override
-                    public Class<BeforeVisitor> getTarget() {
-                        return BeforeVisitor.class;
-                    }
-                });
+                intercept(visitBeforeInvocation, element, executionContext);
             }
         }
     }
@@ -106,35 +84,13 @@ public class SessionInterceptor extends AbstractInterceptorVisitor implements El
     @Override
     public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) {
         if (new NodeFragment(characterData.getParentNode()).isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext)) {
-            intercept(new Invocation<ChildrenVisitor>() {
-                @Override
-                public Object invoke(ChildrenVisitor visitor) {
-                    visitor.visitChildText(characterData, executionContext);
-                    return null;
-                }
-
-                @Override
-                public Class<ChildrenVisitor> getTarget() {
-                    return ChildrenVisitor.class;
-                }
-            });
+            intercept(visitChildTextInvocation, characterData, executionContext);
         }
     }
 
     @Override
     public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-        intercept(new Invocation<ChildrenVisitor>() {
-            @Override
-            public Object invoke(ChildrenVisitor visitor) {
-                visitor.visitChildElement(childElement, executionContext);
-                return null;
-            }
-
-            @Override
-            public Class<ChildrenVisitor> getTarget() {
-                return ChildrenVisitor.class;
-            }
-        });
+        intercept(visitChildElementInvocation, childElement, executionContext);
     }
 
     @Override
@@ -145,34 +101,12 @@ public class SessionInterceptor extends AbstractInterceptorVisitor implements El
                 if (element.getAttribute("visit").equals("visitChildText")) {
                     visitChildText((CharacterData) source, executionContext);
                 } else {
-                    intercept(new Invocation<AfterVisitor>() {
-                        @Override
-                        public Object invoke(final AfterVisitor visitor) {
-                            visitor.visitAfter((Element) source, executionContext);
-                            return null;
-                        }
-
-                        @Override
-                        public Class<AfterVisitor> getTarget() {
-                            return AfterVisitor.class;
-                        }
-                    });
+                    intercept(visitAfterInvocation, source, executionContext);
                 }
             }
         } else {
             if (new NodeFragment(element).isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext)) {
-                intercept(new Invocation<AfterVisitor>() {
-                    @Override
-                    public Object invoke(final AfterVisitor visitor) {
-                        visitor.visitAfter(element, executionContext);
-                        return null;
-                    }
-
-                    @Override
-                    public Class<AfterVisitor> getTarget() {
-                        return AfterVisitor.class;
-                    }
-                });
+                intercept(visitAfterInvocation, element, executionContext);
             }
         }
     }

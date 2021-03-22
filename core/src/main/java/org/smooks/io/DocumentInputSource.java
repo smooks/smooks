@@ -42,39 +42,33 @@
  */
 package org.smooks.io;
 
-import org.smooks.support.XmlUtil;
-import org.w3c.dom.Node;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringReader;
 
-public class DOMInputSource extends InputSource {
+public class DocumentInputSource extends InputSource {
 
-    private final Node node;
-    private final boolean closeEmptyElements;
-    private String serializedNode;
-
-    public DOMInputSource(Node node, boolean closeEmptyElements) {
-        this.node = node;
-        this.closeEmptyElements = closeEmptyElements;
+    private final Document document;
+    
+    public DocumentInputSource(Document document) {
+        this.document = document;
     }
     
-    public DOMInputSource() {
+    public DocumentInputSource() {
         throw new UnsupportedOperationException();
     }
 
-    public DOMInputSource(String systemId) {
+    public DocumentInputSource(String systemId) {
         throw new UnsupportedOperationException();
     }
 
-    public DOMInputSource(InputStream byteStream) {
+    public DocumentInputSource(InputStream byteStream) {
         throw new UnsupportedOperationException();
     }
 
-    public DOMInputSource(Reader characterStream) {
+    public DocumentInputSource(Reader characterStream) {
         throw new UnsupportedOperationException();
     }
 
@@ -95,7 +89,7 @@ public class DOMInputSource extends InputSource {
 
     @Override
     public InputStream getByteStream() {
-        return new ByteArrayInputStream(serialize(node, closeEmptyElements).getBytes());
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -110,18 +104,10 @@ public class DOMInputSource extends InputSource {
 
     @Override
     public Reader getCharacterStream() {
-        return new StringReader(serialize(node, closeEmptyElements));
-    }
-    
-    protected String serialize(final Node node, final boolean closeEmptyElements) {
-        if (serializedNode == null) {
-            this.serializedNode = XmlUtil.serialize(node, false, closeEmptyElements);
-        }
-        
-        return serializedNode;
+        throw new UnsupportedOperationException();
     }
 
-    public Node getNode() {
-        return node;
+    public Document getDocument() {
+        return document;
     }
 }

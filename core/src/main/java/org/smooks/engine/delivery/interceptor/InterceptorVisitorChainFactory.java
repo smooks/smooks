@@ -46,6 +46,9 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
+import org.smooks.engine.injector.Scope;
+import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
+import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.delivery.ContentHandlerBinding;
@@ -86,8 +89,7 @@ public class InterceptorVisitorChainFactory {
 					throw new SmooksException(e.getMessage(), e);
 				}
 				interceptorVisitor.setVisitorBinding(interceptedVisitorBinding);
-				interceptorVisitor.setApplicationContext(applicationContext);
-
+				
 				final ResourceConfig interceptorResourceConfig = new DefaultResourceConfig(visitorBinding.getResourceConfig());
 				if (interceptorVisitorDefinition.getSelector().isPresent()) {
 					interceptorResourceConfig.getSelectorPath().setSelector(interceptorVisitorDefinition.getSelector().get());
@@ -95,6 +97,7 @@ public class InterceptorVisitorChainFactory {
 						selectorStep.buildPredicatesEvaluator(interceptorResourceConfig.getSelectorPath().getNamespaces());
 					}
 				}
+				applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(interceptorVisitor, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), interceptorResourceConfig, interceptorVisitor)));
 				interceptedVisitorBinding = new DefaultContentHandlerBinding<>(interceptorVisitor, interceptorResourceConfig);
 			}
 			
@@ -104,5 +107,9 @@ public class InterceptorVisitorChainFactory {
 
 	public List<InterceptorVisitorDefinition> getInterceptorVisitorDefinitions() {
 		return interceptorVisitorDefinitions;
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
 	}
 }

@@ -43,13 +43,33 @@
 package org.smooks.engine.delivery.interceptor;
 
 import org.smooks.api.ApplicationContext;
+import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Element;
+
+import javax.inject.Inject;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractInterceptorVisitor implements InterceptorVisitor {
-    
+
+    protected final VisitChildTextInvocation visitChildTextInvocation = new VisitChildTextInvocation();
+    protected final VisitChildElementInvocation visitChildElementInvocation = new VisitChildElementInvocation();
+    protected final VisitAfterInvocation visitAfterInvocation = new VisitAfterInvocation();
+    protected final VisitBeforeInvocation visitBeforeInvocation = new VisitBeforeInvocation();
+    protected final Map<Class<?>, Optional<Visitor>> invocationTargetCache = new ConcurrentHashMap<>();
+    protected final AtomicReference<ContentHandlerBinding<Visitor>> target = new AtomicReference<>();
     protected ContentHandlerBinding<Visitor> visitorBinding;
+    
+    @Inject
     protected ApplicationContext applicationContext;
     
     @Override
@@ -64,40 +84,104 @@ public abstract class AbstractInterceptorVisitor implements InterceptorVisitor {
 
     @Override
     public ContentHandlerBinding<Visitor> getTarget() {
-        ContentHandlerBinding<Visitor> nextVisitorBinding = visitorBinding;
-        while (nextVisitorBinding.getContentHandler() instanceof InterceptorVisitor) {
-            nextVisitorBinding = ((InterceptorVisitor) visitorBinding.getContentHandler()).getTarget();
+        if (target.get() == null) {
+            ContentHandlerBinding<Visitor> nextVisitorBinding = visitorBinding;
+            while (nextVisitorBinding.getContentHandler() instanceof InterceptorVisitor) {
+                nextVisitorBinding = ((InterceptorVisitor) visitorBinding.getContentHandler()).getTarget();
+            }
+            target.compareAndSet(null, nextVisitorBinding);
         }
 
-        return nextVisitorBinding;    
+        return target.get();
     }
 
-    @Override
-    public void setApplicationContext(final ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
-    protected <T extends Visitor> Object intercept(final Invocation<T> invocation) {
-        final Class<?> targetClass = invocation.getTarget();
-        ContentHandlerBinding<Visitor> nextVisitorBinding = visitorBinding;
-        while (nextVisitorBinding != null) {
-            if (targetClass.isInstance(nextVisitorBinding.getContentHandler())) {
-                return invocation.invoke((T) nextVisitorBinding.getContentHandler());
-            } else {
-                if (nextVisitorBinding.getContentHandler() instanceof InterceptorVisitor) {
-                    nextVisitorBinding = ((InterceptorVisitor) nextVisitorBinding.getContentHandler()).getVisitorBinding();
+    protected <T extends Visitor> Object intercept(final Invocation<T> invocation, Object... args) {
+        final Class<?> invocationTargetClass = invocation.getTarget();
+        Optional<Visitor> invocationTargetVisitorOptional = invocationTargetCache.get(invocationTargetClass);
+        if (invocationTargetVisitorOptional == null) {
+            ContentHandlerBinding<Visitor> nextVisitorBinding = visitorBinding;
+            Visitor nextVisitor;
+            while (nextVisitorBinding != null) {
+                nextVisitor = nextVisitorBinding.getContentHandler();
+                if (invocationTargetClass.isInstance(nextVisitor)) {
+                    invocationTargetVisitorOptional = Optional.of(nextVisitor);
+                    invocationTargetCache.put(invocationTargetClass, invocationTargetVisitorOptional);
+                    break;
+                } else if (nextVisitor instanceof InterceptorVisitor) {
+                    nextVisitorBinding = ((InterceptorVisitor) nextVisitor).getVisitorBinding();
                 } else {
-                    nextVisitorBinding = null;
+                    invocationTargetVisitorOptional = Optional.empty();
+                    invocationTargetCache.put(invocationTargetClass, invocationTargetVisitorOptional);
+                    break;
                 }
+                
             }
         }
 
-        return null;
+        if (invocationTargetVisitorOptional.isPresent()) {
+            return invocation.invoke((T) invocationTargetVisitorOptional.get(), args);
+        } else {
+            return null;
+        }
     }
 
     public interface Invocation<T extends Visitor> {
-        Object invoke(T visitor);
+        Object invoke(T visitor, Object... args);
 
         Class<T> getTarget();
+    }
+
+    protected static class VisitChildTextInvocation implements Invocation<ChildrenVisitor> {
+
+        @Override
+        public Object invoke(final ChildrenVisitor visitor, final Object... args) {
+            visitor.visitChildText((CharacterData) args[0], (ExecutionContext) args[1]);
+            return null;
+        }
+
+        @Override
+        public Class<ChildrenVisitor> getTarget() {
+            return ChildrenVisitor.class;
+        }
+    }
+
+    protected static class VisitChildElementInvocation implements Invocation<ChildrenVisitor> {
+
+        @Override
+        public Object invoke(final ChildrenVisitor visitor, final Object... args) {
+            visitor.visitChildElement((Element) args[0], (ExecutionContext) args[1]);
+            return null;
+        }
+
+        @Override
+        public Class<ChildrenVisitor> getTarget() {
+            return ChildrenVisitor.class;
+        }
+    }
+
+    protected static class VisitAfterInvocation implements Invocation<AfterVisitor> {
+        @Override
+        public Object invoke(final AfterVisitor visitor, final Object... args) {
+            visitor.visitAfter((Element) args[0], (ExecutionContext) args[1]);
+            return null;
+        }
+
+        @Override
+        public Class<AfterVisitor> getTarget() {
+            return AfterVisitor.class;
+        }
+    }
+
+    protected static class VisitBeforeInvocation implements Invocation<BeforeVisitor> {
+        @Override
+        public Object invoke(final BeforeVisitor visitor, final Object... args) {
+            visitor.visitBefore((Element) args[0], (ExecutionContext) args[1]);
+            return null;
+        }
+
+        @Override
+        public Class<BeforeVisitor> getTarget() {
+            return BeforeVisitor.class;
+        }
     }
 }

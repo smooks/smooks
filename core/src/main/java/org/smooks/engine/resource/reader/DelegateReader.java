@@ -50,21 +50,23 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.config.ResourceConfigSeq;
+import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
 import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.api.TypedKey;
 import org.smooks.engine.DefaultApplicationContextBuilder;
-import org.smooks.io.DOMInputSource;
+import org.smooks.io.DocumentInputSource;
 import org.smooks.io.SAXWriter;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
 import org.smooks.engine.delivery.sax.ng.session.Session;
 import org.smooks.engine.delivery.sax.ng.session.SessionInterceptor;
 import org.smooks.api.resource.reader.SmooksXMLReader;
-import org.w3c.dom.Node;
+import org.w3c.dom.Document;
 import org.xml.sax.*;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
@@ -79,9 +81,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NodeReader implements SmooksXMLReader {
-    private static final Map<String, Smooks> SMOOKS_READERS = new ConcurrentHashMap<>();
-    
+public class DelegateReader implements SmooksXMLReader {
     private final TypedKey<Writer> contentHandlerTypedKey = new TypedKey<>();
     private final TypedKey<ExecutionContext> executionContextTypedKey = new TypedKey<>();
     
@@ -95,33 +95,47 @@ public class NodeReader implements SmooksXMLReader {
 
     @Inject
     private ApplicationContext applicationContext;
+    
+    private DocumentBuilder documentBuilder;
 
     @PostConstruct
     public void postConstruct() {
+        try {
+            final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+            documentBuilderFactory.setFeature("http://xml.org/sax/features/validation", false);
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new SmooksException(e);
+        }
         final String smooksResourceList = "<smooks-resource-list xmlns=\"https://www.smooks.org/xsd/smooks-2.0.xsd\">" + resourceConfig.getParameter("resourceConfigs", String.class).getValue() + "</smooks-resource-list>";
-        readerSmooks = SMOOKS_READERS.computeIfAbsent(smooksResourceList, k -> {
-            final ResourceConfigSeq resourceConfigList;
-            try {
-                resourceConfigList = XMLConfigDigester.digestConfig(new ByteArrayInputStream(smooksResourceList.getBytes(StandardCharsets.UTF_8)), "./", new HashMap<>(), applicationContext.getClassLoader());
-            } catch (URISyntaxException | SAXException | IOException e) {
-                throw new SmooksException(e);
-            }
-            final Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
-            smooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(1));
-            for (ResourceConfig resourceConfig : resourceConfigList) {
-                smooks.addConfiguration(resourceConfig);
-            }
+        final ResourceConfigSeq resourceConfigList;
+        try {
+            resourceConfigList = XMLConfigDigester.digestConfig(new ByteArrayInputStream(smooksResourceList.getBytes(StandardCharsets.UTF_8)), "./", new HashMap<>(), applicationContext.getClassLoader());
+        } catch (URISyntaxException | SAXException | IOException e) {
+            throw new SmooksException(e);
+        }
+        readerSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
+        readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1));
+        for (ResourceConfig resourceConfig : resourceConfigList) {
+            readerSmooks.addConfiguration(resourceConfig);
+        }
 
-            final InterceptorVisitorChainFactory interceptorVisitorChainFactory = new InterceptorVisitorChainFactory();
-            InterceptorVisitorDefinition interceptorVisitorDefinition = new InterceptorVisitorDefinition();
-            interceptorVisitorDefinition.setSelector(Optional.of("*"));
-            interceptorVisitorDefinition.setClass(SessionInterceptor.class);
-            interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(interceptorVisitorDefinition);
-            
-            smooks.getApplicationContext().getRegistry().registerObject(interceptorVisitorChainFactory);
+        final InterceptorVisitorChainFactory interceptorVisitorChainFactory = new InterceptorVisitorChainFactory();
+        interceptorVisitorChainFactory.setApplicationContext(applicationContext);
 
-            return smooks;
-        });
+        InterceptorVisitorDefinition sessionInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
+        sessionInterceptorVisitorDefinition.setSelector(Optional.of("*"));
+        sessionInterceptorVisitorDefinition.setClass(SessionInterceptor.class);
+
+        InterceptorVisitorDefinition staticProxyInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
+        staticProxyInterceptorVisitorDefinition.setSelector(Optional.of("*"));
+        staticProxyInterceptorVisitorDefinition.setClass(StaticProxyInterceptor.class);
+
+        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(sessionInterceptorVisitorDefinition);
+        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(staticProxyInterceptorVisitorDefinition);
+
+        readerSmooks.getApplicationContext().getRegistry().registerObject(interceptorVisitorChainFactory);
     }
     
     @Override
@@ -190,15 +204,12 @@ public class NodeReader implements SmooksXMLReader {
     
     @Override
     public void parse(final InputSource inputSource) throws IOException, SAXException {
-        final Node node;
-        if (inputSource instanceof DOMInputSource) {
-            node = ((DOMInputSource) inputSource).getNode();
+        final Document document;
+        if (inputSource instanceof DocumentInputSource) {
+            document = ((DocumentInputSource) inputSource).getDocument();
         } else {
-            try {
-                node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputSource);
-            } catch (ParserConfigurationException e) {
-                throw new SmooksException(e);
-            }
+            document = documentBuilder.parse(inputSource);
+            document.setStrictErrorChecking(false);
         }
         
         ExecutionContext readerExecutionContext = executionContext.get(executionContextTypedKey);
@@ -207,8 +218,8 @@ public class NodeReader implements SmooksXMLReader {
             executionContext.put(executionContextTypedKey, readerExecutionContext);   
         }
         
-        if (Session.isSession(node)) {
-            final Session session = new Session(node);
+        if (Session.isSession(document.getFirstChild())) {
+            final Session session = new Session(document.getFirstChild());
             readerExecutionContext.put(session.getSourceKey(), session.getSourceValue(executionContext));
         }
         
@@ -217,7 +228,7 @@ public class NodeReader implements SmooksXMLReader {
         }
         StreamResult streamResult = new StreamResult();
         streamResult.setWriter(executionContext.get(contentHandlerTypedKey));
-        readerSmooks.filterSource(readerExecutionContext, new DOMSource(node), streamResult);
+        readerSmooks.filterSource(readerExecutionContext, new DOMSource(document), streamResult);
     }
 
     @Override

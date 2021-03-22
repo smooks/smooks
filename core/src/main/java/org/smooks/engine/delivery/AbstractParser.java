@@ -44,31 +44,30 @@ package org.smooks.engine.delivery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.api.SmooksException;
-import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.delivery.ContentDeliveryConfig;
-import org.smooks.api.delivery.Filter;
-import org.smooks.assertion.AssertArgument;
-import org.smooks.api.resource.config.Parameter;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
-import org.smooks.api.resource.reader.JavaXMLReader;
-import org.smooks.engine.resource.reader.XStreamXMLReader;
-import org.smooks.engine.injector.Scope;
-import org.smooks.io.DOMInputSource;
-import org.smooks.io.NullReader;
+import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.lifecycle.LifecycleManager;
+import org.smooks.api.resource.config.Parameter;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.reader.JavaXMLReader;
+import org.smooks.api.resource.reader.SmooksXMLReader;
+import org.smooks.assertion.AssertArgument;
+import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
-import org.smooks.namespace.NamespaceDeclarationStack;
-import org.smooks.namespace.NamespaceDeclarationStackAware;
+import org.smooks.engine.lookup.LifecycleManagerLookup;
+import org.smooks.engine.resource.reader.NullSourceXMLReader;
+import org.smooks.engine.resource.reader.XStreamXMLReader;
+import org.smooks.engine.xml.NamespaceManager;
+import org.smooks.io.DocumentInputSource;
+import org.smooks.io.NullReader;
 import org.smooks.io.payload.FilterSource;
 import org.smooks.io.payload.JavaSource;
-import org.smooks.engine.lookup.LifecycleManagerLookup;
+import org.smooks.namespace.NamespaceDeclarationStack;
+import org.smooks.namespace.NamespaceDeclarationStackAware;
 import org.smooks.support.ClassUtil;
-import org.smooks.engine.xml.NamespaceManager;
-import org.smooks.engine.resource.reader.NullSourceXMLReader;
-import org.smooks.api.resource.reader.SmooksXMLReader;
+import org.w3c.dom.Document;
 import org.xml.sax.*;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -107,7 +106,7 @@ public class AbstractParser {
      * @param saxDriverConfig SAX Parser configuration. See <a href="#parserconfig">.cdrl Configuration</a>.
      */
     public AbstractParser(ExecutionContext executionContext, ResourceConfig saxDriverConfig) {
-        AssertArgument.isNotNull(executionContext, "execContext");
+        AssertArgument.isNotNull(executionContext, "executionContext");
         this.executionContext = executionContext;
         this.saxDriverConfig = saxDriverConfig;
     }
@@ -127,9 +126,9 @@ public class AbstractParser {
 
     public static void attachXMLReader(XMLReader xmlReader, ExecutionContext execContext) {
         getReaders(execContext).push(xmlReader);
-        
+
         NamespaceDeclarationStack namespaceDeclarationStack = execContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY);
-        if(namespaceDeclarationStack == null) {
+        if (namespaceDeclarationStack == null) {
             throw new IllegalStateException("No NamespaceDeclarationStack attached to the ExecutionContext.");
         }
         namespaceDeclarationStack.pushReader(xmlReader);
@@ -269,8 +268,7 @@ public class AbstractParser {
 
             return inputSource;
         } else if (source instanceof DOMSource)  {
-            boolean closeEmptyElements = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-            return new DOMInputSource(((DOMSource) source).getNode(), closeEmptyElements);
+            return new DocumentInputSource((Document) ((DOMSource) source).getNode());
         } else {
             return new InputSource(getReader(source, contentEncoding));
         }
@@ -291,14 +289,11 @@ public class AbstractParser {
     }
 
     protected XMLReader createXMLReader() throws SAXException {
-        XMLReader reader;
-        ExecutionContext executionContext = getExecutionContext();
+        XMLReader xmlReader;
         Source source = FilterSource.getSource(executionContext);
 
         if (saxDriverConfig != null && saxDriverConfig.getResource() != null) {
-            String className = saxDriverConfig.getResource();
-
-            reader = XMLReaderFactory.createXMLReader(className);
+            xmlReader = XMLReaderFactory.createXMLReader(saxDriverConfig.getResource());
         } else if (source instanceof JavaSource) {
             JavaSource javaSource = (JavaSource) source;
 
@@ -310,30 +305,32 @@ public class AbstractParser {
             // the smooks config (via the reader features) and (b) not turned off via the supplied JavaSource...
             boolean eventStreamingOn = (!isFeatureOff(JavaSource.FEATURE_GENERATE_EVENT_STREAM, saxDriverConfig) && javaSource.isEventStreamRequired());
             if (eventStreamingOn && javaSource.getSourceObjects() != null) {
-                reader = new XStreamXMLReader();
+                xmlReader = new XStreamXMLReader();
             } else {
-                reader = new NullSourceXMLReader();
+                xmlReader = new NullSourceXMLReader();
             }
+        } else if (source instanceof DOMSource) {
+            xmlReader = new DOMReader();
         } else {
-            reader = XMLReaderFactory.createXMLReader();
+            xmlReader = XMLReaderFactory.createXMLReader();
         }
 
-        if (reader instanceof SmooksXMLReader) {
+        if (xmlReader instanceof SmooksXMLReader) {
             final LifecycleManager lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
-            if(saxDriverConfig != null) {
-                lifecycleManager.applyPhase(reader, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), saxDriverConfig, reader)));
-        	} else {
-                lifecycleManager.applyPhase(reader, new PostConstructLifecyclePhase());
-        	}
+            if (saxDriverConfig != null) {
+                lifecycleManager.applyPhase(xmlReader, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), saxDriverConfig, xmlReader)));
+            } else {
+                lifecycleManager.applyPhase(xmlReader, new PostConstructLifecyclePhase());
+            }
         }
 
-        reader.setFeature("http://xml.org/sax/features/namespaces", true);
-        reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+        xmlReader.setFeature("http://xml.org/sax/features/namespaces", true);
+        xmlReader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
 
-        setHandlers(reader);
-        setFeatures(reader);
+        setHandlers(xmlReader);
+        setFeatures(xmlReader);
 
-        return reader;
+        return xmlReader;
     }
 
     protected void attachNamespaceDeclarationStack(XMLReader reader, ExecutionContext execContext) {
@@ -348,26 +345,26 @@ public class AbstractParser {
         }
     }
 
-    protected void configureReader(XMLReader reader, DefaultHandler2 handler, ExecutionContext execContext, Source source) throws SAXException {
-		if (reader instanceof SmooksXMLReader) {
-            ((SmooksXMLReader) reader).setExecutionContext(execContext);
+    protected void configureReader(XMLReader xmlReader, DefaultHandler2 contentHandler, ExecutionContext execContext, Source source) throws SAXException {
+		if (xmlReader instanceof SmooksXMLReader) {
+            ((SmooksXMLReader) xmlReader).setExecutionContext(execContext);
         }
 
-        if (reader instanceof JavaXMLReader) {
+        if (xmlReader instanceof JavaXMLReader) {
             if (!(source instanceof JavaSource)) {
                 throw new SAXException("A " + JavaSource.class.getName() + " source must be supplied for " + JavaXMLReader.class.getName() + " implementations.");
             }
-            ((JavaXMLReader) reader).setSourceObjects(((JavaSource) source).getSourceObjects());
+            ((JavaXMLReader) xmlReader).setSourceObjects(((JavaSource) source).getSourceObjects());
         }
 
-        reader.setContentHandler(handler);
+        xmlReader.setContentHandler(contentHandler);
 
         try {
-            reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
+            xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", contentHandler);
         } catch (SAXNotRecognizedException e) {
-            LOGGER.debug("XMLReader property 'http://xml.org/sax/properties/lexical-handler' not recognized by XMLReader '" + reader.getClass().getName() + "'.");
+            LOGGER.warn("XMLReader property 'http://xml.org/sax/properties/lexical-handler' not recognized by XMLReader '" + xmlReader.getClass().getName() + "'.");
         }
-	}
+    }
 
     private void setHandlers(XMLReader reader) throws SAXException {
         if (saxDriverConfig != null) {

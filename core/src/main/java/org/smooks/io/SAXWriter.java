@@ -48,6 +48,7 @@ import com.fasterxml.aalto.stax.InputFactoryImpl;
 import org.smooks.api.SmooksException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.XMLConstants;
@@ -61,7 +62,8 @@ public class SAXWriter extends Writer {
 
     private final ContentHandler contentHandler;
     private final AsyncXMLStreamReader<AsyncByteArrayFeeder> asyncXMLStreamReader;
-    
+    private final LexicalHandler lexicalHandler;
+
     static {
         ASYNC_XML_INPUT_FACTORY = new InputFactoryImpl();
         ASYNC_XML_INPUT_FACTORY.configureForLowMemUsage();
@@ -69,6 +71,7 @@ public class SAXWriter extends Writer {
     
     public SAXWriter(final ContentHandler contentHandler) {
         this.contentHandler = contentHandler;
+        lexicalHandler = (LexicalHandler) contentHandler;
         asyncXMLStreamReader = ASYNC_XML_INPUT_FACTORY.createAsyncForByteArray();
     }
     
@@ -102,6 +105,11 @@ public class SAXWriter extends Writer {
                     case XMLStreamConstants.CHARACTERS:
                         contentHandler.characters(asyncXMLStreamReader.getText().toCharArray(), asyncXMLStreamReader.getTextStart(), asyncXMLStreamReader.getTextLength());
                         break;
+                    case XMLStreamConstants.CDATA:
+                        lexicalHandler.startCDATA();
+                        contentHandler.characters(asyncXMLStreamReader.getText().toCharArray(), asyncXMLStreamReader.getTextStart(), asyncXMLStreamReader.getTextLength());
+                        lexicalHandler.endCDATA();
+                        break;
                     case XMLStreamConstants.END_ELEMENT:
                         if (asyncXMLStreamReader.getName().getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {
                             contentHandler.endElement(asyncXMLStreamReader.getName().getNamespaceURI(), asyncXMLStreamReader.getName().getLocalPart(), asyncXMLStreamReader.getName().getLocalPart());
@@ -131,6 +139,10 @@ public class SAXWriter extends Writer {
 
     @Override
     public void close() throws IOException {
-
+        try {
+            asyncXMLStreamReader.close();
+        } catch (XMLStreamException e) {
+            throw new IOException(e);
+        }
     }
 }

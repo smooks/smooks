@@ -49,6 +49,7 @@ import org.smooks.api.profile.UnknownProfileMemberException;
 import org.smooks.assertion.AssertArgument;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Default ProfileStore implementation.
@@ -60,7 +61,7 @@ public class DefaultProfileStore implements ProfileStore {
     /**
 	 * The store table.
 	 */
-	private final Hashtable<String, ProfileSet> store = new Hashtable<>();
+	private final Map<String, ProfileSet> store = new ConcurrentHashMap<>();
 
 	/*
 	 * (non-Javadoc)
@@ -69,15 +70,13 @@ public class DefaultProfileStore implements ProfileStore {
 	 */
 	@Override
 	public ProfileSet getProfileSet(String profileMember) throws UnknownProfileMemberException {
-		ProfileSet set = null;
+		ProfileSet set;
 
 		assertProfileMemberNameOK(profileMember);
 
 		set = store.get(profileMember.trim());
 		if (set == null) {
-			throw new UnknownProfileMemberException(
-					"Failed to get ProfileSet.  Unknown profile member name ["
-							+ profileMember + "]");
+			throw new UnknownProfileMemberException("Failed to get ProfileSet.  Unknown profile member name [" + profileMember + "]");
 		}
 
 		return set;
@@ -114,16 +113,13 @@ public class DefaultProfileStore implements ProfileStore {
      * of another profile set, and inserting the sub-profiles into the profile set.
      */
     public void expandProfiles() {
-		Iterator storeIterator = store.entrySet().iterator();
-
-		while (storeIterator.hasNext()) {
-			Map.Entry entry = (Map.Entry) storeIterator.next();
-			DefaultProfileSet profileSet = (DefaultProfileSet) entry.getValue();
-			Iterator iterator = profileSet.values().iterator();
+		for (Map.Entry<String, ProfileSet> profileSetEntry : store.entrySet()) {
+			DefaultProfileSet profileSet = (DefaultProfileSet) profileSetEntry.getValue();
+			Iterator<Profile> iterator = profileSet.values().iterator();
 			List<DefaultProfileSet> addOns = new ArrayList<>();
 
 			while (iterator.hasNext()) {
-				Profile profile = (Profile) iterator.next();
+				Profile profile = iterator.next();
 
 				try {
 					DefaultProfileSet addOnProfileSet = (DefaultProfileSet) getProfileSet(profile.getName());
@@ -137,8 +133,8 @@ public class DefaultProfileStore implements ProfileStore {
 			// perfomed after the above iteration simply to avoid concurrent mod
 			// exceptions
 			// on the ProfileSet.
-			for (int i = 0; i < addOns.size(); i++) {
-				profileSet.addProfileSet(addOns.get(i));
+			for (DefaultProfileSet addOn : addOns) {
+				profileSet.addProfileSet(addOn);
 			}
 		}
 	}
@@ -163,13 +159,11 @@ public class DefaultProfileStore implements ProfileStore {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer storeDescription = new StringBuffer();
-		Iterator iterator = store.entrySet().iterator();
+		StringBuilder storeDescription = new StringBuilder();
 
-		while (iterator.hasNext()) {
-			Map.Entry entry = (Map.Entry) iterator.next();
-			String profileMemberName = (String) entry.getKey();
-			ProfileSet profileSet = (ProfileSet) entry.getValue();
+		for (Map.Entry<String, ProfileSet> entry : store.entrySet()) {
+			String profileMemberName = entry.getKey();
+			ProfileSet profileSet = entry.getValue();
 
 			storeDescription.append(profileMemberName).append(": ").append(
 					profileSet).append("\r\n");

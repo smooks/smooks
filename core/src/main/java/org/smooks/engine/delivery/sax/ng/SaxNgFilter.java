@@ -55,6 +55,7 @@ import org.smooks.io.payload.JavaSource;
 import org.smooks.support.DomUtils;
 import org.smooks.support.XmlUtil;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
@@ -70,9 +71,9 @@ public class SaxNgFilter extends SmooksSAXFilter {
 
     private final SaxNgParser parser;
 
-    public SaxNgFilter(ExecutionContext executionContext) {
-        super(executionContext);
-        parser = new SaxNgParser(executionContext);
+    public SaxNgFilter(final ExecutionContext executionContext, final DocumentBuilder documentBuilder, boolean closeSource, boolean closeResult) {
+        super(executionContext, closeSource, closeResult);
+        parser = new SaxNgParser(executionContext, documentBuilder);
     }
 
     @Override

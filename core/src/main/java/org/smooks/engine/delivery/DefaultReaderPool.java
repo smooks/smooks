@@ -42,57 +42,36 @@
  */
 package org.smooks.engine.delivery;
 
-import org.smooks.api.delivery.ContentDeliveryConfig;
-import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.ReaderPool;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.xml.sax.XMLReader;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class DefaultReaderPool implements ReaderPool {
-    private final List<XMLReader> readerPool = new CopyOnWriteArrayList<>();
-    private final ContentDeliveryConfig contentDeliveryConfig;
-    private final int readerPoolSize;
+    private final AtomicReferenceArray<XMLReader> xmlReaderPool;
 
-    public DefaultReaderPool(final ContentDeliveryConfig contentDeliveryConfig) {
-        this.contentDeliveryConfig = contentDeliveryConfig;
-        this.readerPoolSize = Integer.parseInt(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, "0", contentDeliveryConfig));
+    public DefaultReaderPool(final int maxReaderPoolSize) {
+        xmlReaderPool = new AtomicReferenceArray<>(maxReaderPoolSize);
     }
-
-    /**
-     * Get an {@link XMLReader} instance from the 
-     * reader pool associated with this ContentDelivery config instance.
-     * @return An XMLReader instance if the pool is not empty, otherwise null.
-     */
+    
     @Override
     public XMLReader borrowXMLReader() {
-        synchronized (readerPool) {
-            if (!readerPool.isEmpty()) {
-                return readerPool.remove(0);
-            } else {
-                return null;
+        for (int i = 0; i < xmlReaderPool.length(); i++) {
+            final XMLReader xmlReader = xmlReaderPool.getAndSet(i, null);
+            if (xmlReader != null) {
+                return xmlReader;
             }
         }
-    }
 
-    /**
-     * Return an {@link XMLReader} instance to the
-     * reader pool associated with this ContentDelivery config instance.
-     * @param reader The XMLReader instance to be returned.  If the pool is full, the instance
-     * is left to the GC (i.e. lost).
-     */
+        return null;
+    }
+    
     @Override
-    public void returnXMLReader(XMLReader reader) {
-        synchronized(readerPool) {
-            if(readerPool.size() < readerPoolSize) {
-                readerPool.add(reader);
+    public void returnXMLReader(final XMLReader xmlReader) {
+        for (int i = 0; i < xmlReaderPool.length(); i++) {
+            if (xmlReaderPool.compareAndSet(i, null, xmlReader)) {
+                break;
             }
         }
-    }
-
-    public ContentDeliveryConfig getContentDeliveryConfig() {
-        return contentDeliveryConfig;
     }
 }

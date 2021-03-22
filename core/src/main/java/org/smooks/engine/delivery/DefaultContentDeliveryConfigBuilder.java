@@ -304,7 +304,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         }
 
         // Add it to the sorted resourceConfigTable...
-        final List<ResourceConfig> resourceConfigs = resourceConfigTable.computeIfAbsent(element, k -> new Vector<>());
+        final List<ResourceConfig> resourceConfigs = resourceConfigTable.computeIfAbsent(element, k -> new ArrayList<>());
         if(!resourceConfigs.contains(resourceConfig)) {
             resourceConfigs.add(resourceConfig);
         }
@@ -324,7 +324,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                 ResourceConfigSortComparator sortComparator = new DefaultResourceConfigSortComparator(profileSet);
 
                 Arrays.sort(resourceConfigs, sortComparator);
-                entry.setValue(new Vector<>(Arrays.asList(resourceConfigs)));
+                entry.setValue(new ArrayList<>(Arrays.asList(resourceConfigs)));
             }
         }
     }

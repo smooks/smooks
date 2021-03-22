@@ -60,10 +60,7 @@ import org.smooks.engine.bean.context.StandaloneBeanContextFactory;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Standalone Container Request implementation.
@@ -72,7 +69,7 @@ import java.util.Map;
 public class DefaultExecutionContext implements ExecutionContext {
 
     private final ProfileSet targetProfileSet;
-	private final Map<TypedKey<Object>, Object> attributes = new Hashtable<>();
+	private final Map<TypedKey<Object>, Object> attributes = new HashMap<>();
     private final ContentDeliveryRuntime contentDeliveryRuntime;
 	private final MementoCaretaker mementoCaretaker;
 	private final ApplicationContext applicationContext;

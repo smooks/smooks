@@ -283,16 +283,16 @@
     </resource-config>
 
     
-    <resource-config selector="/smooks:smooks-resource-list/smooks-core:node-reader">
+    <resource-config selector="/smooks:smooks-resource-list/smooks-core:delegate-reader">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.engine.resource.reader.NodeReader</param>
+        <param name="resource">org.smooks.engine.resource.reader.DelegateReader</param>
     </resource-config>
-    <resource-config selector="/smooks:smooks-resource-list/smooks-core:node-reader">
+    <resource-config selector="/smooks:smooks-resource-list/smooks-core:delegate-reader">
         <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">org.xml.sax.driver</param>
     </resource-config>
-    <resource-config selector="/smooks:smooks-resource-list/smooks-core:node-reader">
+    <resource-config selector="/smooks:smooks-resource-list/smooks-core:delegate-reader">
         <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromXml</resource>
         <param name="mapTo">resourceConfigs</param>
     </resource-config>

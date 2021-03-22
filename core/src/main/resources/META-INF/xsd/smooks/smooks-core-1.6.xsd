@@ -418,7 +418,7 @@
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:element name="node-reader" substitutionGroup="smooks:abstract-reader">
+    <xs:element name="delegate-reader" substitutionGroup="smooks:abstract-reader">
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="smooks:abstract-reader">

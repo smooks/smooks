@@ -48,12 +48,14 @@ import org.smooks.api.TypedMap;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.memento.Memento;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+@NotThreadSafe
 public class DefaultMementoCaretaker implements MementoCaretaker {
 
     private final Map<Fragment<?>, Set<String>> mementoAnchors = new HashMap<>();
