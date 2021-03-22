@@ -51,7 +51,7 @@ import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.engine.delivery.event.BasicExecutionEventListener;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;

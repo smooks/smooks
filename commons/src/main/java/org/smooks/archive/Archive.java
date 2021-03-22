@@ -46,8 +46,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.SmooksException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.io.FileUtils;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.FileUtils;
+import org.smooks.support.StreamUtils;
 
 import java.io.*;
 import java.net.MalformedURLException;

@@ -42,7 +42,6 @@
  */
 package org.smooks.support;
 
-import org.smooks.io.StreamUtils;
 import org.smooks.xml.HTMLEntityLookup;
 import org.smooks.xml.LocalDTDEntityResolver;
 import org.smooks.xml.LocalXSDEntityResolver;

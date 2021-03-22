@@ -51,7 +51,7 @@ import org.smooks.api.delivery.Filter;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.engine.delivery.sax.SAXContentDeliveryConfig;
 import org.smooks.engine.delivery.sax.SAXVisitor01;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

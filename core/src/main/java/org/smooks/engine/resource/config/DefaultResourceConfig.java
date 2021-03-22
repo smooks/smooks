@@ -55,7 +55,7 @@ import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.api.resource.reader.SmooksXMLReader;
 import org.smooks.engine.delivery.sax.DefaultSAXElementSerializer;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.ClassUtil;
 import org.smooks.support.XmlUtil;

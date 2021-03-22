@@ -56,7 +56,7 @@ import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.delivery.AbstractParser;
 import org.smooks.api.expression.ExpressionEvaluator;
 import org.smooks.engine.expression.ExpressionEvaluatorFactory;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.smooks.support.URIUtil;
 import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.api.Registry;
