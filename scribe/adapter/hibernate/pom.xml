@@ -12,7 +12,6 @@
     </parent>
     <name>Scribe :: Hibernate adapter</name>
     <artifactId>smooks-scribe-hibernate</artifactId>
-    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>

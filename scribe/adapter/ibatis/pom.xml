@@ -12,7 +12,6 @@
     </parent>
     <name>Scribe :: Ibatis adapter</name>
     <artifactId>smooks-scribe-ibatis</artifactId>
-    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>

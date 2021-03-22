@@ -12,7 +12,6 @@
 
     <name>Core</name>
     <artifactId>smooks-core</artifactId>
-    <packaging>bundle</packaging>
 
     <build>
         <resources>
