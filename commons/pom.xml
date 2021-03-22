@@ -12,7 +12,6 @@
 
     <name>Commons</name>
     <artifactId>smooks-commons</artifactId>
-    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>

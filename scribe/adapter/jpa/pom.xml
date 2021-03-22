@@ -12,7 +12,6 @@
     </parent>
     <name>Scribe :: JPA Adapter</name>
     <artifactId>smooks-scribe-jpa</artifactId>
-    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>

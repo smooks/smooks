@@ -22,17 +22,6 @@
         <module>adapter/ibatis</module>
     </modules>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <inherited>true</inherited>
-                <extensions>true</extensions>
-            </plugin>
-        </plugins>
-    </build>
-
     <profiles>
         <profile>
             <id>test-unit</id>
