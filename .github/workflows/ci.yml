@@ -46,7 +46,7 @@ jobs:
         run: |
           mvn install -B -Dmaven.javadoc.skip=true -DskipTests
           cd benchmark
-          java -XX:+FlightRecorder -XX:StartFlightRecording=filename=recording.jfr -XX:+AlwaysPreTouch -XX:ParallelGCThreads=1 -jar target/benchmark-app-jar-with-dependencies.jar
+          java -XX:+FlightRecorder -XX:StartFlightRecording=delay=30s,filename=recording.jfr -XX:+AlwaysPreTouch -XX:ParallelGCThreads=1 -jar target/benchmark-app-jar-with-dependencies.jar
           tar -czvf recording.tar.gz recording.jfr
       - name: Archive
         uses: actions/upload-artifact@v2
