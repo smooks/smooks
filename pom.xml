@@ -64,7 +64,7 @@
         <persistence-api.version>1.0.2</persistence-api.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <xmlunit.version>1.6</xmlunit.version>
-        <xstream.version>1.4.14</xstream.version>
+        <xstream.version>1.4.16</xstream.version>
     </properties>
     
     <modules>
