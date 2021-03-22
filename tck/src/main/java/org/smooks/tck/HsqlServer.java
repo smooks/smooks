@@ -47,7 +47,7 @@ import org.hsqldb.ServerConstants;
 import org.hsqldb.jdbcDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

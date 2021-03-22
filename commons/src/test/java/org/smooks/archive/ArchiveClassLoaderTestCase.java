@@ -44,7 +44,7 @@ package org.smooks.archive;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -42,7 +42,7 @@
  */
 package org.smooks.xml;
 
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.smooks.support.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;

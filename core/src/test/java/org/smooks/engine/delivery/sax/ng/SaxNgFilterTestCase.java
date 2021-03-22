@@ -48,7 +48,7 @@ import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.report.FlatReportGenerator;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;

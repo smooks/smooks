@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io;
+package org.smooks.support;
 
 import org.smooks.assertion.AssertArgument;
 
@@ -50,7 +50,11 @@ import java.io.*;
  * File utilities.
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public abstract class FileUtils {
+public final class FileUtils {
+    
+    private FileUtils() {
+        
+    }
     
     public static void copyFile(String from, String to) throws IOException {
         File fromFile = new File(from);

@@ -49,7 +49,7 @@ import static org.junit.Assert.*;
 
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;

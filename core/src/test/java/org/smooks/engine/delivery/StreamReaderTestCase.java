@@ -48,7 +48,7 @@ import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.smooks.api.resource.reader.SmooksXMLReader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.*;

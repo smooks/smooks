@@ -56,7 +56,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.tck.MockExecutionContext;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 
 /**
  * Unit test for SmooksDomFilter

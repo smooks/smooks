@@ -42,7 +42,7 @@
  */
 package org.smooks.tck.resource;
 
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.smooks.api.resource.ContainerResourceLocator;
 
 import java.io.*;

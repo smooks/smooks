@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io;
+package org.smooks.support;
 
 import org.smooks.assertion.AssertArgument;
 
@@ -52,7 +52,11 @@ import java.nio.charset.StandardCharsets;
  * 
  * @author tfennelly
  */
-public abstract class StreamUtils {
+public final class StreamUtils {
+    
+    private StreamUtils() {
+        
+    }
 
 	/**
 	 * Read the supplied InputStream and return as a byte array.

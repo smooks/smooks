@@ -45,7 +45,7 @@ package org.smooks.engine.delivery.JIRAs.MILYN_203;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.smooks.Smooks;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.smooks.io.payload.StringResult;
 import org.xml.sax.SAXException;
 

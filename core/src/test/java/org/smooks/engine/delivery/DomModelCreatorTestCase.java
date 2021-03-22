@@ -51,7 +51,7 @@ import static org.junit.Assert.*;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.smooks.support.XmlUtil;
 import org.xml.sax.SAXException;
 
