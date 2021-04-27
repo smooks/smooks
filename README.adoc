@@ -51,13 +51,13 @@ Smooks is an extensible Java framework for building XML and non-XML data (CSV, E
 
 * *Templating*: extensible template-driven transformations, with support for https://www.w3.org/TR/xslt/[XSLT], https://freemarker.apache.org/[FreeMarker], and https://www.stringtemplate.org/[StringTemplate].
 
-* *Huge Message Processing*: process huge messages (terabytes!). Split, transform and route fragments to JMS, filesystem, database, and other destinations.
+* *Huge Message Processing*: process huge messages (gigabytes!). Split, transform and route fragments to JMS, filesystem, database, and other destinations.
 
 * *Fragment Enrichment*: enrich fragments with data from a database or other data sources.
 
 * *Complex Fragment Validation*: rule-based fragment validation.
 
-* *Fragment Persistence*: read fragments from, and save fragments to, a database through either JDBC, persistence frameworks (like MyBatis, Hibernate, or any JPA compatible framework), or DAOs.
+* *Fragment Persistence*: read fragments from, and save fragments to, a database with either JDBC, persistence frameworks (like MyBatis, Hibernate, or any JPA compatible framework), or DAOs.
 
 * *Combine*: leverage Smooks's transformation, routing and persistence functionality for _Extract Transform Load_ (ETL) operations.
 
@@ -65,7 +65,7 @@ Smooks is an extensible Java framework for building XML and non-XML data (CSV, E
 
 === Why Smooks?
 
-Smooks started its life as a transformation solution. The main goal was to perform _fragment-based transformations_ on messages. Supporting fragment-based transformation opened up the possibility of mixing and matching different technologies within the context of a single transformation. This meant that one could leverage distinct technologies for transforming fragments, depending on the type of transformation required by the fragment in question.
+Smooks was conceived to perform _fragment-based transformations_ on messages. Supporting fragment-based transformation opened up the possibility of mixing and matching different technologies within the context of a single transformation. This meant that one could leverage distinct technologies for transforming fragments, depending on the type of transformation required by the fragment in question.
 
 In the process of evolving this fragment-based transformation solution, it dawned on us that we were establishing a fragment-based processing paradigm. Concretely, a framework was being built for targeting custom link:#visitors[visitor] logic at message fragments. A visitor does not need to be restricted to transformation. A visitor could be implemented to apply all sorts of operations on fragments, and therefore, the message as a whole.
 
@@ -688,10 +688,10 @@ Smooks streams events that can be captured, and inspected, while in-flight or af
 [source,java]
 ----
 Smooks smooks = new Smooks("/smooks/smooks-transform-x.xml");
-ExecutionContext execContext = smooks.createExecutionContext();
+ExecutionContext executionContext = smooks.createExecutionContext();
 
-execContext.setEventListener(new HtmlReportGenerator("/tmp/smooks-report.html"));
-smooks.filterSource(execContext, new StreamSource(inputStream), new StreamResult(outputStream));
+executionContext.getContentDeliveryRuntime().addExecutionEventListener(new HtmlReportGenerator("/tmp/smooks-report.html"));
+smooks.filterSource(executionContext, new StreamSource(inputStream), new StreamResult(outputStream));
 ----
 
 `+HtmlReportGenerator+` is a useful tool in the developer's arsenal for diagnosing issues, or for comprehending a transformation.
@@ -1166,7 +1166,7 @@ Smooks supports a number of options when it comes to splitting and routing fragm
 
 . _Complex Fragment Splitting_: basic fragment splitting works for many use cases and is what most splitting and routing solutions offer. Smooks extends the basic splitting capabilities by allowing you to perform transformations on the split fragment data before routing is applied. For example, merging in the customer-details order information with each order-item information before performing the routing order-item split fragment routing.
 
-. _In-Flight Stream Splitting & Routing (Huge Message Support)_: Smooks is able to process infinite input streams because it can perform in-flight event routing; events are not accumulated when the `max.node.depth` parameter is left unset.
+. _In-Flight Stream Splitting & Routing (Huge Message Support)_: Smooks is able to process gigabyte streams because it can perform in-flight event routing; events are not accumulated when the `max.node.depth` parameter is left unset.
 
 . _Multiple Splitting and Routing_: conditionally split and route multiple fragments (different formats XML, EDI, POJOs, etc...) to different endpoints in a single filtering pass of the source. One could route an _OrderItem_ Java instance to the _HighValueOrdersValidation_ JMS queue for order items with a value greater than $1,000 and route all order items as XML/JSON to an HTTP endpoint for logging.
 // end::common-use-cases[]
@@ -2126,13 +2126,14 @@ smooks.filterSource(...);
 
 This lifecycle method allows you to ensure that resources scoped around a single fragment execution of a SaxNgVisitor implementation can be cleaned up for the associated `+ExecutionContext+`.
 
-==== ExecutionContext and ApplicationContext
+==== ExecutionContext
 
-Smooks provides these two Context objects for storing of state information.
+`+ExecutionContext+` is scoped specifically around a single execution of a `+Smooks.filterSource+` method. *All Smooks visitors must be stateless within the context of a single execution*. A visitor
+is created once in Smooks and referenced across multiple concurrent executions of the `+Smooks.filterSource+` method. All data stored in an `+ExecutionContext+` instance will be lost on completion of the `+Smooks.filterSource+` execution. `+ExecutionContext+` is a parameter in all visit invocations.
 
-The `+ExecutionContext+` is scoped specifically around a single execution of a `+Smooks.filterSource+` method. All Smooks visitors must be stateless within the context of a single `+Smooks.filterSource+` execution, allowing the visitor to be used across multiple concurrent executions of the `+Smooks.filterSource+` method. All data stored in an `+ExecutionContext+` instance will be lost on completion of the `+Smooks.filterSource+` execution. The `+ExecutionContext+` is supplied in all visitor API message event calls.
+==== ApplicationContext
 
-The `+ApplicationContext+` is scoped around the associated Smooks instance i.e. only one `+ApplicationContext+` instance exists per Smooks instance. This context object can be used to store data that needs to be maintained (and accessible) across multiple `+Smooks.filterSource+` executions. Components (any component, including `+SaxNgVisitor+` components) can gain access to their associated `+ApplicationContext+` instance by declaring an `+ApplicationContext+` class property and annotating it with `+@Inject+`:
+`+ApplicationContext+` is scoped around the associated Smooks instance: only one `+ApplicationContext+` instance exists per Smooks instance. This context object can be used to store data that needs to be maintained (and accessible) across multiple `+Smooks.filterSource+` executions. Components (any component, including `+SaxNgVisitor+` components) can gain access to their associated `+ApplicationContext+` instance by declaring an `+ApplicationContext+` class property and annotating it with `+@Inject+`:
 
 [source,java]
 ----
@@ -2157,7 +2158,7 @@ You can join these groups and chats to discuss and ask Smooks related questions:
 
 == Contributing
 
-http://www.smooks.org/mediawiki/index.php?title=Code_Contribution_Guide[Please see the following guidelines] if you'd like to contribute code to Smooks.
+https://github.com/smooks/smooks/blob/master/CONTRIBUTING.md[Please see the following guidelines] if you'd like to contribute code to Smooks.
 
 == License
 
