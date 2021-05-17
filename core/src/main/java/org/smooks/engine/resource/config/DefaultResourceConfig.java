@@ -54,7 +54,6 @@ import org.smooks.engine.resource.config.xpath.DefaultSelectorPath;
 import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.api.resource.reader.SmooksXMLReader;
-import org.smooks.engine.delivery.sax.DefaultSAXElementSerializer;
 import org.smooks.support.StreamUtils;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.ClassUtil;
@@ -263,6 +262,7 @@ public class DefaultResourceConfig implements ResourceConfig {
         setTargetProfile(resourceConfig.getTargetProfile());
         setResource(resourceConfig.getResource());
         setSelectorPath(resourceConfig.getSelectorPath().copy());
+        setDefaultResource(resourceConfig.isDefaultResource());
     }
 
     /**

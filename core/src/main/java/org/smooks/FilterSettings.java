@@ -53,7 +53,7 @@ import org.smooks.engine.resource.config.ParameterAccessor;
 public class FilterSettings {
 
     public static final FilterSettings DEFAULT_DOM = new FilterSettings(StreamFilterType.DOM);
-    public static final FilterSettings DEFAULT_SAX = new FilterSettings(StreamFilterType.SAX);
+    public static final FilterSettings DEFAULT_SAX_NG = new FilterSettings(StreamFilterType.SAX_NG);
 
     private StreamFilterType filterType = StreamFilterType.DOM;
     private boolean rewriteEntities = true;
@@ -70,10 +70,6 @@ public class FilterSettings {
     
     public static FilterSettings newDOMSettings() {
     	return new FilterSettings(StreamFilterType.DOM);
-    }
-    
-    public static FilterSettings newSAXSettings() {
-    	return new FilterSettings(StreamFilterType.SAX);
     }
 
     public static FilterSettings newSaxNgSettings() {
@@ -164,7 +160,7 @@ public class FilterSettings {
     }
 
 	private void assertNonStaticDecl() {
-		if(this == DEFAULT_DOM || this == DEFAULT_SAX) {
+		if(this == DEFAULT_DOM || this == DEFAULT_SAX_NG) {
 			throw new UnsupportedOperationException("Invalid attempt to modify static filter type declaration.");
 		}
 	}

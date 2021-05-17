@@ -44,10 +44,7 @@ package org.smooks.engine.resource.visitor.remove;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
 import org.smooks.io.NullWriter;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
@@ -61,7 +58,7 @@ import java.util.Optional;
  * Remove Element.
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAfter {
+public class RemoveElement implements DOMVisitAfter {
 
     private boolean keepChildren;
 
@@ -69,29 +66,6 @@ public class RemoveElement implements SAXVisitBefore, SAXVisitAfter, DOMVisitAft
     public RemoveElement setKeepChildren(Optional<Boolean> keepChildren) {
         this.keepChildren = keepChildren.orElse(this.keepChildren);
         return this;
-    }
-
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        // Claim ownership of the writer for this fragment element...
-        Writer writer = element.getWriter(this);
-
-        if(!keepChildren) {
-            // Swap in a NullWriter instance for the whole fragment...
-            element.setWriter(new NullWriter(), this);
-            // Stash the real writer instance on the element so we can reset it at the end...
-            element.setCache(this, writer);
-        } else {
-            // Just don't write this element, but write the child elements...
-        }
-    }
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(!keepChildren) {
-            // Reset the writer...
-            element.setWriter((Writer) element.getCache(this), this);
-        }
     }
 
     @Override

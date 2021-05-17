@@ -45,14 +45,12 @@ package org.smooks.io;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.TypedKey;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Consumer;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
 import org.smooks.api.lifecycle.VisitLifecycleCleanable;
@@ -89,7 +87,7 @@ import java.nio.charset.StandardCharsets;
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  *
  */
-public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DOMVisitBefore, Consumer, VisitLifecycleCleanable, ExecutionLifecycleCleanable, BeforeVisitor {
+public abstract class AbstractOutputStreamResource implements DOMVisitBefore, Consumer, VisitLifecycleCleanable, ExecutionLifecycleCleanable, BeforeVisitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOutputStreamResource.class);
 
     static final String RESOURCE_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputresource:";
@@ -142,11 +140,6 @@ public abstract class AbstractOutputStreamResource implements SAXVisitBefore, DO
 
     public Charset getWriterEncoding() {
         return writerEncoding;
-    }
-
-    @Override
-    public void visitBefore(final SAXElement element, final ExecutionContext executionContext) throws SmooksException, IOException {
-        bind(executionContext);
     }
 
     @Override

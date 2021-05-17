@@ -42,17 +42,21 @@
  */
 package org.smooks.engine.delivery.interceptor;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.delivery.sax.TextConsumer;
 import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.api.resource.visitor.sax.ng.*;
+import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.TextAccumulatorMemento;
-import org.smooks.api.delivery.sax.TextConsumer;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import javax.annotation.PostConstruct;
 
@@ -84,8 +88,9 @@ public class TextConsumerInterceptor extends AbstractInterceptorVisitor implemen
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) throws SmooksException {
         if (isTextConsumer) {
-            final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(element), this);
+            final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(element));
             executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
+            executionContext.getMementoCaretaker().capture(textAccumulatorMemento);
             element.setTextContent(textAccumulatorMemento.getText());
         }
         intercept(visitAfterInvocation, element, executionContext);
@@ -97,7 +102,10 @@ public class TextConsumerInterceptor extends AbstractInterceptorVisitor implemen
     @Override
     public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) throws SmooksException {
         if (isTextConsumer) {
-            executionContext.getMementoCaretaker().stash(new TextAccumulatorMemento(new NodeFragment(characterData.getParentNode()), this), textAccumulatorMemento -> textAccumulatorMemento.accumulateText(characterData.getTextContent()));
+            final Fragment<Node> parentNodeFragment = new NodeFragment(characterData.getParentNode());
+            if (parentNodeFragment.reserve(Long.parseLong(parentNodeFragment.getId()), this)) {
+                executionContext.getMementoCaretaker().stash(new TextAccumulatorMemento(parentNodeFragment), textAccumulatorMemento -> textAccumulatorMemento.accumulateText(characterData.getTextContent()));
+            }
         }
         intercept(visitChildTextInvocation, characterData, executionContext);
     }

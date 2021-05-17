@@ -42,30 +42,27 @@
  */
 package org.smooks.engine.delivery.interceptor;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
-import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.smooks.api.SmooksException;
+import org.smooks.api.delivery.FilterBypass;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Consumer;
 import org.smooks.api.delivery.ordering.Producer;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
-import org.smooks.api.resource.visitor.sax.SAXVisitChildren;
 import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
 import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
 import org.smooks.api.lifecycle.VisitLifecycleCleanable;
-import org.smooks.api.resource.visitor.sax.ng.*;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import java.util.Collections;
 import java.util.Set;
 
-public class StaticProxyInterceptor extends AbstractInterceptorVisitor implements SAXElementVisitor, ElementVisitor, DOMElementVisitor, VisitLifecycleCleanable, Producer, Consumer, ParameterizedVisitor, ExecutionLifecycleInitializable, ExecutionLifecycleCleanable {
+public class StaticProxyInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor, VisitLifecycleCleanable, Producer, Consumer, ParameterizedVisitor, ExecutionLifecycleInitializable, ExecutionLifecycleCleanable, FilterBypass {
     
     protected Invocation<VisitLifecycleCleanable> executeVisitLifecycleCleanupInvocation = new Invocation<VisitLifecycleCleanable>() {
         @Override
@@ -117,86 +114,6 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
             return ParameterizedVisitor.class;
         }
     };
-    
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        intercept(new Invocation<SAXVisitAfter>() {
-            @Override
-            public Object invoke(SAXVisitAfter visitor, Object... args) {
-                try {
-                    visitor.visitAfter(element, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitAfter> getTarget() {
-                return SAXVisitAfter.class;
-            }
-        });
-    }
-
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        intercept(new Invocation<SAXVisitBefore>() {
-            @Override
-            public Object invoke(SAXVisitBefore visitor, Object... args) {
-                try {
-                    visitor.visitBefore(element, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitBefore> getTarget() {
-                return SAXVisitBefore.class;
-            }
-        });
-    }
-
-    @Override
-    public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException {
-        intercept(new Invocation<SAXVisitChildren>() {
-            @Override
-            public Object invoke(SAXVisitChildren visitor, Object... args) {
-                try {
-                    visitor.onChildText(element, childText, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitChildren> getTarget() {
-                return SAXVisitChildren.class;
-            }
-        });
-    }
-
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-        intercept(new Invocation<SAXVisitChildren>() {
-            @Override
-            public Object invoke(SAXVisitChildren visitor, Object... args) {
-                try {
-                    visitor.onChildElement(element, childElement, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitChildren> getTarget() {
-                return SAXVisitChildren.class;
-            }
-        });
-    }
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
@@ -279,5 +196,26 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
     @Override
     public void executeExecutionLifecycleCleanup(final ExecutionContext executionContext) {
         intercept(executionLifecycleCleanableInvocation, executionContext);
+    }
+
+    @Override
+    public boolean bypass(ExecutionContext executionContext, Source source, Result result) throws SmooksException {
+        final Object interceptResult = intercept(new Invocation<FilterBypass>() {
+            @Override
+            public Object invoke(FilterBypass visitor, Object... args) {
+                return visitor.bypass(executionContext, source, result);
+            }
+
+            @Override
+            public Class<FilterBypass> getTarget() {
+                return FilterBypass.class;
+            }
+        });
+
+        if (interceptResult != null) {
+            return (boolean) interceptResult;
+        } else {
+            return false;
+        }
     }
 }

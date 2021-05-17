@@ -47,7 +47,6 @@ import org.smooks.api.delivery.*;
 import org.smooks.api.delivery.event.ConfigBuilderEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.api.delivery.event.ResourceBasedEvent;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.event.VisitSequence;
@@ -353,11 +352,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         }
 
         public String getElementName() {
-            if(element instanceof SAXElement) {
-                return ((SAXElement)element).getName().getLocalPart();
-            } else {
-                return DomUtils.getName((Element)element);
-            }
+            return DomUtils.getName((Element) element);
         }
 
         

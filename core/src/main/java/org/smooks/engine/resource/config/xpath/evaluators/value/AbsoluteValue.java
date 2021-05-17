@@ -45,9 +45,7 @@ package org.smooks.engine.resource.config.xpath.evaluators.value;
 import org.jaxen.expr.LiteralExpr;
 import org.jaxen.expr.NumberExpr;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
 import org.w3c.dom.Element;
 
 /**
@@ -66,10 +64,6 @@ public class AbsoluteValue extends Value {
         value = number.getNumber();
     }
 
-    protected Object getValue(SAXElement element) {
-        return value;
-    }
-
     protected Object getValue(Element element) {
         return value;
     }
@@ -85,9 +79,7 @@ public class AbsoluteValue extends Value {
 
     @Override
     public Object getValue(Fragment<?> fragment) {
-        if (fragment instanceof SAXElementFragment) {
-            return getValue(((SAXElementFragment) fragment).unwrap());
-        } else if (fragment instanceof NodeFragment) {
+        if (fragment instanceof NodeFragment) {
             return getValue((Element) ((NodeFragment) fragment).unwrap());
         }
 

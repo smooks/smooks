@@ -45,7 +45,7 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd">
 
     <params>
-        <param name="stream.filter.type">SAX</param>
+        <param name="stream.filter.type">SAX NG</param>
     </params>
 
 </smooks-resource-list>

@@ -42,18 +42,16 @@
  */
 package org.smooks.api.delivery.sax;
 
-import org.smooks.api.resource.visitor.sax.SAXVisitor;
-
 import javax.xml.transform.stream.StreamResult;
 import java.lang.annotation.*;
 
 /**
  * Fragment {@link StreamResult} Writer SAX Visitor Annotation.
  * <p/>
- * Used to flag a {@link SAXVisitor} implementation as being a writer
+ * Used to flag a {@link org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor} implementation as being a writer
  * to any defined {@link StreamResult}.  This annotation results in the
  * Stream Writer (for the StreamResult) being acquired on behalf of the
- * SAXVistor implementation declaring the annotation.  See {@link SAXElement}.
+ * SAXVistor implementation declaring the annotation.  See {@link org.smooks.api.delivery.fragment.Fragment}.
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */

@@ -42,19 +42,18 @@
  */
 package org.smooks.engine.resource.config;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.w3c.dom.Element;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.Optional;
 
 /**
  * @author
  */
-public class ConfigurableVisitor implements SAXVisitBefore {
+public class ConfigurableVisitor implements BeforeVisitor {
 
     private String stringParam;
     private Integer intParam = 5;
@@ -92,6 +91,6 @@ public class ConfigurableVisitor implements SAXVisitBefore {
     }
 
     @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
     }
 }

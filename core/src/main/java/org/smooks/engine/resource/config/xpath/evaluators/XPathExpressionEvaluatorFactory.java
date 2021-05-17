@@ -87,7 +87,7 @@ public class XPathExpressionEvaluatorFactory {
                 return new GreaterThanEvaluator(relationalExpr, namespaces);
             }
         } else if (expr instanceof NumberExpr) {
-            return new IndexEvaluator(((NumberExpr) expr).getNumber().intValue(), selectorStep);
+            return new PositionEvaluator(((NumberExpr) expr).getNumber().intValue(), selectorStep);
         }
 
         throw new SAXPathException("Unsupported XPath expr token '" + expr.getText() + "'.");

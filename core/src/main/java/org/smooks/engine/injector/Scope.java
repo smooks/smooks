@@ -45,8 +45,6 @@ package org.smooks.engine.injector;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.delivery.Filter;
 import org.smooks.io.DomToXmlWriter;
-import org.smooks.io.SAXToXMLWriter;
-import org.smooks.api.resource.visitor.sax.SAXVisitor;
 import org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor;
 import org.smooks.api.Registry;
 import org.smooks.engine.lookup.GlobalParamsLookup;
@@ -68,10 +66,7 @@ public class Scope implements Map<Object, Object> {
         }
 
         final boolean entitiesRewrite = Boolean.parseBoolean(resourceConfig.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true"));
-        if (instance instanceof SAXVisitor) {
-            scope.put(SAXToXMLWriter.class, new SAXToXMLWriter((SAXVisitor) instance, entitiesRewrite));
-        }
-        
+
         if (instance instanceof SaxNgVisitor) {
             final boolean closeEmptyElements = Boolean.parseBoolean(resourceConfig.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false"));
             scope.put(DomToXmlWriter.class, new DomToXmlWriter(closeEmptyElements, entitiesRewrite));

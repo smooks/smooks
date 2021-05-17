@@ -49,6 +49,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -829,4 +830,33 @@ public final class XmlUtil {
 			throw arg0;
 		}
 	}
+
+    public static QName toQName(String namespaceURI, String localName, String qName) {
+        if (namespaceURI != null) {
+            int colonIndex;
+
+            if (namespaceURI.length() != 0 && qName != null && (colonIndex = qName.indexOf(':')) != -1) {
+                String prefix = qName.substring(0, colonIndex);
+                String qNameLocalName = qName.substring(colonIndex + 1);
+
+                return new QName(namespaceURI.intern(), qNameLocalName, prefix);
+            } else if (localName != null && localName.length() != 0) {
+                return new QName(namespaceURI, localName);
+            } else if (qName != null && qName.length() != 0) {
+                return new QName(namespaceURI, qName);
+            } else {
+                throwInvalidNameException(namespaceURI, localName, qName);
+            }
+        } else if (localName != null && localName.length() != 0) {
+            return new QName(localName);
+        } else {
+            throwInvalidNameException(null, localName, qName);
+        }
+
+        return null;
+    }
+
+    protected static void throwInvalidNameException(String namespaceURI, String localName, String qName) {
+        throw new IllegalArgumentException("Invalid QName: namespaceURI='" + namespaceURI + "', localName='" + localName + "', qName='" + qName + "'.");
+    }
 }

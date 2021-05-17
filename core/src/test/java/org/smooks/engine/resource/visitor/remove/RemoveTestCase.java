@@ -61,18 +61,8 @@ import java.util.Optional;
 public class RemoveTestCase {
 
 	@Test
-    public void test_no_children_SAX() throws IOException, SAXException {
-        test(FilterSettings.DEFAULT_SAX, false, "<a><something /></a>");
-    }
-
-	@Test
     public void test_no_children_DOM() throws IOException, SAXException {
         test(FilterSettings.DEFAULT_DOM, false, "<a><something></something></a>");
-    }
-
-	@Test
-    public void test_children_SAX() throws IOException, SAXException {
-        test(FilterSettings.DEFAULT_SAX, true, "<a><d><e>some text</e></d><something /></a>");
     }
 
 	@Test
@@ -91,11 +81,6 @@ public class RemoveTestCase {
 
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new StringReader(expected), new StringReader(result.getResult()));
-    }
-
-	@Test
-    public void test_XML_config_SAX() throws IOException, SAXException {
-        test_XML_config(FilterSettings.DEFAULT_SAX);
     }
 
 	@Test

@@ -42,22 +42,18 @@
  */
 package org.smooks.JIRAs.MILYN_560;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.sax.TextConsumer;
+import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.io.payload.StringResult;
 import org.smooks.io.payload.StringSource;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -92,8 +88,8 @@ public class MILYN_560_TestCase {
     }
 
     @TextConsumer
-    private static class MockSAX implements SAXVisitAfter {
-        public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    private static class MockSAX implements AfterVisitor {
+        public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
             assertEquals("&tomfennelly", element.getAttribute("attrib"));
             assertEquals("&tomfennelly", element.getTextContent());
         }

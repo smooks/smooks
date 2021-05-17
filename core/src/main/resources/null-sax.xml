@@ -55,7 +55,7 @@
     </profiles>
 
     <resource-config selector="global-parameters">
-        <param name="stream.filter.type">SAX</param>
+        <param name="stream.filter.type">SAX NG</param>
     </resource-config>
 
 </smooks-resource-list>

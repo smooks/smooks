@@ -76,7 +76,7 @@ public class FilterSettingsTestCase {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("filterSettings-02.xml"));		
 		ExecutionContext execContext = smooks.createExecutionContext();
 		
-		assertEquals("SAX", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("SAX NG", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
 		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
 		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
 		assertEquals("true", ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));

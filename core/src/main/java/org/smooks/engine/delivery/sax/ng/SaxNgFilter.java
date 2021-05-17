@@ -44,9 +44,9 @@ package org.smooks.engine.delivery.sax.ng;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.engine.delivery.sax.SmooksSAXFilter;
+import org.smooks.api.SmooksException;
+import org.smooks.engine.delivery.AbstractFilter;
 import org.smooks.engine.delivery.sax.ng.terminate.TerminateException;
 import org.smooks.io.Stream;
 import org.smooks.io.payload.FilterResult;
@@ -65,14 +65,19 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
 import java.io.Writer;
 
-public class SaxNgFilter extends SmooksSAXFilter {
+public class SaxNgFilter extends AbstractFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SaxNgFilter.class);
 
-    private final SaxNgParser parser;
+    protected final ExecutionContext executionContext;
+    protected final boolean closeSource;
+    protected final boolean closeResult;
+    protected final SaxNgParser parser;
 
     public SaxNgFilter(final ExecutionContext executionContext, final DocumentBuilder documentBuilder, boolean closeSource, boolean closeResult) {
-        super(executionContext, closeSource, closeResult);
+        this.executionContext = executionContext;
+        this.closeSource = closeSource;
+        this.closeResult = closeResult;
         parser = new SaxNgParser(executionContext, documentBuilder);
     }
 
@@ -89,7 +94,6 @@ public class SaxNgFilter extends SmooksSAXFilter {
         doFilter(source, result);
     }
 
-    @Override
     protected void doFilter(final Source source, final Result result) {
         if (!(source instanceof StreamSource || source instanceof JavaSource || source instanceof DOMSource)) {
             throw new IllegalArgumentException("Unsupported " + source.getClass().getName() + " source type: SAX NG filter supports StreamSource, JavaSource, and DOMSource");
@@ -124,5 +128,10 @@ public class SaxNgFilter extends SmooksSAXFilter {
                 close(result);
             }
         }
+    }
+
+    @Override
+    public void close() {
+        parser.close();
     }
 }

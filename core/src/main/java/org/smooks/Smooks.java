@@ -54,7 +54,6 @@ import org.smooks.api.resource.config.ReaderConfigurator;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.classpath.CascadingClassLoaderSet;
 import org.smooks.engine.DefaultApplicationContextBuilder;
@@ -100,11 +99,11 @@ import java.util.Properties;
  * <p/>
  * The basic usage scenario for this class might be as follows:
  * <ol>
- * <li>Develop (or reuse) an implementation of {@link DOMElementVisitor}/{@link SAXElementVisitor} to
+ * <li>Develop (or reuse) an implementation of {@link org.smooks.api.resource.visitor.sax.ng.ElementVisitor} to
  * perform some transformation/analysis operation on a message.  There are a number of prebuilt
  * and reuseable implemntations available as
  * "<a target="new" href="https://www.smooks.org#Smooks-smookscartridges">Smooks Cartridges</a>".</li>
- * <li>Write a {@link ResourceConfig resource configuration} to target the {@link DOMElementVisitor}/{@link SAXElementVisitor}
+ * <li>Write a {@link ResourceConfig resource configuration} to target the {@link org.smooks.api.resource.visitor.sax.ng.ElementVisitor}
  * implementation at the target fragment of the message being processed.</li>
  * <li>Apply the logic as follows:
  * <pre>
@@ -116,9 +115,9 @@ import java.util.Properties;
  * </pre>
  * </li>
  * </ol>
- * Remember, you can implement and apply multiple {@link DOMElementVisitor DOMElementVisitors}/{@link SAXElementVisitor}
+ * Remember, you can implement and apply multiple {@link org.smooks.api.resource.visitor.sax.ng.ElementVisitor}
  * within the context of a single filtering operation.  You can also target
- * {@link DOMElementVisitor DOMElementVisitors}/{@link SAXElementVisitor} based on target profiles, and so use a single
+ * {@link DOMElementVisitor DOMElementVisitors}/{@link org.smooks.api.resource.visitor.sax.ng.ElementVisitor} based on target profiles, and so use a single
  * configuration to process multiple messages by sharing profiles across your message set.
  * <p/>
  * See <a target="new" href="http://milyn.codehaus.org/Tutorials">Smooks Tutorials</a>.

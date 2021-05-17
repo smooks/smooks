@@ -47,7 +47,7 @@ import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.engine.delivery.dom.ProcessorVisitor1;
-import org.smooks.engine.delivery.sax.SAXVisitor01;
+import org.smooks.engine.delivery.sax.ng.Visitor01;
 import org.smooks.io.payload.StringSource;
 
 import static org.junit.Assert.assertEquals;
@@ -65,7 +65,7 @@ public class MILYN_294_TestCase {
         Smooks smooks = new Smooks();
 
         // Set the Smooks instance to use the SAX filter...
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
+        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
 
         // Add a DOM-only visitor
         smooks.addVisitor(new ProcessorVisitor1(), "a");
@@ -74,7 +74,7 @@ public class MILYN_294_TestCase {
             smooks.filterSource(new StringSource("<a/>"));
             fail("Expected SmooksException.");
         } catch (SmooksException e) {
-            assertEquals("The configured Filter ('SAX') cannot be used: [DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
+            assertEquals("The configured Filter ('SAX NG') cannot be used: [DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
         }
     }
 
@@ -86,13 +86,13 @@ public class MILYN_294_TestCase {
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
 
         // Add a SAX-only visitor
-        smooks.addVisitor(new SAXVisitor01(), "a");
+        smooks.addVisitor(new Visitor01(), "a");
 
         try {
             smooks.filterSource(new StringSource("<a/>"));
             fail("Expected SmooksException.");
         } catch (SmooksException e) {
-            assertEquals("The configured Filter ('DOM') cannot be used: [SAX] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
+            assertEquals("The configured Filter ('DOM') cannot be used: [SAX NG] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
         }
     }
 }

@@ -119,7 +119,6 @@
     <xs:simpleType name="filterType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="DOM"/>
-            <xs:enumeration value="SAX"/>
             <xs:enumeration value="SAX NG"/>
         </xs:restriction>
     </xs:simpleType>

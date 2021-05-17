@@ -42,6 +42,7 @@
  */
 package org.smooks.engine.delivery.dom;
 
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
@@ -134,13 +135,15 @@ public class DOMFilterProvider extends AbstractFilterProvider {
     @Override
     public Boolean isProvider(List<ContentHandlerBinding<Visitor>> visitorBindings) {
         return visitorBindings.stream().filter(c -> isDOMVisitor(c.getContentHandler())).count() == visitorBindings.
-                stream().
-                filter(v -> isDOMVisitor(v.getContentHandler()) || isSAXVisitor(v.getContentHandler())).
-                count();
+                stream().count();
     }
 
     @Override
     public String getName() {
         return "DOM";
+    }
+
+    protected boolean isDOMVisitor(ContentHandler contentHandler) {
+        return (contentHandler instanceof DOMVisitBefore || contentHandler instanceof DOMVisitAfter || contentHandler instanceof DOMSerializerVisitor);
     }
 }

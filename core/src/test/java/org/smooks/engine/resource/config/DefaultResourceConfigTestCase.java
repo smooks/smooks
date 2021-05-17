@@ -43,18 +43,14 @@
 package org.smooks.engine.resource.config;
 
 import org.junit.Test;
-import org.smooks.api.delivery.sax.SAXElement;
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.SmooksConfigException;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
-import org.smooks.engine.delivery.sax.DefaultSAXElement;
 import org.smooks.support.DomUtil;
 import org.smooks.support.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
 
 import java.util.List;
 
@@ -237,163 +233,9 @@ public class DefaultResourceConfigTestCase {
     }
 
 	@Test
-    public void test_isTargetedAtElement_SAX() {
-        SAXElement e = buildE();
-
-        ResourceConfig rc1 = new DefaultResourceConfig("e", "blah");
-        ResourceConfig rc2 = new DefaultResourceConfig("d/e", "blah");
-        ResourceConfig rc3 = new DefaultResourceConfig("a/b/c/d/e", "blah");
-        ResourceConfig rc4 = new DefaultResourceConfig("xx/a/b/c/d/e", "blah");
-        ResourceConfig rc5 = new DefaultResourceConfig("xx/b/c/d/e", "blah");
-
-        SAXElementFragment saxElementFragment = new SAXElementFragment(e);
-        
-        assertTrue(saxElementFragment.isMatch(rc1.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc2.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc3.getSelectorPath(), null));
-        assertFalse(saxElementFragment.isMatch(rc4.getSelectorPath(), null));
-        assertFalse(saxElementFragment.isMatch(rc5.getSelectorPath(), null));
-    }
-
-	@Test
-    public void test_isTargetedAtElement_SAX_wildcards() {
-        SAXElement e = buildE();
-
-        ResourceConfig rc1 = new DefaultResourceConfig("e", "blah");
-        ResourceConfig rc2 = new DefaultResourceConfig("d/e", "blah");
-        ResourceConfig rc3 = new DefaultResourceConfig("a/b/*/d/e", "blah");
-        ResourceConfig rc4 = new DefaultResourceConfig("xx/a/b/*/d/e", "blah");
-        ResourceConfig rc5 = new DefaultResourceConfig("xx/b/*/d/e", "blah");
-        ResourceConfig rc6 = new DefaultResourceConfig("a/*/c/*/e", "blah");
-        ResourceConfig rc7 = new DefaultResourceConfig("a/b/**/e", "blah");
-        ResourceConfig rc8 = new DefaultResourceConfig("a/**/**/e", "blah");
-        ResourceConfig rc9 = new DefaultResourceConfig("a/b/*/**/e", "blah");
-        ResourceConfig rc10 = new DefaultResourceConfig("a/**/c/**/e", "blah");
-        ResourceConfig rc11 = new DefaultResourceConfig("**/c/**/e", "blah");
-        ResourceConfig rc12 = new DefaultResourceConfig("**/**/e", "blah");
-        ResourceConfig rc13 = new DefaultResourceConfig("**/e", "blah");
-        ResourceConfig rc14 = new DefaultResourceConfig("a/**/e", "blah");
-        ResourceConfig rc15 = new DefaultResourceConfig("a/b/**", "blah");
-        ResourceConfig rc15_1 = new DefaultResourceConfig("b/**", "blah");
-        ResourceConfig rc16 = new DefaultResourceConfig("a/b/**/*", "blah");
-        ResourceConfig rc16_1 = new DefaultResourceConfig("b/**/*", "blah");
-        ResourceConfig rc17 = new DefaultResourceConfig("h/**", "blah");
-        ResourceConfig rc18 = new DefaultResourceConfig("h/**/e", "blah");
-        ResourceConfig rc19 = new DefaultResourceConfig("a/h/**/e", "blah");
-        ResourceConfig rc20 = new DefaultResourceConfig("/a/**/e", "blah");
-        ResourceConfig rc21 = new DefaultResourceConfig("/**/e", "blah");
-        ResourceConfig rc22 = new DefaultResourceConfig("*/e", "blah");
-        ResourceConfig rc23 = new DefaultResourceConfig("/*/e", "blah");
-
-        SAXElementFragment saxElementFragment = new SAXElementFragment(e);
-
-        assertTrue(saxElementFragment.isMatch(rc1.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc2.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc3.getSelectorPath(), null));
-
-        assertFalse(saxElementFragment.isMatch(rc4.getSelectorPath(), null));
-        assertFalse(saxElementFragment.isMatch(rc5.getSelectorPath(), null));
-
-        assertTrue(saxElementFragment.isMatch(rc6.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc7.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc8.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc9.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc10.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc11.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc12.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc13.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc14.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc15.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc16.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc15_1.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc16_1.getSelectorPath(), null));
-
-        assertFalse(saxElementFragment.isMatch(rc17.getSelectorPath(), null));
-        assertFalse(saxElementFragment.isMatch(rc18.getSelectorPath(), null));
-        assertFalse(saxElementFragment.isMatch(rc19.getSelectorPath(), null));
-
-        assertTrue(saxElementFragment.isMatch(rc20.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc21.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc22.getSelectorPath(), null));
-
-        assertFalse(saxElementFragment.isMatch(rc23.getSelectorPath(), null));
-    }
-
-	@Test
     public void test_attributeSelector() {
         // Test that the attribute part of the selector doesn't get lowercased...
         ResourceConfig resource = new DefaultResourceConfig("a/b/@myAttribute");
         assertEquals("a/b{@myAttribute}", resource.getSelectorPath().toString());
-    }
-
-	@Test
-    public void test_isTargetedAtElement_SAX_rooted() {
-        SAXElement e = buildE_rooted();
-
-        ResourceConfig rc1 = new DefaultResourceConfig("/a/b/c/a/d/e", "blah");
-        ResourceConfig rc2 = new DefaultResourceConfig("/a/d/e", "blah");
-        ResourceConfig rc3 = new DefaultResourceConfig("/**/d/e", "blah");
-        ResourceConfig rc4 = new DefaultResourceConfig("/a/b/**/d/e", "blah");
-        ResourceConfig rc5 = new DefaultResourceConfig("/a/b/*/d/e", "blah");
-
-        SAXElementFragment saxElementFragment = new SAXElementFragment(e);
-
-        assertTrue(saxElementFragment.isMatch(rc1.getSelectorPath(), null));
-        assertFalse(saxElementFragment.isMatch(rc2.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc3.getSelectorPath(), null));
-        assertTrue(saxElementFragment.isMatch(rc4.getSelectorPath(), null));
-        assertFalse(saxElementFragment.isMatch(rc5.getSelectorPath(), null));
-    }
-
-	@Test
-    public void test_isTargetedAtElement_SAX_with_Attribute() {
-        SAXElement e = buildE_rooted();
-
-        ResourceConfig noAtt = new DefaultResourceConfig("e", "blah");
-        assertNull(noAtt.getSelectorPath().getTargetAttribute());
-
-        // Check with an attribute on the selector....
-        ResourceConfig rc8 = new DefaultResourceConfig("e/@attrib1", "blah");
-        ResourceConfig rc9 = new DefaultResourceConfig("a/b/c/a/d/e/@attrib1", "blah");
-        ResourceConfig rc10 = new DefaultResourceConfig("/a/d/e/@attrib1", "blah");
-
-        SAXElementFragment saxElementFragment = new SAXElementFragment(e);
-
-        assertEquals("e", rc8.getSelectorPath().getTargetElement());
-        assertEquals("attrib1", rc8.getSelectorPath().getTargetAttribute());
-        assertTrue(saxElementFragment.isMatch(rc8.getSelectorPath(), null));
-
-        assertEquals("e", rc9.getSelectorPath().getTargetElement());
-        assertEquals("attrib1", rc9.getSelectorPath().getTargetAttribute());
-        assertTrue(saxElementFragment.isMatch(rc9.getSelectorPath(), null));
-
-        assertEquals("e", rc10.getSelectorPath().getTargetElement());
-        assertEquals("attrib1", rc10.getSelectorPath().getTargetAttribute());
-        assertFalse(saxElementFragment.isMatch(rc10.getSelectorPath(), null));
-    }
-
-    private SAXElement buildE() {
-        SAXElement element;
-
-        element = new DefaultSAXElement(null, "a", null, new AttributesImpl(), null);
-        element = new DefaultSAXElement(null, "b", null, new AttributesImpl(), element);
-        element = new DefaultSAXElement(null, "c", null, new AttributesImpl(), element);
-        element = new DefaultSAXElement(null, "d", null, new AttributesImpl(), element);
-        element = new DefaultSAXElement(null, "e", null, new AttributesImpl(), element);
-
-        return element;
-    }
-
-    private SAXElement buildE_rooted() {
-        SAXElement element;
-
-        element = new DefaultSAXElement(null, "a", null, new AttributesImpl(), null);
-        element = new DefaultSAXElement(null, "b", null, new AttributesImpl(), element);
-        element = new DefaultSAXElement(null, "c", null, new AttributesImpl(), element);
-        element = new DefaultSAXElement(null, "a", null, new AttributesImpl(), element);
-        element = new DefaultSAXElement(null, "d", null, new AttributesImpl(), element);
-        element = new DefaultSAXElement(null, "e", null, new AttributesImpl(), element);
-
-        return element;
     }
 }

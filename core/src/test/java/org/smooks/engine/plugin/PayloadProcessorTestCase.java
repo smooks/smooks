@@ -93,7 +93,7 @@ public class PayloadProcessorTestCase {
         Object object = processor.process(sourceResult, smooks.createExecutionContext());
 
         TestCase.assertEquals(result, object);
-        TestCase.assertEquals("<text />", writer.toString());
+        TestCase.assertEquals("<text/>", writer.toString());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process("<testing/>", smooks.createExecutionContext());
 
-        TestCase.assertEquals("<testing />", object);
+        TestCase.assertEquals("<testing/>", object);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class PayloadProcessorTestCase {
         Object payload = "<testing/>".getBytes();
         Object object = processor.process(payload, smooks.createExecutionContext());
 
-        TestCase.assertEquals("<testing />", object);
+        TestCase.assertEquals("<testing/>", object);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class PayloadProcessorTestCase {
         Object object = processor.process(payload, smooks.createExecutionContext());
 
         TestCase.assertTrue(object instanceof byte[]);
-        TestCase.assertTrue(Arrays.equals("<testing />".getBytes(), ((byte[]) object)));
+        TestCase.assertTrue(Arrays.equals("<testing/>".getBytes(), ((byte[]) object)));
     }
 
     @SuppressWarnings("unchecked")
@@ -162,7 +162,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process(new StringReader("<test/>"), smooks.createExecutionContext());
 
-        TestCase.assertEquals("<test />", object.toString());
+        TestCase.assertEquals("<test/>", object.toString());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process(new ByteArrayInputStream("<test/>".getBytes()), smooks.createExecutionContext());
 
-        TestCase.assertEquals("<test />", object.toString());
+        TestCase.assertEquals("<test/>", object.toString());
     }
 
     @Test
@@ -178,7 +178,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process(new StreamSource(new ByteArrayInputStream("<test/>".getBytes())), smooks.createExecutionContext());
 
-        TestCase.assertEquals("<test />", object.toString());
+        TestCase.assertEquals("<test/>", object.toString());
     }
 
     @Test

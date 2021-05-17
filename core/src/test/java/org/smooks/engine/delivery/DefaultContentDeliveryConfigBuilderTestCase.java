@@ -44,13 +44,15 @@ package org.smooks.engine.delivery;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.api.SmooksException;
 import org.smooks.StreamFilterType;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.Filter;
+import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
-import org.smooks.engine.delivery.sax.SAXContentDeliveryConfig;
-import org.smooks.engine.delivery.sax.SAXVisitor01;
+import org.smooks.engine.delivery.sax.ng.SaxNgContentDeliveryConfig;
+import org.smooks.engine.delivery.sax.ng.Visitor01;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
@@ -66,24 +68,21 @@ import static org.junit.Assert.*;
 public class DefaultContentDeliveryConfigBuilderTestCase {
 
 	@Test
-    public void test_sax() throws IOException, SAXException {
+    public void testSax() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-sax.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SAXContentDeliveryConfig);
-        SAXContentDeliveryConfig config = (SAXContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
+        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig);
+        SaxNgContentDeliveryConfig config = (SaxNgContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
-        // Should be 5: 4 configured + 2 auto-installed
-        assertEquals(8, config.getVisitBeforeSelectorTable().size());
-        assertTrue(config.getVisitBeforeSelectorTable().get("b").get(0).getContentHandler() instanceof SAXVisitor01);
-        assertTrue(config.getVisitBeforeSelectorTable().get("b").get(0).getContentHandler() instanceof SAXVisitor01);
-        assertEquals(7, config.getVisitAfterSelectorTable().size());
-        assertTrue(config.getVisitAfterSelectorTable().get("b").get(1).getContentHandler() instanceof SAXVisitor01);
-        assertTrue(config.getVisitAfterSelectorTable().get("b").get(1).getContentHandler() instanceof SAXVisitor01);
+        assertEquals(8, config.getBeforeVisitorSelectorTable().size());
+        assertTrue(((InterceptorVisitor)config.getBeforeVisitorSelectorTable().get("b").get(0).getContentHandler()).getTarget().getContentHandler() instanceof Visitor01);
+        assertEquals(8, config.getAfterVisitorSelectorTable().size());
+        assertTrue(((InterceptorVisitor)config.getAfterVisitorSelectorTable().get("b").get(0).getContentHandler()).getTarget().getContentHandler() instanceof Visitor01);
     }
 
 	@Test
-    public void test_dom() throws IOException, SAXException {
+    public void testDom() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
@@ -98,22 +97,22 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
     }
 
 	@Test
-    public void test_dom_sax_1() throws IOException, SAXException {
+    public void testDomSax1() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-1.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
         // Should default to SAX
-        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SAXContentDeliveryConfig);
+        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig);
     }
 
 	@Test
-    public void test_dom_sax_2() throws IOException, SAXException {
+    public void testDomSax2() throws IOException, SAXException {
         Smooks smooks;
         ExecutionContext execContext;
 
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-2.1.xml"));
         execContext = smooks.createExecutionContext();
-        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SAXContentDeliveryConfig);
+        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig);
 
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-2.2.xml"));
         execContext = smooks.createExecutionContext();
@@ -124,12 +123,12 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
             smooks.createExecutionContext();
             fail("Expected SmooksException");
         } catch(SmooksException e) {
-            assertEquals("The configured Filter ('xxxx') cannot be used: [SAX, DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
+            assertEquals("The configured Filter ('xxxx') cannot be used: [SAX NG, DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
         }
     }
 
 	@Test
-    public void test_dom_sax_3() throws IOException, SAXException {
+    public void testDomSax3() throws IOException, SAXException {
         String origDefault = System.setProperty(Filter.STREAM_FILTER_TYPE, StreamFilterType.DOM.toString());
 
         try {
@@ -148,7 +147,7 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
     }
 
 	@Test
-    public void test_invalid() throws IOException, SAXException {
+    public void testUnsupportedVisitor() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-invalid.xml"));
 
         try {
@@ -160,5 +159,9 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
 
             assertEquals(expected.toLowerCase(), actual.toLowerCase());
         }
+    }
+
+    public static class UnsupportedVisitor implements Visitor {
+
     }
 }

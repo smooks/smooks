@@ -48,8 +48,12 @@
         <resource>org.smooks.engine.delivery.dom.ProcessorVisitor1</resource>
     </resource-config>
 
-    <resource-config selector="d">
-        <resource>org.smooks.engine.delivery.sax.SAXVisitor01</resource>
+    <resource-config selector="b">
+        <resource>org.smooks.engine.delivery.sax.ng.Visitor01</resource>
+    </resource-config>
+
+    <resource-config selector="c">
+        <resource>org.smooks.engine.delivery.DefaultContentDeliveryConfigBuilderTestCase$UnsupportedVisitor</resource>
     </resource-config>
 
 </smooks-resource-list>

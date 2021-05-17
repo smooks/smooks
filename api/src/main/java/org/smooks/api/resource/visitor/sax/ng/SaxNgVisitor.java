@@ -44,12 +44,11 @@ package org.smooks.api.resource.visitor.sax.ng;
 
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMVisitor;
-import org.smooks.api.resource.visitor.sax.SAXVisitor;
 
 /**
  * Applies operations on partial {@link org.w3c.dom.Element}s.
  * 
- * Supersedes {@link DOMVisitor} and {@link SAXVisitor} without sacrificing
+ * Supersedes {@link DOMVisitor} and {@link org.smooks.api.resource.visitor.sax.SAXVisitor} without sacrificing
  * convenience or performance. Visitors should implement this interface since both <code>DOMVisitor</code> and 
  * <code>SAXVisitor</code> will eventually be phased out.
  */

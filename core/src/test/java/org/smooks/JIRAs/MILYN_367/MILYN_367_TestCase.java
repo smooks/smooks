@@ -53,7 +53,7 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
-import org.smooks.engine.delivery.sax.DefaultSAXElementSerializer;
+import org.smooks.engine.delivery.sax.ng.SaxNgSerializerVisitor;
 import org.smooks.io.payload.StringResult;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -77,9 +77,9 @@ public class MILYN_367_TestCase {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "#document");
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "#document/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "#document");
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "#document/**");
+		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
 		
@@ -91,9 +91,9 @@ public class MILYN_367_TestCase {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "customer");
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "customer/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "customer");
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "customer/**");
+		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
 		
@@ -105,9 +105,9 @@ public class MILYN_367_TestCase {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "items");
-		smooks.addVisitor(new DefaultSAXElementSerializer(), "items/**");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX));
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "items");
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "items/**");
+		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
 		

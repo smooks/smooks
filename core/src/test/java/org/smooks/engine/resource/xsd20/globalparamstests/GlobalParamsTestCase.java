@@ -62,7 +62,7 @@ public class GlobalParamsTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        assertEquals("SAX", execContext.getConfigParameter("stream.filter.type"));
+        assertEquals("SAX NG", execContext.getConfigParameter("stream.filter.type"));
         assertEquals("zzzzval", execContext.getConfigParameter("zzzz"));
     }
 

@@ -42,32 +42,32 @@
  */
 package org.smooks.engine.delivery.sax.ng;
 
-import org.smooks.api.SmooksException;
-import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.delivery.event.ExecutionEventListener;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.ContentDeliveryRuntime;
 import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.delivery.event.ExecutionEventListener;
+import org.smooks.api.delivery.sax.TextType;
+import org.smooks.api.lifecycle.LifecycleManager;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.smooks.engine.delivery.SmooksContentHandler;
+import org.smooks.engine.delivery.event.EndFragmentEvent;
+import org.smooks.engine.delivery.event.StartFragmentEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.replay.EndElementEvent;
 import org.smooks.engine.delivery.replay.StartElementEvent;
-import org.smooks.support.SAXUtil;
-import org.smooks.api.delivery.sax.TextType;
-import org.smooks.engine.delivery.event.EndFragmentEvent;
-import org.smooks.engine.delivery.event.StartFragmentEvent;
-import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.engine.lifecycle.VisitCleanupPhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
+import org.smooks.engine.memento.TextAccumulatorMemento;
 import org.smooks.engine.xml.DocType;
 import org.smooks.io.Stream;
 import org.smooks.support.DomUtils;
+import org.smooks.support.XmlUtil;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -101,7 +101,6 @@ public class SaxNgHandler extends SmooksContentHandler {
     private NodeFragment currentNodeFragment;
     private Document document;
 
-    @SuppressWarnings("WeakerAccess")
     public SaxNgHandler(final ExecutionContext executionContext, final DocumentBuilder documentBuilder) {
         this(executionContext, documentBuilder, null);
     }
@@ -140,7 +139,7 @@ public class SaxNgHandler extends SmooksContentHandler {
     @Override
     public void startElement(final StartElementEvent startEvent) {
         final boolean isRoot = (currentContentHandlerState.getPreviousContentHandlerState() == null);
-        final QName elementQName = SAXUtil.toQName(startEvent.uri, startEvent.localName, startEvent.qName);
+        final QName elementQName = XmlUtil.toQName(startEvent.uri, startEvent.localName, startEvent.qName);
         final String elementName = elementQName != null ? elementQName.getLocalPart() : null;
 
         SaxNgVisitorBindings visitorBindings;
@@ -196,8 +195,15 @@ public class SaxNgHandler extends SmooksContentHandler {
                 executionEventListener.onEvent(endFragmentEvent);
             }
         }
-        
+
+        final Node currentNode = this.currentNodeFragment.unwrap();
+        final boolean isMaxNodeDepth = DomUtils.getDepth(currentNode) >= Math.max(globalMaxNodeDepth, findMaxNodeDepth(currentContentHandlerState));
         if (currentContentHandlerState.getVisitorBindings() != null) {
+            if (isMaxNodeDepth) {
+                final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(currentNodeFragment);
+                executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
+                currentNode.setTextContent(textAccumulatorMemento.getText());
+            }
             List<ContentHandlerBinding<AfterVisitor>> afterVisitorBindings = currentContentHandlerState.getVisitorBindings().getAfterVisitors();
 
             if (afterVisitorBindings == null && globalVisitorBindings != null) {
@@ -221,9 +227,7 @@ public class SaxNgHandler extends SmooksContentHandler {
             } catch (IOException e) {
                 throw new SmooksException(e.getMessage(), e);
             }
-        }
 
-        if (currentContentHandlerState.getVisitorBindings() != null) {
             final List<ContentHandlerBinding<? extends Visitor>> visitorBindings = currentContentHandlerState.getVisitorBindings().getAll();
             final VisitCleanupPhase visitCleanupPhase = new VisitCleanupPhase(currentNodeFragment, executionContext);
             for (final ContentHandlerBinding<? extends Visitor> visitorBinding : visitorBindings) {
@@ -236,16 +240,15 @@ public class SaxNgHandler extends SmooksContentHandler {
         executionContext.getMementoCaretaker().forget(currentNodeFragment);
         
         final ContentHandlerState previousContentHandlerState = currentContentHandlerState.getPreviousContentHandlerState();
-        final Node currentNode = this.currentNodeFragment.unwrap();
         final Node parentNode = currentNode.getParentNode();
-        if (DomUtils.getDepth(currentNode) >= Math.max(globalMaxNodeDepth, findMaxNodeDepth(currentContentHandlerState))) {
+        if (isMaxNodeDepth) {
             parentNode.removeChild(currentNode);
         }
         this.currentNodeFragment = new NodeFragment(parentNode);
         currentContentHandlerState = previousContentHandlerState;
     }
     
-    private int findMaxNodeDepth(final ContentHandlerState contentHandlerState) {
+    protected int findMaxNodeDepth(final ContentHandlerState contentHandlerState) {
         ContentHandlerState previousNodeState = contentHandlerState;
         int maxNodeDepth = 0;
         while (previousNodeState != null) {
@@ -256,7 +259,7 @@ public class SaxNgHandler extends SmooksContentHandler {
         return maxNodeDepth;
     }
 
-    private void visitBefore(final Element element, final SaxNgVisitorBindings saxNgVisitorBindings) {
+    protected void visitBefore(final Element element, final SaxNgVisitorBindings saxNgVisitorBindings) {
         currentNodeFragment = new NodeFragment(element);
         final ContentHandlerState contentHandlerState = new ContentHandlerState();
         contentHandlerState.setPreviousContentHandlerState(currentContentHandlerState);
@@ -292,7 +295,7 @@ public class SaxNgHandler extends SmooksContentHandler {
         }
     }
 
-    private void onChildElement(final Element childElement) {
+    protected void onChildElement(final Element childElement) {
         if (currentContentHandlerState.getVisitorBindings() != null) {
             List<ContentHandlerBinding<ChildrenVisitor>> childVisitorBindings = currentContentHandlerState.getVisitorBindings().getChildVisitors();
             if (childVisitorBindings == null && globalVisitorBindings != null) {
@@ -309,7 +312,7 @@ public class SaxNgHandler extends SmooksContentHandler {
         }
     }
 
-    private void visitAfter(final ContentHandlerBinding<AfterVisitor> afterVisitorBinding) {
+    protected void visitAfter(final ContentHandlerBinding<AfterVisitor> afterVisitorBinding) {
         if (currentNodeFragment.isMatch(afterVisitorBinding.getResourceConfig().getSelectorPath(), executionContext)) {
             afterVisitorBinding.getContentHandler().visitAfter((Element) currentNodeFragment.unwrap(), executionContext);
         }
@@ -323,8 +326,8 @@ public class SaxNgHandler extends SmooksContentHandler {
             cdataNodeBuilder.append(ch, start, length);
         }
     }
-    
-    private void doCharacters(final char[] ch, final int start, final int length) {
+
+    protected void doCharacters(final char[] ch, final int start, final int length) {
         if (!rewriteEntities && currentContentHandlerState.getTextType() == TextType.ENTITY) {
             entityBuilder.setLength(0);
             entityBuilder.append("&#").append((int) ch[start]).append(';');

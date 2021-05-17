@@ -40,52 +40,62 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath;
+package org.smooks.engine.resource.config.xpath.evaluators.equality;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
-import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
-import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
-import org.w3c.dom.CharacterData;
+import org.smooks.api.TypedKey;
+import org.smooks.api.resource.config.xpath.SelectorStep;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.memento.VisitorMemento;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
+ * Element position counter.
+ * <p/>
+ * Used for position based XPath predicates.
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class XPathVisitor implements ElementVisitor, DOMElementVisitor {
+public class ElementPositionCounter implements BeforeVisitor {
 
-    public static Element domVisitedBeforeElementStatic;
-    public static Element domVisitedAfterElementStatic;
-    public Element domVisitedBeforeElement;
-    public Element domVisitedAfterElement;
+    private final SelectorStep selectorStep;
+    private final TypedKey<String> positionMementoTypedKey = new TypedKey<>();
+
+    public ElementPositionCounter(SelectorStep selectorStep) {
+        this.selectorStep = selectorStep;
+    }
+
+    public SelectorStep getSelectorStep() {
+        return selectorStep;
+    }
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        domVisitedBeforeElementStatic = element;
-        domVisitedBeforeElement = element;
+        Integer position = getElementPosition(element, executionContext);
+        if (position != null) {
+            VisitorMemento<Integer> positionMemento = new VisitorMemento<>(new NodeFragment(element.getParentNode()), this, positionMementoTypedKey, position + 1);
+            executionContext.getMementoCaretaker().capture(positionMemento);
+        }
     }
 
-    @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        domVisitedAfterElementStatic = element;
-        domVisitedAfterElement = element;
+    protected int getCount(Element element, ExecutionContext executionContext) {
+        Integer position = getElementPosition(element, executionContext);
+        return position != null ? position : 0;
     }
 
-    public Element getDomVisitedBeforeElement() {
-        return domVisitedBeforeElement;
-    }
+    private Integer getElementPosition(Element element, ExecutionContext executionContext) {
+        Node parentNode = element.getParentNode();
 
-    public Element getDomVisitedAfterElement() {
-        return domVisitedAfterElement;
-    }
+        if (parentNode != null) {
+            VisitorMemento<Integer> positionMemento = new VisitorMemento<>(new NodeFragment(parentNode), this, positionMementoTypedKey, 0);
+            executionContext.getMementoCaretaker().restore(positionMemento);
 
-    @Override
-    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+            return positionMemento.getState();
+        }
 
-    }
-
-    @Override
-    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-
+        return null;
     }
 }

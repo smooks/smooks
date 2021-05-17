@@ -45,7 +45,7 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" 
                       xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
 
-    <core:filterSettings type="SAX" closeResult="true" 
+    <core:filterSettings type="SAX NG" closeResult="true"
                          closeSource="true" defaultSerialization="true" 
                          terminateOnException="true" 
                          rewriteEntities="true" readerPoolSize="3"/>

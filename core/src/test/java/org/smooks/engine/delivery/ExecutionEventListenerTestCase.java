@@ -76,7 +76,7 @@ public class ExecutionEventListenerTestCase {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
         testListener(eventListener, "smooks-config-sax.xml");
-        assertEquals(41, eventListener.getEvents().size());
+        assertEquals(56, eventListener.getEvents().size());
     }
 
 	@Test

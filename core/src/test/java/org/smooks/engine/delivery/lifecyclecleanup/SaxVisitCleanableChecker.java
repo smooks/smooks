@@ -42,21 +42,20 @@
  */
 package org.smooks.engine.delivery.lifecyclecleanup;
 
-import static org.junit.Assert.*;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.w3c.dom.Element;
 
-import java.io.IOException;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SaxVisitCleanableChecker implements SAXVisitBefore {
+public class SaxVisitCleanableChecker implements BeforeVisitor {
 
     @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if(!SaxVisitCleanable.cleaned) {
             fail("Resource should have been cleaned!");
         }

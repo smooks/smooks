@@ -44,9 +44,7 @@ package org.smooks.engine.resource.config.xpath.evaluators.value;
 
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.converter.TypeConverter;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -67,16 +65,6 @@ public class AttributeValue extends Value {
         this.namespaceURI = namespaceURI;
         this.localPart = localPart;
         this.typeConverter = typeConverter;
-    }
-
-    protected Object getValue(SAXElement element) {
-        String attribValue;
-        if(namespaceURI != null) {
-            attribValue = element.getAttributeNS(namespaceURI, localPart);
-        } else {
-            attribValue = element.getAttribute(localPart);
-        }
-        return typeConverter.convert(attribValue);
     }
 
     protected Object getValue(Element element) {
@@ -117,9 +105,7 @@ public class AttributeValue extends Value {
 
     @Override
     public Object getValue(Fragment<?> fragment) {
-        if (fragment instanceof SAXElementFragment) {
-            return getValue(((SAXElementFragment) fragment).unwrap());
-        } else if (fragment instanceof NodeFragment) {
+        if (fragment instanceof NodeFragment) {
             return getValue((Element) ((NodeFragment) fragment).unwrap());
         }
 

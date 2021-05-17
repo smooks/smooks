@@ -46,15 +46,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.io.payload.StringResult;
 import org.smooks.io.payload.StringSource;
-import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.SmooksUtil;
 import org.w3c.dom.Element;
@@ -157,20 +156,20 @@ public class SmooksTestCase {
         }
     }
 
-    private static class TestSAXVisitorBefore implements SAXVisitBefore {
+    private static class TestSAXVisitorBefore implements BeforeVisitor {
         private int callCount;
 
         @Override
-        public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
             callCount++;
         }
     }
 
-    private static class TestSAXVisitorAfter implements SAXVisitAfter {
+    private static class TestSAXVisitorAfter implements AfterVisitor {
         private int callCount;
 
         @Override
-        public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
             callCount++;
         }
     }

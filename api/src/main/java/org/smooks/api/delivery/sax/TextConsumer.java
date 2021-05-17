@@ -42,19 +42,17 @@
  */
 package org.smooks.api.delivery.sax;
 
-import org.smooks.api.resource.visitor.sax.SAXVisitor;
-
 import java.lang.annotation.*;
 
 /**
- * Fragment Text Consumer {@link SAXVisitor} Annotation.
+ * Fragment Text Consumer {@link org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor} Annotation.
  * <p/>
  * Because SAX is a streaming model, you need to tell Smooks to accumulate text events
  * for a specific fragment.  For performance reasons, Smooks would never accumulate these
  * events by default, because that could result in a significant memory/performance overhead.
  * <p/> 
  * This annotation results in {@link SAXElement#accumulateText() text accumulation}
- * being turned on for the fragment targeted by the annotated {@link SAXVisitor} instance.
+ * being turned on for the fragment targeted by the annotated {@link org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor} instance.
  * The text event data can then be accessed through the parent {@link SAXElement} instance.
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
