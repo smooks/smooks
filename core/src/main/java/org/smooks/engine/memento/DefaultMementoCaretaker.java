@@ -42,11 +42,11 @@
  */
 package org.smooks.engine.memento;
 
-import org.smooks.api.memento.MementoCaretaker;
 import org.smooks.api.TypedKey;
 import org.smooks.api.TypedMap;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.memento.Memento;
+import org.smooks.api.memento.MementoCaretaker;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
@@ -73,12 +73,9 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
 
     @Override
     public void restore(Memento memento) {
-        final TypedKey<Memento> anchorTypedKey = new TypedKey<>(memento.getAnchor());
-        final Memento restoredMemento = typedMap.get(anchorTypedKey);
+        final Memento restoredMemento = typedMap.get(new TypedKey<>(memento.getAnchor()));
         if (restoredMemento != null) {
             memento.restore(restoredMemento);
-        } else {
-            typedMap.put(anchorTypedKey, memento);
         }
     }
 

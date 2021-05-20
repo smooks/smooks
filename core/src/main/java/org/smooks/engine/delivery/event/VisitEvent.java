@@ -44,16 +44,16 @@ package org.smooks.engine.delivery.event;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.api.delivery.event.ResourceBasedEvent;
-import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.ContentHandler;
-import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.resource.visitor.VisitReport;
 import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.delivery.event.ResourceBasedEvent;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.VisitAfterReport;
 import org.smooks.api.resource.visitor.VisitBeforeReport;
+import org.smooks.api.resource.visitor.VisitReport;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.engine.expression.MVELExpressionEvaluator;
 import org.smooks.support.FreeMarkerTemplate;
 import org.smooks.support.MultiLineToStringBuilder;
@@ -74,6 +74,7 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
 
     private final ContentHandlerBinding<T> visitorBinding;
     private final VisitSequence sequence;
+    private final ExecutionContext executionContext;
     private String executionContextState;
     private Throwable error;
     private String reportSummary;
@@ -83,15 +84,7 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
         super(fragment);
         this.visitorBinding = visitorBinding;
         this.sequence = sequence;
-        try {
-            executionContextState = MultiLineToStringBuilder.toString(executionContext);
-
-        } catch (Exception e) {
-            StringWriter exceptionWriter = new StringWriter();
-            e.printStackTrace(new PrintWriter(exceptionWriter));
-            executionContextState = "Execution Context Serialization Failure:\n" + exceptionWriter.toString();
-        }
-        initReport(executionContext);
+        this.executionContext = executionContext;
     }
 
     public VisitEvent(Fragment<F> fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext, Throwable error) {
@@ -113,6 +106,15 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
     }
 
     public String getExecutionContextState() {
+        if (executionContextState == null) {
+            try {
+                executionContextState = MultiLineToStringBuilder.toString(executionContext);
+            } catch (Exception e) {
+                StringWriter exceptionWriter = new StringWriter();
+                e.printStackTrace(new PrintWriter(exceptionWriter));
+                executionContextState = "Execution Context Serialization Failure:\n" + exceptionWriter.toString();
+            }
+        }
         return executionContextState;
     }
 
@@ -121,10 +123,16 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
     }
 
     public String getReportSummary() {
+        if (reportSummary == null) {
+            initReport(executionContext);
+        }
         return reportSummary;
     }
 
     public String getReportDetail() {
+        if (reportDetail == null) {
+            initReport(executionContext);
+        }
         return reportDetail;
     }
 
@@ -144,7 +152,7 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
 
         if (reportDetail == null) {
             // No template ...
-            reportDetail = executionContextState;
+            reportDetail = getExecutionContextState();
         }
     }
 
@@ -167,7 +175,7 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
                 reportSummary = template.apply(templateParams);
             } catch (Exception e) {
                 reportSummary = "Report Template Summary Error: " + e.getMessage();
-                LOGGER.debug("Failed to apply Summary Template.", e);
+                LOGGER.warn("Failed to apply Summary Template.", e);
             }
         }
 
@@ -177,7 +185,7 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
                 reportDetail = template.apply(templateParams);
             } catch (Exception e) {
                 reportSummary = "Report Template Detail Error: " + e.getMessage();
-                LOGGER.debug("Failed to apply Detail Template.", e);
+                LOGGER.warn("Failed to apply Detail Template.", e);
             }
         }
     }
