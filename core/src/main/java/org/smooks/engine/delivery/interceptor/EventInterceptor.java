@@ -42,136 +42,25 @@
  */
 package org.smooks.engine.delivery.interceptor;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
-import org.smooks.api.resource.visitor.sax.SAXVisitChildren;
-import org.smooks.engine.delivery.event.VisitSequence;
+import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
-import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.engine.delivery.event.ResourceTargetingEvent;
 import org.smooks.engine.delivery.event.VisitEvent;
+import org.smooks.engine.delivery.event.VisitSequence;
+import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
-
-public class EventInterceptor extends AbstractInterceptorVisitor implements SAXElementVisitor, ElementVisitor {
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws IOException {
-        final Invocation<SAXVisitBefore> invocation = new Invocation<SAXVisitBefore>() {
-            @Override
-            public Object invoke(SAXVisitBefore visitor, Object... args) {
-                try {
-                    visitor.visitBefore(element, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitBefore> getTarget() {
-                return SAXVisitBefore.class;
-            }
-        };
-        if (getTarget() instanceof SAXVisitBefore) {
-            final Fragment<SAXElement> saxElementFragment = new SAXElementFragment(element);
-            for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
-                executionEventListener.onEvent(new ResourceTargetingEvent(saxElementFragment, getTarget().getResourceConfig(), VisitSequence.BEFORE));
-            }
-            intercept(invocation);
-            onEvent(executionContext, saxElementFragment, VisitSequence.BEFORE);
-        } else {
-            intercept(invocation);
-        }
-    }
-    
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws IOException {
-        intercept(new Invocation<SAXVisitAfter>() {
-            @Override
-            public Object invoke(SAXVisitAfter visitor, Object... args) {
-                try {
-                    visitor.visitAfter(element, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitAfter> getTarget() {
-                return SAXVisitAfter.class;
-            }
-        });
-        
-        if (getTarget() instanceof SAXVisitAfter) {
-            onEvent(executionContext, new SAXElementFragment(element), VisitSequence.AFTER);
-        }
-    }
-    
-    @Override
-    public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws IOException {
-        intercept(new Invocation<SAXVisitChildren>() {
-            @Override
-            public Object invoke(SAXVisitChildren visitor, Object... args) {
-                try {
-                    visitor.onChildText(element, childText, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitChildren> getTarget() {
-                return SAXVisitChildren.class;
-            }
-        });
-
-        if (getTarget() instanceof SAXVisitChildren) {
-            onEvent(executionContext, new SAXElementFragment(element), VisitSequence.AFTER);
-        }
-    }
-
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws IOException {
-        intercept(new Invocation<SAXVisitChildren>() {
-            @Override
-            public Object invoke(SAXVisitChildren visitor, Object... args) {
-                try {
-                    visitor.onChildElement(element, childElement, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitChildren> getTarget() {
-                return SAXVisitChildren.class;
-            }
-        });
-        
-        if (getTarget() instanceof SAXVisitChildren) {
-            onEvent(executionContext, new SAXElementFragment(element), VisitSequence.AFTER);
-        }
-    }
+public class EventInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
-        if (getTarget() instanceof BeforeVisitor) {
+        if (getTarget().getContentHandler() instanceof BeforeVisitor) {
             for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
                 executionEventListener.onEvent(new ResourceTargetingEvent(new NodeFragment(element), getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }
@@ -186,7 +75,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
     public void visitAfter(Element element, ExecutionContext executionContext) {
         intercept(visitAfterInvocation, element, executionContext);
         
-        if (getTarget() instanceof AfterVisitor) {
+        if (getTarget().getContentHandler() instanceof AfterVisitor) {
             onEvent(executionContext, new NodeFragment(element), VisitSequence.AFTER);
         }
     }
@@ -195,7 +84,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
     public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
         intercept(visitChildTextInvocation, characterData, executionContext);
         
-        if (getTarget() instanceof ChildrenVisitor) {
+        if (getTarget().getContentHandler() instanceof ChildrenVisitor) {
             onEvent(executionContext, new NodeFragment(characterData), VisitSequence.AFTER);
         }
     }
@@ -203,7 +92,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements SAXE
     @Override
     public void visitChildElement(Element childElement, ExecutionContext executionContext) {
         intercept(visitChildElementInvocation, childElement, executionContext);
-        if (getTarget() instanceof ChildrenVisitor) {
+        if (getTarget().getContentHandler() instanceof ChildrenVisitor) {
             onEvent(executionContext, new NodeFragment(childElement.getParentNode()), VisitSequence.AFTER);
         }
     }

@@ -42,31 +42,23 @@
  */
 package org.smooks.engine.delivery;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
 */
-public class ModelCatcher implements SAXVisitAfter, DOMVisitAfter, AfterVisitor {
+public class ModelCatcher implements DOMVisitAfter, AfterVisitor {
 
     public static final List<Element> elements = new ArrayList<Element>();
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        addModelElement(element.getName().getLocalPart(), executionContext);
-    }
 
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {

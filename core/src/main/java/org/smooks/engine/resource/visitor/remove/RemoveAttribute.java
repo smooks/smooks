@@ -44,22 +44,19 @@ package org.smooks.engine.resource.visitor.remove;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.xml.XMLConstants;
-import java.io.IOException;
 import java.util.Optional;
 
 /**
  * Remove attribute.
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
+public class RemoveAttribute implements DOMVisitAfter {
 
     private String qName;
     private String localPart;
@@ -95,15 +92,6 @@ public class RemoveAttribute implements SAXVisitBefore, DOMVisitAfter {
     public RemoveAttribute setNamespace(Optional<String> attributeNamespace) {
         this.namespace = attributeNamespace;
         return this;
-    }
-
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(namespace .isPresent()) {
-            element.removeAttributeNS(namespace.orElse(null), qName);
-        } else {
-            element.removeAttribute(qName);
-        }
     }
 
     @Override

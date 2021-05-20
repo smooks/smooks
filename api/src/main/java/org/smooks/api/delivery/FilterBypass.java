@@ -47,6 +47,7 @@ import javax.xml.transform.Source;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.resource.visitor.Visitor;
 
 /**
  * Filter bypass interface.
@@ -57,7 +58,7 @@ import org.smooks.api.ExecutionContext;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface FilterBypass {
+public interface FilterBypass extends Visitor {
 
 	/**
 	 * Bypass the Smooks Filter process.

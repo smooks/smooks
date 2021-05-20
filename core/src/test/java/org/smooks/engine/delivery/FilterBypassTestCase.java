@@ -46,21 +46,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.FilterBypass;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.io.payload.StringResult;
 import org.smooks.io.payload.StringSource;
 import org.w3c.dom.Element;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -100,7 +98,7 @@ public class FilterBypassTestCase {
 
 	@Test
 	public void test_sax_bypass_only() {
-		filterSettings = FilterSettings.DEFAULT_SAX;
+		filterSettings = FilterSettings.DEFAULT_SAX_NG;
 		test("#document", true);
 		test("/", true);
 		test("x", false);
@@ -110,7 +108,7 @@ public class FilterBypassTestCase {
 	public void test_sax_bypass_with_visitor() {
 		simpleVisitor = new SimpleVisitor();
 
-		filterSettings = FilterSettings.DEFAULT_SAX;
+		filterSettings = FilterSettings.DEFAULT_SAX_NG;
 		test("#document", false);
 		test("/", false);
 		test("x", false);		
@@ -119,20 +117,20 @@ public class FilterBypassTestCase {
 	public void test(String selector, boolean expectBypass) {
 		Smooks smooks = new Smooks();
 		MyVisitBypass bypassVisitor = new MyVisitBypass(!expectBypass);
-		
+
 		smooks.setFilterSettings(filterSettings);
-		
+
 		smooks.addVisitor(bypassVisitor, selector);
-		if(simpleVisitor != null) {
+		if (simpleVisitor != null) {
 			smooks.addVisitor(simpleVisitor, "zz");
 		}
-		
+
 		smooks.filterSource(new StringSource("<x/>"), new StringResult());
-		
+
 		assertEquals(expectBypass, bypassVisitor.bypassCalled);
 	}
 	
-	private static class MyVisitBypass implements DOMVisitBefore, SAXVisitAfter, FilterBypass {
+	private static class MyVisitBypass implements DOMVisitBefore, BeforeVisitor, FilterBypass {
 		
 		private final boolean expectsVisitCall;
 		private boolean bypassCalled;
@@ -153,19 +151,9 @@ public class FilterBypassTestCase {
 				fail("Unexpected call to filter visit method.");
 			}
 		}
-
-		@Override
-		public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-			if(!expectsVisitCall) {
-				fail("Unexpected call to filter visit method.");
-			}
-		}		
 	}
 	
-	private static class SimpleVisitor implements DOMVisitAfter, SAXVisitBefore {
-		@Override
-		public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-		}
+	private static class SimpleVisitor implements DOMVisitAfter, AfterVisitor {
 		
 		@Override
 		public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {

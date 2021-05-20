@@ -42,20 +42,17 @@
  */
 package org.smooks.engine.delivery;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
-
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SAXAndDOMVisitor implements DOMElementVisitor, SAXElementVisitor {
+public class SAXAndDOMVisitor implements DOMElementVisitor, ElementVisitor {
 
     public static boolean visited;
 
@@ -70,22 +67,12 @@ public class SAXAndDOMVisitor implements DOMElementVisitor, SAXElementVisitor {
     }
 
     @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
         visited = true;
     }
 
     @Override
-    public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
-        visited = true;
-    }
-
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-        visited = true;
-    }
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
         visited = true;
     }
 }

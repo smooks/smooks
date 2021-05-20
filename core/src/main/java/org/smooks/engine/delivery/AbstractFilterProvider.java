@@ -49,8 +49,6 @@ import org.smooks.api.resource.visitor.VisitBeforeIf;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
 import org.smooks.engine.expression.MVELExpressionEvaluator;
 
 public abstract class AbstractFilterProvider implements FilterProvider {
@@ -81,14 +79,5 @@ public abstract class AbstractFilterProvider implements FilterProvider {
         }
 
         return true;
-    }
-
-    protected boolean isSAXVisitor(ContentHandler contentHandler) {
-        // Intentionally not checking for SAXVisitChildren.  Must be incorporated into a visit before or after...
-        return (contentHandler instanceof SAXVisitBefore || contentHandler instanceof SAXVisitAfter);
-    }
-
-    protected boolean isDOMVisitor(ContentHandler contentHandler) {
-        return (contentHandler instanceof DOMVisitBefore || contentHandler instanceof DOMVisitAfter || contentHandler instanceof DOMSerializerVisitor);
     }
 }

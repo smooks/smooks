@@ -58,11 +58,11 @@ import java.io.IOException;
 import java.io.Writer;
 
 public class SAXWriter extends Writer {
-    private static final InputFactoryImpl ASYNC_XML_INPUT_FACTORY;
+    protected static final InputFactoryImpl ASYNC_XML_INPUT_FACTORY;
 
-    private final ContentHandler contentHandler;
-    private final AsyncXMLStreamReader<AsyncByteArrayFeeder> asyncXMLStreamReader;
-    private final LexicalHandler lexicalHandler;
+    protected final ContentHandler contentHandler;
+    protected final AsyncXMLStreamReader<AsyncByteArrayFeeder> asyncXMLStreamReader;
+    protected final LexicalHandler lexicalHandler;
 
     static {
         ASYNC_XML_INPUT_FACTORY = new InputFactoryImpl();
@@ -71,7 +71,7 @@ public class SAXWriter extends Writer {
     
     public SAXWriter(final ContentHandler contentHandler) {
         this.contentHandler = contentHandler;
-        lexicalHandler = (LexicalHandler) contentHandler;
+        lexicalHandler = contentHandler instanceof LexicalHandler ? (LexicalHandler) contentHandler : null;
         asyncXMLStreamReader = ASYNC_XML_INPUT_FACTORY.createAsyncForByteArray();
     }
     
@@ -92,9 +92,12 @@ public class SAXWriter extends Writer {
                         for (int i = 0; i < asyncXMLStreamReader.getNamespaceCount(); i++) {
                             contentHandler.startPrefixMapping(asyncXMLStreamReader.getNamespacePrefix(i), asyncXMLStreamReader.getNamespaceURI(i));
                         }
-                        AttributesImpl saxAttributes = new AttributesImpl();
+                        final AttributesImpl saxAttributes = new AttributesImpl();
                         for (int i = 0, n = asyncXMLStreamReader.getAttributeCount(); i < n; ++i) {
                             saxAttributes.addAttribute(asyncXMLStreamReader.getAttributeName(i).getNamespaceURI(), asyncXMLStreamReader.getAttributeName(i).getLocalPart(), asyncXMLStreamReader.getAttributeName(i).getPrefix() + ":" + asyncXMLStreamReader.getAttributeName(i).getLocalPart(), asyncXMLStreamReader.getAttributeType(i), asyncXMLStreamReader.getAttributeValue(i));
+                        }
+                        for (int i = 0, n = asyncXMLStreamReader.getNamespaceCount(); i < n; ++i) {
+                            saxAttributes.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, asyncXMLStreamReader.getNamespacePrefix(i), XMLConstants.XMLNS_ATTRIBUTE + ":" + asyncXMLStreamReader.getNamespacePrefix(i), "CDATA", asyncXMLStreamReader.getNamespaceURI(i));
                         }
                         if (asyncXMLStreamReader.getName().getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {
                             contentHandler.startElement(asyncXMLStreamReader.getName().getNamespaceURI(), asyncXMLStreamReader.getName().getLocalPart(), asyncXMLStreamReader.getName().getLocalPart(), saxAttributes);
@@ -106,9 +109,13 @@ public class SAXWriter extends Writer {
                         contentHandler.characters(asyncXMLStreamReader.getText().toCharArray(), asyncXMLStreamReader.getTextStart(), asyncXMLStreamReader.getTextLength());
                         break;
                     case XMLStreamConstants.CDATA:
-                        lexicalHandler.startCDATA();
+                        if (lexicalHandler != null) {
+                            lexicalHandler.startCDATA();
+                        }
                         contentHandler.characters(asyncXMLStreamReader.getText().toCharArray(), asyncXMLStreamReader.getTextStart(), asyncXMLStreamReader.getTextLength());
-                        lexicalHandler.endCDATA();
+                        if (lexicalHandler != null) {
+                            lexicalHandler.endCDATA();
+                        }
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         if (asyncXMLStreamReader.getName().getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {

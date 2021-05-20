@@ -267,24 +267,24 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     private <T extends Visitor> FilterBypass getFilterBypass(SelectorTable<T> selectorTable) {
         Set<Entry<String, List<ContentHandlerBinding<T>>>> entries = selectorTable.entrySet();
 
-        for(Entry<String, List<ContentHandlerBinding<T>>> entry : entries) {
-        	ContentHandlerBinding<T> configMap = entry.getValue().get(0);
-        	ResourceConfig resourceConfig = configMap.getResourceConfig();
+        for (Entry<String, List<ContentHandlerBinding<T>>> entry : entries) {
+            ContentHandlerBinding<T> configMap = entry.getValue().get(0);
+            ResourceConfig resourceConfig = configMap.getResourceConfig();
 
-        	if(!resourceConfig.isDefaultResource()) {
-	        	if(resourceConfig.getSelectorPath().getTargetElement().equals(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
-	        		T visitor = configMap.getContentHandler();
-	        		if(visitor instanceof FilterBypass) {
-	        			return (FilterBypass) visitor;
-	        		}
-	        	}
+            if (!resourceConfig.isDefaultResource()) {
+                if (resourceConfig.getSelectorPath().getTargetElement().equals(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
+                    T visitor = configMap.getContentHandler();
+                    if (visitor instanceof FilterBypass) {
+                        return (FilterBypass) visitor;
+                    }
+                }
 
-	        	// Make sure we only iterate once...
-	        	return null;
-        	}
+                // Make sure we only iterate once...
+                return null;
+            }
         }
 
-    	return null;
+        return null;
     }
     
     protected boolean getCloseSource() {

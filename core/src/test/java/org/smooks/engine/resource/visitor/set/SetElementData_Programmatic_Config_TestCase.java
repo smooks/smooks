@@ -65,11 +65,6 @@ import java.util.Optional;
 public class SetElementData_Programmatic_Config_TestCase {
 
 	@Test
-    public void test_ChangeName_SAX() throws IOException, SAXException {
-        test_ChangeName(FilterSettings.DEFAULT_SAX);
-    }
-
-	@Test
     public void test_ChangeName_DOM() throws IOException, SAXException {
         test_ChangeName(FilterSettings.DEFAULT_DOM);
     }
@@ -86,11 +81,6 @@ public class SetElementData_Programmatic_Config_TestCase {
 
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new StringReader("<a><c><d><z>some text</z></d></c></a>"), new StringReader(result.getResult()));
-    }
-
-    @Test
-    public void test_SetNamespace_SAX() throws IOException, SAXException {
-        test_SetNamespace(FilterSettings.DEFAULT_SAX);
     }
 
     @Test
@@ -111,11 +101,6 @@ public class SetElementData_Programmatic_Config_TestCase {
 
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new StringReader("<a><c><d><xxx:z xmlns:xxx=\"http://xxx\">some text</xxx:z></d></c></a>"), new StringReader(result.getResult()));
-    }
-
-    @Test
-    public void test_ChangeNamespace_1_SAX() throws IOException, SAXException {
-        test_ChangeNamespace_1(FilterSettings.DEFAULT_SAX);
     }
 
     @Test
@@ -140,11 +125,6 @@ public class SetElementData_Programmatic_Config_TestCase {
     }
 
     @Test
-    public void test_ChangeNamespace_2_SAX() throws IOException, SAXException {
-        test_ChangeNamespace_2(FilterSettings.DEFAULT_SAX);
-    }
-
-    @Test
     public void test_ChangeNamespace_2_DOM() throws IOException, SAXException {
         test_ChangeNamespace_2(FilterSettings.DEFAULT_DOM);
     }
@@ -161,11 +141,6 @@ public class SetElementData_Programmatic_Config_TestCase {
 
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new StringReader("<a><c><d><xxx:z xmlns:xxx=\"http://yyy\">some text</xxx:z></d></c></a>"), new StringReader(result.getResult()));
-    }
-
-    @Test
-    public void test_SetAttribute_1_SAX() throws IOException, SAXException {
-        test_SetAttribute_1(FilterSettings.DEFAULT_SAX);
     }
 
     @Test
@@ -187,11 +162,6 @@ public class SetElementData_Programmatic_Config_TestCase {
 
         XMLUnit.setIgnoreWhitespace( true );
         XMLAssert.assertXMLEqual(new StringReader("<a xxx=\"something\" />"), new StringReader(result.getResult()));
-    }
-
-    @Test
-    public void test_SetAttribute_2_SAX() throws IOException, SAXException {
-        test_SetAttribute_2(FilterSettings.DEFAULT_SAX);
     }
 
     @Test

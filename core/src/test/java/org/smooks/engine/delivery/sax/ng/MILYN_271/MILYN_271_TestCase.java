@@ -40,48 +40,68 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax;
+package org.smooks.engine.delivery.sax.ng.MILYN_271;
 
-import org.smooks.api.SmooksException;
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
+import javax.xml.transform.stream.StreamSource;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.smooks.FilterSettings;
+import org.smooks.Smooks;
+import org.smooks.engine.delivery.sax.ng.MockVisitBefore;
 
 /**
+ * http://jira.codehaus.org/browse/MILYN-271
+ * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SAXVisitor02 implements SAXElementVisitor {
+public class MILYN_271_TestCase {
+	
+	@Test
+	public void test_01_DOM() {
+		test_01(FilterSettings.DEFAULT_DOM);
+	}
+	
+	@Test
+	public void test_01_SAX() {
+		test_01(FilterSettings.DEFAULT_SAX_NG);
+	}
+	
+	public void test_01(FilterSettings filterSettings) {
+		Smooks smooks = new Smooks();		
+		MockVisitBefore visitor = new MockVisitBefore();
+		
+		smooks.setFilterSettings(filterSettings);
+		
+		smooks.addVisitor(visitor, "order-item/*");		
+		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		
+		assertEquals("[product, quantity, price]", visitor.getElements().toString());
+	}
+		
+	@Test
+	public void test_02_DOM() {
+		test_02(FilterSettings.DEFAULT_DOM);
+	}
+	
+	@Test
+	public void test_02_SAX() {
+		test_02(FilterSettings.DEFAULT_SAX_NG);
+	}
+	
+	public void test_02(FilterSettings filterSettings) {
+		Smooks smooks = new Smooks();		
+		MockVisitBefore visitor1 = new MockVisitBefore();
+		MockVisitBefore visitor2 = new MockVisitBefore();
+		
+		smooks.setFilterSettings(filterSettings);
 
-    public static SAXElement element;
-    public static final List<SAXElement> children = new ArrayList<SAXElement>();
-    public static final List<String> childText = new ArrayList<String>();
-
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        SAXVisitor02.element = element;
-    }
-
-    @Override
-    public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
-        assertEquals(SAXVisitor02.element, element);
-        childText.add(text.getText());
-    }
-
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-        assertEquals(SAXVisitor02.element, element);
-        children.add(childElement);
-    }
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        assertEquals(SAXVisitor02.element, element);
-    }
+		smooks.addVisitor(visitor1, "order-item/*");
+		smooks.addVisitor(visitor2, "order-item/price");
+		
+		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		
+		assertEquals("[product, quantity, price]", visitor1.getElements().toString());
+		assertEquals("[price]", visitor2.getElements().toString());
+	}
 }

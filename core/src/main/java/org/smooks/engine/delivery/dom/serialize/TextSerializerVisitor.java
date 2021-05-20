@@ -42,13 +42,11 @@
  */
 package org.smooks.engine.delivery.dom.serialize;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.support.DomUtils;
 import org.smooks.engine.xml.Namespace;
+import org.smooks.support.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -62,7 +60,7 @@ import java.io.Writer;
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class TextSerializerVisitor extends DefaultDOMSerializerVisitor implements SAXVisitBefore, BeforeVisitor {
+public class TextSerializerVisitor extends DefaultDOMSerializerVisitor implements BeforeVisitor {
 
     @Override
     public void writeStartElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
@@ -70,10 +68,6 @@ public class TextSerializerVisitor extends DefaultDOMSerializerVisitor implement
 
     @Override
     public void writeEndElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-    }
-
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
     }
 
     public static Element createTextElement(Element element, String templatingResult) {

@@ -45,11 +45,8 @@ package org.smooks.engine.resource.config.xpath;
 import org.jaxen.saxpath.SAXPathException;
 import org.junit.Test;
 import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
-import org.smooks.engine.delivery.sax.DefaultSAXElement;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -82,81 +79,6 @@ public class SelectorStepBuilderTestCase {
 
         assertFalse(selectorPath.get(0).accessesText());
         assertTrue(selectorPath.get(1).accessesText());
-    }
-
-    @Test
-    public void test_2() throws SAXPathException {
-        SelectorPath selectorPath = SelectorStepBuilder.buildSteps("x/y[@d = '23']/*", namespaces);
-        assertEquals("x/y(@d = '23')/*", selectorPath.toString());
-
-        assertFalse(selectorPath.get(0).accessesText());
-        assertFalse(selectorPath.get(1).accessesText());
-        assertFalse(selectorPath.get(2).accessesText());
-
-        SAXElement y = new DefaultSAXElement(null, "y");
-
-        assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y.setAttribute("d", "22");
-        assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y.setAttribute("d", "23");
-        assertTrue(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-    }
-
-    @Test
-    public void test_2_1() throws SAXPathException {
-        SelectorPath selectorPath = SelectorStepBuilder.buildSteps("x/y[@d = 23]/*", namespaces);
-        assertEquals("x/y(@d = 23.0)/*", selectorPath.toString());
-
-        SAXElement y = new DefaultSAXElement(null, "y");
-
-        assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y.setAttribute("d", "22");
-        assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y.setAttribute("d", "23");
-        assertTrue(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-    }
-
-    @Test
-    public void test_3_1() throws SAXPathException {
-        SelectorPath selectorPath = SelectorStepBuilder.buildSteps("x/y[(@d = 23 or text() = 'ddd') and @h = 'rrr']", namespaces);
-        assertEquals("x/y(((@d = 23.0) or (text() = 'ddd')) and (@h = 'rrr'))", selectorPath.toString());
-
-        assertFalse(selectorPath.get(0).accessesText());
-        assertTrue(selectorPath.get(1).accessesText());
-
-        SAXElement y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "2");
-        y.addText("dd");
-        y.setAttribute("h", "rr");
-        assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "23");
-        y.addText("dd");
-        y.setAttribute("h", "rr");
-        assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "23");
-        y.addText("dd");
-        y.setAttribute("h", "rrr");
-        assertTrue(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "2");
-        y.addText("dd");
-        y.setAttribute("h", "rrr");
-        assertFalse(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "2");
-        y.addText("ddd");
-        y.setAttribute("h", "rrr");
-        assertTrue(selectorPath.get(1).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
     }
 
     @Test
@@ -193,76 +115,6 @@ public class SelectorStepBuilderTestCase {
         y.appendChild(y.getOwnerDocument().createTextNode("ddd"));
         y.setAttribute("h", "rrr");
         assertTrue(selectorPath.get(1).getPredicatesEvaluator().evaluate(new NodeFragment(y), null));
-    }
-
-    @Test
-    public void test_3_2() throws SAXPathException {
-        SelectorPath selectorPath = SelectorStepBuilder.buildSteps("y[@d = 23 and text() = 35]", namespaces);
-        assertEquals("y((@d = 23.0) and (text() = 35.0))", selectorPath.toString());
-
-        SAXElement y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "2");
-        assertFalse(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "23");
-        y.addText("dd");
-        assertFalse(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "23");
-        y.addText("35");
-        assertTrue(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-    }
-
-    @Test
-    public void test_3_3() throws SAXPathException {
-        SelectorPath selectorPath = SelectorStepBuilder.buildSteps("y[@a:d = 23]", namespaces);
-        assertEquals("y(@{http://a}d = 23.0)", selectorPath.toString());
-
-        SAXElement y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "23");
-        assertFalse(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttributeNS("http://a", "d", "23");
-        assertTrue(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-    }
-    
-    @Test
-    public void test_3_4() throws SAXPathException {
-        SelectorPath selectorPath = SelectorStepBuilder.buildSteps("y[@a:d < 23]", namespaces);
-        assertEquals("y(@{http://a}d < 23.0)", selectorPath.toString());
-
-        SAXElement y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "23");
-        assertFalse(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttributeNS("http://a", "d", "22");
-        assertTrue(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttributeNS("http://a", "d", "23");
-        assertFalse(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-    }
-
-    @Test
-    public void test_3_5() throws SAXPathException {
-        SelectorPath selectorPath = SelectorStepBuilder.buildSteps("y[@a:d > 23]", namespaces);
-        assertEquals("y(@{http://a}d > 23.0)", selectorPath.toString());
-
-        SAXElement y = new DefaultSAXElement(null, "y");
-        y.setAttribute("d", "23");
-        assertFalse(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttributeNS("http://a", "d", "24");
-        assertTrue(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
-
-        y = new DefaultSAXElement(null, "y");
-        y.setAttributeNS("http://a", "d", "23");
-        assertFalse(selectorPath.get(0).getPredicatesEvaluator().evaluate(new SAXElementFragment(y), null));
     }
 
     @Test

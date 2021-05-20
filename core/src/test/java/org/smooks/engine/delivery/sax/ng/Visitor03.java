@@ -42,15 +42,12 @@
  */
 package org.smooks.engine.delivery.sax.ng;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,11 +59,6 @@ public class Visitor03 implements ElementVisitor {
     public static final List<Element> children = new ArrayList<>();
     public static final List<String> childText = new ArrayList<>();
 
-    public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
-        assertEquals(Visitor03.element, element);
-        childText.add(text.getText());
-    }
-    
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         assertEquals(Visitor03.element, element);

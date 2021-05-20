@@ -47,7 +47,6 @@ package org.smooks;
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public enum StreamFilterType {
-    SAX("SAX"),
     SAX_NG("SAX NG"),
     DOM("DOM");
 

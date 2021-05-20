@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * API
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,13 +40,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.resource.visitor.sax;
+package org.smooks.engine.delivery.sax.ng;
 
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.w3c.dom.Element;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * SAX Element Visitor.
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface SAXElementVisitor extends SAXVisitBefore, SAXVisitChildren, SAXVisitAfter {
+public class MockVisitBefore implements BeforeVisitor, DOMVisitBefore {
+
+	private final List<String> elements = new ArrayList<String>();
+	
+	/* (non-Javadoc)
+	 * @see org.smooks.engine.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.engine.container.ExecutionContext)
+	 */
+	@Override
+	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+		elements.add(element.getLocalName());
+	}
+
+	/**
+	 * @return the elements
+	 */
+	public List<String> getElements() {
+		return elements;
+	}
 }

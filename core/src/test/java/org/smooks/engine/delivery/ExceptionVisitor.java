@@ -42,44 +42,29 @@
  */
 package org.smooks.engine.delivery;
 
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
-import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
-
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ExceptionVisitor implements SAXElementVisitor, DOMElementVisitor {
+public class ExceptionVisitor implements ElementVisitor, DOMElementVisitor {
 
     public static SmooksException beforeException;
     public static SmooksException afterException;
 
     @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(beforeException != null) {
-            throw beforeException;
-        }
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+
     }
 
     @Override
-    public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
-    }
+    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
 
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-    }
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        if(afterException != null) {
-            throw afterException;
-        }
     }
 
     @Override

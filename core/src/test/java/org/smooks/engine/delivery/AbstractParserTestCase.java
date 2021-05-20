@@ -87,7 +87,7 @@ public class AbstractParserTestCase {
     	Smooks smooks = new Smooks();
     	
     	smooks.setReaderConfig(new GenericReaderConfigurator(PooledSAXParser.class));
-    	smooks.setFilterSettings(FilterSettings.newSAXSettings().setReaderPoolSize(1));
+    	smooks.setFilterSettings(FilterSettings.newSaxNgSettings().setReaderPoolSize(1));
     	
     	PooledSAXParser.numSetHandlerCalls = 0;
     	smooks.filterSource(new StringSource("<x/>"));
@@ -101,7 +101,7 @@ public class AbstractParserTestCase {
     	Smooks smooks = new Smooks();
     	
     	smooks.setReaderConfig(new GenericReaderConfigurator(UnpooledSAXParser.class));
-    	smooks.setFilterSettings(FilterSettings.newSAXSettings().setReaderPoolSize(0));
+    	smooks.setFilterSettings(FilterSettings.newSaxNgSettings().setReaderPoolSize(0));
     	
     	UnpooledSAXParser.numSetHandlerCalls = 0;
     	smooks.filterSource(new StringSource("<x/>"));

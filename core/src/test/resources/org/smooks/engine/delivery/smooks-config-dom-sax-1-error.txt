@@ -1,4 +1,0 @@
-All configured XML Element Content Handler resource configurations can be applied using the SAX or DOM Stream Filter.  Please select the appropriate Filter type e.g.
-		<resource-config selector="global-parameters">
-			<param name="stream.filter.type">SAX/DOM</param>
-		</resource-config>

@@ -50,32 +50,20 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
-import org.smooks.api.resource.visitor.sax.SAXVisitChildren;
-import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
-import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.delivery.event.VisitEvent;
 import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
 import org.smooks.engine.delivery.sax.ng.terminate.TerminateException;
 import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.function.Supplier;
 
-public class ExceptionInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor, SAXElementVisitor {
+public class ExceptionInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionInterceptor.class);
     
     protected boolean terminateOnVisitorException;
@@ -91,86 +79,6 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
         visitAfterExceptionMessage = String.format("Error in %s while processing visitAfter SAX NG event", visitorBinding.getContentHandler().getClass().getName());
         visitChildTextExceptionMessage = String.format("Error in %s while processing visitChildText SAX NG event", visitorBinding.getContentHandler().getClass().getName());
         visitChildElementExceptionMessage = String.format("Error in %s while processing visitChildElement SAX NG event", visitorBinding.getContentHandler().getClass().getName());
-    }
-    
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        intercept(new Invocation<SAXVisitBefore>() {
-            @Override
-            public Object invoke(SAXVisitBefore visitor, Object... args) {
-                try {
-                    visitor.visitBefore(element, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitBefore> getTarget() {
-                return SAXVisitBefore.class;
-            }
-        }, executionContext, String.format("Error in %s while processing visitBefore SAX event", visitorBinding.getContentHandler().getClass().getName()), new SAXElementFragment(element), VisitSequence.BEFORE);
-    }
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        intercept(new Invocation<SAXVisitAfter>() {
-            @Override
-            public Object invoke(SAXVisitAfter visitor, Object... args) {
-                try {
-                    visitor.visitAfter(element, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitAfter> getTarget() {
-                return SAXVisitAfter.class;
-            }
-        }, executionContext, String.format("Error in %s while processing visitAfter SAX event", visitorBinding.getContentHandler().getClass().getName()), new SAXElementFragment(element), VisitSequence.AFTER);
-    }
-
-    @Override
-    public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException {
-        intercept(new Invocation<SAXVisitChildren>() {
-            @Override
-            public Object invoke(SAXVisitChildren visitor, Object... args) {
-                try {
-                    visitor.onChildText(element, childText, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitChildren> getTarget() {
-                return SAXVisitChildren.class;
-            }
-        }, executionContext, String.format("Error in %s while processing onChildText SAX event", visitorBinding.getContentHandler().getClass().getName()), new SAXElementFragment(element), VisitSequence.AFTER);
-    }
-
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-        intercept(new Invocation<SAXVisitChildren>() {
-            @Override
-            public Object invoke(SAXVisitChildren visitor, Object... args) {
-                try {
-                    visitor.onChildElement(element, childElement, executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            public Class<SAXVisitChildren> getTarget() {
-                return SAXVisitChildren.class;
-            }
-        }, executionContext, String.format("Error in %s while processing onChildElement SAX event", visitorBinding.getContentHandler().getClass().getName()), new SAXElementFragment(element), VisitSequence.AFTER);
     }
 
     @Override

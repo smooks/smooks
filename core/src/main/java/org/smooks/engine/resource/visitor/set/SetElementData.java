@@ -42,17 +42,14 @@
  */
 package org.smooks.engine.resource.visitor.set;
 
-import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.Parameter;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
-import org.smooks.engine.delivery.sax.DefaultSAXElement;
-import org.smooks.engine.delivery.sax.DefaultSAXElementSerializer;
-import org.smooks.support.FreeMarkerTemplate;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.support.DomUtils;
+import org.smooks.support.FreeMarkerTemplate;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
@@ -60,14 +57,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import java.io.IOException;
 import java.util.*;
 
 /**
  * Set Element Data visitor.
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SetElementData extends DefaultSAXElementSerializer implements DOMVisitAfter {
+public class SetElementData implements DOMVisitAfter {
 
     protected static final String ATTRIBUTE_DATA = "attributeData";
 
@@ -148,60 +144,6 @@ public class SetElementData extends DefaultSAXElementSerializer implements DOMVi
     public SetElementData setAttribute(QName name, String valueTemplate) {
         attributes.put(name, new FreeMarkerTemplate(valueTemplate));
         return this;
-    }
-
-    @Override
-    protected void writeStart(SAXElement element, BeanContext beanContext) throws IOException {
-        SAXElement reconstructedElement = reconstructElement(element, beanContext);
-        super.writeStart(reconstructedElement, beanContext);
-        element.setCache(this, reconstructedElement.getCache(this));
-    }
-
-    @Override
-    protected void writeEnd(SAXElement element, BeanContext beanContext) throws IOException {
-        SAXElement reconstructedElement = reconstructElement(element, beanContext);
-        reconstructedElement.setCache(this, element.getCache(this));
-        super.writeEnd(reconstructedElement, beanContext);
-    }
-
-    private SAXElement reconstructElement(SAXElement element, BeanContext beanContext) {
-        QName qName = element.getName();
-
-        if (elementQName.isPresent() || elementNamespace.isPresent()) {
-            // Need to create a new QName for the element...
-            String newElementName = (elementName != null ? elementName : qName.getLocalPart());
-            String newElementNamespace = (elementNamespace.isPresent() ? elementNamespace.get() : qName.getNamespaceURI());
-            String newElementNamespacePrefix = (elementNamespacePrefix != null ? elementNamespacePrefix : qName.getPrefix());
-
-            qName = new QName(newElementNamespace, newElementName, newElementNamespacePrefix);
-        }
-
-        SAXElement newElement = new DefaultSAXElement(qName, element.getAttributes(), element.getParent());
-        newElement.setWriter(element.getWriter(this), this);
-
-        if (!attributes.isEmpty()) {
-            Map<String, Object> beans = beanContext.getBeanMap();
-            Set<Map.Entry<QName, FreeMarkerTemplate>> attributeSet = attributes.entrySet();
-
-            for (Map.Entry<QName, FreeMarkerTemplate> attributeConfig : attributeSet) {
-                QName attribName = attributeConfig.getKey();
-                FreeMarkerTemplate valueTemplate = attributeConfig.getValue();
-                String namespaceURI = attribName.getNamespaceURI();
-
-                if (namespaceURI != null) {
-                    String prefix = attribName.getPrefix();
-                    if (prefix != null && prefix.length() > 0) {
-                        newElement.setAttributeNS(namespaceURI, prefix + ":" + attribName.getLocalPart(), valueTemplate.apply(beans));
-                    } else {
-                        newElement.setAttributeNS(namespaceURI, attribName.getLocalPart(), valueTemplate.apply(beans));
-                    }
-                } else {
-                    newElement.setAttribute(attribName.getLocalPart(), valueTemplate.apply(beans));
-                }
-            }
-        }
-
-        return newElement;
     }
 
     @Override

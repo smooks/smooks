@@ -42,21 +42,26 @@
  */
 package org.smooks.engine.delivery.sax.ng;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.delivery.ContentDeliveryConfig;
+import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.Registry;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
+import org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor;
 import org.smooks.engine.delivery.AbstractFilterProvider;
 import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.engine.delivery.SelectorTable;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.api.delivery.event.ConfigBuilderEvent;
 import org.smooks.engine.delivery.event.DefaultConfigBuilderEvent;
 import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +76,9 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
             visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
 
             if (visitorBinding.getContentHandler() instanceof BeforeVisitor || visitorBinding.getContentHandler() instanceof AfterVisitor) {
+                if (visitorBinding.getContentHandler() instanceof BeforeVisitor || visitorBinding.getContentHandler() instanceof ChildrenVisitor) {
+                    assertSelectorsNotAccessingText(visitorBinding.getResourceConfig());
+                }
                 final ContentHandlerBinding<Visitor> interceptorChain = interceptorVisitorChainFactory.createInterceptorChain(visitorBinding);
                 final String selector = interceptorChain.getResourceConfig().getSelectorPath().getTargetElement();
                 final Visitor interceptorChainVisitor = interceptorChain.getContentHandler();
@@ -93,10 +101,17 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
         saxNgContentDeliveryConfig.setRegistry(registry);
         saxNgContentDeliveryConfig.setResourceConfigs(resourceConfigTable);
         saxNgContentDeliveryConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
-        saxNgContentDeliveryConfig.assertSelectorsNotAccessingText();
         saxNgContentDeliveryConfig.addToExecutionLifecycleSets();
         
         return saxNgContentDeliveryConfig;
+    }
+
+    protected void assertSelectorsNotAccessingText(ResourceConfig resourceConfig) {
+        SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
+
+        if (selectorStep.accessesText()) {
+            throw new SmooksConfigException("Unsupported selector '" + selectorStep.getXPathExpression() + "' on resource '" + resourceConfig + "'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the " + AfterVisitor.class.getName() + " interface only.  Class '" + resourceConfig.getResource() + "' implements other SAX Visitor interfaces.");
+        }
     }
 
     @Override

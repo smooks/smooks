@@ -42,11 +42,9 @@
  */
 package org.smooks.engine.resource.config.xpath.evaluators.value;
 
-import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.converter.TypeConverter;
-import org.smooks.api.delivery.sax.SAXElement;
+import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
 import org.w3c.dom.Element;
 
 /**
@@ -61,10 +59,6 @@ public class TextValue extends Value {
         this.typeConverter = typeConverter;
     }
 
-    protected Object getValue(SAXElement element) {
-        return typeConverter.convert(element.getTextContent());
-    }
-
     protected Object getValue(Element element) {
         return typeConverter.convert(element.getTextContent());
     }
@@ -76,9 +70,7 @@ public class TextValue extends Value {
 
     @Override
     public Object getValue(Fragment<?> fragment) {
-        if (fragment instanceof SAXElementFragment) {
-            return getValue(((SAXElementFragment) fragment).unwrap());
-        } else if (fragment instanceof NodeFragment) {
+        if (fragment instanceof NodeFragment) {
             return getValue((Element) ((NodeFragment) fragment).unwrap());
         }
 

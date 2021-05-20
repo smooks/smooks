@@ -46,7 +46,6 @@ import org.smooks.api.delivery.*;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.engine.delivery.dom.DOMFilterProvider;
-import org.smooks.engine.delivery.sax.SAXFilterProvider;
 import org.smooks.engine.delivery.sax.ng.SaxNgFilterProvider;
 import org.smooks.api.Registry;
 import org.smooks.engine.lookup.GlobalParamsLookup;
@@ -71,7 +70,7 @@ public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRunt
         if (contentDeliveryConfigBuilder == null) {
             synchronized (this) {
                 if (contentDeliveryConfigBuilders.get(profileSet.getBaseProfile()) == null) {
-                    contentDeliveryConfigBuilder = new DefaultContentDeliveryConfigBuilder(profileSet, registry, Arrays.asList(new SaxNgFilterProvider(), new SAXFilterProvider(), new DOMFilterProvider()));
+                    contentDeliveryConfigBuilder = new DefaultContentDeliveryConfigBuilder(profileSet, registry, Arrays.asList(new SaxNgFilterProvider(), new DOMFilterProvider()));
                     final int readerPoolSize = Integer.parseInt(registry.lookup(new GlobalParamsLookup(registry)).getParameterValue(Filter.READER_POOL_SIZE, String.class, "0"));
                     if (readerPoolSize == -1) {
                         readerPools.put(contentDeliveryConfigBuilder, new DynamicReaderPool());

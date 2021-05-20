@@ -43,16 +43,14 @@
 package org.smooks.engine.delivery;
 
 import org.junit.Test;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.VisitAfterIf;
 import org.smooks.api.resource.visitor.VisitBeforeIf;
-import org.smooks.engine.delivery.sax.SAXFilterProvider;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
-
-import java.io.IOException;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.engine.delivery.sax.ng.SaxNgFilterProvider;
+import org.w3c.dom.Element;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -62,7 +60,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class VisitIfAndIfNotTestCase {
 
-    private SAXFilterProvider saxFilterProvider = new SAXFilterProvider();
+    private SaxNgFilterProvider saxFilterProvider = new SaxNgFilterProvider();
 
     @Test
     public void test_sax_visitBefore() {
@@ -87,7 +85,7 @@ public class VisitIfAndIfNotTestCase {
        ==================================================================================================== */
 
     @VisitBeforeIf(condition = "visitBefore == 'true'")
-    public static class MySAXVisitBeforeVisitor1 implements SAXVisitBefore {
+    public static class MySAXVisitBeforeVisitor1 implements BeforeVisitor {
         private String visitBefore;
         
         public MySAXVisitBeforeVisitor1(String visitBefore) {
@@ -95,7 +93,7 @@ public class VisitIfAndIfNotTestCase {
         }
 
         @Override
-        public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         }
 
         public String getVisitBefore() {
@@ -104,7 +102,7 @@ public class VisitIfAndIfNotTestCase {
     }
 
     @VisitAfterIf(condition = "visitBefore != 'true'")
-    public static class MySAXVisitAfterVisitor1 implements SAXVisitAfter {
+    public static class MySAXVisitAfterVisitor1 implements AfterVisitor {
         private String visitBefore;
 
         public MySAXVisitAfterVisitor1(String visitBefore) {
@@ -112,7 +110,7 @@ public class VisitIfAndIfNotTestCase {
         }
 
         @Override
-        public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+        public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         }
 
         public String getVisitBefore() {

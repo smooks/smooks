@@ -43,7 +43,10 @@
 package org.smooks.api.resource.visitor.sax.ng;
 
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.w3c.dom.Element;
+
+import java.io.IOException;
 
 /**
  * Applies an operation immediately after the {@link org.w3c.dom.Element}'s end tag.

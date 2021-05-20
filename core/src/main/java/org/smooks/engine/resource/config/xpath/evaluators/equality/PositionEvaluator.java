@@ -42,13 +42,11 @@
  */
 package org.smooks.engine.resource.config.xpath.evaluators.equality;
 
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.config.xpath.SelectorStep;
-import org.smooks.api.resource.config.xpath.XPathExpressionEvaluator;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.resource.config.xpath.SelectorStep;
+import org.smooks.api.resource.config.xpath.XPathExpressionEvaluator;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -57,19 +55,19 @@ import org.w3c.dom.NodeList;
 import javax.xml.XMLConstants;
 
 /**
- * Simple element index predicate evaluator.
+ * Simple element position predicate evaluator.
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class IndexEvaluator implements XPathExpressionEvaluator {
+public class PositionEvaluator implements XPathExpressionEvaluator {
 
-    private final int index;
-    private ElementIndexCounter counter;
+    private final int position;
+    private ElementPositionCounter counter;
     private final String elementName;
     private String elementNS;
 
-    public IndexEvaluator(int index, SelectorStep selectorStep) {
-        this.index = index;
+    public PositionEvaluator(int position, SelectorStep selectorStep) {
+        this.position = position;
         elementName = selectorStep.getElement().getLocalPart();
         elementNS = selectorStep.getElement().getNamespaceURI();
         if (elementNS.equals(XMLConstants.NULL_NS_URI)) {
@@ -77,56 +75,55 @@ public class IndexEvaluator implements XPathExpressionEvaluator {
         }
     }
 
-    public ElementIndexCounter getCounter() {
+    public ElementPositionCounter getCounter() {
         return counter;
     }
 
-    public void setCounter(ElementIndexCounter indexCounter) {
-        this.counter = indexCounter;
-    }
-
-    protected boolean evaluate(SAXElement element, ExecutionContext executionContext) {
-        return counter.getCount(element) == index;
+    public void setCounter(ElementPositionCounter positionCounter) {
+        this.counter = positionCounter;
     }
 
     protected boolean evaluate(Element element, ExecutionContext executionContext) {
+        int count;
+        if (counter == null) {
+            count = 0;
+        } else {
+            count = counter.getCount(element, executionContext) - 1;
+        }
         Node parent = element.getParentNode();
 
         if (parent == null) {
-            return (index == 0);
+            return position == 0;
         }
 
-        NodeList siblings = parent.getChildNodes();
-        int count = 0;
-        int siblingCount = siblings.getLength();
+        NodeList childNodes = parent.getChildNodes();
+        int childNodeCount = childNodes.getLength();
 
-        for (int i = 0; i < siblingCount; i++) {
-            Node sibling = siblings.item(i);
+        for (int i = 0; i < childNodeCount; i++) {
+            Node childNode = childNodes.item(i);
 
-            if (sibling.getNodeType() == Node.ELEMENT_NODE && DomUtils.getName((Element) sibling).equalsIgnoreCase(elementName)) {
-                if (elementNS == null || elementNS.equals(sibling.getNamespaceURI())) {
+            if (childNode.getNodeType() == Node.ELEMENT_NODE && DomUtils.getName((Element) childNode).equalsIgnoreCase(elementName)) {
+                if (elementNS == null || elementNS.equals(childNode.getNamespaceURI())) {
                     count++;
                 }
             }
 
-            if (sibling == element) {
+            if (childNode == element) {
                 break;
             }
         }
 
-        return (index == count);
+        return position == count;
     }
 
     @Override
     public String toString() {
-        return "[" + index + "]";
+        return "[" + position + "]";
     }
 
     @Override
     public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
-        if (fragment instanceof SAXElementFragment) {
-            return evaluate(((SAXElementFragment) fragment).unwrap(), executionContext);
-        } else if (fragment instanceof NodeFragment) {
+        if (fragment instanceof NodeFragment) {
             return evaluate((Element) ((NodeFragment) fragment).unwrap(), executionContext);
         }
         

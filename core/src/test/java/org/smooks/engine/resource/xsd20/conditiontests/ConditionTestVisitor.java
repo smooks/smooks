@@ -42,20 +42,19 @@
  */
 package org.smooks.engine.resource.xsd20.conditiontests;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.w3c.dom.Element;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ConditionTestVisitor implements SAXVisitBefore {
+public class ConditionTestVisitor implements BeforeVisitor {
 
     @Inject
     private String message;
@@ -63,7 +62,7 @@ public class ConditionTestVisitor implements SAXVisitBefore {
     public static final List<String> messagesUsed = new ArrayList<String>();
 
     @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         messagesUsed.add(message);
     }
 }

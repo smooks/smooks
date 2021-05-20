@@ -40,68 +40,46 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.equality;
+package org.smooks.engine.memento;
 
-import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.config.xpath.SelectorStep;
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.memento.Memento;
 
-import java.io.IOException;
+public class TextAccumulatorVisitorMemento extends TextAccumulatorMemento {
 
-/**
- * Element index counter.
- * <p/>
- * Used for index based XPath predicates.
- *
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class ElementIndexCounter implements SAXVisitBefore {
+    private final AbstractVisitorMemento visitorMemento;
 
-    private final SelectorStep selectorStep;
+    public TextAccumulatorVisitorMemento(Fragment<?> fragment, Visitor visitor) {
+        super(fragment);
+        visitorMemento = new AbstractVisitorMemento(fragment, visitor) {
+            @Override
+            public Memento copy() {
+                final TextAccumulatorVisitorMemento textAccumulatorMemento = new TextAccumulatorVisitorMemento(fragment, visitor);
+                textAccumulatorMemento.accumulateText(getText());
 
-    public ElementIndexCounter(SelectorStep selectorStep) {
-        this.selectorStep = selectorStep;
-    }
+                return textAccumulatorMemento;
+            }
 
-    public SelectorStep getSelectorStep() {
-        return selectorStep;
+            @Override
+            public void restore(Memento memento) {
+                TextAccumulatorVisitorMemento.super.restore(memento);
+            }
+        };
     }
 
     @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        ElementIndex index = getElementIndex(element);
-        if(index != null) {
-            index.i++;
-        }
+    public Memento copy() {
+        return visitorMemento.copy();
     }
 
-    protected int getCount(SAXElement element) {
-        ElementIndex index = getElementIndex(element);
-        if(index != null) {
-            return index.i;
-        }
-        return 0;
+    @Override
+    public void restore(final Memento memento) {
+        visitorMemento.restore(memento);
     }
 
-    private ElementIndex getElementIndex(SAXElement element) {
-        SAXElement parent = element.getParent();
-        ElementIndex index;
-
-        if(parent != null) {
-            index = (ElementIndex) parent.getCache(this);
-            if(index == null) {
-                index = new ElementIndex();
-                parent.setCache(this, index);
-            }
-            return index;
-        }
-
-        return null;
-    }
-
-    private static class ElementIndex {
-        private int i = 0;
+    @Override
+    public String getAnchor() {
+        return visitorMemento.getAnchor();
     }
 }

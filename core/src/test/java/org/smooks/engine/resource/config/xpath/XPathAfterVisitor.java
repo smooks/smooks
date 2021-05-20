@@ -42,30 +42,21 @@
  */
 package org.smooks.engine.resource.config.xpath;
 
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
-import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.w3c.dom.Element;
-
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class XPathAfterVisitor implements SAXVisitAfter, DOMVisitAfter {
+public class XPathAfterVisitor implements AfterVisitor, DOMVisitAfter {
 
-    public static SAXElement saxVisitedAfterElement;
     public static Element domVisitedAfterElement;
 
     @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        saxVisitedAfterElement = element;
-    }
-    
-    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        domVisitedAfterElement = element;
+        domVisitedAfterElement = (Element) element.cloneNode(true);
     }
 }

@@ -44,15 +44,12 @@ package org.smooks.engine.delivery.dom.serialize;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
-import org.smooks.support.DomUtils;
 import org.smooks.engine.xml.Namespace;
+import org.smooks.support.DomUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 
@@ -67,7 +64,7 @@ import java.io.Writer;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, SAXElementVisitor, ElementVisitor {
+public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, ElementVisitor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextObjectSerializerVisitor.class);
 
@@ -139,22 +136,6 @@ public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, SAX
 
     public static boolean isContextObjectElement(Element element) {
         return DomUtils.getName(element).equals("context-object") && Namespace.SMOOKS_URI.equals(element.getNamespaceURI());
-    }
-
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-    }
-
-    @Override
-    public void onChildText(SAXElement element, SAXText text, ExecutionContext executionContext) throws SmooksException, IOException {
-    }
-    
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-    }
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
     }
 
     @Override

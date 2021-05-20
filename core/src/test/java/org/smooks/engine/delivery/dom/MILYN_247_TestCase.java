@@ -83,7 +83,7 @@ public class MILYN_247_TestCase {
     public void test_MILYN_247_03() {
         Smooks smooks = new Smooks();
 
-        smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.SAX).setRewriteEntities(true));
+        smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.SAX_NG).setRewriteEntities(true));
 
         StringResult stringResult = new StringResult();
         smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringResult);
@@ -94,7 +94,7 @@ public class MILYN_247_TestCase {
     public void test_MILYN_247_04() {
         Smooks smooks = new Smooks();
 
-        smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.SAX).setRewriteEntities(false));
+        smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.SAX_NG).setRewriteEntities(false));
 
         StringResult stringResult = new StringResult();
         smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringResult);

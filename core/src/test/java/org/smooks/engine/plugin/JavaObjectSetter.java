@@ -42,30 +42,29 @@
  */
 package org.smooks.engine.plugin;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.io.payload.FilterResult;
 import org.smooks.io.payload.JavaResult;
+import org.w3c.dom.Element;
 
 import javax.xml.transform.Result;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JavaObjectSetter implements SAXVisitBefore {
+public class JavaObjectSetter implements BeforeVisitor {
 
     @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         Result result = FilterResult.getResult(executionContext, JavaResult.class);
-        if(result != null) {
+        if (result != null) {
             Map<String, Object> beans = new HashMap<String, Object>();
 
-            ((JavaResult)result).setResultMap(beans);
+            ((JavaResult) result).setResultMap(beans);
             beans.put("theBean", "Hi there!");
         }
     }

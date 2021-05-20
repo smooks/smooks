@@ -42,10 +42,8 @@
  */
 package org.smooks.engine.delivery.event;
 
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.api.delivery.event.ExecutionEvent;
-import org.smooks.support.SAXUtil;
+import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 
@@ -70,8 +68,6 @@ public abstract class FragmentEvent<T> implements ExecutionEvent {
         T unwrappedFragment = fragment.unwrap();
         if (unwrappedFragment instanceof Element) {
             return DomUtils.getDepth((Element) unwrappedFragment);
-        } else if (unwrappedFragment instanceof SAXElement) {
-            return SAXUtil.getDepth((SAXElement) unwrappedFragment);
         }
 
         return 0;

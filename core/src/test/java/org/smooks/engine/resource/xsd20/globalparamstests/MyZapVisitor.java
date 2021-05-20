@@ -42,18 +42,17 @@
  */
 package org.smooks.engine.resource.xsd20.globalparamstests;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.w3c.dom.Element;
 
 import javax.inject.Inject;
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class MyZapVisitor implements SAXVisitBefore {
+public class MyZapVisitor implements BeforeVisitor {
 
     @Inject
     private String xp;
@@ -65,7 +64,7 @@ public class MyZapVisitor implements SAXVisitBefore {
     public static int configuredZapCount;
 
     @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         configuredXP = xp;
         configuredZapCount = zapCount;
     }

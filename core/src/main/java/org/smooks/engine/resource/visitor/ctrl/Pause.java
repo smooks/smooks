@@ -44,13 +44,11 @@ package org.smooks.engine.resource.visitor.ctrl;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
-import org.smooks.api.resource.visitor.sax.SAXVisitAfter;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.w3c.dom.Element;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -58,7 +56,7 @@ import java.util.Optional;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class Pause implements SAXVisitAfter, DOMVisitAfter {
+public class Pause implements AfterVisitor, DOMVisitAfter {
 
     private long period = 1000;
 
@@ -66,11 +64,6 @@ public class Pause implements SAXVisitAfter, DOMVisitAfter {
     public Pause setPeriod(Optional<Long> period) {
         this.period = period.orElse(this.period);
         return this;
-    }
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        pause();
     }
 
     @Override

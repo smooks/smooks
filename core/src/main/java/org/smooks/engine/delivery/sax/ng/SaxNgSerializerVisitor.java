@@ -42,23 +42,20 @@
  */
 package org.smooks.engine.delivery.sax.ng;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.Filter;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.api.delivery.sax.SAXText;
-import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
-import org.smooks.io.DomToXmlWriter;
+import org.smooks.api.memento.Memento;
 import org.smooks.api.resource.visitor.SerializerVisitor;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.AbstractVisitorMemento;
-import org.smooks.api.memento.Memento;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
-import org.smooks.api.resource.visitor.sax.SAXElementVisitor;
+import org.smooks.io.DomToXmlWriter;
 import org.smooks.io.FragmentWriter;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
@@ -71,7 +68,7 @@ import java.io.Writer;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor, DOMElementVisitor, SerializerVisitor {
+public class SaxNgSerializerVisitor implements ElementVisitor, DOMElementVisitor, SerializerVisitor {
    
     protected DomToXmlWriter domToXmlWriter;
     private Boolean closeEmptyElements = true;
@@ -90,26 +87,6 @@ public class SaxNgSerializerVisitor implements ElementVisitor, SAXElementVisitor
     @Inject
     public void setRewriteEntities(@Named(Filter.ENTITIES_REWRITE) Optional<Boolean> rewriteEntities) {
         this.rewriteEntities = rewriteEntities.orElse(this.rewriteEntities);
-    }
-
-    @Override
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-
-    }
-
-    @Override
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-
-    }
-
-    @Override
-    public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
-
-    }
-
-    @Override
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-
     }
 
     @Override

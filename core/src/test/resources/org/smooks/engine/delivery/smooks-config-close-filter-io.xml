@@ -64,13 +64,13 @@
     </resource-config>
 
     <resource-config selector="global-parameters" target-profile="sax-dont-close">
-        <param name="stream.filter.type">SAX</param>
+        <param name="stream.filter.type">SAX NG</param>
         <param name="close.source">false</param>
         <param name="close.result">false</param>
     </resource-config>
 
     <resource-config selector="global-parameters" target-profile="sax-close">
-        <param name="stream.filter.type">SAX</param>
+        <param name="stream.filter.type">SAX NG</param>
         <param name="close.source">true</param>
         <param name="close.result">true</param>
     </resource-config>

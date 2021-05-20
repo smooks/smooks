@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -42,29 +42,46 @@
  */
 package org.smooks.engine.memento;
 
-import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.TypedKey;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.memento.Memento;
+import org.smooks.engine.delivery.interceptor.TextConsumerInterceptor;
 
-public class TextAccumulatorMemento extends AbstractVisitorMemento {
-    
-    private final StringBuilder stringBuilder = new StringBuilder();
-    
-    public TextAccumulatorMemento(Fragment<?> fragment, Visitor visitor) {
-        super(fragment, visitor);
+public class TextAccumulatorMemento implements Memento {
+    private static final TypedKey<String> ANCHOR_TYPED_KEY = new TypedKey<>();
+
+    protected final Fragment<?> fragment;
+    protected final StringBuilder stringBuilder = new StringBuilder();
+    protected String anchor;
+
+    public TextAccumulatorMemento(final Fragment<?> fragment) {
+        this.fragment = fragment;
     }
 
     @Override
     public Memento copy() {
-        final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(fragment, visitor);
+        final TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(fragment);
         textAccumulatorMemento.accumulateText(getText());
-        
+
         return textAccumulatorMemento;
     }
 
     @Override
     public void restore(final Memento memento) {
         stringBuilder.append(((TextAccumulatorMemento) memento).getText());
+    }
+
+    @Override
+    public Fragment<?> getFragment() {
+        return fragment;
+    }
+
+    @Override
+    public String getAnchor() {
+        if (anchor == null) {
+            anchor = ANCHOR_TYPED_KEY.getName() + "@" + fragment.getId();
+        }
+        return anchor;
     }
 
     public TextAccumulatorMemento accumulateText(final String text) {

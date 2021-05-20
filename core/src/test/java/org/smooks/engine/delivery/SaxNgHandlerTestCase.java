@@ -48,33 +48,31 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.delivery.sax.SAXElement;
-import org.smooks.engine.delivery.sax.SAXHandler;
-import org.smooks.api.resource.visitor.sax.SAXVisitBefore;
 import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
-import static org.smooks.engine.delivery.SAXHandlerTestCase.SAXMatchers.isSaxElementWithQName;
-import static org.smooks.engine.delivery.SAXHandlerTestCase.SAXMatchers.isSaxFragmentWithQName;
+import static org.smooks.engine.delivery.SaxNgHandlerTestCase.SAXMatchers.isSaxElementWithQName;
+import static org.smooks.engine.delivery.SaxNgHandlerTestCase.SAXMatchers.isSaxFragmentWithQName;
 
 /**
- * Test for {@link SAXHandler}.
+ * Test for {@link org.smooks.engine.delivery.sax.ng.SaxNgHandler}.
  *
  * @author Michael Kr&uuml;ske
  */
-public class SAXHandlerTestCase {
+public class SaxNgHandlerTestCase {
     private static final String SIMPLE_SAMPLE_XML = "SAXHandlerTest.xml";
 
     private static final String URN_SIMPLE = "urn:simple";
@@ -94,10 +92,9 @@ public class SAXHandlerTestCase {
      * Test for MILYN-648 Only execute clean-up handlers targeted at element.
      *
      * @throws SmooksException if parsing fails
-     * @throws IOException     if reading fails
      */
     @Test
-    public void executeLifeCycleCleanup_onlyForTargetElements() throws SmooksException, IOException {
+    public void executeLifeCycleCleanup_onlyForTargetElements() throws SmooksException {
         // given
         final VisitBeforeAndLifecycleCleanable firstMock = mock(VisitBeforeAndLifecycleCleanable.class);
         final VisitBeforeAndLifecycleCleanable secondMock = mock(VisitBeforeAndLifecycleCleanable.class);
@@ -142,7 +139,7 @@ public class SAXHandlerTestCase {
     }
 
     private StreamSource createSource() {
-        final InputStream inputStream = SAXHandlerTestCase.class
+        final InputStream inputStream = SaxNgHandlerTestCase.class
                 .getResourceAsStream(SIMPLE_SAMPLE_XML);
         StreamSource source = new StreamSource(inputStream);
         return source;
@@ -162,7 +159,7 @@ public class SAXHandlerTestCase {
         return namespaces;
     }
 
-    private interface VisitBeforeAndLifecycleCleanable extends SAXVisitBefore, VisitLifecycleCleanable {
+    private interface VisitBeforeAndLifecycleCleanable extends BeforeVisitor, VisitLifecycleCleanable {
     }
 
     static class SAXMatchers {
@@ -171,8 +168,8 @@ public class SAXHandlerTestCase {
         }
 
         @Factory
-        public static <T> Matcher<SAXElement> isSaxElementWithQName(final QName qname) {
-            return new IsSaxElement(qname);
+        public static <T> Matcher<Element> isSaxElementWithQName(final QName qname) {
+            return new IsElement(qname);
         }
 
         @Factory
@@ -182,17 +179,17 @@ public class SAXHandlerTestCase {
 
     }
 
-    private static class IsSaxElement extends TypeSafeMatcher<SAXElement> {
+    private static class IsElement extends TypeSafeMatcher<Element> {
 		private final QName qname;
 
-        public IsSaxElement(final QName qname) {
+        public IsElement(final QName qname) {
             if (qname == null) throw new IllegalArgumentException("qname must not be null.");
             this.qname = qname;
         }
 
         @Override
-        public boolean matchesSafely(SAXElement element) {
-            return qname.equals(element.getName());
+        public boolean matchesSafely(Element element) {
+            return qname.getNamespaceURI().equals(element.getNamespaceURI()) && qname.getLocalPart().equals(element.getLocalName());
         }
 
         @Override
@@ -211,7 +208,7 @@ public class SAXHandlerTestCase {
 
         @Override
         public boolean matchesSafely(Fragment fragment) {
-            return qname.equals(((SAXElement) fragment.unwrap()).getName());
+            return qname.getNamespaceURI().equals(((Element) fragment.unwrap()).getNamespaceURI()) && qname.getLocalPart().equals(((Element) fragment.unwrap()).getLocalName());
         }
 
         @Override
