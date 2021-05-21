@@ -48,15 +48,20 @@ import org.dom4j.io.DOMWriter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.engine.DefaultApplicationContextBuilder;
-import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.memento.SimpleVisitorMemento;
-import org.smooks.engine.memento.VisitorMemento;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
+import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
+import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
+import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
+import org.smooks.engine.delivery.sax.ng.session.SessionInterceptor;
+import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
+import org.smooks.engine.memento.SimpleVisitorMemento;
+import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.Stream;
 import org.smooks.io.payload.StringResult;
@@ -67,6 +72,7 @@ import org.xml.sax.SAXException;
 import javax.xml.transform.dom.DOMSource;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
@@ -77,6 +83,24 @@ public class NestedSmooksVisitorTestCase {
 
     private NestedSmooksVisitor.Action getRandomActions() {
         return NestedSmooksVisitor.Action.values()[ThreadLocalRandom.current().nextInt(NestedSmooksVisitor.Action.values().length)];
+    }
+
+    @Test
+    public void testPostConstructRegistersInterceptorVisitorDefinitions() throws IOException, URISyntaxException, ClassNotFoundException, SAXException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+
+        nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        nestedSmooksVisitor.postConstruct();
+
+        InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup(new InterceptorVisitorFactoryLookup());
+        List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = interceptorVisitorChainFactory.getInterceptorVisitorDefinitions();
+        assertTrue(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass().equals(SessionInterceptor.class));
+        assertTrue(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass().equals(StaticProxyInterceptor.class));
     }
 
     @Test
