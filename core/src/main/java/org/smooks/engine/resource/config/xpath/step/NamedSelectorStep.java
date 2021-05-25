@@ -1,8 +1,8 @@
 /*-
  * ========================LICENSE_START=================================
- * API
+ * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,28 +40,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.resource.config.xpath;
+package org.smooks.engine.resource.config.xpath.step;
 
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.fragment.Fragment;
-import org.w3c.dom.Element;
+import javax.xml.namespace.QName;
 
-/**
- * Jaxen XPath expression evaluator.
- * 
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public interface XPathExpressionEvaluator {
+public abstract class NamedSelectorStep extends AbstractSelectorStep {
 
-    /**
-     * Does this XPath expression evaluate for the supplied {@link Element} context object.
-     * <p/>
-     * The implementation can update the context to a parent element if the expression targets
-     * multiple contexts.
-     *
-     * @param fragment          The {@link Element} context to be evaluated against.
-     * @param executionContext Smooks {@link ExecutionContext}.
-     * @return True if the expression evaluates, otherwise false.
-     */
-    boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext);
+    protected final QName qName;
+
+    protected NamedSelectorStep(final QName qName) {
+        this.qName = qName;
+    }
+
+    public QName getQName() {
+        return qName;
+    }
 }

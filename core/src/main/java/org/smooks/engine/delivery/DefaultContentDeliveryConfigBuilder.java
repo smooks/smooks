@@ -44,27 +44,27 @@ package org.smooks.engine.delivery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.Registry;
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.VisitorAppender;
 import org.smooks.api.delivery.*;
+import org.smooks.api.delivery.event.ConfigBuilderEvent;
 import org.smooks.api.delivery.event.ContentDeliveryConfigBuilderLifecycleEvent;
 import org.smooks.api.delivery.event.ContentDeliveryConfigBuilderLifecycleListener;
 import org.smooks.api.profile.ProfileSet;
-import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.Registry;
+import org.smooks.api.resource.config.ResourceConfigSortComparator;
+import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.api.SmooksConfigException;
-import org.smooks.engine.resource.config.DefaultResourceConfigSortComparator;
-import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.api.resource.config.ResourceConfigSortComparator;
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
 import org.smooks.engine.delivery.event.DefaultConfigBuilderEvent;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.ResourceConfigsProfileSetLookup;
+import org.smooks.engine.resource.config.DefaultResourceConfigSortComparator;
+import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -285,8 +285,14 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         String target = config.getSelectorPath().getSelector();
 
         // If it's contextual, it's targeting an XML element...
-        if(config.getSelectorPath().size() > 1) {
-            target = config.getSelectorPath().getTargetElement();
+        if (config.getSelectorPath().size() > 1) {
+            for (int i = config.getSelectorPath().size(); i > 0; i--) {
+                final SelectorStep selectorStep = config.getSelectorPath().get(i - 1);
+                if (selectorStep instanceof ElementSelectorStep) {
+                    target = ((ElementSelectorStep) selectorStep).getQName().getLocalPart();
+                    break;
+                }
+            }
         }
 
         addResourceConfig(target, config);
@@ -299,13 +305,13 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      */
     private void addResourceConfig(String element, ResourceConfig resourceConfig) {
         // Add it to the unsorted list...
-        if(!resourceConfigs.contains(resourceConfig)) {
+        if (!resourceConfigs.contains(resourceConfig)) {
             resourceConfigs.add(resourceConfig);
         }
 
         // Add it to the sorted resourceConfigTable...
         final List<ResourceConfig> resourceConfigs = resourceConfigTable.computeIfAbsent(element, k -> new ArrayList<>());
-        if(!resourceConfigs.contains(resourceConfig)) {
+        if (!resourceConfigs.contains(resourceConfig)) {
             resourceConfigs.add(resourceConfig);
         }
     }
@@ -363,7 +369,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         }
 
         @Override
-        public void applyStrategy(String elementName, ResourceConfig resourceConfig) {
+        public void applyStrategy(ResourceConfig resourceConfig) {
             applyContentDeliveryUnitStrategy(resourceConfig);
         }
 
@@ -515,7 +521,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 		 */
         private void iterate() {
             for (ResourceConfig resourceConfig : resourceConfigs) {
-                strategy.applyStrategy(resourceConfig.getSelectorPath().getTargetElement(), resourceConfig);
+                strategy.applyStrategy(resourceConfig);
             }
         }
 	}
@@ -527,9 +533,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 	private interface ResourceConfigStrategy {
 		/**
 		 * Apply the strategy algorithm.
-		 * @param elementName The element name
 		 * @param resourceConfig The ResourceConfig
 		 */
-		void applyStrategy(String elementName, ResourceConfig resourceConfig);
+		void applyStrategy(ResourceConfig resourceConfig);
 	}
 }

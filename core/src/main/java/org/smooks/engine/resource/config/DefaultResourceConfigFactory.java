@@ -70,12 +70,11 @@ public class DefaultResourceConfigFactory implements ResourceConfigFactory {
             resource = null;
         }
 
-        final ResourceConfig resourceConfig = new DefaultResourceConfig((selector != null ? selector : defaultSelector),
+        final ResourceConfig resourceConfig = new DefaultResourceConfig((selector != null ? selector : defaultSelector), getNamespaces(element),
                 (namespace != null ? namespace : defaultNamespace),
                 (targetProfile != null ? targetProfile : defaultProfile),
                 resource);
-        resourceConfig.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
-        
+
         if (resourceElement != null) {
             resourceConfig.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));
         }
@@ -104,8 +103,7 @@ public class DefaultResourceConfigFactory implements ResourceConfigFactory {
             resource = null;
         }
 
-        final ResourceConfig resourceConfig = new DefaultResourceConfig(selector, (targetProfile != null ? targetProfile : defaultProfile), resource);
-        resourceConfig.getSelectorPath().getNamespaces().putAll(getNamespaces(element));
+        final ResourceConfig resourceConfig = new DefaultResourceConfig(selector, getNamespaces(element), (targetProfile != null ? targetProfile : defaultProfile), resource);
 
         if (resourceElement != null) {
             resourceConfig.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));

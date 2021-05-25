@@ -46,6 +46,8 @@ import org.junit.Test;
 import org.smooks.api.resource.config.ConfigSearch;
 import org.smooks.api.resource.config.ResourceConfig;
 
+import java.util.Properties;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -62,7 +64,7 @@ public class DefaultConfigSearchTestCase {
 		
 		assertTrue(search.matches(resourceConfig));
 
-		resourceConfig.setSelector("a");
+		resourceConfig.setSelector("a", new Properties());
 		assertTrue(search.matches(resourceConfig));
 		assertTrue(search.selector("a").matches(resourceConfig));
 		assertFalse(search.selector("b").matches(resourceConfig));

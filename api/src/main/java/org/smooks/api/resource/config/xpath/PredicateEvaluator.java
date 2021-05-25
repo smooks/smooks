@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Core
+ * API
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,29 +40,28 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.logical;
+package org.smooks.api.resource.config.xpath;
 
-import org.jaxen.expr.LogicalExpr;
-import org.jaxen.saxpath.SAXPathException;
-import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.fragment.Fragment;
-
-import java.util.Properties;
+import org.w3c.dom.Element;
 
 /**
- * Simple "or" predicate evaluator.
- *
+ * Jaxen XPath expression evaluator.
+ * 
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class OrEvaluator extends AbstractLogicalEvaluator {
+public interface PredicateEvaluator extends Predicate {
 
-    public OrEvaluator(LogicalExpr expr, SelectorStep selectorStep, Properties namespaces) throws SAXPathException {
-        super(expr, selectorStep, namespaces);
-    }
-    
-    @Override
-    public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
-        return lhs.evaluate(fragment, executionContext) || rhs.evaluate(fragment, executionContext);
-    }
+    /**
+     * Does this XPath expression evaluate for the supplied {@link Element} context object.
+     * <p/>
+     * The implementation can update the context to a parent element if the expression targets
+     * multiple contexts.
+     *
+     * @param fragment          The {@link Element} context to be evaluated against.
+     * @param executionContext Smooks {@link ExecutionContext}.
+     * @return True if the expression evaluates, otherwise false.
+     */
+    boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext);
 }

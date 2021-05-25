@@ -1,8 +1,8 @@
 /*-
  * ========================LICENSE_START=================================
- * Core
+ * API
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,40 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.value;
+package org.smooks.api.resource.config.xpath;
 
-import org.smooks.api.converter.TypeConverter;
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.w3c.dom.Element;
-
-/**
- * Element text value getter.
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class TextValue extends Value {
-
-    private final TypeConverter<String, ?> typeConverter;
-
-    public TextValue(TypeConverter<String, ?> typeConverter) {
-        this.typeConverter = typeConverter;
-    }
-
-    protected Object getValue(Element element) {
-        return typeConverter.convert(element.getTextContent());
-    }
-
-    @Override
-    public String toString() {
-        return "text()";
-    }
-
-    @Override
-    public Object getValue(Fragment<?> fragment) {
-        if (fragment instanceof NodeFragment) {
-            return getValue((Element) ((NodeFragment) fragment).unwrap());
-        }
-
-        throw new UnsupportedOperationException();
-    }
+public interface Predicate {
 }

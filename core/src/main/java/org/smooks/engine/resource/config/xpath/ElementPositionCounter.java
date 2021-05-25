@@ -40,75 +40,62 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.value;
+package org.smooks.engine.resource.config.xpath;
 
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.TypedKey;
+import org.smooks.api.resource.config.xpath.SelectorStep;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.w3c.dom.Attr;
+import org.smooks.engine.memento.VisitorMemento;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
- * Element text value getter.
+ * Element position counter.
+ * <p/>
+ * Used for position based XPath predicates.
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class AttributeValue extends Value {
+public class ElementPositionCounter implements BeforeVisitor {
 
-    private static final String EMPTY_STRING = "";
+    private final SelectorStep selectorStep;
+    private final TypedKey<String> positionMementoTypedKey = new TypedKey<>();
 
-    private final String namespaceURI;
-    private final String localPart;
-    private final TypeConverter<String, ?> typeConverter;
-
-    public AttributeValue(String namespaceURI, String localPart, TypeConverter<String, ?> typeConverter) {
-        this.namespaceURI = namespaceURI;
-        this.localPart = localPart;
-        this.typeConverter = typeConverter;
+    public ElementPositionCounter(SelectorStep selectorStep) {
+        this.selectorStep = selectorStep;
     }
 
-    protected Object getValue(Element element) {
-        String attribValue = EMPTY_STRING;
-
-        if(namespaceURI != null) {
-            attribValue = element.getAttributeNS(namespaceURI, localPart);
-        } else {
-            NamedNodeMap attributes = element.getAttributes();
-            int numAttributes = attributes.getLength();
-
-            for(int i = 0; i < numAttributes; i++) {
-                Attr attr = (Attr) attributes.item(i);
-                String attrName = attr.getLocalName();
-
-                if(attrName == null) {
-                    attrName = attr.getName();
-                }
-
-                if(attrName.equals(localPart)) {
-                    attribValue = attr.getValue();
-                    break;
-                }
-            }
-        }
-
-        return typeConverter.convert(attribValue);
-    }
-    
-    @Override
-    public String toString() {
-        if(namespaceURI != null) {
-            return "@{" + namespaceURI + "}" + localPart;
-        } else {
-            return "@" + localPart;
-        }
+    public SelectorStep getSelectorStep() {
+        return selectorStep;
     }
 
     @Override
-    public Object getValue(Fragment<?> fragment) {
-        if (fragment instanceof NodeFragment) {
-            return getValue((Element) ((NodeFragment) fragment).unwrap());
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+        Integer position = getElementPosition(element, executionContext);
+        if (position != null) {
+            VisitorMemento<Integer> positionMemento = new VisitorMemento<>(new NodeFragment(element.getParentNode()), this, positionMementoTypedKey, position + 1);
+            executionContext.getMementoCaretaker().capture(positionMemento);
+        }
+    }
+
+    public int getCount(Element element, ExecutionContext executionContext) {
+        Integer position = getElementPosition(element, executionContext);
+        return position != null ? position : 0;
+    }
+
+    protected Integer getElementPosition(Element element, ExecutionContext executionContext) {
+        Node parentNode = element.getParentNode();
+
+        if (parentNode != null) {
+            VisitorMemento<Integer> positionMemento = new VisitorMemento<>(new NodeFragment(parentNode), this, positionMementoTypedKey, 0);
+            executionContext.getMementoCaretaker().restore(positionMemento);
+
+            return positionMemento.getState();
         }
 
-        throw new UnsupportedOperationException();
+        return null;
     }
 }

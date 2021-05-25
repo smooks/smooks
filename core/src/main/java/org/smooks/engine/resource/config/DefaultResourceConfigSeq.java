@@ -54,7 +54,6 @@ import org.smooks.assertion.AssertArgument;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * {@link ResourceConfig} list.
@@ -104,10 +103,10 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
         AssertArgument.isNotNull(resourceConfig, "resourceConfig");
         String[] selectors = resourceConfig.getSelectorPath().getSelector().split(",");
 
-        for(String selector : selectors) {
+        for (String selector : selectors) {
             ResourceConfig clone = resourceConfig.copy();
+            clone.setSelector(selector.trim(), resourceConfig.getSelectorPath().getNamespaces());
 
-            clone.setSelector(selector.trim());
             resourceConfigs.add(clone);
             LOGGER.debug("Smooks ResourceConfiguration [" + clone + "] added to list [" + name + "].");
         }

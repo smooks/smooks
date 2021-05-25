@@ -42,9 +42,9 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:c="http://c">
 
-    <resource-config selector="item[@code = '8655']/units[text() = 1]">
+    <resource-config selector="item[@c:code = '8655']/units[text() = 1]">
         <resource>org.smooks.engine.resource.config.xpath.XPathAfterVisitor</resource>
     </resource-config>
 

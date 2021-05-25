@@ -42,11 +42,10 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list 
-    xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-    xmlns:smooks="https://www.smooks.org/xsd/smooks-2.0.xsd"
-    xmlns:smooks-core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
-
+<smooks-resource-list
+        xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
+        xmlns:smooks="https://www.smooks.org/xsd/smooks-2.0.xsd"
+        xmlns:smooks-core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
   
     <resource-config selector="smooks-core:filterSettings">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
@@ -91,8 +90,7 @@
         <param name="attribute">readerPoolSize</param>
         <param name="mapTo">reader.pool.size</param>
     </resource-config>
-    
- 
+
     <resource-config selector="smooks-core:exports">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.io.payload.Exports</param>
@@ -117,7 +115,6 @@
         <param name="mapTo">extract</param>
     </resource-config>
 
-
     <resource-config selector="smooks-core:namespaces">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.engine.xml.NamespaceManager</param>
@@ -127,7 +124,6 @@
         <param name="attribute">uri</param>
         <param name="mapToSpecifier">prefix</param>
     </resource-config>
-
 
     <resource-config selector="smooks-core:interceptors">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
@@ -146,7 +142,6 @@
         <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">selector</param>
     </resource-config>
-    
 
     <resource-config selector="smooks-core:terminate">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
@@ -162,7 +157,6 @@
         <param name="attribute">terminateBefore</param>
     </resource-config>
 
-  
     <resource-config selector="smooks-core:setElementData">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.engine.resource.visitor.set.SetElementData</param>
@@ -184,7 +178,6 @@
         <resource>org.smooks.engine.resource.visitor.set.SetElementDataConfigDigester</resource>
     </resource-config>
 
-
     <resource-config selector="smooks-core:remove">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.engine.resource.visitor.remove.RemoveElement</param>
@@ -198,8 +191,7 @@
         <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">keepChildren</param>
     </resource-config>
-    
-    
+
     <resource-config selector="smooks-core:removeAttribute">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.engine.resource.visitor.remove.RemoveAttribute</param>
@@ -217,8 +209,7 @@
         <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">namespace</param>
     </resource-config>
-    
-    
+
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.engine.resource.visitor.smooks.NestedSmooksVisitor</param>

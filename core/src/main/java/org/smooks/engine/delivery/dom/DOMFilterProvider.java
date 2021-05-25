@@ -42,24 +42,26 @@
  */
 package org.smooks.engine.delivery.dom;
 
+import org.smooks.api.Registry;
+import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentHandler;
+import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.delivery.event.ConfigBuilderEvent;
+import org.smooks.api.lifecycle.VisitLifecycleCleanable;
 import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.xpath.SelectorStep;
+import org.smooks.api.resource.visitor.SerializerVisitor;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.resource.visitor.dom.Phase;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.delivery.AbstractFilterProvider;
-import org.smooks.api.delivery.ContentDeliveryConfig;
-import org.smooks.api.delivery.ContentHandlerBinding;
-import org.smooks.api.resource.visitor.SerializerVisitor;
 import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
-import org.smooks.api.Registry;
 import org.smooks.engine.delivery.event.DefaultConfigBuilderEvent;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
+import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
 import java.util.List;
 import java.util.Map;
@@ -70,14 +72,22 @@ public class DOMFilterProvider extends AbstractFilterProvider {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
         for (ContentHandlerBinding<Visitor> contentHandlerBinding : visitorBindings) {
-            final String targetElement = contentHandlerBinding.getResourceConfig().getSelectorPath().getTargetElement();
+            String targetElement = null;
+            for (int i = contentHandlerBinding.getResourceConfig().getSelectorPath().size(); i > 0; i--) {
+                final SelectorStep selectorStep = contentHandlerBinding.getResourceConfig().getSelectorPath().get(i - 1);
+                if (selectorStep instanceof ElementSelectorStep) {
+                    targetElement = ((ElementSelectorStep) selectorStep).getQName().getLocalPart();
+                    break;
+                }
+            }
+
             final Visitor visitor = contentHandlerBinding.getContentHandler();
             final ResourceConfig resourceConfig = contentHandlerBinding.getResourceConfig();
             resourceConfig.getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
 
             if (isDOMVisitor(visitor)) {
                 if (visitor instanceof DOMSerializerVisitor) {
-                    domConfig.getSerializerVisitorSelectorTable().put(targetElement, resourceConfig, (SerializerVisitor) visitor);
+                    domConfig.getSerializerVisitorIndex().put(targetElement, resourceConfig, (SerializerVisitor) visitor);
                     configBuilderEvents.add(new DefaultConfigBuilderEvent(resourceConfig, "Added as a DOM " + SerializerVisitor.class.getSimpleName() + " resource."));
                 } else {
                     Phase phaseAnnotation = contentHandlerBinding.getContentHandler().getClass().getAnnotation(Phase.class);
@@ -86,26 +96,26 @@ public class DOMFilterProvider extends AbstractFilterProvider {
                     if (phaseAnnotation != null && phaseAnnotation.value() == VisitPhase.ASSEMBLY) {
                         // It's an assembly unit...
                         if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
-                            domConfig.getAssemblyVisitBeforeSelectorTable().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
+                            domConfig.getAssemblyVisitBeforeIndex().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
                         }
                         if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
-                            domConfig.getAssemblyVisitAfterSelectorTable().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
+                            domConfig.getAssemblyVisitAfterIndex().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
                         }
                     } else if (visitPhase.equalsIgnoreCase(VisitPhase.ASSEMBLY.toString())) {
                         // It's an assembly unit...
                         if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
-                            domConfig.getAssemblyVisitBeforeSelectorTable().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
+                            domConfig.getAssemblyVisitBeforeIndex().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
                         }
                         if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
-                            domConfig.getAssemblyVisitAfterSelectorTable().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
+                            domConfig.getAssemblyVisitAfterIndex().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
                         }
                     } else {
                         // It's a processing unit...
                         if (visitor instanceof DOMVisitBefore && visitBeforeAnnotationsOK(visitor)) {
-                            domConfig.getProcessingVisitBeforeSelectorTable().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
+                            domConfig.getProcessingVisitBeforeIndex().put(targetElement, resourceConfig, (DOMVisitBefore) visitor);
                         }
                         if (visitor instanceof DOMVisitAfter && visitAfterAnnotationsOK(visitor)) {
-                            domConfig.getProcessingVisitAfterSelectorTable().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
+                            domConfig.getProcessingVisitAfterIndex().put(targetElement, resourceConfig, (DOMVisitAfter) visitor);
                         }
                     }
 
@@ -114,7 +124,7 @@ public class DOMFilterProvider extends AbstractFilterProvider {
             }
 
             if (visitor instanceof VisitLifecycleCleanable) {
-                domConfig.getVisitLifecycleCleanableSelectorTable().put(targetElement, resourceConfig, (VisitLifecycleCleanable) visitor);
+                domConfig.getVisitLifecycleCleanableIndex().put(targetElement, resourceConfig, (VisitLifecycleCleanable) visitor);
             }
         }
 

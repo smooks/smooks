@@ -42,15 +42,16 @@
  */
 package org.smooks.engine.delivery;
 
-import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.Registry;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
-import org.smooks.api.Registry;
-import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.engine.injector.FieldInjector;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
+import org.smooks.engine.lookup.NamespaceManagerLookup;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
 
 import java.util.Objects;
 
@@ -71,7 +72,7 @@ public class DefaultContentHandlerBinding<T extends ContentHandler> implements C
 
     public DefaultContentHandlerBinding(final T contentHandler, final String targetSelector, @Deprecated final String targetSelectorNS, final Registry registry) {
         this.contentHandler = contentHandler;
-        resourceConfig = new DefaultResourceConfig(targetSelector, contentHandler.getClass().getName());
+        resourceConfig = new DefaultResourceConfig(targetSelector, registry.lookup(new NamespaceManagerLookup()), contentHandler.getClass().getName());
         resourceConfig.getSelectorPath().setSelectorNamespaceURI(targetSelectorNS);
 
         final FieldInjector fieldInjector = new FieldInjector(contentHandler, new Scope(registry, resourceConfig, contentHandler));

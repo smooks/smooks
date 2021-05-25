@@ -49,7 +49,7 @@
         <param name="sax-handler">org.smooks.engine.delivery.sax.MockEntityResolver</param>
     </resource-config>
 
-    <resource-config selector="**/y:h">
+    <resource-config selector="//y:h">
         <resource>org.smooks.engine.delivery.sax.ng.Visitor01</resource>
     </resource-config>
 

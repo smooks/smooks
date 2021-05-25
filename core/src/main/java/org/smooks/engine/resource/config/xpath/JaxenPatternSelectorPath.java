@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,45 +40,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.logical;
+package org.smooks.engine.resource.config.xpath;
 
-import org.jaxen.expr.LogicalExpr;
-import org.jaxen.saxpath.SAXPathException;
-import org.smooks.api.resource.config.xpath.SelectorStep;
-import org.smooks.api.resource.config.xpath.XPathExpressionEvaluator;
-import org.smooks.engine.resource.config.xpath.evaluators.XPathExpressionEvaluatorFactory;
+import org.jaxen.pattern.Pattern;
+import org.smooks.api.resource.config.xpath.SelectorPath;
 
-import java.util.Properties;
+public interface JaxenPatternSelectorPath extends SelectorPath {
 
-/**
- * Simple "and"/"or" predicate evaluator.
- *
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public abstract class AbstractLogicalEvaluator implements XPathExpressionEvaluator {
-
-    private final String op;
-
-    protected XPathExpressionEvaluator lhs;
-    protected XPathExpressionEvaluator rhs;
-
-    public AbstractLogicalEvaluator(LogicalExpr expr, SelectorStep   selectorStep, Properties namespaces) throws SAXPathException {
-        final XPathExpressionEvaluatorFactory xpathExpressionEvaluatorFactory = new XPathExpressionEvaluatorFactory();
-        lhs = xpathExpressionEvaluatorFactory.create(expr.getLHS(), selectorStep, namespaces);
-        op = expr.getOperator();
-        rhs = xpathExpressionEvaluatorFactory.create(expr.getRHS(), selectorStep, namespaces);
-    }
-
-    public XPathExpressionEvaluator getLhs() {
-        return lhs;
-    }
-
-    public XPathExpressionEvaluator getRhs() {
-        return rhs;
-    }
-
-    @Override
-    public String toString() {
-        return "(" + lhs + " " + op + " " +  rhs + ")";
-    }
+    Pattern getPattern();
 }

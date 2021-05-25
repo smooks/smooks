@@ -82,22 +82,22 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ResourceConfig config;
+        ResourceConfig resourceConfig;
         String value = DomUtils.getAttributeValue(element, attribute);
 
         String actualMapTo = mapTo.orElse(null);
 
-        if(actualMapTo == null && mapToSpecifier.isPresent()) {
-        	actualMapTo = DomUtils.getAttributeValue(element, mapToSpecifier.get());
+        if (actualMapTo == null && mapToSpecifier.isPresent()) {
+            actualMapTo = DomUtils.getAttributeValue(element, mapToSpecifier.get());
         }
-        
+
         //If no mapTo is set then the attribute value becomes the mapTo value
-        if(actualMapTo == null) {
-        	actualMapTo = attribute;
+        if (actualMapTo == null) {
+            actualMapTo = attribute;
         }
 
         try {
-            config = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
+            resourceConfig = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
         } catch (EmptyStackException e) {
             throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + actualMapTo + "' with attribute '" + attribute + "' value '" + value + "'.");
         }
@@ -107,16 +107,16 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
         }
 
         if (value == null) {
-        	if(LOGGER.isDebugEnabled()) {
-        		LOGGER.debug("Not setting property '" + actualMapTo + "' on resource configuration.  Attribute '" + attribute + "' value on element '" + DomUtils.getName(element) + "' is null.  You may need to set a default value in the binding configuration.");
-        	}
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Not setting property '" + actualMapTo + "' on resource configuration.  Attribute '" + attribute + "' value on element '" + DomUtils.getName(element) + "' is null.  You may need to set a default value in the binding configuration.");
+            }
             return;
         } else {
-        	if(LOGGER.isDebugEnabled()) {
-        		LOGGER.debug("Setting property '" + actualMapTo + "' on resource configuration to a value of '" + value + "'.");
-        	}
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Setting property '" + actualMapTo + "' on resource configuration to a value of '" + value + "'.");
+            }
         }
 
-        ResourceConfigUtil.setProperty(config, actualMapTo, value, executionContext);
+        ResourceConfigUtil.setProperty(resourceConfig, actualMapTo, value, executionContext);
     }
 }

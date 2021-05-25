@@ -57,6 +57,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -75,7 +76,7 @@ public class StreamReaderTestCase
     @Before
     public void setup() {
         smooks = new Smooks();
-        smooks.addConfiguration(new DefaultResourceConfig("org.xml.sax.driver", MockReader.class.getName()));
+        smooks.addConfiguration(new DefaultResourceConfig("org.xml.sax.driver", new Properties(), MockReader.class.getName()));
     }
 
     @Test

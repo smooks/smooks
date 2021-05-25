@@ -112,8 +112,9 @@ public class SAX_XPathSelectorsTestCase {
     public void test_04() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
+        smooks.setNamespaces(namespaces);
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.addVisitor(new XPathVisitor(), "item[@code = 8655]");
+        smooks.addVisitor(new XPathVisitor(), "item[@c:code = 8655]");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
         assertEquals("8655", XPathVisitor.domVisitedBeforeElementStatic.getAttribute("c:code"));
         assertEquals("8655", XPathVisitor.domVisitedAfterElementStatic.getAttribute("c:code"));
@@ -137,8 +138,9 @@ public class SAX_XPathSelectorsTestCase {
     public void test_06() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
+        smooks.setNamespaces(namespaces);
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.addVisitor(new XPathAfterVisitor(), "item[@code = '8655']/units[text() = 1]");
+        smooks.addVisitor(new XPathAfterVisitor(), "item[@c:code = '8655']/units[text() = 1]");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
@@ -187,7 +189,7 @@ public class SAX_XPathSelectorsTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-07.xml"));
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
 
         assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
         assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
@@ -263,7 +265,6 @@ public class SAX_XPathSelectorsTestCase {
         assertEquals("1", visitor2.getDomVisitedAfterElement().getAttribute("index"));
     }
 
-
     @Test
     public void test_indexevaluator_sax_07() {
         Smooks smooks = new Smooks();
@@ -287,7 +288,7 @@ public class SAX_XPathSelectorsTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-07.xml"));
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
 
         assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
         assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
@@ -297,9 +298,10 @@ public class SAX_XPathSelectorsTestCase {
     public void test_indexevaluator_dom_02() {
         Smooks smooks = new Smooks();
 
+        smooks.setNamespaces(namespaces);
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
-        smooks.addVisitor(new XPathVisitor(), "items/item[2]/units");
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.addVisitor(new XPathVisitor(), "items/c:item[2]/units");
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
 
         assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
         assertNotNull(XPathVisitor.domVisitedAfterElementStatic);

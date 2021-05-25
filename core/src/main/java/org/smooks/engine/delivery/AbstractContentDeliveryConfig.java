@@ -44,20 +44,21 @@ package org.smooks.engine.delivery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.Registry;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
-import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.api.resource.config.ResourceConfigSortComparator;
-import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.event.ConfigBuilderEvent;
 import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
 import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
-import org.smooks.api.Registry;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.ResourceConfigSortComparator;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
+import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.xpath.step.DocumentSelectorStep;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -184,10 +185,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     }
 
     @SuppressWarnings("WeakerAccess")
-    public <T extends Visitor> void addToExecutionLifecycleSets(SelectorTable<T> selectorTable) {
-        Collection<List<ContentHandlerBinding<T>>> selectorTableContentHandlerBindings = selectorTable.values();
-
-        for (List<ContentHandlerBinding<T>> contentHandlerBindings : selectorTableContentHandlerBindings) {
+    public <T extends Visitor> void addToExecutionLifecycleSets(ContentHandlerBindingIndex<T> contentHandlerBindingIndex) {
+        for (List<ContentHandlerBinding<T>> contentHandlerBindings : contentHandlerBindingIndex.values()) {
             for (ContentHandlerBinding<T> contentHandlerBinding : contentHandlerBindings) {
                 if (contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleInitializable) {
                     executionLifecycleInitializables.add((ExecutionLifecycleInitializable) contentHandlerBinding.getContentHandler());
@@ -217,9 +216,9 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         }
     }
 
-    protected FilterBypass getFilterBypass(SelectorTable<?>... selectorTables) {
-    	for (SelectorTable selectorTable : selectorTables) {
-            Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = selectorTable.values();
+    protected FilterBypass getFilterBypass(ContentHandlerBindingIndex<?>... contentHandlerBindingIndices) {
+    	for (ContentHandlerBindingIndex contentHandlerBindingIndex : contentHandlerBindingIndices) {
+            Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = contentHandlerBindingIndex.values();
             long userContentHandlerBindingsCount = contentHandlerBindings.
                     stream().
                     flatMap(l -> l.
@@ -234,8 +233,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
         // Gather the possible set of FilterBypass instances...
         Set<FilterBypass> bypassSet = new HashSet<>();
-        for (SelectorTable selectorTable : selectorTables) {
-            Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = selectorTable.values();
+        for (ContentHandlerBindingIndex contentHandlerBindingIndex : contentHandlerBindingIndices) {
+            Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = contentHandlerBindingIndex.values();
             long userContentHandlerBindingsCount = contentHandlerBindings.
                     stream().
                     flatMap(l -> l.
@@ -243,7 +242,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
                             filter(c -> !c.getResourceConfig().isDefaultResource())).count();
             
             if (userContentHandlerBindingsCount == 1) {
-                FilterBypass filterBypass = getFilterBypass(selectorTable);
+                FilterBypass filterBypass = getFilterBypass(contentHandlerBindingIndex);
 
                 if (filterBypass != null) {
                     bypassSet.add(filterBypass);
@@ -264,15 +263,15 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         return null;
     }
 
-    private <T extends Visitor> FilterBypass getFilterBypass(SelectorTable<T> selectorTable) {
-        Set<Entry<String, List<ContentHandlerBinding<T>>>> entries = selectorTable.entrySet();
+    private <T extends Visitor> FilterBypass getFilterBypass(ContentHandlerBindingIndex<T> contentHandlerBindingIndex) {
+        Set<Entry<String, List<ContentHandlerBinding<T>>>> entries = contentHandlerBindingIndex.entrySet();
 
         for (Entry<String, List<ContentHandlerBinding<T>>> entry : entries) {
             ContentHandlerBinding<T> configMap = entry.getValue().get(0);
             ResourceConfig resourceConfig = configMap.getResourceConfig();
 
             if (!resourceConfig.isDefaultResource()) {
-                if (resourceConfig.getSelectorPath().getTargetElement().equals(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
+                if (resourceConfig.getSelectorPath().getTargetSelectorStep() instanceof DocumentSelectorStep) {
                     T visitor = configMap.getContentHandler();
                     if (visitor instanceof FilterBypass) {
                         return (FilterBypass) visitor;

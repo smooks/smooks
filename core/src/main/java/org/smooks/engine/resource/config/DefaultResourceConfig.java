@@ -47,16 +47,16 @@ import org.slf4j.LoggerFactory;
 import org.smooks.api.profile.Profile;
 import org.smooks.api.resource.config.*;
 import org.smooks.api.resource.config.xpath.SelectorPath;
+import org.smooks.api.resource.reader.SmooksXMLReader;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.classpath.ClasspathUtils;
-import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.engine.resource.config.xpath.DefaultSelectorPath;
 import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
-import org.smooks.api.resource.reader.SmooksXMLReader;
-import org.smooks.support.StreamUtils;
+import org.smooks.engine.resource.config.xpath.SelectorPathFactory;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.ClassUtil;
+import org.smooks.support.StreamUtils;
 import org.smooks.support.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -177,7 +177,7 @@ public class DefaultResourceConfig implements ResourceConfig {
     /**
      * Selector steps.
      */
-    private SelectorPath selectorPath = new DefaultSelectorPath();
+    private SelectorPath selectorPath;
     
     /**
      * Target profile.
@@ -228,7 +228,7 @@ public class DefaultResourceConfig implements ResourceConfig {
     /**
      * Change listeners.
      */
-    private final Set<ResourceConfigChangeListener> changeListeners = new HashSet<ResourceConfigChangeListener>();
+    private final Set<ResourceConfigChangeListener> changeListeners = new HashSet<>();
 
     /**
      * Public default constructor.
@@ -240,7 +240,7 @@ public class DefaultResourceConfig implements ResourceConfig {
      * @see #setParameter(String, Object)
      */
     public DefaultResourceConfig() {
-        setSelector(SELECTOR_NONE);
+        setSelector(SELECTOR_NONE, new Properties());
         setTargetProfile(Profile.DEFAULT_PROFILE);
     }
 
@@ -253,15 +253,15 @@ public class DefaultResourceConfig implements ResourceConfig {
      * @see #setResourceType(String)
      * @see #setParameter(String, Object)
      */
-    public DefaultResourceConfig(String selector) {
-        setSelector(selector);
+    public DefaultResourceConfig(String selector, Properties namespaces) {
+        setSelector(selector, namespaces);
         setTargetProfile(Profile.DEFAULT_PROFILE);
     }
     
     public DefaultResourceConfig(ResourceConfig resourceConfig) {
         setTargetProfile(resourceConfig.getTargetProfile());
         setResource(resourceConfig.getResource());
-        setSelectorPath(resourceConfig.getSelectorPath().copy());
+        setSelectorPath(SelectorPathFactory.newSelectorPath(resourceConfig.getSelectorPath()));
         setDefaultResource(resourceConfig.isDefaultResource());
     }
 
@@ -274,8 +274,8 @@ public class DefaultResourceConfig implements ResourceConfig {
      * @see #setResourceType(String)
      * @see #setParameter(String, Object)
      */
-    public DefaultResourceConfig(String selector, String resource) {
-        this(selector, Profile.DEFAULT_PROFILE, resource);
+    public DefaultResourceConfig(String selector, Properties namespaces, String resource) {
+        this(selector, namespaces, Profile.DEFAULT_PROFILE, resource);
     }
 
     /**
@@ -288,8 +288,8 @@ public class DefaultResourceConfig implements ResourceConfig {
      * @see #setResourceType(String)
      * @see #setParameter(String, Object)
      */
-    public DefaultResourceConfig(String selector, String targetProfile, String resource) {
-        this(selector);
+    public DefaultResourceConfig(String selector, Properties namespaces, String targetProfile, String resource) {
+        this(selector, namespaces);
 
         setTargetProfile(targetProfile);
         setResource(resource);
@@ -306,7 +306,7 @@ public class DefaultResourceConfig implements ResourceConfig {
         DefaultResourceConfig copyResourceConfig = new DefaultResourceConfig();
 
         copyResourceConfig.extendedConfigNS = extendedConfigNS;
-        copyResourceConfig.selectorPath = selectorPath.copy();
+        copyResourceConfig.selectorPath = SelectorPathFactory.newSelectorPath(selectorPath);
         copyResourceConfig.targetProfile = targetProfile;
         copyResourceConfig.defaultResource = defaultResource;
         copyResourceConfig.profileTargetingExpressionStrings = profileTargetingExpressionStrings;
@@ -358,8 +358,8 @@ public class DefaultResourceConfig implements ResourceConfig {
      * @see #setResourceType(String)
      * @see #setParameter(String, Object)
      */
-    public DefaultResourceConfig(String selector, @Deprecated String selectorNamespaceURI, String targetProfile, String resource) {
-        this(selector, targetProfile, resource);
+    public DefaultResourceConfig(String selector, Properties namespaces, @Deprecated String selectorNamespaceURI, String targetProfile, String resource) {
+        this(selector, namespaces, targetProfile, resource);
         selectorPath.setSelectorNamespaceURI(selectorNamespaceURI);
     }
 
@@ -369,11 +369,16 @@ public class DefaultResourceConfig implements ResourceConfig {
      * @param selector The selector definition.
      */
     @Override
-    public void setSelector(final String selector) {
+    public void setSelector(final String selector, final Properties namespaces) {
         if (selector != null) {
-            selectorPath.setSelector(selector);
+            if (selectorPath == null) {
+                selectorPath = SelectorPathFactory.newSelectorPath(selector, namespaces);
+            } else {
+                selectorPath = SelectorPathFactory.newSelectorPath(selector, selectorPath);
+                selectorPath.getNamespaces().putAll(namespaces);
+            }
         } else {
-            selectorPath.setSelector(SELECTOR_NONE);
+            selectorPath = SelectorPathFactory.newSelectorPath(SELECTOR_NONE, namespaces);
         }
 
         fireChangedEvent();

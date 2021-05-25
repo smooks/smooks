@@ -44,24 +44,24 @@ package org.smooks.engine.delivery.dom.serialize;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentDeliveryRuntime;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
-import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.event.ExecutionEventListener;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.SerializerVisitor;
-import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.engine.resource.config.ResourceConfigurationNotFoundException;
-import org.smooks.engine.delivery.*;
+import org.smooks.engine.delivery.ContentHandlerBindingIndex;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
-import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.event.DOMFilterLifecycleEvent;
 import org.smooks.engine.delivery.event.ResourceTargetingEvent;
 import org.smooks.engine.delivery.event.StartFragmentEvent;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.ResourceConfigurationNotFoundException;
 import org.smooks.engine.xml.DocType;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Document;
@@ -99,7 +99,7 @@ public class Serializer {
   /**
 	 * Target content delivery context SerializationUnit definitions.
 	 */
-	private final SelectorTable<SerializerVisitor> serializerVisitorSelectorTable;
+	private final ContentHandlerBindingIndex<SerializerVisitor> serializerVisitorIndex;
     private final ContentDeliveryRuntime contentDeliveryRuntime;
     /**
      * Default serialization unit.
@@ -134,9 +134,9 @@ public class Serializer {
      */
         DOMContentDeliveryConfig deliveryConfig = (DOMContentDeliveryConfig) contentDeliveryRuntime.getContentDeliveryConfig();
         // Initialise the serializationUnits member
-        serializerVisitorSelectorTable = deliveryConfig.getSerializerVisitorSelectorTable();
+        serializerVisitorIndex = deliveryConfig.getSerializerVisitorIndex();
 
-        globalSUs = serializerVisitorSelectorTable.get(new String[]{"*", "**"});
+        globalSUs = serializerVisitorIndex.get("*", "//");
 
         // Set the default SerializationUnit
     /*
@@ -274,9 +274,9 @@ public class Serializer {
 
         if (isRoot) {
             // The document as a whole (root node) can also be targeted through the "#document" selector.
-            serializerVisitorBindings = serializerVisitorSelectorTable.get(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            serializerVisitorBindings = serializerVisitorIndex.get(new String[]{ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
-            serializerVisitorBindings = serializerVisitorSelectorTable.get(elementName);
+            serializerVisitorBindings = serializerVisitorIndex.get(elementName);
         }
 
         if (serializerVisitorBindings == null || serializerVisitorBindings.isEmpty()) {

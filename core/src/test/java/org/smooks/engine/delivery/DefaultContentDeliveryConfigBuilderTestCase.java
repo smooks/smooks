@@ -75,10 +75,10 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
         assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig);
         SaxNgContentDeliveryConfig config = (SaxNgContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
-        assertEquals(8, config.getBeforeVisitorSelectorTable().size());
-        assertTrue(((InterceptorVisitor)config.getBeforeVisitorSelectorTable().get("b").get(0).getContentHandler()).getTarget().getContentHandler() instanceof Visitor01);
-        assertEquals(8, config.getAfterVisitorSelectorTable().size());
-        assertTrue(((InterceptorVisitor)config.getAfterVisitorSelectorTable().get("b").get(0).getContentHandler()).getTarget().getContentHandler() instanceof Visitor01);
+        assertEquals(8, config.getBeforeVisitorIndex().size());
+        assertTrue(((InterceptorVisitor)config.getBeforeVisitorIndex().get("b").get(0).getContentHandler()).getTarget().getContentHandler() instanceof Visitor01);
+        assertEquals(8, config.getAfterVisitorIndex().size());
+        assertTrue(((InterceptorVisitor)config.getAfterVisitorIndex().get("b").get(0).getContentHandler()).getTarget().getContentHandler() instanceof Visitor01);
     }
 
 	@Test
@@ -89,11 +89,11 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
         assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof DOMContentDeliveryConfig);
         DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
-        assertEquals(1, config.getAssemblyVisitBeforeSelectorTable().values().stream().mapToLong(Collection::size).sum());
-        assertEquals(1, config.getAssemblyVisitAfterSelectorTable().values().stream().mapToLong(Collection::size).sum());
-        assertEquals(3, config.getProcessingVisitBeforeSelectorTable().values().stream().mapToLong(Collection::size).sum());
-        assertEquals(3, config.getProcessingVisitAfterSelectorTable().values().stream().mapToLong(Collection::size).sum());
-        assertEquals(4, config.getSerializerVisitorSelectorTable().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(1, config.getAssemblyVisitBeforeIndex().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(1, config.getAssemblyVisitAfterIndex().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(3, config.getProcessingVisitBeforeIndex().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(3, config.getProcessingVisitAfterIndex().values().stream().mapToLong(Collection::size).sum());
+        assertEquals(4, config.getSerializerVisitorIndex().values().stream().mapToLong(Collection::size).sum());
     }
 
 	@Test

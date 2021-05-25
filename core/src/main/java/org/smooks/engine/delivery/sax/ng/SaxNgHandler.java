@@ -50,6 +50,7 @@ import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.sax.TextType;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
@@ -116,9 +117,10 @@ public class SaxNgHandler extends SmooksContentHandler {
         deliveryConfig = ((SaxNgContentDeliveryConfig) contentDeliveryRuntime.getContentDeliveryConfig());
 
         final SaxNgVisitorBindings starVisitorBindings = deliveryConfig.get("*");
-        final SaxNgVisitorBindings starStarVisitorBindings = deliveryConfig.get("**");
+        final SaxNgVisitorBindings starStarVisitorBindings = deliveryConfig.get("//");
 
-        globalVisitorBindings = starVisitorBindings != null ? starVisitorBindings.merge(starStarVisitorBindings) : starStarVisitorBindings;        rewriteEntities = deliveryConfig.isRewriteEntities();
+        globalVisitorBindings = starVisitorBindings != null ? starVisitorBindings.merge(starStarVisitorBindings) : starStarVisitorBindings;
+        rewriteEntities = deliveryConfig.isRewriteEntities();
         maintainElementStack = deliveryConfig.isMaintainElementStack();
         globalMaxNodeDepth = deliveryConfig.getMaxNodeDepth() == 0 ? Integer.MAX_VALUE : deliveryConfig.getMaxNodeDepth();
         reverseVisitOrderOnVisitAfter = deliveryConfig.isReverseVisitOrderOnVisitAfter();

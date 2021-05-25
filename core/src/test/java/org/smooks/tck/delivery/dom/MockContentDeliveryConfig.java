@@ -42,10 +42,13 @@
  */
 package org.smooks.tck.delivery.dom;
 
-import org.smooks.engine.delivery.SelectorTable;
+import org.smooks.engine.delivery.ContentHandlerBindingIndex;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Mock ContentDeliveryConfig for DOM.
@@ -58,12 +61,12 @@ public class MockContentDeliveryConfig extends DOMContentDeliveryConfig {
 
   public MockContentDeliveryConfig() {
     setResourceConfigs(new LinkedHashMap<>());
-    setAssemblyVisitBeforeSelectorTable(new SelectorTable());
-    setAssemblyVisitAfterSelectorTable(new SelectorTable());
-    setProcessingVisitBeforeSelectorTable(new SelectorTable());
-    setProcessingVisitAfterSelectorTable(new SelectorTable());
-    setSerializerVisitorSelectorTable(new SelectorTable());
-    setVisitLifecycleCleanableSelectorTable(new SelectorTable());
+    setAssemblyVisitBeforeIndex(new ContentHandlerBindingIndex());
+    setAssemblyVisitAfterIndex(new ContentHandlerBindingIndex());
+    setProcessingVisitBeforeIndex(new ContentHandlerBindingIndex());
+    setProcessingVisitAfterIndex(new ContentHandlerBindingIndex());
+    setSerializerVisitorIndex(new ContentHandlerBindingIndex());
+    setVisitLifecycleCleanableIndex(new ContentHandlerBindingIndex());
   }
 
   /* (non-Javadoc)

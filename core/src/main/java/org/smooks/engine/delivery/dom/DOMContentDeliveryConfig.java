@@ -42,17 +42,18 @@
  */
 package org.smooks.engine.delivery.dom;
 
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
+import org.smooks.api.lifecycle.VisitLifecycleCleanable;
 import org.smooks.api.resource.visitor.SerializerVisitor;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.api.SmooksConfigException;
-import org.smooks.api.ExecutionContext;
-import org.smooks.engine.delivery.*;
+import org.smooks.engine.delivery.AbstractContentDeliveryConfig;
+import org.smooks.engine.delivery.ContentHandlerBindingIndex;
 import org.smooks.engine.delivery.ordering.Sorter;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
 
 /**
  * DOM specific {@link ContentDeliveryConfig} implementation.
@@ -61,61 +62,61 @@ import org.smooks.api.lifecycle.VisitLifecycleCleanable;
  */
 @SuppressWarnings("unchecked")
 public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
-    private SelectorTable<DOMVisitBefore> assemblyVisitBeforeSelectorTable = new SelectorTable<>();
-    private SelectorTable<DOMVisitAfter> assemblyVisitAfterSelectorTable = new SelectorTable<>();
-    private SelectorTable<DOMVisitBefore> processingVisitBeforeSelectorTable = new SelectorTable<>();
-    private SelectorTable<DOMVisitAfter> processingVisitAfterSelectorTable = new SelectorTable<>();
-    private SelectorTable<SerializerVisitor> serializerVisitorSelectorTable = new SelectorTable<>();
-    private SelectorTable<VisitLifecycleCleanable> visitLifecycleCleanableSelectorTable = new SelectorTable<>();
+    private ContentHandlerBindingIndex<DOMVisitBefore> assemblyVisitBeforeIndex = new ContentHandlerBindingIndex<>();
+    private ContentHandlerBindingIndex<DOMVisitAfter> assemblyVisitAfterIndex = new ContentHandlerBindingIndex<>();
+    private ContentHandlerBindingIndex<DOMVisitBefore> processingVisitBeforeIndex = new ContentHandlerBindingIndex<>();
+    private ContentHandlerBindingIndex<DOMVisitAfter> processingVisitAfterIndex = new ContentHandlerBindingIndex<>();
+    private ContentHandlerBindingIndex<SerializerVisitor> serializerVisitorIndex = new ContentHandlerBindingIndex<>();
+    private ContentHandlerBindingIndex<VisitLifecycleCleanable> visitLifecycleCleanableIndex = new ContentHandlerBindingIndex<>();
     private FilterBypass filterBypass;
 
-    public SelectorTable<DOMVisitBefore> getAssemblyVisitBeforeSelectorTable() {
-        return assemblyVisitBeforeSelectorTable;
+    public ContentHandlerBindingIndex<DOMVisitBefore> getAssemblyVisitBeforeIndex() {
+        return assemblyVisitBeforeIndex;
     }
 
-    public void setAssemblyVisitBeforeSelectorTable(SelectorTable<DOMVisitBefore> assemblyVisitBeforeSelectorTable) {
-        this.assemblyVisitBeforeSelectorTable = assemblyVisitBeforeSelectorTable;
+    public void setAssemblyVisitBeforeIndex(ContentHandlerBindingIndex<DOMVisitBefore> assemblyVisitBeforeIndex) {
+        this.assemblyVisitBeforeIndex = assemblyVisitBeforeIndex;
     }
 
-    public SelectorTable<DOMVisitAfter> getAssemblyVisitAfterSelectorTable() {
-        return assemblyVisitAfterSelectorTable;
+    public ContentHandlerBindingIndex<DOMVisitAfter> getAssemblyVisitAfterIndex() {
+        return assemblyVisitAfterIndex;
     }
 
-    public void setAssemblyVisitAfterSelectorTable(SelectorTable<DOMVisitAfter> assemblyVisitAfterSelectorTable) {
-        this.assemblyVisitAfterSelectorTable = assemblyVisitAfterSelectorTable;
+    public void setAssemblyVisitAfterIndex(ContentHandlerBindingIndex<DOMVisitAfter> assemblyVisitAfterIndex) {
+        this.assemblyVisitAfterIndex = assemblyVisitAfterIndex;
     }
 
-    public SelectorTable<DOMVisitBefore> getProcessingVisitBeforeSelectorTable() {
-        return processingVisitBeforeSelectorTable;
+    public ContentHandlerBindingIndex<DOMVisitBefore> getProcessingVisitBeforeIndex() {
+        return processingVisitBeforeIndex;
     }
 
-    public void setProcessingVisitBeforeSelectorTable(SelectorTable<DOMVisitBefore> processingVisitBeforeSelectorTable) {
-        this.processingVisitBeforeSelectorTable = processingVisitBeforeSelectorTable;
+    public void setProcessingVisitBeforeIndex(ContentHandlerBindingIndex<DOMVisitBefore> processingVisitBeforeIndex) {
+        this.processingVisitBeforeIndex = processingVisitBeforeIndex;
     }
 
-    public SelectorTable<DOMVisitAfter> getProcessingVisitAfterSelectorTable() {
-        return processingVisitAfterSelectorTable;
+    public ContentHandlerBindingIndex<DOMVisitAfter> getProcessingVisitAfterIndex() {
+        return processingVisitAfterIndex;
     }
 
-    public void setProcessingVisitAfterSelectorTable(SelectorTable<DOMVisitAfter> processingVisitAfterSelectorTable) {
-        this.processingVisitAfterSelectorTable = processingVisitAfterSelectorTable;
+    public void setProcessingVisitAfterIndex(ContentHandlerBindingIndex<DOMVisitAfter> processingVisitAfterIndex) {
+        this.processingVisitAfterIndex = processingVisitAfterIndex;
     }
 
-    public SelectorTable<SerializerVisitor> getSerializerVisitorSelectorTable() {
-        return serializerVisitorSelectorTable;
+    public ContentHandlerBindingIndex<SerializerVisitor> getSerializerVisitorIndex() {
+        return serializerVisitorIndex;
     }
 
-    public void setSerializerVisitorSelectorTable(SelectorTable<SerializerVisitor> serializerVisitorSelectorTable) {
-        this.serializerVisitorSelectorTable = serializerVisitorSelectorTable;
+    public void setSerializerVisitorIndex(ContentHandlerBindingIndex<SerializerVisitor> serializerVisitorIndex) {
+        this.serializerVisitorIndex = serializerVisitorIndex;
     }
 
     @SuppressWarnings("WeakerAccess")
-    public SelectorTable<VisitLifecycleCleanable> getVisitLifecycleCleanableSelectorTable() {
-        return visitLifecycleCleanableSelectorTable;
+    public ContentHandlerBindingIndex<VisitLifecycleCleanable> getVisitLifecycleCleanableIndex() {
+        return visitLifecycleCleanableIndex;
     }
 
-    public void setVisitLifecycleCleanableSelectorTable(SelectorTable<VisitLifecycleCleanable> visitLifecycleCleanableSelectorTable) {
-        this.visitLifecycleCleanableSelectorTable = visitLifecycleCleanableSelectorTable;
+    public void setVisitLifecycleCleanableIndex(ContentHandlerBindingIndex<VisitLifecycleCleanable> visitLifecycleCleanableIndex) {
+        this.visitLifecycleCleanableIndex = visitLifecycleCleanableIndex;
     }
 
     @Override
@@ -130,21 +131,21 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
     @Override
     public void sort() throws SmooksConfigException {
-        assemblyVisitBeforeSelectorTable.sort(Sorter.SortOrder.PRODUCERS_FIRST);
-        assemblyVisitAfterSelectorTable.sort(Sorter.SortOrder.CONSUMERS_FIRST);
-        processingVisitBeforeSelectorTable.sort(Sorter.SortOrder.PRODUCERS_FIRST);
-        processingVisitAfterSelectorTable.sort(Sorter.SortOrder.CONSUMERS_FIRST);
+        assemblyVisitBeforeIndex.sort(Sorter.SortOrder.PRODUCERS_FIRST);
+        assemblyVisitAfterIndex.sort(Sorter.SortOrder.CONSUMERS_FIRST);
+        processingVisitBeforeIndex.sort(Sorter.SortOrder.PRODUCERS_FIRST);
+        processingVisitAfterIndex.sort(Sorter.SortOrder.CONSUMERS_FIRST);
     }
 
     @Override
     public void addToExecutionLifecycleSets() throws SmooksConfigException {
-        addToExecutionLifecycleSets(assemblyVisitBeforeSelectorTable);
-        addToExecutionLifecycleSets(assemblyVisitAfterSelectorTable);
-        addToExecutionLifecycleSets(processingVisitBeforeSelectorTable);
-        addToExecutionLifecycleSets(processingVisitAfterSelectorTable);
+        addToExecutionLifecycleSets(assemblyVisitBeforeIndex);
+        addToExecutionLifecycleSets(assemblyVisitAfterIndex);
+        addToExecutionLifecycleSets(processingVisitBeforeIndex);
+        addToExecutionLifecycleSets(processingVisitAfterIndex);
     }
 
     public void configureFilterBypass() {
-		filterBypass = getFilterBypass(assemblyVisitBeforeSelectorTable, assemblyVisitAfterSelectorTable, processingVisitBeforeSelectorTable, processingVisitAfterSelectorTable, serializerVisitorSelectorTable);
+		filterBypass = getFilterBypass(assemblyVisitBeforeIndex, assemblyVisitAfterIndex, processingVisitBeforeIndex, processingVisitAfterIndex, serializerVisitorIndex);
 	}
 }

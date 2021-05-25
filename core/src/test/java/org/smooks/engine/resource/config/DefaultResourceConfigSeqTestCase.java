@@ -45,6 +45,8 @@ package org.smooks.engine.resource.config;
 import org.junit.Test;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 
+import java.util.Properties;
+
 import static org.junit.Assert.*;
 
 /**
@@ -76,13 +78,13 @@ public class DefaultResourceConfigSeqTestCase {
         ResourceConfigSeq list = new DefaultResourceConfigSeq("list-name");
         
         assertTrue(list.isEmpty());
-        list.add(new DefaultResourceConfig("*", "a/b.zap"));
+        list.add(new DefaultResourceConfig("*", new Properties(), "a/b.zap"));
         assertFalse(list.isEmpty());
         assertEquals(1, list.size());
         assertEquals("a/b.zap", list.get(0).getResource());
         
         
-        list.add(new DefaultResourceConfig("*", "c/d.zap"));
+        list.add(new DefaultResourceConfig("*", new Properties(), "c/d.zap"));
         assertEquals(2, list.size());        
         assertEquals("c/d.zap", list.get(1).getResource());
     }

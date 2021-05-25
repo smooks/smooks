@@ -54,6 +54,7 @@ import org.smooks.engine.lookup.ResourceConfigListsLookup;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Accessor class for looking up global parameters.
@@ -188,7 +189,7 @@ public abstract class ParameterAccessor {
     }
 
     public static void setParameter(String name, Object value, Smooks smooks) {
-        ResourceConfig resourceConfig = new DefaultResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS);
+        ResourceConfig resourceConfig = new DefaultResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS, new Properties());
 
         resourceConfig.setParameter(name, value);
         smooks.getApplicationContext().getRegistry().registerResourceConfig(resourceConfig);

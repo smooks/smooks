@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,31 +40,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators;
+package org.smooks.engine.resource.config.xpath.step;
 
-import org.smooks.api.resource.config.xpath.XPathExpressionEvaluator;
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.fragment.Fragment;
+public class AllSelectorStep extends AbstractSelectorStep {
 
-/**
- * Simple Pass-thru predicate evaluator.
- *
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class PassThruEvaluator implements XPathExpressionEvaluator {
-
-    public static final PassThruEvaluator INSTANCE = new PassThruEvaluator();
-
-    private PassThruEvaluator() {
-    }
-
-    @Override
-    public String toString() {
-        return "";
-    }
-
-    @Override
-    public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
-        return true;
-    }
 }
