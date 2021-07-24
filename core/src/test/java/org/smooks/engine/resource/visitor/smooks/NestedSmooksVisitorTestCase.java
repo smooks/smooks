@@ -90,6 +90,7 @@ public class NestedSmooksVisitorTestCase {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
 
+        nestedSmooksVisitor.setApplicationContext(new DefaultApplicationContextBuilder().build());
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
@@ -99,8 +100,8 @@ public class NestedSmooksVisitorTestCase {
 
         InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup(new InterceptorVisitorFactoryLookup());
         List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = interceptorVisitorChainFactory.getInterceptorVisitorDefinitions();
-        assertTrue(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass().equals(SessionInterceptor.class));
-        assertTrue(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass().equals(StaticProxyInterceptor.class));
+        assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), SessionInterceptor.class);
+        assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), StaticProxyInterceptor.class);
     }
 
     @Test
