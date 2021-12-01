@@ -47,9 +47,9 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
-import org.smooks.api.SmooksException;
 import org.smooks.StreamFilterType;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
@@ -78,7 +78,7 @@ public class MILYN_367_TestCase {
 		StringResult result = new StringResult();
 		
 		smooks.addVisitor(new SaxNgSerializerVisitor(), "#document");
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "#document/**");
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "//*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -92,7 +92,7 @@ public class MILYN_367_TestCase {
 		StringResult result = new StringResult();
 		
 		smooks.addVisitor(new SaxNgSerializerVisitor(), "customer");
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "customer/**");
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "descendant-or-self::customer/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -106,7 +106,7 @@ public class MILYN_367_TestCase {
 		StringResult result = new StringResult();
 		
 		smooks.addVisitor(new SaxNgSerializerVisitor(), "items");
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "items/**");
+		smooks.addVisitor(new SaxNgSerializerVisitor(), "descendant-or-self::items/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -120,7 +120,7 @@ public class MILYN_367_TestCase {
 		StringResult result = new StringResult();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "#document");
-		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "#document/**");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "//*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -134,12 +134,12 @@ public class MILYN_367_TestCase {
 		StringResult result = new StringResult();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "customer");
-		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "customer/**");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "descendant-or-self::customer/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
-		
-		assertOK("expected_02.xml", result);        
+
+		assertOK("expected_02.xml", result);
 	}
 
 	@Test
@@ -148,7 +148,7 @@ public class MILYN_367_TestCase {
 		StringResult result = new StringResult();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "items");
-		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "items/**");
+		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "descendant-or-self::items/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -163,9 +163,9 @@ public class MILYN_367_TestCase {
 		DOMVBefore itemsVisitor = new DOMVBefore();
 		
 		smooks.addVisitor(customerVisitor, "customer");
-		smooks.addVisitor(customerVisitor, "customer/**");
+		smooks.addVisitor(customerVisitor, "descendant-or-self::customer/*");
 		smooks.addVisitor(itemsVisitor, "items");
-		smooks.addVisitor(itemsVisitor, "items/**");
+		smooks.addVisitor(itemsVisitor, "descendant-or-self::items/*");
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 		
 		assertEquals("customer-user-fname-x-lname-", customerVisitor.stringBuilder.toString());
@@ -179,9 +179,9 @@ public class MILYN_367_TestCase {
 		DOMVAfter itemsVisitor = new DOMVAfter();
 		
 		smooks.addVisitor(customerVisitor, "customer");
-		smooks.addVisitor(customerVisitor, "customer/**");
+		smooks.addVisitor(customerVisitor, "descendant-or-self::customer/*");
 		smooks.addVisitor(itemsVisitor, "items");
-		smooks.addVisitor(itemsVisitor, "items/**");
+		smooks.addVisitor(itemsVisitor, "descendant-or-self::items/*");
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
 		
 		assertEquals("user-x-fname-lname-customer-", customerVisitor.stringBuilder.toString());

@@ -76,10 +76,7 @@ import javax.xml.transform.dom.DOMSource;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Digester class for an XML {@link ResourceConfig} file (.cdrl).
@@ -338,7 +335,7 @@ public final class XMLConfigDigester {
         NodeList paramNodes = paramsElement.getElementsByTagName("param");
 
         if(paramNodes.getLength() > 0) {
-            ResourceConfig globalParamsConfig = new DefaultResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS);
+            ResourceConfig globalParamsConfig = new DefaultResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS, new Properties());
 
             digestParameters(paramsElement, globalParamsConfig);
             resourceConfigList.add(globalParamsConfig);
@@ -411,7 +408,7 @@ public final class XMLConfigDigester {
 
     	String readerClass = DomUtils.getAttributeValue(configElement, "class");
 
-        ResourceConfig resourceConfig = new DefaultResourceConfig(AbstractParser.ORG_XML_SAX_DRIVER, (profiles != null ? profiles : defaultProfile), readerClass);
+        ResourceConfig resourceConfig = new DefaultResourceConfig(AbstractParser.ORG_XML_SAX_DRIVER, new Properties(), (profiles != null ? profiles : defaultProfile), readerClass);
 
         // Add the reader resource...
         configureHandlers(configElement, resourceConfig);

@@ -45,17 +45,19 @@ package org.smooks.engine.delivery.ordering;
 import org.junit.Before;
 import org.junit.Test;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.delivery.ordering.testvisitors.TestConsumer;
 import org.smooks.engine.delivery.ordering.testvisitors.TestProducer;
 import org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer;
 import org.smooks.engine.delivery.ordering.testvisitors.TestVisitor;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -204,9 +206,9 @@ public class SorterTestCase {
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
             assertEquals(("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
-                    "\tTarget Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [1], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
+                    "\tTarget Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
         }
     }
 
@@ -222,16 +224,16 @@ public class SorterTestCase {
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
             assertEquals(("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
-                    "\tTarget Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [1], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [2], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [3], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [0], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
+                    "\tTarget Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
         }
     }
 
     private void addVisitor(Visitor visitor) {
-        ContentHandlerBinding<Visitor> contentHandlerBinding = new DefaultContentHandlerBinding<>(visitor, new DefaultResourceConfig(String.valueOf(sortedContentHandlerBindings.size()), visitor.getClass().getName()));
+        ContentHandlerBinding<Visitor> contentHandlerBinding = new DefaultContentHandlerBinding<>(visitor, new DefaultResourceConfig(ResourceConfig.SELECTOR_NONE, new Properties(), visitor.getClass().getName()));
         sortedContentHandlerBindings.add(contentHandlerBinding);
         unsortedContentHandlerBindings.add(contentHandlerBinding);
     }

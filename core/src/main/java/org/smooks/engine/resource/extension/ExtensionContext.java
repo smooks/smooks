@@ -52,6 +52,7 @@ import org.smooks.engine.resource.config.XMLConfigDigester;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Stack;
 
 /**
@@ -92,7 +93,7 @@ public class ExtensionContext {
         String selector = resourceConfig.getSelectorPath().getSelector();
         if(selector != null && selector.startsWith("#/")) {
             ResourceConfig parentResource = resourceStack.get(resourceStack.size() - 2);
-            resourceConfig.setSelector(parentResource.getSelectorPath().getSelector() + selector.substring(1));
+            resourceConfig.setSelector(parentResource.getSelectorPath().getSelector() + selector.substring(1), new Properties());
         }
     };
     private final List<ResourceConfig> resources = new ArrayList<>();

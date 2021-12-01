@@ -42,18 +42,18 @@
  */
 package org.smooks.engine.delivery.interceptor;
 
+import org.smooks.api.ApplicationContext;
 import org.smooks.api.SmooksException;
+import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.xpath.SelectorStep;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
+import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.api.ApplicationContext;
-import org.smooks.api.delivery.ContentHandlerBinding;
-import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -92,10 +92,7 @@ public class InterceptorVisitorChainFactory {
 				
 				final ResourceConfig interceptorResourceConfig = new DefaultResourceConfig(visitorBinding.getResourceConfig());
 				if (interceptorVisitorDefinition.getSelector().isPresent()) {
-					interceptorResourceConfig.getSelectorPath().setSelector(interceptorVisitorDefinition.getSelector().get());
-					for (SelectorStep selectorStep : interceptorResourceConfig.getSelectorPath()) {
-						selectorStep.buildPredicatesEvaluator(interceptorResourceConfig.getSelectorPath().getNamespaces());
-					}
+					interceptorResourceConfig.setSelector(interceptorVisitorDefinition.getSelector().get(), interceptorResourceConfig.getSelectorPath().getNamespaces());
 				}
 				applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(interceptorVisitor, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), interceptorResourceConfig, interceptorVisitor)));
 				interceptedVisitorBinding = new DefaultContentHandlerBinding<>(interceptorVisitor, interceptorResourceConfig);

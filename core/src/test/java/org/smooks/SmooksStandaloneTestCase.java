@@ -61,6 +61,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayWriter;
 import java.io.IOException;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -89,11 +90,11 @@ public class SmooksStandaloneTestCase {
         SmooksUtil.registerProfileSet(new DefaultProfileSet("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
-        ResourceConfig profile1AndNotProfile3ResourceConfig = new DefaultResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
+        ResourceConfig profile1AndNotProfile3ResourceConfig = new DefaultResourceConfig("ccc", new Properties(), "profile1 AND not:profile3", RenameElementTrans.class.getName());
         profile1AndNotProfile3ResourceConfig.setParameter("new-name", "xxx");
         smooks.getApplicationContext().getRegistry().registerResourceConfig(profile1AndNotProfile3ResourceConfig);
 
-        ResourceConfig profile2ResourceConfig = new DefaultResourceConfig("aaa", "profile2", RenameElementTrans.class.getName());
+        ResourceConfig profile2ResourceConfig = new DefaultResourceConfig("aaa", new Properties(), "profile2", RenameElementTrans.class.getName());
         profile2ResourceConfig.setParameter("new-name", "zzz");
         smooks.getApplicationContext().getRegistry().registerResourceConfig(profile2ResourceConfig);
 
@@ -118,10 +119,10 @@ public class SmooksStandaloneTestCase {
         SmooksUtil.registerProfileSet(new DefaultProfileSet("message-target2", new String[]{"profile2", "profile3"}), smooks);
 
         // Create CDU configs and target them at the profiles...
-        ResourceConfig resourceConfig = new DefaultResourceConfig("ccc", "profile1 AND not:profile3", RenameElementTrans.class.getName());
+        ResourceConfig resourceConfig = new DefaultResourceConfig("ccc", new Properties(), "profile1 AND not:profile3", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "xxx");
         smooks.getApplicationContext().getRegistry().registerResourceConfig(resourceConfig);
-        resourceConfig = new DefaultResourceConfig("aaa", "profile2", RenameElementTrans.class.getName());
+        resourceConfig = new DefaultResourceConfig("aaa", new Properties(), "profile2", RenameElementTrans.class.getName());
         resourceConfig.setParameter("new-name", "zzz");
         smooks.getApplicationContext().getRegistry().registerResourceConfig(resourceConfig);
 

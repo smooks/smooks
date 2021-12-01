@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,30 +40,41 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.equality;
+package org.smooks.engine.resource.config.xpath.predicate;
 
-import org.jaxen.expr.EqualityExpr;
-import org.jaxen.saxpath.SAXPathException;
+import org.jaxen.Context;
+import org.jaxen.ContextSupport;
+import org.jaxen.JaxenException;
+import org.jaxen.SimpleNamespaceContext;
+import org.jaxen.SimpleVariableContext;
+import org.jaxen.XPathFunctionContext;
+import org.jaxen.dom.DocumentNavigator;
+import org.jaxen.expr.Expr;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.resource.config.xpath.PredicateEvaluator;
+import org.w3c.dom.Node;
 
-import java.util.Properties;
+import java.util.Arrays;
 
-/**
- * Simple "=" predicate evaluator.
- * <p/>
- * Works for element text or attributes.
- *
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class EqualsEvaluator extends AbstractEqualityEvaluator {
+public class DefaultPredicateEvaluator implements PredicateEvaluator {
 
-    public EqualsEvaluator(EqualityExpr expr, Properties namespaces) throws SAXPathException {
-        super(expr, namespaces);
+    private final Expr expr;
+
+    public DefaultPredicateEvaluator(final Expr expr) {
+        expr.simplify();
+        this.expr = expr;
     }
-    
+
     @Override
-    public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
-        return lhs.getValue(fragment).equals(rhs.getValue(fragment));
+    public boolean evaluate(final Fragment<?> fragment, final ExecutionContext executionContext) {
+        final Context context = new Context(new ContextSupport(new SimpleNamespaceContext(), XPathFunctionContext.getInstance(), new SimpleVariableContext(), DocumentNavigator.getInstance()));
+        context.setNodeSet(Arrays.asList((Node) fragment.unwrap()));
+        try {
+            return (boolean) expr.evaluate(context);
+        } catch (JaxenException e) {
+            throw new SmooksException(e);
+        }
     }
 }

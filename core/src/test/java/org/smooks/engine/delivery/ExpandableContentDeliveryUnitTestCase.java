@@ -46,9 +46,9 @@ import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.visitor.SerializerVisitor;
-import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.engine.delivery.dom.serialize.ContextObjectSerializerVisitor;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.xml.sax.SAXException;
@@ -74,24 +74,24 @@ public class ExpandableContentDeliveryUnitTestCase {
         ExecutionContext executionContext = smooks.createExecutionContext();
 
         DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();
-        SelectorTable<DOMVisitBefore> assemblyVisitBeforeSelectorTable = config.getAssemblyVisitBeforeSelectorTable();
-        SelectorTable<DOMVisitAfter> assemblyVisitAfterSelectorTable = config.getAssemblyVisitAfterSelectorTable();
-        SelectorTable<DOMVisitBefore> processingVisitBeforeSelectorTable = config.getProcessingVisitBeforeSelectorTable();
-        SelectorTable<DOMVisitAfter> processingVisitAfterSelectorTable = config.getProcessingVisitAfterSelectorTable();
-        SelectorTable<SerializerVisitor> serializerVisitorSelectorTable = config.getSerializerVisitorSelectorTable();
+        ContentHandlerBindingIndex<DOMVisitBefore> assemblyVisitBeforeContentHandlerBindingIndex = config.getAssemblyVisitBeforeIndex();
+        ContentHandlerBindingIndex<DOMVisitAfter> assemblyVisitAfterContentHandlerBindingIndex = config.getAssemblyVisitAfterIndex();
+        ContentHandlerBindingIndex<DOMVisitBefore> processingVisitBeforeContentHandlerBindingIndex = config.getProcessingVisitBeforeIndex();
+        ContentHandlerBindingIndex<DOMVisitAfter> processingVisitAfterContentHandlerBindingIndex = config.getProcessingVisitAfterIndex();
+        ContentHandlerBindingIndex<SerializerVisitor> serializerVisitorContentHandlerBindingIndex = config.getSerializerVisitorIndex();
 
-        assertEquals(1, assemblyVisitBeforeSelectorTable.values().stream().mapToLong(Collection::size).sum());
-        assertTrue(assemblyVisitBeforeSelectorTable.get("a").get(0).getContentHandler() instanceof Assembly1);
-        assertEquals(1, assemblyVisitAfterSelectorTable.values().stream().mapToLong(Collection::size).sum());
-        assertTrue(assemblyVisitAfterSelectorTable.get("a").get(0).getContentHandler() instanceof Assembly1);
+        assertEquals(1, assemblyVisitBeforeContentHandlerBindingIndex.values().stream().mapToLong(Collection::size).sum());
+        assertTrue(assemblyVisitBeforeContentHandlerBindingIndex.get("a").get(0).getContentHandler() instanceof Assembly1);
+        assertEquals(1, assemblyVisitAfterContentHandlerBindingIndex.values().stream().mapToLong(Collection::size).sum());
+        assertTrue(assemblyVisitAfterContentHandlerBindingIndex.get("a").get(0).getContentHandler() instanceof Assembly1);
 
-        assertEquals(3, processingVisitBeforeSelectorTable.values().stream().mapToLong(Collection::size).sum());
-        assertTrue(processingVisitBeforeSelectorTable.get("b").get(0).getContentHandler() instanceof Processing1);
-        assertEquals(3, processingVisitAfterSelectorTable.values().stream().mapToLong(Collection::size).sum());
-        assertTrue(processingVisitAfterSelectorTable.get("b").get(0).getContentHandler() instanceof Processing1);
+        assertEquals(3, processingVisitBeforeContentHandlerBindingIndex.values().stream().mapToLong(Collection::size).sum());
+        assertTrue(processingVisitBeforeContentHandlerBindingIndex.get("b").get(0).getContentHandler() instanceof Processing1);
+        assertEquals(3, processingVisitAfterContentHandlerBindingIndex.values().stream().mapToLong(Collection::size).sum());
+        assertTrue(processingVisitAfterContentHandlerBindingIndex.get("b").get(0).getContentHandler() instanceof Processing1);
 
-        assertEquals(4, serializerVisitorSelectorTable.values().stream().mapToLong(Collection::size).sum());
-        assertTrue(serializerVisitorSelectorTable.get("c").get(0).getContentHandler() instanceof DefaultDOMSerializerVisitor);
-        assertTrue(serializerVisitorSelectorTable.get("context-object").get(0).getContentHandler() instanceof ContextObjectSerializerVisitor);
+        assertEquals(4, serializerVisitorContentHandlerBindingIndex.values().stream().mapToLong(Collection::size).sum());
+        assertTrue(serializerVisitorContentHandlerBindingIndex.get("c").get(0).getContentHandler() instanceof DefaultDOMSerializerVisitor);
+        assertTrue(serializerVisitorContentHandlerBindingIndex.get("context-object").get(0).getContentHandler() instanceof ContextObjectSerializerVisitor);
     }
 }

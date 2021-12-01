@@ -95,6 +95,7 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
         nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setApplicationContext(new DefaultApplicationContextBuilder().build());
 
         nestedSmooksVisitor.postConstruct();
 

@@ -88,10 +88,14 @@ public class DOM_XPathSelectorsTestCase {
 
 	@Test
     public void test_04() throws IOException, SAXException {
+        Properties properties = new Properties();
+        properties.setProperty("c", "http://c");
+
         Smooks smooks = new Smooks();
 
+        smooks.setNamespaces(properties);
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
-        smooks.addVisitor(new XPathVisitor(), "item[@code = 8655]");
+        smooks.addVisitor(new XPathVisitor(), "item[@c:code = 8655]");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
         assertEquals("8655", XPathVisitor.domVisitedBeforeElementStatic.getAttributeNS("http://c", "code"));
         assertEquals("8655", XPathVisitor.domVisitedAfterElementStatic.getAttributeNS("http://c", "code"));
@@ -99,10 +103,14 @@ public class DOM_XPathSelectorsTestCase {
 
 	@Test
     public void test_06() throws IOException, SAXException {
+        Properties properties = new Properties();
+        properties.setProperty("c", "http://c");
+
         Smooks smooks = new Smooks();
 
+        smooks.setNamespaces(properties);
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
-        smooks.addVisitor(new XPathAfterVisitor(), "item[@code = '8655']/units[text() = 1]");
+        smooks.addVisitor(new XPathAfterVisitor(), "item[@c:code = '8655']/units[text() = 1]");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }

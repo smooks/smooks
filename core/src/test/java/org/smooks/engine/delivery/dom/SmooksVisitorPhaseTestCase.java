@@ -47,9 +47,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.engine.delivery.event.BasicExecutionEventListener;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
@@ -84,8 +84,8 @@ public class SmooksVisitorPhaseTestCase {
         config = (DOMContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
         // Check the assembly units...
-        List<ContentHandlerBinding<DOMVisitBefore>> assemblyVBs = config.getAssemblyVisitBeforeSelectorTable().get("a");
-        List<ContentHandlerBinding<DOMVisitAfter>> assemblyVAs = config.getAssemblyVisitAfterSelectorTable().get("a");
+        List<ContentHandlerBinding<DOMVisitBefore>> assemblyVBs = config.getAssemblyVisitBeforeIndex().get("a");
+        List<ContentHandlerBinding<DOMVisitAfter>> assemblyVAs = config.getAssemblyVisitAfterIndex().get("a");
         assertEquals(2, assemblyVBs.size());
         assertTrue(assemblyVBs.get(0).getContentHandler() instanceof AssemblyVisitor1);
         assertTrue(assemblyVBs.get(1).getContentHandler() instanceof ConfigurableVisitor);
@@ -93,8 +93,8 @@ public class SmooksVisitorPhaseTestCase {
         assertTrue(assemblyVAs.get(0).getContentHandler() instanceof ConfigurableVisitor);
         assertTrue(assemblyVAs.get(1).getContentHandler() instanceof AssemblyVisitor1);
 
-        List<ContentHandlerBinding<DOMVisitBefore>> processingVBs = config.getProcessingVisitBeforeSelectorTable().get("a");
-        List<ContentHandlerBinding<DOMVisitAfter>> processingVAs = config.getProcessingVisitAfterSelectorTable().get("a");
+        List<ContentHandlerBinding<DOMVisitBefore>> processingVBs = config.getProcessingVisitBeforeIndex().get("a");
+        List<ContentHandlerBinding<DOMVisitAfter>> processingVAs = config.getProcessingVisitAfterIndex().get("a");
         assertEquals(2, processingVBs.size());
         assertTrue(processingVBs.get(0).getContentHandler() instanceof ProcessorVisitor1);
         assertTrue(processingVBs.get(1).getContentHandler() instanceof ConfigurableVisitor);

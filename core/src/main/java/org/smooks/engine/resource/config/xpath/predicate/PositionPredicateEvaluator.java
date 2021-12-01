@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,61 +40,51 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.equality;
+package org.smooks.engine.resource.config.xpath.predicate;
 
+import org.jaxen.Context;
+import org.jaxen.ContextSupport;
+import org.jaxen.JaxenException;
+import org.jaxen.SimpleNamespaceContext;
+import org.jaxen.SimpleVariableContext;
+import org.jaxen.XPathFunctionContext;
+import org.jaxen.dom.DocumentNavigator;
+import org.jaxen.expr.Expr;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.resource.config.xpath.SelectorStep;
-import org.smooks.api.resource.config.xpath.XPathExpressionEvaluator;
-import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.api.resource.config.xpath.PredicateEvaluator;
+import org.smooks.engine.resource.config.xpath.ElementPositionCounter;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.XMLConstants;
+import java.util.Arrays;
 
-/**
- * Simple element position predicate evaluator.
- *
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class PositionEvaluator implements XPathExpressionEvaluator {
-
-    private final int position;
-    private ElementPositionCounter counter;
+public class PositionPredicateEvaluator implements PredicateEvaluator {
+    private final Expr expr;
     private final String elementName;
-    private String elementNS;
+    private final String elementNS;
+    private ElementPositionCounter counter;
 
-    public PositionEvaluator(int position, SelectorStep selectorStep) {
-        this.position = position;
-        elementName = selectorStep.getElement().getLocalPart();
-        elementNS = selectorStep.getElement().getNamespaceURI();
-        if (elementNS.equals(XMLConstants.NULL_NS_URI)) {
-            elementNS = null;
-        }
-    }
-
-    public ElementPositionCounter getCounter() {
-        return counter;
+    public PositionPredicateEvaluator(Expr expr, String elementName, String elementNS) {
+        this.expr = expr;
+        this.elementName = elementName;
+        this.elementNS = elementNS;
     }
 
     public void setCounter(ElementPositionCounter positionCounter) {
         this.counter = positionCounter;
     }
 
-    protected boolean evaluate(Element element, ExecutionContext executionContext) {
-        int count;
-        if (counter == null) {
-            count = 0;
-        } else {
-            count = counter.getCount(element, executionContext) - 1;
-        }
-        Node parent = element.getParentNode();
+    @Override
+    public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
+        Element element = (Element) fragment.unwrap();
+        int count = counter == null ? 1 : counter.getCount((Element) fragment.unwrap(), executionContext);
 
-        if (parent == null) {
-            return position == 0;
-        }
+        Node parent = element.getParentNode();
 
         NodeList childNodes = parent.getChildNodes();
         int childNodeCount = childNodes.getLength();
@@ -102,31 +92,25 @@ public class PositionEvaluator implements XPathExpressionEvaluator {
         for (int i = 0; i < childNodeCount; i++) {
             Node childNode = childNodes.item(i);
 
-            if (childNode.getNodeType() == Node.ELEMENT_NODE && DomUtils.getName((Element) childNode).equalsIgnoreCase(elementName)) {
-                if (elementNS == null || elementNS.equals(childNode.getNamespaceURI())) {
-                    count++;
-                }
-            }
-
             if (childNode == element) {
                 break;
             }
+
+            if (childNode.getNodeType() == Node.ELEMENT_NODE && DomUtils.getName((Element) childNode).equalsIgnoreCase(elementName)) {
+                if (elementNS.equals(XMLConstants.NULL_NS_URI) || elementNS.equals(childNode.getNamespaceURI())) {
+                    count++;
+                }
+            }
         }
 
-        return position == count;
-    }
+        Context context = new Context(new ContextSupport(new SimpleNamespaceContext(), XPathFunctionContext.getInstance(), new SimpleVariableContext(), DocumentNavigator.getInstance()));
+        Node unwrap = (Node) fragment.unwrap();
+        context.setNodeSet(Arrays.asList(unwrap));
 
-    @Override
-    public String toString() {
-        return "[" + position + "]";
-    }
-
-    @Override
-    public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
-        if (fragment instanceof NodeFragment) {
-            return evaluate((Element) ((NodeFragment) fragment).unwrap(), executionContext);
+        try {
+            return ((double) expr.evaluate(context)) == count;
+        } catch (JaxenException e) {
+            throw new SmooksException(e);
         }
-        
-        throw new UnsupportedOperationException();
     }
 }

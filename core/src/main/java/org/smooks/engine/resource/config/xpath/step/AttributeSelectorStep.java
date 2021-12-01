@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,59 +40,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators;
+package org.smooks.engine.resource.config.xpath.step;
 
-import org.smooks.api.resource.config.xpath.XPathExpressionEvaluator;
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.assertion.AssertArgument;
-import org.smooks.api.ExecutionContext;
+import javax.xml.namespace.QName;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Predicates Evaluator.
- * 
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class PredicatesEvaluator implements XPathExpressionEvaluator {
-
-    private final List<XPathExpressionEvaluator> evaluators = new ArrayList<XPathExpressionEvaluator>();
-    private int evalCount;
-
-    public void addEvaluator(XPathExpressionEvaluator evaluator) {
-        AssertArgument.isNotNull(evaluator, "evaluator");
-        evaluators.add(evaluator);
-        evalCount = evaluators.size();
+public class AttributeSelectorStep extends NamedSelectorStep {
+    public AttributeSelectorStep(final String namespaceUri, final String localName, final String prefix) {
+        super(new QName(namespaceUri, localName, prefix));
     }
 
-    public List<XPathExpressionEvaluator> getEvaluators() {
-        return evaluators;
-    }
-    
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-
-        if (!evaluators.isEmpty()) {
-            for (XPathExpressionEvaluator evaluator : evaluators) {
-                if (builder.length() > 0) {
-                    builder.append(" and ");
-                }
-                builder.append(evaluator);
-            }
-        }
-
-        return builder.toString();
-    }
-
-    @Override
-    public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
-        for (int i = 0; i < evalCount; i++) {
-            if (!evaluators.get(i).evaluate(fragment, executionContext)) {
-                return false;
-            }
-        }
-        return true;
+    public QName getQName() {
+        return qName;
     }
 }

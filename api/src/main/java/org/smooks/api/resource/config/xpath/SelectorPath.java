@@ -51,13 +51,7 @@ public interface SelectorPath extends List<SelectorStep> {
     
     String getSelector();
 
-    void setSelector(String selector);
-
     SelectorStep getTargetSelectorStep();
-
-    String getTargetElement();
-
-    String getTargetAttribute();
 
     @Deprecated
     String getSelectorNamespaceURI();
@@ -70,8 +64,6 @@ public interface SelectorPath extends List<SelectorStep> {
     void setSelectorNamespaceURI(String namespaceURI);
 
     Properties getNamespaces();
-
-    SelectorPath copy();
 
     void setNamespaces(Properties namespaces);
 }

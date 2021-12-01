@@ -42,29 +42,30 @@
  */
 package org.smooks.engine.delivery.fragment;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.smooks.api.resource.config.ResourceConfig;
+import org.jaxen.*;
+import org.jaxen.dom.DocumentNavigator;
+import org.jaxen.saxpath.SAXPathException;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.xpath.SelectorPath;
-import org.smooks.api.resource.config.xpath.SelectorStep;
-import org.smooks.api.resource.config.xpath.XPathExpressionEvaluator;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.expression.ExecutionContextExpressionEvaluator;
-import org.smooks.support.DomUtils;
-import org.w3c.dom.Element;
+import org.smooks.engine.resource.config.xpath.JaxenPatternSelectorPath;
+import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.UserDataHandler;
 
+import javax.xml.XMLConstants;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class NodeFragment implements Fragment<Node> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeFragment.class);
     protected static final UserDataHandler COPY_USER_DATA_HANDLER = new UserDataHandler() {
         @Override
         public void handle(final short operation, final String key, final Object data, final Node src, final Node dst) {
@@ -79,7 +80,7 @@ public class NodeFragment implements Fragment<Node> {
     private final boolean isReservationInheritable;
     private String id;
     private int hash;
-    
+
     protected static class Reservation {
         private final Object token;
         private final boolean inheritable;
@@ -159,191 +160,73 @@ public class NodeFragment implements Fragment<Node> {
     }
 
     @Override
-    public boolean isMatch(SelectorPath selectorPath, ExecutionContext executionContext) {
+    public boolean isMatch(final SelectorPath selectorPath, final ExecutionContext executionContext) {
         if (!assertConditionTrue(executionContext, selectorPath)) {
             return false;
         }
 
-        if (selectorPath.getSelectorNamespaceURI() != null) {
-            if (!isTargetedAtNamespace(node.getNamespaceURI(), selectorPath.getSelectorNamespaceURI())) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(node) + "].  Element not in namespace [" + selectorPath.getSelectorNamespaceURI() + "].");
-                }
-                return false;
+        try {
+            return isPatternMatch(node, selectorPath) && evaluate(node, selectorPath, executionContext);
+        } catch (SAXPathException e) {
+            throw new SmooksException(e);
+        }
+    }
+
+    protected boolean evaluate(final Node node, final SelectorPath selectorPath, final ExecutionContext executionContext) throws JaxenException {
+        Node nodeUnderTest = null;
+        if (selectorPath.getTargetSelectorStep() instanceof AttributeSelectorStep && node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.hasAttributes()) {
+                final String namespaceURI = ((AttributeSelectorStep) selectorPath.getTargetSelectorStep()).getQName().getNamespaceURI();
+                nodeUnderTest = node.getAttributes().getNamedItemNS(namespaceURI.equals(XMLConstants.NULL_NS_URI) ? null : namespaceURI, ((AttributeSelectorStep) selectorPath.getTargetSelectorStep()).getQName().getLocalPart());
             }
         } else {
-            // We don't test the SelectorStep namespace if a namespace is configured on the
-            // resource configuration.  This is why we have this code inside the else block.
-            if (!selectorPath.getTargetSelectorStep().isTargetedAtNamespace(node.getNamespaceURI())) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(node) + "].  Element not in namespace [" + selectorPath.getTargetSelectorStep().getElement().getNamespaceURI() + "].");
-                }
+            nodeUnderTest = node;
+        }
+        if (nodeUnderTest == null) {
+            return false;
+        }
+        for (int i = selectorPath.size() - 1; i >= 0; i--) {
+            if (!selectorPath.get(i).evaluate(new NodeFragment(nodeUnderTest), executionContext)) {
                 return false;
             }
-        }
-
-        XPathExpressionEvaluator evaluator = selectorPath.getTargetSelectorStep().getPredicatesEvaluator();
-        if (evaluator == null) {
-            LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-        } else if (!evaluator.evaluate(this, executionContext)) {
-            return false;
-        }
-
-        if (!isTarget(node, selectorPath, executionContext)) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Not applying resource [" + this + "] to element [" + DomUtils.getXPath(node) + "].  This resource is only targeted at '" + DomUtils.getName((Element) node) + "' when in the following context '" + selectorPath.getSelector() + "'.");
+            if (nodeUnderTest.getNodeType() == Node.ATTRIBUTE_NODE) {
+                nodeUnderTest = ((Attr) nodeUnderTest).getOwnerElement();
+            } else {
+                nodeUnderTest = nodeUnderTest.getParentNode();
             }
-            return false;
         }
 
         return true;
     }
 
-    protected boolean isMaybeTarget(Node node, SelectorStep selectorStep) {
-        if (node.getNodeType() == Node.ELEMENT_NODE) {
-            if (selectorStep.isStar() || selectorStep.isStarStar()) {
-                return true;
-            }
-
-            if (!(DomUtils.getName((Element) node).equals(selectorStep.getElement().getLocalPart()) || (selectorStep.getElement().getLocalPart().equals(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR) && (node.getParentNode() == null || node.getParentNode().equals(node.getOwnerDocument()))))) {
-                return false;
-            }
-
-            return selectorStep.isTargetedAtNamespace(node.getNamespaceURI());
-        } else {
-            return false;
+    protected boolean isPatternMatch(final Node node, final SelectorPath selectorPath) throws JaxenException {
+        final SimpleNamespaceContext simpleNamespaceContext = new SimpleNamespaceContext();
+        final Properties namespaces = selectorPath.getNamespaces();
+        for (String namespacePrefix : namespaces.stringPropertyNames()) {
+            simpleNamespaceContext.addNamespace(namespacePrefix, namespaces.getProperty(namespacePrefix));
         }
-    }
-    
-    /**
-     * Is this resource configuration targeted at the specified DOM element
-     * in context.
-     * <p/>
-     * See details about the "selector" attribute in the
-     * <a href="#attribdefs">Attribute Definitions</a> section.
-     * <p/>
-     * Note this doesn't perform any namespace checking.
-     *
-     * @param node          The element to check against.
-     * @param executionContext The current execution context.
-     * @return True if this resource configuration is targeted at the specified
-     * element in context, otherwise false.
-     */
-    protected boolean isTarget(Node node, SelectorPath selectorPath, ExecutionContext executionContext) {
-        Node currentNode = node;
-        ContextIndex index = new ContextIndex(executionContext);
-
-        index.i = selectorPath.size() - 1;
-        
-        if (selectorPath.get(index.i).isStarStar()) {
-            // The target selector step is "**".  If the parent one is "#document" and we're at
-            // the root now, then fail...
-            if (selectorPath.size() == 2 && selectorPath.get(0).isRooted() && node.getParentNode() == null) {
-                return false;
-            }
-        }
-
-        if (currentNode == null || currentNode.getNodeType() != Node.ELEMENT_NODE) {
-            return false;
-        }
-
-        // Check the element name(s).
-        while (index.i >= 0) {
-            Element currentElement = (Element) currentNode;
-            Node parentNode;
-
-            parentNode = currentElement.getParentNode();
-            if (parentNode == null || parentNode.getNodeType() != Node.ELEMENT_NODE) {
-                parentNode = null;
-            }
-
-            if (!isTarget(currentElement, (Element) parentNode, index, selectorPath)) {
-                return false;
-            }
-
-            if (parentNode == null) {
-                return true;
-            }
-
-            currentNode = parentNode;
-        }
-
-        return true;
-    }
-
-    protected boolean isTarget(Element element, Element parentElement, ContextIndex index, SelectorPath selectorPath) {
-        if (selectorPath.get(index.i).isRooted() && parentElement != null) {
-            return false;
-        } else if (selectorPath.get(index.i).isStar()) {
-            index.i--;
-        } else if (selectorPath.get(index.i).isStarStar()) {
-            if (index.i == 0) {
-                // No more tokens to match and ** matches everything
-                return true;
-            } else if (index.i == 1) {
-                SelectorStep parentStep = selectorPath.get(0);
-
-                if (parentElement == null && parentStep.isRooted()) {
-                    // we're at the root of the document and the only selector left is
-                    // the document selector.  Pass..
-                    return true;
-                } else if (parentElement == null) {
-                    // we're at the root of the document, yet there are still
-                    // unmatched tokens in the selector.  Fail...
-                    return false;
-                }
-            } else if (parentElement == null) {
-                // we're at the root of the document, yet there are still
-                // unmatched tokens in the selector.  Fail...
-                return false;
-            }
-
-            SelectorStep parentStep = selectorPath.get(index.i - 1);
-
-            if (isMaybeTarget(parentElement, parentStep)) {
-                if (!parentStep.isStarStar()) {
-                    XPathExpressionEvaluator evaluator = parentStep.getPredicatesEvaluator();
-                    if (evaluator == null) {
-                        LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-                    } else if (!evaluator.evaluate(new NodeFragment(parentElement), index.executionContext)) {
-                        return false;
+        final Context context = new Context(new ContextSupport(simpleNamespaceContext, XPathFunctionContext.getInstance(), new SimpleVariableContext(), DocumentNavigator.getInstance()));
+        boolean isMatch = true;
+        if (selectorPath.getTargetSelectorStep() instanceof AttributeSelectorStep && node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.hasAttributes()) {
+                for (int i = 0; i < node.getAttributes().getLength(); i++) {
+                    isMatch = ((JaxenPatternSelectorPath) selectorPath).getPattern().matches(node.getAttributes().item(i), context);
+                    if (isMatch) {
+                        break;
                     }
                 }
-                index.i--;
+            } else {
+                isMatch = false;
             }
-        } else if (!isMaybeTarget(element, selectorPath.get(index.i))) {
-            return false;
         } else {
-            if (!selectorPath.get(index.i).isStarStar()) {
-                XPathExpressionEvaluator evaluator = selectorPath.get(index.i).getPredicatesEvaluator();
-                if (evaluator == null) {
-                    LOGGER.debug("Predicate Evaluators for resource [" + this + "] is null.  XPath step predicates will not be evaluated.");
-                } else if (!evaluator.evaluate(new NodeFragment(element), index.executionContext)) {
-                    return false;
-                }
-            }
-            index.i--;
+            isMatch = ((JaxenPatternSelectorPath) selectorPath).getPattern().matches(node, context);
         }
 
-        if (parentElement == null) {
-            if (index.i >= 0 && !selectorPath.get(index.i).isStarStar()) {
-                return selectorPath.get(index.i).isRooted();
-            }
-        }
-
-        return true;
-    }
-
-    protected boolean isTargetedAtNamespace(String namespace, String namespaceURI) {
-        if (namespaceURI != null) {
-            return namespaceURI.equals(namespace);
-        }
-
-        return true;
+        return isMatch;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    protected boolean assertConditionTrue(ExecutionContext executionContext, SelectorPath selectorPath) {
+    protected boolean assertConditionTrue(final ExecutionContext executionContext, final SelectorPath selectorPath) {
         if (selectorPath.getConditionEvaluator() == null) {
             return true;
         }
@@ -351,15 +234,6 @@ public class NodeFragment implements Fragment<Node> {
         return ((ExecutionContextExpressionEvaluator) selectorPath.getConditionEvaluator()).eval(executionContext);
     }
 
-    protected static class ContextIndex {
-        private int i;
-        private final ExecutionContext executionContext;
-
-        public ContextIndex(ExecutionContext executionContext) {
-            this.executionContext = executionContext;
-        }
-    }
-    
     @Override
     public String toString() {
         return node.getNodeName();
@@ -374,7 +248,7 @@ public class NodeFragment implements Fragment<Node> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }

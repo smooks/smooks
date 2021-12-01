@@ -44,40 +44,41 @@ package org.smooks.engine.delivery.dom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
+import org.smooks.api.TypedKey;
 import org.smooks.api.delivery.ContentDeliveryRuntime;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
-import org.smooks.api.delivery.ContentHandler;
+import org.smooks.api.delivery.event.ExecutionEventListener;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.lifecycle.LifecycleManager;
+import org.smooks.api.lifecycle.VisitLifecycleCleanable;
 import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.ResourceConfigSortComparator;
+import org.smooks.api.resource.visitor.SerializerVisitor;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
-import org.smooks.api.resource.visitor.SerializerVisitor;
-import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.engine.delivery.event.*;
-import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.api.resource.config.ResourceConfigSortComparator;
-import org.smooks.engine.resource.config.ResourceConfigurationNotFoundException;
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.TypedKey;
-import org.smooks.engine.delivery.*;
+import org.smooks.engine.delivery.AbstractFilter;
+import org.smooks.engine.delivery.ContentHandlerBindingIndex;
 import org.smooks.engine.delivery.dom.serialize.Serializer;
 import org.smooks.engine.delivery.dom.serialize.TextSerializerVisitor;
-import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.engine.delivery.event.*;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.api.delivery.event.ExecutionEventListener;
-import org.smooks.engine.report.AbstractReportGenerator;
-import org.smooks.io.Stream;
-import org.smooks.api.lifecycle.LifecycleManager;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
 import org.smooks.engine.lifecycle.VisitCleanupPhase;
+import org.smooks.engine.lookup.LifecycleManagerLookup;
+import org.smooks.engine.report.AbstractReportGenerator;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.ResourceConfigurationNotFoundException;
+import org.smooks.io.Stream;
 import org.smooks.io.payload.FilterResult;
 import org.smooks.io.payload.FilterSource;
 import org.smooks.io.payload.JavaSource;
-import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -374,7 +375,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         return deliveryNode;
     }
 
-    private static final String[] GLOBAL_SELECTORS = new String[] {"*", "**"};
+    private static final String[] GLOBAL_SELECTORS = new String[] {"*", "//"};
 
     /**
      * Filter the supplied W3C Element.
@@ -404,10 +405,10 @@ public class SmooksDOMFilter extends AbstractFilter {
 
             }
         });
-        SelectorTable<DOMVisitBefore> visitBeforeSelectorTable = deliveryConfig.getAssemblyVisitBeforeSelectorTable();
-        SelectorTable<DOMVisitAfter> visitAfterSelectorTable = deliveryConfig.getAssemblyVisitAfterSelectorTable();
-        globalAssemblyBefores = visitBeforeSelectorTable.get(GLOBAL_SELECTORS);
-        globalAssemblyAfters = visitAfterSelectorTable.get(GLOBAL_SELECTORS);
+        ContentHandlerBindingIndex<DOMVisitBefore> visitBeforeContentHandlerBindingIndex = deliveryConfig.getAssemblyVisitBeforeIndex();
+        ContentHandlerBindingIndex<DOMVisitAfter> visitAfterContentHandlerBindingIndex = deliveryConfig.getAssemblyVisitAfterIndex();
+        globalAssemblyBefores = visitBeforeContentHandlerBindingIndex.get(GLOBAL_SELECTORS);
+        globalAssemblyAfters = visitAfterContentHandlerBindingIndex.get(GLOBAL_SELECTORS);
 
         // Register the DOM phase events...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
@@ -415,7 +416,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         }
         
         // Apply assembly phase, skipping it if there are no configured assembly units...
-        if (applyAssembly(visitBeforeSelectorTable, visitAfterSelectorTable)) {
+        if (applyAssembly(visitBeforeContentHandlerBindingIndex, visitAfterContentHandlerBindingIndex)) {
             // Assemble
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Starting assembly phase [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
@@ -437,11 +438,11 @@ public class SmooksDOMFilter extends AbstractFilter {
             LOGGER.debug("Starting processing phase [" + executionContext.getTargetProfiles().getBaseProfile() + "]");
         }
 
-        globalProcessingBefores = deliveryConfig.getProcessingVisitBeforeSelectorTable().get(GLOBAL_SELECTORS);
+        globalProcessingBefores = deliveryConfig.getProcessingVisitBeforeIndex().get(GLOBAL_SELECTORS);
         if(globalProcessingBefores != null && globalProcessingBefores.isEmpty()) {
         	globalProcessingBefores = null;
         }
-        globalProcessingAfters = deliveryConfig.getProcessingVisitAfterSelectorTable().get(GLOBAL_SELECTORS);
+        globalProcessingAfters = deliveryConfig.getProcessingVisitAfterIndex().get(GLOBAL_SELECTORS);
         if(globalProcessingAfters != null && globalProcessingAfters.isEmpty()) {
         	globalProcessingAfters = null;
         }
@@ -459,7 +460,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         return executionContext.get(DELIVERY_NODE_REQUEST_KEY);
     }
 
-    private boolean applyAssembly(SelectorTable<DOMVisitBefore> visitBefores, SelectorTable<DOMVisitAfter> visitAfters) {
+    private boolean applyAssembly(ContentHandlerBindingIndex<DOMVisitBefore> visitBefores, ContentHandlerBindingIndex<DOMVisitAfter> visitAfters) {
         return !visitBefores.isEmpty() || !visitAfters.isEmpty() ||
                 (globalAssemblyBefores != null && !globalAssemblyBefores.isEmpty()) ||
                 (globalAssemblyAfters != null && !globalAssemblyAfters.isEmpty());
@@ -476,8 +477,8 @@ public class SmooksDOMFilter extends AbstractFilter {
     private void assemble(Element element, boolean isRoot) {
         List<Node> nodeListCopy = copyList(element.getChildNodes());
 
-        SelectorTable<DOMVisitBefore> visitBeforeTable = deliveryConfig.getAssemblyVisitBeforeSelectorTable();
-        SelectorTable<DOMVisitAfter> visitAfterTable = deliveryConfig.getAssemblyVisitAfterSelectorTable();
+        ContentHandlerBindingIndex<DOMVisitBefore> visitBeforeTable = deliveryConfig.getAssemblyVisitBeforeIndex();
+        ContentHandlerBindingIndex<DOMVisitAfter> visitAfterTable = deliveryConfig.getAssemblyVisitAfterIndex();
         String elementName = DomUtils.getName(element);
 
         // Register the "presence" of the element...
@@ -615,13 +616,13 @@ public class SmooksDOMFilter extends AbstractFilter {
         elementName = DomUtils.getName(element);
         if (isRoot) {
             // The document as a whole (root node) can also be targeted through the "#document" selector.
-            processingBefores = deliveryConfig.getProcessingVisitBeforeSelectorTable().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
-            processingAfters = deliveryConfig.getProcessingVisitAfterSelectorTable().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
-            processingCleanables = deliveryConfig.getVisitLifecycleCleanableSelectorTable().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            processingBefores = deliveryConfig.getProcessingVisitBeforeIndex().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            processingAfters = deliveryConfig.getProcessingVisitAfterIndex().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            processingCleanables = deliveryConfig.getVisitLifecycleCleanableIndex().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
-            processingBefores = deliveryConfig.getProcessingVisitBeforeSelectorTable().get(elementName);
-            processingAfters = deliveryConfig.getProcessingVisitAfterSelectorTable().get(elementName);
-            processingCleanables = deliveryConfig.getVisitLifecycleCleanableSelectorTable().get(elementName);
+            processingBefores = deliveryConfig.getProcessingVisitBeforeIndex().get(elementName);
+            processingAfters = deliveryConfig.getProcessingVisitAfterIndex().get(elementName);
+            processingCleanables = deliveryConfig.getVisitLifecycleCleanableIndex().get(elementName);
         }
 
         if (processingBefores != null && !processingBefores.isEmpty()) {

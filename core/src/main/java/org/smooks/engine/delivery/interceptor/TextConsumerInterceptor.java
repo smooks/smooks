@@ -54,6 +54,7 @@ import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.TextAccumulatorMemento;
+import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -70,8 +71,8 @@ public class TextConsumerInterceptor extends AbstractInterceptorVisitor implemen
         if (!(visitorBinding.getContentHandler() instanceof ParameterizedVisitor) || (((ParameterizedVisitor) visitorBinding.getContentHandler()).getMaxNodeDepth() == 1)) {
             if (visitorBinding.getContentHandler().getClass().isAnnotationPresent(TextConsumer.class)) {
                 isTextConsumer = true;
-            } else if (visitorBinding.getContentHandler() instanceof AfterVisitor) {
-                isTextConsumer = visitorBinding.getResourceConfig().getSelectorPath().getTargetSelectorStep().accessesText();
+            } else if (visitorBinding.getContentHandler() instanceof AfterVisitor && visitorBinding.getResourceConfig().getSelectorPath().getTargetSelectorStep() instanceof ElementSelectorStep) {
+                isTextConsumer = ((ElementSelectorStep) visitorBinding.getResourceConfig().getSelectorPath().getTargetSelectorStep()).accessesText();
             } else {
                 isTextConsumer = false;
             }

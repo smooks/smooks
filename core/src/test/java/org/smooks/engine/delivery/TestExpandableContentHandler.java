@@ -53,6 +53,7 @@ import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author
@@ -67,9 +68,9 @@ public class TestExpandableContentHandler implements DOMElementVisitor, Configur
 
         List<ResourceConfig> expansionConfigs = new ArrayList<ResourceConfig>();
 
-        expansionConfigs.add(new DefaultResourceConfig("a", Assembly1.class.getName()));
-        expansionConfigs.add(new DefaultResourceConfig("b", Processing1.class.getName()));        
-        expansionConfigs.add(new DefaultResourceConfig("c", DefaultDOMSerializerVisitor.class.getName()));
+        expansionConfigs.add(new DefaultResourceConfig("a", new Properties(), Assembly1.class.getName()));
+        expansionConfigs.add(new DefaultResourceConfig("b", new Properties(), Processing1.class.getName()));
+        expansionConfigs.add(new DefaultResourceConfig("c", new Properties(), DefaultDOMSerializerVisitor.class.getName()));
 
         return expansionConfigs;
     }

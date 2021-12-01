@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,29 +40,43 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.logical;
+package org.smooks.engine.resource.config.xpath.step;
 
-import org.jaxen.expr.LogicalExpr;
-import org.jaxen.saxpath.SAXPathException;
-import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.resource.config.xpath.Predicate;
+import org.smooks.api.resource.config.xpath.PredicateEvaluator;
+import org.smooks.api.resource.config.xpath.SelectorStep;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-/**
- * Simple "and" predicate evaluator.
- *
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class AndEvaluator extends AbstractLogicalEvaluator {
-    
-    public AndEvaluator(LogicalExpr expr, SelectorStep selectorStep, Properties namespaces) throws SAXPathException {
-        super(expr, selectorStep, namespaces);
-    }
-    
+public abstract class AbstractSelectorStep implements SelectorStep {
+    protected final Properties namespaces = new Properties();
+    protected final List<Predicate> predicates = new ArrayList<>();
+
     @Override
-    public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
-        return lhs.evaluate(fragment, executionContext) && rhs.evaluate(fragment, executionContext);
+    public Properties getNamespaces() {
+        return namespaces;
+    }
+
+
+    @Override
+    public boolean evaluate(final Fragment<?> fragment, final ExecutionContext executionContext) {
+        for (Predicate predicate : predicates) {
+            if (predicate instanceof PredicateEvaluator) {
+                if (!((PredicateEvaluator) predicate).evaluate(fragment, executionContext)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<Predicate> getPredicates() {
+        return predicates;
     }
 }

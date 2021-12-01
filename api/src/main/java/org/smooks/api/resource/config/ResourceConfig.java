@@ -79,7 +79,7 @@ public interface ResourceConfig {
 
     void addParameters(ResourceConfig resourceConfig);
 
-    void setSelector(String selector);
+    void setSelector(String selector, Properties namespaces);
 
     void setResource(String resource);
 

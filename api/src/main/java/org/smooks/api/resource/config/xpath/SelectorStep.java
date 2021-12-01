@@ -42,34 +42,17 @@
  */
 package org.smooks.api.resource.config.xpath;
 
-import javax.xml.namespace.QName;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.delivery.fragment.Fragment;
+
 import java.util.List;
 import java.util.Properties;
 
 public interface SelectorStep {
-    SelectorStep copy();
 
-    String getXPathExpression();
+    Properties getNamespaces();
 
-    QName getElement();
+    boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext);
 
-    QName getAttribute();
-
-    XPathExpressionEvaluator getPredicatesEvaluator();
-
-    boolean isRooted();
-
-    void setRooted(boolean rooted);
-
-    boolean isStar();
-
-    boolean isStarStar();
-
-    void buildPredicatesEvaluator(Properties namespaces);
-
-    boolean isTargetedAtNamespace(String namespace);
-
-    boolean accessesText();
-
-    <T extends XPathExpressionEvaluator> void getEvaluators(Class<T> evaluatorClass, List<T> evaluators);
+    List<Predicate> getPredicates();
 }

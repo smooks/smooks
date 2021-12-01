@@ -51,6 +51,8 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSortComparator;
 import org.smooks.engine.profile.DefaultProfileSet;
 
+import java.util.Properties;
+
 public class DefaultResourceConfigSortComparatorTestCase {
 
     private DefaultProfileSet profileSet;
@@ -81,12 +83,12 @@ public class DefaultResourceConfigSortComparatorTestCase {
 		//  110 -> Explicit contextual selector - 2 deep
 		//    0 -> Null namespace
         //    5 -> "*".
-		assertSpecificityOK(115.0, "table tr", null, "*");
+		assertSpecificityOK(115.0, "table/tr", null, "*");
 
 		//  110 -> Explicit contextual selector - 3 deep
 		//    0 -> Null namespace
         //    5 -> "*".
-		assertSpecificityOK(125.0, "table tr td", null, "*");
+		assertSpecificityOK(125.0, "table/tr/td", null, "*");
 	}
 
     @Test
@@ -182,22 +184,22 @@ public class DefaultResourceConfigSortComparatorTestCase {
 		ResourceConfig config2;
 
 		// 0	-> same object instance
-		config1 = new DefaultResourceConfig("selector", "http://namespace", "uaCommonName", null);
+		config1 = new DefaultResourceConfig("selector", new Properties(), "http://namespace", "uaCommonName", null);
 		assertEquals(0, sortComparator.compare(config1, config1));
 
 		// 0	-> 2 configs of equal specificity
-		config1 = new DefaultResourceConfig("selector", "http://namespace", "uaCommonName", null);
-		config2 = new DefaultResourceConfig("selector", "http://namespace", "uaCommonName", null);
+		config1 = new DefaultResourceConfig("selector", new Properties(), "http://namespace", "uaCommonName", null);
+		config2 = new DefaultResourceConfig("selector", new Properties(), "http://namespace", "uaCommonName", null);
 		assertEquals(0, sortComparator.compare(config1, config2));
 
 		// -1	-> config1 more specific than config2
-		config1 = new DefaultResourceConfig("selector", "http://namespace", "uaCommonName", null);
-		config2 = new DefaultResourceConfig("selector", "http://namespace", "profile1", null);
+		config1 = new DefaultResourceConfig("selector", new Properties(), "http://namespace", "uaCommonName", null);
+		config2 = new DefaultResourceConfig("selector", new Properties(), "http://namespace", "profile1", null);
 		assertEquals(-1, sortComparator.compare(config1, config2));
 
 		// 1	-> config2 more specific than config1
-		config1 = new DefaultResourceConfig("selector", "http://namespace", "profile1", null);
-		config2 = new DefaultResourceConfig("selector", "http://namespace", "uaCommonName", null);
+		config1 = new DefaultResourceConfig("selector", new Properties(), "http://namespace", "profile1", null);
+		config2 = new DefaultResourceConfig("selector", new Properties(), "http://namespace", "uaCommonName", null);
 		assertEquals(1, sortComparator.compare(config1, config2));
 	}
 	
@@ -206,7 +208,7 @@ public class DefaultResourceConfigSortComparatorTestCase {
 		ResourceConfig resourceConfig;
 		double specificity;
 
-		resourceConfig = new DefaultResourceConfig(selector, namespaceURI, useragents, null);
+		resourceConfig = new DefaultResourceConfig(selector, new Properties(), namespaceURI, useragents, null);
 		specificity = sortComparator.getSpecificity(resourceConfig);
 		assertEquals("Wrong specificity calculated.", expected, specificity, 0.01);
 	}

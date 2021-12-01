@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,49 +40,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.value;
+package org.smooks.engine.resource.config.xpath.step;
 
-import org.jaxen.expr.LiteralExpr;
-import org.jaxen.expr.NumberExpr;
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.w3c.dom.Element;
+import javax.xml.namespace.QName;
 
-/**
- * Absolute value getter.
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class AbsoluteValue extends Value {
+public class ElementSelectorStep extends NamedSelectorStep {
 
-    private final Object value;
+    protected boolean accessesText = false;
 
-    public AbsoluteValue(LiteralExpr literal) {
-        value = literal.getLiteral();
+    public ElementSelectorStep(final String namespaceUri, final String localName, final String prefix) {
+        super(new QName(namespaceUri, localName, prefix));
     }
 
-    public AbsoluteValue(NumberExpr number) {
-        value = number.getNumber();
+    public void setAccessesText(boolean accessesText) {
+        this.accessesText = accessesText;
     }
 
-    protected Object getValue(Element element) {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        if(value instanceof String) {
-            return "'" + value + "'";
-        } else {
-            return value.toString();
-        }
-    }
-
-    @Override
-    public Object getValue(Fragment<?> fragment) {
-        if (fragment instanceof NodeFragment) {
-            return getValue((Element) ((NodeFragment) fragment).unwrap());
-        }
-
-        throw new UnsupportedOperationException();
+    public boolean accessesText() {
+        return accessesText;
     }
 }

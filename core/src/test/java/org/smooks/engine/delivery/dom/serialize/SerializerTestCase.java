@@ -45,16 +45,16 @@ package org.smooks.engine.delivery.dom.serialize;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.tck.MockExecutionContext;
-import org.smooks.tck.delivery.dom.MockContentDeliveryConfig;
-import org.smooks.engine.injector.Scope;
 import org.smooks.api.lifecycle.LifecycleManager;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.support.CharUtils;
 import org.smooks.support.XmlUtil;
+import org.smooks.tck.MockExecutionContext;
+import org.smooks.tck.delivery.dom.MockContentDeliveryConfig;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -62,6 +62,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
 
@@ -80,32 +81,32 @@ public class SerializerTestCase {
 		// Target a resource at the "document fragment" i.e. the root..
 
         // Don't write xxx but write its child elements
-		ResourceConfig resourceConfig = new DefaultResourceConfig(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, "deviceX", "....");
+		ResourceConfig resourceConfig = new DefaultResourceConfig(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, new Properties(), "deviceX", "....");
 		AddAttributeSerializer addAttributeSerializer = new AddAttributeSerializer();
 		lifecycleManager.applyPhase(addAttributeSerializer, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), resourceConfig, addAttributeSerializer)));
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorSelectorTable().put(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, resourceConfig, addAttributeSerializer);
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorIndex().put(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, resourceConfig, addAttributeSerializer);
 
         // Don't write xxx but write its child elements
-		resourceConfig = new DefaultResourceConfig("xxx", "deviceX", "....");
+		resourceConfig = new DefaultResourceConfig("xxx", new Properties(), "deviceX", "....");
 		RemoveTestSerializaterVisitor removeTestSerializationUnit = new RemoveTestSerializaterVisitor();
 		lifecycleManager.applyPhase(removeTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), resourceConfig, removeTestSerializationUnit)));
 
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorSelectorTable().put("xxx", resourceConfig, removeTestSerializationUnit);
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorIndex().put("xxx", resourceConfig, removeTestSerializationUnit);
 
 		// write yyyy as a badly-formed empty element
-		resourceConfig = new DefaultResourceConfig("yyyy", "deviceX", "....");
+		resourceConfig = new DefaultResourceConfig("yyyy", new Properties(), "deviceX", "....");
 		resourceConfig.setParameter("wellformed", "false");
 		EmptyElTestSerializerVisitor emptyElTestSerializationUnit = new EmptyElTestSerializerVisitor();
 		lifecycleManager.applyPhase(emptyElTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), resourceConfig, emptyElTestSerializationUnit)));
 		
-		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorSelectorTable().put("yyyy", resourceConfig, emptyElTestSerializationUnit);
+		((MockContentDeliveryConfig)executionContext.deliveryConfig).getSerializerVisitorIndex().put("yyyy", resourceConfig, emptyElTestSerializationUnit);
 
 		/// write zzz as a well-formed empty element
-		resourceConfig = new DefaultResourceConfig("zzz", "deviceX", "....");
+		resourceConfig = new DefaultResourceConfig("zzz", new Properties(), "deviceX", "....");
 		EmptyElTestSerializerVisitor otherEmptyElTestSerializationUnit = new EmptyElTestSerializerVisitor();
 		lifecycleManager.applyPhase(otherEmptyElTestSerializationUnit, new PostConstructLifecyclePhase(new Scope(executionContext.getApplicationContext().getRegistry(), resourceConfig, otherEmptyElTestSerializationUnit)));
 
-		((MockContentDeliveryConfig) executionContext.deliveryConfig).getSerializerVisitorSelectorTable().put("zzz", resourceConfig, otherEmptyElTestSerializationUnit);
+		((MockContentDeliveryConfig) executionContext.deliveryConfig).getSerializerVisitorIndex().put("zzz", resourceConfig, otherEmptyElTestSerializationUnit);
 
 		Document doc = XmlUtil.parseStream(getClass().getResourceAsStream("testmarkup.xxml"), XmlUtil.VALIDATION_TYPE.NONE, true);
 		Serializer serializer = new Serializer(doc, executionContext);

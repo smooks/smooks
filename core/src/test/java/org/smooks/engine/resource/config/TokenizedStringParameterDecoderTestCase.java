@@ -53,6 +53,7 @@ import org.smooks.engine.lookup.LifecycleManagerLookup;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -90,7 +91,7 @@ public class TokenizedStringParameterDecoderTestCase {
 	}
 	
 	public Collection getParameter(String type, String value) {
-        ResourceConfig decoderConfig = new DefaultResourceConfig(Parameter.PARAM_TYPE_PREFIX + type, "org.smooks.engine.resource.config.TokenizedStringParameterDecoder");
+        ResourceConfig decoderConfig = new DefaultResourceConfig(Parameter.PARAM_TYPE_PREFIX + type, new Properties(), "org.smooks.engine.resource.config.TokenizedStringParameterDecoder");
         decoderConfig.setParameter(Parameter.PARAM_TYPE_PREFIX, type);
 		TokenizedStringParameterDecoder tokenizedStringParameterDecoder = new TokenizedStringParameterDecoder();
 		MockApplicationContext mockApplicationContext = new MockApplicationContext();

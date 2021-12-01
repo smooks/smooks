@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,37 +40,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath.evaluators.equality;
+package org.smooks.engine.resource.config.xpath.step;
 
-import org.jaxen.expr.RelationalExpr;
-import org.jaxen.saxpath.SAXPathException;
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.fragment.Fragment;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
-import java.util.Properties;
+public class DocumentSelectorStep extends ElementSelectorStep {
 
-/**
- * Simple ">" predicate evaluator.
- * <p/>
- * Works for element text or attributes.
- *
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class GreaterThanEvaluator extends AbstractEqualityEvaluator {
-
-    public GreaterThanEvaluator(RelationalExpr expr, Properties namespaces) throws SAXPathException {
-        super(expr, namespaces);
+    public DocumentSelectorStep() {
+        super(XMLConstants.NULL_NS_URI, "#document", XMLConstants.DEFAULT_NS_PREFIX);
     }
 
     @Override
-    public boolean evaluate(Fragment<?> fragment, ExecutionContext executionContext) {
-        Object lhsVal = lhs.getValue(fragment);
-        Object rhsVal = rhs.getValue(fragment);
-
-        if(!(lhsVal instanceof Double) || !(rhsVal instanceof Double)) {
-            return false;
-        }
-
-        return ((Double)lhsVal > (Double)rhsVal);
+    public QName getQName() {
+        return qName;
     }
 }

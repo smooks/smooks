@@ -42,20 +42,21 @@
  */
 package org.smooks.engine.resource.visitor.dom;
 
-import org.smooks.api.SmooksException;
-import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.SmooksException;
+import org.smooks.api.TypedKey;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEventListener;
-import org.smooks.api.TypedKey;
-import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Producer;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
 import org.smooks.engine.delivery.event.EndFragmentEvent;
 import org.smooks.engine.delivery.event.StartFragmentEvent;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
+import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.support.CollectionsUtil;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.CharacterData;
@@ -143,7 +144,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
 
     @Override
     public Set<String> getProducts() {
-        return CollectionsUtil.toSet(resourceConfig.getSelectorPath().getTargetElement());
+        return CollectionsUtil.toSet(((ElementSelectorStep) resourceConfig.getSelectorPath().getTargetSelectorStep()).getQName().getLocalPart());
     }
 
     @Override

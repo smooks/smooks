@@ -48,6 +48,8 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.config.Parameter;
 import org.w3c.dom.Element;
 
+import java.util.Properties;
+
 /**
  * Resource Configuration Extension utility class.
  *
@@ -61,7 +63,7 @@ public final class ResourceConfigUtil {
     
     public static void setProperty(ResourceConfig resourceConfig, String setOn, Object value, Element xml, ExecutionContext executionContext) throws SmooksException {
         if(setOn.equals("selector")) {
-            resourceConfig.setSelector((String) value);
+            resourceConfig.setSelector((String) value, new Properties());
         } else if(setOn.equals("resource")) {
             resourceConfig.setResource((String) value);
         } else if(setOn.equals("resourceType")) {
@@ -89,7 +91,7 @@ public final class ResourceConfigUtil {
 
     public static void unsetProperty(ResourceConfig resourceConfig, String property) {
         if(property.equals("selector")) {
-            resourceConfig.setSelector(null);
+            resourceConfig.setSelector(null, new Properties());
         } else if(property.equals("resource")) {
             resourceConfig.setResource(null);
         } else if(property.equals("resourceType")) {

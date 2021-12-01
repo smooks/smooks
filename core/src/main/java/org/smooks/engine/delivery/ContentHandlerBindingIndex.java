@@ -42,9 +42,9 @@
  */
 package org.smooks.engine.delivery;
 
-import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.engine.delivery.ordering.Sorter;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -56,7 +56,7 @@ import java.util.*;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @NotThreadSafe
-public class SelectorTable<T extends ContentHandler> implements Map<String, List<ContentHandlerBinding<T>>> {
+public class ContentHandlerBindingIndex<T extends ContentHandler> implements Map<String, List<ContentHandlerBinding<T>>> {
 
     private final Map<String, List<ContentHandlerBinding<T>>> contentHandlerBindingsBySelector = new LinkedHashMap<>();
 
@@ -150,11 +150,11 @@ public class SelectorTable<T extends ContentHandler> implements Map<String, List
 
     /**
      * Add all the content handlers defined in the supplied <code>Map</code>.
-     * @param selectorTable The config map.
+     * @param contentHandlerBindingIndex The config map.
      */
     @Override
-    public void putAll(Map<? extends String, ? extends List<ContentHandlerBinding<T>>> selectorTable) {
-        for (Entry<? extends String, ? extends List<ContentHandlerBinding<T>>> entry : selectorTable.entrySet()) {
+    public void putAll(Map<? extends String, ? extends List<ContentHandlerBinding<T>>> contentHandlerBindingIndex) {
+        for (Entry<? extends String, ? extends List<ContentHandlerBinding<T>>> entry : contentHandlerBindingIndex.entrySet()) {
             String selector = entry.getKey();
             List<ContentHandlerBinding<T>> contentHandlerBindings = entry.getValue();
 
