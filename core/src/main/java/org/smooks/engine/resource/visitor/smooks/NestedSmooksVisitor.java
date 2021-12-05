@@ -387,6 +387,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             mementoCaretaker.restore(nestedExecutionContextMemento);
         } else {
             final ExecutionContext nestedExecutionContext = nestedSmooks.createExecutionContext();
+            nestedExecutionContext.setContentEncoding(executionContext.getContentEncoding());
             nestedExecutionContext.setBeanContext(executionContext.getBeanContext().newSubContext(nestedExecutionContext));
             nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY, nestedExecutionContext);
             mementoCaretaker.capture(nestedExecutionContextMemento);
