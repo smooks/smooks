@@ -65,10 +65,16 @@ import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.Stream;
 import org.smooks.io.payload.StringResult;
+import org.smooks.tck.MockExecutionContext;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -103,6 +109,23 @@ public class NestedSmooksVisitorTestCase {
         List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = interceptorVisitorChainFactory.getInterceptorVisitorDefinitions();
         assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), SessionInterceptor.class);
         assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), StaticProxyInterceptor.class);
+    }
+
+    @Test
+    public void testFilterSourceGivenExecutionContextContentEncoding() throws URISyntaxException, ClassNotFoundException, SAXException, DocumentException, ParserConfigurationException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        nestedSmooksVisitor.setNestedSmooks(new Smooks() {
+            @Override
+            public void filterSource(ExecutionContext executionContext, Source source, Result... results) throws SmooksException {
+                assertEquals("ISO-8859-1", executionContext.getContentEncoding());
+            }
+        });
+
+        ExecutionContext executionContext = new MockExecutionContext();
+        executionContext.setContentEncoding("ISO-8859-1");
+
+        nestedSmooksVisitor.executeExecutionLifecycleInitialize(executionContext);
+        nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, null);
     }
 
     @Test
