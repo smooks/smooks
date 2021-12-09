@@ -54,34 +54,34 @@ import java.util.function.Function;
 public interface MementoCaretaker {
 
     /**
-     * Stores a copy of a <code>VisitorMemento</code>. It is the client's responsibility to remove the saved 
-     * <code>VisitorMemento</code> once it is no longer needed either by calling {@link #forget(Fragment)} or 
+     * Stores a copy of a <code>Memento</code>. It is the client's responsibility to remove the saved
+     * <code>Memento</code> once it is no longer needed either by calling {@link #forget(Fragment)} or
      * {@link #forget(Memento)}.
      * 
-     * @param memento  the <code>VisitorMemento</code> to copy and store. After saving, mutations to this 
-     *                        <code>VisitorMemento</code> should not alter the saved copy.
+     * @param memento  the <code>Memento</code> to copy and store. After saving, mutations to this
+     *                 <code>Memento</code> should not alter the saved copy.
      */
     void capture(Memento memento);
 
     /**
-     * Mutates a <code>Memento</code> to match the state of a saved <code>VisitorMemento</code>. The 
-     * <code>VisitorMemento</code> parameter is restored from a saved <code>VisitorMemento</code> having an ID equal to 
-     * its ID as returned by {@link Memento#getAnchor()}. The <code>VisitorMemento</code> parameter remains unchanged 
-     * if no such saved <code>VisitorMemento</code> exists. 
+     * Mutates a <code>Memento</code> to match the state of a saved <code>Memento</code>. The
+     * <code>Memento</code> parameter is restored from a saved <code>Memento</code> having an ID equal to
+     * its ID as returned by {@link Memento#getAnchor()}. The <code>Memento</code> parameter remains unchanged
+     * if no such saved <code>Memento</code> exists.
      * 
-     * @param memento  the <code>VisitorMemento</code> to restore
+     * @param memento  the <code>Memento</code> to restore
      */
      void restore(Memento memento);
 
      boolean exists(Memento memento);
 
     /**
-     * Removes the <code>VisitorMemento</code> having an ID equal to the <code>VisitorMemento</code> parameter's ID as 
+     * Removes the <code>Memento</code> having an ID equal to the <code>Memento</code> parameter's ID as
      * returned by {@link Memento#getAnchor()}.
      * 
-     * @param visitorMemento  the <code>VisitorMemento</code> to be removed
+     * @param memento  the <code>Memento</code> to be removed
      */
-     void forget(Memento visitorMemento);
+     void forget(Memento memento);
 
     /**
      * Removes all <code>Memento</code>s bound to the <code>Fragment</code> parameter.
@@ -91,18 +91,18 @@ public interface MementoCaretaker {
      void forget(Fragment<?> fragment);
 
     /**
-     * Invokes a {@link Consumer} with a restored <code>VisitorMemento</code> and then saves the <code>VisitorMemento</code>. 
+     * Invokes a {@link Consumer} with a restored <code>Memento</code> and then saves the <code>Memento</code>.
      * This method offers a convenient way to aggregate and save data instead of writing:
      * <pre>
-     * mementoCaretaker.restore(visitorMemento);
-     * // add data to visitorMemento
+     * mementoCaretaker.restore(Memento);
+     * // add data to memento
      * // ...
-     * mementoCaretaker.save(visitorMemento);
+     * mementoCaretaker.save(memento);
      * </pre>
      * 
-     * @param defaultMemento  the <code>VisitorMemento</code> to be restored
-     * @param function               the function acting on the restored <code>VisitorMemento</code> and returning a new 
-     *                               <code>VisitorMemento replacing the earlier memento</code>
+     * @param defaultMemento  the <code>Memento</code> to be restored
+     * @param function        the function acting on the restored <code>Memento</code> and returning a new
+     *                        <code>Memento replacing the earlier memento</code>
      * 
      * @see #restore(Memento)
      * @see #capture(Memento)

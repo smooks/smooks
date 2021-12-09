@@ -48,36 +48,36 @@ import org.smooks.api.delivery.fragment.Fragment;
 /**
  * Holds the state of a {@link Visitor}. 
  * 
- * A <code>VisitorMemento</code> is saved and restored it at a later stage. A <code>VisitorMemento</code> is bound to a 
- * <code>Visitor<code></> and its fragment (e.g., {@link Fragment}). Management of <code>VisitorMemento</code>s
+ * A <code>Memento</code> is saved and restored it at a later stage. A <code>Memento</code> is bound to a
+ * <code>Visitor<code></> and its fragment (e.g., {@link Fragment}). Management of <code>Memento</code>s
  * should be delegated to {@link MementoCaretaker}.
  */
 public interface Memento  {
 
     /**
-     * Performs a deep clone of this <code>VisitorMemento</code>.
+     * Performs a deep clone of this <code>Memento</code>.
      * 
-     * @return a deep clone of this <code>VisitorMemento</code>
+     * @return a deep clone of this <code>Memento</code>
      */
     Memento copy();
 
     /**
-     * Combines a <code>VisitorMemento</code> state with this <code>VisitorMemento</code>
+     * Combines a <code>Memento</code> state with this <code>Memento</code>
      * 
-     * @param memento  the <code>VisitorMemento</code> restoring this <code>VisitorMemento</code>
+     * @param memento  the <code>Memento</code> restoring this <code>Memento</code>
      */
     void restore(Memento memento);
 
     /**
-     * @return the fragment which this <code>VisitorMemento</code> is bound to
+     * @return the fragment which this <code>Memento</code> is bound to
      */
     Fragment<?> getFragment();
 
     /**
-     * Gets the anchor value of this <code>VisitorMemento</code>. <code>VisitorMemento</code>s with equal anchor values 
+     * Gets the anchor value of this <code>Memento</code>. <code>Memento</code>s with equal anchor values
      * are considered to be capturing the state of the same object but at different points in time.
      * 
-     * @return the ID of this <code>VisitorMemento</code>
+     * @return the ID of this <code>Memento</code>
      */
     String getAnchor();
     
