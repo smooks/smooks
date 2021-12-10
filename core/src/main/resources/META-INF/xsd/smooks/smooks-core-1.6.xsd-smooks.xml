@@ -157,59 +157,6 @@
         <param name="attribute">terminateBefore</param>
     </resource-config>
 
-    <resource-config selector="smooks-core:setElementData">
-        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.engine.resource.visitor.set.SetElementData</param>
-    </resource-config>
-    <resource-config selector="smooks-core:setElementData">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">onElement</param>
-        <param name="mapTo">selector</param>
-    </resource-config>
-    <resource-config selector="smooks-core:setElementData">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">name</param>
-    </resource-config>
-    <resource-config selector="smooks-core:setElementData">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">namespace</param>
-    </resource-config>
-    <resource-config selector="smooks-core:setElementData/attribute">
-        <resource>org.smooks.engine.resource.visitor.set.SetElementDataConfigDigester</resource>
-    </resource-config>
-
-    <resource-config selector="smooks-core:remove">
-        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.engine.resource.visitor.remove.RemoveElement</param>
-    </resource-config>
-    <resource-config selector="smooks-core:remove">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">element</param>
-        <param name="mapTo">selector</param>
-    </resource-config>
-    <resource-config selector="smooks-core:remove">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">keepChildren</param>
-    </resource-config>
-
-    <resource-config selector="smooks-core:removeAttribute">
-        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.engine.resource.visitor.remove.RemoveAttribute</param>
-    </resource-config>
-    <resource-config selector="smooks-core:removeAttribute">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">onElement</param>
-        <param name="mapTo">selector</param>
-    </resource-config>
-    <resource-config selector="smooks-core:removeAttribute">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">name</param>
-    </resource-config>
-    <resource-config selector="smooks-core:removeAttribute">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">namespace</param>
-    </resource-config>
-
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:smooks">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.engine.resource.visitor.smooks.NestedSmooksVisitor</param>
