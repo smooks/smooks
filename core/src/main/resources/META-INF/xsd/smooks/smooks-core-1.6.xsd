@@ -35,34 +35,10 @@
         </xs:annotation>
     </xs:element>
 
-    <xs:element name="terminate" type="smooks-core:terminate" substitutionGroup="smooks:abstract-resource-config" >
+    <xs:element name="terminate" type="smooks-core:terminate" substitutionGroup="smooks:abstract-resource-config">
 		<xs:annotation>
     		<xs:documentation xml:lang="en">
     			Terminate filtering on visiting the targeted fragment (before/after - default after).
-    		</xs:documentation>
-    	</xs:annotation>
-	</xs:element>
-
-    <xs:element name="setElementData" type="smooks-core:setElementData" substitutionGroup="smooks:abstract-resource-config" >
-		<xs:annotation>
-    		<xs:documentation xml:lang="en">
-    			Set data (name and/or attribites) on the targeted element.
-    		</xs:documentation>
-    	</xs:annotation>
-	</xs:element>
-
-    <xs:element name="remove" type="smooks-core:remove" substitutionGroup="smooks:abstract-resource-config" >
-		<xs:annotation>
-    		<xs:documentation xml:lang="en">
-    			Set data (name and/or attribites) on the targeted element.
-    		</xs:documentation>
-    	</xs:annotation>
-	</xs:element>
-
-    <xs:element name="removeAttribute" type="smooks-core:removeAttribute" substitutionGroup="smooks:abstract-resource-config" >
-		<xs:annotation>
-    		<xs:documentation xml:lang="en">
-    			Set data (name and/or attributes) on the targeted element.
     		</xs:documentation>
     	</xs:annotation>
 	</xs:element>
@@ -299,123 +275,6 @@
     			</xs:attribute>
     		</xs:extension>
     	</xs:complexContent>
-    </xs:complexType>
-
-    <xs:complexType name="setElementData">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">Set element name and/or attribute data on an element.</xs:documentation>
-        </xs:annotation>
-        <xs:complexContent>
-            <xs:extension base="smooks:abstract-resource-config">
-                <xs:sequence>
-                    <xs:element name="attribute" type="smooks-core:attribute" minOccurs="0" maxOccurs="unbounded"/>
-                </xs:sequence>
-                <xs:attribute name="name" type="xs:string" use="optional" >
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            The new name for the element.  Can be a qualified name if the 'namespace' attribute is
-                            configured.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="namespace" type="xs:anyURI" use="optional" >
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            The new namespace for the element.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="onElement" type="xs:string" use="required" >
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            The element on which to set the data.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-
-    <xs:complexType name="attribute">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">Attribute to set on the element.</xs:documentation>
-        </xs:annotation>
-        <xs:attribute name="name" type="xs:string" use="required">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">
-                    The name ot the attribute. Can be a qualified name if the 'namespace' attribute is configured.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="namespace" type="xs:anyURI" use="optional" >
-            <xs:annotation>
-                <xs:documentation xml:lang="en">
-                    The namespace for the attribute.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="value" type="xs:string" use="required">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">
-                    The attribute value.  Can be a FreeMarker template.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-    </xs:complexType>
-
-    <xs:complexType name="remove">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">Remove an element.</xs:documentation>
-        </xs:annotation>
-        <xs:complexContent>
-            <xs:extension base="smooks:abstract-resource-config">
-                <xs:attribute name="element" type="xs:string" use="required" >
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            The element to be removed.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="keepChildren" type="xs:boolean" use="optional" >
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            Keep the removed element's child content.  Default is false.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-
-    <xs:complexType name="removeAttribute">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">Remove an attribute.</xs:documentation>
-        </xs:annotation>
-        <xs:complexContent>
-            <xs:extension base="smooks:abstract-resource-config">
-                <xs:attribute name="onElement" type="xs:string" use="required" >
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            The element on which the attribute is to be removed.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="name" type="xs:string" use="required">
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            The name ot the attribute. Can be a qualified name if the 'namespace' attribute is configured.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="namespace" type="xs:anyURI" use="optional" >
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            The namespace for the attribute.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-            </xs:extension>
-        </xs:complexContent>
     </xs:complexType>
 
     <xs:element name="delegate-reader" substitutionGroup="smooks:abstract-reader">
