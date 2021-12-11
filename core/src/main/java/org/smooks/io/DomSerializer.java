@@ -54,12 +54,12 @@ import java.io.Writer;
  * Default SerialisationUnit where none defined.
  * @author tfennelly
  */
-public class DomToXmlWriter {
+public class DomSerializer {
 
 	private final Boolean closeEmptyElements;
 	private final Boolean rewriteEntities;
 
-	public DomToXmlWriter(Boolean closeEmptyElements, Boolean rewriteEntities) {
+	public DomSerializer(Boolean closeEmptyElements, Boolean rewriteEntities) {
 		this.closeEmptyElements = closeEmptyElements;
 		this.rewriteEntities = rewriteEntities;
 	}

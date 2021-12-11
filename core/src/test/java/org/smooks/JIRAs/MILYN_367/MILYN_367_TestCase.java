@@ -53,7 +53,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
-import org.smooks.engine.delivery.sax.ng.SaxNgSerializerVisitor;
+import org.smooks.engine.delivery.sax.ng.ConsumeSerializerVisitor;
 import org.smooks.io.payload.StringResult;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -77,8 +77,8 @@ public class MILYN_367_TestCase {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "#document");
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "//*");
+		smooks.addVisitor(new ConsumeSerializerVisitor(), "#document");
+		smooks.addVisitor(new ConsumeSerializerVisitor(), "//*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -91,8 +91,8 @@ public class MILYN_367_TestCase {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "customer");
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "descendant-or-self::customer/*");
+		smooks.addVisitor(new ConsumeSerializerVisitor(), "customer");
+		smooks.addVisitor(new ConsumeSerializerVisitor(), "descendant-or-self::customer/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
@@ -105,8 +105,8 @@ public class MILYN_367_TestCase {
 		Smooks smooks = new Smooks();
 		StringResult result = new StringResult();
 		
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "items");
-		smooks.addVisitor(new SaxNgSerializerVisitor(), "descendant-or-self::items/*");
+		smooks.addVisitor(new ConsumeSerializerVisitor(), "items");
+		smooks.addVisitor(new ConsumeSerializerVisitor(), "descendant-or-self::items/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
 		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);

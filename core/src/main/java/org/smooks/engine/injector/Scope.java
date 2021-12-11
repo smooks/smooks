@@ -44,7 +44,7 @@ package org.smooks.engine.injector;
 
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.delivery.Filter;
-import org.smooks.io.DomToXmlWriter;
+import org.smooks.io.DomSerializer;
 import org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor;
 import org.smooks.api.Registry;
 import org.smooks.engine.lookup.GlobalParamsLookup;
@@ -69,7 +69,7 @@ public class Scope implements Map<Object, Object> {
 
         if (instance instanceof SaxNgVisitor) {
             final boolean closeEmptyElements = Boolean.parseBoolean(resourceConfig.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false"));
-            scope.put(DomToXmlWriter.class, new DomToXmlWriter(closeEmptyElements, entitiesRewrite));
+            scope.put(DomSerializer.class, new DomSerializer(closeEmptyElements, entitiesRewrite));
         }
     }
     
