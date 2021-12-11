@@ -116,7 +116,7 @@
             <xs:extension base="smooks:element-visitor" >
                 <xs:sequence>
                     <xs:element name="action" type="smooks-core:action" minOccurs="0" />
-                    <xs:element name="config">
+                    <xs:element name="config" minOccurs="0">
                         <xs:complexType>
                             <xs:sequence>
                                 <xs:element ref="smooks:smooks-resource-list"/>

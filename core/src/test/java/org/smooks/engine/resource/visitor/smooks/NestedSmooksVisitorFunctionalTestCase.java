@@ -131,4 +131,12 @@ public class NestedSmooksVisitorFunctionalTestCase {
 		assertEquals("<a><b><c/></b></a>", stringResult.getResult());
 		assertEquals("Hello World!", outputStream.toString());
 	}
+
+	@Test
+	public void testNoOp() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("no-op-nested-smooks-visitor-config.xml"));
+		StringResult stringResult = new StringResult();
+		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringResult);
+		assertEquals("<a><a><b><b><c></c><c/></b></b></a></a>", stringResult.getResult());
+	}
 }

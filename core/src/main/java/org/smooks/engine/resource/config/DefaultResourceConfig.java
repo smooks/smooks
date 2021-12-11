@@ -694,10 +694,10 @@ public class DefaultResourceConfig implements ResourceConfig {
     @Override
     public List<?> getParameterValues() {
         if (parameters == null) {
-            return null;
+            return Collections.emptyList();
+        } else {
+            return new ArrayList<>(parameters.values());
         }
-
-        return new ArrayList<>(parameters.values());
     }
 
     /**
@@ -708,21 +708,19 @@ public class DefaultResourceConfig implements ResourceConfig {
      */
     @Override
     public List<Parameter<?>> getParameters(String name) {
-        if (parameters == null) {
-            return null;
+        if (parameters != null) {
+            Object parameter = parameters.get(name);
+
+            if (parameter instanceof List) {
+                return (List<Parameter<?>>) parameter;
+            } else if (parameter instanceof Parameter) {
+                List<Parameter<?>> paramList = new ArrayList<>();
+                paramList.add((Parameter<?>) parameter);
+
+                return paramList;
+            }
         }
-        Object parameter = parameters.get(name);
-
-        if (parameter instanceof List) {
-            return (List<Parameter<?>>) parameter;
-        } else if (parameter instanceof Parameter) {
-            List<Parameter<?>> paramList = new ArrayList<>();
-            paramList.add((Parameter<?>) parameter);
-
-            return paramList;
-        }
-
-        return null;
+        return Collections.emptyList();
     }
 
 
