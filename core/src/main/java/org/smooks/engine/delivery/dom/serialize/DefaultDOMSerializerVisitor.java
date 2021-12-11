@@ -44,7 +44,7 @@ package org.smooks.engine.delivery.dom.serialize;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.Filter;
-import org.smooks.io.DomToXmlWriter;
+import org.smooks.io.DomSerializer;
 import org.w3c.dom.*;
 
 import javax.annotation.PostConstruct;
@@ -55,7 +55,7 @@ import java.io.Writer;
 import java.util.Optional;
 
 public class DefaultDOMSerializerVisitor implements DOMSerializerVisitor {
-    protected DomToXmlWriter domToXmlWriter;
+    protected DomSerializer domSerializer;
     protected Boolean closeEmptyElements = false;
     protected Boolean rewriteEntities = true;
 
@@ -71,37 +71,37 @@ public class DefaultDOMSerializerVisitor implements DOMSerializerVisitor {
     
     @PostConstruct
     public void postConstruct() {
-        domToXmlWriter = new DomToXmlWriter(closeEmptyElements, rewriteEntities);
+        domSerializer = new DomSerializer(closeEmptyElements, rewriteEntities);
     }
     
     @Override
     public void writeStartElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeStartElement(element, writer);
+        domSerializer.writeStartElement(element, writer);
     }
 
     @Override
     public void writeEndElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeEndElement(element, writer);
+        domSerializer.writeEndElement(element, writer);
     }
 
     @Override
     public void writeCharacterData(Node node, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeCharacterData(node, writer);
+        domSerializer.writeCharacterData(node, writer);
     }
 
     @Override
     public void writeElementComment(Comment comment, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeElementComment(comment, writer);
+        domSerializer.writeElementComment(comment, writer);
     }
 
     @Override
     public void writeElementEntityRef(EntityReference entityRef, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeElementEntityRef(entityRef, writer);
+        domSerializer.writeElementEntityRef(entityRef, writer);
     }
 
     @Override
     public void writeElementCDATA(CDATASection cdata, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeElementCDATA(cdata, writer);
+        domSerializer.writeElementCDATA(cdata, writer);
     }
 
     @Override

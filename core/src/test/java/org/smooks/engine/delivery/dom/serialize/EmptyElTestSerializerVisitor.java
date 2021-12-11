@@ -68,7 +68,7 @@ public class EmptyElTestSerializerVisitor extends DefaultDOMSerializerVisitor {
 		writer.write('<');
 		writer.write(element.getTagName());
 
-		domToXmlWriter.writeAttributes(element.getAttributes(), writer);
+		domSerializer.writeAttributes(element.getAttributes(), writer);
 	}
 
 	/* (non-Javadoc)

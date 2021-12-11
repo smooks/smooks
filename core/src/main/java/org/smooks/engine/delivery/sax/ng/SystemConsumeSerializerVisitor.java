@@ -48,7 +48,12 @@ import org.w3c.dom.Node;
 import java.io.Writer;
 import java.util.function.Consumer;
 
-public class SystemSaxNgSerializerVisitor extends SaxNgSerializerVisitor {
+/**
+ * <code>SystemConsumeSerializerVisitor</code> consumes and serializes a node iff
+ * {@link org.smooks.api.delivery.ContentDeliveryConfig#isDefaultSerializationOn()} in this execution context
+ * returns true.
+ */
+public class SystemConsumeSerializerVisitor extends ConsumeSerializerVisitor {
     
     @Override
     protected void onWrite(final Consumer<Writer> writerConsumer, final ExecutionContext executionContext, final Node node) {

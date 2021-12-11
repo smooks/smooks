@@ -71,7 +71,7 @@ import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.engine.xml.Namespace;
-import org.smooks.io.DomToXmlWriter;
+import org.smooks.io.DomSerializer;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.ResourceWriter;
 import org.smooks.io.Stream;
@@ -147,7 +147,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
 
     protected ResourceConfigSeq resourceConfigSeq;
     protected Smooks nestedSmooks;
-    protected DomToXmlWriter nestedSmooksVisitorWriter;
+    protected DomSerializer domSerializer;
     
     @PostConstruct
     public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
@@ -174,7 +174,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             }
         }
         
-        nestedSmooksVisitorWriter = new DomToXmlWriter(false, rewriteEntities);
+        domSerializer = new DomSerializer(false, rewriteEntities);
     }
 
     protected InterceptorVisitorChainFactory createInterceptorVisitorChainFactory(final ApplicationContext applicationContext) {
@@ -243,7 +243,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
                     final FragmentWriter fragmentWriter = new FragmentWriter(executionContext, rootNodeFragment);
                     if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn()) {
                         try {
-                            nestedSmooksVisitorWriter.writeStartElement(element, fragmentWriter);
+                            domSerializer.writeStartElement(element, fragmentWriter);
                         } catch (IOException e) {
                             throw new SmooksException(e);
                         }
@@ -332,7 +332,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         try {
             fragmentWriter.park();
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.PREPEND_AFTER) {
-                nestedSmooksVisitorWriter.writeStartElement(rootElement, fragmentWriter);
+                domSerializer.writeStartElement(rootElement, fragmentWriter);
             }
             executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(rootNodeFragment, this, fragmentWriter));
             filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriter, executionContext, "visitBefore");
@@ -350,11 +350,11 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterMemento.getState(), executionContext, "visitAfter");
         try {
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.PREPEND_BEFORE) {
-                nestedSmooksVisitorWriter.writeStartElement(rootElement, fragmentWriterMemento.getState());
+                domSerializer.writeStartElement(rootElement, fragmentWriterMemento.getState());
             }
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn()) {
                 fragmentWriterMemento.getState().write(XmlUtil.serialize(rootElement.getChildNodes(), Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()))));
-                nestedSmooksVisitorWriter.writeEndElement(rootElement, fragmentWriterMemento.getState());
+                domSerializer.writeEndElement(rootElement, fragmentWriterMemento.getState());
             }
         } catch (IOException e) {
             throw new SmooksException(e);
@@ -368,11 +368,11 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
 
         try {
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.APPEND_AFTER) {
-                nestedSmooksVisitorWriter.writeEndElement(rootElement, fragmentWriterMemento.getState());
+                domSerializer.writeEndElement(rootElement, fragmentWriterMemento.getState());
             }
             filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterMemento.getState(), executionContext, "visitAfter");
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.APPEND_BEFORE) {
-                nestedSmooksVisitorWriter.writeEndElement(rootElement, fragmentWriterMemento.getState());
+                domSerializer.writeEndElement(rootElement, fragmentWriterMemento.getState());
             }
         } catch (IOException e) {
             throw new SmooksException(e);

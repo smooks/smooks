@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery.dom.serialize;
 
-import org.smooks.io.DomToXmlWriter;
+import org.smooks.io.DomSerializer;
 import org.w3c.dom.NamedNodeMap;
 
 import javax.annotation.PostConstruct;
@@ -57,7 +57,7 @@ public class AddAttributeSerializer extends DefaultDOMSerializerVisitor {
     @PostConstruct
     @Override
     public void postConstruct() {
-        domToXmlWriter = new DomToXmlWriter(closeEmptyElements, rewriteEntities) {
+        domSerializer = new DomSerializer(closeEmptyElements, rewriteEntities) {
             @Override
             public void writeAttributes(NamedNodeMap attributes, Writer writer) throws IOException {
                 super.writeAttributes(attributes, writer);

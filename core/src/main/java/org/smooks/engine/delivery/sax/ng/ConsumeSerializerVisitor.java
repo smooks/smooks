@@ -55,7 +55,7 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.AbstractVisitorMemento;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
-import org.smooks.io.DomToXmlWriter;
+import org.smooks.io.DomSerializer;
 import org.smooks.io.FragmentWriter;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
@@ -68,15 +68,21 @@ import java.io.Writer;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class SaxNgSerializerVisitor implements ElementVisitor, DOMElementVisitor, SerializerVisitor {
+/**
+ * Consumes a node and serializes it to the execution result stream.
+ * <p>
+ * Once this <code>ConsumeSerializerVisitor</code> consumes a node, no other <code>ConsumeSerializerVisitor</code>
+ * instance, including this <code>ConsumeSerializerVisitor</code>, can re-serialize the node.
+ */
+public class ConsumeSerializerVisitor implements ElementVisitor, DOMElementVisitor, SerializerVisitor {
    
-    protected DomToXmlWriter domToXmlWriter;
+    protected DomSerializer domSerializer;
     private Boolean closeEmptyElements = true;
     private Boolean rewriteEntities = true;
 
     @PostConstruct
     public void postConstruct() {
-        domToXmlWriter = new DomToXmlWriter(closeEmptyElements, rewriteEntities);
+        domSerializer = new DomSerializer(closeEmptyElements, rewriteEntities);
     }
     
     @Inject
@@ -91,32 +97,32 @@ public class SaxNgSerializerVisitor implements ElementVisitor, DOMElementVisitor
 
     @Override
     public void writeStartElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeStartElement(element, writer);
+        domSerializer.writeStartElement(element, writer);
     }
 
     @Override
     public void writeEndElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeEndElement(element, writer);
+        domSerializer.writeEndElement(element, writer);
     }
 
     @Override
     public void writeCharacterData(Node node, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeCharacterData(node, writer);
+        domSerializer.writeCharacterData(node, writer);
     }
 
     @Override
     public void writeElementComment(Comment comment, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeElementComment(comment, writer);
+        domSerializer.writeElementComment(comment, writer);
     }
 
     @Override
     public void writeElementEntityRef(EntityReference entityRef, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeElementEntityRef(entityRef, writer);
+        domSerializer.writeElementEntityRef(entityRef, writer);
     }
 
     @Override
     public void writeElementCDATA(CDATASection cdata, Writer writer, ExecutionContext executionContext) throws IOException {
-        domToXmlWriter.writeElementCDATA(cdata, writer);
+        domSerializer.writeElementCDATA(cdata, writer);
     }
 
     @Override
@@ -162,21 +168,21 @@ public class SaxNgSerializerVisitor implements ElementVisitor, DOMElementVisitor
                     throw new SmooksException(e.getMessage(), e);
                 }
 
-                return new ElementMemento(nodeFragment, SaxNgSerializerVisitor.this, true);
+                return new ElementMemento(nodeFragment, ConsumeSerializerVisitor.this, true);
             } else {
                 return elementMemento;
             }
         });
     }
 
-    public void writeEndElement(final Element element, final ExecutionContext executionContext, Writer writer) {
+    public void writeEndElement(final Element element, final ExecutionContext executionContext, final Writer writer) {
         final ElementMemento elementMemento = new ElementMemento(new NodeFragment(element), this, false);
         executionContext.getMementoCaretaker().restore(elementMemento);
         try {
             if (closeEmptyElements && !elementMemento.isOpen()) {
                 writer.write('<');
                 writer.write(element.getTagName());
-                domToXmlWriter.writeAttributes(element.getAttributes(), writer);
+                domSerializer.writeAttributes(element.getAttributes(), writer);
                 writer.write("/>");
             } else {
                 if (!elementMemento.isOpen()) {
@@ -209,14 +215,14 @@ public class SaxNgSerializerVisitor implements ElementVisitor, DOMElementVisitor
                         throw new SmooksException(e);
                     }
 
-                    return new ElementMemento(new NodeFragment(characterData.getParentNode()), SaxNgSerializerVisitor.this, true);
+                    return new ElementMemento(new NodeFragment(characterData.getParentNode()), ConsumeSerializerVisitor.this, true);
                 } else {
                     return elementMemento;
                 }
             });
             try {
                 final Writer charDataWriter = new FragmentWriter(executionContext, new NodeFragment(characterData));
-                domToXmlWriter.writeCharacterData(characterData, charDataWriter);
+                domSerializer.writeCharacterData(characterData, charDataWriter);
                 charDataWriter.flush();
             } catch (IOException e) {
                 throw new SmooksException(e.getMessage(), e);
@@ -235,7 +241,7 @@ public class SaxNgSerializerVisitor implements ElementVisitor, DOMElementVisitor
                 } catch (IOException e) {
                     throw new SmooksException(e);
                 }
-                return new ElementMemento(new NodeFragment(parentElement), SaxNgSerializerVisitor.this, true);
+                return new ElementMemento(new NodeFragment(parentElement), ConsumeSerializerVisitor.this, true);
             } else {
                 return elementMemento;
             }
