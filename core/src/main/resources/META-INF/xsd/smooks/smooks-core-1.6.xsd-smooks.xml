@@ -220,7 +220,6 @@
         <param name="mapTo">outputStreamResource</param>
     </resource-config>
 
-    
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:delegate-reader">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.engine.resource.reader.DelegateReader</param>
@@ -234,5 +233,15 @@
         <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromXml</resource>
         <param name="mapTo">resourceConfigs</param>
     </resource-config>
-    
+
+    <resource-config selector="/smooks:smooks-resource-list/smooks-core:echo">
+        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.engine.delivery.sax.ng.SimpleSerializerVisitor</param>
+    </resource-config>
+    <resource-config selector="/smooks:smooks-resource-list/smooks-core:echo">
+        <resource>org.smooks.engine.resource.extension.SetOnResourceConfig</resource>
+        <param name="setOn">selector</param>
+        <param name="value">*</param>
+    </resource-config>
+
 </smooks-resource-list>
