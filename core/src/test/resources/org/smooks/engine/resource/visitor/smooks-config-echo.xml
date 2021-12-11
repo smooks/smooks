@@ -3,7 +3,7 @@
   ========================LICENSE_START=================================
   Core
   %%
-  Copyright (C) 2020 Smooks
+  Copyright (C) 2020 - 2021 Smooks
   %%
   Licensed under the terms of the Apache License Version 2.0, or
   the GNU Lesser General Public License version 3.0 or later.
@@ -44,8 +44,5 @@
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
-
-    <core:setElementData onElement="b" name="c" />
-    <core:setElementData onElement="e" name="z" />
-
+    <core:echo/>
 </smooks-resource-list>

@@ -47,20 +47,17 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.memento.Memento;
-import org.smooks.api.resource.visitor.SerializerVisitor;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
-import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.AbstractVisitorMemento;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
-import org.smooks.io.DomSerializer;
 import org.smooks.io.FragmentWriter;
 import org.w3c.dom.CharacterData;
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
@@ -74,66 +71,9 @@ import java.util.function.Consumer;
  * Once this <code>ConsumeSerializerVisitor</code> consumes a node, no other <code>ConsumeSerializerVisitor</code>
  * instance, including this <code>ConsumeSerializerVisitor</code>, can re-serialize the node.
  */
-public class ConsumeSerializerVisitor implements ElementVisitor, DOMElementVisitor, SerializerVisitor {
-   
-    protected DomSerializer domSerializer;
-    private Boolean closeEmptyElements = true;
-    private Boolean rewriteEntities = true;
+public class ConsumeSerializerVisitor extends SimpleSerializerVisitor implements DOMElementVisitor {
 
-    @PostConstruct
-    public void postConstruct() {
-        domSerializer = new DomSerializer(closeEmptyElements, rewriteEntities);
-    }
-    
-    @Inject
-    public void setCloseEmptyElements(@Named(Filter.CLOSE_EMPTY_ELEMENTS) Optional<Boolean> closeEmptyElements) {
-        this.closeEmptyElements = closeEmptyElements.orElse(this.closeEmptyElements);
-    }
-
-    @Inject
-    public void setRewriteEntities(@Named(Filter.ENTITIES_REWRITE) Optional<Boolean> rewriteEntities) {
-        this.rewriteEntities = rewriteEntities.orElse(this.rewriteEntities);
-    }
-
-    @Override
-    public void writeStartElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeStartElement(element, writer);
-    }
-
-    @Override
-    public void writeEndElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeEndElement(element, writer);
-    }
-
-    @Override
-    public void writeCharacterData(Node node, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeCharacterData(node, writer);
-    }
-
-    @Override
-    public void writeElementComment(Comment comment, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeElementComment(comment, writer);
-    }
-
-    @Override
-    public void writeElementEntityRef(EntityReference entityRef, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeElementEntityRef(entityRef, writer);
-    }
-
-    @Override
-    public void writeElementCDATA(CDATASection cdata, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeElementCDATA(cdata, writer);
-    }
-
-    @Override
-    public void writeElementNode(Node node, Writer writer, ExecutionContext executionContext) throws IOException {
-        throw new IOException("writeElementNode not implemented yet. Node: " + node.getNodeValue() + ", node: [" + node + "]");
-    }
-
-    @Override
-    public boolean writeChildElements() {
-        return true;
-    }
+    protected Boolean closeEmptyElements = true;
 
     protected static class ElementMemento extends AbstractVisitorMemento {
         private Boolean isOpen;
@@ -158,6 +98,11 @@ public class ConsumeSerializerVisitor implements ElementVisitor, DOMElementVisit
         }
     }
 
+    @Inject
+    public void setCloseEmptyElements(@Named(Filter.CLOSE_EMPTY_ELEMENTS) Optional<Boolean> closeEmptyElements) {
+        this.closeEmptyElements = closeEmptyElements.orElse(this.closeEmptyElements);
+    }
+
     public void writeStartElement(final Element element, final ExecutionContext executionContext) {
         final Fragment<Node> nodeFragment = new NodeFragment(element);
         executionContext.getMementoCaretaker().stash(new ElementMemento(nodeFragment, this, false), elementMemento -> {
@@ -175,7 +120,7 @@ public class ConsumeSerializerVisitor implements ElementVisitor, DOMElementVisit
         });
     }
 
-    public void writeEndElement(final Element element, final ExecutionContext executionContext, final Writer writer) {
+    protected void closeElement(final Element element, final Writer writer, final ExecutionContext executionContext) {
         final ElementMemento elementMemento = new ElementMemento(new NodeFragment(element), this, false);
         executionContext.getMementoCaretaker().restore(elementMemento);
         try {
@@ -250,7 +195,7 @@ public class ConsumeSerializerVisitor implements ElementVisitor, DOMElementVisit
 
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) throws SmooksException {
-        onWrite(nodeWriter -> writeEndElement(element, executionContext, nodeWriter), executionContext, element);
+        onWrite(nodeWriter -> closeElement(element, nodeWriter, executionContext), executionContext, element);
     }
     
     protected void onWrite(final Consumer<Writer> writerConsumer, final ExecutionContext executionContext, final Node node) {
