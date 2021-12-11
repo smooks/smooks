@@ -111,12 +111,12 @@ public class GenericReaderConfiguratorTestCase {
         if(numFeaturesOn != 0) {
             assertEquals(numFeaturesOn, config.getParameters(AbstractParser.FEATURE_ON).size());
         } else {
-            assertNull(config.getParameters(AbstractParser.FEATURE_ON));
+            assertTrue(config.getParameters(AbstractParser.FEATURE_ON).isEmpty());
         }
         if(numFeaturesOff != 0) {
             assertEquals(numFeaturesOff, config.getParameters(AbstractParser.FEATURE_OFF).size());
         } else {
-            assertNull(config.getParameters(AbstractParser.FEATURE_OFF));
+            assertTrue(config.getParameters(AbstractParser.FEATURE_OFF).isEmpty());
         }
     }
 }

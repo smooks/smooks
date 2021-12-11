@@ -68,6 +68,8 @@ import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
 import org.smooks.engine.delivery.sax.ng.session.SessionInterceptor;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.engine.xml.Namespace;
@@ -98,6 +100,7 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 
 public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer, ExecutionLifecycleInitializable {
@@ -152,8 +155,15 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     @PostConstruct
     public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
         if (nestedSmooks == null) {
-            final ByteArrayInputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
-            resourceConfigSeq = XMLConfigDigester.digestConfig(smooksResourceList, "./", new HashMap<>(), applicationContext.getClassLoader());
+            if (!resourceConfig.getParameters("smooksResourceList").isEmpty()) {
+                final ByteArrayInputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
+                resourceConfigSeq = XMLConfigDigester.digestConfig(smooksResourceList, "./", new HashMap<>(), applicationContext.getClassLoader());
+            } else {
+                final ResourceConfig resourceConfig = new DefaultResourceConfig("*", new Properties());
+                resourceConfig.setResource("org.smooks.engine.delivery.sax.ng.SimpleSerializerVisitor");
+                resourceConfigSeq = new DefaultResourceConfigSeq("./");
+                resourceConfigSeq.add(resourceConfig);
+            }
             nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
 
             for (ResourceConfig resourceConfig : resourceConfigSeq) {
