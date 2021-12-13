@@ -42,15 +42,14 @@
  */
 package org.smooks.engine.lookup;
 
+import org.smooks.api.Registry;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
-import org.smooks.api.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.function.Function;
 
 /**

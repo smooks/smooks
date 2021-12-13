@@ -164,7 +164,7 @@ class AnnotatedMethodImpl implements AnnotatedMethod {
 
 			Map<Class<?>, Annotation> map = result[i];
 			if (map == null) {
-				map = new HashMap<Class<?>, Annotation>();
+				map = new HashMap<>();
 				result[i] = map;
 			}
 

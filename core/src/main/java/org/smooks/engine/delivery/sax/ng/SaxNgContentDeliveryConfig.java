@@ -62,15 +62,23 @@ import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.delivery.ordering.Sorter;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
-import org.smooks.engine.resource.config.xpath.predicate.PositionPredicateEvaluator;
 import org.smooks.engine.resource.config.xpath.ElementPositionCounter;
+import org.smooks.engine.resource.config.xpath.predicate.PositionPredicateEvaluator;
+import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {

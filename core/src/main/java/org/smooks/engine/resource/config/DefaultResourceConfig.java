@@ -45,11 +45,11 @@ package org.smooks.engine.resource.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.profile.Profile;
-import org.smooks.api.resource.config.*;
+import org.smooks.api.resource.config.Parameter;
+import org.smooks.api.resource.config.ProfileTargetingExpression;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.ResourceConfigChangeListener;
 import org.smooks.api.resource.config.xpath.SelectorPath;
-import org.smooks.api.resource.reader.SmooksXMLReader;
-import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.classpath.ClasspathUtils;
 import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
@@ -65,7 +65,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 @SuppressWarnings({ "WeakerAccess", "unused", "deprecation", "unchecked" })
 public class DefaultResourceConfig implements ResourceConfig {

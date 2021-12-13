@@ -46,7 +46,6 @@ import org.smooks.api.ApplicationContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.engine.delivery.DefaultContentHandlerBinding;

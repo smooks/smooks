@@ -68,7 +68,6 @@ import org.smooks.io.payload.StringResult;
 import org.smooks.tck.MockExecutionContext;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -83,7 +82,8 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class NestedSmooksVisitorTestCase {
 

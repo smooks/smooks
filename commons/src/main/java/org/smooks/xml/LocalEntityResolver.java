@@ -50,6 +50,8 @@ import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Hashtable;
 
 /**
@@ -139,7 +141,7 @@ public abstract class LocalEntityResolver implements EntityResolver {
 				}
 			}
 			if (localEntityFolder != null && fileSysEntity.exists()) {
-				entityStream = new FileInputStream(fileSysEntity);
+				entityStream = Files.newInputStream(Paths.get(fileSysEntity.toURI()));
 			} else if (entityCPLocation != null) {
 				entityStream = ClassUtil.getResourceAsStream(entityCPLocation + entityName, getClass());
 				if (entityStream == null) {
