@@ -46,6 +46,9 @@ import org.smooks.api.profile.ProfileSet;
 
 import java.util.List;
 
+/**
+ * An ordered list of {@link ResourceConfig}.
+ */
 public interface ResourceConfigSeq extends Iterable<ResourceConfig> {
 
     void add(ResourceConfig resourceConfig);

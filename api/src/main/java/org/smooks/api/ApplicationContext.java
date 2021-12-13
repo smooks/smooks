@@ -54,9 +54,9 @@ import java.util.Collection;
 
 /**
  * Application-scoped service locator.
- * 
+ * <p>
  * Clients obtain references to application services like {@link Registry} from the <code>ApplicationContext</code>. A 
- * resource obtains a reference to an <code>ApplicationContext</code> by annotating an 
+ * Smooks resource obtains a reference to an <code>ApplicationContext</code> by annotating an
  * <code>ApplicationContext</code> field in the resource class with {@link javax.inject.Inject}.
  */
 @ThreadSafe

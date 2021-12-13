@@ -45,14 +45,29 @@ package org.smooks.api;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Represents a type-safe key for mapping to an object.
+ *
+ * @param <T> type of key
+ * @see       org.smooks.api.TypedMap
+ */
 public final class TypedKey<T> {
     private final String name;
     private int hash;
 
+    /**
+     * Constructs a <code>TypedKey</code> with a random UUID for its name.
+     */
     public TypedKey() {
         this(UUID.randomUUID().toString());
     }
-    
+
+
+    /**
+     * Constructs a <code>TypedKey</code> with a custom name.
+     *
+     * @param name identifier to give to this <code>TypedKey</code>
+     */
     public TypedKey(String name) {
         Objects.requireNonNull(name);
         this.name = name;

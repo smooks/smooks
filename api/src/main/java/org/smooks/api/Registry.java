@@ -47,6 +47,7 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.xml.sax.SAXException;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -54,30 +55,81 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * A general purpose store for holding system and user objects such as {@link ResourceConfig}s and 
- * {@link ContentHandler}s. 
- * 
- * Clients should call {@link #deRegisterObject(Object)} to remove registered objects once they are no longer needed.
+ * Holds system and user objects such as {@link ResourceConfig} and {@link ContentHandler}.
+ * <p>
+ * A registry is bound to the application context. It allows Smooks to discover and reference registered objects during a
+ * filter execution. Clients should call {@link #deRegisterObject(Object)} to remove a registered object once it is no longer
+ * needed.
  */
 public interface Registry {
 
+    /**
+     * Registers an object with its name derived from the object's {@link Resource#name()} attribute or the object's class name.
+     *
+     * @param value object to register
+     *
+     * @throws SmooksException if the value with the assigned name already exists
+     * @throws IllegalArgumentException if the value is null
+     */
     void registerObject(Object value);
 
-    void registerObject(Object key, Object value);
+    /**
+     * Registers an object.
+     *
+     * @param name name under which the object is registered
+     * @param value object to register
+     *
+     * @throws SmooksException if the value with the assigned name already exists
+     * @throws IllegalArgumentException if the name or the value is null
+     */
+    void registerObject(Object name, Object value);
 
-    void deRegisterObject(Object key);
+    /**
+     * @param name
+     */
+    void deRegisterObject(Object name);
 
+    /**
+     * @param function
+     * @param <R>
+     * @return
+     */
     <R> R lookup(Function<Map<Object, Object>, R> function);
 
-    <T> T lookup(Object key);
+    /**
+     * @param name
+     * @param <T>
+     * @return
+     */
+    <T> T lookup(Object name);
 
+    /**
+     * @param baseURI
+     * @param resourceConfigStream
+     * @return
+     * @throws SAXException
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     ResourceConfigSeq registerResources(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException, URISyntaxException;
 
+    /**
+     * @param resourceConfig
+     */
     void registerResourceConfig(ResourceConfig resourceConfig);
 
-    void registerResourceConfigList(ResourceConfigSeq resourceConfigList);
+    /**
+     * @param resourceConfigSeq
+     */
+    void registerResourceConfigSeq(ResourceConfigSeq resourceConfigSeq);
 
+    /**
+     *
+     */
     void close();
 
+    /**
+     * @return
+     */
     ClassLoader getClassLoader();
 }

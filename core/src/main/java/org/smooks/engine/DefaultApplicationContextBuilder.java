@@ -123,10 +123,10 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     }
     
     private void registerSystemResources(final Registry registry) {
-        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/null-dom.xml", registry.getClassLoader()).create());
-        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/null-sax.xml", registry.getClassLoader()).create());
-        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/system-param-decoders.xml", registry.getClassLoader()).create());
-        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/system-serializers.xml", registry.getClassLoader()).create());
-        registry.registerResourceConfigList(new SystemResourceConfigListFactory("/system-interceptors.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/null-dom.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/null-sax.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/system-param-decoders.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/system-serializers.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/system-interceptors.xml", registry.getClassLoader()).create());
     }
 }

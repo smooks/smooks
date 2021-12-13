@@ -43,14 +43,10 @@
 package org.smooks.api;
 
 /**
- * Smooks resource configuration exception.
- * @author tfennelly
+ * Exception occurring during the construction of a Smooks configuration.
  */
 public class SmooksConfigException extends SmooksException {
 
-    /**
-     * Serial UID.
-     */
     private static final long serialVersionUID = 1L;
     
     public SmooksConfigException(String message, Throwable cause) {

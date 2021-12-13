@@ -43,26 +43,16 @@
 package org.smooks.api;
 
 /**
- * Smooks Exception.
- * @author tfennelly
+ * Exception originating from the Smooks framework.
  */
 public class SmooksException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-    /**
-     * Public constructor.
-     * @param message Exception message.
-     */
     public SmooksException(String message) {
         super(message);
     }
 
-    /**
-	 * Public constructor.
-	 * @param message Exception message.
-	 * @param cause Exception cause chain.
-	 */
 	public SmooksException(String message, Throwable cause) {
 		super(message, cause);
 	}
