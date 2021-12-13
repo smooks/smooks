@@ -62,8 +62,7 @@ public abstract class AssertArgument {
 	 * @throws IllegalArgumentException
 	 *             Argument is null.
 	 */
-	public static void isNotNull(Object arg, String argName)
-			throws IllegalArgumentException {
+	public static void isNotNull(Object arg, String argName) throws IllegalArgumentException {
 		if (arg == null) {
 			throw new IllegalArgumentException("Undefined '" + argName + "' argument in method call.");
 		}

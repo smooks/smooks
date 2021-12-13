@@ -46,7 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Interface for locating stream resources external to the container..
+ * Interface for locating stream resources external to the container.
  * 
  * @author tfennelly
  */

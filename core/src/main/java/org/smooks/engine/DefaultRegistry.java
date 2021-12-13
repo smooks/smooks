@@ -116,24 +116,24 @@ public class DefaultRegistry implements Registry {
         if (value.getClass().isAnnotationPresent(Resource.class) && value.getClass().getAnnotation(Resource.class).name().length() > 0) {
             name = value.getClass().getAnnotation(Resource.class).name();
         } else {
-            name = value.getClass().getName() + ":" + UUID.randomUUID().toString();
+            name = value.getClass().getName() + ":" + UUID.randomUUID();
         }
         registerObject(name, value);
     }
 
     @Override
-    public void registerObject(final Object key, final Object value) {
-        AssertArgument.isNotNull(key, "key");
+    public void registerObject(final Object name, final Object value) {
+        AssertArgument.isNotNull(name, "name");
         AssertArgument.isNotNull(value, "value");
 
-        if (registry.putIfAbsent(key, value) != null) {
-            throw new SmooksException(String.format("Duplicate registration: %s", key));
+        if (registry.putIfAbsent(name, value) != null) {
+            throw new SmooksException(String.format("Duplicate registration: %s", name));
         }
     }
 
     @Override
-    public void deRegisterObject(Object key) {
-        registry.remove(key);
+    public void deRegisterObject(Object name) {
+        registry.remove(name);
     }
 
     @Override
@@ -142,8 +142,8 @@ public class DefaultRegistry implements Registry {
     }
 
     @Override
-    public <T> T lookup(final Object key) {
-        return (T) registry.get(key);
+    public <T> T lookup(final Object name) {
+        return (T) registry.get(name);
     }
 
     /**
@@ -195,7 +195,7 @@ public class DefaultRegistry implements Registry {
         AssertArgument.isNotNull(resourceConfigStream, "resourceConfigStream");
 
         ResourceConfigSeq resourceConfigList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
-        registerResourceConfigList(resourceConfigList);
+        registerResourceConfigSeq(resourceConfigList);
 
         return resourceConfigList;
     }
@@ -230,16 +230,16 @@ public class DefaultRegistry implements Registry {
     /**
      * Add a {@link ResourceConfigSeq} to this registry.
      *
-     * @param resourceConfigList All the ResourceConfigList instances added on this registry.
+     * @param resourceConfigSeq All the ResourceConfigList instances added on this registry.
      */
     @Override
-    public void registerResourceConfigList(ResourceConfigSeq resourceConfigList) {
-        lookup(new ResourceConfigListsLookup()).add(resourceConfigList);
-        lookup(new LifecycleManagerLookup()).applyPhase(resourceConfigList, new PostConstructLifecyclePhase(new Scope(this)));
+    public void registerResourceConfigSeq(ResourceConfigSeq resourceConfigSeq) {
+        lookup(new ResourceConfigListsLookup()).add(resourceConfigSeq);
+        lookup(new LifecycleManagerLookup()).applyPhase(resourceConfigSeq, new PostConstructLifecyclePhase(new Scope(this)));
 
         // XSD v1.0 added profiles to the resource config.  If there were any, add them to the
         // profile store.
-        addProfileSets(resourceConfigList.getProfiles());
+        addProfileSets(resourceConfigSeq.getProfiles());
     }
 
     /**

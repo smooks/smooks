@@ -46,7 +46,10 @@ package org.smooks.api;
  * Constructs an {@link ApplicationContext}.
  */
 public interface ApplicationContextBuilder {
-    
+
+    /**
+     * @return a new application context
+     */
     ApplicationContext build();
     
 }

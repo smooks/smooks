@@ -43,21 +43,100 @@
 package org.smooks.api.resource.config;
 
 import org.smooks.api.resource.config.xpath.SelectorPath;
+import org.smooks.api.resource.reader.SmooksXMLReader;
+import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * A configuration for a Smooks resource.
+ * <p>
+ * <code>ResourceConfig</code> controls the behaviour of a Smooks resource, including:
+ * <ul>
+ *     <li>which event/s from the input stream target the resource</li>
+ *     <li>the parameters injected into the resource</li>
+ *     <li>the type of resource that is instantiated</li>
+ * </ul>
+ * <p>
+ * A <code>ResourceConfig</code> can be configured through Java code but it is easier to configure through XML. The
+ * following are a few sample configurations. Explanations follow the samples.
+ * <p/>
+ * <h3>Basic Sample</h3>
+ * <pre>
+ * <i>&lt;?xml version='1.0'?&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"&gt;
+ *      <b>&lt;resource-config <a href="#selector">selector</a>="order/order-header"&gt;
+ *          &lt;resource type="xsl"&gt;<a target="new" href="https://www.smooks.org#Smooks-smookscartridges">/com/acme/transform/OrderHeaderTransformer.xsl</a>&lt;/resource&gt;
+ *      &lt;/resource-config&gt;</b>
+ *
+ *      <b>&lt;resource-config <a href="#selector">selector</a>="order-items/order-item"&gt;
+ *          &lt;resource&gt;{@link DOMElementVisitor com.acme.transform.MyJavaOrderItemTransformer}&lt;/resource&gt;
+ *      &lt;/resource-config&gt;</b>
+ * &lt;/smooks-resource-list&gt;</i>
+ * </pre>
+ * The <b>resource-config</b> XML element maps directly to an instance of <code>ResourceConfig</code>.
+ * <p>
+ * <h3>More Complex Sample with Profiling</h3>
+ * <pre>
+ * <i>&lt;?xml version='1.0'?&gt;
+ * &lt;smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"&gt;
+ *      <b>&lt;profiles&gt;
+ *          &lt;profile base-profile="message-exchange-1" sub-profiles="message-producer-A, message-consumer-B" /&gt;
+ *          &lt;profile base-profile="message-exchange-2" sub-profiles="message-producer-A, message-consumer-C" /&gt;
+ *      &lt;/profiles&gt;</b>
+ *
+ * (1)  &lt;resource-config selector="order/order-header" <b>target-profile="message-producer-A"</b>&gt;
+ *          &lt;resource&gt;com.acme.transform.AddIdentityInfo&lt;/resource&gt;
+ *      &lt;/resource-config&gt;
+ *
+ * (2)  &lt;resource-config selector="order-items/order-item" <b>target-profile="message-consumer-B"</b>&gt;
+ *          &lt;resource&gt;com.acme.transform.MyJavaOrderItemTransformer&lt;/resource&gt;
+ *          &lt;param name="execution-param-X"&gt;param-value-forB&lt;/param&gt;
+ *      &lt;/resource-config&gt;
+ *
+ * (3)  &lt;resource-config selector="order-items/order-item" <b>target-profile="message-consumer-C"</b>&gt;
+ *          &lt;resource&gt;com.acme.transform.MyJavaOrderItemTransformer&lt;/resource&gt;
+ *          &lt;param name="execution-param-X"&gt;param-value-forC&lt;/param&gt;
+ *      &lt;/resource-config&gt;
+ *
+ * &lt;/smooks-resource-list&gt;</i></pre>
+ * <p>
+ * The first resource is targeted for both "message-exchange-1" and "message-exchange-2" profiles. The second resource
+ * is only targeted for "message-exchange-1" profile and the third resource only for "message-exchange-2" profile
+ * (see {@link org.smooks.Smooks#createExecutionContext(String)}).
+ * <p>
+ * <h4 id="attribdefs">Attribute Definitions</h4>
+ * <ul>
+ * <li><b id="useragent">target-profile</b>: a list of one or more {@link ProfileTargetingExpression profile targeting expressions}
+ * (supports wildcards "*").
+ * </ol>
+ * </li>
+ * <br/>
+ * <li><b id="selector">selector</b>: selector string.  Used by Smooks to lookup a resource config.
+ * This is typically an input fragment name (partial XPath support). This attribute supports a list of comma separated selectors,
+ * allowing you to target a single resource at multiple selector (e.g. fragments).  Where the resource is a {@link Visitor} implementation,
+ * the selector is treated as an XPath expression (full XPath spec not supported), otherwise the selector value is treated as an opaque value.
+ * <p>
+ * <p>
+ * Example selectors:
+ * <ol>
+ * <li>For a {@link Visitor}, use the target fragment name e.g. "order", "address", "address/name", "item[2]/price[text() = 99.99]" etc.
+ * Also supports wildcard based fragment selection (i.e., "*").  See the <a href="www.smooks.org">User Guide</a> for more
+ * details on setting selectors for {@link Visitor} type resources.
+ * </li>
+ * <li>"#document" is a special selector that targets a resource at the "document" fragment i.e. the whole document,
+ * or document root node fragment.</li>
+ * <li>Targeting a specific {@link SmooksXMLReader} at a specific profile.</li>
+ * </ol>
+ */
 public interface ResourceConfig {
     /**
      * A special selector for resource targeted at the document as a whole (the root element).
      */
     String DOCUMENT_FRAGMENT_SELECTOR = "#document";
-
-    /**
-     * A special selector for resource targeted at the document as a whole (the root element).
-     */
-    String DOCUMENT_VOID_SELECTOR = "$void";
 
     /**
      * XML selector type definition prefix
