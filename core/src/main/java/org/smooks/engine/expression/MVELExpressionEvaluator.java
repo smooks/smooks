@@ -46,7 +46,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.smooks.api.expression.ExpressionEvaluationException;
 import org.smooks.api.expression.ExpressionEvaluator;
 import org.smooks.api.SmooksConfigException;
@@ -164,9 +163,6 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
 	 */
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this)
-					.append("expression", expression)
-					.append("toType", toType)
-					.toString();
+		return String.format("%s[expression=%s,toType=%s]", this, expression, toType);
 	}
 }
