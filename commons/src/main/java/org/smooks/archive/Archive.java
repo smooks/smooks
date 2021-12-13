@@ -443,28 +443,6 @@ public class Archive {
     }
 
     /**
-     * Create an archive in the specified File containing entries
-     * for the data contained in the streams supplied entries arg.
-     * specifying the entry name and the value is a InputStream containing
-     * the entry data.
-     * @param file The archive file.
-     * @throws java.io.IOException Write failure.
-     */
-    public void toFile(File file) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-
-        try {
-            toOutputStream(new ZipOutputStream(fileOutputStream));
-        } finally {
-            try {
-                fileOutputStream.flush();
-            } finally {
-                fileOutputStream.close();
-            }
-        }
-    }
-
-    /**
      * Output the entries to the specified output folder on the file system.
      * @param outputFolder The target output folder.
      * @throws java.io.IOException Write failure.

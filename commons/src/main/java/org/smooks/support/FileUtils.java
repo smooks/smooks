@@ -45,6 +45,8 @@ package org.smooks.support;
 import org.smooks.assertion.AssertArgument;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * File utilities.
@@ -72,17 +74,14 @@ public final class FileUtils {
     public static byte[] readFile(File file) throws IOException {
         AssertArgument.isNotNull(file, "file");
 
-        if(!file.exists()) {
+        if (!file.exists()) {
             throw new IllegalArgumentException("No such file '" + file.getAbsoluteFile() + "'.");
-        } else if(file.isDirectory()) {
+        } else if (file.isDirectory()) {
             throw new IllegalArgumentException("File '" + file.getAbsoluteFile() + "' is a directory.  Cannot read.");
         }
 
-        InputStream stream = new FileInputStream(file);
-        try {
+        try (InputStream stream = Files.newInputStream(Paths.get(file.toURI()))) {
             return StreamUtils.readStream(stream);
-        } finally {
-            stream.close();
         }
     }
 

@@ -46,9 +46,6 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.FilterProvider;
 import org.smooks.api.resource.visitor.VisitAfterIf;
 import org.smooks.api.resource.visitor.VisitBeforeIf;
-import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
-import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
 import org.smooks.engine.expression.MVELExpressionEvaluator;
 
 public abstract class AbstractFilterProvider implements FilterProvider {

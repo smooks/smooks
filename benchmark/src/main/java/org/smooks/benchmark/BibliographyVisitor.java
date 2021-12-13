@@ -51,10 +51,6 @@ import org.smooks.io.Stream;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.util.List;
 

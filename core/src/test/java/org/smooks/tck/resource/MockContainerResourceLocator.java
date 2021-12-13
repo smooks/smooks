@@ -47,6 +47,8 @@ import org.smooks.api.resource.ContainerResourceLocator;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Hashtable;
 
 
@@ -74,18 +76,18 @@ public class MockContainerResourceLocator implements ContainerResourceLocator {
 	public InputStream getResource(String uri) throws IllegalArgumentException, IOException {
 		String relUri = uri;
 
-        if(uri.charAt(0) == '\\' || uri.charAt(0) == '/') {
-        	relUri = uri.substring(1);
-        }
+		if (uri.charAt(0) == '\\' || uri.charAt(0) == '/') {
+			relUri = uri.substring(1);
+		}
 		// Try loading the resource from the standalone test context
-    	File resFile = new File(TEST_STANDALONE_CTX_BASE, relUri);
-    	if(resFile.exists() && !resFile.isDirectory()) {
-    		return new FileInputStream(resFile);
-    	}
+		File resFile = new File(TEST_STANDALONE_CTX_BASE, relUri);
+		if (resFile.exists() && !resFile.isDirectory()) {
+			return Files.newInputStream(Paths.get(resFile.toURI()));
+		}
 
 		// Check has it been set in this mock instance.
-		byte[] resBytes = (byte[])streams.get(uri);
-		if(resBytes == null) {
+		byte[] resBytes = (byte[]) streams.get(uri);
+		if (resBytes == null) {
 			throw new IllegalStateException("Resource [" + uri + "] not set in MockContainerResourceLocator OR loadable from the test standalone context.  Use MockContainerResourceLocator.setResource()");
 		}
 

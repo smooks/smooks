@@ -46,6 +46,8 @@ import org.smooks.assertion.AssertArgument;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Stream Utilities.
@@ -103,7 +105,7 @@ public final class StreamUtils {
         AssertArgument.isNotNull(file, "file");
         AssertArgument.isNotNull(data, "data");
 
-        OutputStream stream = new FileOutputStream(file);
+        OutputStream stream = Files.newOutputStream(Paths.get(file.toURI()));
         try {
             stream.write(data);
         } finally {

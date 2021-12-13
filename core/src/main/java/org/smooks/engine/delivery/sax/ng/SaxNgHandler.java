@@ -50,7 +50,6 @@ import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.sax.TextType;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;

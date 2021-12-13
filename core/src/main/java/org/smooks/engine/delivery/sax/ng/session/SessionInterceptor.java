@@ -44,12 +44,9 @@ package org.smooks.engine.delivery.sax.ng.session;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.TypedKey;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.interceptor.AbstractInterceptorVisitor;
-import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
-import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
-import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

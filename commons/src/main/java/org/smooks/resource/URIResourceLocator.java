@@ -52,6 +52,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * {@link java.net.URI} resource locator.
@@ -140,9 +142,9 @@ public class URIResourceLocator implements ContainerResourceLocator {
         	// On GAE we will get a security exception
         }
 		if (unresolvedExists) {
-            stream = new FileInputStream(fileUnresolved);
+            stream = Files.newInputStream(Paths.get(fileUnresolved.toURI()));
         } else if (fileResolved != null && resolvedExists) {
-            stream = new FileInputStream(fileResolved);
+            stream = Files.newInputStream(Paths.get(fileResolved.toURI()));
         } else if (scheme == null || scheme.equals(SCHEME_CLASSPATH)) {
             String path = uri.resolvedURI.getPath();
 

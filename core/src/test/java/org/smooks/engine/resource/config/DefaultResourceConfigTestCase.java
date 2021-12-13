@@ -46,9 +46,7 @@ import org.junit.Test;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.resource.config.xpath.predicate.AttributePredicate;
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.support.DomUtil;
@@ -59,7 +57,10 @@ import org.w3c.dom.Element;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class DefaultResourceConfigTestCase {
 

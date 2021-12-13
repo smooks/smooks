@@ -52,6 +52,8 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
@@ -138,7 +140,7 @@ public class BenchmarkApp {
         connection.setDoOutput(true);
 
         final File testDatasetFile = File.createTempFile("dblp-2015-03-02", ".xml.gz");
-        final FileOutputStream fileOutputStream = new FileOutputStream(testDatasetFile);
+        final OutputStream fileOutputStream = Files.newOutputStream(Paths.get(testDatasetFile.toURI()));
 
         LOGGER.info("Downloading test dataset...");
         byte[] buf = new byte[8192];
@@ -151,7 +153,7 @@ public class BenchmarkApp {
         smooks.addConfigurations(BenchmarkApp.class.getResourceAsStream("/smooks-config.xml"));
         IntStream.range(0, Math.min(2, Runtime.getRuntime().availableProcessors())).parallel().forEach(value -> {
             try {
-                final CountingInputStream inputStream = new CountingInputStream(new GZIPInputStream(new FileInputStream(testDatasetFile)));
+                final CountingInputStream inputStream = new CountingInputStream(new GZIPInputStream(Files.newInputStream(Paths.get(testDatasetFile.toURI()))));
                 LOGGER.info("Filtering...");
                 final long startTime = System.currentTimeMillis();
                 smooks.filterSource(new StreamSource(inputStream));

@@ -52,6 +52,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,7 +114,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
             file.getParentFile().mkdirs();
         }
 
-        return new FileWriter(file);
+        return Files.newBufferedWriter(Paths.get(file.toURI()));
     }
 
 }
