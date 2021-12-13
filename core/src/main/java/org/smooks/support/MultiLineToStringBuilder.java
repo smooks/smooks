@@ -42,7 +42,6 @@
  */
 package org.smooks.support;
 
-import org.apache.commons.lang.StringUtils;
 import org.smooks.api.ExecutionContext;
 import org.smooks.io.payload.FilterResult;
 import org.smooks.io.payload.FilterSource;
@@ -97,62 +96,62 @@ public class MultiLineToStringBuilder {
 	 * @param executionContext The ExecutionContext
 	 * @return The String representation
 	 */
-    public static String toString(ExecutionContext executionContext) {
-    	Stack<Object> stack = new Stack<Object>();
-    	stack.push(executionContext);
+	public static String toString(ExecutionContext executionContext) {
+		Stack<Object> stack = new Stack<Object>();
+		stack.push(executionContext);
 
-    	StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 
-    	builder.append("BeanContext : ");
-    	builder.append(toString(executionContext.getBeanContext().getBeanMap(), stack, new ArrayList<String>()));
-    	builder.append(NL);
-    	builder.append(NL);
-    	builder.append("Attributes : ");
-    	builder.append(toString(executionContext.getAll(), stack, EXECUTION_CONTEXT_FILTER_LIST));
+		builder.append("BeanContext : ");
+		builder.append(toString(executionContext.getBeanContext().getBeanMap(), stack, new ArrayList<String>()));
+		builder.append(NL);
+		builder.append(NL);
+		builder.append("Attributes : ");
+		builder.append(toString(executionContext.getAll(), stack, EXECUTION_CONTEXT_FILTER_LIST));
 
-    	return builder.toString();
-    }
-
-    /**
-     * Creates a multi line JSON like string representation from a Map
-     *
-     * @param map The Map to create the string from
-     * @return The String representation of the Map
-     */
-    public static String toString(Map<?, ?> map) {
-    	return toString(map, Collections.emptyList());
+		return builder.toString();
 	}
 
-    /**
-     * Creates a multi line JSON like string representation from a Map
-     *
-     * @param map The Map to create the string from
-     * @param filterKeyList A list of objects that are ignored when encountered as keys
-     * @return The String representation of the Map
-     */
-    public static String toString(Map<?, ?> map, List<?> filterKeyList) {
+	/**
+	 * Creates a multi line JSON like string representation from a Map
+	 *
+	 * @param map The Map to create the string from
+	 * @return The String representation of the Map
+	 */
+	public static String toString(Map<?, ?> map) {
+		return toString(map, Collections.emptyList());
+	}
+
+	/**
+	 * Creates a multi line JSON like string representation from a Map
+	 *
+	 * @param map           The Map to create the string from
+	 * @param filterKeyList A list of objects that are ignored when encountered as keys
+	 * @return The String representation of the Map
+	 */
+	public static String toString(Map<?, ?> map, List<?> filterKeyList) {
 		Stack<Object> stack = new Stack<Object>();
 		stack.add(new Object()); // A little hack to make sure that the first level is rendered correctly
-    	return toString(map, stack, filterKeyList);
+		return toString(map, stack, filterKeyList);
 	}
 
-    /**
-     * Creates a multi line JSON like string representation from a Collection.
-     *
-     * @param map The Map to create the string from
-     * @return The String representation of the Map
-     */
+	/**
+	 * Creates a multi line JSON like string representation from a Collection.
+	 *
+	 * @param map The Map to create the string from
+	 * @return The String representation of the Map
+	 */
 	public static String toString(Collection<?> collection) {
 		return toString(collection, Collections.emptyList());
 	}
 
 	/**
-     * Creates a multi line JSON like string representation from a Collection
-     *
-     * @param map The Map to create the string from
-     * @param filterKeyList A list of objects that are ignored when encountered as keys
-     * @return The String representation of the Map
-     */
+	 * Creates a multi line JSON like string representation from a Collection
+	 *
+	 * @param map           The Map to create the string from
+	 * @param filterKeyList A list of objects that are ignored when encountered as keys
+	 * @return The String representation of the Map
+	 */
 	public static String toString(Collection<?> collection, List<?> filterKeyList) {
 		Stack<Object> stack = new Stack<Object>();
 		stack.add(new Object()); // A little hack to make sure that the first level is rendered correctly
@@ -161,22 +160,22 @@ public class MultiLineToStringBuilder {
 	}
 
 	/**
-     * Creates a multi line JSON like string representation from an Array
-     *
-     * @param map The Map to create the string from
-     * @return The String representation of the Map
-     */
+	 * Creates a multi line JSON like string representation from an Array
+	 *
+	 * @param map The Map to create the string from
+	 * @return The String representation of the Map
+	 */
 	public static String toString(Object[] array) {
 		return toString(array, Collections.emptyList());
 	}
 
 	/**
-     * Creates a multi line JSON like string representation from an Array
-     *
-     * @param map The Map to create the string from
-     * @param filterKeyList A list of objects that are ignored when encountered as keys
-     * @return The String representation of the Map
-     */
+	 * Creates a multi line JSON like string representation from an Array
+	 *
+	 * @param map           The Map to create the string from
+	 * @param filterKeyList A list of objects that are ignored when encountered as keys
+	 * @return The String representation of the Map
+	 */
 	public static String toString(Object[] array, List<?> filterKeyList) {
 		Stack<Object> stack = new Stack<Object>();
 		stack.add(new Object()); // A little hack to make sure that the first level is renderd ok
@@ -185,178 +184,176 @@ public class MultiLineToStringBuilder {
 	}
 
 	/**
-     * Creates a multi line JSON like string representation from a Map
-     *
-     * @param map The Map to create the string from
-     * @param filterKeyList A list of objects that are ignored when encountered as keys
-     * @return The String representation of the Map
-     */
+	 * Creates a multi line JSON like string representation from a Map
+	 *
+	 * @param map           The Map to create the string from
+	 * @param filterKeyList A list of objects that are ignored when encountered as keys
+	 * @return The String representation of the Map
+	 */
 	private static String toString(Map<?, ?> map, Stack<Object> parentStack, List<?> filterKeys) {
-    	StringBuilder builder = new StringBuilder();
-    	builder.append(CURLY_BRACKET_OPEN);
+		StringBuilder builder = new StringBuilder();
+		builder.append(CURLY_BRACKET_OPEN);
 
-    	String indent = StringUtils.repeat(SPACE, parentStack.size()*SPACES);
-    	String bracketIndent = StringUtils.repeat(SPACE, (parentStack.size()-1)*SPACES);
+		String indent = repeat(SPACE, parentStack.size() * SPACES);
+		String bracketIndent = repeat(SPACE, (parentStack.size() - 1) * SPACES);
 
-    	int i = 0;
-    	int size = map.entrySet().size();
-    	for(Entry<?, ?> entry : map.entrySet()) {
-    		String key = entry.getKey().toString();
+		int i = 0;
+		int size = map.entrySet().size();
+		for (Entry<?, ?> entry : map.entrySet()) {
+			String key = entry.getKey().toString();
 
-    		if(filterKeys.contains(key)) {
-    			continue;
-    		}
+			if (filterKeys.contains(key)) {
+				continue;
+			}
 
-    		builder.append(NL);
+			builder.append(NL);
 
-    		Object value = entry.getValue();
+			Object value = entry.getValue();
 
-    		builder.append(indent);
-    		builder.append(QUOTE);
-    		builder.append(key);
-    		builder.append(QUOTE);
+			builder.append(indent);
+			builder.append(QUOTE);
+			builder.append(key);
+			builder.append(QUOTE);
 
-    		builder.append(VALUE_KEY_SEPARATOR);
-    		if(value == null) {
-    			builder.append(NULL);
-    		} else {
-	    		if(isTraversable(value) && parentStack.contains(value)) {
-	    			processParent(parentStack, builder, value);
-	    		} else if(value == map){
-	    			builder.append(THIS);
-	    		} else {
-	    			processValue(map, value, key, parentStack, builder, filterKeys);
-	    		}
-    		}
-    		i++;
-    		if(i < size) {
-    			builder.append(COMMA);
-    		}
-    	}
-    	if(i > 0) {
-    		builder.append(NL);
-    		builder.append(bracketIndent);
-    	}
-    	builder.append(CURLY_BRACKET_CLOSE);
-    	return builder.toString();
-    }
-
-
-
-    private static String toString(Collection<?> collection, Stack<Object> parentStack, List<?> filterKeys) {
-    	StringBuilder builder = new StringBuilder();
-    	builder.append(SQUARE_BRACKET_OPEN);
-
-    	String indent = StringUtils.repeat(SPACE, parentStack.size()*SPACES);
-    	String bracketIndent = StringUtils.repeat(SPACE, (parentStack.size()-1)*SPACES);
-
-    	int i = 0;
-    	int size = collection.size();
-    	for(Object value : collection) {
-    		builder.append(NL);
-
-    		builder.append(indent);
-
-    		if(value == null) {
-    			builder.append(NULL);
-    		} else {
-	    		if(isTraversable(value) && parentStack.contains(value)) {
-	    			processParent(parentStack, builder, value);
-	    		} else if(value == collection){
-	    			builder.append(THIS);
-	    		} else {
-	    			processValue(collection, value, null, parentStack, builder, filterKeys);
-	    		}
-    		}
-    		i++;
-    		if(i < size) {
-    			builder.append(COMMA);
-    		}
-
-    	}
-    	if(i > 0) {
-    		builder.append(NL);
-    		builder.append(bracketIndent);
-    	}
-    	builder.append(SQUARE_BRACKET_CLOSE);
-    	return builder.toString();
-    }
+			builder.append(VALUE_KEY_SEPARATOR);
+			if (value == null) {
+				builder.append(NULL);
+			} else {
+				if (isTraversable(value) && parentStack.contains(value)) {
+					processParent(parentStack, builder, value);
+				} else if (value == map) {
+					builder.append(THIS);
+				} else {
+					processValue(map, value, key, parentStack, builder, filterKeys);
+				}
+			}
+			i++;
+			if (i < size) {
+				builder.append(COMMA);
+			}
+		}
+		if (i > 0) {
+			builder.append(NL);
+			builder.append(bracketIndent);
+		}
+		builder.append(CURLY_BRACKET_CLOSE);
+		return builder.toString();
+	}
 
 
+	private static String toString(Collection<?> collection, Stack<Object> parentStack, List<?> filterKeys) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SQUARE_BRACKET_OPEN);
 
-    private static String toString(Object[] array, Stack<Object> parentStack, List<?> filterKeys) {
-    	StringBuilder builder = new StringBuilder();
-    	builder.append(SQUARE_BRACKET_OPEN);
+		String indent = repeat(SPACE, parentStack.size() * SPACES);
+		String bracketIndent = repeat(SPACE, (parentStack.size() - 1) * SPACES);
 
-    	String indent = StringUtils.repeat(SPACE, parentStack.size()*SPACES);
-    	String bracketIndent = StringUtils.repeat(SPACE, (parentStack.size()-1)*SPACES);
+		int i = 0;
+		int size = collection.size();
+		for (Object value : collection) {
+			builder.append(NL);
 
-    	int i = 0;
-    	int size = array.length;
-    	for(Object value : array) {
-    		builder.append(NL);
+			builder.append(indent);
 
-    		builder.append(indent);
+			if (value == null) {
+				builder.append(NULL);
+			} else {
+				if (isTraversable(value) && parentStack.contains(value)) {
+					processParent(parentStack, builder, value);
+				} else if (value == collection) {
+					builder.append(THIS);
+				} else {
+					processValue(collection, value, null, parentStack, builder, filterKeys);
+				}
+			}
+			i++;
+			if (i < size) {
+				builder.append(COMMA);
+			}
 
-    		if(value == null) {
-    			builder.append(NULL);
-    		} else {
-	    		if(isTraversable(value) && parentStack.contains(value)) {
-	    			processParent(parentStack, builder, value);
-	    		} else if(value == array){
-	    			builder.append(THIS);
-	    		} else {
-	    			processValue(array, value, null, parentStack, builder, filterKeys);
-	    		}
-    		}
-    		i++;
-    		if(i < size) {
-    			builder.append(COMMA);
-    		}
+		}
+		if (i > 0) {
+			builder.append(NL);
+			builder.append(bracketIndent);
+		}
+		builder.append(SQUARE_BRACKET_CLOSE);
+		return builder.toString();
+	}
 
-    	}
-    	if(i > 0) {
-    		builder.append(NL);
-    		builder.append(bracketIndent);
-    	}
-    	builder.append(SQUARE_BRACKET_CLOSE);
-    	return builder.toString();
-    }
+
+	private static String toString(Object[] array, Stack<Object> parentStack, List<?> filterKeys) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SQUARE_BRACKET_OPEN);
+
+		String indent = repeat(SPACE, parentStack.size() * SPACES);
+		String bracketIndent = repeat(SPACE, (parentStack.size() - 1) * SPACES);
+
+		int i = 0;
+		int size = array.length;
+		for (Object value : array) {
+			builder.append(NL);
+
+			builder.append(indent);
+
+			if (value == null) {
+				builder.append(NULL);
+			} else {
+				if (isTraversable(value) && parentStack.contains(value)) {
+					processParent(parentStack, builder, value);
+				} else if (value == array) {
+					builder.append(THIS);
+				} else {
+					processValue(array, value, null, parentStack, builder, filterKeys);
+				}
+			}
+			i++;
+			if (i < size) {
+				builder.append(COMMA);
+			}
+
+		}
+		if (i > 0) {
+			builder.append(NL);
+			builder.append(bracketIndent);
+		}
+		builder.append(SQUARE_BRACKET_CLOSE);
+		return builder.toString();
+	}
 
 	private static void processParent(Stack<Object> parentStack, StringBuilder builder, Object value) {
 		int index = parentStack.indexOf(value);
 
 		builder.append(PARENT_OPEN)
-		       .append(parentStack.size() - index)
-               .append(PARENT_CLOSE);
+				.append(parentStack.size() - index)
+				.append(PARENT_CLOSE);
 	}
 
 	@SuppressWarnings("unchecked")
 	private static void processValue(Object current, Object value, String key, Stack<Object> parentStack, StringBuilder builder, List<?> filterKeys) {
-		if(value instanceof Map<?, ?>) {
+		if (value instanceof Map<?, ?>) {
 			parentStack.push(current);
 			builder.append(toString((Map<?, ?>) value, parentStack, filterKeys));
 			parentStack.pop();
-		} else if(value instanceof Collection<?>) {
+		} else if (value instanceof Collection<?>) {
 			parentStack.push(current);
 			builder.append(toString((Collection<?>) value, parentStack, filterKeys));
 			parentStack.pop();
-		} else if(value.getClass().isArray()) {
+		} else if (value.getClass().isArray()) {
 			parentStack.push(current);
 			builder.append(toString((Object[]) value, parentStack, filterKeys));
 			parentStack.pop();
 		} else {
 
-			if(value instanceof Number) {
+			if (value instanceof Number) {
 				builder.append(value);
 			} else {
 				builder.append(QUOTE);
 				String valueStr = value.toString();
 
 				Matcher matcher = NL_PATTERN.matcher(valueStr);
-				if(matcher.find()) {
+				if (matcher.find()) {
 					int keyLength = key == null ? 0 : key.length() + VALUE_KEY_SEPARATOR.length();
-					String spaces = StringUtils.repeat(SPACE, keyLength + (parentStack.size()*SPACES));
+					String spaces = repeat(SPACE, keyLength + (parentStack.size() * SPACES));
 
 					valueStr = matcher.replaceAll(NL + spaces);
 					builder.append(valueStr);
@@ -368,7 +365,20 @@ public class MultiLineToStringBuilder {
 		}
 	}
 
-    private static boolean isTraversable(Object obj) {
-    	return obj instanceof Collection<?> || obj instanceof Map<?, ?> || obj.getClass().isArray();
-    }
+	private static boolean isTraversable(Object obj) {
+		return obj instanceof Collection<?> || obj instanceof Map<?, ?> || obj.getClass().isArray();
+	}
+
+	protected static String repeat(String str, int repeat) {
+		if (str == null) {
+			return null;
+		}
+
+		final StringBuilder repeatedString = new StringBuilder();
+		for (int i = 0; i < repeat; i++) {
+			repeatedString.append(str);
+		}
+
+		return repeatedString.toString();
+	}
 }
