@@ -57,6 +57,9 @@ import java.io.StringWriter;
 import org.smooks.xml.LocalDTDEntityResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * XmlUtilTest
@@ -570,6 +573,20 @@ public class XmlUtilTestCase {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+
+	@Test
+	public void testParseStreamGivenXmlEntityAttack() throws IOException, SAXException, ParserConfigurationException {
+		try {
+			XmlUtil.parseStream(getClass().getResourceAsStream("/xxe.xml"));
+		} catch (SAXParseException e) {
+			assertEquals("DOCTYPE is disallowed when the feature \"http://apache.org/xml/features/disallow-doctype-decl\" set to true.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testParseStreamGivenXIncludeAttack() throws IOException, SAXException, ParserConfigurationException {
+		XmlUtil.parseStream(getClass().getResourceAsStream("/xinclude.xml"));
 	}
 
 	private Document getXPathDocument() {

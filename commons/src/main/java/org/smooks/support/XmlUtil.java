@@ -406,7 +406,7 @@ public final class XmlUtil {
      * @return Document instance.
      */
     public static Document parseStream(Reader stream) throws ParserConfigurationException, IOException, SAXException {
-        return XmlUtil.parseStream(stream, null);
+        return parseStream(stream, null);
     }
 
     /**
@@ -419,6 +419,12 @@ public final class XmlUtil {
      */
     public static Document parseStream(final Reader stream, final ErrorHandler errorHandler) throws ParserConfigurationException, IOException, SAXException {
         final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        documentBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        documentBuilderFactory.setXIncludeAware(false);
+        documentBuilderFactory.setExpandEntityReferences(false);
         documentBuilderFactory.setNamespaceAware(true);
 
         final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
