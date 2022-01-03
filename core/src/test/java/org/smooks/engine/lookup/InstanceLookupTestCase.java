@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2022 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -42,28 +42,26 @@
  */
 package org.smooks.engine.lookup;
 
+import org.junit.Test;
+
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-/**
- * Collects all registry entries containing values with type {@link T}
- *
- * @param <T> criteria to match type
- */
-public class InstanceLookup<T> implements Function<Map<Object, Object>, Map<Object, T>> {
+import static org.junit.Assert.assertEquals;
 
-    private final Class<T> type;
+public class InstanceLookupTestCase {
 
-    public InstanceLookup(final Class<T> type) {
-        this.type = type;
+    @Test
+    public void testApply() {
+        InstanceLookup<String> instanceLookup = new InstanceLookup<>(String.class);
+        Map<Object, Object> registryEntries = new HashMap<>();
+
+        registryEntries.put("bar", "foo");
+        registryEntries.put("quuz", 1);
+
+        Map<Object, String> result = instanceLookup.apply(registryEntries);
+        assertEquals(1, result.size());
+        assertEquals("foo", result.get("bar"));
     }
 
-    @Override
-    public Map<Object, T> apply(final Map<Object, Object> registryEntries) {
-        return (Map<Object, T>) registryEntries.entrySet().
-                stream().
-                filter(kv -> type.isInstance(kv.getValue())).
-                collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
-    }
 }

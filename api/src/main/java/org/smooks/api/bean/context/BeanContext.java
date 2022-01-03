@@ -90,7 +90,7 @@ public interface BeanContext {
      * @param bean The bean instance to be stored.
      * @param source Source fragment.
      */
-    void addBean(BeanId beanId, Object bean, Fragment source);
+    void addBean(BeanId beanId, Object bean, Fragment<?> source);
 
 	/**
 	 * Add a bean instance under the specified beanId.
@@ -113,7 +113,7 @@ public interface BeanContext {
      * @param bean The bean instance to be stored.
      * @param source Source fragment.
      */
-    void addBean(String beanId, Object bean, Fragment source);
+    void addBean(String beanId, Object bean, Fragment<?> source);
 
 	/**
 	 * Get the {@link BeanId} instance for the specified beanId String.
@@ -169,7 +169,7 @@ public interface BeanContext {
      * @param bean The bean instance to be stored.
      * @param source Source fragment.
      */
-    void changeBean(BeanId beanId, Object bean, Fragment source);
+    void changeBean(BeanId beanId, Object bean, Fragment<?> source);
 
 	/**
 	 * Removes a bean and all its associated lifecycle beans from the bean map
@@ -177,7 +177,7 @@ public interface BeanContext {
 	 * @param beanId The beanId to remove the beans from.
      * @param source Source fragment.
      */
-    Object removeBean(BeanId beanId, Fragment source);
+    Object removeBean(BeanId beanId, Fragment<?> source);
 
 	/**
 	 * Removes a bean and all its associated lifecycle beans from the bean map
@@ -185,7 +185,7 @@ public interface BeanContext {
 	 * @param beanId The beanId to remove the beans from.
      * @param source Source fragment.
      */
-    Object removeBean(String beanId, Fragment source);
+    Object removeBean(String beanId, Fragment<?> source);
 
 	/**
 	 * Removes all the beans from the bean map

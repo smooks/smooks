@@ -63,7 +63,7 @@ import org.xml.sax.ext.DefaultHandler2;
 public abstract class SmooksContentHandler extends DefaultHandler2 implements SAXEventReplay {
 
     private static final TypedKey<SmooksContentHandler> SMOOKS_CONTENT_HANDLER_TYPED_KEY = new TypedKey<>();
-    
+
     private final ExecutionContext executionContext;
     private final SmooksContentHandler parentContentHandler;
     private SmooksContentHandler nestedContentHandler;
@@ -79,15 +79,15 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
         this.parentContentHandler = parentContentHandler;
         attachHandler();
 
-        if(parentContentHandler != null) {
+        if (parentContentHandler != null) {
             parentContentHandler.nestedContentHandler = this;
         }
     }
 
     public NamespaceDeclarationStack getNamespaceDeclarationStack() {
-        if(namespaceDeclarationStack == null) {
+        if (namespaceDeclarationStack == null) {
             namespaceDeclarationStack = executionContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY);
-            if(namespaceDeclarationStack == null) {
+            if (namespaceDeclarationStack == null) {
                 throw new IllegalStateException("NamespaceDeclarationStack instance not set on ExecutionContext.");
             }
         }
@@ -109,7 +109,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
         depth++;
         startElement(startEvent);
 
-        if(nestedContentHandler != null) {
+        if (nestedContentHandler != null) {
             // Replay the start element event from the parent handler onto the nested handler...
             replay(nestedContentHandler);
         }
@@ -126,7 +126,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
             endElement(endEvent);
             depth--;
         } finally {
-            if(!endReplayed && depth == 0 && parentContentHandler != null) {
+            if (!endReplayed && depth == 0 && parentContentHandler != null) {
                 endReplayed = true;
                 // Replay the last sax event from this handler onto the parent handler ...
                 replay(parentContentHandler);
@@ -145,7 +145,7 @@ public abstract class SmooksContentHandler extends DefaultHandler2 implements SA
 
     @Override
     public void replay(org.xml.sax.ContentHandler handler) throws SmooksException {
-        if(lastEvent != null) {
+        if (lastEvent != null) {
             lastEvent.replay(handler);
         }
     }

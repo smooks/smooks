@@ -76,18 +76,18 @@ public interface Registry {
     /**
      * Registers an object.
      *
-     * @param name name under which the object is registered
+     * @param key object that maps to <code>value</code>
      * @param value object to register
      *
      * @throws SmooksException if the value with the assigned name already exists
      * @throws IllegalArgumentException if the name or the value is null
      */
-    void registerObject(Object name, Object value);
+    void registerObject(Object key, Object value);
 
     /**
-     * @param name
+     * @param key
      */
-    void deRegisterObject(Object name);
+    void deRegisterObject(Object key);
 
     /**
      * @param function
@@ -97,11 +97,11 @@ public interface Registry {
     <R> R lookup(Function<Map<Object, Object>, R> function);
 
     /**
-     * @param name
+     * @param key
      * @param <T>
      * @return
      */
-    <T> T lookup(Object name);
+    <T> T lookup(Object key);
 
     /**
      * @param baseURI
