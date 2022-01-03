@@ -121,7 +121,7 @@ public class StandaloneBeanContext implements BeanContext {
     }
 
 	@Override
-	public void addBean(BeanId beanId, Object bean, Fragment source) {
+	public void addBean(BeanId beanId, Object bean, Fragment<?> source) {
 		AssertArgument.isNotNull(beanId, "beanId");
 		AssertArgument.isNotNull(bean, "bean");
 
@@ -157,7 +157,7 @@ public class StandaloneBeanContext implements BeanContext {
     }
 
 	@Override
-	public void addBean(String beanId, Object bean, Fragment source) {
+	public void addBean(String beanId, Object bean, Fragment<?> source) {
 		AssertArgument.isNotNull(beanId, "beanId");
 
 		addBean(getBeanId(beanId), bean, source);
@@ -258,7 +258,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * repository.BeanId, java.lang.Object)
 	 */
 	@Override
-	public void changeBean(BeanId beanId, Object bean, Fragment source) {
+	public void changeBean(BeanId beanId, Object bean, Fragment<?> source) {
 		AssertArgument.isNotNull(beanId, "beanId");
 		AssertArgument.isNotNull(bean, "bean");
 
@@ -283,7 +283,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * repository.BeanId)
 	 */
 	@Override
-	public Object removeBean(BeanId beanId, Fragment source) {
+	public Object removeBean(BeanId beanId, Fragment<?> source) {
 		AssertArgument.isNotNull(beanId, "beanId");
 
 		ContextEntry repositoryEntry = entries.get(beanId.getIndex());
@@ -304,7 +304,7 @@ public class StandaloneBeanContext implements BeanContext {
 	 * @see org.smooks.engine.javabean.context.BeanContext#removeBean(java.lang.String)
 	 */
 	@Override
-	public Object removeBean(String beanId, Fragment source) {
+	public Object removeBean(String beanId, Fragment<?> source) {
 		BeanId beanIDObj = getBeanId(beanId);
 
 		if (beanIDObj != null) {
@@ -752,8 +752,8 @@ public class StandaloneBeanContext implements BeanContext {
 			lifecycleObservers = null;
 			try {
 				int observerCount = localObserverListCopy.size();
-				for (int i = 0; i < observerCount; i++) {
-					localObserverListCopy.get(i).onBeanLifecycleEvent(event);
+				for (BeanContextLifecycleObserver beanContextLifecycleObserver : localObserverListCopy) {
+					beanContextLifecycleObserver.onBeanLifecycleEvent(event);
 				}
 			} finally {
 				// Reinstate the global List ref so it can be used again...
@@ -808,16 +808,14 @@ public class StandaloneBeanContext implements BeanContext {
 	private void syncObserverList() {
 		int addObserverCount = addObserversQueue.size();
 		if (addObserverCount > 0) {
-			for (BeanContextLifecycleObserver beanContextLifecycleObserver : addObserversQueue) {
-				lifecycleObservers.add(beanContextLifecycleObserver);
-			}
+			lifecycleObservers.addAll(addObserversQueue);
 			addObserversQueue.clear();
 		}
 
 		int removeObserverCount = removeObserversQueue.size();
 		if (removeObserverCount > 0) {
-			for (int i = 0; i < removeObserverCount; i++) {
-				lifecycleObservers.remove(removeObserversQueue.get(i));
+			for (BeanContextLifecycleObserver beanContextLifecycleObserver : removeObserversQueue) {
+				lifecycleObservers.remove(beanContextLifecycleObserver);
 			}
 			removeObserversQueue.clear();
 		}

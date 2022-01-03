@@ -122,18 +122,18 @@ public class DefaultRegistry implements Registry {
     }
 
     @Override
-    public void registerObject(final Object name, final Object value) {
-        AssertArgument.isNotNull(name, "name");
+    public void registerObject(final Object key, final Object value) {
+        AssertArgument.isNotNull(key, "key");
         AssertArgument.isNotNull(value, "value");
 
-        if (registry.putIfAbsent(name, value) != null) {
-            throw new SmooksException(String.format("Duplicate registration: %s", name));
+        if (registry.putIfAbsent(key, value) != null) {
+            throw new SmooksException(String.format("Duplicate registration: %s", key));
         }
     }
 
     @Override
-    public void deRegisterObject(Object name) {
-        registry.remove(name);
+    public void deRegisterObject(Object key) {
+        registry.remove(key);
     }
 
     @Override
@@ -142,8 +142,8 @@ public class DefaultRegistry implements Registry {
     }
 
     @Override
-    public <T> T lookup(final Object name) {
-        return (T) registry.get(name);
+    public <T> T lookup(final Object key) {
+        return (T) registry.get(key);
     }
 
     /**

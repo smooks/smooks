@@ -190,28 +190,6 @@ public class AbstractParser {
         return saxDriverConfig;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    protected static Reader getReader(Source source, String contentEncoding) {
-    	if(source != null) {
-	        if (source instanceof StreamSource) {
-	            StreamSource streamSource = (StreamSource) source;
-	            if (streamSource.getReader() != null) {
-	                return streamSource.getReader();
-	            } else if (streamSource.getInputStream() != null) {
-	            	return streamToReader(streamSource.getInputStream(), contentEncoding);
-				} else if (streamSource.getSystemId() != null) {
-					return systemIdToReader(streamSource.getSystemId(), contentEncoding);
-				}
-
-	            throw new SmooksException("Invalid " + StreamSource.class.getName() + ".  No InputStream, Reader or SystemId instance.");
-			} else if (source.getSystemId() != null) {
-				return systemIdToReader(source.getSystemId(), contentEncoding);
-			}
-    	}
-
-        return new NullReader();
-    }
-
 	private static Reader systemIdToReader(String systemId, String contentEncoding) {
         return streamToReader(systemIdToStream(systemId), contentEncoding);
 	}
@@ -269,8 +247,10 @@ public class AbstractParser {
             return inputSource;
         } else if (source instanceof DOMSource)  {
             return new DocumentInputSource((Document) ((DOMSource) source).getNode());
+        } else if (source.getSystemId() != null) {
+            return new InputSource(systemIdToReader(source.getSystemId(), contentEncoding));
         } else {
-            return new InputSource(getReader(source, contentEncoding));
+            return new InputSource(new NullReader());
         }
     }
 
