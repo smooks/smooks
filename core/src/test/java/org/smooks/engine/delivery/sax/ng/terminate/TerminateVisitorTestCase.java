@@ -42,8 +42,8 @@
  */
 package org.smooks.engine.delivery.sax.ng.terminate;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.engine.delivery.sax.ng.VisitBeforeVisitor;
 import org.xml.sax.SAXException;
@@ -52,12 +52,12 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TerminateVisitorTestCase {
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		VisitBeforeVisitor.visited = false;
 	}

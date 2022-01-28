@@ -42,9 +42,7 @@
  */
 package org.smooks.JIRAs.MILYN_367;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.StreamFilterType;
@@ -55,16 +53,16 @@ import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.engine.delivery.sax.ng.ConsumeSerializerVisitor;
 import org.smooks.io.payload.StringResult;
+import org.smooks.support.StreamUtils;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import org.xmlunit.builder.DiffBuilder;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 /**
@@ -188,13 +186,16 @@ public class MILYN_367_TestCase {
 		assertEquals("units-name-price-item-units-name-price-item-items-", itemsVisitor.stringBuilder.toString());
 	}
 
-	private void assertOK(String resName, StringResult result) throws SAXException, IOException {
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLAssert.assertXMLEqual(getRes(resName), new StringReader(result.getResult()));
-	}	
+	private void assertOK(String resName, StringResult result) throws IOException {
+		assertFalse(DiffBuilder.compare(result.getResult()).withTest(getRes(resName)).
+				ignoreComments().
+				ignoreWhitespace().
+				build().
+				hasDifferences());
+	}
 	
-	private Reader getRes(String name) {
-		return new InputStreamReader(getClass().getResourceAsStream(name));
+	private String getRes(String name) throws IOException {
+		return StreamUtils.readStreamAsString(getClass().getResourceAsStream(name), "UTF-8");
 	}
 	
 	private static class DOMVBefore implements DOMVisitBefore {

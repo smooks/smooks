@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.config.xpath;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
@@ -54,9 +54,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>

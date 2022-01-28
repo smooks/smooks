@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery.sax.ng;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.io.payload.StringResult;
@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ElementWritingTestCase {
 

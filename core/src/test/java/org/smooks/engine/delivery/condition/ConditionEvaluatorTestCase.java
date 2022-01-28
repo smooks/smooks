@@ -42,8 +42,8 @@
  */
 package org.smooks.engine.delivery.condition;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.ExecutionContext;

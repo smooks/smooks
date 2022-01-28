@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.FilterSettings;
 import org.smooks.engine.delivery.sax.ng.org.apache.xerces.parsers.SAXParser;
 import org.smooks.engine.resource.config.GenericReaderConfigurator;
@@ -55,7 +55,7 @@ import org.xml.sax.ext.DefaultHandler2;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

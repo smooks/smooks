@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery.dom.serialize;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.support.SmooksUtil;
 import org.smooks.api.delivery.Filter;
@@ -53,7 +53,7 @@ import org.smooks.engine.xml.Namespace;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

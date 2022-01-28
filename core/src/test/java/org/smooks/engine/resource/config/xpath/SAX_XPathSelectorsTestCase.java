@@ -42,8 +42,8 @@
  */
 package org.smooks.engine.resource.config.xpath;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksConfigException;
@@ -53,7 +53,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -62,7 +62,7 @@ public class SAX_XPathSelectorsTestCase {
 
     private Properties namespaces;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         XPathVisitor.domVisitedBeforeElementStatic = null;
         XPathVisitor.domVisitedAfterElementStatic = null;

@@ -42,10 +42,10 @@
  */
 package org.smooks.engine.delivery.dom;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.Smooks;
 import org.xml.sax.SAXException;
@@ -60,7 +60,7 @@ import java.io.StringReader;
  */
 public class VisitorEventsTestCase {
 
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
         reset();
     }

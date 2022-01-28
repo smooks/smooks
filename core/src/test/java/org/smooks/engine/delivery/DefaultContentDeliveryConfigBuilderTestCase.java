@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.StreamFilterType;
 import org.smooks.api.ExecutionContext;
@@ -60,7 +60,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

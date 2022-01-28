@@ -42,8 +42,8 @@
  */
 package org.smooks.engine.delivery;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
@@ -60,8 +60,8 @@ import org.w3c.dom.Element;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * 
@@ -72,7 +72,7 @@ public class FilterBypassTestCase {
 	private SimpleVisitor simpleVisitor;
 	private FilterSettings filterSettings;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		simpleVisitor = null;
 		filterSettings = null;

@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.converter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
 
@@ -53,7 +53,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

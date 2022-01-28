@@ -42,13 +42,13 @@
  */
 package org.smooks.engine.resource.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.engine.delivery.AbstractParser;
 import org.smooks.api.resource.reader.JavaXMLReader;
 import org.xml.sax.SAXException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author

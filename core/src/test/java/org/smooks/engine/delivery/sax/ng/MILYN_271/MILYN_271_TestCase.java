@@ -44,8 +44,8 @@ package org.smooks.engine.delivery.sax.ng.MILYN_271;
 
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.engine.delivery.sax.ng.MockVisitBefore;

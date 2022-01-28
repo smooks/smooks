@@ -42,9 +42,8 @@
  */
 package org.smooks.engine.plugin;
 
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.engine.bean.context.preinstalled.Time;
 import org.smooks.engine.bean.context.preinstalled.UniqueID;
@@ -63,6 +62,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit test for PayloadProcessor.
@@ -72,15 +75,15 @@ import static org.hamcrest.collection.IsMapContaining.hasKey;
 public class PayloadProcessorTestCase {
     private Smooks smooks;
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException, SAXException {
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void process() throws IOException, SAXException {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
-        processor.process(null, smooks.createExecutionContext());
+        assertThrows(IllegalArgumentException.class, () -> processor.process(null, smooks.createExecutionContext()));
     }
 
     @Test
@@ -92,8 +95,8 @@ public class PayloadProcessorTestCase {
         SourceResult sourceResult = new SourceResult(source, result);
         Object object = processor.process(sourceResult, smooks.createExecutionContext());
 
-        TestCase.assertEquals(result, object);
-        TestCase.assertEquals("<text/>", writer.toString());
+        assertEquals(result, object);
+        assertEquals("<text/>", writer.toString());
     }
 
     @Test
@@ -101,7 +104,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process("<testing/>", smooks.createExecutionContext());
 
-        TestCase.assertEquals("<testing/>", object);
+        assertEquals("<testing/>", object);
     }
 
     @Test
@@ -110,7 +113,7 @@ public class PayloadProcessorTestCase {
         Object payload = "<testing/>".getBytes();
         Object object = processor.process(payload, smooks.createExecutionContext());
 
-        TestCase.assertEquals("<testing/>", object);
+        assertEquals("<testing/>", object);
     }
 
     @Test
@@ -119,8 +122,8 @@ public class PayloadProcessorTestCase {
         Object payload = "<testing/>".getBytes();
         Object object = processor.process(payload, smooks.createExecutionContext());
 
-        TestCase.assertTrue(object instanceof byte[]);
-        TestCase.assertTrue(Arrays.equals("<testing/>".getBytes(), ((byte[]) object)));
+        assertTrue(object instanceof byte[]);
+        assertTrue(Arrays.equals("<testing/>".getBytes(), ((byte[]) object)));
     }
 
     @SuppressWarnings("unchecked")
@@ -146,7 +149,7 @@ public class PayloadProcessorTestCase {
         processor.setJavaResultBeanId("theBean");
         Object object = processor.process("<testing/>", smooks.createExecutionContext());
 
-        TestCase.assertEquals("Hi there!", object.toString());
+        assertEquals("Hi there!", object.toString());
     }
 
     @Test
@@ -154,7 +157,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process(123, smooks.createExecutionContext());
 
-        TestCase.assertEquals("<int>123</int>", object.toString());
+        assertEquals("<int>123</int>", object.toString());
     }
 
     @Test
@@ -162,7 +165,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process(new StringReader("<test/>"), smooks.createExecutionContext());
 
-        TestCase.assertEquals("<test/>", object.toString());
+        assertEquals("<test/>", object.toString());
     }
 
     @Test
@@ -170,7 +173,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process(new ByteArrayInputStream("<test/>".getBytes()), smooks.createExecutionContext());
 
-        TestCase.assertEquals("<test/>", object.toString());
+        assertEquals("<test/>", object.toString());
     }
 
     @Test
@@ -178,7 +181,7 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
         Object object = processor.process(new StreamSource(new ByteArrayInputStream("<test/>".getBytes())), smooks.createExecutionContext());
 
-        TestCase.assertEquals("<test/>", object.toString());
+        assertEquals("<test/>", object.toString());
     }
 
     @Test
@@ -186,6 +189,6 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.NORESULT);
         Object object = processor.process(123, smooks.createExecutionContext());
 
-        TestCase.assertNull(object);
+        assertNull(object);
     }
 }

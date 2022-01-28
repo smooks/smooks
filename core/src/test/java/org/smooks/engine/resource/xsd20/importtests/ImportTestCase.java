@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.xsd20.importtests;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.engine.delivery.dom.serialize.SimpleDOMVisitor;
 import org.smooks.io.payload.StringSource;
@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -71,7 +71,7 @@ public class ImportTestCase {
     public void test_paramaterized_import() throws IOException, SAXException {
         SimpleDOMVisitor.visited = false;
         testConfig("paramaterized_import_main.xml");
-        assertTrue("Parameters not properly injected into import.", SimpleDOMVisitor.visited);
+        assertTrue(SimpleDOMVisitor.visited, "Parameters not properly injected into import.");
     }
 
     private void testConfig(String config) throws IOException, SAXException {

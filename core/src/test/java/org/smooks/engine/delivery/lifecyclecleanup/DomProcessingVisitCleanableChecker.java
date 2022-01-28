@@ -49,7 +49,7 @@ import org.smooks.api.resource.visitor.dom.Phase;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
 import org.w3c.dom.Element;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

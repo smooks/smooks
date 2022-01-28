@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery.java;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
@@ -55,8 +55,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

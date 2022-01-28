@@ -45,10 +45,10 @@ package org.smooks.engine.expression;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MVELExpressionEvaluatorTestCase {
 
@@ -65,7 +65,7 @@ public class MVELExpressionEvaluatorTestCase {
 		evaluator.setExpression("return test");
 		Object result = evaluator.getValue(map);
 
-		assertSame("Expected object is not same as the result", expected, result);
+		assertSame(expected, result);
 	}
 
 	@Test
@@ -79,13 +79,13 @@ public class MVELExpressionEvaluatorTestCase {
 		evaluator.setExpression("value1 + value2 == value3");
 		boolean result = evaluator.eval(map);
 
-		assertTrue("Expected true", result);
+		assertTrue(result);
 
 		map.put("value3", 4);
 
 		result = evaluator.eval(map);
 
-		assertFalse("Expected false", result);
+		assertFalse(result);
 	}
 
 	@Test
@@ -96,13 +96,13 @@ public class MVELExpressionEvaluatorTestCase {
 		evaluator.setExpression("VARS.isdef('value')");
 		boolean result = evaluator.eval(map);
 
-		assertFalse("Expected false", result);
+		assertFalse(result);
 
 		map.put("value", new Object());
 
 		result = evaluator.eval(map);
 
-		assertTrue("Expected true", result);
+		assertTrue(result);
 
 	}
 
@@ -114,13 +114,13 @@ public class MVELExpressionEvaluatorTestCase {
 		evaluator.setExpression("VARS.isResolveable('value')");
 		boolean result = evaluator.eval(map);
 
-		assertFalse("Expected false", result);
+		assertFalse(result);
 
 		map.put("value", new Object());
 
 		result = evaluator.eval(map);
 
-		assertTrue("Expected true", result);
+		assertTrue(result);
 
 	}
 
@@ -132,13 +132,13 @@ public class MVELExpressionEvaluatorTestCase {
 		evaluator.setExpression("VARS.isUnresolveable('value')");
 		boolean result = evaluator.eval(map);
 
-		assertTrue("Expected true", result);
+		assertTrue(result);
 
 		map.put("value", new Object());
 
 		result = evaluator.eval(map);
 
-		assertFalse("Expected false", result);
+		assertFalse(result);
 	}
 
 	@Test
@@ -150,13 +150,13 @@ public class MVELExpressionEvaluatorTestCase {
 		evaluator.setExpression("VARS.get('value') == null");
 		boolean result = evaluator.eval(map);
 
-		assertTrue("Expected true", result);
+		assertTrue(result);
 
 		map.put("value", var);
 
 		result = evaluator.eval(map);
 
-		assertFalse("Expected false", result);
+		assertFalse(result);
 
 		evaluator.setExpression("VARS.get('value')");
 
@@ -166,7 +166,7 @@ public class MVELExpressionEvaluatorTestCase {
 
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		evaluator = new MVELExpressionEvaluator();
 	}

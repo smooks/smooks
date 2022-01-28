@@ -42,10 +42,10 @@
  */
 package org.smooks.engine.delivery;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
@@ -61,7 +61,7 @@ import java.io.StringReader;
  */
 public class VisitorExceptionTestCase {
 
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
         ExceptionVisitor.beforeException = null;
         ExceptionVisitor.afterException = null;

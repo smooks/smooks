@@ -42,10 +42,10 @@
  */
 package org.smooks.engine.delivery.lifecyclecleanup;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.Smooks;
 import org.smooks.io.payload.StringSource;
@@ -58,7 +58,7 @@ import java.io.IOException;
  */
 public class ExecutionLifecycleTestCase {
 
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
         DomAssemblyBefore.cleaned = false;
         DomAssemblyAfter.cleaned = false;

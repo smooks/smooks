@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.visitor.SerializerVisitor;
@@ -56,8 +56,8 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * ConfigurationExpander tests.

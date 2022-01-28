@@ -42,9 +42,9 @@
  */
 package org.smooks.engine.lifecycle;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.SmooksConfigException;
@@ -63,7 +63,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -73,7 +73,7 @@ public class LifecycleManagerTestCase {
 
     private static LifecycleManager lifecycleManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         lifecycleManager = new DefaultLifecycleManager();
     }
@@ -163,7 +163,7 @@ public class LifecycleManagerTestCase {
     }
 
 	@Test
-    @Ignore("TODO")
+    @Disabled("TODO")
     public void test_parameterSetting_Config_setConfiguration_on_private_inner_class() {
         ResourceConfig resourceConfig = new DefaultResourceConfig();
         MyContentDeliveryUnit4 cdu = new MyContentDeliveryUnit4();

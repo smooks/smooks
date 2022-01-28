@@ -42,7 +42,7 @@
  */
 package org.smooks.support;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.tck.MockExecutionContext;
 import org.smooks.api.TypedKey;
@@ -51,7 +51,7 @@ import org.smooks.io.payload.JavaResult;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 	public class MultiLineToStringBuilderTestCase {
 

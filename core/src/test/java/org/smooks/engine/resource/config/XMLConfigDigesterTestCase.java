@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.resource.config.ResourceConfigSeq;
@@ -55,7 +55,7 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for the ArciveDef class.

@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.reader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
@@ -59,7 +59,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DelegateReaderFunctionalTestCase {
 

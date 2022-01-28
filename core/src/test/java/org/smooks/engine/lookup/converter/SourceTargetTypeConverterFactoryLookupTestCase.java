@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.lookup.converter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
@@ -53,7 +53,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SourceTargetTypeConverterFactoryLookupTestCase {
     

@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -57,10 +57,10 @@ import org.w3c.dom.Element;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DefaultResourceConfigTestCase {
 
@@ -69,10 +69,10 @@ public class DefaultResourceConfigTestCase {
 		ResourceConfig resourceConfig = new DefaultResourceConfig("body", new Properties(), "device", "xxx");
 
 		resourceConfig.setParameter("x", "val x");
-		assertEquals("Expected x to be 'val x'", "val x", resourceConfig.getParameter("x", String.class).getValue());
+		assertEquals("val x", resourceConfig.getParameter("x", String.class).getValue(), "Expected x to be 'val x'");
 		resourceConfig.setParameter("y", "val y 1");
 		resourceConfig.setParameter("y", "val y 2");
-		assertEquals("Expected y to be 'val y 1'", "val y 1", resourceConfig.getParameter("y", String.class).getValue());
+		assertEquals("val y 1", resourceConfig.getParameter("y", String.class).getValue(), "Expected y to be 'val y 1'");
 
         List<Parameter<?>> yParams = resourceConfig.getParameters("y");
 		assertEquals("val y 1", yParams.get(0).getValue());
@@ -89,8 +89,8 @@ public class DefaultResourceConfigTestCase {
         ResourceConfig resourceConfig = new DefaultResourceConfig("body", new Properties(), "device", "xxx");
 		resourceConfig.setParameter("x", true);
 
-		assertTrue("Expected x to be true", resourceConfig.getParameterValue("x", Boolean.class, false));
-		assertFalse("Expected y to be false", resourceConfig.getParameterValue("y", Boolean.class, false));
+		assertTrue(resourceConfig.getParameterValue("x", Boolean.class, false), "Expected x to be true");
+		assertFalse(resourceConfig.getParameterValue("y", Boolean.class, false), "Expected y to be false");
 	}
 
 	@Test
@@ -98,8 +98,8 @@ public class DefaultResourceConfigTestCase {
         ResourceConfig resourceConfig = new DefaultResourceConfig("body", new Properties(), "device", "xxx");
 		resourceConfig.setParameter("x", "xxxx");
 
-		assertEquals("Expected x to be xxxx", "xxxx", resourceConfig.getParameterValue("x", String.class, "yyyy"));
-		assertEquals("Expected y to be yyyy", "yyyy", resourceConfig.getParameterValue("y", String.class, "yyyy"));
+		assertEquals("xxxx", resourceConfig.getParameterValue("x", String.class, "yyyy"), "Expected x to be xxxx");
+		assertEquals("yyyy", resourceConfig.getParameterValue("y", String.class, "yyyy"), "Expected y to be yyyy");
 	}
 
 	@Test

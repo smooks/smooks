@@ -42,14 +42,16 @@
  */
 package org.smooks.io.payload;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit test for {@link JavaResult}.
@@ -62,7 +64,7 @@ public class JavaResultTestCase
 {
     private HashMap<String, Object> beans;
 
-    @Before
+    @BeforeEach
     public void createBeanMap()
     {
         beans = new HashMap<String, Object>();
@@ -84,8 +86,8 @@ public class JavaResultTestCase
     {
         JavaResult javaResult = new JavaResult(beans);
         Map<String, Object> result = (Map<String, Object>) javaResult.extractFromResult(javaResult, new Export(JavaResult.class, null, "second,first"));
-        Assert.assertTrue(result.containsKey("first"));
-        Assert.assertTrue(result.containsKey("second"));
-        Assert.assertFalse(result.containsKey("third"));
+        assertTrue(result.containsKey("first"));
+        assertTrue(result.containsKey("second"));
+        assertFalse(result.containsKey("third"));
     }
 }

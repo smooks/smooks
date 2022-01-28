@@ -42,7 +42,7 @@
  */
 package org.smooks.io.payload;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.engine.lookup.ExportsLookup;
 
@@ -50,8 +50,8 @@ import javax.xml.transform.Result;
 import java.util.Collection;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Functional test for {@link Exports}.

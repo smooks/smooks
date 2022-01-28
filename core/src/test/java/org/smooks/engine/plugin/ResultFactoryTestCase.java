@@ -42,13 +42,13 @@
  */
 package org.smooks.engine.plugin;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.io.payload.JavaResult;
 
 /**

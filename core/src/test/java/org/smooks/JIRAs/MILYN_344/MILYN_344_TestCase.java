@@ -42,7 +42,7 @@
  */
 package org.smooks.JIRAs.MILYN_344;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.xml.sax.SAXException;
 

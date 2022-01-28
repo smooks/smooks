@@ -42,14 +42,14 @@
  */
 package org.smooks.engine.converter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.Configurable;
 import org.smooks.api.converter.TypeConverter;
 
 import java.sql.Time;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the SqlTimeDecoder class

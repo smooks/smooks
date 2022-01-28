@@ -42,8 +42,8 @@
  */
 package org.smooks.engine.delivery.ordering;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -59,8 +59,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
@@ -70,7 +70,7 @@ public class SorterTestCase {
     private final List<ContentHandlerBinding<Visitor>> sortedContentHandlerBindings = new ArrayList<>();
     private final List<ContentHandlerBinding<Visitor>> unsortedContentHandlerBindings = new ArrayList<>();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         sortedContentHandlerBindings.clear();
         unsortedContentHandlerBindings.clear();

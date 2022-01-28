@@ -42,11 +42,11 @@
  */
 package org.smooks.engine.profile;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.profile.UnknownProfileMemberException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 

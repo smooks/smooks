@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery.dom;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,8 +52,8 @@ import java.io.OutputStream;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.tck.MockExecutionContext;
 import org.smooks.support.StreamUtils;
@@ -85,7 +85,7 @@ public class SmooksDOMFilterTestCase
 		assertTrue ( byteArray.length > 0 );
 	}
 	
-	@Before
+	@BeforeEach
 	public void setup() throws IOException
 	{
 		input = StreamUtils.readStream( getClass().getResourceAsStream( "testxml1.xml") );
