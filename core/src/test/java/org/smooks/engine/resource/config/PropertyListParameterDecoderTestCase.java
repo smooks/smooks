@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.tck.MockApplicationContext;
 import org.smooks.engine.injector.Scope;
@@ -51,7 +51,7 @@ import org.smooks.engine.lookup.LifecycleManagerLookup;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PropertyListParameterDecoderTestCase {
 

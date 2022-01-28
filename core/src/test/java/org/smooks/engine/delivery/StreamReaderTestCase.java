@@ -43,8 +43,8 @@
 package org.smooks.engine.delivery;
 
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.ExecutionContext;
@@ -59,7 +59,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
  * Test for JIRA: http://jira.codehaus.org/browse/MILYN-291,
@@ -73,7 +73,7 @@ public class StreamReaderTestCase
     private final byte[] bytes = "bytes".getBytes();
     private Smooks smooks;
 
-    @Before
+    @BeforeEach
     public void setup() {
         smooks = new Smooks();
         smooks.addConfiguration(new DefaultResourceConfig("org.xml.sax.driver", new Properties(), MockReader.class.getName()));

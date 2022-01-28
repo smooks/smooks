@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.visitor.smooks;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.io.payload.StringResult;
@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NestedSmooksVisitorFunctionalTestCase {
 

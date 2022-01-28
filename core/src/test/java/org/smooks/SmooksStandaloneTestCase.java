@@ -42,7 +42,7 @@
  */
 package org.smooks;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -63,7 +63,7 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SmooksStandaloneTestCase {
 
@@ -103,15 +103,15 @@ public class SmooksStandaloneTestCase {
         
         ExecutionContext messageTarget1ExecutionContext = smooks.createExecutionContext("message-target1");
         String messageTarget1Result = SmooksUtil.filterAndSerialize(messageTarget1ExecutionContext, new ByteArrayInputStream(message.getBytes()), smooks);
-        assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", messageTarget1Result);
+        assertEquals("<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", messageTarget1Result, "Unexpected transformation result");
 
         ExecutionContext messageTarget2ExecutionContext = smooks.createExecutionContext("message-target2");
         String messageTarget2Result = SmooksUtil.filterAndSerialize(messageTarget2ExecutionContext, new ByteArrayInputStream(message.getBytes()), smooks);
-        assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><ccc>999</ccc></zzz>", messageTarget2Result);
+        assertEquals("<zzz><bbb>888</bbb><ccc>999</ccc></zzz>", messageTarget2Result, "Unexpected transformation result");
     }
 
 	@Test
-    public void test_Standalone_CodeConfig_2() throws SAXException, IOException {
+    public void test_Standalone_CodeConfig_2() {
         Smooks smooks = new Smooks();
 
         // Add 2 useragents and configure them with profiles...
@@ -133,7 +133,7 @@ public class SmooksStandaloneTestCase {
         CharArrayWriter writer = new CharArrayWriter();
         smooks.filterSource(context, new StreamSource(new ByteArrayInputStream(message.getBytes())), new StreamResult(writer));
 
-        assertEquals("Unexpected transformation result", "<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", writer.toString());
+        assertEquals("<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", writer.toString(), "Unexpected transformation result");
     }
     
 }

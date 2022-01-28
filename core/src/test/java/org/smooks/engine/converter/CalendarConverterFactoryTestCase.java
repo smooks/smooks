@@ -42,9 +42,9 @@
  */
 package org.smooks.engine.converter;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.Configurable;
 import org.smooks.api.converter.TypeConverter;
 
@@ -54,8 +54,8 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 /**
  * Tests for the Calendar and Date decoders.
@@ -112,7 +112,7 @@ public class CalendarConverterFactoryTestCase {
     private TimeZone defaultTimeZone;
     private String defaultEncoding;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         defaultEncoding = System.getProperty("file.encoding");
         System.setProperty("file.encoding", "UTF-8");
@@ -124,7 +124,7 @@ public class CalendarConverterFactoryTestCase {
         TimeZone.setDefault(TimeZone.getTimeZone("ECT"));
 	}
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         // Reset the defaults...
         System.setProperty("file.encoding",defaultEncoding);

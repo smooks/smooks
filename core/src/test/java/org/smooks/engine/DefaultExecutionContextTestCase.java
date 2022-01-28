@@ -42,8 +42,8 @@
  */
 package org.smooks.engine;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.support.SmooksUtil;
 import org.smooks.api.TypedKey;
@@ -51,7 +51,7 @@ import org.smooks.engine.profile.DefaultProfileSet;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit test for {@link DefaultExecutionContext}
@@ -74,7 +74,7 @@ public class DefaultExecutionContextTestCase {
         assertTrue(attributes.containsValue(value));
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         Smooks smooks = new Smooks();
         SmooksUtil.registerProfileSet(new DefaultProfileSet("device1", new String[]{"profile1"}), smooks);

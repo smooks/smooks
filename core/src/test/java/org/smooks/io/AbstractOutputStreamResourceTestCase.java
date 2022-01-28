@@ -42,7 +42,7 @@
  */
 package org.smooks.io;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
 import org.smooks.tck.MockExecutionContext;
@@ -56,7 +56,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test for AbstractOutputStreamResouce 

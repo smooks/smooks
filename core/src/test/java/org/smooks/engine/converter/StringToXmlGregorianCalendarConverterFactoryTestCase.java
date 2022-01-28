@@ -42,9 +42,9 @@
  */
 package org.smooks.engine.converter;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.Configurable;
 import org.smooks.api.converter.TypeConverter;
 
@@ -53,8 +53,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -96,13 +96,13 @@ public class StringToXmlGregorianCalendarConverterFactoryTestCase {
         assertNotSame(date_a, date_b);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         defaultLocale = Locale.getDefault();
 		Locale.setDefault( new Locale("de", "DE") );
 	}
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         Locale.setDefault(defaultLocale);
     }

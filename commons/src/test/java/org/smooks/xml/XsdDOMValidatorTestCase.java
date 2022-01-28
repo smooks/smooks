@@ -42,8 +42,8 @@
  */
 package org.smooks.xml;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.support.XmlUtil;
 import org.w3c.dom.Document;

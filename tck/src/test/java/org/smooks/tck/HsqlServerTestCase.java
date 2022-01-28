@@ -42,11 +42,11 @@
  */
 package org.smooks.tck;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.hsqldb.ServerConstants;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link HsqlServer}.
@@ -56,7 +56,7 @@ import org.junit.Test;
  */
 public class HsqlServerTestCase {
     @Test
-    @Ignore("want to see if there might be a restriction on the bamboo machines that cause this test to sometimes fail.")
+    @Disabled("want to see if there might be a restriction on the bamboo machines that cause this test to sometimes fail.")
     public void startStop() throws Exception {
         for (int i = 0; i < 50; i++) {
             startStopCycle();

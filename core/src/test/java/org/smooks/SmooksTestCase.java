@@ -42,8 +42,8 @@
  */
 package org.smooks;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
@@ -63,8 +63,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  *
@@ -72,7 +72,7 @@ import static org.junit.Assert.assertSame;
  */
 public class SmooksTestCase {
 
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
         Smooks smooks = new Smooks();
         SmooksUtil.registerProfileSet(new DefaultProfileSet("device1", new String[] {"profile1"}), smooks);

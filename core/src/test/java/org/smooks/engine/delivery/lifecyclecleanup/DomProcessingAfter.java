@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery.lifecyclecleanup;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;

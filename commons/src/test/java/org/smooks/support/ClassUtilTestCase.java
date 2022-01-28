@@ -42,7 +42,8 @@
  */
 package org.smooks.support;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -51,54 +52,55 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
- *
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
- *
  */
-public class ClassUtilTestCase extends TestCase
-{
+public class ClassUtilTestCase {
 	private final String fileName = "META-INF/classes.inf";
 	private final String testClassesDirName = "target" + File.separator + "test-classes";
-	private final File jarFile = new File ( testClassesDirName + File.separator + "test.jar");
+	private final File jarFile = new File(testClassesDirName + File.separator + "test.jar");
 
-	public void test_getClassesNegative()
-	{
-		try
-		{
-			ClassUtil.getClasses( null, null);
-		}
-		catch (Exception e)
-		{
-			assertTrue ( e instanceof IllegalArgumentException );
+	@Test
+	public void test_getClassesNegative() {
+		try {
+			ClassUtil.getClasses(null, null);
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
 		}
 	}
 
-	public void test_getClasses()
-  {
-		List<Class<Object>> classes = ClassUtil.getClasses( fileName, Object.class);
-		assertNotNull( classes );
-		assertTrue( classes.contains( String.class ) );
-		assertTrue( classes.contains( Integer.class ) );
+	@Test
+	public void test_getClasses() {
+		List<Class<Object>> classes = ClassUtil.getClasses(fileName, Object.class);
+		assertNotNull(classes);
+		assertTrue(classes.contains(String.class));
+		assertTrue(classes.contains(Integer.class));
 	}
 
-	@Override
-	public void setUp() throws MalformedURLException
-	{
-		File testClassesDir = new File( testClassesDirName );
-		URLClassLoader urlc = new URLClassLoader( new URL[] { jarFile.toURI().toURL(), testClassesDir.toURI().toURL() } );
-		Thread.currentThread().setContextClassLoader( urlc );
+	@BeforeEach
+	public void setUp() throws MalformedURLException {
+		File testClassesDir = new File(testClassesDirName);
+		URLClassLoader urlc = new URLClassLoader(new URL[]{jarFile.toURI().toURL(), testClassesDir.toURI().toURL()});
+		Thread.currentThread().setContextClassLoader(urlc);
 	}
 
+	@Test
 	public void test_indexOffAssignableClass() {
 
-		assertEquals(0, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, List.class)) ;
-		assertEquals(1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class)) ;
-		assertEquals(1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class, List.class)) ;
-		assertEquals(-1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, String.class, String.class)) ;
+		assertEquals(0, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, List.class));
+		assertEquals(1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class));
+		assertEquals(1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class, List.class));
+		assertEquals(-1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, String.class, String.class));
 
 	}
 
+	@Test
 	public void test_containsAssignableClass() {
 
 		assertTrue(ClassUtil.containsAssignableClass(ArrayList.class, List.class));
@@ -108,23 +110,25 @@ public class ClassUtilTestCase extends TestCase
 
 	}
 
-    public void test_get_setter() {
-        Method nameSetter = ClassUtil.getSetterMethodByProperty("name", Animal.class, String.class);
-        Method ageSetter = ClassUtil.getSetterMethodByProperty("age", Animal.class, int.class);
+	@Test
+	public void test_get_setter() {
+		Method nameSetter = ClassUtil.getSetterMethodByProperty("name", Animal.class, String.class);
+		Method ageSetter = ClassUtil.getSetterMethodByProperty("age", Animal.class, int.class);
 
-        assertNotNull(nameSetter);
-        assertEquals("setName", nameSetter.getName());
-        assertNotNull(ageSetter);
-        assertEquals("setAge", ageSetter.getName());
-    }
+		assertNotNull(nameSetter);
+		assertEquals("setName", nameSetter.getName());
+		assertNotNull(ageSetter);
+		assertEquals("setAge", ageSetter.getName());
+	}
 
-    public void test_get_getter() {
-        Method nameGetter = ClassUtil.getGetterMethodByProperty("name", Animal.class, String.class);
-        Method ageGetter = ClassUtil.getGetterMethodByProperty("age", Animal.class, int.class);
+	@Test
+	public void test_get_getter() {
+		Method nameGetter = ClassUtil.getGetterMethodByProperty("name", Animal.class, String.class);
+		Method ageGetter = ClassUtil.getGetterMethodByProperty("age", Animal.class, int.class);
 
-        assertNotNull(nameGetter);
-        assertEquals("getName", nameGetter.getName());
-        assertNotNull(ageGetter);
-        assertEquals("getAge", ageGetter.getName());
-    }
+		assertNotNull(nameGetter);
+		assertEquals("getName", nameGetter.getName());
+		assertNotNull(ageGetter);
+		assertEquals("getAge", ageGetter.getName());
+	}
 }

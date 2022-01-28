@@ -42,8 +42,8 @@
  */
 package org.smooks.engine.bean.context;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.bean.context.BeanIdStore;
@@ -55,10 +55,10 @@ import org.smooks.api.bean.repository.BeanId;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- *	@author maurice_zeijen
+ * @author maurice_zeijen
  */
 public class BeanContextTestCase {
 
@@ -69,31 +69,29 @@ public class BeanContextTestCase {
 	 */
 	@Test
 	public void test_add_bean() {
-        Object bean1 = new MyGoodBean();
-        Object bean2 = new MyGoodBean();
+		Object bean1 = new MyGoodBean();
+		Object bean2 = new MyGoodBean();
 
-        BeanId beanId1 = getBeanIdStore().register("bean1");
-        BeanId beanId2 = getBeanIdStore().register("bean2");
+		BeanId beanId1 = getBeanIdStore().register("bean1");
+		BeanId beanId2 = getBeanIdStore().register("bean2");
 
-        BeanContext BeanContext = getBeanContext();
+		BeanContext BeanContext = getBeanContext();
 
-        assertEquals(2, BeanContext.getBeanMap().size());
+		assertEquals(2, BeanContext.getBeanMap().size());
 
-        assertNull(BeanContext.getBean(beanId1));
-        assertNull(BeanContext.getBean(beanId2));
+		assertNull(BeanContext.getBean(beanId1));
+		assertNull(BeanContext.getBean(beanId2));
 
-        BeanContext.addBean(beanId1, bean1, null);
-        BeanContext.addBean(beanId2, bean2, null);
+		BeanContext.addBean(beanId1, bean1, null);
+		BeanContext.addBean(beanId2, bean2, null);
 
-        assertEquals(bean1, BeanContext.getBean(beanId1));
-        assertEquals(bean2, BeanContext.getBean(beanId2));
-
-
-        assertEquals(bean1, BeanContext.getBeanMap().get("bean1"));
-        assertEquals(bean2, BeanContext.getBeanMap().get("bean2"));
-    }
+		assertEquals(bean1, BeanContext.getBean(beanId1));
+		assertEquals(bean2, BeanContext.getBean(beanId2));
 
 
+		assertEquals(bean1, BeanContext.getBeanMap().get("bean1"));
+		assertEquals(bean2, BeanContext.getBeanMap().get("bean2"));
+	}
 
 
 	/**
@@ -101,55 +99,55 @@ public class BeanContextTestCase {
 	 */
 	@Test
 	public void test_add_and_overwrite_bean() {
-        Object bean1 = new MyGoodBean();
-        Object newBean1 = new MyGoodBean();
+		Object bean1 = new MyGoodBean();
+		Object newBean1 = new MyGoodBean();
 
-        BeanId beanId1 = getBeanIdStore().register("bean1");
+		BeanId beanId1 = getBeanIdStore().register("bean1");
 
-        BeanContext BeanContext = getBeanContext();
+		BeanContext BeanContext = getBeanContext();
 
-        assertNull(BeanContext.getBean(beanId1));
+		assertNull(BeanContext.getBean(beanId1));
 
-        BeanContext.addBean( beanId1, bean1, null);
+		BeanContext.addBean(beanId1, bean1, null);
 
-        assertEquals(bean1, BeanContext.getBean(beanId1));
+		assertEquals(bean1, BeanContext.getBean(beanId1));
 
-        BeanContext.addBean( beanId1, newBean1, null);
+		BeanContext.addBean(beanId1, newBean1, null);
 
-        assertEquals(newBean1, BeanContext.getBean(beanId1));
-    }
+		assertEquals(newBean1, BeanContext.getBean(beanId1));
+	}
 
 	/**
 	 * Test adding and changing a bean
 	 */
 	@Test
 	public void test_change_bean() {
-        Object bean1 = new MyGoodBean();
-        Object newBean1 = new MyGoodBean();
+		Object bean1 = new MyGoodBean();
+		Object newBean1 = new MyGoodBean();
 
-        BeanId beanId1 = getBeanIdStore().register("bean1");
-        BeanId beanIdNE = getBeanIdStore().register("notExisting");
+		BeanId beanId1 = getBeanIdStore().register("bean1");
+		BeanId beanIdNE = getBeanIdStore().register("notExisting");
 
 
-        BeanContext BeanContext = getBeanContext();
+		BeanContext BeanContext = getBeanContext();
 
-        BeanContext.addBean(beanId1, bean1, null);
+		BeanContext.addBean(beanId1, bean1, null);
 
-        assertEquals(bean1, BeanContext.getBean(beanId1));
+		assertEquals(bean1, BeanContext.getBean(beanId1));
 
-        BeanContext.changeBean(beanId1, newBean1, null);
+		BeanContext.changeBean(beanId1, newBean1, null);
 
-        assertEquals(newBean1, BeanContext.getBean(beanId1));
+		assertEquals(newBean1, BeanContext.getBean(beanId1));
 
-        boolean fired = false;
+		boolean fired = false;
 
-        try {
-        	BeanContext.changeBean(beanIdNE, new Object(), null);
-        } catch (IllegalStateException e) {
-        	fired = true;
+		try {
+			BeanContext.changeBean(beanIdNE, new Object(), null);
+		} catch (IllegalStateException e) {
+			fired = true;
 		}
-        assertTrue("The exception did not fire", fired);
-    }
+		assertTrue(fired, "The exception did not fire");
+	}
 
 	/**
 	 * Test adding and replacing a bean
@@ -186,8 +184,8 @@ public class BeanContextTestCase {
 
 		assertFalse(beanMap.isEmpty());
 
-        // Mark bean as being "out of context" so we can remove it...
-        BeanContext.setBeanInContext(beanId1, false);
+		// Mark bean as being "out of context" so we can remove it...
+		BeanContext.setBeanInContext(beanId1, false);
 
 		beanMap.remove("bean1");
 
@@ -216,7 +214,7 @@ public class BeanContextTestCase {
 		assertNull(BeanContext.getBean("bean4"));
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		executionContext = new MockExecutionContext();
 	}
@@ -226,33 +224,33 @@ public class BeanContextTestCase {
 	 *
 	 */
 	private BeanIdStore getBeanIdStore() {
-        return executionContext.getApplicationContext().getBeanIdStore();
+		return executionContext.getApplicationContext().getBeanIdStore();
 	}
 
 	/**
 	 *
 	 */
 	private BeanContext getBeanContext() {
-        return executionContext.getBeanContext();
+		return executionContext.getBeanContext();
 	}
 
 
-    public static class MockRepositoryBeanLifecycleObserver implements BeanContextLifecycleObserver {
+	public static class MockRepositoryBeanLifecycleObserver implements BeanContextLifecycleObserver {
 
-    	private boolean fired;
+		private boolean fired;
 
-    	public boolean isFired() {
-    		return fired;
-    	}
+		public boolean isFired() {
+			return fired;
+		}
 
-    	public void reset() {
-    		fired = false;
-    	}
+		public void reset() {
+			fired = false;
+		}
 
 		@Override
 		public void onBeanLifecycleEvent(BeanContextLifecycleEvent event) {
 			fired = true;
 		}
-    }
+	}
 
 }

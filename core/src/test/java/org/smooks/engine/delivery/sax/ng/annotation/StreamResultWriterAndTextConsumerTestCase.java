@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery.sax.ng.annotation;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
@@ -57,7 +57,7 @@ import org.w3c.dom.Element;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StreamResultWriterAndTextConsumerTestCase {
 

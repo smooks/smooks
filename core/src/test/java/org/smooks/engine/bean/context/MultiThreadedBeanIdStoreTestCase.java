@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.bean.context;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.tck.MockApplicationContext;
 import org.smooks.tck.MockExecutionContext;
@@ -54,8 +54,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class MultiThreadedBeanIdStoreTestCase {
 
@@ -114,7 +114,7 @@ public class MultiThreadedBeanIdStoreTestCase {
 
 		countDownLatch.await();
 
-		assertFalse("Exceptions where thrown during the multi threaded test. See the log for the stacktraces.", exceptionsThrown.get());
+		assertFalse(exceptionsThrown.get(), "Exceptions where thrown during the multi threaded test. See the log for the stacktraces.");
 	}
 
 }

@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.xml.sax.SAXException;
@@ -51,7 +51,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

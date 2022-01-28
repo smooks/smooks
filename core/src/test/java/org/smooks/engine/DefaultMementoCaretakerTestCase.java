@@ -42,7 +42,7 @@
  */
 package org.smooks.engine;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.TypedKey;
 import org.smooks.api.TypedMap;
 import org.smooks.api.memento.MementoCaretaker;
@@ -57,7 +57,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DefaultMementoCaretakerTestCase {
 

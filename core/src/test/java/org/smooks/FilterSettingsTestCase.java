@@ -42,7 +42,7 @@
  */
 package org.smooks;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.Filter;
 import org.smooks.engine.resource.config.ParameterAccessor;
@@ -50,8 +50,8 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>

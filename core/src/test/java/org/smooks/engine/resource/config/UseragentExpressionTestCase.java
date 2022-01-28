@@ -42,11 +42,11 @@
  */
 package org.smooks.engine.resource.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.ProfileTargetingExpression;
 import org.smooks.engine.profile.DefaultProfileSet;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UseragentExpressionTestCase {
 

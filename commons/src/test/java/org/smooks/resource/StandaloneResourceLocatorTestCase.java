@@ -45,8 +45,8 @@ package org.smooks.resource;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StandaloneResourceLocatorTestCase {
 

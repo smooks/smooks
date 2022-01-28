@@ -42,10 +42,10 @@
  */
 package org.smooks.engine.resource.config;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSortComparator;
@@ -57,7 +57,7 @@ public class DefaultResourceConfigSortComparatorTestCase {
 
     private DefaultProfileSet profileSet;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         profileSet = new DefaultProfileSet("uaCommonName");
         profileSet.addProfiles(new String[] {"profile1", "profile2", "profile3"});
@@ -210,6 +210,6 @@ public class DefaultResourceConfigSortComparatorTestCase {
 
 		resourceConfig = new DefaultResourceConfig(selector, new Properties(), namespaceURI, useragents, null);
 		specificity = sortComparator.getSpecificity(resourceConfig);
-		assertEquals("Wrong specificity calculated.", expected, specificity, 0.01);
+		assertEquals(expected, specificity, 0.01, "Wrong specificity calculated.");
 	}
 }

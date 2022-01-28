@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery.dom.serialize;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.lifecycle.LifecycleManager;
@@ -64,7 +64,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Properties;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -118,6 +118,6 @@ public class SerializerTestCase {
 		byte[] actualBytes = output.toByteArray();
 		LOGGER.debug(new String(actualBytes));
 		boolean areEqual = CharUtils.compareCharStreams(getClass().getResourceAsStream("testmarkup.xxml.ser_1"), new ByteArrayInputStream(actualBytes));
-		assertTrue("Unexpected Serialization result failure.", areEqual);
+		assertTrue(areEqual, "Unexpected Serialization result failure.");
 	}
 }

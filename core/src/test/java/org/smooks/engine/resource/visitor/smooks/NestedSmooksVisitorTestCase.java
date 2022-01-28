@@ -45,8 +45,8 @@ package org.smooks.engine.resource.visitor.smooks;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.DOMWriter;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
@@ -82,8 +82,8 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class NestedSmooksVisitorTestCase {
 
@@ -362,7 +362,7 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
-    @Ignore("TODO: undefined behaviour")
+    @Disabled("TODO: undefined behaviour")
     public void testVisitChildElementGivenPrependBefore() throws SAXException, IOException, URISyntaxException, DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
@@ -406,7 +406,7 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
-    @Ignore("TODO: undefined behaviour")
+    @Disabled("TODO: undefined behaviour")
     public void testVisitChildElementGivenPrependAfter() throws SAXException, IOException, URISyntaxException, DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());

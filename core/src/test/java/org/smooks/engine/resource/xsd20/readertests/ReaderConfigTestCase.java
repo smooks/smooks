@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.xsd20.readertests;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.engine.delivery.AbstractParser;
@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

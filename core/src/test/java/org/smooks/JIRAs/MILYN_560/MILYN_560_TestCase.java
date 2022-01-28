@@ -42,7 +42,7 @@
  */
 package org.smooks.JIRAs.MILYN_560;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
@@ -53,7 +53,7 @@ import org.smooks.io.payload.StringResult;
 import org.smooks.io.payload.StringSource;
 import org.w3c.dom.Element;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

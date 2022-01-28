@@ -42,10 +42,10 @@
  */
 package org.smooks.engine.profile;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.profile.Profile;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 

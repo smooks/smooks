@@ -42,7 +42,7 @@
  */
 package org.smooks.io;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SAXWriterTestCase {
 

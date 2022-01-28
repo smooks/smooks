@@ -45,7 +45,7 @@ package org.smooks.support;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.w3c.dom.Document;
 

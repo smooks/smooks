@@ -42,9 +42,9 @@
  */
 package org.smooks.resource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,7 +53,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author tfennelly
@@ -62,12 +62,12 @@ public class URIResourceLocatorTestCase {
 
 	private final File file = new File("testfilex.zap");
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		file.createNewFile();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		file.delete();
 	}

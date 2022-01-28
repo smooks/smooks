@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.xsd20.extensiontests;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
@@ -59,7 +59,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>

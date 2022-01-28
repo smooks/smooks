@@ -42,9 +42,9 @@
  */
 package org.smooks.engine.delivery.sax.ng;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.report.FlatReportGenerator;
@@ -55,11 +55,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SaxNgFilterTestCase {
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         Visitor01.element = null;
         Visitor01.children.clear();
@@ -279,7 +279,7 @@ public class SaxNgFilterTestCase {
     }
     
     @Test
-    @Ignore("FIXME")
+    @Disabled("FIXME")
     public void test_report() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-04.xml"));
         ExecutionContext executionContext = smooks.createExecutionContext();

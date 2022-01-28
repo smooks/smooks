@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.resource.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.tck.MockApplicationContext;
@@ -55,8 +55,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TokenizedStringParameterDecoderTestCase {
 
@@ -66,13 +66,13 @@ public class TokenizedStringParameterDecoderTestCase {
 	@Test
 	public void testDecodeValue_string_list() {
 		Collection collection = getParameter("string-list", "a,b,c,d ,");
-		assertTrue("Expected to get back a java.util.List parameter", (collection instanceof List));
+		assertTrue((collection instanceof List), "Expected to get back a java.util.List parameter");
 		List paramsList = (List)collection;
-		assertTrue("Expected java.util.List to contain value.", paramsList.contains("a"));
-		assertTrue("Expected java.util.List to contain value.", paramsList.contains("b"));
-		assertTrue("Expected java.util.List to contain value.", paramsList.contains("c"));
-		assertTrue("Expected java.util.List to contain value.", paramsList.contains("d"));
-		assertFalse("Expected java.util.List to NOT contain value.", paramsList.contains("e"));
+		assertTrue(paramsList.contains("a"), "Expected java.util.List to contain value.");
+		assertTrue(paramsList.contains("b"), "Expected java.util.List to contain value.");
+		assertTrue(paramsList.contains("c"), "Expected java.util.List to contain value.");
+		assertTrue(paramsList.contains("d"), "Expected java.util.List to contain value.");
+		assertFalse(paramsList.contains("e"), "Expected java.util.List to NOT contain value.");
 	}
 
 	/*
@@ -81,13 +81,13 @@ public class TokenizedStringParameterDecoderTestCase {
 	@Test
 	public void testDecode_string_hashset() {
 		Collection collection = getParameter("string-hashset", "a,b,c,d ,");
-		assertTrue("Expected to get back a java.util.List parameter", (collection instanceof HashSet));
+		assertTrue((collection instanceof HashSet), "Expected to get back a java.util.List parameter");
 		HashSet paramsHashSet = (HashSet)collection;
-		assertTrue("Expected java.util.HashSet to contain value.", paramsHashSet.contains("a"));
-		assertTrue("Expected java.util.HashSet to contain value.", paramsHashSet.contains("b"));
-		assertTrue("Expected java.util.HashSet to contain value.", paramsHashSet.contains("c"));
-		assertTrue("Expected java.util.HashSet to contain value.", paramsHashSet.contains("d"));
-		assertFalse("Expected java.util.HashSet to NOT contain value.", paramsHashSet.contains("e"));
+		assertTrue(paramsHashSet.contains("a"), "Expected java.util.HashSet to contain value.");
+		assertTrue(paramsHashSet.contains("b"), "Expected java.util.HashSet to contain value.");
+		assertTrue(paramsHashSet.contains("c"), "Expected java.util.HashSet to contain value.");
+		assertTrue(paramsHashSet.contains("d"), "Expected java.util.HashSet to contain value.");
+		assertFalse(paramsHashSet.contains("e"), "Expected java.util.HashSet to NOT contain value.");
 	}
 	
 	public Collection getParameter(String type, String value) {

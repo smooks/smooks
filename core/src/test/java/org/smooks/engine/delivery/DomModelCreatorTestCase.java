@@ -42,11 +42,11 @@
  */
 package org.smooks.engine.delivery;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
@@ -64,7 +64,7 @@ import java.io.IOException;
  */
 public class DomModelCreatorTestCase {
 
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
         ModelCatcher.elements.clear();
     }
@@ -212,7 +212,7 @@ public class DomModelCreatorTestCase {
     }
 
 	@Test
-    @Ignore
+    @Disabled
     public void test_dom() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("node-model-01.xml"));
         ExecutionContext executionContext = smooks.createExecutionContext();

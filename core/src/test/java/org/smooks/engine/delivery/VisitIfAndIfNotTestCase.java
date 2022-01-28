@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.delivery;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.VisitAfterIf;
@@ -52,8 +52,8 @@ import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.engine.delivery.sax.ng.SaxNgFilterProvider;
 import org.w3c.dom.Element;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

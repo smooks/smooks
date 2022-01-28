@@ -47,7 +47,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.w3c.dom.Element;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

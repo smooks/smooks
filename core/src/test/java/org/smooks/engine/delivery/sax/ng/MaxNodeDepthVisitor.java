@@ -47,7 +47,7 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.w3c.dom.Element;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MaxNodeDepthVisitor implements ParameterizedVisitor {
     public static Element element;
