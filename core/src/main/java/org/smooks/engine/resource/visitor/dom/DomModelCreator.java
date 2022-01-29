@@ -56,6 +56,7 @@ import org.smooks.engine.delivery.event.EndFragmentEvent;
 import org.smooks.engine.delivery.event.StartFragmentEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
+import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.support.CollectionsUtil;
 import org.smooks.support.DomUtils;
@@ -68,6 +69,7 @@ import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.util.Collections;
 import java.util.Set;
 import java.util.Stack;
 
@@ -144,7 +146,11 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
 
     @Override
     public Set<String> getProducts() {
-        return CollectionsUtil.toSet(((ElementSelectorStep) resourceConfig.getSelectorPath().getTargetSelectorStep()).getQName().getLocalPart());
+        if (resourceConfig.getSelectorPath() instanceof IndexedSelectorPath) {
+            return CollectionsUtil.toSet(((ElementSelectorStep) ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep()).getQName().getLocalPart());
+        } else {
+            return Collections.emptySet();
+        }
     }
 
     @Override

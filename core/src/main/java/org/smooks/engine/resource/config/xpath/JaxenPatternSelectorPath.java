@@ -43,9 +43,22 @@
 package org.smooks.engine.resource.config.xpath;
 
 import org.jaxen.pattern.Pattern;
-import org.smooks.api.resource.config.xpath.SelectorPath;
+import org.jaxen.saxpath.SAXPathException;
+import org.smooks.api.SmooksException;
 
-public interface JaxenPatternSelectorPath extends SelectorPath {
+public abstract class JaxenPatternSelectorPath extends AbstractSelectorPath {
+    protected final Pattern pattern;
 
-    Pattern getPattern();
+    public JaxenPatternSelectorPath(final String selector) {
+        this.selector = selector;
+        try {
+            this.pattern = PatternParser.parse(selector);
+        } catch (SAXPathException e) {
+            throw new SmooksException(e);
+        }
+    }
+
+    public Pattern getPattern() {
+        return pattern;
+    }
 }

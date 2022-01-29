@@ -242,10 +242,6 @@ public class DefaultRegistry implements Registry {
         addProfileSets(resourceConfigSeq.getProfiles());
     }
 
-    /**
-     * Close this resource configuration store, {@link javax.annotation.PreDestroy uninitializing}
-     * all {@link ContentHandler ContentHandlers} allocated from this store instance.
-     */
     @Override
     public void close() {
         LOGGER.debug("Un-initializing all ContentHandler instances allocated through this registry");

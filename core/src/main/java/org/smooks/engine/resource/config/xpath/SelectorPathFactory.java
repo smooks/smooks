@@ -126,11 +126,6 @@ public final class SelectorPathFactory {
                     }
 
                     @Override
-                    public SelectorStep getTargetSelectorStep() {
-                        return null;
-                    }
-
-                    @Override
                     public String getSelectorNamespaceURI() {
                         return null;
                     }

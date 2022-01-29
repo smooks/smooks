@@ -154,7 +154,9 @@ public class SelectorPathJaxenHandler extends JaxenHandler {
             } else {
                 selectorPath.add(new AttributeSelectorStep(namespaces.getProperty(prefix), localName, prefix));
             }
-        } else if (selectorPath.getTargetSelectorStep() == null || !localName.equals("*") || !(selectorPath.getTargetSelectorStep() instanceof DocumentSelectorStep)) {
+        } else if (!(selectorPath instanceof IndexedSelectorPath) ||
+                !localName.equals("*") ||
+                !(((IndexedSelectorPath) selectorPath).getTargetSelectorStep() instanceof DocumentSelectorStep)) {
             if (!isPredicate) {
                 selectorPath.add(new ElementSelectorStep(namespaces.getProperty(prefix), localName, prefix));
             }
@@ -365,6 +367,9 @@ public class SelectorPathJaxenHandler extends JaxenHandler {
 
     @Override
     public void startFunction(String prefix, String functionName) throws JaxenException {
+        if (selectorPath == null) {
+            selectorPath = new SimpleSelectorPath(selector);
+        }
         super.startFunction(prefix, functionName);
     }
 

@@ -65,7 +65,7 @@ public interface ExecutionContext extends TypedMap {
     /**
      * Sets the document source URI of this <code>ExecutionContext</code>.
      *
-     * @param docSource  the document URI
+     * @param docSource the document URI
      */
     void setDocumentSource(URI docSource);
 
@@ -80,14 +80,14 @@ public interface ExecutionContext extends TypedMap {
     URI getDocumentSource();
 
     /**
-     * Get the {@link ApplicationContext} of this <code>ExecutionContext</code>.
+     * Gets the {@link ApplicationContext} of this <code>ExecutionContext</code>.
      *
      * @return  the <code>ApplicationContext</code> instance.
      */
     ApplicationContext getApplicationContext();
 
     /**
-     * Get the set of profiles at which this execution context is targeted.
+     * Gets the set of profiles at which this execution context is targeted.
      * <p/>
      * Basically, the set of profiles for which this execution context is to perform
      * transformation/analysis.
@@ -140,7 +140,8 @@ public interface ExecutionContext extends TypedMap {
     /**
      * Get a global configuration parameter associated with this execution context.
      * <p/>
-     * For more fine grained control, see the {@link org.smooks.cdr.ParameterAccessor} class.
+     * For more fine grained control, see the {@link org.smooks.engine.resource.config.ParameterAccessor} class.
+     *
      * @param name The name of the parameter.
      * @return The parameter value, or null if the parameter is not configured.
      */
@@ -149,7 +150,8 @@ public interface ExecutionContext extends TypedMap {
     /**
      * Get a global configuration parameter associated with this execution context.
      * <p/>
-     * For more fine grained control, see the {@link org.smooks.cdr.ParameterAccessor} class.
+     * For more fine grained control, see the {@link org.smooks.engine.resource.config.ParameterAccessor} class.
+     *
      * @param name The name of the parameter.
      * @param defaultVal The default value to be returned if the configuration parameter is not set.
      * @return The parameter value, or "defaultVal" if the parameter is not configured.

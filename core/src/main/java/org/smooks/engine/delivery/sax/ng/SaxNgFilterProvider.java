@@ -44,7 +44,6 @@ package org.smooks.engine.delivery.sax.ng;
 
 import org.smooks.api.Registry;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.event.ConfigBuilderEvent;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -58,6 +57,7 @@ import org.smooks.engine.delivery.event.DefaultConfigBuilderEvent;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
+import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
 import java.util.List;
@@ -66,7 +66,7 @@ import java.util.Map;
 public class SaxNgFilterProvider extends AbstractFilterProvider {
 
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents) {
+    public SaxNgContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents) {
         final SaxNgContentDeliveryConfig saxNgContentDeliveryConfig = new SaxNgContentDeliveryConfig();
         final InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorFactoryLookup());
 
@@ -80,12 +80,16 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
                 final ContentHandlerBinding<Visitor> interceptorChain = interceptorVisitorChainFactory.createInterceptorChain(visitorBinding);
                 final Visitor interceptorChainVisitor = interceptorChain.getContentHandler();
                 String selector = null;
-                for (int i = interceptorChain.getResourceConfig().getSelectorPath().size(); i > 0; i--) {
-                    final SelectorStep selectorStep = interceptorChain.getResourceConfig().getSelectorPath().get(i - 1);
-                    if (selectorStep instanceof ElementSelectorStep) {
-                        selector = ((ElementSelectorStep) selectorStep).getQName().getLocalPart();
-                        break;
+                if (interceptorChain.getResourceConfig().getSelectorPath() instanceof IndexedSelectorPath) {
+                    for (int i = interceptorChain.getResourceConfig().getSelectorPath().size(); i > 0; i--) {
+                        final SelectorStep selectorStep = interceptorChain.getResourceConfig().getSelectorPath().get(i - 1);
+                        if (selectorStep instanceof ElementSelectorStep) {
+                            selector = ((ElementSelectorStep) selectorStep).getQName().getLocalPart();
+                            break;
+                        }
                     }
+                } else {
+                    selector = "*";
                 }
 
                 if (interceptorChainVisitor instanceof BeforeVisitor && visitBeforeAnnotationsOK(visitorBinding.getContentHandler())) {
@@ -114,7 +118,9 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
     }
 
     protected void assertSelectorsNotAccessingText(ResourceConfig resourceConfig) {
-        if (resourceConfig.getSelectorPath().getTargetSelectorStep() instanceof ElementSelectorStep && ((ElementSelectorStep) resourceConfig.getSelectorPath().getTargetSelectorStep()).accessesText()) {
+        if (resourceConfig.getSelectorPath() instanceof IndexedSelectorPath &&
+                ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep() instanceof ElementSelectorStep &&
+                ((ElementSelectorStep) ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep()).accessesText()) {
             throw new SmooksConfigException("Unsupported selector '" + resourceConfig.getSelectorPath().getSelector() + "' on resource '" + resourceConfig + "'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the " + AfterVisitor.class.getName() + " interface only.  Class '" + resourceConfig.getResource() + "' implements other SAX Visitor interfaces.");
         }
     }

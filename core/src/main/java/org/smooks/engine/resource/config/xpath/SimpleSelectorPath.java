@@ -1,8 +1,8 @@
 /*-
  * ========================LICENSE_START=================================
- * API
+ * Core
  * %%
- * Copyright (C) 2020 - 2021 Smooks
+ * Copyright (C) 2020 - 2022 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,28 +40,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.resource.config.xpath;
+package org.smooks.engine.resource.config.xpath;
 
-import org.smooks.api.expression.ExpressionEvaluator;
+import org.smooks.api.resource.config.ResourceConfig;
 
-import java.util.List;
-import java.util.Properties;
+public class SimpleSelectorPath extends JaxenPatternSelectorPath {
 
-public interface SelectorPath extends List<SelectorStep> {
-    
-    String getSelector();
+    public SimpleSelectorPath() {
+        this(ResourceConfig.SELECTOR_NONE);
+    }
 
-    @Deprecated
-    String getSelectorNamespaceURI();
+    public SimpleSelectorPath(final String selector) {
+        super(selector);
+    }
 
-    void setConditionEvaluator(ExpressionEvaluator expressionEvaluator);
-
-    ExpressionEvaluator getConditionEvaluator();
-
-    @Deprecated
-    void setSelectorNamespaceURI(String namespaceURI);
-
-    Properties getNamespaces();
-
-    void setNamespaces(Properties namespaces);
 }
