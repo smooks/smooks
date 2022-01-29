@@ -43,6 +43,7 @@
 package org.smooks.engine.resource.config.xpath;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
@@ -53,22 +54,33 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class DOM_XPathSelectorsTestCase {
+public class SelectorDomFilterFunctionalTestCase {
 
-	@BeforeEach
+    private Properties namespaces;
+
+    @BeforeEach
     public void setUp() throws Exception {
         XPathVisitor.domVisitedBeforeElementStatic = null;
         XPathVisitor.domVisitedAfterElementStatic = null;
         XPathAfterVisitor.domVisitedAfterElement = null;
+
+        namespaces = new Properties();
+
+        namespaces.put("a", "http://a");
+        namespaces.put("b", "http://b");
+        namespaces.put("c", "http://c");
+        namespaces.put("d", "http://d");
     }
 	
 	@Test
-    public void test_01() throws IOException, SAXException {
+    @DisplayName("item[@c:code = 8655]")
+    public void testSelector1() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
@@ -78,7 +90,8 @@ public class DOM_XPathSelectorsTestCase {
     }
 
 	@Test
-    public void test_03() throws IOException, SAXException {
+    @DisplayName("item[@c:code = '8655']/units[text() = 1]")
+    public void testSelector2() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-03.xml"));
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
@@ -87,7 +100,8 @@ public class DOM_XPathSelectorsTestCase {
     }
 
 	@Test
-    public void test_04() throws IOException, SAXException {
+    @DisplayName("item[@c:code = 8655]")
+    public void testAddVisitorSelector1() {
         Properties properties = new Properties();
         properties.setProperty("c", "http://c");
 
@@ -102,7 +116,8 @@ public class DOM_XPathSelectorsTestCase {
     }
 
 	@Test
-    public void test_06() throws IOException, SAXException {
+    @DisplayName("item[@c:code = '8655']/units[text() = 1]")
+    public void testAddVisitorSelector2() {
         Properties properties = new Properties();
         properties.setProperty("c", "http://c");
 
@@ -116,7 +131,8 @@ public class DOM_XPathSelectorsTestCase {
     }
 
 	@Test
-    public void test_07() throws IOException, SAXException {
+    @DisplayName("c:item[@c:code = '8655']/d:units[text() = 1]")
+    public void testSelector3() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-04.xml"));
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
@@ -125,7 +141,8 @@ public class DOM_XPathSelectorsTestCase {
     }
 
 	@Test
-    public void test_08() throws IOException, SAXException {
+    @DisplayName("c:item[@d:code = '8655']/d:units[text() = 1]")
+    public void testSelector4() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-05.xml"));
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
@@ -134,7 +151,8 @@ public class DOM_XPathSelectorsTestCase {
     }
 
 	@Test
-    public void test_09() throws IOException, SAXException {
+    @DisplayName("/a:ord[@num = 3122 and @state = 'finished']/a:items/c:item[@c:code = '8655']/d:units[text() = 1]")
+    public void testSelector5() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-06.xml"));
 
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
@@ -143,20 +161,122 @@ public class DOM_XPathSelectorsTestCase {
     }
 
 	@Test
-    public void test_10() throws IOException, SAXException {
+    @DisplayName("/a:ord[@num = 3122 and @state = 'finished']/a:items/c:item[@c:code = '8655']/d:units[text() = 1]")
+    public void testAddVisitorSelector3() {
         Smooks smooks = new Smooks();
-        Properties namespaces = new Properties();
-
-        namespaces.put("a", "http://a");
-        namespaces.put("b", "http://b");
-        namespaces.put("c", "http://c");
-        namespaces.put("d", "http://d");
-
         smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
         smooks.setNamespaces(namespaces);
 
         smooks.addVisitor(new XPathAfterVisitor(), "/a:ord[@num = 3122 and @state = 'finished']/a:items/c:item[@c:code = '8655']/d:units[text() = 1]");
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
+    }
+
+    @Test
+    @DisplayName("items/c:item[2]/units")
+    public void testSelectorGivenIndex() throws Exception {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("config-07.xml"));
+
+        smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+
+        assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
+    }
+
+    @Test
+    @DisplayName("items/c:item[2]/units")
+    public void testAddVisitorSelectorGivenIndex() {
+        Smooks smooks = new Smooks();
+
+        smooks.setNamespaces(namespaces);
+        smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
+        smooks.addVisitor(new XPathVisitor(), "items/c:item[2]/units");
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+
+        assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
+    }
+
+    @Test
+    @DisplayName("items/item[3]/units")
+    public void testSelectorGivenWrongIndex() throws Exception {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("config-08.xml"));
+
+        smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+        assertNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNull(XPathVisitor.domVisitedAfterElementStatic);
+    }
+
+    @Test
+    @DisplayName("items/item[3]/units")
+    public void testAddVisitorSelectorGivenWrongIndex() {
+        Smooks smooks = new Smooks();
+
+        smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
+        smooks.addVisitor(new XPathVisitor(), "items/item[3]/units");
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+        assertNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNull(XPathVisitor.domVisitedAfterElementStatic);
+    }
+
+    @Test
+    @DisplayName("items[1]/item[2]/units, items[2]/item[1]/units")
+    public void testAddVisitorSelectorsGivenIndexes() {
+        Smooks smooks = new Smooks();
+        XPathVisitor visitor1 = new XPathVisitor();
+        XPathVisitor visitor2 = new XPathVisitor();
+
+        smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
+
+        smooks.addVisitor(visitor1, "items[1]/item[2]/units");
+        smooks.addVisitor(visitor2, "items[2]/item[1]/units");
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+
+        assertEquals("2", visitor1.getDomVisitedAfterElement().getAttribute("index"));
+        assertEquals("1", visitor2.getDomVisitedAfterElement().getAttribute("index"));
+    }
+
+    @Test
+    @DisplayName("items[1]/c:item[2]/units, items[2]/c:item[1]/units")
+    public void testAddVisitorSelectorsGivenIndexesAndPrefixes() {
+        Smooks smooks = new Smooks();
+        XPathVisitor visitor1 = new XPathVisitor();
+        XPathVisitor visitor2 = new XPathVisitor();
+
+        smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
+        smooks.setNamespaces(namespaces);
+
+        smooks.addVisitor(visitor1, "items[1]/c:item[2]/units");
+        smooks.addVisitor(visitor2, "items[2]/c:item[1]/units");
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+
+        assertEquals("2", visitor1.getDomVisitedAfterElement().getAttribute("index"));
+        assertEquals("1", visitor2.getDomVisitedAfterElement().getAttribute("index"));
+    }
+
+
+    @Test
+    @DisplayName("items[1]/d:item[2]/units, items[2]/d:item[1]/units")
+    public void testAddVisitorSelectorsGivenIndexesAndWrongPrefixes() {
+        Smooks smooks = new Smooks();
+        XPathVisitor visitor1 = new XPathVisitor();
+        XPathVisitor visitor2 = new XPathVisitor();
+
+        smooks.setFilterSettings(FilterSettings.DEFAULT_DOM);
+        smooks.setNamespaces(namespaces);
+
+        smooks.addVisitor(visitor1, "items[1]/d:item[2]/units");
+        smooks.addVisitor(visitor2, "items[2]/d:item[1]/units");
+
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+
+        assertNull(visitor1.getDomVisitedAfterElement());
+        assertNull(visitor2.getDomVisitedAfterElement());
     }
 }

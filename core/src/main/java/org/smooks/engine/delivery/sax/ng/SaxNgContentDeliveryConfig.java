@@ -274,7 +274,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
         ResourceConfig resourceConfig = new DefaultResourceConfig(targetElementName, new Properties());
 
-        vbs.add(0, new DefaultContentHandlerBinding(positionCounter, resourceConfig));
+        vbs.add(0, new DefaultContentHandlerBinding<>(positionCounter, resourceConfig));
     }
 
     public SaxNgVisitorBindings get(String... selectors) {

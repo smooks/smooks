@@ -200,6 +200,30 @@ public class SelectorPathFactoryTestCase {
     }
 
     @Test
+    public void testNewSelectorPathGivenNotPredicateIsTrue() throws ParserConfigurationException {
+        SelectorPath selectorPath = SelectorPathFactory.newSelectorPath("not(self::v)", namespaces);
+
+        Element y = createElement("y");
+        Element x = y.getOwnerDocument().createElement("x");
+        x.appendChild(y);
+        y.setAttribute("c", "dd");
+
+        assertTrue(new NodeFragment(x).isMatch(selectorPath, null));
+    }
+
+    @Test
+    public void testNewSelectorPathGivenNotPredicateIsFalse() throws ParserConfigurationException {
+        SelectorPath selectorPath = SelectorPathFactory.newSelectorPath("not(self::x)", namespaces);
+
+        Element y = createElement("y");
+        Element x = y.getOwnerDocument().createElement("x");
+        x.appendChild(y);
+        y.setAttribute("c", "dd");
+
+        assertFalse(new NodeFragment(x).isMatch(selectorPath, null));
+    }
+
+    @Test
     public void testNewSelectorPathGivenAttributeWithNamespacePrefixInPath() throws ParserConfigurationException {
         SelectorPath selectorPath = SelectorPathFactory.newSelectorPath("x/y/@a:c", namespaces);
 

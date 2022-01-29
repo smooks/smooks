@@ -58,6 +58,7 @@ import org.smooks.api.resource.config.ResourceConfigSortComparator;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
 import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.DocumentSelectorStep;
 
 import java.util.*;
@@ -147,17 +148,16 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
         objects = (List) objectsTable.get(selector);
         if (objects == null) {
-            List unitDefs = resourceConfigTable.get(selector);
+            List<ResourceConfig> resourceConfigs = resourceConfigTable.get(selector);
 
-            if (unitDefs != null && unitDefs.size() > 0) {
-                objects = new ArrayList<>(unitDefs.size());
+            if (resourceConfigs != null && resourceConfigs.size() > 0) {
+                objects = new ArrayList<>(resourceConfigs.size());
 
                 if (registry == null) {
                     throw new IllegalStateException("Call to getObjects() before the setRegistry() was called.");
                 }
 
-                for (final Object unitDef : unitDefs) {
-                    ResourceConfig resourceConfig = (ResourceConfig) unitDef;
+                for (ResourceConfig resourceConfig : resourceConfigs) {
                     objects.add(registry.lookup(new ContentHandlerFactoryLookup("class")).create(resourceConfig));
                 }
             } else {
@@ -216,8 +216,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         }
     }
 
-    protected FilterBypass getFilterBypass(ContentHandlerBindingIndex<?>... contentHandlerBindingIndices) {
-    	for (ContentHandlerBindingIndex contentHandlerBindingIndex : contentHandlerBindingIndices) {
+    protected FilterBypass getFilterBypass(ContentHandlerBindingIndex<?>... contentHandlerBindingIndexes) {
+    	for (ContentHandlerBindingIndex contentHandlerBindingIndex : contentHandlerBindingIndexes) {
             Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = contentHandlerBindingIndex.values();
             long userContentHandlerBindingsCount = contentHandlerBindings.
                     stream().
@@ -233,7 +233,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
         // Gather the possible set of FilterBypass instances...
         Set<FilterBypass> bypassSet = new HashSet<>();
-        for (ContentHandlerBindingIndex contentHandlerBindingIndex : contentHandlerBindingIndices) {
+        for (ContentHandlerBindingIndex contentHandlerBindingIndex : contentHandlerBindingIndexes) {
             Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = contentHandlerBindingIndex.values();
             long userContentHandlerBindingsCount = contentHandlerBindings.
                     stream().
@@ -271,7 +271,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
             ResourceConfig resourceConfig = configMap.getResourceConfig();
 
             if (!resourceConfig.isDefaultResource()) {
-                if (resourceConfig.getSelectorPath().getTargetSelectorStep() instanceof DocumentSelectorStep) {
+                if (resourceConfig.getSelectorPath() instanceof IndexedSelectorPath &&
+                        ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep() instanceof DocumentSelectorStep) {
                     T visitor = configMap.getContentHandler();
                     if (visitor instanceof FilterBypass) {
                         return (FilterBypass) visitor;

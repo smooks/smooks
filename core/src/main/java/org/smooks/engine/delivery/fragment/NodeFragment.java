@@ -50,6 +50,7 @@ import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.expression.ExecutionContextExpressionEvaluator;
+import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.JaxenPatternSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.w3c.dom.Attr;
@@ -174,10 +175,12 @@ public class NodeFragment implements Fragment<Node> {
 
     protected boolean evaluate(final Node node, final SelectorPath selectorPath, final ExecutionContext executionContext) throws JaxenException {
         Node nodeUnderTest = null;
-        if (selectorPath.getTargetSelectorStep() instanceof AttributeSelectorStep && node.getNodeType() == Node.ELEMENT_NODE) {
+        if (selectorPath instanceof IndexedSelectorPath &&
+                ((IndexedSelectorPath) selectorPath).getTargetSelectorStep() instanceof AttributeSelectorStep && node.getNodeType() == Node.ELEMENT_NODE) {
             if (node.hasAttributes()) {
-                final String namespaceURI = ((AttributeSelectorStep) selectorPath.getTargetSelectorStep()).getQName().getNamespaceURI();
-                nodeUnderTest = node.getAttributes().getNamedItemNS(namespaceURI.equals(XMLConstants.NULL_NS_URI) ? null : namespaceURI, ((AttributeSelectorStep) selectorPath.getTargetSelectorStep()).getQName().getLocalPart());
+                final AttributeSelectorStep attributeSelectorStep = (AttributeSelectorStep) ((IndexedSelectorPath) selectorPath).getTargetSelectorStep();
+                final String namespaceURI = attributeSelectorStep.getQName().getNamespaceURI();
+                nodeUnderTest = node.getAttributes().getNamedItemNS(namespaceURI.equals(XMLConstants.NULL_NS_URI) ? null : namespaceURI, attributeSelectorStep.getQName().getLocalPart());
             }
         } else {
             nodeUnderTest = node;
@@ -207,7 +210,8 @@ public class NodeFragment implements Fragment<Node> {
         }
         final Context context = new Context(new ContextSupport(simpleNamespaceContext, XPathFunctionContext.getInstance(), new SimpleVariableContext(), DocumentNavigator.getInstance()));
         boolean isMatch = true;
-        if (selectorPath.getTargetSelectorStep() instanceof AttributeSelectorStep && node.getNodeType() == Node.ELEMENT_NODE) {
+        if (selectorPath instanceof IndexedSelectorPath &&
+                ((IndexedSelectorPath) selectorPath).getTargetSelectorStep() instanceof AttributeSelectorStep && node.getNodeType() == Node.ELEMENT_NODE) {
             if (node.hasAttributes()) {
                 for (int i = 0; i < node.getAttributes().getLength(); i++) {
                     isMatch = ((JaxenPatternSelectorPath) selectorPath).getPattern().matches(node.getAttributes().item(i), context);

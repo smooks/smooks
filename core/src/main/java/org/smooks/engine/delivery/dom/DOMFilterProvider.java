@@ -68,7 +68,7 @@ import java.util.Map;
 
 public class DOMFilterProvider extends AbstractFilterProvider {
     @Override
-    public ContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents) {
+    public DOMContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents) {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
         for (ContentHandlerBinding<Visitor> contentHandlerBinding : visitorBindings) {

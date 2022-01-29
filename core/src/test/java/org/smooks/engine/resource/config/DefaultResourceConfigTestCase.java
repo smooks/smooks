@@ -47,6 +47,7 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.support.DomUtil;
@@ -134,19 +135,19 @@ public class DefaultResourceConfigTestCase {
         ResourceConfig rc9 = new DefaultResourceConfig("a/b/c/d/e[@attrib1]", new Properties(), "blah");
         ResourceConfig rc10 = new DefaultResourceConfig("/c/d/e/@attrib1", new Properties(), "blah");
 
-        assertEquals("e", ((ElementSelectorStep) rc8.getSelectorPath().getTargetSelectorStep()).getQName().getLocalPart());
-        assertEquals(1, rc8.getSelectorPath().getTargetSelectorStep().getPredicates().size());
+        assertEquals("e", ((ElementSelectorStep) ((IndexedSelectorPath) rc8.getSelectorPath()).getTargetSelectorStep()).getQName().getLocalPart());
+        assertEquals(1, ((IndexedSelectorPath) rc8.getSelectorPath()).getTargetSelectorStep().getPredicates().size());
 
         NodeFragment nodeFragment = new NodeFragment(e);
 
         assertTrue(nodeFragment.isMatch(rc8.getSelectorPath(), null));
 
-        assertEquals("e", ((ElementSelectorStep) rc9.getSelectorPath().getTargetSelectorStep()).getQName().getLocalPart());
-        assertEquals(1, rc9.getSelectorPath().getTargetSelectorStep().getPredicates().size());
+        assertEquals("e", ((ElementSelectorStep) ((IndexedSelectorPath) rc9.getSelectorPath()).getTargetSelectorStep()).getQName().getLocalPart());
+        assertEquals(1, ((IndexedSelectorPath) rc9.getSelectorPath()).getTargetSelectorStep().getPredicates().size());
         assertTrue(nodeFragment.isMatch(rc9.getSelectorPath(), null));
         
         assertEquals("e", ((ElementSelectorStep) rc10.getSelectorPath().get(rc10.getSelectorPath().size() - 2)).getQName().getLocalPart());
-        assertEquals("attrib1", ((AttributeSelectorStep) rc10.getSelectorPath().getTargetSelectorStep()).getQName().getLocalPart());
+        assertEquals("attrib1", ((AttributeSelectorStep) ((IndexedSelectorPath) rc10.getSelectorPath()).getTargetSelectorStep()).getQName().getLocalPart());
         assertFalse(nodeFragment.isMatch(rc10.getSelectorPath(), null));
     }
 

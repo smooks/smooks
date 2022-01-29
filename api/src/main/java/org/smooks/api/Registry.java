@@ -64,72 +64,82 @@ import java.util.function.Function;
 public interface Registry {
 
     /**
-     * Registers an object with its name derived from the object's {@link Resource#name()} attribute or the object's class name.
+     * Registers an object with its key derived from the object's {@link Resource#name()} attribute or the object's class name.
      *
      * @param value object to register
-     *
      * @throws SmooksException if the value with the assigned name already exists
      * @throws IllegalArgumentException if the value is null
      */
     void registerObject(Object value);
 
     /**
-     * Registers an object.
+     * Adds an object with the given key to this <code>Registry</code>.
      *
-     * @param key object that maps to <code>value</code>
-     * @param value object to register
-     *
+     * @param key object that maps to the <code>value</code> to register
+     * @param value object to register which can be retrieved by its <code>key</code>
      * @throws SmooksException if the value with the assigned name already exists
      * @throws IllegalArgumentException if the name or the value is null
      */
     void registerObject(Object key, Object value);
 
     /**
-     * @param key
+     * Removes a registered object from this <code>Registry</code>.
+     *
+     * @param key key of the registered object to remove
      */
     void deRegisterObject(Object key);
 
     /**
-     * @param function
-     * @param <R>
-     * @return
+     * Looks up a registered object by function.
+     *
+     * @param function function to apply for looking up an object
+     * @param <R> type of object to be returned
+     * @return registered object if it exists or null
      */
     <R> R lookup(Function<Map<Object, Object>, R> function);
 
     /**
-     * @param key
-     * @param <T>
-     * @return
+     * Looks up a registered object by its key.
+     *
+     * @param key key of registered object
+     * @param <T> type of object to be returned
+     * @return the registered object if it exists or null
      */
     <T> T lookup(Object key);
 
     /**
-     * @param baseURI
-     * @param resourceConfigStream
-     * @return
-     * @throws SAXException
-     * @throws IOException
-     * @throws URISyntaxException
+     * Registers the set of resources specified in the supplied XML configuration stream.
+     *
+     * @param baseURI base URI to be associated with the configuration stream
+     * @param resourceConfigStream XML resource configuration stream
+     * @return {@link ResourceConfigSeq} created from the added resource configuration
+     * @throws SAXException if error happens while parsing the resource stream
+     * @throws IOException  if error happens while reading resource stream
      */
     ResourceConfigSeq registerResources(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException, URISyntaxException;
 
     /**
-     * @param resourceConfig
+     * Registers and initialises a {@link ResourceConfig}.
+     *
+     * @param resourceConfig {@link ResourceConfig} to register
      */
     void registerResourceConfig(ResourceConfig resourceConfig);
 
     /**
-     * @param resourceConfigSeq
+     * Registers and initialises a {@link ResourceConfigSeq}.
+     *
+     * @param resourceConfigSeq {@link ResourceConfigSeq} to register
      */
     void registerResourceConfigSeq(ResourceConfigSeq resourceConfigSeq);
 
     /**
-     *
+     * Cleans up the resources of this <code>Registry</code> and calls the {@link javax.annotation.PreDestroy} method of
+     * each registered object.
      */
     void close();
 
     /**
-     * @return
+     * @return the class loader of this <code>Registry</code>
      */
     ClassLoader getClassLoader();
 }
