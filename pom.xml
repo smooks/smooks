@@ -58,7 +58,7 @@
         <mvel.version>2.4.14.Final</mvel.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <xmlunit.version>2.9.0</xmlunit.version>
-        <xstream.version>1.4.18</xstream.version>
+        <xstream.version>1.4.19</xstream.version>
     </properties>
 
     <modules>
