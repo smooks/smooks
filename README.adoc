@@ -92,7 +92,7 @@ Smooks 2 introduces the DFDL cartridge and revamps its EDI cartridge, while drop
     ** Added functionality to serialize EDI documents
     ** As in previous Smooks versions, incorporated special support for EDIFACT
 * SAX NG filter
-    ** Supersedes the SAX and DOM filters
+    ** Replaces SAX filter and supersedes DOM filter
     ** Brings with it a new visitor API which unifies the SAX and DOM visitor APIs
     ** Cartridges migrated to SAX NG
     ** Supports XSLT and StringTemplate resources unlike the legacy SAX filter
@@ -107,6 +107,8 @@ Smooks 2 introduces the DFDL cartridge and revamps its EDI cartridge, while drop
     ** Farewell `+@ConfigParam+`, `+@Config+`, `+@AppContext+`, and `+@StreamResultWriter+`. Welcome `+@Inject+`.
     ** Farewell `+@Initialize+` and `+@Uninitialize+`. Welcome `+@PostConstruct+` and `+@PreDestroy+`.
 * Separate top-level Java namespaces for API and implementation to provide a cleaner and more intuitive package structure: API interfaces and internal classes were relocated to `+org.smooks.api+` and `+org.smooks.engine+` respectively
+* Improved XPath support for resource selectors
+    ** Functions like `not()` are now supported
 * Numerous dependency updates
 * Maven coordinates change: we are now publishing Smooks artifacts under Maven group IDs prefixed with `+org.smooks+`
 * Replaced default SAX parser implementation from Apache Xerces to https://github.com/FasterXML/woodstox[FasterXML's Woodstox]: benchmarks consistently showed Woodstox outperforming Xerces
@@ -115,6 +117,7 @@ Smooks 2 introduces the DFDL cartridge and revamps its EDI cartridge, while drop
 
 . Smooks 2 no longer supports Java 7. Your application needs to be compiled to at least Java 8 to run Smooks 2.
 . Replace references to Java packages `org.milyn` with `org.smooks.api`, `org.smooks.engine`, `org.smooks.io` or `org.smooks.support`.
+. Inherit from `org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor` instead of `org.milyn.delivery.sax.SAXVisitor`.
 . Change legacy document root fragment selectors from `$document` to `#document`.
 . Replace Smooks Maven coordinates to match the coordinates as described in the https://www.smooks.org/v2/maven[Maven guide].
 . Replace `ExecutionContext#isDefaultSerializationOn()` method calls with
@@ -132,6 +135,7 @@ Smooks 2 introduces the DFDL cartridge and revamps its EDI cartridge, while drop
 . Replace references to `org.smooks.javabean.DataDecoderException` with `org.smooks.api.converter.TypeConverterException`.
 . Replace references to `org.smooks.cdr.SmooksResourceConfigurationStore` with `org.smooks.api.Registry`.
 . Replace references to `org.milyn.cdr.SmooksResourceConfiguration` with `org.smooks.api.resource.config.ResourceConfig`.
+. Replace references to `org.milyn.delivery.sax.SAXToXMLWriter` with `org.smooks.io.DomSerializer`.
 
 === FAQs
 
@@ -667,7 +671,7 @@ Filter-specific knobs are set through the _smooks-core_ configuration namespace 
 
 </smooks-resource-list>
 ----
-<1> `+type+` (default: `+SAX NG+`): the type of processing model that will be used. `+SAX NG+` is the recommended type. The `+DOM+` and `+SAX+` types are deprecated.
+<1> `+type+` (default: `+SAX NG+`): the type of processing model that will be used. `+SAX NG+` is the recommended type. The `+DOM+` type is deprecated.
 
 <2> `+defaultSerialization+` (default: `+true+`): if default serialization should be switched on. Default serialization being turned on simply tells Smooks to locate a `+StreamResult+` (or `+DOMResult+`) in the Result objects provided to the `+Smooks.filterSource+` method and to serialize all events to that `+Result+` instance. This behavior can be turned off using this global configuration parameter and can be overridden on a per-fragment basis by targeting a visitor at that fragment that takes ownership of the `+org.smooks.io.FragmentWriter+` object.
 
@@ -990,7 +994,7 @@ Like with any Software, when configured or used incorrectly, performance can be 
 
 * *link:#user-content-settings[Pool reader instances]* where possible. This can result in a huge performance boost, as some readers are very expensive to create.
 
-* If possible, use link:#filter-settings[SAX filtering]. However, you need to check that all Smooks Cartridges in use are SAX compatible. SAX processing is a lot faster than DOM processing and has a consistently small memory footprint. It is mandatory for processing large messages. See the link:#filtering-process-selection-dom-or-sax[Filtering Process Selection (DOM or SAX?)] section. SAX filtering is the http://jira.codehaus.org/browse/MILYN-589[default filtering type since Smooks v1.5].
+* If possible, use link:#filter-settings[SAX NG filtering]. However, you need to check that all Smooks cartridges in use are SAX NG compatible. SAX NG processing is faster than DOM processing and has a consistently small memory footprint. It is especially recommended for processing large messages. See the link:#filtering-process-selection-dom-or-sax[Filtering Process Selection (DOM or SAX?)] section. SAX NG is the default filter since Smooks 2.
 
 * Turn off debug logging. Smooks performs some intensive debug logging in parts of the code. This can result in significant additional processing overhead and lower throughput. Also remember that NOT having your logging configured (at all) may result in debug log statements being executed!!
 
@@ -1829,7 +1833,7 @@ public class MyVisitor implements AfterVisitor {
 }
 ----
 
-Note that all of the fragment text will not be available until the `+AfterVisitor.visitAfter+` event.
+Note that the complete fragment text will not be available until the `+AfterVisitor.visitAfter+` event.
 
 ==== StreamResult Writing/Serialization
 
@@ -1895,21 +1899,21 @@ public class MyVisitor implements AfterVisitor {
 }
 ----
 
-===== DomToXmlWriter
+===== DomSerializer
 
-Smooks provides the `+DomToXmlWriter+` class to make serializing of element data, as XML, a little easier. This class allows you to write a `+SaxNgVisitor+` implementation like:
+Smooks provides the `+DomSerializer+` class to make serializing of element data, as XML, a little easier. This class allows you to write a `+SaxNgVisitor+` implementation like:
 
 [source,java]
 ----
 @StreamResultWriter
 public class MyVisitor implements ElementVisitor {
 
-    private DomToXmlWriter xmlWriter = new DomToXmlWriter(true, true);
+    private DomSerializer domSerializer = new DomSerializer(true, true);
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
         try {
-            xmlWriter.writeStartElement(element, executionContext.getWriter());
+            domSerializer.writeStartElement(element, executionContext.getWriter());
         } catch (IOException e) {
             throw new SmooksException(e);
         }
@@ -1918,7 +1922,7 @@ public class MyVisitor implements ElementVisitor {
     @Override
     public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
         try {
-            xmlWriter.writeText(characterData, executionContext.getWriter());
+            domSerializer.writeText(characterData, executionContext.getWriter());
         } catch (IOException e) {
             throw new SmooksException(e);
         }
@@ -1931,7 +1935,7 @@ public class MyVisitor implements ElementVisitor {
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException, IOException {
         try {
-            xmlWriter.writeEndElement(element, executionContext.getWriter());
+            domSerializer.writeEndElement(element, executionContext.getWriter());
         } catch (IOException e) {
             throw new SmooksException(e);
         }
@@ -1939,7 +1943,7 @@ public class MyVisitor implements ElementVisitor {
 }
 ----
 
-You may have noticed that the arguments in the `+DomToXmlWriter+` constructor are boolean. This is the `+closeEmptyElements+` and `+rewriteEntities+` args which should be based on the `+closeEmptyElements+` and `+rewriteEntities+` filter setting, respectively. Smooks provides a small code optimization/assist here. If you annotate the `+DomToXmlWriter+` field with `+@Inject+`, Smooks will create the `+DomToXmlWriter+` instance and initialize it with the `+closeEmptyElements+` and `+rewriteEntities+` filter settings for the associated Smooks instance:
+You may have noticed that the arguments in the `+DomSerializer+` constructor are boolean. This is the `+closeEmptyElements+` and `+rewriteEntities+` args which should be based on the `+closeEmptyElements+` and `+rewriteEntities+` filter setting, respectively. Smooks provides a small code optimization/assist here. If you annotate the `+DomSerializer+` field with `+@Inject+`, Smooks will create the `+DomSerializer+` instance and initialize it with the `+closeEmptyElements+` and `+rewriteEntities+` filter settings for the associated Smooks instance:
 
 [source,java]
 ----
@@ -1947,13 +1951,13 @@ You may have noticed that the arguments in the `+DomToXmlWriter+` constructor ar
 public class MyVisitor implements AfterVisitor {
 
     @Inject
-    private DomToXmlWriter xmlWriter;
+    private DomSerializer domSerializer;
 
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException, IOException {
         try {
-            xmlWriter.writeStartElement(element, executionContext.getWriter());
-            xmlWriter.writeText(element, executionContext.getWriter());
-            xmlWriter.writeEndElement(element, executionContext.getWriter());
+            domSerializer.writeStartElement(element, executionContext.getWriter());
+            domSerializer.writeText(element, executionContext.getWriter());
+            domSerializer.writeEndElement(element, executionContext.getWriter());
         } catch (IOException e) {
             throw new SmooksException(e);
         }
@@ -1979,7 +1983,7 @@ Let's assume we have a very simple `+SaxNgVisitor+` implementation as follows:
 public class ChangeItemState implements AfterVisitor {
 
     @Inject
-    private DomToXmlWriter xmlWriter;
+    private DomSerializer domSerializer;
 
     @Inject
     private String newState;
@@ -1988,9 +1992,9 @@ public class ChangeItemState implements AfterVisitor {
         element.setAttribute("state", newState);
 
         try {
-            xmlWriter.writeStartElement(element, executionContext.getWriter());
-            xmlWriter.writeText(element, executionContext.getWriter());
-            xmlWriter.writeEndElement(element, executionContext.getWriter());
+            domSerializer.writeStartElement(element, executionContext.getWriter());
+            domSerializer.writeText(element, executionContext.getWriter());
+            domSerializer.writeEndElement(element, executionContext.getWriter());
         } catch (IOException e) {
             throw new SmooksException(e);
         }
