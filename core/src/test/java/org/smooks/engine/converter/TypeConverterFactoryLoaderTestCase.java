@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class TypeConverterFactoryLoaderTestCase {
 
-    private final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
+    private final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load(getClass().getClassLoader());
 
     @Test
     public void testLoad() {

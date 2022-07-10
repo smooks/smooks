@@ -380,7 +380,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             if (resourceConfig.isJavaResource()) {
                 final ContentHandlerFactory<?> contentHandlerFactory = registry.lookup(new ContentHandlerFactoryLookup("class"));
                 if (contentHandlerFactory == null) {
-                    throw new SmooksException("No ContentHandlerFactory configured (IoC) for type 'class' (Java).");
+                    throw new SmooksException("No org.smooks.api.delivery.ContentHandlerFactory found for content of type 'class'. Hint: ensure the Smooks application context has the correct class loader set");
                 }
                 // Job done - it's a CDU and we've added it!
                 return addContentDeliveryUnit(resourceConfig, contentHandlerFactory);

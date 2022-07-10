@@ -93,7 +93,7 @@ public class DefaultRegistry implements Registry {
         this.classLoader = classLoader;
         registerObject(ProfileStore.class, profileStore);
 
-        final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load();
+        final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load(classLoader);
         registerObject(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY, typeConverterFactories);
         registerObject(LifecycleManager.class, new DefaultLifecycleManager());
 

@@ -8,3 +8,10 @@ updates:
   reviewers:
   - tfennelly
   - claudemamo
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+  reviewers:
+    - tfennelly
+    - claudemamo
