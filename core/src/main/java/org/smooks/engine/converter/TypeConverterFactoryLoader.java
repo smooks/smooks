@@ -58,8 +58,8 @@ import java.util.Set;
 public class TypeConverterFactoryLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeConverterFactoryLoader.class);
 
-    public Set<TypeConverterFactory<?, ?>> load() {
-        final Iterator<TypeConverterFactory> typeConverterFactoryIterator = ServiceLoader.load(TypeConverterFactory.class).iterator();
+    public Set<TypeConverterFactory<?, ?>> load(ClassLoader classLoader) {
+        final Iterator<TypeConverterFactory> typeConverterFactoryIterator = ServiceLoader.load(TypeConverterFactory.class, classLoader).iterator();
         final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new HashSet<>();
 
         while (typeConverterFactoryIterator.hasNext()) {

@@ -116,7 +116,7 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     }
     
     private void registerSystemContentHandlerFactories(final Registry registry) {
-        for (ContentHandlerFactory<?> contentHandlerFactory : ServiceLoader.load(ContentHandlerFactory.class)) {
+        for (ContentHandlerFactory<?> contentHandlerFactory : ServiceLoader.load(ContentHandlerFactory.class, classLoader)) {
             registry.lookup(new LifecycleManagerLookup()).applyPhase(contentHandlerFactory, new PostConstructLifecyclePhase(new Scope(registry)));
             registry.registerObject(contentHandlerFactory);
         }
