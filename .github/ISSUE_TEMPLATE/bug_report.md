@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 <!--
-Do NOT report Security Vulnerabilities here. Please contact one of the core committers directly on [Gitter](https://github.com/spring-projects/spring-security/security/policy]
+Do NOT report Security Vulnerabilities here. Please contact one of the core committers directly on [Gitter](https://gitter.im/smooks/smooks)
 -->
 
 **Describe the bug**
