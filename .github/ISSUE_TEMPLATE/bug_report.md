@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 <!--
-Do NOT report Security Vulnerabilities here. Please open a [draft security advisory](https://github.com/smooks/smooks/security/advisories/new).
+Do NOT report Security Vulnerabilities here. Please open a draft security advisory at https://github.com/smooks/smooks/security/advisories/new.
 -->
 
 **Describe the bug**
