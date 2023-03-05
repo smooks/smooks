@@ -26,7 +26,7 @@ jobs:
       - name: Build
         run: |
           mvn install -pl !benchmark -B -Dmaven.javadoc.skip=true
-          mvn javadoc:aggregate -pl !benchmark -DreportOutputDirectory=target/site/javadoc/v\${project.version} -DdestDir=smooks -B
+          mvn javadoc:aggregate -pl api,commons,tck,core -DreportOutputDirectory=target/site/javadoc/v\${project.version} -DdestDir=smooks -B
       - name: Deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
