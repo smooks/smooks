@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 <!--
-Do NOT report Security Vulnerabilities here. Please contact one of the core committers directly on [Gitter](https://gitter.im/smooks/smooks)
+Do NOT report Security Vulnerabilities here. Please open a [draft security advisory](https://github.com/smooks/smooks/security/advisories/new).
 -->
 
 **Describe the bug**
@@ -19,6 +19,14 @@ Steps to reproduce the behavior.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
+
+**Environment**
+<!--
+Example:
+- Smooks: 2.0.0-RC1
+- Java: OpenJDK 8
+- OS: Ubuntu 20.04
+-->
 
 **Sample**
 
