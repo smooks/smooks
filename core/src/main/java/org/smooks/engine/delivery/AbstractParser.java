@@ -235,7 +235,7 @@ public class AbstractParser {
             reader = streamSource.getReader();
             if (reader == null) {
                 if (inputStream == null) {
-                    throw new SmooksException("Invalid StreamSource.  Unable to extract an InputStream (even by systemId) or Reader instance.");
+                    throw new SmooksException("Invalid StreamSource. Unable to extract an InputStream (even by systemId) or Reader instance.");
                 }
                 reader = streamToReader(inputStream, contentEncoding);
             }
