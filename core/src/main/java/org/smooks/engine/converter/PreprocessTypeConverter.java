@@ -52,7 +52,7 @@ import org.smooks.engine.expression.MVELExpressionEvaluator;
 import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.support.ClassUtil;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

@@ -50,7 +50,7 @@ import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.support.ClassUtil;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Properties;
 
 @Resource(name = "Enum")

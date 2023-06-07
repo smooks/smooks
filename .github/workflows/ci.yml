@@ -17,18 +17,21 @@ jobs:
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
       GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
+    strategy:
+      matrix:
+        java: [ '8', '11' ]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 8
+          java-version: ${{ matrix.java }}
       - name: Build
         run: |
           mvn install -pl !benchmark -B -Dmaven.javadoc.skip=true
           mvn javadoc:aggregate -pl api,commons,tck,core -DreportOutputDirectory=target/site/javadoc/v\${project.version} -DdestDir=smooks -B
       - name: Deploy
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.java == '11'
         run: |
           echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
           echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust

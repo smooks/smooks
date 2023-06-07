@@ -53,7 +53,7 @@ import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.lookup.ResourceConfigListsLookup;
 import org.smooks.namespace.NamespaceDeclarationStack;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Properties;
 

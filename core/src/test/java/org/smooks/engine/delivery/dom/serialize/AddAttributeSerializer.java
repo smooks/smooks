@@ -45,7 +45,7 @@ package org.smooks.engine.delivery.dom.serialize;
 import org.smooks.io.DomSerializer;
 import org.w3c.dom.NamedNodeMap;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.Writer;
 

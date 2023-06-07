@@ -56,7 +56,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.EntityReference;
 import org.w3c.dom.Node;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;

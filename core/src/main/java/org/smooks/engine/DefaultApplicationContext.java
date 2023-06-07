@@ -56,7 +56,7 @@ import org.smooks.api.Registry;
 import org.smooks.api.resource.ContainerResourceLocator;
 import org.smooks.resource.URIResourceLocator;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;

@@ -69,7 +69,7 @@ import org.smooks.engine.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.api.resource.ContainerResourceLocator;
 import org.xml.sax.SAXException;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

@@ -55,8 +55,8 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.resource.config.MyContentDeliveryUnit5;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.nio.charset.Charset;

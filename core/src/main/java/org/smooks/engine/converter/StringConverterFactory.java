@@ -46,7 +46,7 @@ import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 @Resource(name = "String")
 public class StringConverterFactory implements TypeConverterFactory<String, String> {

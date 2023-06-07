@@ -47,7 +47,7 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.engine.lookup.ExportsLookup;
 import org.smooks.support.CollectionsUtil;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Objects;
 import java.util.Optional;

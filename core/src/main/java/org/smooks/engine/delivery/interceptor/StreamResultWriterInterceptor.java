@@ -56,7 +56,7 @@ import org.smooks.io.Stream;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

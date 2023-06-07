@@ -47,7 +47,7 @@ import org.smooks.api.delivery.Filter;
 import org.smooks.io.DomSerializer;
 import org.w3c.dom.*;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;

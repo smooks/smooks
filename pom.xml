@@ -4,7 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>org.smooks</groupId>
     <artifactId>smooks</artifactId>
     <version>2.0.0-RC2-SNAPSHOT</version>
@@ -14,7 +14,8 @@
     <url>https://www.smooks.org</url>
 
     <description>
-        Smooks is an extensible data integration Java framework for building XML and non-XML fragment-based applications.
+        Smooks is an extensible data integration Java framework for building XML and non-XML fragment-based
+        applications.
     </description>
 
     <licenses>
@@ -61,6 +62,19 @@
         <xstream.version>1.4.20</xstream.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>post-java-8</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                <maven.compiler.release>8</maven.compiler.release>
+            </properties>
+        </profile>
+    </profiles>
+
     <modules>
         <module>api</module>
         <module>commons</module>
@@ -68,7 +82,7 @@
         <module>core</module>
         <module>benchmark</module>
     </modules>
-    
+
     <build>
         <pluginManagement>
             <plugins>
@@ -237,7 +251,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <reporting>
         <plugins>
             <plugin>
@@ -281,7 +295,7 @@
                 <artifactId>smooks-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.smooks</groupId>
                 <artifactId>smooks-core</artifactId>
@@ -299,13 +313,13 @@
                 <artifactId>xmlunit-core</artifactId>
                 <version>${xmlunit.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>${mockito.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker</artifactId>
@@ -355,7 +369,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

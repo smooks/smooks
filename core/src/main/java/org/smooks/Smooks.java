@@ -595,7 +595,7 @@ public class Smooks {
     /**
      * Close this Smooks instance and all associated resources.
      * <p/>
-     * Should result in the {@link javax.annotation.PostConstruct uninitialization}
+     * Should result in the {@link jakarta.annotation.PostConstruct uninitialization}
      * of all allocated {@link ContentHandler} instances.
      */
     public void close() {
