@@ -45,7 +45,7 @@ package org.smooks.engine.lookup.converter;
 import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.support.ClassUtil;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Map;
 import java.util.Set;
 

@@ -59,7 +59,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SqlTimeConverterFactoryTestCase {
 
 	@Test
-    public void test_DateDecoder() {
+    public void testDateDecoder() {
         Properties config = new Properties();
         config.setProperty(DateToStringLocaleAwareConverter.FORMAT, "EEE MMM dd HH:mm:ss z yyyy");
 
@@ -70,12 +70,12 @@ public class SqlTimeConverterFactoryTestCase {
 	    TypeConverter<String, Time> typeConverter = sqlTimeConverterFactory.createTypeConverter();
         ((Configurable) typeConverter).setConfiguration(config);
 
-        Object object = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        Object object = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006");
         assertTrue(object instanceof Time);
         
-        Time time_a = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        Time time_a = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006");
         assertEquals(1163616328000L, time_a.getTime());
-        Time date_b = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        Time date_b = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006");
         assertNotSame(time_a, date_b);
     }
     

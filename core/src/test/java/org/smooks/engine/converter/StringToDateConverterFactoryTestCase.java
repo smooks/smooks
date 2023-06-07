@@ -76,9 +76,9 @@ public class StringToDateConverterFactoryTestCase {
         TypeConverter<String, Date> typeConverter = stringToDateConverterFactory.createTypeConverter();
         ((Configurable) typeConverter).setConfiguration(config);
 
-        Date date_a = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        Date date_a = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006");
         assertEquals(1163616328000L, date_a.getTime());
-        Date date_b = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        Date date_b = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006");
         assertNotSame(date_a, date_b);
     }
 
@@ -92,9 +92,9 @@ public class StringToDateConverterFactoryTestCase {
         TypeConverter<String, Date> typeConverter = stringToDateConverterFactory.createTypeConverter();
         ((Configurable) typeConverter).setConfiguration(config);
         
-        Date date_a = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        Date date_a = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006");
         assertEquals(1163616328000L, date_a.getTime());
-        Date date_b = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006");
+        Date date_b = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006");
         assertNotSame(date_a, date_b);
     }
 

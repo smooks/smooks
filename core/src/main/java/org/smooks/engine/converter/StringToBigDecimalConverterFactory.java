@@ -47,7 +47,7 @@ import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;

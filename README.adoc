@@ -15,7 +15,7 @@ toc::[]
 
 === Prerequisites
 
-* JDK 8
+* JDK 8 or higher
 * Apache Maven 3.2.x
 
 === Maven
@@ -128,8 +128,8 @@ Smooks 2 introduces the DFDL cartridge and revamps its EDI cartridge, while drop
 . Replace `org.smooks.cdr.annotation.ConfigParam` annotations with `javax.inject.Inject` annotations:
     * Substitute the `@ConfigParam` name attribute with the `@javax.inject.Named` annotation.
     * Wrap `java.util.Optional` around the field to mimic the behaviour of the `@ConfigParam` optional attribute.
-. Replace `org.smooks.delivery.annotation.Initialize` annotations with `javax.annotation.PostConstruct` annotations.
-. Replace `org.smooks.delivery.annotation.Uninitialize` annotations with `javax.annotation.PreDestroy` annotations.
+. Replace `org.smooks.delivery.annotation.Initialize` annotations with `jakarta.annotation.PostConstruct` annotations.
+. Replace `org.smooks.delivery.annotation.Uninitialize` annotations with `jakarta.annotation.PreDestroy` annotations.
 . Replace references to `org.smooks.javabean.DataDecode` with `org.smooks.api.converter.TypeConverterFactory`.
 . Replace references to `org.smooks.cdr.annotation.Configurator` with `org.smooks.api.lifecycle.LifecycleManager`.
 . Replace references to `org.smooks.javabean.DataDecoderException` with `org.smooks.api.converter.TypeConverterException`.

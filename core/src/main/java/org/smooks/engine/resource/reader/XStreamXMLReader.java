@@ -49,7 +49,7 @@ import org.smooks.api.resource.reader.JavaXMLReader;
 import org.smooks.io.payload.JavaSource;
 import org.xml.sax.*;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;

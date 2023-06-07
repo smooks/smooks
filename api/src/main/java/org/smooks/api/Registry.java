@@ -47,7 +47,7 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.xml.sax.SAXException;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -133,7 +133,7 @@ public interface Registry {
     void registerResourceConfigSeq(ResourceConfigSeq resourceConfigSeq);
 
     /**
-     * Cleans up the resources of this <code>Registry</code> and calls the {@link javax.annotation.PreDestroy} method of
+     * Cleans up the resources of this <code>Registry</code> and calls the {@link jakarta.annotation.PreDestroy} method of
      * each registered object.
      */
     void close();

@@ -52,7 +52,7 @@ import org.smooks.engine.injector.MethodInjector;
 import org.smooks.engine.injector.Scope;
 import org.smooks.support.ClassUtil;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

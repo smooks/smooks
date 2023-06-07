@@ -60,7 +60,7 @@ import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 public class TextConsumerInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, InterceptorVisitor {
     

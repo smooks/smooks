@@ -61,7 +61,7 @@ import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 public class ExceptionInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionInterceptor.class);

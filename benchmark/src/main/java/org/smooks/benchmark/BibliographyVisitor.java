@@ -50,7 +50,7 @@ import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.io.Stream;
 import org.w3c.dom.Element;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 

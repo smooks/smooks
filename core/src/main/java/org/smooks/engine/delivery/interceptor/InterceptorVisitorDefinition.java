@@ -46,7 +46,7 @@ import org.smooks.api.ApplicationContext;
 import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Optional;
 

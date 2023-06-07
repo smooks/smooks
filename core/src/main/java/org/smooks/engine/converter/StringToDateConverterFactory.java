@@ -46,7 +46,7 @@ import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

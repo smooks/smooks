@@ -64,7 +64,7 @@ public class StringToXmlGregorianCalendarConverterFactoryTestCase {
     private Locale defaultLocale;
 
     @Test
-    public void test_DateDecoder_01() {
+    public void testDateDecoder01() {
         StringToXmlGregorianCalendarConverterFactory stringToXmlGregorianCalendarConverterFactory = new StringToXmlGregorianCalendarConverterFactory();
         Properties config = new Properties();
 
@@ -74,14 +74,14 @@ public class StringToXmlGregorianCalendarConverterFactoryTestCase {
         TypeConverter<String, XMLGregorianCalendar> typeConverter = stringToXmlGregorianCalendarConverterFactory.createTypeConverter();
         ((Configurable) typeConverter).setConfiguration(config);
 
-        Date date_a = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006").toGregorianCalendar().getTime();
+        Date date_a = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006").toGregorianCalendar().getTime();
         assertEquals(1163616328000L, date_a.getTime());
-        Date date_b = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006").toGregorianCalendar().getTime();
+        Date date_b = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006").toGregorianCalendar().getTime();
         assertNotSame(date_a, date_b);
     }
 
     @Test
-    public void test_DateDecoder_02() {
+    public void testDateDecoder02() {
         StringToXmlGregorianCalendarConverterFactory stringToXmlGregorianCalendarConverterFactory = new StringToXmlGregorianCalendarConverterFactory();
         Properties config = new Properties();
 
@@ -90,9 +90,9 @@ public class StringToXmlGregorianCalendarConverterFactoryTestCase {
         TypeConverter<String, XMLGregorianCalendar> typeConverter = stringToXmlGregorianCalendarConverterFactory.createTypeConverter();
         ((Configurable) typeConverter).setConfiguration(config);
         
-        Date date_a = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006").toGregorianCalendar().getTime();
+        Date date_a = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006").toGregorianCalendar().getTime();
         assertEquals(1163616328000L, date_a.getTime());
-        Date date_b = typeConverter.convert("Wed Nov 15 13:45:28 EST 2006").toGregorianCalendar().getTime();
+        Date date_b = typeConverter.convert("Wed Nov 15 13:45:28 GMT-05:00 2006").toGregorianCalendar().getTime();
         assertNotSame(date_a, date_b);
     }
 

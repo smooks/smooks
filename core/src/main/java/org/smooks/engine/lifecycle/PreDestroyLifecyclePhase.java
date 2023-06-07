@@ -42,7 +42,7 @@
  */
 package org.smooks.engine.lifecycle;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 public class PreDestroyLifecyclePhase extends AbstractLifecyclePhase {
     @Override
