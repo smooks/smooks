@@ -37,7 +37,7 @@ You can also build from the https://www.docker.io[Docker] image:
 // tag::getting-started[]
 == Getting Started
 
-The easiest way to get started with Smooks is to download and try out the https://github.com/smooks/smooks-examples/tree/v1.0.2[examples]. The examples are the recommended base upon which to integrate Smooks into your application.
+The easiest way to get started with Smooks is to download and try out the https://github.com/smooks/smooks-examples/tree/v1.0.4[examples]. The examples are the recommended base upon which to integrate Smooks into your application.
 // end::getting-started[]
 
 // tag::introduction[]
@@ -1723,7 +1723,7 @@ VariableFieldRecordParser and VariableFieldRecordParserFactory are abstract impl
 
 * The ability to read the next record chunk, with support for a simple record delimiter, or a regular expression (regex) pattern that marks the beginning of each record.
 
-The CSV and Regex readers are implemented using these abstract classes. See the https://github.com/smooks/smooks-examples/tree/v1.0.2/csv-variable-record[csv-variable-record] and https://github.com/smooks/smooks-examples/tree/v1.0.2/flatfile-to-xml-regex[flatfile-to-xml-regex] examples. The https://github.com/smooks/smooks-examples/tree/v1.0.2/flatfile-to-xml-regex[Regex Reader] implementation is also a good example that can be used as a basis for your own custom flat file reader.
+The CSV and Regex readers are implemented using these abstract classes. See the https://github.com/smooks/smooks-examples/tree/v1.0.4/csv-variable-record[csv-variable-record] and https://github.com/smooks/smooks-examples/tree/v1.0.4/flatfile-to-xml-regex[flatfile-to-xml-regex] examples. The https://github.com/smooks/smooks-examples/tree/v1.0.4/flatfile-to-xml-regex[Regex Reader] implementation is also a good example that can be used as a basis for your own custom flat file reader.
 
 === Implementing a Fragment Visitor
 
