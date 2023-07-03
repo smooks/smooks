@@ -57,7 +57,7 @@
         <mockobjects-core.version>0.09</mockobjects-core.version>
         <mockobjects-j1.4-j2ee1.3.version>0.07</mockobjects-j1.4-j2ee1.3.version>
         <mvel.version>2.5.0.Final</mvel.version>
-        <slf4j-api.version>2.0.6</slf4j-api.version>
+        <slf4j-api.version>2.0.7</slf4j-api.version>
         <xmlunit.version>2.9.1</xmlunit.version>
         <xstream.version>1.4.20</xstream.version>
     </properties>
