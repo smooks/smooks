@@ -74,7 +74,7 @@ public final class StreamUtils {
 
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
 		byte[] byteBuf = new byte[1024];
-		int readCount = 0;
+		int readCount;
 
 		while ((readCount = stream.read(byteBuf)) != -1) {
 			bytesOut.write(byteBuf, 0, readCount);
@@ -99,22 +99,6 @@ public final class StreamUtils {
         AssertArgument.isNotNull(encoding, "encoding");
 
         return new String(readStream(stream), encoding);
-    }
-
-    public static void writeFile(File file, byte[] data) throws IOException {
-        AssertArgument.isNotNull(file, "file");
-        AssertArgument.isNotNull(data, "data");
-
-        OutputStream stream = Files.newOutputStream(Paths.get(file.toURI()));
-        try {
-            stream.write(data);
-        } finally {
-            try {
-                stream.flush();
-            } finally {
-                stream.close();
-            }
-        }
     }
 
     public static String readStream(Reader stream) throws IOException {

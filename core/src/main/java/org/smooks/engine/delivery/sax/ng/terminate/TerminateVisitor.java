@@ -46,10 +46,10 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.ordering.Producer;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.support.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -75,7 +75,7 @@ public class TerminateVisitor implements BeforeVisitor, AfterVisitor, Producer {
 	public Set<?> getProducts() {
 		// Doesn't actually produce anything.  Just using the Producer/Consumer mechanism to
 		// force this vistor to the top of the visitor apply list.
-		return CollectionsUtil.toSet();
+		return Collections.EMPTY_SET;
 	}
 
 	@Override

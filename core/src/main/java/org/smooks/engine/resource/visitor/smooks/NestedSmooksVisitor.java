@@ -77,7 +77,6 @@ import org.smooks.io.DomSerializer;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.ResourceWriter;
 import org.smooks.io.Stream;
-import org.smooks.support.CollectionsUtil;
 import org.smooks.support.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -98,10 +97,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer, ExecutionLifecycleInitializable {
     
@@ -428,7 +426,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
 
     @Override
     public Set<String> getProducts() {
-        return outputStreamResourceOptional.map(CollectionsUtil::toSet).orElseGet(CollectionsUtil::toSet);
+        return outputStreamResourceOptional.map(os -> java.util.stream.Stream.of(os).collect(Collectors.toSet())).orElse(Collections.EMPTY_SET);
     }
 
     public void setMaxNodeDepth(Integer maxNodeDepth) {

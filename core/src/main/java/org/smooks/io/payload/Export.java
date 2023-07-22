@@ -45,10 +45,11 @@ package org.smooks.io.payload;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.engine.lookup.ExportsLookup;
-import org.smooks.support.CollectionsUtil;
 
 import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -112,7 +113,7 @@ public class Export implements ContentHandler {
     }
     
     private void initExtractSet() {
-        extract.ifPresent(s -> extractSet = CollectionsUtil.toSet(s.split(",")));
+        extract.ifPresent(s -> extractSet = new HashSet<>(Arrays.asList(s.split(","))));
     }
 
     public String getName() {

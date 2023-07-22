@@ -55,6 +55,8 @@ import java.lang.reflect.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Utility methods to aid in class/resource loading.
@@ -67,7 +69,7 @@ public class ClassUtil {
     private static final Map<String, Class> primitives;
 
     static {
-        primitives = new HashMap<String, Class>();
+        primitives = new HashMap<>();
         primitives.put("int", Integer.TYPE);
         primitives.put("long", Long.TYPE);
         primitives.put("boolean", Boolean.TYPE);
@@ -187,11 +189,11 @@ public class ClassUtil {
 
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         if (contextClassLoader != null) {
-			resources.addAll(CollectionsUtil.toList(contextClassLoader.getResources(resourcePath)));
+            resources.addAll(Collections.list(contextClassLoader.getResources(resourcePath)));
 		}
 
 		if (callerClassLoader != null) {
-            resources.addAll(CollectionsUtil.toList(callerClassLoader.getResources(resourcePath)));
+            resources.addAll(Collections.list(callerClassLoader.getResources(resourcePath)));
 		}
 
 		return new ArrayList<URL>(resources);
