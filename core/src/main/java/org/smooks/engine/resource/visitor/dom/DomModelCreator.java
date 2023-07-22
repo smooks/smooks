@@ -58,7 +58,6 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
-import org.smooks.support.CollectionsUtil;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
@@ -72,6 +71,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * DOM Node Model creator.
@@ -147,7 +148,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
     @Override
     public Set<String> getProducts() {
         if (resourceConfig.getSelectorPath() instanceof IndexedSelectorPath) {
-            return CollectionsUtil.toSet(((ElementSelectorStep) ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep()).getQName().getLocalPart());
+            return Stream.of(((ElementSelectorStep) ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep()).getQName().getLocalPart()).collect(Collectors.toSet());
         } else {
             return Collections.emptySet();
         }
