@@ -58,10 +58,10 @@ abstract class AbstractFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InstanceOfFilter.class);
 
-    private final List<Class> classes = new ArrayList<Class>();
+    private final List<Class<?>> classes = new ArrayList<>();
     private String[] includeList;
     private String[] igrnoreList = defaultIgnoreList;
-    private static final String[] defaultIgnoreList = new String[] {
+    private static final String[] defaultIgnoreList = new String[]{
             "charsets.jar", "javaws.jar", "jce.jar", "jsse.jar", "rt.jar", "dnsns.jar", "sunjce_provider.jar", "sunpkcs11.jar", "junit-", "servlet-api-", "idea_rt.jar",
             "java/", "javax/", "netscape/", "sun/", "com/sun", "org/omg", "org/xml", "org/w3c", "junit/", "org/apache/commons", "org/apache/log4j",
     };
@@ -70,7 +70,7 @@ abstract class AbstractFilter implements Filter {
     }
 
     AbstractFilter(String[] ignoreList, String[] includeList) {
-        if(ignoreList != null) {
+        if (ignoreList != null) {
             this.igrnoreList = ignoreList;
         }
         this.includeList = includeList;
@@ -78,12 +78,12 @@ abstract class AbstractFilter implements Filter {
 
     @Override
     public void filter(String resourceName) {
-        if(resourceName.endsWith(".class") && !isIgnorable(resourceName)) {
+        if (resourceName.endsWith(".class") && !isIgnorable(resourceName)) {
             String className = ClasspathUtils.toClassName(resourceName);
 
             try {
-                Class clazz = ClassUtil.forName(className, InstanceOfFilter.class);
-                if(addClass(clazz)) {
+                Class<?> clazz = ClassUtil.forName(className, InstanceOfFilter.class);
+                if (addClass(clazz)) {
                     classes.add(clazz);
                 }
             } catch (Throwable throwable) {
@@ -98,21 +98,21 @@ abstract class AbstractFilter implements Filter {
     public boolean isIgnorable(String resourceName) {
         boolean isJar = resourceName.endsWith(".jar");
 
-        if(includeList != null) {
-            for(String include : includeList) {
-                if(isJar && resourceName.startsWith(include)) {
+        if (includeList != null) {
+            for (String include : includeList) {
+                if (isJar && resourceName.startsWith(include)) {
                     return false;
-                } else if(!isJar && (resourceName.length() < include.length() || resourceName.startsWith(include))) {
+                } else if (!isJar && (resourceName.length() < include.length() || resourceName.startsWith(include))) {
                     return false;
                 }
             }
             return true;
         }
 
-        for(String ignore : igrnoreList) {
-            if(isJar && resourceName.startsWith(ignore)) {
+        for (String ignore : igrnoreList) {
+            if (isJar && resourceName.startsWith(ignore)) {
                 return true;
-            } else if(!isJar && (resourceName.length() >= ignore.length() && resourceName.startsWith(ignore))) {
+            } else if (!isJar && (resourceName.length() >= ignore.length() && resourceName.startsWith(ignore))) {
                 return true;
             }
         }
@@ -120,7 +120,7 @@ abstract class AbstractFilter implements Filter {
         return false;
     }
 
-    public List<Class> getClasses() {
+    public List<Class<?>> getClasses() {
         return classes;
     }
 }

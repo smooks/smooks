@@ -50,6 +50,7 @@
                         <exclude>test/resources/org/smooks/xml/*.xml</exclude>
                         <exclude>test/resources/org/smooks/support/*.xml</exclude>
                         <exclude>test/java/org/smooks/annotation/TestAnnotation.java</exclude>
+                        <exclude>test/resources/jaxws-ri-4.0.1.pom</exclude>
                         <exclude>main/java/org/smooks/annotation/*.java</exclude>
                     </excludes>
                 </configuration>

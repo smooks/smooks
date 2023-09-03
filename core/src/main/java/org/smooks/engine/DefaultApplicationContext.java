@@ -92,7 +92,7 @@ public class DefaultApplicationContext implements ApplicationContext {
 		} catch (IOException e) {
 			throw new SmooksException(e.getMessage(), e);
 		}
-		List<Class> classes = isAnnotationPresentFilter.getClasses();
+		List<Class<?>> classes = isAnnotationPresentFilter.getClasses();
 		resourceLocator = new URIResourceLocator();
         ((URIResourceLocator)resourceLocator).setBaseURI(URI.create(URIResourceLocator.SCHEME_CLASSPATH + ":/"));
     }

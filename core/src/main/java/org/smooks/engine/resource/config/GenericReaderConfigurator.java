@@ -53,7 +53,7 @@ import java.util.*;
  * Generic reader configurator.
  * <p/>
  * Specific reader implementations can define specialized configurators.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class GenericReaderConfigurator implements ReaderConfigurator {
@@ -81,7 +81,7 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
     }
 
     public GenericReaderConfigurator setFeature(String feature, boolean on) {
-        if(on) {
+        if (on) {
             featuresOn.add(feature);
         } else {
             featuresOff.add(feature);
@@ -99,27 +99,27 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
         ResourceConfig resourceConfig = new DefaultResourceConfig();
         resourceConfig.setSelector(AbstractParser.ORG_XML_SAX_DRIVER, new Properties());
 
-        if(readerClass != null) {
+        if (readerClass != null) {
             resourceConfig.setResource(readerClass.getName());
         }
 
-        if(targetProfile != null) {
+        if (targetProfile != null) {
             resourceConfig.setTargetProfile(targetProfile);
         }
 
         // Add the parameters...
         Set<Map.Entry<Object, Object>> entries = parameters.entrySet();
         for (Map.Entry<Object, Object> entry : entries) {
-            resourceConfig.setParameter((String)entry.getKey(), (String)entry.getValue());
+            resourceConfig.setParameter((String) entry.getKey(), (String) entry.getValue());
         }
 
         // Add the "on" features...
-        for(String featureOn : featuresOn) {
+        for (String featureOn : featuresOn) {
             resourceConfig.setParameter(AbstractParser.FEATURE_ON, featureOn);
         }
 
         // Add the "off" features...
-        for(String featureOff : featuresOff) {
+        for (String featureOff : featuresOff) {
             resourceConfig.setParameter(AbstractParser.FEATURE_OFF, featureOff);
         }
 
