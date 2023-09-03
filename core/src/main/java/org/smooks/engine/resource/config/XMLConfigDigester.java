@@ -85,7 +85,7 @@ import java.util.*;
  */
 @SuppressWarnings("WeakerAccess")
 public final class XMLConfigDigester {
-    
+
     @Deprecated
     public static final String XSD_V12 = "https://www.smooks.org/xsd/smooks-1.2.xsd";
     public static final String XSD_V20 = "https://www.smooks.org/xsd/smooks-2.0.xsd";
@@ -108,13 +108,12 @@ public final class XMLConfigDigester {
      *  <li>From the {@link #digestConfig(java.io.InputStream, String)} method.</li>
      *  <li>From the {@link #getExtendedConfigDigester(String)} method.</li>
      * </ul>
-     *
+     * <p>
      * The {@link #digestConfig(java.io.InputStream, String)} method is public and always calls
      * {@link #setExtensionDigestOff()}.  The {@link #getExtendedConfigDigester(String)} method is
      * private and always calls {@link #setExtensionDigestOn()}.  Playing with the
      * public/private nature of these methods may effect the behavior of the {@link #EXTENSION_DIGEST_ON}
      * ThreadLocal.
-     *
      *
      * @param resourceConfigList Config list.
      */
@@ -126,15 +125,15 @@ public final class XMLConfigDigester {
     /**
      * Digest the XML Smooks configuration stream.
      *
-     * @param stream  The stream.
-     * @param baseURI The base URI to be associated with the configuration stream.
+     * @param stream                  The stream.
+     * @param baseURI                 The base URI to be associated with the configuration stream.
      * @param extendedConfigDigesters Config digesters.
      * @return A {@link ResourceConfigSeq} containing the list of
-     *         {@link ResourceConfig ResourceConfigs} defined in the
-     *         XML configuration.
-     * @throws SAXException Error parsing the XML stream.
-     * @throws IOException  Error reading the XML stream.
-     * @throws SmooksConfigException  Invalid configuration..
+     * {@link ResourceConfig ResourceConfigs} defined in the
+     * XML configuration.
+     * @throws SAXException          Error parsing the XML stream.
+     * @throws IOException           Error reading the XML stream.
+     * @throws SmooksConfigException Invalid configuration..
      */
     @SuppressWarnings("unused")
     public static ResourceConfigSeq digestConfig(InputStream stream, String baseURI, Map<String, Smooks> extendedConfigDigesters) throws SAXException, IOException, URISyntaxException, SmooksConfigException {
@@ -144,16 +143,16 @@ public final class XMLConfigDigester {
     /**
      * Digest the XML Smooks configuration stream.
      *
-     * @param stream  The stream.
-     * @param baseURI The base URI to be associated with the configuration stream.
+     * @param stream                  The stream.
+     * @param baseURI                 The base URI to be associated with the configuration stream.
      * @param extendedConfigDigesters Config digesters.
-     * @param classLoader The ClassLoader to be used.
+     * @param classLoader             The ClassLoader to be used.
      * @return A {@link ResourceConfigSeq} containing the list of
-     *         {@link ResourceConfig ResourceConfigs} defined in the
-     *         XML configuration.
-     * @throws SAXException Error parsing the XML stream.
-     * @throws IOException  Error reading the XML stream.
-     * @throws SmooksConfigException  Invalid configuration..
+     * {@link ResourceConfig ResourceConfigs} defined in the
+     * XML configuration.
+     * @throws SAXException          Error parsing the XML stream.
+     * @throws IOException           Error reading the XML stream.
+     * @throws SmooksConfigException Invalid configuration..
      */
     public static ResourceConfigSeq digestConfig(InputStream stream, String baseURI, Map<String, Smooks> extendedConfigDigesters, ClassLoader classLoader) throws SAXException, IOException, URISyntaxException, SmooksConfigException {
         ResourceConfigSeq resourceConfigList = new DefaultResourceConfigSeq(baseURI);
@@ -161,7 +160,7 @@ public final class XMLConfigDigester {
         setExtensionDigestOff();
         XMLConfigDigester digester = new XMLConfigDigester(resourceConfigList);
 
-        if(classLoader != null) {
+        if (classLoader != null) {
             digester.classLoader = classLoader;
         }
 
@@ -177,11 +176,11 @@ public final class XMLConfigDigester {
      * @param stream  The stream.
      * @param baseURI The base URI to be associated with the configuration stream.
      * @return A {@link ResourceConfigSeq} containing the list of
-     *         {@link ResourceConfig ResourceConfigs} defined in the
-     *         XML configuration.
-     * @throws SAXException Error parsing the XML stream.
-     * @throws IOException  Error reading the XML stream.
-     * @throws SmooksConfigException  Invalid configuration..
+     * {@link ResourceConfig ResourceConfigs} defined in the
+     * XML configuration.
+     * @throws SAXException          Error parsing the XML stream.
+     * @throws IOException           Error reading the XML stream.
+     * @throws SmooksConfigException Invalid configuration..
      */
     public static ResourceConfigSeq digestConfig(InputStream stream, String baseURI) throws SAXException, IOException, URISyntaxException, SmooksConfigException {
         return digestConfig(stream, baseURI, (ClassLoader) null);
@@ -193,11 +192,11 @@ public final class XMLConfigDigester {
      * @param stream  The stream.
      * @param baseURI The base URI to be associated with the configuration stream.
      * @return A {@link ResourceConfigSeq} containing the list of
-     *         {@link ResourceConfig ResourceConfigs} defined in the
-     *         XML configuration.
-     * @throws SAXException Error parsing the XML stream.
-     * @throws IOException  Error reading the XML stream.
-     * @throws SmooksConfigException  Invalid configuration..
+     * {@link ResourceConfig ResourceConfigs} defined in the
+     * XML configuration.
+     * @throws SAXException          Error parsing the XML stream.
+     * @throws IOException           Error reading the XML stream.
+     * @throws SmooksConfigException Invalid configuration..
      */
     public static ResourceConfigSeq digestConfig(InputStream stream, String baseURI, ClassLoader classLoader) throws SAXException, IOException, URISyntaxException, SmooksConfigException {
         ResourceConfigSeq list = new DefaultResourceConfigSeq(baseURI);
@@ -205,7 +204,7 @@ public final class XMLConfigDigester {
         setExtensionDigestOff();
         XMLConfigDigester digester = new XMLConfigDigester(list);
 
-        if(classLoader != null) {
+        if (classLoader != null) {
             digester.classLoader = classLoader;
         }
         digester.digestConfigRecursively(new InputStreamReader(stream), baseURI);
@@ -215,10 +214,11 @@ public final class XMLConfigDigester {
 
     /**
      * Get the active resource configuration list.
+     *
      * @return The active resource configuration list.
      */
     public ResourceConfigSeq getResourceList() {
-    	return resourceConfigList;
+        return resourceConfigList;
     }
 
     private void digestConfigRecursively(Reader stream, String baseURI) throws IOException, SAXException, URISyntaxException, SmooksConfigException {
@@ -291,17 +291,17 @@ public final class XMLConfigDigester {
             }
         }
     }
-    
+
     private void digestV20XSDValidatedConfig(String baseURI, Document configDoc) throws SAXException, URISyntaxException, SmooksConfigException {
         Element currentElement = configDoc.getDocumentElement();
-        
+
         String defaultProfile = DomUtils.getAttributeValue(currentElement, "default-target-profile");
         String defaultConditionRef = DomUtils.getAttributeValue(currentElement, "default-condition-ref");
 
         NodeList configNodes = currentElement.getChildNodes();
 
         for (int i = 0; i < configNodes.getLength(); i++) {
-            if(configNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+            if (configNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element configElement = (Element) configNodes.item(i);
 
                 // Make sure the element is permitted...
@@ -309,20 +309,20 @@ public final class XMLConfigDigester {
 
                 String elementName = DomUtils.getName(configElement);
                 String namespaceURI = configElement.getNamespaceURI();
-                if(namespaceURI == null || namespaceURI.equals(XSD_V20)) {
-	                if (elementName.equals("params")) {
-	                    digestParams(configElement);
-	                } else if (elementName.equals("conditions")) {
-	                    digestConditions(configElement);
-	                } else if (elementName.equals("profiles")) {
-	                    digestProfiles(configElement);
-	                } else if (elementName.equals("import")) {
-	                    digestImport(configElement, new URI(baseURI));
-	                } else if (elementName.equals("reader")) {
-	                    digestReaderConfig(configElement, defaultProfile);
-	                } else if (elementName.equals("resource-config")) {
-	                    digestResourceConfig(configElement, null, null, defaultProfile, defaultConditionRef);
-	                }
+                if (namespaceURI == null || namespaceURI.equals(XSD_V20)) {
+                    if (elementName.equals("params")) {
+                        digestParams(configElement);
+                    } else if (elementName.equals("conditions")) {
+                        digestConditions(configElement);
+                    } else if (elementName.equals("profiles")) {
+                        digestProfiles(configElement);
+                    } else if (elementName.equals("import")) {
+                        digestImport(configElement, new URI(baseURI));
+                    } else if (elementName.equals("reader")) {
+                        digestReaderConfig(configElement, defaultProfile);
+                    } else if (elementName.equals("resource-config")) {
+                        digestResourceConfig(configElement, null, null, defaultProfile, defaultConditionRef);
+                    }
                 } else {
                     // It's an extended resource configuration element
                     digestExtendedResourceConfig(configElement, null, null, defaultProfile, defaultConditionRef);
@@ -334,7 +334,7 @@ public final class XMLConfigDigester {
     private void digestParams(Element paramsElement) {
         NodeList paramNodes = paramsElement.getElementsByTagName("param");
 
-        if(paramNodes.getLength() > 0) {
+        if (paramNodes.getLength() > 0) {
             ResourceConfig globalParamsConfig = new DefaultResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS, new Properties());
 
             digestParameters(paramsElement, globalParamsConfig);
@@ -343,9 +343,9 @@ public final class XMLConfigDigester {
     }
 
     private void assertElementPermitted(Element configElement) {
-        if(isExtensionConfig()) {
+        if (isExtensionConfig()) {
             String elementName = DomUtils.getName(configElement);
-            if(!elementName.equals("import") && !elementName.equals("resource-config")) {
+            if (!elementName.equals("import") && !elementName.equals("resource-config")) {
                 throw new SmooksConfigException("Configuration element '" + elementName + "' not supported in an extension configuration.");
             }
         }
@@ -377,7 +377,7 @@ public final class XMLConfigDigester {
                 resourceStream = resourceLocator.getResource(file);
                 try {
                     List<Element> importParams = DomUtils.getElements(importElement, "param", null);
-                    if(!importParams.isEmpty()) {
+                    if (!importParams.isEmpty()) {
                         // Inject parameters into import config...
                         String importConfig = StreamUtils.readStreamAsString(resourceStream, "UTF-8");
 
@@ -404,9 +404,9 @@ public final class XMLConfigDigester {
     }
 
     private void digestReaderConfig(Element configElement, String defaultProfile) {
-    	String profiles = DomUtils.getAttributeValue(configElement, "targetProfile");
+        String profiles = DomUtils.getAttributeValue(configElement, "targetProfile");
 
-    	String readerClass = DomUtils.getAttributeValue(configElement, "class");
+        String readerClass = DomUtils.getAttributeValue(configElement, "class");
 
         ResourceConfig resourceConfig = new DefaultResourceConfig(AbstractParser.ORG_XML_SAX_DRIVER, new Properties(), (profiles != null ? profiles : defaultProfile), readerClass);
 
@@ -421,10 +421,10 @@ public final class XMLConfigDigester {
     private void configureHandlers(Element configElement, ResourceConfig resourceConfig) {
         Element handlersElement = DomUtils.getElement(configElement, "handlers", 1);
 
-        if(handlersElement != null) {
+        if (handlersElement != null) {
             NodeList handlers = handlersElement.getChildNodes();
-            for(int i = 0; i < handlers.getLength(); i++) {
-                if(handlers.item(i).getNodeType() == Node.ELEMENT_NODE) {
+            for (int i = 0; i < handlers.getLength(); i++) {
+                if (handlers.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element handler = (Element) handlers.item(i);
                     String handlerClass = handler.getAttribute("class");
 
@@ -437,14 +437,14 @@ public final class XMLConfigDigester {
     private void configureFeatures(Element configElement, ResourceConfig resourceConfig) {
         Element featuresElement = DomUtils.getElement(configElement, "features", 1);
 
-        if(featuresElement != null) {
+        if (featuresElement != null) {
             NodeList features = featuresElement.getChildNodes();
-            for(int i = 0; i < features.getLength(); i++) {
-                if(features.item(i).getNodeType() == Node.ELEMENT_NODE) {
+            for (int i = 0; i < features.getLength(); i++) {
+                if (features.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element feature = (Element) features.item(i);
                     String uri = feature.getAttribute("feature");
 
-                    if(DomUtils.getName(feature).equals("setOn")) {
+                    if (DomUtils.getName(feature).equals("setOn")) {
                         resourceConfig.setParameter("feature-on", uri);
                     } else {
                         resourceConfig.setParameter("feature-off", uri);
@@ -457,10 +457,10 @@ public final class XMLConfigDigester {
     private void configureParams(Element configElement, ResourceConfig resourceConfig) {
         Element paramsElement = DomUtils.getElement(configElement, "params", 1);
 
-        if(paramsElement != null) {
+        if (paramsElement != null) {
             NodeList params = paramsElement.getChildNodes();
-            for(int i = 0; i < params.getLength(); i++) {
-                if(params.item(i).getNodeType() == Node.ELEMENT_NODE) {
+            for (int i = 0; i < params.getLength(); i++) {
+                if (params.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element param = (Element) params.item(i);
                     String name = param.getAttribute("name");
                     String value = DomUtils.getAllText(param, true);
@@ -522,7 +522,7 @@ public final class XMLConfigDigester {
         // Create the ExtenstionContext and set it on the ExecutionContext...
         if (conditionElement != null && (conditionElement.getNamespaceURI().equals(XSD_V12) || conditionElement.getNamespaceURI().equals(XSD_V20))) {
             extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, digestCondition(conditionElement));
-        } else if(defaultConditionRef != null) {
+        } else if (defaultConditionRef != null) {
             extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, getConditionEvaluator(defaultConditionRef));
         } else {
             extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, null);
@@ -542,7 +542,7 @@ public final class XMLConfigDigester {
     private Smooks getExtendedConfigDigester(String configNamespace) {
         Smooks smooks = extendedConfigDigesters.get(configNamespace);
 
-        if(smooks == null) {
+        if (smooks == null) {
             URI namespaceURI;
 
             try {
@@ -579,7 +579,7 @@ public final class XMLConfigDigester {
             // And add it to the Map of extension digesters...
             extendedConfigDigesters.put(configNamespace, smooks);
         }
-        
+
         return smooks;
     }
 
@@ -628,11 +628,11 @@ public final class XMLConfigDigester {
     private void digestConditions(Element conditionsElement) {
         NodeList conditions = conditionsElement.getElementsByTagName("condition");
 
-        for(int i = 0; i < conditions.getLength(); i++) {
+        for (int i = 0; i < conditions.getLength(); i++) {
             Element conditionElement = (Element) conditions.item(i);
             String id = DomUtils.getAttributeValue(conditionElement, "id");
 
-            if(id != null) {
+            if (id != null) {
                 addConditionEvaluator(id, digestCondition(conditionElement));
             }
         }
@@ -642,13 +642,13 @@ public final class XMLConfigDigester {
     public ExpressionEvaluator digestCondition(Element conditionElement) throws SmooksConfigException {
         String idRef = DomUtils.getAttributeValue(conditionElement, "idRef");
 
-        if(idRef != null) {
+        if (idRef != null) {
             return getConditionEvaluator(idRef);
         } else {
             String evaluatorClassName = DomUtils.getAttributeValue(conditionElement, "evaluator");
 
             String evaluatorConditionExpression = DomUtils.getAllText(conditionElement, true);
-            if(evaluatorConditionExpression == null || evaluatorConditionExpression.trim().equals("")) {
+            if (evaluatorConditionExpression == null || evaluatorConditionExpression.trim().equals("")) {
                 throw new SmooksConfigException("smooks-resource/condition must specify a condition expression as child text e.g. <condition evaluator=\"....\">A + B > C</condition>.");
             }
 
@@ -661,7 +661,7 @@ public final class XMLConfigDigester {
         NodeList configNodes = profilesElement.getChildNodes();
 
         for (int i = 0; i < configNodes.getLength(); i++) {
-            if(configNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+            if (configNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element profileNode = (Element) configNodes.item(i);
                 String baseProfile = DomUtils.getAttributeValue(profileNode, "base-profile");
                 String subProfiles = DomUtils.getAttributeValue(profileNode, "sub-profiles");
@@ -693,7 +693,7 @@ public final class XMLConfigDigester {
     public String getCurrentPath() {
         StringBuilder pathBuilder = new StringBuilder();
 
-        for(int i = configStack.size() - 1; i >= 0; i--) {
+        for (int i = configStack.size() - 1; i >= 0; i--) {
             pathBuilder.insert(0, "]");
             pathBuilder.insert(0, configStack.get(i).configFile);
             pathBuilder.insert(0, "/[");
@@ -704,7 +704,7 @@ public final class XMLConfigDigester {
 
     private void pushConfig(String file, URI fileURI) {
         for (SmooksConfig smooksConfig : configStack) {
-            if(fileURI.equals(smooksConfig.fileURI)) {
+            if (fileURI.equals(smooksConfig.fileURI)) {
                 throw new SmooksConfigException("Invalid circular reference to config file '" + fileURI + "' from inside config file '" + getCurrentPath() + "'.");
             }
         }
@@ -728,9 +728,9 @@ public final class XMLConfigDigester {
     public ExpressionEvaluator getConditionEvaluator(String idRef) {
         SmooksConfig smooksConfig = configStack.peek();
 
-        while(smooksConfig != null) {
+        while (smooksConfig != null) {
             ExpressionEvaluator evaluator = smooksConfig.conditionEvaluators.get(idRef);
-            if(evaluator != null) {
+            if (evaluator != null) {
                 return evaluator;
             }
             smooksConfig = smooksConfig.parent;
@@ -740,7 +740,7 @@ public final class XMLConfigDigester {
     }
 
     private void assertUniqueConditionId(String id) {
-        if(configStack.peek().conditionEvaluators.containsKey(id)) {
+        if (configStack.peek().conditionEvaluators.containsKey(id)) {
             throw new SmooksConfigException("Duplicate condition ID '" + id + "'.");
         }
     }

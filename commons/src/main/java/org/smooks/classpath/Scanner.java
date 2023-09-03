@@ -73,7 +73,6 @@ public class Scanner {
     }
 
     public void scanClasspath(ClassLoader classLoader) throws IOException {
-
         if (!(classLoader instanceof URLClassLoader)) {
             LOGGER.warn("Not scanning classpath for ClassLoader '" + classLoader.getClass().getName() + "'.  ClassLoader must implement '" + URLClassLoader.class.getName() + "'.");
             return;
@@ -95,10 +94,11 @@ public class Scanner {
             }
 
             File file = new File(urlPath);
-            if(alreadyScanned.contains(file.getAbsolutePath())) {
+            if (alreadyScanned.contains(file.getAbsolutePath())) {
                 LOGGER.debug("Ignoring classpath URL '" + file.getAbsolutePath() + "'.  Already scanned this URL.");
                 continue;
-            } if (file.isDirectory()) {
+            }
+            if (file.isDirectory()) {
                 handleDirectory(file, null);
             } else {
                 handleArchive(file);
@@ -107,40 +107,44 @@ public class Scanner {
         }
     }
 
-    private void handleArchive(File file) throws IOException {
-        if(filter.isIgnorable(file.getName())) {
-            if(LOGGER.isDebugEnabled()) {
+    private void handleArchive(File file) {
+        if (filter.isIgnorable(file.getName())) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Ignoring archive: " + file);
             }
             return;
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Scanning archive: " + file.getAbsolutePath());
         }
 
-        ZipFile zip = new ZipFile(file);
-        Enumeration<? extends ZipEntry> entries = zip.entries();
-
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = entries.nextElement();
-            String name = entry.getName();
-            filter.filter(name);
+        try {
+            try (ZipFile zip = new ZipFile(file)) {
+                final Enumeration<? extends ZipEntry> entries = zip.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    String name = entry.getName();
+                    filter.filter(name);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Unable to open archive so skipping it: " + file, e);
         }
     }
 
     private void handleDirectory(File file, String path) {
-        if(path != null && filter.isIgnorable(path)) {
-            if(LOGGER.isDebugEnabled()) {
+        if (path != null && filter.isIgnorable(path)) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Ignoring directory (and subdirectories): " + path);
             }
             return;
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Scanning directory: " + file.getAbsolutePath());
         }
 
         for (File child : file.listFiles()) {
-            String newPath = path == null?child.getName() : path + '/' + child.getName();
+            String newPath = path == null ? child.getName() : path + '/' + child.getName();
 
             if (child.isDirectory()) {
                 handleDirectory(child, newPath);

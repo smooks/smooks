@@ -63,29 +63,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ScannerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScannerTest.class);
 
-    private URLClassLoader classLoader;
+    private File targetDir;
+    private File classesDir;
+    private File testClassesDir;
 
     @BeforeEach
     public void setUp() throws MalformedURLException {
-        File targetDir = new File("target");
-        File classesDir = new File(targetDir, "classes");
-        File testClassesDir = new File(targetDir, "test-classes");
-        classLoader = new URLClassLoader(new URL[]{classesDir.toURI().toURL(), testClassesDir.toURI().toURL()});
+        targetDir = new File("target");
+        classesDir = new File(targetDir, "classes");
+        testClassesDir = new File(targetDir, "test-classes");
+//        classLoader = new URLClassLoader(new URL[]{classesDir.toURI().toURL(), testClassesDir.toURI().toURL(), new File(testClassesDir, "jaxws-ri-4.0.1.pom").toURI().toURL()});
     }
 
     @Test
-    public void test_instanceof_has_include() throws IOException {
-
+    public void testScanClasspathGivenInstanceOfFilterHavingIncludeList() throws IOException {
         InstanceOfFilter filter = new InstanceOfFilter(Filter.class, null, new String[]{"org/smooks"});
         Scanner scanner = new Scanner(filter);
 
         long start = System.currentTimeMillis();
-        scanner.scanClasspath(classLoader);
+        scanner.scanClasspath(newUrlClassLoader(targetDir, classesDir, testClassesDir));
         LOGGER.debug("Took: " + (System.currentTimeMillis() - start));
-        List<Class> classes = filter.getClasses();
+        List<Class<?>> classes = filter.getClasses();
 
         LOGGER.debug(classes.toString());
-        assertEquals(4, classes.size());
+        assertEquals(5, classes.size());
         assertTrue(classes.contains(InstanceOfFilter.class));
         assertTrue(classes.contains(IsAnnotationPresentFilter.class));
         assertTrue(classes.contains(AbstractFilter.class));
@@ -93,14 +94,14 @@ public class ScannerTest {
     }
 
     @Test
-    public void test_annotated_has_include() throws IOException {
+    public void testScanClasspathGivenIsAnnotationPresentFilter() throws IOException {
         IsAnnotationPresentFilter filter = new IsAnnotationPresentFilter(TestAnnotation.class, null, new String[]{"org/smooks"});
         Scanner scanner = new Scanner(filter);
 
         long start = System.currentTimeMillis();
-        scanner.scanClasspath(classLoader);
+        scanner.scanClasspath(newUrlClassLoader(targetDir, classesDir, testClassesDir));
         LOGGER.debug("Took: " + (System.currentTimeMillis() - start));
-        List<Class> classes = filter.getClasses();
+        List<Class<?>> classes = filter.getClasses();
 
         LOGGER.debug(classes.toString());
         assertEquals(2, classes.size());
@@ -109,20 +110,48 @@ public class ScannerTest {
     }
 
     @Test
-    public void test_instanceof_no_include() throws IOException {
+    public void testScanClasspathGivenInstanceOfFilter() throws IOException {
         InstanceOfFilter filter = new InstanceOfFilter(Filter.class);
         Scanner scanner = new Scanner(filter);
 
         long start = System.currentTimeMillis();
-        scanner.scanClasspath(classLoader);
+        scanner.scanClasspath(newUrlClassLoader(targetDir, classesDir, testClassesDir));
         LOGGER.debug("Took: " + (System.currentTimeMillis() - start));
-        List<Class> classes = filter.getClasses();
+        List<Class<?>> classes = filter.getClasses();
 
         LOGGER.debug(classes.toString());
-        assertEquals(4, classes.size());
+        assertEquals(5, classes.size());
         assertTrue(classes.contains(InstanceOfFilter.class));
         assertTrue(classes.contains(IsAnnotationPresentFilter.class));
         assertTrue(classes.contains(AbstractFilter.class));
         assertTrue(classes.contains(Filter.class));
+    }
+
+    @Test
+    public void testScanClasspathSkipsFilesThatAreNotArchives() throws IOException {
+        Scanner scanner = new Scanner(new Filter() {
+            @Override
+            public void filter(String resourceName) {
+
+            }
+
+            @Override
+            public boolean isIgnorable(String resourceName) {
+                return false;
+            }
+        });
+
+        scanner.scanClasspath(newUrlClassLoader(targetDir, classesDir, testClassesDir, new File(testClassesDir, "jaxws-ri-4.0.1.pom")));
+    }
+
+    private URLClassLoader newUrlClassLoader(File... files) throws MalformedURLException {
+        URL[] urls = new URL[files.length];
+        int i = 0;
+        for (File file : files) {
+            urls[i] = file.toURI().toURL();
+            i++;
+        }
+
+        return new URLClassLoader(urls);
     }
 }

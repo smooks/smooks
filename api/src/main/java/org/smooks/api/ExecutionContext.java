@@ -115,7 +115,7 @@ public interface ExecutionContext extends TypedMap {
     /**
      * Get the content encoding to be used when parsing content on this context.
      * 
-     * @return Character encoding to be used when parsing content.  Defaults to "UTF-8".
+     * @return Character encoding to be used when parsing content. Defaults to "UTF-8".
      */
     String getContentEncoding();
     
