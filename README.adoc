@@ -126,7 +126,7 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
 . Replace Smooks Maven coordinates to match the coordinates as described in the https://www.smooks.org/v2/maven[Maven guide].
 . Replace `ExecutionContext#isDefaultSerializationOn()` method calls with
 `ExecutionContext#getContentDeliveryRuntime().getDeliveryConfig().isDefaultSerializationOn()`.
-. Replace `ExecutionContext#getContext()` method calls with`+ExecutionContext#getApplicationContext()+`.
+. Replace `ExecutionContext#getContext()` method calls with `ExecutionContext#getApplicationContext()`.
 . Replace `org.smooks.delivery.dom.serialize.SerializationVisitor` references with `org.smooks.api.resource.visitor.SerializerVisitor`.
 . Replace `org.smooks.cdr.annotation.AppContext` annotations with `javax.inject.Inject` annotations.
 . Replace `org.smooks.cdr.annotation.ConfigParam` annotations with `javax.inject.Inject` annotations:
