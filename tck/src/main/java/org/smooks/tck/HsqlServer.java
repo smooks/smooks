@@ -43,20 +43,21 @@
 package org.smooks.tck;
 
 import org.hsqldb.Server;
-import org.hsqldb.ServerConstants;
+import org.hsqldb.cmdline.SqlFile;
+import org.hsqldb.cmdline.SqlToolError;
 import org.hsqldb.jdbcDriver;
+import org.hsqldb.server.ServerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.support.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -73,32 +74,28 @@ public class HsqlServer {
     private final String password = "";
 
     private final Connection connection;
-    
+
     private final CountDownLatch startGate = new CountDownLatch(1);
-    
-    public HsqlServer(final int port) throws Exception {
+
+    public  HsqlServer(final int port) throws Exception {
         final String databaseName = "milyn-hsql-" + port;
 
         url = "jdbc:hsqldb:hsql://localhost:" + port + "/" + databaseName +";shutdown=true";
         LOGGER.info("Starting Hypersonic Database '" + url + "'.");
-        new Thread() {
-            @Override
-            public void run() {
-                Server server = new Server();
-                Logger targetLogger = LoggerFactory.getLogger("org.hsqldb");
-                server.setLogWriter(new PrintWriter(new StdoutToLog4jFilter(server.getLogWriter(), targetLogger)));
-                server.setDatabasePath(0, "target/hsql/" + databaseName);
-                server.setDatabaseName(0, databaseName);
-                server.setNoSystemExit( true );
-                server.setSilent( true );
-                server.setPort(port);
-                server.start();
+        new Thread(() -> {
+            Server server = new Server();
+            Logger targetLogger = LoggerFactory.getLogger("org.hsqldb");
+            server.setLogWriter(new PrintWriter(new StdoutToLog4jFilter(server.getLogWriter(), targetLogger)));
+            server.setDatabasePath(0, "target/hsql/" + databaseName);
+            server.setDatabaseName(0, databaseName);
+            server.setNoSystemExit(true);
+            server.setSilent(true);
+            server.setPort(port);
+            server.start();
 
-
-                hsqlServer = server;
-                startGate.countDown();
-            }
-        }.start();
+            hsqlServer = server;
+            startGate.countDown();
+        }).start();
 
         startGate.await();
 
@@ -109,32 +106,19 @@ public class HsqlServer {
     public void stop() throws Exception {
         try {
             hsqlServer.signalCloseAllServerConnections();
-            connection.close();
-        } catch (final SQLException ignored) {
-            LOGGER.debug(ignored.getMessage(), ignored);
-        } 
-        finally {
+        } finally {
             hsqlServer.stop();
             org.hsqldb.DatabaseManager.closeDatabases(0);
-            while(hsqlServer.getState() != ServerConstants.SERVER_STATE_SHUTDOWN) {
+            while (hsqlServer.getState() != ServerConstants.SERVER_STATE_SHUTDOWN) {
                 Thread.sleep(100L);
             }
         }
     }
 
-    public boolean execScript(InputStream script) throws SQLException {
-        String scriptString;
-        try {
-            scriptString = StreamUtils.readStream(new InputStreamReader(script));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Statement statement = connection.createStatement();
-        try {
-            return statement.execute(scriptString);
-        } finally {
-            statement.close();
-        }
+    public void execScript(InputStream script) throws SQLException, IOException, SqlToolError {
+        SqlFile sqlFile = new SqlFile(new InputStreamReader(script), "", null, "UTF-8", false, (URL) null);
+        sqlFile.setConnection(connection);
+        sqlFile.execute();
     }
 
     public Connection getConnection() {

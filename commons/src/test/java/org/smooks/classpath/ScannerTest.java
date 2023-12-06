@@ -72,7 +72,6 @@ public class ScannerTest {
         targetDir = new File("target");
         classesDir = new File(targetDir, "classes");
         testClassesDir = new File(targetDir, "test-classes");
-//        classLoader = new URLClassLoader(new URL[]{classesDir.toURI().toURL(), testClassesDir.toURI().toURL(), new File(testClassesDir, "jaxws-ri-4.0.1.pom").toURI().toURL()});
     }
 
     @Test

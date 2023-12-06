@@ -128,7 +128,7 @@ public class Scanner {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Unable to open archive so skipping it: " + file, e);
+            LOGGER.warn(String.format("%s: %s. Unable to scan [%s] for Smooks resources", e.getClass().getName(), e.getMessage(), file));
         }
     }
 
