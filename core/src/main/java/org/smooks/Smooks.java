@@ -83,6 +83,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -125,7 +126,7 @@ import java.util.Properties;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @ThreadSafe
-public class Smooks {
+public class Smooks implements Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Smooks.class);
     private final ApplicationContext applicationContext;
@@ -598,6 +599,7 @@ public class Smooks {
      * Should result in the {@link jakarta.annotation.PostConstruct uninitialization}
      * of all allocated {@link ContentHandler} instances.
      */
+    @Override
     public void close() {
         applicationContext.getRegistry().close();
     }
