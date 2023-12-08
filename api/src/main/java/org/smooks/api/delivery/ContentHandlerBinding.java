@@ -54,7 +54,6 @@ import org.smooks.api.resource.config.ResourceConfig;
  */
 public interface ContentHandlerBinding<T extends ContentHandler> {
 
-
     T getContentHandler();
 
     ResourceConfig getResourceConfig();
