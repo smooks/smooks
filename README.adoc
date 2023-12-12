@@ -26,14 +26,6 @@ toc::[]
 
 NOTE: You will need both Maven (version 3.2.x) and Git installed on your local machine.
 
-=== Docker
-
-You can also build from the https://www.docker.io[Docker] image:
-
-. https://www.docker.io/gettingstarted/[Install Docker].
-. Run `sudo docker build -t smooks github.com/smooks/smooks`. This will create a Docker image named _smooks_ that contains the correct build environment and a clone of this Git repo.
-. Run `sudo docker run -i smooks mvn clean install` to build the source code.
-
 // tag::getting-started[]
 == Getting Started
 
