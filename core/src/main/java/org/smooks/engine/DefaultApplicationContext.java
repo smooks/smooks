@@ -102,7 +102,10 @@ public class DefaultApplicationContext implements ApplicationContext {
 		return resourceLocator;
 	}
 
-	@Override
+	/**
+	 * Set the resource locator for this Smooks application context.
+	 * @param resourceLocator The Resource locator.
+	 */
 	public void setResourceLocator(ContainerResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
     }

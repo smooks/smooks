@@ -134,6 +134,7 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
 . Replace references to `org.milyn.delivery.sax.SAXToXMLWriter` with `org.smooks.io.DomSerializer`.
 . Follow the https://github.com/smooks/smooks-examples/tree/master/edifact-to-java[EDIFACT-to-Java example] to migrate an implementation that binds an EDIFACT document to a POJO.
 . Follow the https://github.com/smooks/smooks-examples/tree/master/java-to-edifact[Java-to-EDIFACT example] to migrate an implementation that deserialises a POJO into an EDIFACT document.
+. Set `ContainerResourceLocator` from `DefaultApplicationContextBuilder#setResourceLocator` instead from `ApplicationContext#setResourceLocator`.
 
 === FAQs
 

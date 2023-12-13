@@ -69,12 +69,6 @@ public interface ApplicationContext {
 	ContainerResourceLocator getResourceLocator();
 
     /**
-     * Set the resource locator for this Smooks application context.
-     * @param resourceLocator The Resource locator.
-     */
-    void setResourceLocator(ContainerResourceLocator resourceLocator);
-
-    /**
 	 * Get the registry for from the container application context.
 	 * @return Registry instance.
 	 */

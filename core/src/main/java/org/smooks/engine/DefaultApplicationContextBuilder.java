@@ -43,6 +43,7 @@
 package org.smooks.engine;
 
 import org.smooks.api.profile.Profile;
+import org.smooks.api.resource.ContainerResourceLocator;
 import org.smooks.engine.resource.config.SystemResourceConfigListFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
@@ -55,6 +56,7 @@ import org.smooks.io.payload.Exports;
 import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.api.Registry;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
+import org.smooks.resource.URIResourceLocator;
 
 import java.util.ServiceLoader;
 
@@ -64,6 +66,7 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     private ClassLoader classLoader;
     private Registry registry;
     private ContentDeliveryRuntimeFactory contentDeliveryConfigBuilderFactory;
+    private ContainerResourceLocator resourceLocator;
 
     public DefaultApplicationContextBuilder setClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -82,6 +85,11 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
 
     public DefaultApplicationContextBuilder setContentDeliveryConfigBuilderFactory(ContentDeliveryRuntimeFactory contentDeliveryConfigBuilderFactory) {
         this.contentDeliveryConfigBuilderFactory = contentDeliveryConfigBuilderFactory;
+        return this;
+    }
+
+    public DefaultApplicationContextBuilder setResourceLocator(ContainerResourceLocator resourceLocator) {
+        this.resourceLocator = resourceLocator;
         return this;
     }
 
@@ -109,6 +117,12 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
             applicationContext.setContentDeliveryConfigBuilderFactory(new DefaultContentDeliveryRuntimeFactory(applicationContext.getRegistry()));
         } else {
             applicationContext.setContentDeliveryConfigBuilderFactory(contentDeliveryConfigBuilderFactory);
+        }
+
+        if (resourceLocator == null) {
+            applicationContext.setResourceLocator(new URIResourceLocator());
+        } else {
+            applicationContext.setResourceLocator(resourceLocator);
         }
         applicationContext.getProfileStore().addProfileSet(new DefaultProfileSet(Profile.DEFAULT_PROFILE));
         

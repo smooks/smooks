@@ -179,11 +179,10 @@ public class Smooks implements Closeable {
      * @see ResourceConfig
      */
     public Smooks(String resourceURI) throws IOException, SAXException {
-        this();
         URIResourceLocator resourceLocator = new URIResourceLocator();
-        
         resourceLocator.setBaseURI(URIResourceLocator.extractBaseURI(resourceURI));
-        applicationContext.setResourceLocator(resourceLocator);
+        applicationContext = new DefaultApplicationContextBuilder().setResourceLocator(resourceLocator).build();
+        visitorBindings = new ArrayList<>();
         addConfigurations(resourceURI);
     }
 
@@ -202,7 +201,6 @@ public class Smooks implements Closeable {
      */
     public Smooks(InputStream resourceConfigStream) throws IOException, SAXException {
         this();
-        applicationContext.setResourceLocator(new URIResourceLocator());
         addConfigurations(resourceConfigStream);
     }
 

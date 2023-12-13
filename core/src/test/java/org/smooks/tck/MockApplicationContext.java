@@ -88,11 +88,6 @@ public class MockApplicationContext implements ApplicationContext {
 	}
 
 	@Override
-	public void setResourceLocator(ContainerResourceLocator resourceLocator) {
-		throw new UnsupportedOperationException("Can't set the locator on the Mock using this method.  Set it through the publicly accessible  property.");
-	}
-
-	@Override
 	public BeanIdStore getBeanIdStore() {
 		return applicationContext.getBeanIdStore();
 	}
