@@ -46,7 +46,6 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 import org.smooks.api.delivery.event.ExecutionEvent;
-import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Producer;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -56,6 +55,7 @@ import org.smooks.engine.delivery.event.EndFragmentEvent;
 import org.smooks.engine.delivery.event.StartFragmentEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
+import org.smooks.engine.delivery.sax.ng.session.SessionAwareExecutionEventListener;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.support.DomUtils;
@@ -158,7 +158,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         // Push a new DOMCreator onto the DOMCreator stack and install it in the
         // Dynamic Vistor list in the SAX handler...
-         pushCreator(new DOMCreator(executionContext), executionContext);
+        pushCreator(new DOMCreator(executionContext), executionContext);
     }
 
     private void addNodeModel(Element element, ExecutionContext executionContext) {
@@ -169,10 +169,10 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
     private void pushCreator(DOMCreator domCreator, ExecutionContext executionContext) {
         Stack<DOMCreator> domCreatorStack = executionContext.get(DOM_CREATOR_STACK_TYPED_KEY);
 
-        if(domCreatorStack == null) {
+        if (domCreatorStack == null) {
             domCreatorStack = new Stack<>();
             executionContext.put(DOM_CREATOR_STACK_TYPED_KEY, domCreatorStack);
-        } else if(!domCreatorStack.isEmpty()) {
+        } else if (!domCreatorStack.isEmpty()) {
             // We need to remove the current DOMCreator from the dynamic visitor list because
             // we want to stop nodes being added to it and instead, have them added to the new
             // DOM.  This prevents a single huge DOM being created for a huge message (being processed
@@ -218,13 +218,14 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
         popCreator(executionContext);
     }
 
-    private class DOMCreator implements ExecutionEventListener {
+    private class DOMCreator extends SessionAwareExecutionEventListener {
 
         private final Document document;
         private final ExecutionContext executionContext;
         private Node currentNode;
 
         private DOMCreator(ExecutionContext executionContext) {
+            super(executionContext);
             document = documentBuilder.newDocument();
             document.setStrictErrorChecking(false);
             currentNode = document;
@@ -232,27 +233,27 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
         }
 
         @Override
-        public void onEvent(ExecutionEvent executionEvent) {
+        public void doOnEvent(ExecutionEvent executionEvent) {
             if (executionEvent instanceof StartFragmentEvent) {
                 StartFragmentEvent<NodeFragment> startFragmentEvent = (StartFragmentEvent<NodeFragment>) executionEvent;
                 Fragment<NodeFragment> fragment = startFragmentEvent.getFragment();
                 Element importNode = (Element) document.importNode((Node) fragment.unwrap(), true);
 
-                if(currentNode == document) {
+                if (currentNode == document) {
                     addNodeModel(importNode, executionContext);
                 }
 
                 currentNode.appendChild(importNode);
                 currentNode = importNode;
             } else if (executionEvent instanceof CharDataFragmentEvent) {
-                if(currentNode == document) {
+                if (currentNode == document) {
                     // Just ignore for now...
                     return;
                 }
 
                 CharacterData characterData = (CharacterData) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap();
                 String textContent = characterData.getTextContent();
-                if(textContent.trim().length() == 0) {
+                if (textContent.trim().isEmpty()) {
                     // Ignore pure whitespace...
                     return;
                 }

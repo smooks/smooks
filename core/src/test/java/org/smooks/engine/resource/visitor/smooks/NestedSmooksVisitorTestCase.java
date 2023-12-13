@@ -62,6 +62,7 @@ import org.smooks.engine.delivery.sax.ng.session.SessionInterceptor;
 import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
+import org.smooks.engine.resource.visitor.dom.DOMModel;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.Stream;
 import org.smooks.io.payload.StringResult;
@@ -96,7 +97,6 @@ public class NestedSmooksVisitorTestCase {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
 
-        nestedSmooksVisitor.setApplicationContext(new DefaultApplicationContextBuilder().build());
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
@@ -123,6 +123,24 @@ public class NestedSmooksVisitorTestCase {
 
         ExecutionContext executionContext = new MockExecutionContext();
         executionContext.setContentEncoding("ISO-8859-1");
+
+        nestedSmooksVisitor.executeExecutionLifecycleInitialize(executionContext);
+        nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, null);
+    }
+
+    @Test
+    public void testFilterSourceGivenExecutionContextDomModel() throws ParserConfigurationException {
+        DOMModel domModel = new DOMModel();
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        nestedSmooksVisitor.setNestedSmooks(new Smooks() {
+            @Override
+            public void filterSource(ExecutionContext executionContext, Source source, Result... results) throws SmooksException {
+                assertEquals(domModel, executionContext.get(DOMModel.DOM_MODEL_TYPED_KEY));
+            }
+        });
+
+        ExecutionContext executionContext = new MockExecutionContext();
+        executionContext.put(DOMModel.DOM_MODEL_TYPED_KEY, domModel);
 
         nestedSmooksVisitor.executeExecutionLifecycleInitialize(executionContext);
         nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, null);

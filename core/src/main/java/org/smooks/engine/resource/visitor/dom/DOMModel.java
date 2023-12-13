@@ -56,7 +56,7 @@ import java.util.Map;
  */
 public class DOMModel {
 
-    private static final TypedKey<DOMModel> DOM_MODEL_TYPED_KEY = new TypedKey<>();
+    public static final TypedKey<DOMModel> DOM_MODEL_TYPED_KEY = new TypedKey<>();
     private final Map<String, Element> models = new LinkedHashMap<String, Element>();
 
     public Map<String, Element> getModels() {
