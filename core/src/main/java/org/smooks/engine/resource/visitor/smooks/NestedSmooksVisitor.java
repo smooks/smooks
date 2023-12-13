@@ -72,6 +72,7 @@ import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.XMLConfigDigester;
+import org.smooks.engine.resource.visitor.dom.DOMModel;
 import org.smooks.engine.xml.Namespace;
 import org.smooks.io.DomSerializer;
 import org.smooks.io.FragmentWriter;
@@ -397,6 +398,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             final ExecutionContext nestedExecutionContext = nestedSmooks.createExecutionContext();
             nestedExecutionContext.setContentEncoding(executionContext.getContentEncoding());
             nestedExecutionContext.setBeanContext(executionContext.getBeanContext().newSubContext(nestedExecutionContext));
+            nestedExecutionContext.put(DOMModel.DOM_MODEL_TYPED_KEY, DOMModel.getModel(executionContext));
             nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY, nestedExecutionContext);
             mementoCaretaker.capture(nestedExecutionContextMemento);
         }
