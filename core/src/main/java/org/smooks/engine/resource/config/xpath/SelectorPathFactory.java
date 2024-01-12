@@ -71,7 +71,6 @@ public final class SelectorPathFactory {
 
     public static SelectorPath newSelectorPath(final String selector, SelectorPath selectorPath) {
         SelectorPath newSelectorPath = newSelectorPath(selector, selectorPath.getNamespaces());
-        newSelectorPath.setSelectorNamespaceURI(selectorPath.getSelectorNamespaceURI());
         newSelectorPath.setConditionEvaluator(selectorPath.getConditionEvaluator());
 
         return newSelectorPath;
@@ -126,11 +125,6 @@ public final class SelectorPathFactory {
                     }
 
                     @Override
-                    public String getSelectorNamespaceURI() {
-                        return null;
-                    }
-
-                    @Override
                     public void setConditionEvaluator(ExpressionEvaluator expressionEvaluator) {
 
                     }
@@ -138,11 +132,6 @@ public final class SelectorPathFactory {
                     @Override
                     public ExpressionEvaluator getConditionEvaluator() {
                         return null;
-                    }
-
-                    @Override
-                    public void setSelectorNamespaceURI(String namespaceURI) {
-
                     }
 
                     @Override

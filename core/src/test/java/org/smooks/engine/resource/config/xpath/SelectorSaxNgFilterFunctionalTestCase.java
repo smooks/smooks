@@ -98,7 +98,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
             smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
-            assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Selector Namespace URI: [null], Resource: [org.smooks.engine.resource.config.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.smooks.api.resource.visitor.sax.ng.AfterVisitor interface only.  Class 'org.smooks.engine.resource.config.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
+            assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Resource: [org.smooks.engine.resource.config.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.smooks.api.resource.visitor.sax.ng.AfterVisitor interface only.  Class 'org.smooks.engine.resource.config.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
         }
     }
 
@@ -136,7 +136,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
             smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
-            assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Selector Namespace URI: [null], Resource: [org.smooks.engine.resource.config.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.smooks.api.resource.visitor.sax.ng.AfterVisitor interface only.  Class 'org.smooks.engine.resource.config.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
+            assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Resource: [org.smooks.engine.resource.config.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.smooks.api.resource.visitor.sax.ng.AfterVisitor interface only.  Class 'org.smooks.engine.resource.config.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
         }
     }
 

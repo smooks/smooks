@@ -55,6 +55,7 @@ public class DefaultResourceConfigSortComparator implements ResourceConfigSortCo
 
     /**
      * Private constructor.
+     *
      * @param profileSet Profile set used to evaluate specificity.
      */
     public DefaultResourceConfigSortComparator(ProfileSet profileSet) {
@@ -66,7 +67,7 @@ public class DefaultResourceConfigSortComparator implements ResourceConfigSortCo
      */
     @Override
     public int compare(ResourceConfig configObj1, ResourceConfig configObj2) {
-        if(configObj1 == configObj2) {
+        if (configObj1 == configObj2) {
             return 0;
         }
 
@@ -74,9 +75,9 @@ public class DefaultResourceConfigSortComparator implements ResourceConfigSortCo
         double config2Specificity = getSpecificity(configObj2);
 
         // They are ordered as follow (most specific first). 
-        if(config1Specificity > config2Specificity) {
+        if (config1Specificity > config2Specificity) {
             return -1;
-        } else if(config1Specificity < config2Specificity) {
+        } else if (config1Specificity < config2Specificity) {
             return 1;
         } else {
             return 0;
@@ -87,6 +88,7 @@ public class DefaultResourceConfigSortComparator implements ResourceConfigSortCo
      * Get the specificity of the ResourceConfig.
      * <p/>
      * The "specificity" is evaluated based on the selector and target-profile values.
+     *
      * @param resourceConfig Resource configuration.
      * @return Configuration specificity.
      */
@@ -97,14 +99,14 @@ public class DefaultResourceConfigSortComparator implements ResourceConfigSortCo
 
         // Get the combined specificity of all the profile targeting expressions.
         ProfileTargetingExpression[] profileTargetingExpressions = resourceConfig.getProfileTargetingExpressions();
-        for(int i = 0; i < profileTargetingExpressions.length; i++) {
+        for (int i = 0; i < profileTargetingExpressions.length; i++) {
             specificity += profileTargetingExpressions[i].getSpecificity(profileSet);
         }
 
         // Check the 'selector' attribute value.
-        if(resourceConfig.isXmlDef()) {
+        if (resourceConfig.isXmlDef()) {
             specificity += 10;
-        } else if(resourceConfig.getSelectorPath().getSelector().equals("*")) {
+        } else if (resourceConfig.getSelectorPath().getSelector().equals("*")) {
             specificity += 5;
         } else {
             // Explicit selector listed
@@ -113,15 +115,10 @@ public class DefaultResourceConfigSortComparator implements ResourceConfigSortCo
             // If the selector is contextual it's, therefore more specific so
             // account for that.  Subtract 1 because that "1" is already accounted
             // for by the addition of 100 - it's the extra we're accounting for here...
-            if(resourceConfig.getSelectorPath().size() > 1) {
+            if (resourceConfig.getSelectorPath().size() > 1) {
                 int contextSpecificity = resourceConfig.getSelectorPath().size();
                 specificity += (10 * (contextSpecificity - 1));
             }
-        }
-
-        // Check the 'namespace' attribute.
-        if(resourceConfig.getSelectorPath().getSelectorNamespaceURI() != null) {
-            specificity += 10;
         }
 
         return specificity;

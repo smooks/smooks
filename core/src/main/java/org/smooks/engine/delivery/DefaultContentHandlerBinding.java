@@ -70,10 +70,9 @@ public class DefaultContentHandlerBinding<T extends ContentHandler> implements C
         this.resourceConfig = resourceConfig;
     }
 
-    public DefaultContentHandlerBinding(final T contentHandler, final String targetSelector, @Deprecated final String targetSelectorNS, final Registry registry) {
+    public DefaultContentHandlerBinding(final T contentHandler, final String targetSelector, final Registry registry) {
         this.contentHandler = contentHandler;
         resourceConfig = new DefaultResourceConfig(targetSelector, registry.lookup(new NamespaceManagerLookup()), contentHandler.getClass().getName());
-        resourceConfig.getSelectorPath().setSelectorNamespaceURI(targetSelectorNS);
 
         final FieldInjector fieldInjector = new FieldInjector(contentHandler, new Scope(registry, resourceConfig, contentHandler));
         fieldInjector.inject();

@@ -50,21 +50,9 @@ import java.util.Properties;
 import java.util.Set;
 
 public class DefaultConfigSearch implements ConfigSearch {
-    private String configNS;
     private String selector;
-    private String selectorNS;
     private String resource;
     private final Properties params = new Properties();
-
-    public String getConfigNS() {
-        return configNS;
-    }
-
-    @Override
-    public ConfigSearch configNS(String configNS) {
-        this.configNS = configNS;
-        return this;
-    }
 
     @Override
     public String getSelector() {
@@ -74,16 +62,6 @@ public class DefaultConfigSearch implements ConfigSearch {
     @Override
     public ConfigSearch selector(String selector) {
         this.selector = selector;
-        return this;
-    }
-
-    public String getSelectorNS() {
-        return selectorNS;
-    }
-
-    @Override
-    public ConfigSearch selectorNS(String selectorNS) {
-        this.selectorNS = selectorNS;
         return this;
     }
 
@@ -106,34 +84,24 @@ public class DefaultConfigSearch implements ConfigSearch {
 
     @Override
     public boolean matches(ResourceConfig resourceConfig) {
-        if(configNS != null) {
-            if(resourceConfig.getExtendedConfigNS() == null || !resourceConfig.getExtendedConfigNS().startsWith(configNS)) {
+        if (selector != null) {
+            if (resourceConfig.getSelectorPath().getSelector() == null || !resourceConfig.getSelectorPath().getSelector().equalsIgnoreCase(selector)) {
                 return false;
             }
         }
-        if(selector != null) {
-            if(resourceConfig.getSelectorPath().getSelector() == null || !resourceConfig.getSelectorPath().getSelector().equalsIgnoreCase(selector)) {
-                return false;
-            }
-        }
-        if(selectorNS != null) {
-            if(resourceConfig.getSelectorPath().getSelectorNamespaceURI() == null || !resourceConfig.getSelectorPath().getSelectorNamespaceURI().equals(selectorNS)) {
-                return false;
-            }
-        }
-        if(resource != null) {
-            if(resourceConfig.getResource() == null || !resourceConfig.getResource().equals(resource)) {
+        if (resource != null) {
+            if (resourceConfig.getResource() == null || !resourceConfig.getResource().equals(resource)) {
                 return false;
             }
         }
 
-        if(!params.isEmpty()) {
+        if (!params.isEmpty()) {
             Set<Map.Entry<Object, Object>> entries = params.entrySet();
-            for(Map.Entry<Object, Object> entry : entries) {
+            for (Map.Entry<Object, Object> entry : entries) {
                 String expectedValue = (String) entry.getValue();
                 String actualValue = resourceConfig.getParameterValue((String) entry.getKey(), String.class);
 
-                if(!expectedValue.equals(actualValue)) {
+                if (!expectedValue.equals(actualValue)) {
                     return false;
                 }
             }

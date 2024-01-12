@@ -147,14 +147,7 @@ public interface ResourceConfig {
      */
     String SELECTOR_NONE = "none";
 
-    @SuppressWarnings({ "MethodDoesntCallSuperMethod", "unchecked" })
     ResourceConfig copy();
-
-    @Deprecated
-    String getExtendedConfigNS();
-
-    @Deprecated
-    void setExtendedConfigNS(String extendedConfigNS);
 
     void addParameters(ResourceConfig resourceConfig);
 

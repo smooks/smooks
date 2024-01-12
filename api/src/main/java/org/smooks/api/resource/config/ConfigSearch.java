@@ -48,15 +48,9 @@ package org.smooks.api.resource.config;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public interface ConfigSearch {
-
-
-	ConfigSearch configNS(String configNS);
-
 	String getSelector();
 
 	ConfigSearch selector(String selector);
-
-	ConfigSearch selectorNS(String selectorNS);
 
 	String getResource();
 

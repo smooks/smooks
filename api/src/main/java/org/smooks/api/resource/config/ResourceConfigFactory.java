@@ -49,9 +49,6 @@ import org.w3c.dom.Element;
  */
 public interface ResourceConfigFactory {
 
-    @Deprecated
-    ResourceConfig createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element);
-
     /**
      * @return the <code>ResourceConfig</code
      */

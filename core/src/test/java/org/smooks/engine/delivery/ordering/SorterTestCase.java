@@ -206,9 +206,9 @@ public class SorterTestCase {
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
             assertEquals(("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
-                    "\tTarget Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
+                    "\tTarget Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
         }
     }
 
@@ -224,11 +224,11 @@ public class SorterTestCase {
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
             assertEquals(("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" +
-                    "\tTarget Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
-                    "\t\t\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Selector Namespace URI: [null], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
+                    "\tTarget Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]\n" +
+                    "\t\t\t\t\tdepends-on: Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [none], Resource: [org.smooks.engine.delivery.ordering.testvisitors.TestProducerConsumer], Num Params: [0]").trim(), e.getMessage().trim());
         }
     }
 

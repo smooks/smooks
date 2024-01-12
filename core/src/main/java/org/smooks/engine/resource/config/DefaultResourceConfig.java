@@ -77,7 +77,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-@SuppressWarnings({ "WeakerAccess", "unused", "deprecation", "unchecked" })
 public class DefaultResourceConfig implements ResourceConfig {
 
     /**
@@ -136,11 +135,7 @@ public class DefaultResourceConfig implements ResourceConfig {
      * {@link DefaultSAXElementSerializer}.
      */
     private boolean defaultResource;
-    /**
-     * The extended config namespace from which the  resource was created.
-     */
-    @Deprecated
-    private String extendedConfigNS;
+
     /**
      * Change listeners.
      */
@@ -221,7 +216,6 @@ public class DefaultResourceConfig implements ResourceConfig {
     public ResourceConfig copy() {
         DefaultResourceConfig copyResourceConfig = new DefaultResourceConfig();
 
-        copyResourceConfig.extendedConfigNS = extendedConfigNS;
         copyResourceConfig.selectorPath = SelectorPathFactory.newSelectorPath(selectorPath);
         copyResourceConfig.targetProfile = targetProfile;
         copyResourceConfig.defaultResource = defaultResource;
@@ -238,45 +232,9 @@ public class DefaultResourceConfig implements ResourceConfig {
         return copyResourceConfig;
     }
 
-    /**
-     * Get the extended config namespace from which this configuration was created.
-	 * @return The extended config namespace from which this configuration was created.
-	 */
-    @Override
-    @Deprecated
-    public String getExtendedConfigNS() {
-        return extendedConfigNS;
-    }
-
-    /**
-     * Set the extended config namespace from which this configuration was created.
-	 * @param extendedConfigNS The extended config namespace from which this configuration was created.
-	 */
-    @Override
-    @Deprecated
-	public void setExtendedConfigNS(String extendedConfigNS) {
-		this.extendedConfigNS = extendedConfigNS;
-	}
-	
 	@Override
     public void addParameters(ResourceConfig resourceConfig) {
         parameters.putAll(resourceConfig.getParameters());
-    }
-
-    /**
-     * Public constructor.
-     *
-     * @param selector             The selector definition.
-     * @param selectorNamespaceURI The selector namespace URI.
-     * @param targetProfile        Target Profile(s).  Comma separated list of
-     *                             {@link ProfileTargetingExpression ProfileTargetingExpressions}.
-     * @param resource             The resource.
-     * @see #setResourceType(String)
-     * @see #setParameter(String, Object)
-     */
-    public DefaultResourceConfig(String selector, Properties namespaces, @Deprecated String selectorNamespaceURI, String targetProfile, String resource) {
-        this(selector, namespaces, targetProfile, resource);
-        selectorPath.setSelectorNamespaceURI(selectorNamespaceURI);
     }
 
     /**
@@ -707,7 +665,7 @@ public class DefaultResourceConfig implements ResourceConfig {
     
     @Override
     public String toString() {
-        return "Target Profile: [" + Arrays.asList(profileTargetingExpressionStrings) + "], Selector: [" + selectorPath.getSelector() + "], Selector Namespace URI: [" + selectorPath.getSelectorNamespaceURI() + "], Resource: [" + resource + "], Num Params: [" + getParameterCount() + "]";
+        return "Target Profile: [" + Arrays.asList(profileTargetingExpressionStrings) + "], Selector: [" + selectorPath.getSelector() + "], Resource: [" + resource + "], Num Params: [" + getParameterCount() + "]";
     }
 
     /**
@@ -833,11 +791,6 @@ public class DefaultResourceConfig implements ResourceConfig {
         builder.append("<resource-config selector=\"")
                .append(selectorPath.getSelector())
                .append("\"");
-        if (selectorPath.getSelectorNamespaceURI() != null) {
-            builder.append(" selector-namespace=\"")
-                   .append(selectorPath.getSelectorNamespaceURI())
-                   .append("\"");
-        }
         if (targetProfile != null && !targetProfile.equals(Profile.DEFAULT_PROFILE)) {
             builder.append(" target-profile=\"")
                    .append(targetProfile)
