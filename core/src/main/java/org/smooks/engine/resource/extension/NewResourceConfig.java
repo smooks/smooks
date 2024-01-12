@@ -63,7 +63,7 @@ import java.util.Optional;
  */
 public class NewResourceConfig implements DOMElementVisitor {
 
-	public static final String PARAMETER_TARGET_PROFILE = "targetProfile";
+    public static final String PARAMETER_TARGET_PROFILE = "targetProfile";
 
     @Inject
     private Optional<String> resource;
@@ -79,19 +79,18 @@ public class NewResourceConfig implements DOMElementVisitor {
         ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
 
         String targetProfile = DomUtils.getAttributeValue(element, PARAMETER_TARGET_PROFILE);
-        if(targetProfile == null) {
+        if (targetProfile == null) {
             targetProfile = extensionContext.getDefaultProfile();
         }
-        
-        ResourceConfig resourceConfig = resourceConfigFactory.createConfiguration(extensionContext.getDefaultSelector(), extensionContext.getDefaultNamespace(), targetProfile, element);
-        resourceConfig.setExtendedConfigNS(element.getNamespaceURI());
+
+        ResourceConfig resourceConfig = resourceConfigFactory.createConfiguration(targetProfile, element);
         resourceConfig.setResource(resource.orElse(null));
         resourceConfig.getSelectorPath().setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
 
-        if(isTemplate) {
-        	extensionContext.addResourceTemplate(resourceConfig);
+        if (isTemplate) {
+            extensionContext.addResourceTemplate(resourceConfig);
         } else {
-        	extensionContext.addResource(resourceConfig);
+            extensionContext.addResource(resourceConfig);
         }
     }
 

@@ -255,7 +255,7 @@ public class Smooks implements Closeable {
      * @param visitor The visitor implementation.
      */
     public ResourceConfig addVisitor(Visitor visitor) {
-        return addVisitor(visitor, ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, null);
+        return addVisitor(visitor, ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR);
     }
 
     /**
@@ -265,25 +265,13 @@ public class Smooks implements Closeable {
      * @param targetSelector The message fragment target selector.
      */
     public ResourceConfig addVisitor(Visitor visitor, String targetSelector) {
-        return addVisitor(visitor, targetSelector, null);
-    }
-
-    /**
-     * Add a visitor instance to <code>this</code> Smooks instance.
-     *
-     * @param visitor The visitor implementation.
-     * @param targetSelector The message fragment target selector.
-     * @param targetSelectorNS The message fragment target selector namespace.
-     */
-    @Deprecated
-    public ResourceConfig addVisitor(Visitor visitor, String targetSelector, String targetSelectorNS) {
         assertIsConfigurable();
         AssertArgument.isNotNull(visitor, "visitor");
         AssertArgument.isNotNull(targetSelector, "targetSelector");
-        
-        ContentHandlerBinding<Visitor> contentHandlerBinding = new DefaultContentHandlerBinding<>(visitor, targetSelector, targetSelectorNS, applicationContext.getRegistry());
+
+        ContentHandlerBinding<Visitor> contentHandlerBinding = new DefaultContentHandlerBinding<>(visitor, targetSelector, applicationContext.getRegistry());
         visitorBindings.add(contentHandlerBinding);
-        
+
         return contentHandlerBinding.getResourceConfig();
     }
 

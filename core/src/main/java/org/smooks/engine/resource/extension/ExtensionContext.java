@@ -64,17 +64,13 @@ public class ExtensionContext {
     public static final TypedKey<ExtensionContext> EXTENSION_CONTEXT_TYPED_KEY = new TypedKey<>();
 
     private final XMLConfigDigester xmlConfigDigester;
-    @Deprecated
-    private final String defaultSelector;
-    @Deprecated
-    private final String defaultNamespace;
     private final String defaultProfile;
     private final ExpressionEvaluator defaultConditionEvaluator;
 
     private final Stack<ResourceConfig> resourceStack = new Stack<ResourceConfig>() {
         @Override
         public ResourceConfig push(ResourceConfig resourceConfiguration) {
-            if(!isEmpty()) {
+            if (!isEmpty()) {
                 resourceConfiguration.addChangeListener(resChangeListener);
             }
             return super.push(resourceConfiguration);
@@ -83,7 +79,7 @@ public class ExtensionContext {
         @Override
         public ResourceConfig pop() {
             ResourceConfig resourceConfig = super.pop();
-            if(!isEmpty()) {
+            if (!isEmpty()) {
                 resourceConfig.removeChangeListener(resChangeListener);
             }
             return resourceConfig;
@@ -91,7 +87,7 @@ public class ExtensionContext {
     };
     private final ResourceConfigChangeListener resChangeListener = resourceConfig -> {
         String selector = resourceConfig.getSelectorPath().getSelector();
-        if(selector != null && selector.startsWith("#/")) {
+        if (selector != null && selector.startsWith("#/")) {
             ResourceConfig parentResource = resourceStack.get(resourceStack.size() - 2);
             resourceConfig.setSelector(parentResource.getSelectorPath().getSelector() + selector.substring(1), new Properties());
         }
@@ -100,16 +96,13 @@ public class ExtensionContext {
 
     /**
      * Public constructor.
-     * @param xmlConfigDigester The base XMLConfigDigester.
-     * @param defaultSelector The default selector.
-     * @param defaultNamespace The default namespace.
-     * @param defaultProfile The default profile.
+     *
+     * @param xmlConfigDigester         The base XMLConfigDigester.
+     * @param defaultProfile            The default profile.
      * @param defaultConditionEvaluator The default condition evaluator.
      */
-    public ExtensionContext(XMLConfigDigester xmlConfigDigester, @Deprecated String defaultSelector, @Deprecated String defaultNamespace, String defaultProfile, ExpressionEvaluator defaultConditionEvaluator) {
+    public ExtensionContext(XMLConfigDigester xmlConfigDigester, String defaultProfile, ExpressionEvaluator defaultConditionEvaluator) {
         this.xmlConfigDigester = xmlConfigDigester;
-        this.defaultSelector = defaultSelector;
-        this.defaultNamespace = defaultNamespace;
         this.defaultProfile = defaultProfile;
         this.defaultConditionEvaluator = defaultConditionEvaluator;
     }
@@ -141,6 +134,7 @@ public class ExtensionContext {
 
     /**
      * Get the resource stack.
+     *
      * @return The resource stack.
      * @see #addResource(ResourceConfig)
      */
@@ -150,27 +144,28 @@ public class ExtensionContext {
 
     /**
      * Get the resource list.
+     *
      * @return The resource list.
      * @see #addResource(ResourceConfig)
      */
     public List<ResourceConfig> getResources() {
         return resources;
     }
-    
+
     /**
      * Get the active resource configuration list.
      * <p/>
      * This is the global config list i.e. not just the config list for the config
      * being processed.
-     * 
+     *
      * @return The active resource configuration list.
      */
     public ResourceConfigSeq getResourceList() {
-    	return xmlConfigDigester.getResourceList();
+        return xmlConfigDigester.getResourceList();
     }
 
     public ResourceConfig getCurrentConfig() {
-        if(resourceStack.isEmpty()) {
+        if (resourceStack.isEmpty()) {
             return null;
         } else {
             return resourceStack.peek();
@@ -181,16 +176,6 @@ public class ExtensionContext {
         return xmlConfigDigester;
     }
 
-    @Deprecated
-    public String getDefaultSelector() {
-        return defaultSelector;
-    }
-
-    @Deprecated
-    public String getDefaultNamespace() {
-        return defaultNamespace;
-    }
-
     public String getDefaultProfile() {
         return defaultProfile;
     }
@@ -199,28 +184,28 @@ public class ExtensionContext {
         return defaultConditionEvaluator;
     }
 
-	public ResourceConfig getResourceByName(String name) {
-		for(int i = resourceStack.size() - 1; i >= 0; i--) {
+    public ResourceConfig getResourceByName(String name) {
+        for (int i = resourceStack.size() - 1; i >= 0; i--) {
             ResourceConfig resourceConfig = resourceStack.get(i);
-			String resourceName = resourceConfig.getResource();
-			if(name.equals(resourceName)) {
-				return resourceConfig;
-			}
-		}
+            String resourceName = resourceConfig.getResource();
+            if (name.equals(resourceName)) {
+                return resourceConfig;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Lookup an existing resource configuration from the global config list.
-	 * <p/>
-	 * Note that this is resource config order-dependent.  It will not locate configs that
-	 * have not yet been loaded.
-	 *
-	 * @param searchCriteria The resource lookup criteria.
-	 * @return List of matches resources, or an empty List if no matches are found.
-	 */
-	public List<ResourceConfig> lookupResource(ConfigSearch searchCriteria) {
-		return xmlConfigDigester.getResourceList().lookupResource(searchCriteria);
-	}
+    /**
+     * Lookup an existing resource configuration from the global config list.
+     * <p/>
+     * Note that this is resource config order-dependent.  It will not locate configs that
+     * have not yet been loaded.
+     *
+     * @param searchCriteria The resource lookup criteria.
+     * @return List of matches resources, or an empty List if no matches are found.
+     */
+    public List<ResourceConfig> lookupResource(ConfigSearch searchCriteria) {
+        return xmlConfigDigester.getResourceList().lookupResource(searchCriteria);
+    }
 }

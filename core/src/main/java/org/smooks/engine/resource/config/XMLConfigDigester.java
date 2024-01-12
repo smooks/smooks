@@ -86,8 +86,6 @@ import java.util.*;
 @SuppressWarnings("WeakerAccess")
 public final class XMLConfigDigester {
 
-    @Deprecated
-    public static final String XSD_V12 = "https://www.smooks.org/xsd/smooks-1.2.xsd";
     public static final String XSD_V20 = "https://www.smooks.org/xsd/smooks-2.0.xsd";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigDigester.class);
@@ -237,9 +235,7 @@ public final class XMLConfigDigester {
         validator.validate();
 
         configStack.peek().defaultNS = defaultNS;
-        if (XSD_V12.equals(defaultNS)) {
-            digestV12XSDValidatedConfig(baseURI, configDoc);
-        } else if (XSD_V20.equals(defaultNS)) {
+        if (XSD_V20.equals(defaultNS)) {
             digestV20XSDValidatedConfig(baseURI, configDoc);
         } else {
             throw new SAXException("Cannot parse Smooks configuration.  Unsupported default Namespace '" + defaultNS + "'.");
@@ -247,48 +243,6 @@ public final class XMLConfigDigester {
 
         if (resourceConfigList.isEmpty()) {
             throw new SAXException("Invalid Content Delivery Resource archive definition file: 0 Content Delivery Resource definitions.");
-        }
-    }
-
-    @Deprecated
-    private void digestV12XSDValidatedConfig(String baseURI, Document configDoc) throws SAXException, URISyntaxException, SmooksConfigException {
-        Element currentElement = configDoc.getDocumentElement();
-
-        String defaultSelector = DomUtils.getAttributeValue(currentElement, "default-selector");
-        String defaultNamespace = DomUtils.getAttributeValue(currentElement, "default-selector-namespace");
-        String defaultProfile = DomUtils.getAttributeValue(currentElement, "default-target-profile");
-        String defaultConditionRef = DomUtils.getAttributeValue(currentElement, "default-condition-ref");
-
-        NodeList configNodes = currentElement.getChildNodes();
-
-        for (int i = 0; i < configNodes.getLength(); i++) {
-            if (configNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element configElement = (Element) configNodes.item(i);
-
-                // Make sure the element is permitted...
-                assertElementPermitted(configElement);
-
-                String elementName = DomUtils.getName(configElement);
-                String namespaceURI = configElement.getNamespaceURI();
-                if (namespaceURI == null || namespaceURI.equals(XSD_V12)) {
-                    if (elementName.equals("params")) {
-                        digestParams(configElement);
-                    } else if (elementName.equals("conditions")) {
-                        digestConditions(configElement);
-                    } else if (elementName.equals("profiles")) {
-                        digestProfiles(configElement);
-                    } else if (elementName.equals("import")) {
-                        digestImport(configElement, new URI(baseURI));
-                    } else if (elementName.equals("reader")) {
-                        digestReaderConfig(configElement, defaultProfile);
-                    } else if (elementName.equals("resource-config")) {
-                        digestResourceConfig(configElement, defaultSelector, defaultNamespace, defaultProfile, defaultConditionRef);
-                    }
-                } else {
-                    // It's an extended resource configuration element
-                    digestExtendedResourceConfig(configElement, defaultSelector, defaultNamespace, defaultProfile, defaultConditionRef);
-                }
-            }
         }
     }
 
@@ -321,11 +275,11 @@ public final class XMLConfigDigester {
                     } else if (elementName.equals("reader")) {
                         digestReaderConfig(configElement, defaultProfile);
                     } else if (elementName.equals("resource-config")) {
-                        digestResourceConfig(configElement, null, null, defaultProfile, defaultConditionRef);
+                        digestResourceConfig(configElement, defaultProfile, defaultConditionRef);
                     }
                 } else {
                     // It's an extended resource configuration element
-                    digestExtendedResourceConfig(configElement, null, null, defaultProfile, defaultConditionRef);
+                    digestExtendedResourceConfig(configElement, defaultProfile, defaultConditionRef);
                 }
             }
         }
@@ -471,7 +425,7 @@ public final class XMLConfigDigester {
         }
     }
 
-    private void digestResourceConfig(Element configElement, String defaultSelector, String defaultNamespace, String defaultProfile, String defaultConditionRef) {
+    private void digestResourceConfig(Element configElement, String defaultProfile, String defaultConditionRef) {
         final String factory = DomUtils.getAttributeValue(configElement, "factory");
 
         final ResourceConfig resourceConfig;
@@ -484,7 +438,7 @@ public final class XMLConfigDigester {
             }
             try {
                 ResourceConfigFactory resourceConfigFactory = (ResourceConfigFactory) resourceConfigFactoryClass.newInstance();
-                resourceConfig = resourceConfigFactory.createConfiguration(defaultSelector, defaultNamespace, defaultProfile, configElement);
+                resourceConfig = resourceConfigFactory.createConfiguration(defaultProfile, configElement);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new SmooksConfigException(e.getMessage(), e);
             }
@@ -512,7 +466,7 @@ public final class XMLConfigDigester {
     }
 
     @SuppressWarnings("ConfusingArgumentToVarargsMethod")
-    private void digestExtendedResourceConfig(Element configElement, @Deprecated String defaultSelector, @Deprecated String defaultNamespace, String defaultProfile, String defaultConditionRef) {
+    private void digestExtendedResourceConfig(Element configElement, String defaultProfile, String defaultConditionRef) {
         String configNamespace = configElement.getNamespaceURI();
         Smooks configDigester = getExtendedConfigDigester(configNamespace);
         ExecutionContext executionContext = configDigester.createExecutionContext();
@@ -520,12 +474,12 @@ public final class XMLConfigDigester {
         Element conditionElement = DomUtils.getElement(configElement, "condition", 1);
 
         // Create the ExtenstionContext and set it on the ExecutionContext...
-        if (conditionElement != null && (conditionElement.getNamespaceURI().equals(XSD_V12) || conditionElement.getNamespaceURI().equals(XSD_V20))) {
-            extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, digestCondition(conditionElement));
+        if (conditionElement != null && conditionElement.getNamespaceURI().equals(XSD_V20)) {
+            extentionContext = new ExtensionContext(this, defaultProfile, digestCondition(conditionElement));
         } else if (defaultConditionRef != null) {
-            extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, getConditionEvaluator(defaultConditionRef));
+            extentionContext = new ExtensionContext(this, defaultProfile, getConditionEvaluator(defaultConditionRef));
         } else {
-            extentionContext = new ExtensionContext(this, defaultSelector, defaultNamespace, defaultProfile, null);
+            extentionContext = new ExtensionContext(this, defaultProfile, null);
         }
         executionContext.put(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY, extentionContext);
 
@@ -605,11 +559,8 @@ public final class XMLConfigDigester {
         }
 
         String defaultNS = validator.getDefaultNamespace().toString();
-        if (!XSD_V12.equals(defaultNS) && !XSD_V20.equals(defaultNS)) {
+        if (!XSD_V20.equals(defaultNS)) {
             throw new SmooksConfigException("Extended resource configuration '" + resourcePath + "' default namespace must be a valid Smooks configuration namespace.");
-        }
-        if (XSD_V12.equals(defaultNS) && validator.getNamespaces().size() > 1) {
-            throw new SmooksConfigException("Extended resource configuration '" + resourcePath + "' defines configurations from multiple namespaces.  This is not permitted.  Only use configurations from the base Smooks config namespaces e.g. '" + XSD_V12 + "'.");
         }
     }
 

@@ -58,17 +58,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ImportTestCase {
 
     @Test
-    public void test_12_imports_20() throws IOException, SAXException {
-        testConfig("12_import_20.xml");
-    }
-
-    @Test
-    public void test_20_imports_12() throws IOException, SAXException {
+    public void testImport() throws IOException, SAXException {
         testConfig("20_import_12.xml");
     }
 
     @Test
-    public void test_paramaterized_import() throws IOException, SAXException {
+    public void testParamaterizedImport() throws IOException, SAXException {
         SimpleDOMVisitor.visited = false;
         testConfig("paramaterized_import_main.xml");
         assertTrue(SimpleDOMVisitor.visited, "Parameters not properly injected into import.");

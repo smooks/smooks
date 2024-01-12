@@ -51,15 +51,9 @@ public interface SelectorPath extends List<SelectorStep> {
     
     String getSelector();
 
-    @Deprecated
-    String getSelectorNamespaceURI();
-
     void setConditionEvaluator(ExpressionEvaluator expressionEvaluator);
 
     ExpressionEvaluator getConditionEvaluator();
-
-    @Deprecated
-    void setSelectorNamespaceURI(String namespaceURI);
 
     Properties getNamespaces();
 

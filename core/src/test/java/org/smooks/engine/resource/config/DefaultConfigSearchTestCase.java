@@ -60,40 +60,26 @@ public class DefaultConfigSearchTestCase {
 	@Test
 	public void test() {
 		ResourceConfig resourceConfig = new DefaultResourceConfig();
-		ConfigSearch search = new DefaultConfigSearch();
+		ConfigSearch configSearch = new DefaultConfigSearch();
 		
-		assertTrue(search.matches(resourceConfig));
+		assertTrue(configSearch.matches(resourceConfig));
 
 		resourceConfig.setSelector("a", new Properties());
-		assertTrue(search.matches(resourceConfig));
-		assertTrue(search.selector("a").matches(resourceConfig));
-		assertFalse(search.selector("b").matches(resourceConfig));
-		search.selector(null); // clear it
-		assertTrue(search.matches(resourceConfig));
-
-		resourceConfig.setExtendedConfigNS("http://x/y");
-		assertTrue(search.matches(resourceConfig));
-		assertTrue(search.configNS("http://x/y").matches(resourceConfig));
-		assertTrue(search.configNS("http://x").matches(resourceConfig));
-		assertFalse(search.configNS("http://x/z").matches(resourceConfig));
-		search.configNS(null); // clear it
-		assertTrue(search.matches(resourceConfig));
-
-		resourceConfig.getSelectorPath().setSelectorNamespaceURI("http://x/y");
-		assertTrue(search.selectorNS("http://x/y").matches(resourceConfig));
-		assertFalse(search.selectorNS("http://x/z").matches(resourceConfig));
-		search.selectorNS(null); // clear it
-		assertTrue(search.matches(resourceConfig));
+		assertTrue(configSearch.matches(resourceConfig));
+		assertTrue(configSearch.selector("a").matches(resourceConfig));
+		assertFalse(configSearch.selector("b").matches(resourceConfig));
+		configSearch.selector(null); // clear it
+		assertTrue(configSearch.matches(resourceConfig));
 
 		resourceConfig.setResource("a");
-		assertTrue(search.resource("a").matches(resourceConfig));
-		assertFalse(search.resource("b").matches(resourceConfig));
-		search.resource(null); // clear it
-		assertTrue(search.matches(resourceConfig));
+		assertTrue(configSearch.resource("a").matches(resourceConfig));
+		assertFalse(configSearch.resource("b").matches(resourceConfig));
+		configSearch.resource(null); // clear it
+		assertTrue(configSearch.matches(resourceConfig));
 		
-		search.param("a", "1");
-		assertFalse(search.matches(resourceConfig));
+		configSearch.param("a", "1");
+		assertFalse(configSearch.matches(resourceConfig));
 		resourceConfig.setParameter("a", "1");
-		assertTrue(search.matches(resourceConfig));		
+		assertTrue(configSearch.matches(resourceConfig));
 	}
 }

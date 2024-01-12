@@ -56,41 +56,6 @@ public class DefaultResourceConfigFactory implements ResourceConfigFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultResourceConfigFactory.class);
 
     @Override
-    @Deprecated
-    public ResourceConfig createConfiguration(String defaultSelector, String defaultNamespace, String defaultProfile, Element element) {
-        String selector = DomUtils.getAttributeValue(element, "selector");
-        String namespace = DomUtils.getAttributeValue(element, "selector-namespace");
-        String targetProfile = DomUtils.getAttributeValue(element, "target-profile");
-        Element resourceElement = DomUtils.getElementByTagName(element, "resource");
-
-        final String resource;
-        if (resourceElement != null) {
-            resource = DomUtils.getAllText(resourceElement, true);
-        } else {
-            resource = null;
-        }
-
-        final ResourceConfig resourceConfig = new DefaultResourceConfig((selector != null ? selector : defaultSelector), getNamespaces(element),
-                (namespace != null ? namespace : defaultNamespace),
-                (targetProfile != null ? targetProfile : defaultProfile),
-                resource);
-
-        if (resourceElement != null) {
-            resourceConfig.setResourceType(DomUtils.getAttributeValue(resourceElement, "type"));
-        }
-
-        if (resource == null) {
-            if (resourceConfig.getParameters("restype") != null) {
-                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
-            } else {
-                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
-            }
-        }
-
-        return resourceConfig;
-    }
-
-    @Override
     public ResourceConfig createConfiguration(String defaultProfile, Element element) {
         String selector = DomUtils.getAttributeValue(element, "selector");
         String targetProfile = DomUtils.getAttributeValue(element, "target-profile");

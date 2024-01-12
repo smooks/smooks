@@ -58,14 +58,6 @@ import java.util.ListIterator;
 import java.util.Properties;
 
 public abstract class AbstractSelectorPath implements SelectorPath {
-
-
-    /**
-     * The XML namespace of the tag to which this config
-     * should only be applied.
-     */
-    @Deprecated
-    protected String namespaceURI;
     protected ExpressionEvaluator expressionEvaluator;
     protected final Properties namespaces = new Properties();
     protected final List<SelectorStep> selectorSteps = new ArrayList<>();
@@ -222,12 +214,6 @@ public abstract class AbstractSelectorPath implements SelectorPath {
     }
 
     @Override
-    @Deprecated
-    public String getSelectorNamespaceURI() {
-        return namespaceURI;
-    }
-
-    @Override
     public void setConditionEvaluator(ExpressionEvaluator expressionEvaluator) {
         if (expressionEvaluator != null && !(expressionEvaluator instanceof ExecutionContextExpressionEvaluator)) {
             throw new UnsupportedOperationException("Unsupported ExpressionEvaluator type '" + expressionEvaluator.getClass().getName() + "'.  Currently only support '" + ExecutionContextExpressionEvaluator.class.getName() + "' implementations.");
@@ -238,11 +224,5 @@ public abstract class AbstractSelectorPath implements SelectorPath {
     @Override
     public ExpressionEvaluator getConditionEvaluator() {
         return expressionEvaluator;
-    }
-
-    @Override
-    @Deprecated
-    public void setSelectorNamespaceURI(final String namespaceURI) {
-        this.namespaceURI = namespaceURI;
     }
 }
