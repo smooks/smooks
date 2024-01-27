@@ -104,9 +104,7 @@ public class DefaultResourceConfigSortComparator implements ResourceConfigSortCo
         }
 
         // Check the 'selector' attribute value.
-        if (resourceConfig.isXmlDef()) {
-            specificity += 10;
-        } else if (resourceConfig.getSelectorPath().getSelector().equals("*")) {
+        if (resourceConfig.getSelectorPath().getSelector().equals("*")) {
             specificity += 5;
         } else {
             // Explicit selector listed

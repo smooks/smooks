@@ -71,9 +71,7 @@ import java.util.Comparator;
 	}
 	
 	// Check the 'selector' attribute value.
-	if(resourceConfig.{@link ResourceConfig#isXmlDef() isXmlDef()}) {
-		specificity += 10;
-	} else if(resourceConfig.{@link ResourceConfig#getSelector() getselector()}.equals("*")) {
+	if (resourceConfig.{@link ResourceConfig#getSelector() getselector()}.equals("*")) {
 		specificity += 5;
 	} else {
 		// Explicit selector listed

@@ -206,13 +206,8 @@ public class DefaultResourceConfig implements ResourceConfig {
         setResource(resource);
     }
 
-    /**
-     * Perform a shallow clone of this configuration.
-     *
-     * @return Configuration clone.
-     */
+
     @Override
-    @SuppressWarnings({ "MethodDoesntCallSuperMethod", "unchecked" })
     public ResourceConfig copy() {
         DefaultResourceConfig copyResourceConfig = new DefaultResourceConfig();
 
@@ -237,11 +232,7 @@ public class DefaultResourceConfig implements ResourceConfig {
         parameters.putAll(resourceConfig.getParameters());
     }
 
-    /**
-     * Set the config selector.
-     *
-     * @param selector The selector definition.
-     */
+
     @Override
     public void setSelector(final String selector, final Properties namespaces) {
         if (selector != null) {
@@ -258,11 +249,6 @@ public class DefaultResourceConfig implements ResourceConfig {
         fireChangedEvent();
     }
 
-    /**
-     * Set the configs "resource".
-     *
-     * @param resource The resource.
-     */
     @Override
     public void setResource(String resource) {
         this.resource = resource;
@@ -278,36 +264,17 @@ public class DefaultResourceConfig implements ResourceConfig {
         }
         fireChangedEvent();
     }
-    
-    /**
-     * Is this resource defined inline in the configuration, or is it
-     * referenced through a URI.
-     * <p/>
-     * Note that this method also returns false if the resource is undefined (null).
-     *
-     * @return True if the resource is defined inline, otherwise false.
-     */
+
     @Override
     public boolean isInline() {
         return isInline;
     }
 
-    /**
-     * Get the target profile string as set in the configuration.
-     *
-     * @return The target profile.
-     */
     @Override
     public String getTargetProfile() {
         return targetProfile;
     }
 
-    /**
-     * Set the configs "target profile".
-     *
-     * @param targetProfile Target Profile(s).  Comma separated list of
-     *                      {@link ProfileTargetingExpression ProfileTargetingExpressions}.
-     */
     @Override
     public void setTargetProfile(String targetProfile) {
         if (targetProfile == null || targetProfile.trim().equals("")) {
@@ -318,114 +285,57 @@ public class DefaultResourceConfig implements ResourceConfig {
         parseTargetingExpressions(targetProfile);
     }
 
-    /**
-     * Explicitly set the resource type.
-     * <p/>
-     * E.g. "class", "xsl", "groovy" etc.
-     *
-     * @param resourceType The resource type.
-     */
     @Override
     public void setResourceType(String resourceType) {
         this.resourceType = resourceType;
     }
 
-    /**
-     * Set the selector steps.
-     * @param selectorPath The selector steps.
-     */
     @Override
     public void setSelectorPath(SelectorPath selectorPath) {
         this.selectorPath = selectorPath;
         fireChangedEvent();
     }
 
-    /**
-     * Get the selector steps.
-     * @return The selector steps.
-     */
     @Override
     public SelectorPath getSelectorPath() {
         return selectorPath;
     }
 
-    /**
-     * Get the profile targeting expressions for this ResourceConfig.
-     *
-     * @return The profile targeting expressions.
-     */
     @Override
     public ProfileTargetingExpression[] getProfileTargetingExpressions() {
         return profileTargetingExpressions;
     }
 
-    /**
-     * Get the resource for this ResourceConfig.
-     *
-     * @return The cdrar path.
-     */
     @Override
     public String getResource() {
         return resource;
     }
-    
-    /**
-     * Is this resource config a default applied resource.
-     * <p/>
-     * Some resources (e.g. {@link DOMSerializerVisitor} or
-     * {@link DefaultSAXElementSerializer}) are applied by default when no other
-     * resources are targeted at an element.
-     *
-     * @return True if this is a default applied resource, otherwise false.
-     */
+
     @Override
     public boolean isDefaultResource() {
         return defaultResource;
     }
 
-    /**
-     * Set this resource config as a default applied resource.
-     * <p/>
-     * Some resources (e.g. {@link DOMSerializerVisitor} or
-     * {@link DefaultSAXElementSerializer}) are applied by default when no other
-     * resources are targeted at an element.
-     *
-     * @param defaultResource True if this is a default applied resource, otherwise false.
-     */
     @Override
     public void setDefaultResource(boolean defaultResource) {
         this.defaultResource = defaultResource;
     }
 
-    /**
-     * Get the resource "type" for this resource.
-     * <p/>
-     * Determines the type through the following checks (in order):
-     * <ol>
-     * <li>Is it a Java resource. See {@link #isJavaResource()}.  If it is, return "class".</li>
-     * <li>Is the "restype" resource paramater specified.  If it is, return it's value. Ala DTD v1.0</li>
-     * <li>Is the resource type explicitly set on this configuration.  If it is, return it's
-     * value. Ala the "type" attribute on the resource element on DTD v2.0</li>
-     * <li>Return the resource path file extension e.g. "xsl".</li>
-     * </ol>
-     *
-     * @return The resource type.
-     */
     @Override
     public String getResourceType() {
         if (isJavaResource()) {
             return "class";
         }
 
-        final String restype;
-        if (resourceType != null) {
+        final String resourceType;
+        if (this.resourceType != null) {
             // Ala DTD v2.0, where the type is set through the "type" attribute on the <resource> element.
-            restype = resourceType;
+            resourceType = this.resourceType;
         } else {
-            restype = getExtension(getResource());
+            resourceType = getExtension(getResource());
         }
 
-        return restype;
+        return resourceType;
     }
 
     /**
@@ -471,32 +381,13 @@ public class DefaultResourceConfig implements ResourceConfig {
         return null;
     }
 
-    /**
-     * Set the named ResourceConfig parameter value (default type - String).
-     * <p/>
-     * Overwrites previous value of the same name.
-     *
-     * @param name  Parameter name.
-     * @param value Parameter value.
-     * @return The parameter instance.
-     */
     @Override
     public <T> Parameter<T> setParameter(String name, T value) {
-        Parameter<T> param = new DefaultParameter(name, value);
+        Parameter<T> param = new DefaultParameter<>(name, value);
         setParameter(param);
         return param;
     }
 
-    /**
-     * Set the named ResourceConfig parameter value (with type).
-     * <p/>
-     * Overwrites previous value of the same name.
-     *
-     * @param name  Parameter name.
-     * @param type  Parameter type.
-     * @param value Parameter value.
-     * @return The parameter instance.
-     */
     @Override
     public <T> Parameter<T> setParameter(String name, String type, T value) {
         Parameter<T> param = new DefaultParameter<>(name, value, type);
@@ -524,15 +415,6 @@ public class DefaultResourceConfig implements ResourceConfig {
         parameterCount++;
     }
 
-    /**
-     * Get the named ResourceConfig {@link Parameter parameter}.
-     * <p/>
-     * If there is more than one of the named parameters defined, the first
-     * defined value is returned.
-     *
-     * @param name Name of parameter to get.
-     * @return Parameter value, or null if not set.
-     */
     @Override
     public <T> Parameter<T> getParameter(String name, Class<T> valueClass) {
         if (parameters == null) {
@@ -549,22 +431,11 @@ public class DefaultResourceConfig implements ResourceConfig {
         return null;
     }
 
-    /**
-     * Get the param map associated with this configuration.
-     *
-     * @return The configuration parameters.  The Map value is either a
-     *         {@link Parameter} or parameter list (List&lt;{@link Parameter}&gt;).
-     */
     @Override
     public Map<String, Object> getParameters() {
         return parameters;
     }
 
-    /**
-     * Get all {@link Parameter parameter} values set on this configuration.
-     *
-     * @return {@link Parameter} value {@link List}, or null if not set.
-     */
     @Override
     public List<?> getParameterValues() {
         if (parameters == null) {
@@ -574,12 +445,6 @@ public class DefaultResourceConfig implements ResourceConfig {
         }
     }
 
-    /**
-     * Get the named ResourceConfig {@link Parameter parameter} List.
-     *
-     * @param name Name of parameter to get.
-     * @return {@link Parameter} value {@link List}, or null if not set.
-     */
     @Override
     public List<Parameter<?>> getParameters(String name) {
         if (parameters != null) {
@@ -603,27 +468,13 @@ public class DefaultResourceConfig implements ResourceConfig {
         Parameter<Object> parameter = getParameter(name, Object.class);
         return (parameter != null ? parameter.getValue() : null);
     }
-    
-    /**
-     * Get the named ResourceConfig parameter.
-     *
-     * @param name Name of parameter to get.
-     * @return Parameter value, or null if not set.
-     */
+
     @Override
     public <T> T getParameterValue(String name, Class<T> valueClass) {
         Parameter<T> parameter = getParameter(name, valueClass);
         return (parameter != null ? parameter.getValue() : null);
     }
 
-    /**
-     * Get the named ResourceConfig parameter.
-     *
-     * @param name       Name of parameter to get.
-     * @param defaultValue The default value to be returned if there are no
-     *                   parameters on the this ResourceConfig instance, or the parameter is not defined.
-     * @return Parameter value, or defaultVal if not defined.
-     */
     @Override
     public <T> T getParameterValue(String name, Class<T> valueClass, T defaultValue) {
         T value = getParameterValue(name, valueClass);
@@ -631,36 +482,14 @@ public class DefaultResourceConfig implements ResourceConfig {
         return (value != null ? value : defaultValue);
     }
 
-    /**
-     * Get the ResourceConfig parameter count.
-     *
-     * @return Number of parameters defined on this ResourceConfig.
-     */
     @Override
     public int getParameterCount() {
         return parameterCount;
     }
 
-    /**
-     * Remove the named parameter.
-     *
-     * @param name The name of the parameter to be removed.
-     */
     @Override
     public void removeParameter(String name) {
         parameters.remove(name);
-    }
-
-    /**
-     * Is this selector defininition an XML based definition.
-     * <p/>
-     * I.e. is the selector attribute value prefixed with "xmldef:".
-     *
-     * @return True if this selector defininition is an XML based definition, otherwise false.
-     */
-    @Override
-    public boolean isXmlDef() {
-        return selectorPath.getSelector().startsWith(XML_DEF_PREFIX);
     }
     
     @Override
@@ -668,17 +497,6 @@ public class DefaultResourceConfig implements ResourceConfig {
         return "Target Profile: [" + Arrays.asList(profileTargetingExpressionStrings) + "], Selector: [" + selectorPath.getSelector() + "], Resource: [" + resource + "], Num Params: [" + getParameterCount() + "]";
     }
 
-    /**
-     * Get the resource as a byte array.
-     * <p/>
-     * If the resource data is not inlined in the configuration (in a "resdata" param), it will be
-     * resolved using the {@link URIResourceLocator} i.e. the path will be enterpretted as a {@link java.net.URI}.
-     * If the resource doesn't resolve to a stream producing URI, the resource string will be converted to
-     * bytes and returned.
-     *
-     * @return The resource as a byte array, or null if resource path
-     *         is null or the resource doesn't exist.
-     */
     @Override
     public byte[] getBytes() {
         // Defines the resource in a resource element, so it can be used to specify a path
@@ -750,40 +568,21 @@ public class DefaultResourceConfig implements ResourceConfig {
         }
     }
 
-    /**
-     * Does this resource configuration refer to a Java Class resource.
-     *
-     * @return True if this resource configuration refers to a Java Class
-     *         resource, otherwise false.
-     */
     @Override
     public boolean isJavaResource() {
         return (toJavaResource() != null);
     }
 
-    /**
-     * Add the specified change listener to the list of change listeners.
-     * @param listener The listener instance.
-     */
     @Override
-    public void addChangeListener(ResourceConfigChangeListener listener) {
-        changeListeners.add(listener);
+    public void addChangeListener(ResourceConfigChangeListener resourceConfigChangeListener) {
+        changeListeners.add(resourceConfigChangeListener);
     }
 
-    /**
-     * Remove the specified change listener from the list of change listeners.
-     * @param listener The listener instance.
-     */
     @Override
-    public void removeChangeListener(ResourceConfigChangeListener listener) {
-        changeListeners.remove(listener);
+    public void removeChangeListener(ResourceConfigChangeListener resourceConfigChangeListener) {
+        changeListeners.remove(resourceConfigChangeListener);
     }
 
-    /**
-     * Generate an XML'ified description of this resource.
-     *
-     * @return XML'ified description of the resource.
-     */
     @Override
     public String toXml() {
         StringBuilder builder = new StringBuilder();
@@ -855,10 +654,6 @@ public class DefaultResourceConfig implements ResourceConfig {
         return super.equals(obj);
     }
 
-    /**
-     * Create a {@link Properties} instance from this supplied {@link DefaultResourceConfig}
-     * @return The resource parameters as a {@link Properties} instance.
-     */
     @Override
     public Properties toProperties() {
         Properties properties = new Properties();

@@ -93,17 +93,6 @@ public final class SelectorPathFactory {
     }
 
     private static SelectorPath buildSelectorPath(String selector, Properties namespaces) {
-        final SelectorPath selectorPath;
-        if (ResourceConfig.SELECTOR_NONE.equals(selector)) {
-            selectorPath =  _buildSelectorPath(ResourceConfig.SELECTOR_NONE, namespaces);
-        } else {
-            selectorPath = _buildSelectorPath(selector, namespaces);
-        }
-
-        return selectorPath;
-    }
-
-    private static SelectorPath _buildSelectorPath(String selector, Properties namespaces) {
         AssertArgument.isNotNull(selector, "selector");
 
         String xpathExpression = selector.replaceAll(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, "/*");
