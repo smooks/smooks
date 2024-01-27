@@ -75,11 +75,7 @@ public class DefaultResourceConfigFactory implements ResourceConfigFactory {
         }
 
         if (resource == null) {
-            if (resourceConfig.getParameters("restype") != null) {
-                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ".  This is probably an error because the configuration contains a 'resdata' param, which suggests it is following the old DTD based configuration model.  The new model requires the resource to be specified in the <resource> element.");
-            } else {
-                LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
-            }
+            LOGGER.debug("Resource 'null' for resource config: " + resourceConfig + ". This is not invalid!");
         }
 
         return resourceConfig;

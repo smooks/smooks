@@ -415,16 +415,16 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
          * Try create the CDU creator for the specified resource type.
          * <p/>
          * Return null if unsuccessful i.e. no exceptions.
-         * @param restype The resource type.
+         * @param resourceType The resource type.
          * @return The appropriate CDU creator instance, or null if there is none.
          */
-        private ContentHandlerFactory<?> tryCreateCreator(String restype) {
-            if (restype == null || restype.trim().equals("")) {
+        private ContentHandlerFactory<?> tryCreateCreator(String resourceType) {
+            if (resourceType == null || resourceType.trim().isEmpty()) {
                 LOGGER.debug("Request to attempt ContentHandlerFactory creation based on a null/empty resource type.");
                 return null;
             }
 
-            return registry.lookup(new ContentHandlerFactoryLookup(restype));
+            return registry.lookup(new ContentHandlerFactoryLookup(resourceType));
 
         }
 

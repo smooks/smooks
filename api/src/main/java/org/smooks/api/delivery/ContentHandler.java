@@ -43,7 +43,7 @@
 package org.smooks.api.delivery;
 
 /**
- * Smooks resource and a target of content delivery.
+ * Smooks resource which can be targeted for content delivery by the Smooks engine.
  */
 public interface ContentHandler {
 }

@@ -52,16 +52,6 @@ import org.smooks.api.SmooksConfigException;
  */
 public interface ContentHandlerFactory<T> extends ContentHandler {
 
-    /**
-     * Name of the param used on a ContentHandlerFactory config that specifies
-     * the resource type that the creator is adding support for.  This is different
-     * from the type attribute on the resource element.  In the case of a ContentHandlerFactory
-     * configuration, the ContentHandlerFactory impl resource type is "class", but it's adding
-     * support for something else (e.g. "xsl").  This is why we can't use the type attribute for this
-     * purpose.
-     */
-    String PARAM_RESTYPE = "restype";
-
 	/**
 	 * Create the content handler instance.
 	 * @param resourceConfig The ResourceConfig for the {@link ContentHandler}

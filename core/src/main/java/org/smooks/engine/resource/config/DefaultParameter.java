@@ -62,10 +62,10 @@ public class DefaultParameter<T> implements Parameter<T> {
      * @param value Parameter value.
      */
     public DefaultParameter(String name, T value) {
-        if(name == null || (name = name.trim()).equals("")) {
+        if (name == null || (name = name.trim()).isEmpty()) {
             throw new IllegalArgumentException("null or empty 'name' arg in constructor call.");
         }
-        if(value == null) {
+        if (value == null) {
             throw new IllegalArgumentException("null 'value' arg in constructor call.");
         }
         this.name = name;

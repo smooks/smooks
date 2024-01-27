@@ -45,7 +45,7 @@ package org.smooks.engine.resource.config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSortComparator;
@@ -65,15 +65,10 @@ public class DefaultResourceConfigSortComparatorTestCase {
 
     @Test
 	public void test_getSpecificity_selector() {
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//    5 -> "*".
 		assertSpecificityOK(105.0, "selector", "*");
-
-		//   10 -> XmlDef selector
-		//    0 -> Null namespace
-        //    5 -> "*".
-		assertSpecificityOK(15.0, ResourceConfig.XML_DEF_PREFIX + "selector", "*");
 
 		//    5 -> Wildcard selector "*".
 		//    0 -> Null namespace
@@ -93,69 +88,69 @@ public class DefaultResourceConfigSortComparatorTestCase {
 
     @Test
 	public void test_getSpecificity_useragent() {
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//  100 -> Useragent specifying the ua common name.
 		assertSpecificityOK(200.0, "selector", "uaCommonName");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//    0 -> Useragent specifying a non-matching common name or profile.
 		assertSpecificityOK(100.0, "selector", "X");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//   10 -> Useragent specifying 1 ua profile.
 		assertSpecificityOK(110.0, "selector", "profile1");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//  110 -> Useragent specifying the ua common name + 1 ua profile.
 		assertSpecificityOK(210.0, "selector", "uaCommonName, profile1");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//  120 -> Useragent specifying the ua common name + 2 ua profiles.
 		assertSpecificityOK(220.0, "selector", "uaCommonName, profile1, profile2");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//   20 -> Useragent specifying 2 ua profiles.
 		assertSpecificityOK(120.0, "selector", "profile1, profile2");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//    1 -> Negated non-matching useragent
 		assertSpecificityOK(101.0, "selector", "not:X");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//    0 -> Negated matching useragent
 		assertSpecificityOK(100.0, "selector", "not:uaCommonName");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//    0 -> Negated matching profile
 		assertSpecificityOK(100.0, "selector", "not:profile2");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//    0 -> Negated matching non-useragent and non-profile
 		assertSpecificityOK(101.0, "selector", "not:X");
 
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//  110 -> Matching expression - common name + 1 mathcing profile
 		assertSpecificityOK(210.0, "selector", "uaCommonName AND profile2");
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//  101 -> Matching expression - common name + 1 negated non-mathcing useragent/profile
 		assertSpecificityOK(201.0, "selector", "uaCommonName AND not:X");
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//    0 -> Non-matching expression - 2 negated mathcing useragents/profiles
 		assertSpecificityOK(100.0, "selector", "uaCommonName AND not:profile2");
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//    0 -> Null namespace
 		//    2 -> Non-matching expression - 2 negated non-mathcing useragents/profiles
 		assertSpecificityOK(102.0, "selector", "not:X AND not:Y");
@@ -163,7 +158,7 @@ public class DefaultResourceConfigSortComparatorTestCase {
 
     @Test
 	public void test_getSpecificity_all() {
-		//  100 -> Explicit selector (non-xmldef, non-wildcard)
+		//  100 -> Explicit selector (non-wildcard)
 		//   10 -> Namespace specified.
 		//  100 -> Useragent specifying the ua common name.
 		assertSpecificityOK(200.0, "selector", "uaCommonName");
