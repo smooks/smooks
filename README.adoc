@@ -148,7 +148,7 @@ See the https://www.smooks.org/v2/maven[Maven guide] for details on how to integ
 // tag::fundamentals[]
 == Fundamentals
 
-A commonly accepted definition of Smooks is of it being a "Transformation Engine". Nonetheless, at its core, Smooks makes no reference to _data transformation_. The core codebase is designed to hook visitor logic into an event stream produced from a source of some kind. As such, in its most distilled form, Smooks is a _Structured Data Event Stream Processor_.
+A commonly accepted definition of Smooks is of it being a _Transformation Engine_. Nonetheless, at its core, Smooks makes no reference to _data transformation_. The core codebase is designed to hook visitor logic into an event stream produced from a source of some kind. As such, in its most distilled form, Smooks is a _Structured Data Event Stream Processor_.
 
 An application of a structured data event processor is transformation. In implementation terms, a Smooks transformation solution is a visitor reading the event stream from a source to produce a different representation of the input. However, Smooks's core capabilities enable much more than transformation. A range of other solutions can be implemented based on the fragment-based processing model:
 
@@ -160,7 +160,9 @@ An application of a structured data event processor is transformation. In implem
 
 === Basic Processing Model
 
-Smooks's fundamental behaviour is to take an input _source_, such as XML, and from it generate an _event stream_ to which _visitors_ are applied to produce a _result_ such as EDI.
+Smooks's fundamental behaviour is to take an input _source_, such as XML, and from it generate an _event stream_ to which _visitors_ are applied to produce a _result_ such as EDI as illustrated below:
+
+image:docs/images/smooks.png[Image:smooks.png]
 
 Several sources and result types are supported which equate to different transformation types, including but not limited to:
 
