@@ -160,7 +160,7 @@ An application of a structured data event processor is transformation. In implem
 
 === Basic Processing Model
 
-Smooks's fundamental behaviour is to take an input _source_, such as XML, and from it generate an _event stream_ to which _visitors_ are applied to produce a _result_ such as EDI as illustrated below:
+Smooks's fundamental behaviour is to take an input _source_, such as XML, and from it generate an _event stream_ to which _visitors_ are applied to produce a _result_ as illustrated below:
 
 image:docs/images/smooks.png[Image:smooks.png]
 
