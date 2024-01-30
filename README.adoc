@@ -152,17 +152,26 @@ A commonly accepted definition of Smooks is of it being a _Transformation Engine
 
 An application of a structured data event processor is transformation. In implementation terms, a Smooks transformation solution is a visitor reading the event stream from a source to produce a different representation of the input. However, Smooks's core capabilities enable much more than transformation. A range of other solutions can be implemented based on the fragment-based processing model:
 
-* *Java Binding*: population of a POJO from the source.
+* *Java binding*: population of a POJO from the source.
 
-* *Splitting & Routing*: perform complex splitting and routing operations on the source stream, including routing data in different formats (XML, EDI, CSV, POJO, etc...) to multiple destinations concurrently.
+* *splitting & routing*: perform complex splitting and routing operations on the source stream, including routing data in different formats (XML, EDI, CSV, POJO, etc...) to multiple destinations concurrently.
 
-* *Huge Message Processing*: declaratively consume (transform, or split and route) huge messages without writing boilerplate code.
+* *huge message processing*: declaratively consume (transform, or split and route) huge messages without writing boilerplate code.
 
-=== Processing Model
-
-Smooks's fundamental behaviour is to take an input _source_, such as CSV, and from it generate an _event stream_ to which _visitors_ are applied to produce a _result_, such as EDI. The Smooks processing model is illustrated below:
+The following gives a 10,000 foot view of Smooks:
 
 image:docs/images/smooks.png[Image:smooks.png]
+
+Smooks's fundamental behaviour is to take an input _source_, such as CSV, and from it generate an _event stream_ to which _visitors_ are applied to produce a _result_, such as EDI. In Smooks nomenclature, this behaviour is called filtering. During filtering, you have other Smooks actors which are participating, including:
+
+* resources
+* application context
+* execution context
+* bean context
+* registry
+* listeners
+
+All of these actors are explained in later sections.
 
 Several sources and result types are supported which equate to different transformation types, including but not limited to:
 
