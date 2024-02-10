@@ -54,7 +54,7 @@ import org.w3c.dom.Node;
 public class SessionInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
     protected boolean doVisit(final Node node, final String currentVisit, final ExecutionContext executionContext) {
         if (((Element) node).getAttribute("visit").equals(currentVisit)) {
-            Node sourceNode = executionContext.get(new TypedKey<>(((Element) node).getAttribute("source")));
+            Node sourceNode = executionContext.get(TypedKey.of(((Element) node).getAttribute("source")));
             if (sourceNode instanceof CharacterData) {
                 return new NodeFragment(sourceNode.getParentNode()).isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext);
             } else {
@@ -68,7 +68,7 @@ public class SessionInterceptor extends AbstractInterceptorVisitor implements El
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
         if (Session.isSession(element)) {
             if (doVisit(element, "visitBefore", executionContext)) {
-                Object source = executionContext.get(new TypedKey<>(element.getAttribute("source")));
+                Object source = executionContext.get(TypedKey.of(element.getAttribute("source")));
                 intercept(visitBeforeInvocation, source, executionContext);
             }
         } else {
@@ -94,7 +94,7 @@ public class SessionInterceptor extends AbstractInterceptorVisitor implements El
     public void visitAfter(final Element element, final ExecutionContext executionContext) {
         if (Session.isSession(element)) {
             if (doVisit(element, "visitChildText", executionContext) || doVisit(element, "visitAfter", executionContext)) {
-                Object source = executionContext.get(new TypedKey<>(element.getAttribute("source")));
+                Object source = executionContext.get(TypedKey.of(element.getAttribute("source")));
                 if (element.getAttribute("visit").equals("visitChildText")) {
                     visitChildText((CharacterData) source, executionContext);
                 } else {

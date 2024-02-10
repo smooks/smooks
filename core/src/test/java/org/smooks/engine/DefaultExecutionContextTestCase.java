@@ -64,7 +64,7 @@ public class DefaultExecutionContextTestCase {
 
     @Test
     public void testGetAttributes() {
-        final TypedKey<String> key = new TypedKey<>("testKey");
+        final TypedKey<String> key = TypedKey.of("testKey");
         final String value = "testValue";
         context.put(key, value);
 

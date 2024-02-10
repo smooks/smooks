@@ -234,12 +234,12 @@ public class DefaultResourceConfig implements ResourceConfig {
 
 
     @Override
-    public void setSelector(final String selector, final Properties namespaces) {
+    public void setSelector(String selector, Properties namespaces) {
         if (selector != null) {
             if (selectorPath == null) {
                 selectorPath = SelectorPathFactory.newSelectorPath(selector, namespaces);
             } else {
-                selectorPath = SelectorPathFactory.newSelectorPath(selector, selectorPath);
+                selectorPath = SelectorPathFactory.newSelectorPath(selector, selectorPath.getNamespaces(), selectorPath.getConditionEvaluator());
                 selectorPath.getNamespaces().putAll(namespaces);
             }
         } else {
@@ -277,7 +277,7 @@ public class DefaultResourceConfig implements ResourceConfig {
 
     @Override
     public void setTargetProfile(String targetProfile) {
-        if (targetProfile == null || targetProfile.trim().equals("")) {
+        if (targetProfile == null || targetProfile.trim().isEmpty()) {
             // Default the target profile to everything if not specified.
             targetProfile = Profile.DEFAULT_PROFILE;
         }

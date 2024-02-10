@@ -62,7 +62,7 @@ import org.w3c.dom.Node;
 public class ElementPositionCounter implements BeforeVisitor {
 
     private final SelectorStep selectorStep;
-    private final TypedKey<String> positionMementoTypedKey = new TypedKey<>();
+    private final TypedKey<String> positionMementoTypedKey = TypedKey.of();
 
     public ElementPositionCounter(SelectorStep selectorStep) {
         this.selectorStep = selectorStep;

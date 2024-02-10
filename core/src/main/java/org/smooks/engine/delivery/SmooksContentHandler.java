@@ -62,7 +62,7 @@ import org.xml.sax.ext.DefaultHandler2;
  */
 public abstract class SmooksContentHandler extends DefaultHandler2 implements SAXEventReplay {
 
-    private static final TypedKey<SmooksContentHandler> SMOOKS_CONTENT_HANDLER_TYPED_KEY = new TypedKey<>();
+    private static final TypedKey<SmooksContentHandler> SMOOKS_CONTENT_HANDLER_TYPED_KEY = TypedKey.of();
 
     private final ExecutionContext executionContext;
     private final SmooksContentHandler parentContentHandler;

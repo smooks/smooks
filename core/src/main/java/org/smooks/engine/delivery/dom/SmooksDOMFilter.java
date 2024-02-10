@@ -197,7 +197,7 @@ public class SmooksDOMFilter extends AbstractFilter {
      * request.  This is needed because Xerces doesn't allow "overwriting" of
      * the document root node.
      */
-    private static final TypedKey<Node> DELIVERY_NODE_REQUEST_KEY = new TypedKey<>();
+    private static final TypedKey<Node> DELIVERY_NODE_REQUEST_KEY = TypedKey.of();
 
     private final Boolean closeSource;
     private final Boolean closeResult;

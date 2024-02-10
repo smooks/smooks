@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
 
 public class CounterVisitor implements BeforeVisitor, ExecutionLifecycleInitializable {
     
-    private final TypedKey<Long> counterTypedKey = new TypedKey<>();
+    private final TypedKey<Long> counterTypedKey = TypedKey.of();
     
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {

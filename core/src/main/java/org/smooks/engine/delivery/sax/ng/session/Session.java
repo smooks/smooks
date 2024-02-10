@@ -65,7 +65,7 @@ public class Session {
     }
 
     public TypedKey<Node> getSourceKey() {
-        return new TypedKey<>(node.getAttributes().getNamedItem("source").getNodeValue());
+        return TypedKey.of(node.getAttributes().getNamedItem("source").getNodeValue());
     }
 
     public String getVisit() {
@@ -73,6 +73,6 @@ public class Session {
     }
     
     public Node getSourceValue(ExecutionContext executionContext) {
-        return executionContext.get(new TypedKey<>(node.getAttributes().getNamedItem("source").getNodeValue()));
+        return executionContext.get(TypedKey.of(node.getAttributes().getNamedItem("source").getNodeValue()));
     }
 }

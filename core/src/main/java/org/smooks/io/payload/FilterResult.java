@@ -54,7 +54,7 @@ import javax.xml.transform.Result;
  */
 public abstract class FilterResult implements Result {
 
-    public static final TypedKey<Result[]> RESULTS_TYPED_KEY = new TypedKey<>();
+    public static final TypedKey<Result[]> RESULTS_TYPED_KEY = TypedKey.of();
 
     private String systemId;
 

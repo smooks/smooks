@@ -87,8 +87,8 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class DelegateReader implements SmooksXMLReader {
-    private final TypedKey<Writer> contentHandlerTypedKey = new TypedKey<>();
-    private final TypedKey<ExecutionContext> executionContextTypedKey = new TypedKey<>();
+    private final TypedKey<Writer> contentHandlerTypedKey = TypedKey.of();
+    private final TypedKey<ExecutionContext> executionContextTypedKey = TypedKey.of();
     
     private ContentHandler contentHandler;
     private Smooks readerSmooks;

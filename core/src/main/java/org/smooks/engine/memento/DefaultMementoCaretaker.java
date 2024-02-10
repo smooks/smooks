@@ -68,12 +68,12 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
     @Override
     public void capture(Memento memento) {
         mementoAnchors.computeIfAbsent(memento.getFragment(), o -> new HashSet<>()).add(memento.getAnchor());
-        typedMap.put(new TypedKey<>(memento.getAnchor()), memento.copy());
+        typedMap.put(TypedKey.of(memento.getAnchor()), memento.copy());
     }
 
     @Override
     public void restore(Memento memento) {
-        final Memento restoredMemento = typedMap.get(new TypedKey<>(memento.getAnchor()));
+        final Memento restoredMemento = typedMap.get(TypedKey.of(memento.getAnchor()));
         if (restoredMemento != null) {
             memento.restore(restoredMemento);
         }
@@ -81,19 +81,19 @@ public class DefaultMementoCaretaker implements MementoCaretaker {
 
     @Override
     public boolean exists(Memento memento) {
-        return typedMap.get(new TypedKey<>(memento.getAnchor())) != null;
+        return typedMap.get(TypedKey.of(memento.getAnchor())) != null;
     }
 
     @Override
     public void forget(Memento visitorMemento) {
-        typedMap.remove(new TypedKey<>(visitorMemento.getAnchor()));
+        typedMap.remove(TypedKey.of(visitorMemento.getAnchor()));
         mementoAnchors.getOrDefault(visitorMemento.getFragment(), new HashSet<>()).remove(visitorMemento.getAnchor());
     }
 
     @Override
     public void forget(Fragment<?> fragment) {
         for (final String anchor : mementoAnchors.getOrDefault(fragment, new HashSet<>())) {
-            typedMap.remove(new TypedKey<>(anchor));
+            typedMap.remove(TypedKey.of(anchor));
         }
         mementoAnchors.remove(fragment);
     }

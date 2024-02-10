@@ -51,54 +51,68 @@ import java.util.UUID;
  * @param <T> type of key
  * @see       org.smooks.api.TypedMap
  */
-public final class TypedKey<T> {
-    private final String name;
-    private int hash;
+public interface TypedKey<T> {
+
+    String getName();
 
     /**
      * Constructs a <code>TypedKey</code> with a random UUID for its name.
      */
-    public TypedKey() {
-        this(UUID.randomUUID().toString());
+    static <T> TypedKey<T> of() {
+        return new DefaultTypedKey<>(UUID.randomUUID().toString());
     }
-
 
     /**
      * Constructs a <code>TypedKey</code> with a custom name.
      *
      * @param name identifier to give to this <code>TypedKey</code>
      */
-    public TypedKey(String name) {
-        Objects.requireNonNull(name);
-        this.name = name;
+    static <T> TypedKey<T> of(String name) {
+        return new DefaultTypedKey<>(name);
     }
 
-    public String getName() {
-        return name;
-    }
+    final class DefaultTypedKey<T> implements TypedKey<T> {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        private final String name;
+        private int hash;
+
+        /**
+         * Constructs a <code>TypedKey</code> with a custom name.
+         *
+         * @param name identifier to give to this <code>TypedKey</code>
+         */
+        public DefaultTypedKey(String name) {
+            Objects.requireNonNull(name);
+            this.name = name;
         }
-        if (!(o instanceof TypedKey)) {
-            return false;
-        }
-        TypedKey<?> typedKey = (TypedKey<?>) o;
-        return name.equals(typedKey.name);
-    }
 
-    @Override
-    public int hashCode() {
-        if (hash == 0) {
-            hash = Objects.hash(name);
+        public String getName() {
+            return name;
         }
-        return hash;
-    }
 
-    @Override
-    public String toString() {
-        return name;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof TypedKey)) {
+                return false;
+            }
+            TypedKey<?> typedKey = (TypedKey<?>) o;
+            return name.equals(typedKey.getName());
+        }
+
+        @Override
+        public int hashCode() {
+            if (hash == 0) {
+                hash = Objects.hash(name);
+            }
+            return hash;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }

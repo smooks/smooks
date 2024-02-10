@@ -47,7 +47,7 @@ import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.memento.Memento;
 
 public class TextAccumulatorMemento implements Memento {
-    private static final TypedKey<String> ANCHOR_TYPED_KEY = new TypedKey<>();
+    private static final TypedKey<String> ANCHOR_TYPED_KEY = TypedKey.of();
 
     protected final Fragment<?> fragment;
     protected final StringBuilder stringBuilder = new StringBuilder();

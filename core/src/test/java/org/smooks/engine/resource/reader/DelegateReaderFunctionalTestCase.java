@@ -64,7 +64,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DelegateReaderFunctionalTestCase {
 
     public static class DelegateReaderResource implements ElementVisitor {
-        private final TypedKey<FragmentWriter> fragmentWriterTypedKey = new TypedKey<>();
+        private final TypedKey<FragmentWriter> fragmentWriterTypedKey = TypedKey.of();
 
         @Override
         public void visitBefore(Element element, ExecutionContext executionContext) {

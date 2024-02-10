@@ -97,11 +97,11 @@ public class ResourceWriter extends Writer {
      * @throws SmooksException Unable to access OutputStream.
      */
     protected Writer getOutputWriter(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
-        final TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
+        final TypedKey<Object> resourceKey = TypedKey.of(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
         final Object resourceIOObj = executionContext.get(resourceKey);
 
         if (resourceIOObj == null) {
-            final AbstractOutputStreamResource resource = executionContext.get(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
+            final AbstractOutputStreamResource resource = executionContext.get(TypedKey.of(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
             final OutputStream outputStream = openOutputStream(resource, executionContext);
             if (outputStream != null) {
                 Writer outputStreamWriter = new java.io.OutputStreamWriter(outputStream, resource.getWriterEncoding());

@@ -104,7 +104,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 		context.getBeanContext().addBean("objectMap", objectMap, null);
 
-		context.put(new TypedKey<>("multiline"), "hello\nworld");
+		context.put(TypedKey.of("multiline"), "hello\nworld");
 
 		String actual = MultiLineToStringBuilder.toString(context);
 
