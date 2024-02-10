@@ -114,9 +114,9 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         OUTPUT_TO
     }
 
-    protected static final TypedKey<Node> SOURCE_SESSION_TYPED_KEY = new TypedKey<>();
-    protected static final TypedKey<DocumentBuilder> CACHED_DOCUMENT_BUILDER_TYPED_KEY = new TypedKey<>();
-    protected static final TypedKey<ExecutionContext> NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = new TypedKey<>();
+    protected static final TypedKey<Node> SOURCE_SESSION_TYPED_KEY = TypedKey.of();
+    protected static final TypedKey<DocumentBuilder> CACHED_DOCUMENT_BUILDER_TYPED_KEY = TypedKey.of();
+    protected static final TypedKey<ExecutionContext> NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = TypedKey.of();
 
     protected BeanId bindBeanId;
 

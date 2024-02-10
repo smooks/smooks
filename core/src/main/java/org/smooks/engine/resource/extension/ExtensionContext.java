@@ -61,7 +61,7 @@ import java.util.Stack;
  */
 public class ExtensionContext {
 
-    public static final TypedKey<ExtensionContext> EXTENSION_CONTEXT_TYPED_KEY = new TypedKey<>();
+    public static final TypedKey<ExtensionContext> EXTENSION_CONTEXT_TYPED_KEY = TypedKey.of();
 
     private final XMLConfigDigester xmlConfigDigester;
     private final String defaultProfile;

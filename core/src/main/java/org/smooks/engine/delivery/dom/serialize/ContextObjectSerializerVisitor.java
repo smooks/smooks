@@ -72,10 +72,10 @@ public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, Ele
     public void writeStartElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
         String key = getContextKey(element);
 
-        if(key != null) {
-            Object object = executionContext.get(new TypedKey<>(key));
+        if (key != null) {
+            Object object = executionContext.get(TypedKey.of(key));
 
-            if(object != null) {
+            if (object != null) {
                 writer.write(object.toString());
             } else {
                 LOGGER.debug("Invalid <context-object> specification at '" + DomUtils.getXPath(element) + "'. No Object instance found on context at '" + key + "'.");
@@ -120,8 +120,9 @@ public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, Ele
 
     /**
      * Utility method for creating a &lt;context-object/&gt; element.
+     *
      * @param ownerDocument The owner document.
-     * @param key The context key.
+     * @param key           The context key.
      * @return The &lt;context-object/&gt; element.
      */
     public static Element createElement(Document ownerDocument, String key) {
@@ -140,17 +141,17 @@ public class ContextObjectSerializerVisitor implements DOMSerializerVisitor, Ele
 
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        
+
     }
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
 
     }
-    
+
     @Override
     public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
-        
+
     }
 
     @Override

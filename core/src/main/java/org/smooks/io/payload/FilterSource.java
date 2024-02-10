@@ -54,7 +54,7 @@ import javax.xml.transform.Source;
  */
 public abstract class FilterSource implements Source {
 
-    public static final TypedKey<Source> SOURCE_TYPED_KEY = new TypedKey<>();
+    public static final TypedKey<Source> SOURCE_TYPED_KEY = TypedKey.of();
 
     private String systemId;
 

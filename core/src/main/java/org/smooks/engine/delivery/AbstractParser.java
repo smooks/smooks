@@ -94,7 +94,7 @@ public class AbstractParser {
     public static final String FEATURE_OFF = "feature-off";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractParser.class);
-    private static final TypedKey<Stack<XMLReader>> XML_READER_STACK_TYPED_KEY = new TypedKey<>();
+    private static final TypedKey<Stack<XMLReader>> XML_READER_STACK_TYPED_KEY = TypedKey.of();
     
     private final ExecutionContext executionContext;
     private final ResourceConfig saxDriverConfig;

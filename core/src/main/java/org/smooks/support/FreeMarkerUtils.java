@@ -59,7 +59,7 @@ import java.util.Set;
  */
 public abstract class FreeMarkerUtils {
 
-    private static final TypedKey<Map<String, ElementToNodeModel>> ELEMENT_TO_NODE_MODEL_TYPED_KEY = new TypedKey<>();
+    private static final TypedKey<Map<String, ElementToNodeModel>> ELEMENT_TO_NODE_MODEL_TYPED_KEY = TypedKey.of();
     
     /**
      * Get a "merged" model for FreeMarker templating.

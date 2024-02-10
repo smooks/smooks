@@ -123,7 +123,7 @@ public class AbstractOutputStreamResourceTestCase
     }
 
     private Object getResource(AbstractOutputStreamResource resource, MockExecutionContext executionContext) {
-        return executionContext.get(new TypedKey<>(AbstractOutputStreamResource.RESOURCE_CONTEXT_KEY_PREFIX + resource.getResourceName()));
+        return executionContext.get(TypedKey.of(AbstractOutputStreamResource.RESOURCE_CONTEXT_KEY_PREFIX + resource.getResourceName()));
     }
 
     /**

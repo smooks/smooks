@@ -75,11 +75,11 @@ public class ResourceOutputStream extends OutputStream {
      * @throws SmooksException Unable to access OutputStream.
      */
     protected OutputStream getOutputStream(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
-        TypedKey<Object> resourceKey = new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
+        TypedKey<Object> resourceKey = TypedKey.of(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
         Object resourceIOObj = executionContext.get(resourceKey);
 
         if (resourceIOObj == null) {
-            AbstractOutputStreamResource resource = executionContext.get(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
+            AbstractOutputStreamResource resource = executionContext.get(TypedKey.of(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
             OutputStream outputStream = openOutputStream(resource, resourceName, executionContext);
 
             executionContext.put(resourceKey, outputStream);

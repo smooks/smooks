@@ -57,7 +57,7 @@ import java.util.List;
  */
 public abstract class DocType {
 
-    private static final TypedKey<DocumentTypeData> DOCTYPE_KEY = new TypedKey<>();
+    private static final TypedKey<DocumentTypeData> DOCTYPE_KEY = TypedKey.of();
 
     public static void setDocType(String name, String publicId, String systemId, String xmlns, ExecutionContext executionContext) {
         executionContext.put(DOCTYPE_KEY, new DocumentTypeData(name, publicId, systemId, xmlns));

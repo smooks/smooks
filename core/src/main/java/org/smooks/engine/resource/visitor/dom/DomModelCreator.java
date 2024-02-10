@@ -135,7 +135,7 @@ import java.util.stream.Stream;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
-    private static final TypedKey<Stack<DOMCreator>> DOM_CREATOR_STACK_TYPED_KEY = new TypedKey<>();
+    private static final TypedKey<Stack<DOMCreator>> DOM_CREATOR_STACK_TYPED_KEY = TypedKey.of();
     private final DocumentBuilder documentBuilder;
 
     @Inject

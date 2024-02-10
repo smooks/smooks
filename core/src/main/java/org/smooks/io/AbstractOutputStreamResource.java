@@ -173,16 +173,16 @@ public abstract class AbstractOutputStreamResource implements DOMVisitBefore, Co
      */
     protected void closeResource(final ExecutionContext executionContext) {
         try {
-            Closeable output = executionContext.get(new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName()));
+            Closeable output = executionContext.get(TypedKey.of(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName()));
             close(output);
         } finally {
-            executionContext.remove(new TypedKey<>(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName()));
-            executionContext.remove(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName()));
+            executionContext.remove(TypedKey.of(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + getResourceName()));
+            executionContext.remove(TypedKey.of(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName()));
         }
     }
 
     private void bind(final ExecutionContext executionContext) {
-        executionContext.put(new TypedKey<>(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName()), this);
+        executionContext.put(TypedKey.of(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName()), this);
     }
 
     private void close(final Closeable closeable) {

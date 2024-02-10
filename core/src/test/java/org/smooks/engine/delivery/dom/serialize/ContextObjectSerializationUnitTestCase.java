@@ -68,7 +68,7 @@ public class ContextObjectSerializationUnitTestCase {
         ParameterAccessor.setParameter(Filter.STREAM_FILTER_TYPE, "DOM", smooks);
 
         context = smooks.createExecutionContext();
-        context.put(new TypedKey<>("object-x"), "Hi there!");
+        context.put(TypedKey.of("object-x"), "Hi there!");
 
         String result = SmooksUtil.filterAndSerialize(context, new ByteArrayInputStream(("<context-object key='object-x' xmlns=\"" + Namespace.SMOOKS_URI + "\" />").getBytes()), smooks);
         assertEquals("Hi there!", result);

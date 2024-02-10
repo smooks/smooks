@@ -48,7 +48,7 @@ import org.smooks.api.TypedKey;
 import java.io.Writer;
 
 public final class Stream {
-    public static final TypedKey<Writer> STREAM_WRITER_TYPED_KEY = new TypedKey<>();
+    public static final TypedKey<Writer> STREAM_WRITER_TYPED_KEY = TypedKey.of();
     
     private Stream() {
 

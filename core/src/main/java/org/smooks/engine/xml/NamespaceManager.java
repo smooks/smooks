@@ -66,7 +66,7 @@ import java.util.Properties;
  */
 public class NamespaceManager {
 
-	public static final TypedKey<NamespaceDeclarationStack> NAMESPACE_DECLARATION_STACK_TYPED_KEY = new TypedKey<>();
+	public static final TypedKey<NamespaceDeclarationStack> NAMESPACE_DECLARATION_STACK_TYPED_KEY = TypedKey.of();
 
 	/**
      * Logger.

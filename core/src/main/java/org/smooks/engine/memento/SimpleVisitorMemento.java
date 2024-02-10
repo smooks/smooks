@@ -49,6 +49,6 @@ import org.smooks.api.delivery.fragment.Fragment;
 public class SimpleVisitorMemento<T> extends VisitorMemento<T> {
     
     public SimpleVisitorMemento(final Fragment<?> fragment, final Visitor visitor, final T state) {
-        super(fragment, visitor, new TypedKey<>(state.getClass().getName()), state);
+        super(fragment, visitor, TypedKey.of(state.getClass().getName()), state);
     }
 }

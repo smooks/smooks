@@ -66,12 +66,12 @@ public final class SelectorPathFactory {
     }
 
     public static SelectorPath newSelectorPath(final SelectorPath selectorPath) {
-        return newSelectorPath(selectorPath.getSelector(), selectorPath);
+        return newSelectorPath(selectorPath.getSelector(), selectorPath.getNamespaces(), selectorPath.getConditionEvaluator());
     }
 
-    public static SelectorPath newSelectorPath(final String selector, SelectorPath selectorPath) {
-        SelectorPath newSelectorPath = newSelectorPath(selector, selectorPath.getNamespaces());
-        newSelectorPath.setConditionEvaluator(selectorPath.getConditionEvaluator());
+    public static SelectorPath newSelectorPath(final String selector, Properties namespaces, ExpressionEvaluator conditionEvaluator) {
+        SelectorPath newSelectorPath = newSelectorPath(selector, namespaces);
+        newSelectorPath.setConditionEvaluator(conditionEvaluator);
 
         return newSelectorPath;
     }
