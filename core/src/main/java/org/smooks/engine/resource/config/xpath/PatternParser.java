@@ -297,7 +297,7 @@ public class PatternParser
                 }
                 else
                 {
-                    path.setNodeTest( new NamespaceTest( prefix, nodeType ) );
+                    path.setNodeTest( new PrefixNamespaceTest( prefix, nodeType ) );
                 }
             }
             else
@@ -306,7 +306,7 @@ public class PatternParser
                 NodeTest nodeTest;
                 if (prefix.length() > 0)
                 {
-                    NamespaceTest namespaceTest = new NamespaceTest( prefix, nodeType );
+                    NamespaceTest namespaceTest = new PrefixNamespaceTest( prefix, nodeType );
                     nodeTest = new NameNamespaceCompositeTest(nameTest, namespaceTest);
                 }
                 else

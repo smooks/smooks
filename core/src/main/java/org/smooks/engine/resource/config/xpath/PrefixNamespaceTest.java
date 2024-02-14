@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -42,29 +42,38 @@
  */
 package org.smooks.engine.resource.config.xpath;
 
-import org.junit.jupiter.api.Test;
-import org.smooks.api.resource.config.xpath.SelectorPath;
-import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.jaxen.Context;
+import org.jaxen.pattern.NamespaceTest;
 
 /**
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * <p><code>NamespaceTest</code> tests for a given namespace URI.</p>
+ *
+ * @author <a href="mailto:jstrachan@apache.org">James Strachan</a>
+ * @version $Revision$
  */
-public class SelectorPathFactoryTestCase {
+public class PrefixNamespaceTest extends NamespaceTest {
 
-    @Test
-    public void testNewSelectorPathGivenTextPredicate() {
-        SelectorPath selectorPath = SelectorPathFactory.newSelectorPath("x/y[text() = '23']");
+    protected final String prefix;
+    protected final short nodeType;
 
-        assertTrue(selectorPath instanceof IndexedSelectorPath);
-        assertEquals(2, selectorPath.size());
+    public PrefixNamespaceTest(String prefix, short nodeType) {
+        super(prefix, nodeType);
+        if (prefix == null) {
+            prefix = "";
+        }
+        this.prefix = prefix;
+        this.nodeType = nodeType;
+    }
 
-        assertTrue(selectorPath.get(0) instanceof ElementSelectorStep);
-        assertFalse(((ElementSelectorStep) selectorPath.get(0)).accessesText());
-        assertTrue(selectorPath.get(1) instanceof ElementSelectorStep);
-        assertTrue(((ElementSelectorStep) selectorPath.get(1)).accessesText());
+
+    /**
+     * Returns the URI of the current prefix or "" if no URI can be found
+     */
+    protected String getURI(Object node, Context context) {
+        String uri = context.getContextSupport().translateNamespacePrefixToUri(prefix);
+        if (uri == null) {
+            uri = "";
+        }
+        return uri;
     }
 }

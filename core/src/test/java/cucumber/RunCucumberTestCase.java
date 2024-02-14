@@ -1,8 +1,8 @@
-/*-
+package cucumber;/*-
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,31 +40,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.xpath;
 
-import org.junit.jupiter.api.Test;
-import org.smooks.api.resource.config.xpath.SelectorPath;
-import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
+import org.junit.platform.suite.api.ConfigurationParameter;
+import org.junit.platform.suite.api.IncludeEngines;
+import org.junit.platform.suite.api.SelectClasspathResource;
+import org.junit.platform.suite.api.Suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 
-/**
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class SelectorPathFactoryTestCase {
-
-    @Test
-    public void testNewSelectorPathGivenTextPredicate() {
-        SelectorPath selectorPath = SelectorPathFactory.newSelectorPath("x/y[text() = '23']");
-
-        assertTrue(selectorPath instanceof IndexedSelectorPath);
-        assertEquals(2, selectorPath.size());
-
-        assertTrue(selectorPath.get(0) instanceof ElementSelectorStep);
-        assertFalse(((ElementSelectorStep) selectorPath.get(0)).accessesText());
-        assertTrue(selectorPath.get(1) instanceof ElementSelectorStep);
-        assertTrue(((ElementSelectorStep) selectorPath.get(1)).accessesText());
-    }
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("features")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "cucumber")
+public class RunCucumberTestCase {
 }
