@@ -541,7 +541,7 @@ Directs the output to a different stream other than the result stream:
 
 The basic functionality of Smooks can be extended through the development of a Smooks cartridge. A cartridge is a Java archive (JAR) containing reusable resources (also known as _Content Handlers_). A cartridge augments Smooks with support for a specific type input source or event handling.
 
-Visit the https://github.com/smooks/?q=-cartridge&type=&language=&sort=[GitHub organisation page] for the complete list of Smooks cartridges.
+Visit the https://github.com/orgs/smooks/repositories?q=cartridge&type=all&language=&sort=[GitHub repositories page] for the complete list of Smooks cartridges.
 
 === Filter
 
