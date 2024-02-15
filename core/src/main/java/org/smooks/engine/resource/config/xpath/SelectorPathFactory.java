@@ -107,147 +107,7 @@ public final class SelectorPathFactory {
             reader.parse(xpathExpression);
         } catch (SAXPathException e) {
             if (selector.split(",").length > 1) {
-                return new SelectorPath() {
-                    @Override
-                    public String getSelector() {
-                        return selector;
-                    }
-
-                    @Override
-                    public void setConditionEvaluator(ExpressionEvaluator expressionEvaluator) {
-
-                    }
-
-                    @Override
-                    public ExpressionEvaluator getConditionEvaluator() {
-                        return null;
-                    }
-
-                    @Override
-                    public Properties getNamespaces() {
-                        return new Properties();
-                    }
-
-                    @Override
-                    public void setNamespaces(Properties namespaces) {
-
-                    }
-
-                    @Override
-                    public int size() {
-                        return 0;
-                    }
-
-                    @Override
-                    public boolean isEmpty() {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean contains(Object o) {
-                        return false;
-                    }
-
-                    @Override
-                    public Iterator<SelectorStep> iterator() {
-                        return null;
-                    }
-
-                    @Override
-                    public Object[] toArray() {
-                        return new Object[0];
-                    }
-
-                    @Override
-                    public <T> T[] toArray(T[] a) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean add(SelectorStep selectorStep) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean remove(Object o) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean containsAll(Collection<?> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean addAll(Collection<? extends SelectorStep> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean addAll(int index, Collection<? extends SelectorStep> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean removeAll(Collection<?> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean retainAll(Collection<?> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public void clear() {
-
-                    }
-
-                    @Override
-                    public SelectorStep get(int index) {
-                        return null;
-                    }
-
-                    @Override
-                    public SelectorStep set(int index, SelectorStep element) {
-                        return null;
-                    }
-
-                    @Override
-                    public void add(int index, SelectorStep element) {
-
-                    }
-
-                    @Override
-                    public SelectorStep remove(int index) {
-                        return null;
-                    }
-
-                    @Override
-                    public int indexOf(Object o) {
-                        return 0;
-                    }
-
-                    @Override
-                    public int lastIndexOf(Object o) {
-                        return 0;
-                    }
-
-                    @Override
-                    public ListIterator<SelectorStep> listIterator() {
-                        return null;
-                    }
-
-                    @Override
-                    public ListIterator<SelectorStep> listIterator(int index) {
-                        return null;
-                    }
-
-                    @Override
-                    public List<SelectorStep> subList(int fromIndex, int toIndex) {
-                        return null;
-                    }
-                };
+                return new CompositeSelectorPath(selector, namespaces);
             } else {
                 throw new SmooksException(e);
             }
@@ -264,5 +124,155 @@ public final class SelectorPathFactory {
         }
 
         return xpathHandler.getSelectorPath();
+    }
+
+    private static class CompositeSelectorPath implements SelectorPath {
+
+        private final String selector;
+        private Properties namespaces;
+
+        public CompositeSelectorPath(String selector, Properties namespaces) {
+            this.selector = selector;
+            this.namespaces = namespaces;
+        }
+
+        @Override
+        public String getSelector() {
+            return selector;
+        }
+
+        @Override
+        public void setConditionEvaluator(ExpressionEvaluator expressionEvaluator) {
+        }
+
+        @Override
+        public ExpressionEvaluator getConditionEvaluator() {
+            return null;
+        }
+
+        @Override
+        public Properties getNamespaces() {
+            return namespaces;
+        }
+
+        @Override
+        public void setNamespaces(Properties namespaces) {
+            this.namespaces = namespaces;
+        }
+
+        @Override
+        public int size() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Iterator<SelectorStep> iterator() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Object[] toArray() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean add(SelectorStep selectorStep) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends SelectorStep> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean addAll(int index, Collection<? extends SelectorStep> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SelectorStep get(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SelectorStep set(int index, SelectorStep element) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(int index, SelectorStep element) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SelectorStep remove(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int indexOf(Object o) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int lastIndexOf(Object o) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ListIterator<SelectorStep> listIterator() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ListIterator<SelectorStep> listIterator(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<SelectorStep> subList(int fromIndex, int toIndex) {
+            throw new UnsupportedOperationException();
+        }
     }
 }

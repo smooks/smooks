@@ -46,6 +46,8 @@ import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
+import java.util.Properties;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -66,5 +68,15 @@ public class SelectorPathFactoryTestCase {
         assertFalse(((ElementSelectorStep) selectorPath.get(0)).accessesText());
         assertTrue(selectorPath.get(1) instanceof ElementSelectorStep);
         assertTrue(((ElementSelectorStep) selectorPath.get(1)).accessesText());
+    }
+
+    @Test
+    public void testNewSelectorPathGivenCommaDelimitedSelectors() {
+        Properties namespaces = new Properties();
+        namespaces.put("a", "http://a");
+
+        SelectorPath selectorPath = SelectorPathFactory.newSelectorPath("a:a1,a:a2", namespaces);
+        assertEquals(1, selectorPath.getNamespaces().size());
+        assertEquals("http://a", selectorPath.getNamespaces().getProperty("a"));
     }
 }
