@@ -51,7 +51,7 @@ import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.api.Registry;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import javax.inject.Named;
 import java.lang.reflect.InvocationTargetException;
@@ -68,7 +68,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
         try {
             doSetMember(member, instance, value, name);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new SmooksConfigException("Failed to set parameter configuration value on '" + ClassUtil.getLongMemberName(member) + "'.", e);
+            throw new SmooksConfigException("Failed to set parameter configuration value on '" + ClassUtils.getLongMemberName(member) + "'.", e);
         }
     }
 
@@ -130,7 +130,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
                     setMember(member, instance, convertedValueInject, name);
                 }
             } catch (TypeConverterException e) {
-                throw new SmooksConfigException("Failed to set parameter configuration value on '" + ClassUtil.getLongMemberName(member) + "'.", e);
+                throw new SmooksConfigException("Failed to set parameter configuration value on '" + ClassUtils.getLongMemberName(member) + "'.", e);
             }
         } else {
             if (getDefaultParamValue(instance, member) == null) {

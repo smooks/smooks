@@ -51,11 +51,10 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigChangeListener;
 import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.classpath.ClasspathUtils;
-import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.engine.resource.config.xpath.SelectorPathFactory;
 import org.smooks.resource.URIResourceLocator;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.smooks.support.StreamUtils;
 import org.smooks.support.XmlUtil;
 import org.w3c.dom.Element;
@@ -550,9 +549,9 @@ public class DefaultResourceConfig implements ResourceConfig {
             return null;
         }
 
-        className = ClasspathUtils.toClassName(resource);
+        className = ClassUtils.toClassName(resource);
         try {
-            return ClassUtil.forName(className, getClass());
+            return ClassUtils.forName(className, getClass());
         } catch (ClassNotFoundException e) {
             if (resource.equals(className)) {
                 LOGGER.debug("Resource path [" + resource + "] looks as though it may be a Java resource reference.  If so, this class is not available on the classpath.");

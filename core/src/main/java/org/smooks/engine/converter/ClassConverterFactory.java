@@ -46,7 +46,7 @@ import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 /**
  * Class decoder.
@@ -61,7 +61,7 @@ public class ClassConverterFactory implements TypeConverterFactory<String, Class
     public TypeConverter<String, Class> createTypeConverter() {
         return value -> {
             try {
-                return ClassUtil.forName(value.trim(), ClassConverterFactory.class);
+                return ClassUtils.forName(value.trim(), ClassConverterFactory.class);
             } catch (ClassNotFoundException e) {
                 throw new TypeConverterException("Failed to decode '" + value + "' as a Java Class.", e);
             }

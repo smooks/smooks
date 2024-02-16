@@ -46,7 +46,7 @@ package org.smooks.api.resource.config;
  * ResourceConfig Factory.
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public interface ResourceConfigListFactory {
+public interface ResourceConfigSeqFactory {
 
     /**
      * Create the configuration instance.

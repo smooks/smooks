@@ -55,17 +55,15 @@ import java.lang.reflect.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Utility methods to aid in class/resource loading.
  *
  * @author Kevin Conner
  */
-public class ClassUtil {
+public class ClassUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtils.class);
     private static final Map<String, Class> primitives;
 
     static {
@@ -256,7 +254,7 @@ public class ClassUtil {
         if (threadClassLoader != null) {
             return Proxy.newProxyInstance(threadClassLoader, classes, handler);
         } else {
-            return Proxy.newProxyInstance(ClassUtil.class.getClassLoader(), classes, handler);
+            return Proxy.newProxyInstance(ClassUtils.class.getClassLoader(), classes, handler);
         }
     }
 
@@ -280,7 +278,7 @@ public class ClassUtil {
         int resCount = 0;
 
         try {
-            cpURLs = getResources(fileName, ClassUtil.class);
+            cpURLs = getResources(fileName, ClassUtils.class);
         } catch (IOException e) {
             throw new RuntimeException("Error getting resource URLs for resource : " + fileName, e);
         }
@@ -322,7 +320,7 @@ public class ClassUtil {
                 }
 
                 try {
-                    clazz = forName(className, ClassUtil.class);
+                    clazz = forName(className, ClassUtils.class);
                 } catch (ClassNotFoundException e) {
                     LOGGER.debug("Failed to load class '" + className + "'. Class not found.", e);
                     continue;
@@ -553,5 +551,43 @@ public class ClassUtil {
 
     public static String getLongMemberName(Member field) {
         return field.getDeclaringClass().getName() + "#" + field.getName();
+    }
+
+    /**
+     * Convert the Java-class-file-name to the equivalent Java-class-name (dot
+     * delimited package name).
+     * <p/>
+     * EG:<br/>
+     * a/b/c/X.class converts to a.b.c.X<br/>
+     * a/b/c/X converts to a.b.c.X<br/>
+     * a.b.c.X converts to a.b.c.X<br/>
+     * a.b.c.X.class converts to a.b.c.X<br/>
+     * @param fileName The file name String to be translated.
+     * @return Java Class runtime name representation of the supplied file name String.
+     */
+    public static String toClassName(String fileName) {
+        StringBuffer className;
+
+        if(fileName == null) {
+            throw new IllegalArgumentException("null 'fileName' arg in method call.");
+        }
+        fileName = fileName.trim();
+        if(fileName.equals("")) {
+            throw new IllegalArgumentException("empty 'fileName' arg in method call.");
+        }
+
+        className = new StringBuffer(fileName);
+        // Fixup the name - replace '/' with '.' and remove ".class" if
+        // present.
+        if(fileName.endsWith(".class") && fileName.length() > 6) {
+            className.setLength(className.length() - 6);
+        }
+        for(int i = 0; i < className.length(); i++) {
+            if(className.charAt(i) == '/') {
+                className.setCharAt(i, '.');
+            }
+        }
+
+        return className.toString();
     }
 }

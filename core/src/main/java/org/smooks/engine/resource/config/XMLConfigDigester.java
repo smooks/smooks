@@ -61,7 +61,7 @@ import org.smooks.support.URIUtil;
 import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.api.Registry;
 import org.smooks.resource.URIResourceLocator;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.smooks.support.DomUtils;
 import org.smooks.support.XmlUtil;
 import org.smooks.xml.XsdDOMValidator;
@@ -522,7 +522,7 @@ public final class XMLConfigDigester {
                 XMLConfigDigester configDigester = new XMLConfigDigester(extConfigList);
 
                 configDigester.extendedConfigDigesters = extendedConfigDigesters;
-                configDigester.digestConfigRecursively(new InputStreamReader(ClassUtil.getResourceAsStream(resourcePath, classLoader)), baseURI);
+                configDigester.digestConfigRecursively(new InputStreamReader(ClassUtils.getResourceAsStream(resourcePath, classLoader)), baseURI);
                 registry.registerResourceConfigSeq(extConfigList);
             } catch (Exception e) {
                 throw new SmooksConfigException("Failed to construct Smooks instance for processing extended configuration resource '" + resourcePath + "'.", e);
@@ -538,7 +538,7 @@ public final class XMLConfigDigester {
     }
 
     private void assertExtendedConfigOK(String configNamespace, String resourcePath) {
-        InputStream resourceStream = ClassUtil.getResourceAsStream(resourcePath, classLoader);
+        InputStream resourceStream = ClassUtils.getResourceAsStream(resourcePath, classLoader);
 
         if (resourceStream == null) {
             throw new SmooksConfigException("Unable to locate Smooks digest configuration '" + resourcePath + "' for extended resource configuration namespace '" + configNamespace + "'.  This resource must be available on the classpath.");

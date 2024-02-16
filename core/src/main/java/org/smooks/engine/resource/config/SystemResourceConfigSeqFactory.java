@@ -44,16 +44,16 @@ package org.smooks.engine.resource.config;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfigSeq;
-import org.smooks.api.resource.config.ResourceConfigListFactory;
+import org.smooks.api.resource.config.ResourceConfigSeqFactory;
 
 import java.io.InputStream;
 
-public class SystemResourceConfigListFactory implements ResourceConfigListFactory {
+public class SystemResourceConfigSeqFactory implements ResourceConfigSeqFactory {
 
     private final ClassLoader classLoader;
     private final String resourceFile;
 
-    public SystemResourceConfigListFactory(String resourceFile, ClassLoader classLoader) {
+    public SystemResourceConfigSeqFactory(String resourceFile, ClassLoader classLoader) {
         this.classLoader = classLoader;
         this.resourceFile = resourceFile;
     }

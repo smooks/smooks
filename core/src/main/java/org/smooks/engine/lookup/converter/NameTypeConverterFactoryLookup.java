@@ -43,7 +43,7 @@
 package org.smooks.engine.lookup.converter;
 
 import org.smooks.api.converter.TypeConverterFactory;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import jakarta.annotation.Resource;
 import java.util.Map;
@@ -65,7 +65,7 @@ public class NameTypeConverterFactoryLookup<S, T> implements TypeConverterFactor
             if (typeConverterFactory == null) {
                 final Class typeConverterFactoryClass;
                 try {
-                    typeConverterFactoryClass = ClassUtil.forName(name, NameTypeConverterFactoryLookup.class);
+                    typeConverterFactoryClass = ClassUtils.forName(name, NameTypeConverterFactoryLookup.class);
                     typeConverterFactory = typeConverterFactories.stream().filter(t -> t.getClass().equals(typeConverterFactoryClass)).findFirst().orElse(null);
                 } catch (ClassNotFoundException e) {
                     typeConverterFactory = null;

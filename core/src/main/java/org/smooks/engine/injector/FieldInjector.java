@@ -43,7 +43,7 @@
 package org.smooks.engine.injector;
 
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -110,7 +110,7 @@ public class FieldInjector extends AbstractInjector<Field> {
     @Override
     protected Object getDefaultParamValue(Object instance, Field field) {
         try {
-            return ClassUtil.getField(field, instance);
+            return ClassUtils.getField(field, instance);
         } catch (IllegalAccessException e) {
             throw new SmooksConfigException(e);
         }
@@ -118,6 +118,6 @@ public class FieldInjector extends AbstractInjector<Field> {
 
     @Override
     protected void doSetMember(final Member member, final Object instance, final Object value, final String name) throws IllegalAccessException {
-        ClassUtil.setField((Field) member, instance, value);
+        ClassUtils.setField((Field) member, instance, value);
     }
 }

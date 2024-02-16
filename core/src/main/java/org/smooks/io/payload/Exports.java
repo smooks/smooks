@@ -46,7 +46,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.delivery.ContentHandler;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import javax.inject.Inject;
 import javax.xml.transform.Result;
@@ -94,7 +94,7 @@ public class Exports implements ContentHandler {
 
     private Class<?> getClassForType(final String type) {
         try {
-            return ClassUtil.forName(type, Exports.class);
+            return ClassUtils.forName(type, Exports.class);
         } catch (ClassNotFoundException e) {
             throw new SmooksException("Could not load class for type [" + type + "].");
         }

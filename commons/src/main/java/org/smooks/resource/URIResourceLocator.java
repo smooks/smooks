@@ -45,10 +45,9 @@ package org.smooks.resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.resource.ContainerResourceLocator;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
@@ -156,7 +155,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
                 path = "/" + path;
             }
             errorBuilder.append("\tClasspath: ").append(path).append("\n");
-            stream = ClassUtil.getResourceAsStream(path, getClass());
+            stream = ClassUtils.getResourceAsStream(path, getClass());
         } else {
             boolean isHttp = ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme));
             url = uri.resolvedURI.toURL();

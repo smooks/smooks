@@ -50,7 +50,7 @@ import org.smooks.engine.injector.FieldInjector;
 import org.smooks.api.injector.Injector;
 import org.smooks.engine.injector.MethodInjector;
 import org.smooks.engine.injector.Scope;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -102,9 +102,9 @@ public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
             Object fieldValue;
 
             try {
-                fieldValue = ClassUtil.getField(field, instance);
+                fieldValue = ClassUtils.getField(field, instance);
             } catch (IllegalAccessException e) {
-                throw new SmooksConfigException("Unable to get property field value for '" + ClassUtil.getLongMemberName(field) + "'.", e);
+                throw new SmooksConfigException("Unable to get property field value for '" + ClassUtils.getLongMemberName(field) + "'.", e);
             }
 
             if (fieldValue != null) {
@@ -116,8 +116,8 @@ public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
             if (injectAnnotation == null) {
                 // Check is there's a setter method for this property, with the @Inject annotation
                 // configured on it...
-                String setterName = ClassUtil.toSetterName(fieldName);
-                Method setterMethod = ClassUtil.getSetterMethod(setterName, contentHandlerClass, field.getType());
+                String setterName = ClassUtils.toSetterName(fieldName);
+                Method setterMethod = ClassUtils.getSetterMethod(setterName, contentHandlerClass, field.getType());
 
                 if (setterMethod != null) {
                     injectAnnotation = setterMethod.getAnnotation(Inject.class);

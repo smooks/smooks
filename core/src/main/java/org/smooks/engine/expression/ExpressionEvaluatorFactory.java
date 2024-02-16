@@ -45,7 +45,7 @@ package org.smooks.engine.expression;
 import org.smooks.api.expression.ExecutionContextExpressionEvaluator;
 import org.smooks.api.expression.ExpressionEvaluator;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 public class ExpressionEvaluatorFactory {
 
@@ -54,7 +54,7 @@ public class ExpressionEvaluatorFactory {
      */
     public ExpressionEvaluator create(String className, String conditionExpression) {
         try {
-            ExpressionEvaluator evaluator = (ExpressionEvaluator) ClassUtil.forName(className, ExpressionEvaluatorFactory.class).newInstance();
+            ExpressionEvaluator evaluator = (ExpressionEvaluator) ClassUtils.forName(className, ExpressionEvaluatorFactory.class).newInstance();
 
             if(!(evaluator instanceof ExecutionContextExpressionEvaluator)) {
                 throw new SmooksConfigException("Unsupported ExpressionEvaluator type '" + className + "'.  Currently only support '" + ExecutionContextExpressionEvaluator.class.getName() + "' implementations.");

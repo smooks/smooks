@@ -42,7 +42,7 @@
  */
 package org.smooks.xml;
 
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -82,7 +82,7 @@ public abstract class HTMLEntityLookup {
 		String line;
 
 		try {
-			is = ClassUtil.getResourceAsStream("HTML.ent",
+			is = ClassUtils.getResourceAsStream("HTML.ent",
 					HTMLEntityLookup.class);
 			try {
 				reader = new BufferedReader(new InputStreamReader(is));
