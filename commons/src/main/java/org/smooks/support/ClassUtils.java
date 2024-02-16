@@ -54,7 +54,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Utility methods to aid in class/resource loading.
