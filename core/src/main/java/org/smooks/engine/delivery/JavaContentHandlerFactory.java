@@ -48,7 +48,6 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.classpath.ClasspathUtils;
 import org.smooks.api.ApplicationContext;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;

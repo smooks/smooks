@@ -50,7 +50,6 @@ import org.smooks.api.resource.config.ProfileTargetingExpression;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigChangeListener;
 import org.smooks.api.resource.config.xpath.SelectorPath;
-import org.smooks.classpath.ClasspathUtils;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.engine.resource.config.xpath.SelectorPathFactory;
 import org.smooks.resource.URIResourceLocator;
