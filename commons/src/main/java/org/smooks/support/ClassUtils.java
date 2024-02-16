@@ -67,7 +67,7 @@ import java.util.Set;
  *
  * @author Kevin Conner
  */
-public class ClassUtils {
+public final class ClassUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtils.class);
     private static final Map<String, Class> primitives;
@@ -82,6 +82,10 @@ public class ClassUtils {
         primitives.put("char", Character.TYPE);
         primitives.put("byte", Byte.TYPE);
         primitives.put("short", Short.TYPE);
+    }
+
+    private ClassUtils() {
+
     }
 
     /**
