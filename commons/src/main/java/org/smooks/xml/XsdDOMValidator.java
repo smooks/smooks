@@ -45,7 +45,7 @@ package org.smooks.xml;
 import org.smooks.api.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.support.StreamUtils;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.w3c.dom.*;
 import org.w3c.dom.ls.LSInput;
 import org.xml.sax.SAXException;
@@ -256,7 +256,7 @@ public class XsdDOMValidator extends XsdValidator {
     private String getNamespaceSource(URI namespace) {
         if (namespace.getPath().length() > 0) {
             String resourcePath = "/META-INF" + namespace.getPath();
-            InputStream xsdStream = ClassUtil.getResourceAsStream(resourcePath, getClass());
+            InputStream xsdStream = ClassUtils.getResourceAsStream(resourcePath, getClass());
 
             if (xsdStream == null) {
                 return null;

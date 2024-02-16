@@ -43,7 +43,7 @@
 package org.smooks.engine.injector;
 
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -70,7 +70,7 @@ public class MethodInjector extends AbstractInjector<Method> {
                 if (params.length == 1) {
                     inject(method.getParameters()[0].getAnnotation(Named.class), method, instance, scope);
                 } else {
-                    throw new SmooksConfigException("Method '" + ClassUtil.getLongMemberName(method) + "' defines a @Inject, yet it specifies more than a single paramater.");
+                    throw new SmooksConfigException("Method '" + ClassUtils.getLongMemberName(method) + "' defines a @Inject, yet it specifies more than a single paramater.");
                 }
             }
         }
@@ -95,7 +95,7 @@ public class MethodInjector extends AbstractInjector<Method> {
             name = getPropertyName(method);
             if (name == null) {
                 throw new SmooksConfigException("Unable to determine the property name associated with '" +
-                        ClassUtil.getLongMemberName(method) + "'. " +
+                        ClassUtils.getLongMemberName(method) + "'. " +
                         "Setter methods that specify the @Inject annotation " +
                         "must either follow the Javabean naming convention ('setX' for property 'x'), or specify the " +
                         "property name via the 'name' parameter on the @Inject annotation.");

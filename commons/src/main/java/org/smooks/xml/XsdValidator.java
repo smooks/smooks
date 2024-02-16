@@ -43,7 +43,7 @@
 package org.smooks.xml;
 
 import org.smooks.assertion.AssertArgument;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -146,7 +146,7 @@ public class XsdValidator {
 
             if (schemaFactoryClass != null) {
                 try {
-                    return (SchemaFactory) ClassUtil.forName(schemaFactoryClass, getClass()).newInstance();
+                    return (SchemaFactory) ClassUtils.forName(schemaFactoryClass, getClass()).newInstance();
                 } catch (Exception e) {
                     throw new IllegalStateException("Failed to create an instance of SchemaFactory '" + schemaFactoryClass + "'.", e);
                 }

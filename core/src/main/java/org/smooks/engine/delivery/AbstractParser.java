@@ -66,7 +66,7 @@ import org.smooks.io.payload.FilterSource;
 import org.smooks.io.payload.JavaSource;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.namespace.NamespaceDeclarationStackAware;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.*;
 import org.xml.sax.ext.DefaultHandler2;
@@ -371,7 +371,7 @@ public class AbstractParser {
 
     private Object createHandler(String handlerName) throws SAXException {
         try {
-            return ClassUtil.forName(handlerName, getClass()).newInstance();
+            return ClassUtils.forName(handlerName, getClass()).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new SAXException("Failed to create SAX Handler '" + handlerName + "'.", e);
         }

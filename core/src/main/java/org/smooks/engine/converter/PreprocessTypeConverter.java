@@ -50,7 +50,7 @@ import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.engine.expression.MVELExpressionEvaluator;
 import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -87,7 +87,7 @@ public class PreprocessTypeConverter implements Configurable, TypeConverter<Stri
         if (delegateTypeConverterFactoryName != null) {
             TypeConverterFactory<String, Object> delegateTypeConverterFactory;
             try {
-                final Class<TypeConverterFactory<?, ?>> typeConverterFactoryClass = ClassUtil.forName(delegateTypeConverterFactoryName, TypeConverterFactory.class);
+                final Class<TypeConverterFactory<?, ?>> typeConverterFactoryClass = ClassUtils.forName(delegateTypeConverterFactoryName, TypeConverterFactory.class);
                 try {
                     delegateTypeConverterFactory = (TypeConverterFactory<String, Object>) typeConverterFactoryClass.newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {

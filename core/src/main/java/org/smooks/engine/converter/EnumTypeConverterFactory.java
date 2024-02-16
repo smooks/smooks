@@ -48,7 +48,7 @@ import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import jakarta.annotation.Resource;
 import java.util.Properties;
@@ -98,7 +98,7 @@ public class EnumTypeConverterFactory implements TypeConverterFactory<String, En
             }
 
             try {
-                enumType = ClassUtil.forName(enumTypeName.trim(), EnumTypeConverter.class);
+                enumType = ClassUtils.forName(enumTypeName.trim(), EnumTypeConverter.class);
             } catch (ClassNotFoundException e) {
                 throw new SmooksConfigException("Invalid Enum decoder configuration.  Failed to resolve '" + enumTypeName + "' as a Java Enum Class.", e);
             }

@@ -43,7 +43,7 @@
 package org.smooks.xml;
 
 import org.smooks.support.StreamUtils;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -143,7 +143,7 @@ public abstract class LocalEntityResolver implements EntityResolver {
 			if (localEntityFolder != null && fileSysEntity.exists()) {
 				entityStream = Files.newInputStream(Paths.get(fileSysEntity.toURI()));
 			} else if (entityCPLocation != null) {
-				entityStream = ClassUtil.getResourceAsStream(entityCPLocation + entityName, getClass());
+				entityStream = ClassUtils.getResourceAsStream(entityCPLocation + entityName, getClass());
 				if (entityStream == null) {
 					return null;
 				}

@@ -44,7 +44,7 @@ package org.smooks.engine;
 
 import org.smooks.api.profile.Profile;
 import org.smooks.api.resource.ContainerResourceLocator;
-import org.smooks.engine.resource.config.SystemResourceConfigListFactory;
+import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
 import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
@@ -137,10 +137,10 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     }
     
     private void registerSystemResources(final Registry registry) {
-        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/null-dom.xml", registry.getClassLoader()).create());
-        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/null-sax.xml", registry.getClassLoader()).create());
-        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/system-param-decoders.xml", registry.getClassLoader()).create());
-        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/system-serializers.xml", registry.getClassLoader()).create());
-        registry.registerResourceConfigSeq(new SystemResourceConfigListFactory("/system-interceptors.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/null-dom.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/null-sax.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-param-decoders.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-serializers.xml", registry.getClassLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-interceptors.xml", registry.getClassLoader()).create());
     }
 }

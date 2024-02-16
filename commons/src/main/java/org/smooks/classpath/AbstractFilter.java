@@ -44,7 +44,7 @@ package org.smooks.classpath;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,10 +79,10 @@ abstract class AbstractFilter implements Filter {
     @Override
     public void filter(String resourceName) {
         if (resourceName.endsWith(".class") && !isIgnorable(resourceName)) {
-            String className = ClasspathUtils.toClassName(resourceName);
+            String className = ClassUtils.toClassName(resourceName);
 
             try {
-                Class<?> clazz = ClassUtil.forName(className, InstanceOfFilter.class);
+                Class<?> clazz = ClassUtils.forName(className, InstanceOfFilter.class);
                 if (addClass(clazz)) {
                     classes.add(clazz);
                 }

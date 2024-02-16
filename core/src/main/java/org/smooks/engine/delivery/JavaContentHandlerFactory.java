@@ -48,12 +48,11 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.classpath.ClasspathUtils;
 import org.smooks.api.ApplicationContext;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
@@ -82,8 +81,8 @@ public class JavaContentHandlerFactory implements ContentHandlerFactory<Object> 
     public Object create(final ResourceConfig resourceConfig) throws SmooksConfigException {
         Object contentHandler;
         try {
-            final String className = ClasspathUtils.toClassName(resourceConfig.getResource());
-            final Class<?> classRuntime = ClassUtil.forName(className, getClass());
+            final String className = ClassUtils.toClassName(resourceConfig.getResource());
+            final Class<?> classRuntime = ClassUtils.forName(className, getClass());
             final Constructor<?> constructor;
             try {
                 constructor = classRuntime.getConstructor(DefaultResourceConfig.class);

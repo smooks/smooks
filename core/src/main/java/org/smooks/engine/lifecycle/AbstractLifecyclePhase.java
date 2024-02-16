@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.lifecycle.LifecyclePhase;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -79,7 +79,7 @@ public abstract class AbstractLifecyclePhase implements LifecyclePhase {
                         throw new SmooksConfigException("Error invoking @" + annotation.getSimpleName() + " method '" + method.getName() + "' on class '" + instance.getClass().getName() + "'.", e.getTargetException());
                     }
                 } else {
-                    LOGGER.warn("Method '" + ClassUtil.getLongMemberName(method) + "' defines an @" + annotation.getSimpleName() + " annotation on a paramaterized method.  This is not allowed!");
+                    LOGGER.warn("Method '" + ClassUtils.getLongMemberName(method) + "' defines an @" + annotation.getSimpleName() + " annotation on a paramaterized method.  This is not allowed!");
                 }
             }
         }

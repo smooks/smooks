@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
-public class ClassUtilTestCase {
+public class ClassUtilsTestCase {
 	private final String fileName = "META-INF/classes.inf";
 	private final String testClassesDirName = "target" + File.separator + "test-classes";
 	private final File jarFile = new File(testClassesDirName + File.separator + "test.jar");
@@ -69,7 +69,7 @@ public class ClassUtilTestCase {
 	@Test
 	public void test_getClassesNegative() {
 		try {
-			ClassUtil.getClasses(null, null);
+			ClassUtils.getClasses(null, null);
 		} catch (Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
 		}
@@ -77,7 +77,7 @@ public class ClassUtilTestCase {
 
 	@Test
 	public void test_getClasses() {
-		List<Class<Object>> classes = ClassUtil.getClasses(fileName, Object.class);
+		List<Class<Object>> classes = ClassUtils.getClasses(fileName, Object.class);
 		assertNotNull(classes);
 		assertTrue(classes.contains(String.class));
 		assertTrue(classes.contains(Integer.class));
@@ -93,27 +93,27 @@ public class ClassUtilTestCase {
 	@Test
 	public void test_indexOffAssignableClass() {
 
-		assertEquals(0, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, List.class));
-		assertEquals(1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class));
-		assertEquals(1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class, List.class));
-		assertEquals(-1, ClassUtil.indexOfFirstAssignableClass(ArrayList.class, String.class, String.class, String.class));
+		assertEquals(0, ClassUtils.indexOfFirstAssignableClass(ArrayList.class, List.class));
+		assertEquals(1, ClassUtils.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class));
+		assertEquals(1, ClassUtils.indexOfFirstAssignableClass(ArrayList.class, String.class, List.class, List.class));
+		assertEquals(-1, ClassUtils.indexOfFirstAssignableClass(ArrayList.class, String.class, String.class, String.class));
 
 	}
 
 	@Test
 	public void test_containsAssignableClass() {
 
-		assertTrue(ClassUtil.containsAssignableClass(ArrayList.class, List.class));
-		assertTrue(ClassUtil.containsAssignableClass(ArrayList.class, String.class, List.class));
-		assertTrue(ClassUtil.containsAssignableClass(ArrayList.class, String.class, List.class, List.class));
-		assertFalse(ClassUtil.containsAssignableClass(ArrayList.class, String.class, String.class, String.class));
+		assertTrue(ClassUtils.containsAssignableClass(ArrayList.class, List.class));
+		assertTrue(ClassUtils.containsAssignableClass(ArrayList.class, String.class, List.class));
+		assertTrue(ClassUtils.containsAssignableClass(ArrayList.class, String.class, List.class, List.class));
+		assertFalse(ClassUtils.containsAssignableClass(ArrayList.class, String.class, String.class, String.class));
 
 	}
 
 	@Test
 	public void test_get_setter() {
-		Method nameSetter = ClassUtil.getSetterMethodByProperty("name", Animal.class, String.class);
-		Method ageSetter = ClassUtil.getSetterMethodByProperty("age", Animal.class, int.class);
+		Method nameSetter = ClassUtils.getSetterMethodByProperty("name", Animal.class, String.class);
+		Method ageSetter = ClassUtils.getSetterMethodByProperty("age", Animal.class, int.class);
 
 		assertNotNull(nameSetter);
 		assertEquals("setName", nameSetter.getName());
@@ -123,8 +123,8 @@ public class ClassUtilTestCase {
 
 	@Test
 	public void test_get_getter() {
-		Method nameGetter = ClassUtil.getGetterMethodByProperty("name", Animal.class, String.class);
-		Method ageGetter = ClassUtil.getGetterMethodByProperty("age", Animal.class, int.class);
+		Method nameGetter = ClassUtils.getGetterMethodByProperty("name", Animal.class, String.class);
+		Method ageGetter = ClassUtils.getGetterMethodByProperty("age", Animal.class, int.class);
 
 		assertNotNull(nameGetter);
 		assertEquals("getName", nameGetter.getName());
