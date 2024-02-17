@@ -64,7 +64,7 @@
         <dependency>
             <groupId>org.smooks</groupId>
             <artifactId>smooks-core</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 </project>
