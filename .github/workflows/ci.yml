@@ -35,4 +35,4 @@ jobs:
         run: |
           echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
           echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
-          mvn deploy -pl !benchmark --settings .mvn/settings.xml -Dgpg.skip=false -DskipTests=true -B
+          mvn deploy -pl !benchmark --settings .mvn/settings.xml -Dgpg.skip=false -DskipTests=true -Dgpg.keyname=BFB2DFBEEAD74E7FAF4C374E70B4AB04102637CC -B
