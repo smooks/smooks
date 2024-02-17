@@ -40,13 +40,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.lifecyclecleanup;
+package org.smooks.engine.delivery.lifecycle;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
-import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
-import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.api.lifecycle.PostExecutionLifecycle;
+import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.Phase;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
 import org.w3c.dom.Element;
@@ -56,29 +55,21 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-@Phase(value = VisitPhase.PROCESSING)
-public class DomProcessingBefore implements DOMVisitBefore, ExecutionLifecycleInitializable, ExecutionLifecycleCleanable {
+@Phase(value = VisitPhase.ASSEMBLY)
+public class DomAssemblyAfterWithException implements DOMVisitAfter, PostExecutionLifecycle {
 
-    public static boolean initialized;
     public static boolean cleaned;
 
     @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(!initialized) {
-            fail("Resource should be initialized!");
-        }
+    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         if(cleaned) {
-            fail("Resource shouldn't be cleaned yet!");
+            fail("Resource shouldn't be clened yet!");
         }
     }
 
     @Override
-    public void executeExecutionLifecycleInitialize(ExecutionContext executionContext) {
-        initialized = true;
-    }
-
-    @Override
-    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
+    public void onPostExecution(ExecutionContext executionContext) {
         cleaned = true;
+        throw new RuntimeException("Blah");
     }
 }

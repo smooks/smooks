@@ -48,9 +48,10 @@ import org.smooks.api.delivery.FilterBypass;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Consumer;
 import org.smooks.api.delivery.ordering.Producer;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
-import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.lifecycle.PostExecutionLifecycle;
+import org.smooks.api.lifecycle.PreExecutionLifecycle;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
@@ -62,44 +63,48 @@ import javax.xml.transform.Source;
 import java.util.Collections;
 import java.util.Set;
 
-public class StaticProxyInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor, VisitLifecycleCleanable, Producer, Consumer, ParameterizedVisitor, ExecutionLifecycleInitializable, ExecutionLifecycleCleanable, FilterBypass {
+public class StaticProxyInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor, PostFragmentLifecycle, Producer, Consumer, ParameterizedVisitor, PreExecutionLifecycle, PostExecutionLifecycle, FilterBypass {
     
-    protected Invocation<VisitLifecycleCleanable> executeVisitLifecycleCleanupInvocation = new Invocation<VisitLifecycleCleanable>() {
+    protected Invocation<PostFragmentLifecycle> postFragmentLifecycleInvocation = new Invocation<PostFragmentLifecycle>() {
         @Override
-        public Object invoke(VisitLifecycleCleanable visitor, Object... args) {
-            visitor.executeVisitLifecycleCleanup((Fragment<?>) args[0], (ExecutionContext) args[1]);
+        public Object invoke(PostFragmentLifecycle visitor, Object... args) {
+            visitor.onPostFragment((Fragment<?>) args[0], (ExecutionContext) args[1]);
             return null;
         }
 
         @Override
-        public Class<VisitLifecycleCleanable> getTarget() {
-            return VisitLifecycleCleanable.class;
+        public Class<PostFragmentLifecycle> getTarget() {
+            return PostFragmentLifecycle.class;
         }
     };
 
-    protected Invocation<ExecutionLifecycleInitializable> executionLifecycleInitializableInvocation = new Invocation<ExecutionLifecycleInitializable>() {
+    protected Invocation<Visitor> preExecutionLifecyleInvocation = new Invocation<Visitor>() {
         @Override
-        public Object invoke(ExecutionLifecycleInitializable visitor, Object... args) {
-            visitor.executeExecutionLifecycleInitialize((ExecutionContext) args[0]);
+        public Object invoke(Visitor visitor, Object... args) {
+            if (visitor instanceof PreExecutionLifecycle) {
+                ((PreExecutionLifecycle) visitor).onPreExecution((ExecutionContext) args[0]);
+            }
             return null;
         }
 
         @Override
-        public Class<ExecutionLifecycleInitializable> getTarget() {
-            return ExecutionLifecycleInitializable.class;
+        public Class<PreExecutionLifecycle> getTarget() {
+            return PreExecutionLifecycle.class;
         }
     };
 
-    protected Invocation<ExecutionLifecycleCleanable> executionLifecycleCleanableInvocation = new Invocation<ExecutionLifecycleCleanable>() {
+    protected Invocation<Visitor> postExecutionLifecycleInvocation = new Invocation<Visitor>() {
         @Override
-        public Object invoke(ExecutionLifecycleCleanable visitor, Object... args) {
-            visitor.executeExecutionLifecycleCleanup((ExecutionContext) args[0]);
+        public Object invoke(Visitor visitor, Object... args) {
+            if (visitor instanceof PostExecutionLifecycle) {
+                ((PostExecutionLifecycle) visitor).onPostExecution((ExecutionContext) args[0]);
+            }
             return null;
         }
 
         @Override
-        public Class<ExecutionLifecycleCleanable> getTarget() {
-            return ExecutionLifecycleCleanable.class;
+        public Class<PostExecutionLifecycle> getTarget() {
+            return PostExecutionLifecycle.class;
         }
     };
 
@@ -136,8 +141,8 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
     }
 
     @Override
-    public void executeVisitLifecycleCleanup(Fragment<?> fragment, ExecutionContext executionContext) {
-        intercept(executeVisitLifecycleCleanupInvocation, fragment, executionContext);
+    public void onPostFragment(Fragment<?> fragment, ExecutionContext executionContext) {
+        intercept(postFragmentLifecycleInvocation, fragment, executionContext);
     }
 
     @Override
@@ -189,13 +194,13 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
     }
 
     @Override
-    public void executeExecutionLifecycleInitialize(final ExecutionContext executionContext) {
-        intercept(executionLifecycleInitializableInvocation, executionContext);
+    public void onPreExecution(final ExecutionContext executionContext) {
+        intercept(preExecutionLifecyleInvocation, executionContext);
     }
 
     @Override
-    public void executeExecutionLifecycleCleanup(final ExecutionContext executionContext) {
-        intercept(executionLifecycleCleanableInvocation, executionContext);
+    public void onPostExecution(final ExecutionContext executionContext) {
+        intercept(postExecutionLifecycleInvocation, executionContext);
     }
 
     @Override

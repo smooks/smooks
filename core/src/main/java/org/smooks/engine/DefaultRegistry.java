@@ -113,7 +113,7 @@ public class DefaultRegistry implements Registry {
         AssertArgument.isNotNull(value, "value");
 
         final String name;
-        if (value.getClass().isAnnotationPresent(Resource.class) && value.getClass().getAnnotation(Resource.class).name().length() > 0) {
+        if (value.getClass().isAnnotationPresent(Resource.class) && !value.getClass().getAnnotation(Resource.class).name().isEmpty()) {
             name = value.getClass().getAnnotation(Resource.class).name();
         } else {
             name = value.getClass().getName() + ":" + UUID.randomUUID();

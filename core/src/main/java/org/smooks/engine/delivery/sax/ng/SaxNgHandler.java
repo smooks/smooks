@@ -61,7 +61,7 @@ import org.smooks.engine.delivery.event.StartFragmentEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.replay.EndElementEvent;
 import org.smooks.engine.delivery.replay.StartElementEvent;
-import org.smooks.engine.lifecycle.VisitCleanupPhase;
+import org.smooks.engine.lifecycle.PostFragmentPhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.memento.TextAccumulatorMemento;
 import org.smooks.engine.xml.DocType;
@@ -230,10 +230,10 @@ public class SaxNgHandler extends SmooksContentHandler {
             }
 
             final List<ContentHandlerBinding<? extends Visitor>> visitorBindings = currentContentHandlerState.getVisitorBindings().getAll();
-            final VisitCleanupPhase visitCleanupPhase = new VisitCleanupPhase(currentNodeFragment, executionContext);
+            final PostFragmentPhase postFragmentPhase = new PostFragmentPhase(currentNodeFragment, executionContext);
             for (final ContentHandlerBinding<? extends Visitor> visitorBinding : visitorBindings) {
                 if (currentNodeFragment.isMatch(visitorBinding.getResourceConfig().getSelectorPath(), executionContext)) {
-                    lifecycleManager.applyPhase(visitorBinding.getContentHandler(), visitCleanupPhase);
+                    lifecycleManager.applyPhase(visitorBinding.getContentHandler(), postFragmentPhase);
                 }
             }
         }

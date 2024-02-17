@@ -128,7 +128,7 @@ public abstract class AbstractInterceptorVisitor implements InterceptorVisitor {
     public interface Invocation<T extends Visitor> {
         Object invoke(T visitor, Object... args);
 
-        Class<T> getTarget();
+        Class<?> getTarget();
     }
 
     protected static class VisitChildTextInvocation implements Invocation<ChildrenVisitor> {

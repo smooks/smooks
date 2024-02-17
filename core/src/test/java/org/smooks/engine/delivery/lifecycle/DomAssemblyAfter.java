@@ -40,11 +40,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.lifecyclecleanup;
+package org.smooks.engine.delivery.lifecycle;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
+import org.smooks.api.lifecycle.PostExecutionLifecycle;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.Phase;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @Phase(value = VisitPhase.ASSEMBLY)
-public class DomAssemblyAfter implements DOMVisitAfter, ExecutionLifecycleCleanable {
+public class DomAssemblyAfter implements DOMVisitAfter, PostExecutionLifecycle {
 
     public static boolean cleaned;
 
@@ -67,7 +67,7 @@ public class DomAssemblyAfter implements DOMVisitAfter, ExecutionLifecycleCleana
     }
 
     @Override
-    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
+    public void onPostExecution(ExecutionContext executionContext) {
         cleaned = true;
     }
 }

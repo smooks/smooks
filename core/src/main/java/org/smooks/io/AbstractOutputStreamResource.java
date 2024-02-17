@@ -52,8 +52,8 @@ import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Consumer;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.lifecycle.PostExecutionLifecycle;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.w3c.dom.Element;
 
 import javax.inject.Inject;
@@ -87,7 +87,7 @@ import java.nio.charset.StandardCharsets;
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  *
  */
-public abstract class AbstractOutputStreamResource implements DOMVisitBefore, Consumer, VisitLifecycleCleanable, ExecutionLifecycleCleanable, BeforeVisitor {
+public abstract class AbstractOutputStreamResource implements DOMVisitBefore, Consumer, PostFragmentLifecycle, PostExecutionLifecycle, BeforeVisitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOutputStreamResource.class);
 
     static final String RESOURCE_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputresource:";
@@ -148,14 +148,14 @@ public abstract class AbstractOutputStreamResource implements DOMVisitBefore, Co
     }
 
     @Override
-    public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
+    public void onPostFragment(Fragment<?> fragment, ExecutionContext executionContext) {
         if (closeCondition(executionContext)) {
             closeResource(executionContext);
         }
     }
 
     @Override
-    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
+    public void onPostExecution(ExecutionContext executionContext) {
         closeResource(executionContext);
     }
 

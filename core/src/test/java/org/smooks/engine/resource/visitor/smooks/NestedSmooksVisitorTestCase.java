@@ -124,7 +124,7 @@ public class NestedSmooksVisitorTestCase {
         ExecutionContext executionContext = new MockExecutionContext();
         executionContext.setContentEncoding("ISO-8859-1");
 
-        nestedSmooksVisitor.executeExecutionLifecycleInitialize(executionContext);
+        nestedSmooksVisitor.onPreExecution(executionContext);
         nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, null);
     }
 
@@ -142,7 +142,7 @@ public class NestedSmooksVisitorTestCase {
         ExecutionContext executionContext = new MockExecutionContext();
         executionContext.put(DOMModel.DOM_MODEL_TYPED_KEY, domModel);
 
-        nestedSmooksVisitor.executeExecutionLifecycleInitialize(executionContext);
+        nestedSmooksVisitor.onPreExecution(executionContext);
         nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, null);
     }
 

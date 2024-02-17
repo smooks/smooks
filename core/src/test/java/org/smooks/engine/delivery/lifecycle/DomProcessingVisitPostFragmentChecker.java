@@ -40,42 +40,26 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.lifecyclecleanup;
+package org.smooks.engine.delivery.lifecycle;
 
-import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
-import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
-import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.api.resource.visitor.dom.Phase;
+import org.smooks.api.resource.visitor.dom.VisitPhase;
 import org.w3c.dom.Element;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SaxVisitBefore implements BeforeVisitor, ExecutionLifecycleInitializable, ExecutionLifecycleCleanable {
+@Phase(value = VisitPhase.PROCESSING)
+public class DomProcessingVisitPostFragmentChecker implements DOMVisitBefore {
 
-    public static boolean initialized;
-    public static boolean cleaned;
-
-    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(!initialized) {
-            fail("Resource should be initialized!");
+        if(!DomProcessingPostFragmentLifecycle.cleaned) {
+            fail("Resource should have been cleaned!");
         }
-        if(cleaned) {
-            fail("Resource shouldn't be cleaned yet!");
-        }
-    }
-
-    @Override
-    public void executeExecutionLifecycleInitialize(ExecutionContext executionContext) {
-        initialized = true;
-    }
-
-    @Override
-    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
-        cleaned = true;
     }
 }

@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Core
+ * API
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,26 +40,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.lifecyclecleanup;
+package org.smooks.api.lifecycle;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.api.resource.visitor.dom.Phase;
-import org.smooks.api.resource.visitor.dom.VisitPhase;
-import org.w3c.dom.Element;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * Post Execution Lifecycle resource.
+ * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-@Phase(value = VisitPhase.PROCESSING)
-public class DomProcessingVisitCleanableChecker implements DOMVisitBefore {
+public interface PostExecutionLifecycle {
 
-    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(!DomProcessingVisitCleanable.cleaned) {
-            fail("Resource should have been cleaned!");
-        }
-    }
+    /**
+     * Cleanup the resources allocated by this resource for the specified ExecutionContext.
+     * <p/>
+     * Executes the cleanup at the end of the filter execution.
+     *
+     * @param executionContext The ExecutionContext.
+     */
+    void onPostExecution(ExecutionContext executionContext);
 }

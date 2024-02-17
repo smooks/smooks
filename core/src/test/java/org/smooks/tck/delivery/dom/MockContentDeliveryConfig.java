@@ -66,7 +66,7 @@ public class MockContentDeliveryConfig extends DOMContentDeliveryConfig {
     setProcessingVisitBeforeIndex(new ContentHandlerBindingIndex());
     setProcessingVisitAfterIndex(new ContentHandlerBindingIndex());
     setSerializerVisitorIndex(new ContentHandlerBindingIndex());
-    setVisitLifecycleCleanableIndex(new ContentHandlerBindingIndex());
+    setPostFragmentLifecycleIndex(new ContentHandlerBindingIndex());
   }
 
   /* (non-Javadoc)

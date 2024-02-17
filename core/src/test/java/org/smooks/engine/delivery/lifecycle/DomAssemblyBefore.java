@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * API
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,24 +40,35 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.lifecycle;
+package org.smooks.engine.delivery.lifecycle;
 
+import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.lifecycle.PostExecutionLifecycle;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.api.resource.visitor.dom.Phase;
+import org.smooks.api.resource.visitor.dom.VisitPhase;
+import org.w3c.dom.Element;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Execution Lifecycle Cleanable resource.
- * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface ExecutionLifecycleCleanable extends Visitor {
+@Phase(value = VisitPhase.ASSEMBLY)
+public class DomAssemblyBefore implements DOMVisitBefore, PostExecutionLifecycle {
 
-    /**
-     * Cleanup the resources allocated by this resource for the specified ExecutionContext.
-     * <p/>
-     * Executes the cleanup at the end of the filter execution.
-     *
-     * @param executionContext The ExecutionContext.
-     */
-    void executeExecutionLifecycleCleanup(ExecutionContext executionContext);
+    public static boolean cleaned;
+
+    @Override
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+        if(cleaned) {
+            fail("Resource shouldn't be cleaned yet!");
+        }
+    }
+
+    @Override
+    public void onPostExecution(ExecutionContext executionContext) {
+        cleaned = true;
+    }
 }

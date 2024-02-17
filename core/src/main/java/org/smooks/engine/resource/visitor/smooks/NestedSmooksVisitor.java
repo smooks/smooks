@@ -53,7 +53,7 @@ import org.smooks.api.bean.repository.BeanId;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Producer;
-import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
+import org.smooks.api.lifecycle.PreExecutionLifecycle;
 import org.smooks.api.memento.MementoCaretaker;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
@@ -99,10 +99,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer, ExecutionLifecycleInitializable {
+public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer, PreExecutionLifecycle {
     
     public enum Action {
         REPLACE,
@@ -204,7 +203,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     }
 
     @Override
-    public void executeExecutionLifecycleInitialize(final ExecutionContext executionContext) {
+    public void onPreExecution(final ExecutionContext executionContext) {
         final DocumentBuilder documentBuilder;
         try {
             documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

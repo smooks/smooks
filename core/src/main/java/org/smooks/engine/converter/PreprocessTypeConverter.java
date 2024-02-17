@@ -87,7 +87,7 @@ public class PreprocessTypeConverter implements Configurable, TypeConverter<Stri
         if (delegateTypeConverterFactoryName != null) {
             TypeConverterFactory<String, Object> delegateTypeConverterFactory;
             try {
-                final Class<TypeConverterFactory<?, ?>> typeConverterFactoryClass = ClassUtils.forName(delegateTypeConverterFactoryName, TypeConverterFactory.class);
+                final Class<TypeConverterFactory<?, ?>> typeConverterFactoryClass = (Class<TypeConverterFactory<?, ?>>) ClassUtils.forName(delegateTypeConverterFactoryName, TypeConverterFactory.class);
                 try {
                     delegateTypeConverterFactory = (TypeConverterFactory<String, Object>) typeConverterFactoryClass.newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {

@@ -44,11 +44,11 @@ package org.smooks.benchmark;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.TypedKey;
-import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
+import org.smooks.api.lifecycle.PreExecutionLifecycle;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.w3c.dom.Element;
 
-public class CounterVisitor implements BeforeVisitor, ExecutionLifecycleInitializable {
+public class CounterVisitor implements BeforeVisitor, PreExecutionLifecycle {
     
     private final TypedKey<Long> counterTypedKey = TypedKey.of();
     
@@ -58,7 +58,7 @@ public class CounterVisitor implements BeforeVisitor, ExecutionLifecycleInitiali
     }
 
     @Override
-    public void executeExecutionLifecycleInitialize(ExecutionContext executionContext) {
+    public void onPreExecution(ExecutionContext executionContext) {
         executionContext.put(counterTypedKey, 0L);
     }
 }

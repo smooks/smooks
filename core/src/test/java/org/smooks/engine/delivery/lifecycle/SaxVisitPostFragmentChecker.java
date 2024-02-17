@@ -40,12 +40,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.lifecyclecleanup;
+package org.smooks.engine.delivery.lifecycle;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
-import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.w3c.dom.Element;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -53,19 +52,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SaxVisitAfter implements AfterVisitor, ExecutionLifecycleCleanable {
-
-    public static boolean cleaned;
+public class SaxVisitPostFragmentChecker implements BeforeVisitor {
 
     @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(cleaned) {
-            fail("Resource shouldn't be cleaned yet!");
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+        if(!SaxVisitPostFragmentLifecycle.cleaned) {
+            fail("Resource should have been cleaned!");
         }
-    }
-
-    @Override
-    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
-        cleaned = true;
     }
 }

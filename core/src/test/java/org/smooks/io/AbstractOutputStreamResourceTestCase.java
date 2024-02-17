@@ -63,15 +63,14 @@ import static org.junit.jupiter.api.Assertions.*;
  * 
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
-public class AbstractOutputStreamResourceTestCase
-{
-	@Test
-	public void getOutputStream () throws ParserConfigurationException {
-		AbstractOutputStreamResource resource = new MockAbstractOutputStreamResource();
-		MockExecutionContext executionContext = new MockExecutionContext();
+public class AbstractOutputStreamResourceTestCase {
+    @Test
+    public void getOutputStream() throws ParserConfigurationException {
+        AbstractOutputStreamResource resource = new MockAbstractOutputStreamResource();
+        MockExecutionContext executionContext = new MockExecutionContext();
 
         assertNull(getResource(resource, executionContext));
-        resource.visitBefore( (Element)null, executionContext );
+        resource.visitBefore(null, executionContext);
         assertNotNull(getResource(resource, executionContext));
 
         ResourceOutputStream outputStreamWriter = new ResourceOutputStream(executionContext, resource.getResourceName());
@@ -83,39 +82,39 @@ public class AbstractOutputStreamResourceTestCase
         try {
             new ResourceWriter(executionContext, resource.getResourceName());
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("An OutputStream to the 'Mock' resource is already open.  Cannot open a Writer to this resource now!", e.getMessage());
         }
 
-        resource.executeVisitLifecycleCleanup(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), executionContext);
+        resource.onPostFragment(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), executionContext);
 
         // Should be unbound "after" and the stream should be closed...
         assertNull(getResource(resource, executionContext));
         assertTrue(MockAbstractOutputStreamResource.isClosed);
-	}
+    }
 
     @Test
-    public void getOutputWriter () throws ParserConfigurationException {
+    public void getOutputWriter() throws ParserConfigurationException {
         AbstractOutputStreamResource resource = new MockAbstractOutputStreamResource();
         MockExecutionContext executionContext = new MockExecutionContext();
 
         assertNull(getResource(resource, executionContext));
-        resource.visitBefore( (Element)null, executionContext );
+        resource.visitBefore(null, executionContext);
         assertNotNull(getResource(resource, executionContext));
 
         Writer writer = new ResourceWriter(executionContext, resource.getResourceName()).getDelegateWriter();
         assertNotNull(writer);
-        assertTrue( writer instanceof java.io.OutputStreamWriter);
+        assertTrue(writer instanceof java.io.OutputStreamWriter);
 
         // Should get an error now if we try get an OutputStream to the same resource...
         try {
             new ResourceOutputStream(executionContext, resource.getResourceName());
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("An Writer to the 'Mock' resource is already open.  Cannot open an OutputStream to this resource now!", e.getMessage());
         }
 
-        resource.executeVisitLifecycleCleanup(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), executionContext);
+        resource.onPostFragment(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), executionContext);
 
         // Should be unbound "after" and the stream should be closed...
         assertNull(getResource(resource, executionContext));
@@ -127,15 +126,13 @@ public class AbstractOutputStreamResourceTestCase
     }
 
     /**
-	 * Mock class for testing
-	 */
-	private static class MockAbstractOutputStreamResource extends AbstractOutputStreamResource
-	{
+     * Mock class for testing
+     */
+    private static class MockAbstractOutputStreamResource extends AbstractOutputStreamResource {
         public static boolean isClosed;
 
-		@Override
-		public OutputStream getOutputStream( final ExecutionContext executionContext )
-		{
+        @Override
+        public OutputStream getOutputStream(final ExecutionContext executionContext) {
             isClosed = false;
             return new ByteArrayOutputStream() {
                 @Override
@@ -144,18 +141,16 @@ public class AbstractOutputStreamResourceTestCase
                     super.close();
                 }
             };
-		}
+        }
 
-		@Override
-		public String getResourceName()
-		{
-			return "Mock";
-		}
+        @Override
+        public String getResourceName() {
+            return "Mock";
+        }
 
         @Override
         public Charset getWriterEncoding() {
             return StandardCharsets.UTF_8;
         }
     }
-
 }

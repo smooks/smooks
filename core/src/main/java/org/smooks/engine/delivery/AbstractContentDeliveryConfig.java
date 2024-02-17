@@ -51,8 +51,8 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
 import org.smooks.api.delivery.event.ConfigBuilderEvent;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
-import org.smooks.api.lifecycle.ExecutionLifecycleInitializable;
+import org.smooks.api.lifecycle.PostExecutionLifecycle;
+import org.smooks.api.lifecycle.PreExecutionLifecycle;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSortComparator;
 import org.smooks.api.resource.visitor.Visitor;
@@ -94,8 +94,8 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
      */
     private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<>();
 
-    private final Set<ExecutionLifecycleInitializable> executionLifecycleInitializables = new LinkedHashSet<>();
-    private final Set<ExecutionLifecycleCleanable> executionLifecycleCleanables = new LinkedHashSet<>();
+    private final Set<PreExecutionLifecycle> preExecutionLifecycles = new LinkedHashSet<>();
+    private final Set<PostExecutionLifecycle> postExecutionLifecycles = new LinkedHashSet<>();
 
     private Boolean isDefaultSerializationOn;
     private Boolean closeSource;
@@ -188,11 +188,11 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     public <T extends Visitor> void addToExecutionLifecycleSets(ContentHandlerBindingIndex<T> contentHandlerBindingIndex) {
         for (List<ContentHandlerBinding<T>> contentHandlerBindings : contentHandlerBindingIndex.values()) {
             for (ContentHandlerBinding<T> contentHandlerBinding : contentHandlerBindings) {
-                if (contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleInitializable) {
-                    executionLifecycleInitializables.add((ExecutionLifecycleInitializable) contentHandlerBinding.getContentHandler());
+                if (contentHandlerBinding.getContentHandler() instanceof PreExecutionLifecycle) {
+                    preExecutionLifecycles.add((PreExecutionLifecycle) contentHandlerBinding.getContentHandler());
                 }
-                if (contentHandlerBinding.getContentHandler() instanceof ExecutionLifecycleCleanable) {
-                    executionLifecycleCleanables.add((ExecutionLifecycleCleanable) contentHandlerBinding.getContentHandler());
+                if (contentHandlerBinding.getContentHandler() instanceof PostExecutionLifecycle) {
+                    postExecutionLifecycles.add((PostExecutionLifecycle) contentHandlerBinding.getContentHandler());
                 }
             }
         }
@@ -200,16 +200,16 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     @Override
     public void executeHandlerInit(final ExecutionContext executionContext) {
-        for (ExecutionLifecycleInitializable executionLifecycleInitializable : executionLifecycleInitializables) {
-            executionLifecycleInitializable.executeExecutionLifecycleInitialize(executionContext);
+        for (PreExecutionLifecycle preExecutionLifecycle : preExecutionLifecycles) {
+            preExecutionLifecycle.onPreExecution(executionContext);
         }
     }
 
     @Override
     public void executeHandlerCleanup(final ExecutionContext executionContext) {
-        for (ExecutionLifecycleCleanable handler : executionLifecycleCleanables) {
+        for (PostExecutionLifecycle postExecutionLifecycle : postExecutionLifecycles) {
             try {
-                handler.executeExecutionLifecycleCleanup(executionContext);
+                postExecutionLifecycle.onPostExecution(executionContext);
             } catch (Throwable t) {
                 LOGGER.error("Error during Visit handler cleanup.", t);
             }

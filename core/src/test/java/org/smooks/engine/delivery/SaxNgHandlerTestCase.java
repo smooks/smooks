@@ -51,7 +51,7 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.w3c.dom.Element;
 
@@ -85,9 +85,9 @@ public class SaxNgHandlerTestCase {
     /**
      * Parse a simple XML file containing two tags only distinguished by their namespaces.
      *
-     * This test checks that the {@see VisitLifecycleCleanable#executeVisitLifecycleCleanup(Fragment, ExecutionContext)} are only
+     * This test checks that the {@see PostFragmentLifecycle#onPostFragment(Fragment, ExecutionContext)} are only
      * called for elements matching the full qualified tag name, including the namespace.
-     * Additionally it will also ensure this for {@see SAXVisitBefore#visitBefore(SAXElement, ExecutionContext)}.
+     * Additionally, it will also ensure this for {@see SAXVisitBefore#visitBefore(SAXElement, ExecutionContext)}.
      *
      * Test for MILYN-648 Only execute clean-up handlers targeted at element.
      *
@@ -96,8 +96,8 @@ public class SaxNgHandlerTestCase {
     @Test
     public void executeLifeCycleCleanup_onlyForTargetElements() throws SmooksException {
         // given
-        final VisitBeforeAndLifecycleCleanable firstMock = mock(VisitBeforeAndLifecycleCleanable.class);
-        final VisitBeforeAndLifecycleCleanable secondMock = mock(VisitBeforeAndLifecycleCleanable.class);
+        final VisitBeforeAndPostFragmentLifecycle firstMock = mock(VisitBeforeAndPostFragmentLifecycle.class);
+        final VisitBeforeAndPostFragmentLifecycle secondMock = mock(VisitBeforeAndPostFragmentLifecycle.class);
 
         final Smooks smooks = createSmooks();
         smooks.addVisitor(firstMock, "simple:simple/first:sample");
@@ -114,10 +114,10 @@ public class SaxNgHandlerTestCase {
                 argThat(isSaxElementWithQName(QNAME_FOR_SECOND_SAMPLE)),
                 any(ExecutionContext.class));
 
-        verify(firstMock).executeVisitLifecycleCleanup(
+        verify(firstMock).onPostFragment(
                 argThat(isSaxFragmentWithQName(QNAME_FOR_FIRST_SAMPLE)),
                 any(ExecutionContext.class));
-        verify(firstMock, never()).executeVisitLifecycleCleanup(
+        verify(firstMock, never()).onPostFragment(
                 argThat(isSaxFragmentWithQName(QNAME_FOR_SECOND_SAMPLE)),
                 any(ExecutionContext.class));
 
@@ -128,10 +128,10 @@ public class SaxNgHandlerTestCase {
                 argThat(isSaxElementWithQName(QNAME_FOR_FIRST_SAMPLE)),
                 any(ExecutionContext.class));
 
-        verify(secondMock).executeVisitLifecycleCleanup(
+        verify(secondMock).onPostFragment(
                 argThat(isSaxFragmentWithQName(QNAME_FOR_SECOND_SAMPLE)),
                 any(ExecutionContext.class));
-        verify(secondMock, never()).executeVisitLifecycleCleanup(
+        verify(secondMock, never()).onPostFragment(
                 argThat(isSaxFragmentWithQName(QNAME_FOR_FIRST_SAMPLE)),
                 any(ExecutionContext.class));
 
@@ -159,7 +159,7 @@ public class SaxNgHandlerTestCase {
         return namespaces;
     }
 
-    private interface VisitBeforeAndLifecycleCleanable extends BeforeVisitor, VisitLifecycleCleanable {
+    private interface VisitBeforeAndPostFragmentLifecycle extends BeforeVisitor, PostFragmentLifecycle {
     }
 
     static class SAXMatchers {

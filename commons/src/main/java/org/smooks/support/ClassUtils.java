@@ -70,7 +70,7 @@ import java.util.Set;
 public final class ClassUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtils.class);
-    private static final Map<String, Class> primitives;
+    private static final Map<String, Class<?>> primitives;
 
     static {
         primitives = new HashMap<>();
@@ -96,10 +96,10 @@ public final class ClassUtils {
      * @return The specified class.
      * @throws ClassNotFoundException If the class cannot be found.
      */
-    public static Class forName(final String className, final Class caller) throws ClassNotFoundException {
+    public static Class<?> forName(final String className, final Class<?> caller) throws ClassNotFoundException {
         final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
 
-        Class primitiveClass = primitives.get(className);
+        Class<?> primitiveClass = primitives.get(className);
         if (primitiveClass != null) {
             return primitiveClass;
         }
@@ -129,7 +129,7 @@ public final class ClassUtils {
      * @param caller       The class of the caller.
      * @return The input stream for the resource or null if not found.
      */
-    public static InputStream getResourceAsStream(final String resourceName, final Class caller) {
+    public static InputStream getResourceAsStream(final String resourceName, final Class<?> caller) {
         final String resource;
 
         if (!resourceName.startsWith("/")) {
