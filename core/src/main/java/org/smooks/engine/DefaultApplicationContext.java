@@ -85,14 +85,6 @@ public class DefaultApplicationContext implements ApplicationContext {
      * Private constructor.
      */
     DefaultApplicationContext() {
-		IsAnnotationPresentFilter isAnnotationPresentFilter = new IsAnnotationPresentFilter(Resource.class);
-		Scanner scanner = new Scanner(isAnnotationPresentFilter);
-		try {
-			scanner.scanClasspath(this.getClass().getClassLoader());
-		} catch (IOException e) {
-			throw new SmooksException(e.getMessage(), e);
-		}
-		List<Class<?>> classes = isAnnotationPresentFilter.getClasses();
 		resourceLocator = new URIResourceLocator();
         ((URIResourceLocator)resourceLocator).setBaseURI(URI.create(URIResourceLocator.SCHEME_CLASSPATH + ":/"));
     }

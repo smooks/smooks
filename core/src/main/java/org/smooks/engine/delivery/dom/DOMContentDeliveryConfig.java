@@ -47,7 +47,7 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.visitor.SerializerVisitor;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
@@ -67,7 +67,7 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
     private ContentHandlerBindingIndex<DOMVisitBefore> processingVisitBeforeIndex = new ContentHandlerBindingIndex<>();
     private ContentHandlerBindingIndex<DOMVisitAfter> processingVisitAfterIndex = new ContentHandlerBindingIndex<>();
     private ContentHandlerBindingIndex<SerializerVisitor> serializerVisitorIndex = new ContentHandlerBindingIndex<>();
-    private ContentHandlerBindingIndex<VisitLifecycleCleanable> visitLifecycleCleanableIndex = new ContentHandlerBindingIndex<>();
+    private ContentHandlerBindingIndex<PostFragmentLifecycle> postFragmentLifecycleIndex = new ContentHandlerBindingIndex<>();
     private FilterBypass filterBypass;
 
     public ContentHandlerBindingIndex<DOMVisitBefore> getAssemblyVisitBeforeIndex() {
@@ -111,12 +111,12 @@ public class DOMContentDeliveryConfig extends AbstractContentDeliveryConfig {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public ContentHandlerBindingIndex<VisitLifecycleCleanable> getVisitLifecycleCleanableIndex() {
-        return visitLifecycleCleanableIndex;
+    public ContentHandlerBindingIndex<PostFragmentLifecycle> getPostFragmentLifecycleIndex() {
+        return postFragmentLifecycleIndex;
     }
 
-    public void setVisitLifecycleCleanableIndex(ContentHandlerBindingIndex<VisitLifecycleCleanable> visitLifecycleCleanableIndex) {
-        this.visitLifecycleCleanableIndex = visitLifecycleCleanableIndex;
+    public void setPostFragmentLifecycleIndex(ContentHandlerBindingIndex<PostFragmentLifecycle> postFragmentLifecycleIndex) {
+        this.postFragmentLifecycleIndex = postFragmentLifecycleIndex;
     }
 
     @Override

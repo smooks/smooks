@@ -79,7 +79,7 @@ public class Scanner {
         }
 
         URL[] urls = ((URLClassLoader) classLoader).getURLs();
-        Set<String> alreadyScanned = new HashSet<String>();
+        Set<String> alreadyScanned = new HashSet<>();
 
         for (URL url : urls) {
             String urlPath = url.getFile();

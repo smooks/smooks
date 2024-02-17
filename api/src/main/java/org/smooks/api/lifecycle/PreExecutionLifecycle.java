@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Core
+ * API
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,27 +40,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.lifecycle;
+package org.smooks.api.lifecycle;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
-import org.smooks.api.lifecycle.LifecyclePhase;
 
-public class VisitCleanupPhase implements LifecyclePhase {
+/**
+ * Execution Lifecycle Initializable resource.
+ *
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public interface PreExecutionLifecycle {
 
-    private final ExecutionContext executionContext;
-    private final Fragment<?> fragment;
-
-    public VisitCleanupPhase(final Fragment<?> fragment, final ExecutionContext executionContext) {
-        this.fragment = fragment;
-        this.executionContext = executionContext;
-    }
-    
-    @Override
-    public void apply(final Object o) {
-        if (o instanceof VisitLifecycleCleanable) {
-            ((VisitLifecycleCleanable) o).executeVisitLifecycleCleanup(fragment, executionContext);
-        }
-    }
+    /**
+     * Initialize the resources allocated by this resource for the specified ExecutionContext.
+     * <p/>
+     * Executes the initialization at the start of the filter execution.
+     *
+     * @param executionContext The ExecutionContext.
+     */
+    void onPreExecution(ExecutionContext executionContext);
 }

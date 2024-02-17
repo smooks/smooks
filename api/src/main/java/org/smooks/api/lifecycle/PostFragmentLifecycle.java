@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Core
+ * API
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,24 +40,26 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.lifecyclecleanup;
+package org.smooks.api.lifecycle;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.SmooksException;
-import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.w3c.dom.Element;
-
-import static org.junit.jupiter.api.Assertions.fail;
+import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.delivery.fragment.Fragment;
 
 /**
+ * Post Fragment Lifecycle resource.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SaxVisitCleanableChecker implements BeforeVisitor {
+public interface PostFragmentLifecycle extends Visitor {
 
-    @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        if(!SaxVisitCleanable.cleaned) {
-            fail("Resource should have been cleaned!");
-        }
-    }
+    /**
+     * Cleanup the resources allocated by this resource for the specified ExecutionContext.
+     * <p/>
+     * Executes the cleanup at the end of the fragment visit.
+     *
+     * @param fragment The fragment.
+     * @param executionContext The ExecutionContext.
+     */
+    void onPostFragment(Fragment<?> fragment, ExecutionContext executionContext);
 }

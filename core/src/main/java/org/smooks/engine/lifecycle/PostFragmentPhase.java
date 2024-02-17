@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * API
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,26 +40,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.lifecycle;
+package org.smooks.engine.lifecycle;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
+import org.smooks.api.lifecycle.LifecyclePhase;
 
-/**
- * Visit Lifecycle Cleanable resource.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public interface VisitLifecycleCleanable extends Visitor {
+public class PostFragmentPhase implements LifecyclePhase {
 
-    /**
-     * Cleanup the resources allocated by this resource for the specified ExecutionContext.
-     * <p/>
-     * Executes the cleanup at the end of the fragment visit.
-     *
-     * @param fragment The fragment.
-     * @param executionContext The ExecutionContext.
-     */
-    void executeVisitLifecycleCleanup(Fragment<?> fragment, ExecutionContext executionContext);
+    private final ExecutionContext executionContext;
+    private final Fragment<?> fragment;
+
+    public PostFragmentPhase(final Fragment<?> fragment, final ExecutionContext executionContext) {
+        this.fragment = fragment;
+        this.executionContext = executionContext;
+    }
+    
+    @Override
+    public void apply(final Object o) {
+        if (o instanceof PostFragmentLifecycle) {
+            ((PostFragmentLifecycle) o).onPostFragment(fragment, executionContext);
+        }
+    }
 }

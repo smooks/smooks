@@ -54,7 +54,7 @@ import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.lifecycle.LifecycleManager;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSortComparator;
 import org.smooks.api.resource.visitor.SerializerVisitor;
@@ -69,7 +69,7 @@ import org.smooks.engine.delivery.dom.serialize.Serializer;
 import org.smooks.engine.delivery.dom.serialize.TextSerializerVisitor;
 import org.smooks.engine.delivery.event.*;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.lifecycle.VisitCleanupPhase;
+import org.smooks.engine.lifecycle.PostFragmentPhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.report.AbstractReportGenerator;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
@@ -606,7 +606,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         String elementName;
         List<ContentHandlerBinding<DOMVisitBefore>> processingBefores;
         List<ContentHandlerBinding<DOMVisitAfter>> processingAfters;
-        List<ContentHandlerBinding<VisitLifecycleCleanable>> processingCleanables;
+        List<ContentHandlerBinding<PostFragmentLifecycle>> processingPostFragmentLifecycles;
 
         // Register the "presence" of the element...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
@@ -618,11 +618,11 @@ public class SmooksDOMFilter extends AbstractFilter {
             // The document as a whole (root node) can also be targeted through the "#document" selector.
             processingBefores = deliveryConfig.getProcessingVisitBeforeIndex().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
             processingAfters = deliveryConfig.getProcessingVisitAfterIndex().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
-            processingCleanables = deliveryConfig.getVisitLifecycleCleanableIndex().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
+            processingPostFragmentLifecycles = deliveryConfig.getPostFragmentLifecycleIndex().get(new String[]{DefaultResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, elementName});
         } else {
             processingBefores = deliveryConfig.getProcessingVisitBeforeIndex().get(elementName);
             processingAfters = deliveryConfig.getProcessingVisitAfterIndex().get(elementName);
-            processingCleanables = deliveryConfig.getVisitLifecycleCleanableIndex().get(elementName);
+            processingPostFragmentLifecycles = deliveryConfig.getPostFragmentLifecycleIndex().get(elementName);
         }
 
         if (processingBefores != null && !processingBefores.isEmpty()) {
@@ -659,9 +659,9 @@ public class SmooksDOMFilter extends AbstractFilter {
             processingList.add(processor);
         }
 
-        if (processingCleanables != null && !processingCleanables.isEmpty()) {
+        if (processingPostFragmentLifecycles != null && !processingPostFragmentLifecycles.isEmpty()) {
             ElementProcessor processor = new ElementProcessor(element);
-            processor.setVisitCleanables(processingCleanables);
+            processor.setPostFragmentLifecycles(processingPostFragmentLifecycles);
             processingList.add(processor);
         }
     }
@@ -737,7 +737,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
         private List<ContentHandlerBinding<DOMVisitBefore>> visitBefores;
         private List<ContentHandlerBinding<DOMVisitAfter>> visitAfters;
-        private List<ContentHandlerBinding<VisitLifecycleCleanable>> visitCleanables;
+        private List<ContentHandlerBinding<PostFragmentLifecycle>> postFragmentLifecycles;
 
         /**
          * Constructor.
@@ -756,8 +756,8 @@ public class SmooksDOMFilter extends AbstractFilter {
             this.visitAfters = visitAfters;
         }
 
-        public void setVisitCleanables(List<ContentHandlerBinding<VisitLifecycleCleanable>> visitCleanables) {
-            this.visitCleanables = visitCleanables;
+        public void setPostFragmentLifecycles(List<ContentHandlerBinding<PostFragmentLifecycle>> postFragmentLifecycles) {
+            this.postFragmentLifecycles = postFragmentLifecycles;
         }
 
         /**
@@ -786,8 +786,8 @@ public class SmooksDOMFilter extends AbstractFilter {
                     }
                 }
             } else {
-                for (final ContentHandlerBinding<VisitLifecycleCleanable> visitCleanable : visitCleanables) {
-                    processMapping(executionContext, visitCleanable, VisitSequence.CLEAN);
+                for (final ContentHandlerBinding<PostFragmentLifecycle> postFragmentLifecycle : postFragmentLifecycles) {
+                    processMapping(executionContext, postFragmentLifecycle, VisitSequence.CLEAN);
                 }
             }
         }
@@ -852,13 +852,13 @@ public class SmooksDOMFilter extends AbstractFilter {
                 }
 
                 ContentHandler contentHandler = visitorBinding.getContentHandler();
-                if (contentHandler instanceof VisitLifecycleCleanable) {
-                    VisitLifecycleCleanable visitor = (VisitLifecycleCleanable) contentHandler;
+                if (contentHandler instanceof PostFragmentLifecycle) {
+                    PostFragmentLifecycle visitor = (PostFragmentLifecycle) contentHandler;
                     try {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Cleaning up processing resource [" + resourceConfig + "] that was targeted to element [" + DomUtils.getXPath(element) + "].");
                         }
-                        lifecycleManager.applyPhase(visitor, new VisitCleanupPhase(nodeFragment, executionContext));
+                        lifecycleManager.applyPhase(visitor, new PostFragmentPhase(nodeFragment, executionContext));
                         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                             executionEventListener.onEvent(new VisitEvent<>(nodeFragment, visitorBinding, VisitSequence.CLEAN, executionContext));
                         }

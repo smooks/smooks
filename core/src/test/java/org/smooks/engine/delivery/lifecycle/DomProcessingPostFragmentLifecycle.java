@@ -40,23 +40,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.lifecyclecleanup;
+package org.smooks.engine.delivery.lifecycle;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
+import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.resource.visitor.dom.Phase;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.w3c.dom.Element;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-@Phase(value = VisitPhase.ASSEMBLY)
-public class DomAssemblyBefore implements DOMVisitBefore, ExecutionLifecycleCleanable {
+@Phase(value = VisitPhase.PROCESSING)
+public class DomProcessingPostFragmentLifecycle implements DOMVisitBefore, DOMVisitAfter, PostFragmentLifecycle {
 
     public static boolean cleaned;
 
@@ -68,7 +70,14 @@ public class DomAssemblyBefore implements DOMVisitBefore, ExecutionLifecycleClea
     }
 
     @Override
-    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
+    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+        if(cleaned) {
+            fail("Resource shouldn't be cleaned yet!");
+        }
+    }
+
+    @Override
+    public void onPostFragment(Fragment fragment, ExecutionContext executionContext) {
         cleaned = true;
     }
 }

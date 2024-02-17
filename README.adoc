@@ -135,6 +135,10 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
 . Follow the https://github.com/smooks/smooks-examples/tree/master/edifact-to-java[EDIFACT-to-Java example] to migrate an implementation that binds an EDIFACT document to a POJO.
 . Follow the https://github.com/smooks/smooks-examples/tree/master/java-to-edifact[Java-to-EDIFACT example] to migrate an implementation that deserialises a POJO into an EDIFACT document.
 . Set `ContainerResourceLocator` from `DefaultApplicationContextBuilder#setResourceLocator` instead from `ApplicationContext#setResourceLocator`.
+. Replace class implementations of:
+    * `org.milyn.delivery.ExecutionLifecycleInitializable` with `org.smooks.api.lifecycle.PreExecutionLifecycle`.
+    * `org.milyn.delivery.ExecutionLifecycleCleanable` with `org.smooks.api.lifecycle.PostExecutionLifecycle`.
+    * `org.milyn.delivery.VisitLifecycleCleanable` with `org.smooks.api.lifecycle.PostFragmentLifecycle`.
 
 === FAQs
 
@@ -2053,52 +2057,52 @@ smooks.filterSource(new StreamSource(inReader), new StreamResult(outWriter));
 
 ==== Visitor Instance Lifecycle
 
-One aspect of the visitor lifecycle has already been discussed in the general context of Smooks component link:#initialize-and-uninitialize[initialization and uninitialization].
+One aspect of the visitor lifecycle has already been discussed in the general context of Smooks component link:#initialize-and-uninitialize[initialization and un-initialization].
 
-Smooks supports two additional component lifecycle events, specific to visitor components, via the `+ExecutionLifecycleCleanable+` and `+VisitLifecycleCleanable+` interfaces.
+Smooks supports two additional component lifecycle events, specific to visitor components, via the `+PostExecutionLifecycle+` and `+PostFragmentLifecycle+` interfaces.
 
-===== ExecutionLifecycleCleanable
+===== PostExecutionLifecycle
 
 Visitor components implementing this lifecycle interface will be able to perform post `+Smooks.filterSource+` lifecycle operations.
 
 [source,java]
 ----
-public interface ExecutionLifecycleCleanable extends Visitor {
+public interface PostExecutionLifecycle {
 
-    void executeExecutionLifecycleCleanup(ExecutionContext executionContext);
+    void onPostExecution(ExecutionContext executionContext);
 }
 ----
 
-The basic call sequence can be described as follows (note the executeExecutionLifecycleCleanup calls):
+The basic call sequence can be described as follows (note the onPostExecution calls):
 
 [source,java]
 ----
 smooks = new Smooks(..);
 
         smooks.filterSource(...);
-            ** VisitorXX.executeExecutionLifecycleCleanup **
+            ** VisitorXX.onPostExecution **
         smooks.filterSource(...);
-            ** VisitorXX.executeExecutionLifecycleCleanup **
+            ** VisitorXX.onPostExecution **
         smooks.filterSource(...);
-            ** VisitorXX.executeExecutionLifecycleCleanup **
+            ** VisitorXX.onPostExecution **
         ... etc ...
 ----
 
 This lifecycle method allows you to ensure that resources scoped around the `+Smooks.filterSource+` execution lifecycle can be cleaned up for the associated `+ExecutionContext+`.
 
-===== VisitLifecycleCleanable
+===== PostFragmentLifecycle
 
 Visitor components implementing this lifecycle interface will be able to perform post `+AfterVisitor.visitAfter+` lifecycle operations.
 
 [source,java]
 ----
-public interface VisitLifecycleCleanable extends Visitor {
+public interface PostFragmentLifecycle extends Visitor {
 
-    void executeVisitLifecycleCleanup(ExecutionContext executionContext);
+    void onPostFragment(Fragment<?> fragment, ExecutionContext executionContext);
 }
 ----
 
-The basic call sequence can be described as follows (note the executeVisitLifecycleCleanup calls):
+The basic call sequence can be described as follows (note the onPostFragment calls):
 
 ....
 smooks.filterSource(...);
@@ -2109,15 +2113,15 @@ smooks.filterSource(...);
             <child>                      <--- VisitorXX.visitChildElement
             </child>
         </target-fragment>     <--- VisitorXX.visitAfter
-        ** VisitorXX.executeVisitLifecycleCleanup **
+        ** VisitorXX.onPostFragment **
         <target-fragment>      <--- VisitorXX.visitBefore
             Text!!                       <--- VisitorXX.visitChildText
             <child>                      <--- VisitorXX.visitChildElement
             </child>
         </target-fragment>     <--- VisitorXX.visitAfter
-        ** VisitorXX.executeVisitLifecycleCleanup **
+        ** VisitorXX.onPostFragment **
     </message>
-    VisitorXX.executeExecutionLifecycleCleanup
+    VisitorXX.onPostExecution
 
 smooks.filterSource(...);
 
@@ -2127,15 +2131,15 @@ smooks.filterSource(...);
             <child>                      <--- VisitorXX.visitChildElement
             </child>
         </target-fragment>     <--- VisitorXX.visitAfter
-        ** VisitorXX.executeVisitLifecycleCleanup **
+        ** VisitorXX.onPostFragment **
         <target-fragment>      <--- VisitorXX.visitBefore
             Text!!                       <--- VisitorXX.visitChildText
             <child>                      <--- VisitorXX.visitChildElement
             </child>
         </target-fragment>     <--- VisitorXX.visitAfter
-        ** VisitorXX.executeVisitLifecycleCleanup **
+        ** VisitorXX.onPostFragment **
     </message>
-    VisitorXX.executeExecutionLifecycleCleanup
+    VisitorXX.onPostExecution
 ....
 
 This lifecycle method allows you to ensure that resources scoped around a single fragment execution of a SaxNgVisitor implementation can be cleaned up for the associated `+ExecutionContext+`.

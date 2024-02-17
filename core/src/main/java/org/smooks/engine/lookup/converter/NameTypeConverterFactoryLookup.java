@@ -63,7 +63,7 @@ public class NameTypeConverterFactoryLookup<S, T> implements TypeConverterFactor
             final Set<TypeConverterFactory<?, ?>> typeConverterFactories = (Set<TypeConverterFactory<?, ?>>) registryEntries.get(TYPE_CONVERTER_FACTORY_REGISTRY_KEY);
             typeConverterFactory = typeConverterFactories.stream().filter(t -> t.getClass().isAnnotationPresent(Resource.class) && t.getClass().getAnnotation(Resource.class).name().equals(name)).findFirst().orElse(null);
             if (typeConverterFactory == null) {
-                final Class typeConverterFactoryClass;
+                final Class<?> typeConverterFactoryClass;
                 try {
                     typeConverterFactoryClass = ClassUtils.forName(name, NameTypeConverterFactoryLookup.class);
                     typeConverterFactory = typeConverterFactories.stream().filter(t -> t.getClass().equals(typeConverterFactoryClass)).findFirst().orElse(null);

@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.lifecyclecleanup;
+package org.smooks.engine.delivery.lifecycle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,8 +69,8 @@ public class ExecutionLifecycleTestCase {
         SaxVisitBefore.initialized = false;
         SaxVisitBefore.cleaned = false;
         SaxVisitAfter.cleaned = false;
-        DomProcessingVisitCleanable.cleaned = false;
-        SaxVisitCleanable.cleaned = false;
+        DomProcessingPostFragmentLifecycle.cleaned = false;
+        SaxVisitPostFragmentLifecycle.cleaned = false;
     }
 
 	@Test
@@ -91,7 +91,7 @@ public class ExecutionLifecycleTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("dom-config-02.xml"));
 
         smooks.filterSource(new StringSource("<a></a>"), null);
-        assertTrue(DomProcessingVisitCleanable.cleaned);
+        assertTrue(DomProcessingPostFragmentLifecycle.cleaned);
     }
 
 	@Test
@@ -109,6 +109,6 @@ public class ExecutionLifecycleTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("sax-config-02.xml"));
 
         smooks.filterSource(new StringSource("<a></a>"), null);
-        assertTrue(SaxVisitCleanable.cleaned);
+        assertTrue(SaxVisitPostFragmentLifecycle.cleaned);
     }
 }

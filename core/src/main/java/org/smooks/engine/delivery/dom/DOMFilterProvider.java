@@ -47,7 +47,7 @@ import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.event.ConfigBuilderEvent;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.SerializerVisitor;
@@ -123,8 +123,8 @@ public class DOMFilterProvider extends AbstractFilterProvider {
                 }
             }
 
-            if (visitor instanceof VisitLifecycleCleanable) {
-                domConfig.getVisitLifecycleCleanableIndex().put(targetElement, resourceConfig, (VisitLifecycleCleanable) visitor);
+            if (visitor instanceof PostFragmentLifecycle) {
+                domConfig.getPostFragmentLifecycleIndex().put(targetElement, resourceConfig, (PostFragmentLifecycle) visitor);
             }
         }
 
