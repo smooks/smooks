@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,43 +40,61 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.JIRAs.MILYN_203;
+package org.smooks.tck;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.smooks.tck.Assertions.compareCharStreams;
-
-import org.smooks.Smooks;
-import org.smooks.io.payload.StringResult;
-import org.xml.sax.SAXException;
-
-import javax.xml.transform.stream.StreamSource;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
-/**
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
-public class MILYN_203_TestCase {
+public final class TextUtils {
 
-	@Test
-    public void test_DOM() throws IOException, SAXException {
-        test_CDATA("dom.xml");
+    private TextUtils() {
+
     }
 
-	@Test
-    public void test_SAX() throws IOException, SAXException {
-        test_CDATA("sax.xml");
+    /**
+     * Read the lines of characters from the stream and trim each line
+     * i.e. remove all leading and trailing whitespace.
+     * @param charStream Character stream.
+     * @return StringBuffer containing the line trimmed stream.
+     * @throws IOException
+     */
+    public static StringBuffer trimLines(Reader charStream) throws IOException {
+        StringBuffer stringBuf = new StringBuffer();
+        BufferedReader reader = new BufferedReader(charStream);
+        String line;
+
+        while((line = reader.readLine()) != null) {
+            stringBuf.append(line.trim());
+        }
+
+        return stringBuf;
     }
 
-    public void test_CDATA(String config) throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
-        StringResult result = new StringResult();
-
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("in-message.xml")), result);
-        assertTrue(compareCharStreams(new InputStreamReader(getClass().getResourceAsStream("in-message.xml")), new StringReader(result.getResult())));
+    /**
+     * Read the lines lines of characters from the stream and trim each line
+     * i.e. remove all leading and trailing whitespace.
+     * @param charStream Character stream.
+     * @return StringBuffer containing the line trimmed stream.
+     * @throws IOException
+     */
+    public static StringBuffer trimLines(InputStream charStream) throws IOException {
+        return trimLines(new InputStreamReader(charStream, StandardCharsets.UTF_8));
     }
 
+    /**
+     * Read the lines lines of characters from the stream and trim each line
+     * i.e. remove all leading and trailing whitespace.
+     * @param charStream Character stream.
+     * @return String containing the line trimmed stream.
+     * @throws IOException
+     */
+    public static String trimLines(String charStream) throws IOException {
+        return trimLines(new StringReader(charStream)).toString();
+    }
 }

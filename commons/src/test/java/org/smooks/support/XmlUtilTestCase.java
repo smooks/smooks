@@ -50,6 +50,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -649,6 +650,43 @@ public class XmlUtilTestCase {
 
         String indentedXmlExpected = StreamUtils.readStreamAsString(getClass().getResourceAsStream(inXml + ".outexpected"), "UTF-8");
 
-        assertEquals(StreamUtils.normalizeLines(indentedXmlExpected, false), StreamUtils.normalizeLines(indentedXML, false));
+        assertEquals(normalizeLines(indentedXmlExpected, false), normalizeLines(indentedXML, false));
     }
+
+	/**
+	 * Read the lines lines of characters from the supplied string, trim each line (optional)
+	 * and add a single newline character.
+	 * @param string The String.
+	 * @param trim Trim each line i.e. to ignore leading and trailing whitespace.
+	 * @return String containing the line trimmed stream.
+	 * @throws IOException
+	 */
+	private String normalizeLines(String string, boolean trim) throws IOException {
+		return normalizeLines(new StringReader(string), trim);
+	}
+
+	/**
+	 * Read the lines lines of characters from the stream, trim each line (optional)
+	 * and add a single newline character.
+	 * @param charStream Character stream.
+	 * @param trim Trim each line i.e. to ignore leading and trailing whitespace.
+	 * @return String containing the line trimmed stream.
+	 * @throws IOException
+	 */
+	private String normalizeLines(Reader charStream, boolean trim) throws IOException {
+		StringBuffer stringBuf = new StringBuffer();
+		BufferedReader reader = new BufferedReader(charStream);
+		String line;
+
+		while((line = reader.readLine()) != null) {
+			if(trim) {
+				stringBuf.append(line.trim());
+			} else {
+				stringBuf.append(line);
+			}
+			stringBuf.append('\n');
+		}
+
+		return stringBuf.toString();
+	}
 }
