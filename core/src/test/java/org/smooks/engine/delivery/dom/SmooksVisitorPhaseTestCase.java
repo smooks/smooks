@@ -63,6 +63,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.smooks.tck.Assertions.compareCharStreams;
 
 /**
  * Tests to make sure the phase annotations work properly.
@@ -119,7 +120,7 @@ public class SmooksVisitorPhaseTestCase {
 
         LOGGER.debug(outputWriter.toString());
         byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream("testxml1-expected.xml"));
-        assertTrue(StreamUtils.compareCharStreams(new ByteArrayInputStream(expected), new ByteArrayInputStream(outputWriter.toString().getBytes())));
+        assertTrue(compareCharStreams(new ByteArrayInputStream(expected), new ByteArrayInputStream(outputWriter.toString().getBytes())));
         assertEquals(48, eventListener.getEvents().size());
     }
 }

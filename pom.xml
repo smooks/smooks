@@ -78,8 +78,8 @@
     <modules>
         <module>api</module>
         <module>commons</module>
-        <module>tck</module>
         <module>core</module>
+        <module>tck</module>
         <module>benchmark</module>
     </modules>
 

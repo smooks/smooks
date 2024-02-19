@@ -51,7 +51,6 @@ import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.support.CharUtils;
 import org.smooks.support.XmlUtil;
 import org.smooks.tck.MockExecutionContext;
 import org.smooks.tck.delivery.dom.MockContentDeliveryConfig;
@@ -65,6 +64,7 @@ import java.io.OutputStreamWriter;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.smooks.tck.Assertions.compareCharStreams;
 
 /**
  *
@@ -117,7 +117,7 @@ public class SerializerTestCase {
 		writer.flush();
 		byte[] actualBytes = output.toByteArray();
 		LOGGER.debug(new String(actualBytes));
-		boolean areEqual = CharUtils.compareCharStreams(getClass().getResourceAsStream("testmarkup.xxml.ser_1"), new ByteArrayInputStream(actualBytes));
+		boolean areEqual = compareCharStreams(getClass().getResourceAsStream("testmarkup.xxml.ser_1"), new ByteArrayInputStream(actualBytes));
 		assertTrue(areEqual, "Unexpected Serialization result failure.");
 	}
 }

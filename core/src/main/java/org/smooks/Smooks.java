@@ -44,7 +44,10 @@ package org.smooks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.api.*;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.TypedMap;
 import org.smooks.api.delivery.*;
 import org.smooks.api.profile.Profile;
 import org.smooks.api.profile.ProfileSet;
@@ -58,8 +61,9 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.classpath.CascadingClassLoaderSet;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.DefaultExecutionContext;
-import org.smooks.engine.delivery.*;
 import org.smooks.api.delivery.event.ExecutionEventListener;
+import org.smooks.engine.delivery.AbstractFilter;
+import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.delivery.event.FilterLifecycleEvent;
 import org.smooks.engine.injector.Scope;
 import org.smooks.api.bean.context.BeanContext;
@@ -137,7 +141,7 @@ public class Smooks implements Closeable {
      */
     private final List<ContentHandlerBinding<Visitor>> visitorBindings;
     /**
-     * Flag indicating whether or not the Smooks instance is configurable.  It becomes unconfigurable
+     * Flag indicating whether or not the Smooks instance is configurable.  It becomes un-configurable
      * after the first execution context has been created.
      */
     private volatile boolean isConfigurable = true;

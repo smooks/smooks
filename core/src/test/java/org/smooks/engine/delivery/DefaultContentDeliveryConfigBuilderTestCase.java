@@ -53,7 +53,7 @@ import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.engine.delivery.sax.ng.SaxNgContentDeliveryConfig;
 import org.smooks.engine.delivery.sax.ng.Visitor01;
-import org.smooks.support.StreamUtils;
+import org.smooks.tck.TextUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -154,8 +154,8 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
             smooks.createExecutionContext();
             fail("Expected SmooksException");
         } catch(SmooksException e) {
-            String expected = StreamUtils.trimLines(getClass().getResourceAsStream("smooks-config-invalid-error.txt")).toString();
-            String actual = StreamUtils.trimLines(new StringReader(e.getMessage())).toString();
+            String expected = TextUtils.trimLines(getClass().getResourceAsStream("smooks-config-invalid-error.txt")).toString();
+            String actual = TextUtils.trimLines(new StringReader(e.getMessage())).toString();
 
             assertEquals(expected.toLowerCase(), actual.toLowerCase());
         }

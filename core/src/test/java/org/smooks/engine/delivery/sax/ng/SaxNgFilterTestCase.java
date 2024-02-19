@@ -49,13 +49,19 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.report.FlatReportGenerator;
 import org.smooks.support.StreamUtils;
+import org.smooks.tck.TextUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.smooks.tck.Assertions.compareCharStreams;
 
 public class SaxNgFilterTestCase {
 
@@ -85,7 +91,7 @@ public class SaxNgFilterTestCase {
         StringWriter writer = new StringWriter();
 
         smooks.filterSource(execContext, new StreamSource(new StringReader(input)), new StreamResult(writer));
-        assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(writer.toString())).toString());
+        assertEquals(TextUtils.trimLines(new StringReader(input)).toString(), TextUtils.trimLines(new StringReader(writer.toString())).toString());
     }
 
 	@Test
@@ -96,7 +102,7 @@ public class SaxNgFilterTestCase {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
         smooks.filterSource(execContext, new StreamSource(new StringReader(input)), new StreamResult(outStream));
-        assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(outStream.toString())).toString());
+        assertEquals(TextUtils.trimLines(new StringReader(input)).toString(), TextUtils.trimLines(new StringReader(outStream.toString())).toString());
     }
 
 	@Test
@@ -107,7 +113,7 @@ public class SaxNgFilterTestCase {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
         smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), new StreamResult(outStream));
-        assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(outStream.toString())).toString());
+        assertEquals(TextUtils.trimLines(new StringReader(input)).toString(), TextUtils.trimLines(new StringReader(outStream.toString())).toString());
     }
 
 	@Test
@@ -118,7 +124,7 @@ public class SaxNgFilterTestCase {
         StringWriter writer = new StringWriter();
 
         smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), new StreamResult(writer));
-        assertEquals(StreamUtils.trimLines(new StringReader(input)).toString(), StreamUtils.trimLines(new StringReader(writer.toString())).toString());
+        assertEquals(TextUtils.trimLines(new StringReader(input)).toString(), TextUtils.trimLines(new StringReader(writer.toString())).toString());
     }
 
 	@Test
@@ -288,6 +294,6 @@ public class SaxNgFilterTestCase {
         executionContext.getContentDeliveryRuntime().addExecutionEventListener(new FlatReportGenerator(reportWriter));
         smooks.filterSource(executionContext, new StreamSource(new StringReader("<c/>")), null);
 
-        assertTrue(StreamUtils.compareCharStreams(getClass().getResourceAsStream("report-expected.txt"), new ByteArrayInputStream(reportWriter.toString().getBytes())));
+        assertTrue(compareCharStreams(getClass().getResourceAsStream("report-expected.txt"), new ByteArrayInputStream(reportWriter.toString().getBytes())));
     }
 }

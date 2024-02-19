@@ -44,10 +44,10 @@ package org.smooks.support;
 
 import org.smooks.assertion.AssertArgument;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
 /**
  * Stream Utilities.
@@ -57,7 +57,7 @@ import java.nio.file.Paths;
 public final class StreamUtils {
     
     private StreamUtils() {
-        
+
     }
 
 	/**
@@ -113,145 +113,5 @@ public final class StreamUtils {
         }
 
         return streamString.toString();
-    }
-
-    /**
-     * Compares the 2 streams.
-     * <p/>
-     * Calls {@link #trimLines(InputStream)} on each stream before comparing.
-     * @param s1 Stream 1.
-     * @param s2 Stream 2.
-     * @return True if the streams are equal not including leading and trailing
-     * whitespace on each line and blank lines, otherwise returns false.
-     */
-    public static boolean compareCharStreams(InputStream s1, InputStream s2) {
-        StringBuffer s1Buf, s2Buf;
-
-        try {
-            s1Buf = trimLines(s1);
-            s2Buf = trimLines(s2);
-
-            return s1Buf.toString().equals(s2Buf.toString());
-        } catch (IOException e) {
-            // fail the comparison
-        }
-
-        return false;
-    }
-
-    /**
-     * Compares the 2 streams.
-     * <p/>
-     * Calls {@link #trimLines(java.io.Reader)} on each stream before comparing.
-     * @param s1 Stream 1.
-     * @param s2 Stream 2.
-     * @return True if the streams are equal not including leading and trailing
-     * whitespace on each line and blank lines, otherwise returns false.
-     */
-    public static boolean compareCharStreams(Reader s1, Reader s2) {
-        StringBuffer s1Buf, s2Buf;
-
-        try {
-            s1Buf = trimLines(s1);
-            s2Buf = trimLines(s2);
-
-            return s1Buf.toString().equals(s2Buf.toString());
-        } catch (IOException e) {
-            // fail the comparison
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Compares the 2 streams.
-     * <p/>
-     * Calls {@link #trimLines(java.io.Reader)} on each stream before comparing.
-     * @param s1 Stream 1.
-     * @param s2 Stream 2.
-     * @return True if the streams are equal not including leading and trailing
-     * whitespace on each line and blank lines, otherwise returns false.
-     */
-    public static boolean compareCharStreams(String s1, String s2) {
-        return compareCharStreams(new StringReader(s1), new StringReader(s2));
-    }
-
-    /**
-     * Read the lines lines of characters from the stream and trim each line
-     * i.e. remove all leading and trailing whitespace.
-     * @param charStream Character stream.
-     * @return StringBuffer containing the line trimmed stream.
-     * @throws IOException
-     */
-    public static StringBuffer trimLines(Reader charStream) throws IOException {
-        StringBuffer stringBuf = new StringBuffer();
-        BufferedReader reader = new BufferedReader(charStream);
-        String line;
-
-        while((line = reader.readLine()) != null) {
-            stringBuf.append(line.trim());
-        }
-
-        return stringBuf;
-    }
-
-    /**
-     * Read the lines lines of characters from the supplied string, trim each line (optional)
-     * and add a single newline character.
-     * @param string The String.
-     * @param trim Trim each line i.e. to ignore leading and trailing whitespace.
-     * @return String containing the line trimmed stream.
-     * @throws IOException
-     */
-    public static String normalizeLines(String string, boolean trim) throws IOException {
-    	return normalizeLines(new StringReader(string), trim);
-    }
-
-    /**
-     * Read the lines lines of characters from the stream, trim each line (optional)
-     * and add a single newline character.
-     * @param charStream Character stream.
-     * @param trim Trim each line i.e. to ignore leading and trailing whitespace.
-     * @return String containing the line trimmed stream.
-     * @throws IOException
-     */
-    public static String normalizeLines(Reader charStream, boolean trim) throws IOException {
-        StringBuffer stringBuf = new StringBuffer();
-        BufferedReader reader = new BufferedReader(charStream);
-        String line;
-
-        while((line = reader.readLine()) != null) {
-            if(trim) {
-                stringBuf.append(line.trim());
-            } else {
-                stringBuf.append(line);
-            }
-            stringBuf.append('\n');
-        }
-
-        return stringBuf.toString();
-    }
-
-    /**
-     * Read the lines lines of characters from the stream and trim each line
-     * i.e. remove all leading and trailing whitespace.
-     * @param charStream Character stream.
-     * @return StringBuffer containing the line trimmed stream.
-     * @throws IOException
-     */
-    public static StringBuffer trimLines(InputStream charStream) throws IOException {
-        return trimLines(new InputStreamReader(charStream, StandardCharsets.UTF_8));
-    }
-
-    /**
-     * Read the lines lines of characters from the stream and trim each line
-     * i.e. remove all leading and trailing whitespace.
-     * @param charStream Character stream.
-     * @return String containing the line trimmed stream.
-     * @throws IOException
-     */
-    public static String trimLines(String charStream) throws IOException {
-        return trimLines(new StringReader(charStream)).toString();
     }
 }

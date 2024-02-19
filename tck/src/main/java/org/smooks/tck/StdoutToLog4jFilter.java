@@ -62,18 +62,17 @@ import java.io.Writer;
  * 
  * @author <a href="mailto:dbevenius@redhat.com">Daniel Bevenius</a>
  */
-public class StdoutToLog4jFilter extends FilterWriter
-{
-	/**
-	 * Log to log check logging level.
-	 */
+public class StdoutToLog4jFilter extends FilterWriter {
+    /**
+     * Log to log check logging level.
+     */
     protected Logger logger;
-    
+
     /**
      * string "buffer"
      */
-    protected final StringBuilder sb = new StringBuilder(); 
-    
+    protected final StringBuilder sb = new StringBuilder();
+
     /**
      * Carrage Return
      */
@@ -83,114 +82,90 @@ public class StdoutToLog4jFilter extends FilterWriter
      */
     private static final char LF = '\n';
 
-    public StdoutToLog4jFilter(Writer writer)
-    {
-    	super( writer );
+    public StdoutToLog4jFilter(Writer writer) {
+        super(writer);
     }
 
-    public StdoutToLog4jFilter(Writer writer, Logger logger)
-    { 
-		this( writer );
-		this.logger = logger;
-    } 
+    public StdoutToLog4jFilter(Writer writer, Logger logger) {
+        this(writer);
+        this.logger = logger;
+    }
 
     @Override
-	public synchronized void write(int c) throws IOException 
-    { 
-        sb.append(c); 
-    } 
+    public synchronized void write(int c) throws IOException {
+        sb.append(c);
+    }
 
     @Override
-	public synchronized void  write(char[] cbuf, int off, int len) throws IOException 
-    { 
-        sb.append( cbuf, off, len ); 
-    } 
+    public synchronized void write(char[] cbuf, int off, int len) throws IOException {
+        sb.append(cbuf, off, len);
+    }
 
     @Override
-	public synchronized void  write(String str, int off, int len) throws IOException 
-    { 
-        sb.append(str, off, off+len); 
-    } 
+    public synchronized void write(String str, int off, int len) throws IOException {
+        sb.append(str, off, off + len);
+    }
 
     @Override
-	public synchronized void flush() throws IOException 
-    { 
-        log(); 
-    } 
+    public synchronized void flush() throws IOException {
+        log();
+    }
 
     @Override
-	public synchronized void close() throws IOException 
-    { 
-        if ( sb.length() != 0) 
-        {
-        	log(); 
+    public synchronized void close() throws IOException {
+        if (sb.length() != 0) {
+            log();
         }
-    } 
+    }
 
     @Override
-	protected void finalize() throws Throwable 
-    { 
-        if (sb.length() != 0) 
-        { 
-        	log(); 
-    	} 
-        super.finalize(); 
-    } 
+    protected void finalize() throws Throwable {
+        if (sb.length() != 0) {
+            log();
+        }
+        super.finalize();
+    }
 
-    protected void log() 
-    { 
+    protected void log() {
         stripExtraNewLine();
         logBuffer(sb);
-        sb.delete(0,sb.length()); 
-    } 
-    
-    private void logBuffer(final StringBuilder sb)
-    {
-    	if (logger == null )
-    	{
-    		return;
-    	}
-    	
-        if (logger.isDebugEnabled())
-        {
-        	logger.debug(sb.toString());
-    	}
+        sb.delete(0, sb.length());
     }
-   
-    protected final void stripExtraNewLine() 
-    { 
-        int length = sb.length(); 
-        
-        if (length == 0)
-        {
-        	return;
+
+    private void logBuffer(final StringBuilder sb) {
+        if (logger == null) {
+            return;
         }
-        
-        if (length == 1)
-        {
-            char last = sb.charAt(0); 
-            if (last == CR || last == LF)
-            {
-                sb.deleteCharAt(0); 
-            }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(sb.toString());
         }
-        else
-        {
-        	int lastPosition = length-1;
-        	char secondLast = sb.charAt(lastPosition); 
-            if (secondLast == CR) 
-            {
-                sb.deleteCharAt( lastPosition ); 
+    }
+
+    protected final void stripExtraNewLine() {
+        int length = sb.length();
+
+        if (length == 0) {
+            return;
+        }
+
+        if (length == 1) {
+            char last = sb.charAt(0);
+            if (last == CR || last == LF) {
+                sb.deleteCharAt(0);
             }
-            else if (secondLast == LF) 
-            { 
-	        	int secondlastPosition = length-2;
-                sb.deleteCharAt(lastPosition); 
-                if (sb.charAt(secondlastPosition) == CR ) 
-                {
-                    sb.deleteCharAt(secondlastPosition); 
+        } else {
+            int lastPosition = length - 1;
+            char secondLast = sb.charAt(lastPosition);
+            if (secondLast == CR) {
+                sb.deleteCharAt(lastPosition);
+            } else if (secondLast == LF) {
+                int secondlastPosition = length - 2;
+                sb.deleteCharAt(lastPosition);
+                if (sb.charAt(secondlastPosition) == CR) {
+                    sb.deleteCharAt(secondlastPosition);
                 }
-            } 
+            }
         }
-    } 
+    }
 }

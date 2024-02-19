@@ -46,12 +46,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.smooks.tck.Assertions.compareCharStreams;
 
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
-import org.smooks.support.StreamUtils;
 import org.smooks.support.XmlUtil;
 import org.xml.sax.SAXException;
 
@@ -79,7 +80,7 @@ public class DomModelCreatorTestCase {
         DOMModel nodeModel = DOMModel.getModel(executionContext);
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<order>\n" +
                 "    <header>\n" +
                 "        <date>Wed Nov 15 13:45:28 EST 2006</date>\n" +
@@ -90,7 +91,7 @@ public class DomModelCreatorTestCase {
                 XmlUtil.serialize(nodeModel.getModels().get("order"), true, true)));
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "        <order-item>\n" +
                 "            <product>222</product>\n" +
                 "            <quantity>7</quantity>\n" +
@@ -101,7 +102,7 @@ public class DomModelCreatorTestCase {
         // Check all the order-item model added...
         assertEquals(2, ModelCatcher.elements.size());
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "        <order-item>\n" +
                 "            <product>111</product>\n" +
                 "            <quantity>2</quantity>\n" +
@@ -109,7 +110,7 @@ public class DomModelCreatorTestCase {
                 "        </order-item>",
                 XmlUtil.serialize(ModelCatcher.elements.get(0), true, true)));
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "        <order-item>\n" +
                 "            <product>222</product>\n" +
                 "            <quantity>7</quantity>\n" +
@@ -128,7 +129,7 @@ public class DomModelCreatorTestCase {
         DOMModel nodeModel = DOMModel.getModel(executionContext);
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<order>\n" +
                 "    <header>\n" +
                 "        <date>Wed Nov 15 13:45:28 EST 2006</date>\n" +
@@ -139,7 +140,7 @@ public class DomModelCreatorTestCase {
                 XmlUtil.serialize(nodeModel.getModels().get("order"), true, true)));
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "        <order-item>\n" +
                 "            <quantity>7</quantity>\n" +
                 "            <price>5.20</price>\n" +
@@ -147,29 +148,29 @@ public class DomModelCreatorTestCase {
                 XmlUtil.serialize(nodeModel.getModels().get("order-item"), true, true)));
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<product>222</product>",
                 XmlUtil.serialize(nodeModel.getModels().get("product"), true, true)));
 
         // Check all the order-item model added...
         assertEquals(4, ModelCatcher.elements.size());
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<product>111</product>",
                 XmlUtil.serialize(ModelCatcher.elements.get(0), true, true)));
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<order-item>\n" +
                 "            <quantity>2</quantity>\n" +
                 "            <price>8.90</price>\n" +
                 "        </order-item>",
                 XmlUtil.serialize(ModelCatcher.elements.get(1), true, true)));
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<product>222</product>",
                 XmlUtil.serialize(ModelCatcher.elements.get(2), true, true)));
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<order-item>\n" +
                 "            <quantity>7</quantity>\n" +
                 "            <price>5.20</price>\n" +
@@ -187,7 +188,7 @@ public class DomModelCreatorTestCase {
         DOMModel nodeModel = DOMModel.getModel(executionContext);
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<order>\n" +
                 "    <header>\n" +
                 "        <date>Wed Nov 15 13:45:28 EST 2006</date>\n" +
@@ -198,7 +199,7 @@ public class DomModelCreatorTestCase {
                 XmlUtil.serialize(nodeModel.getModels().get("order"), true, true)));
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "        <ordi:order-item xmlns:ordi=\"http://ordi\">\n" +
                 "            <ordi:quantity>7</ordi:quantity>\n" +
                 "            <ordi:price>5.20</ordi:price>\n" +
@@ -206,7 +207,7 @@ public class DomModelCreatorTestCase {
                 XmlUtil.serialize(nodeModel.getModels().get("order-item"), true, true)));
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<ordi:product xmlns:ordi=\"http://ordi\">222</ordi:product>",
                 XmlUtil.serialize(nodeModel.getModels().get("product"), true, true)));
     }
@@ -222,7 +223,7 @@ public class DomModelCreatorTestCase {
         DOMModel nodeModel = DOMModel.getModel(executionContext);
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "<order>\n" +
                 "    <header>\n" +
                 "        <date>Wed Nov 15 13:45:28 EST 2006</date>\n" +
@@ -244,7 +245,7 @@ public class DomModelCreatorTestCase {
                 XmlUtil.serialize(nodeModel.getModels().get("order"), true, true)));
 
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "        <order-item>\n" +
                 "            <product>222</product>\n" +
                 "            <quantity>7</quantity>\n" +
@@ -255,7 +256,7 @@ public class DomModelCreatorTestCase {
         // Check all the order-item model added...
         assertEquals(2, ModelCatcher.elements.size());
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "        <order-item>\n" +
                 "            <product>111</product>\n" +
                 "            <quantity>2</quantity>\n" +
@@ -263,7 +264,7 @@ public class DomModelCreatorTestCase {
                 "        </order-item>",
                 XmlUtil.serialize(ModelCatcher.elements.get(0), true, true)));
         assertTrue(
-                StreamUtils.compareCharStreams(
+                compareCharStreams(
                 "        <order-item>\n" +
                 "            <product>222</product>\n" +
                 "            <quantity>7</quantity>\n" +
