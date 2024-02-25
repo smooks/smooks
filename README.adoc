@@ -73,10 +73,11 @@ NOTE: The terms _fragment_ and _node_ denote different meanings. It is usually a
 
 === What's new in Smooks 2?
 
-Smooks 2 introduces the DFDL cartridge and revamps its EDI cartridge, while dropping support for Java 7 along with a few other notable breaking changes:
+Smooks 2 introduces the DFDL cartridge and revamps its EDI cartridge, while dropping support for Java 7 along with other notable changes:
 
 * DFDL cartridge
     ** DFDL is a specification for describing file formats in XML. The DFDL cartridge leverages https://daffodil.apache.org/[Apache Daffodil] to parse files and unparse XML. This opens up Smooks to a wide array of data formats like SWIFT, ISO8583, HL7, and many more.
+* Compatible with Java 8 and higher.
 * Pipeline support
     ** Compose any series of transformations on an event outside the main execution context before directing the pipeline output to the execution result stream or to other destinations
 * Complete overhaul of the EDI cartridge
