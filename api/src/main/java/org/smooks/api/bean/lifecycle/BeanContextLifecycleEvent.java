@@ -54,7 +54,6 @@ import org.smooks.api.bean.repository.BeanId;
  */
 public interface BeanContextLifecycleEvent {
 
-
 	ExecutionContext getExecutionContext();
 
 	Fragment<?> getSource();

@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
 
@@ -97,7 +98,7 @@ public class SaxNgFilterProviderTestCase {
                 if (function instanceof InterceptorVisitorFactoryLookup) {
                     return (R) new InterceptorVisitorChainFactory();
                 } else if (function instanceof NamespaceManagerLookup) {
-                    return (R) new Properties();
+                    return (R) Optional.of(new Properties());
                 }
                 return null;
             }

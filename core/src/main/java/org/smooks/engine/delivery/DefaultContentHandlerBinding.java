@@ -54,6 +54,7 @@ import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 
 import java.util.Objects;
+import java.util.Properties;
 
 public class DefaultContentHandlerBinding<T extends ContentHandler> implements ContentHandlerBinding<T> {
     private final T contentHandler;
@@ -72,7 +73,7 @@ public class DefaultContentHandlerBinding<T extends ContentHandler> implements C
 
     public DefaultContentHandlerBinding(final T contentHandler, final String targetSelector, final Registry registry) {
         this.contentHandler = contentHandler;
-        resourceConfig = new DefaultResourceConfig(targetSelector, registry.lookup(new NamespaceManagerLookup()), contentHandler.getClass().getName());
+        resourceConfig = new DefaultResourceConfig(targetSelector, registry.lookup(new NamespaceManagerLookup()).orElse(new Properties()), contentHandler.getClass().getName());
 
         final FieldInjector fieldInjector = new FieldInjector(contentHandler, new Scope(registry, resourceConfig, contentHandler));
         fieldInjector.inject();
