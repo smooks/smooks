@@ -77,7 +77,8 @@ Smooks 2 introduces the DFDL cartridge and revamps its EDI cartridge, while drop
 
 * DFDL cartridge
     ** DFDL is a specification for describing file formats in XML. The DFDL cartridge leverages https://daffodil.apache.org/[Apache Daffodil] to parse files and unparse XML. This opens up Smooks to a wide array of data formats like SWIFT, ISO8583, HL7, and many more.
-* Compatible with Java 8 and later versions
+* Compatible with Java 9 and later versions
+  ** Retained compatibility with Java 8
 * Pipeline support
     ** Compose any series of transformations on an event outside the main execution context before directing the pipeline output to the execution result stream or to other destinations
 * Complete overhaul of the EDI cartridge
