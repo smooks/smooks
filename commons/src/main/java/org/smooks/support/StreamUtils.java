@@ -106,7 +106,7 @@ public final class StreamUtils {
 
         StringBuffer streamString = new StringBuffer();
         char[] readBuffer = new char[256];
-        int readCount = 0;
+        int readCount;
 
         while ((readCount = stream.read(readBuffer)) != -1) {
             streamString.append(readBuffer, 0, readCount);

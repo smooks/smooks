@@ -62,9 +62,9 @@ public class GlobalParamsLookup implements Function<Map<Object, Object>, Resourc
     public ResourceConfig apply(final Map<Object, Object> registryEntries) {
         final ResourceConfig resourceConfig = new DefaultResourceConfig();
 
-        for (final ResourceConfigSeq resourceConfigList : this.registry.lookup(new ResourceConfigListsLookup())) {
-            for (int i = 0; i < resourceConfigList.size(); i++) {
-                final ResourceConfig nextResourceConfig = resourceConfigList.get(i);
+        for (final ResourceConfigSeq resourceConfigSeq : this.registry.lookup(new ResourceConfigSeqsLookup())) {
+            for (int i = 0; i < resourceConfigSeq.size(); i++) {
+                final ResourceConfig nextResourceConfig = resourceConfigSeq.get(i);
                 if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
                     resourceConfig.addParameters(nextResourceConfig);
                 }

@@ -123,24 +123,24 @@ public class URIResourceLocator implements ContainerResourceLocator {
         StringBuilder errorBuilder = new StringBuilder();
 
         errorBuilder.append("\tFile System: ").append(fileUnresolved.getAbsolutePath()).append("\n");
-        if(scheme == null) {
+        if (scheme == null) {
             fileResolved = new File(uri.resolvedURI.getPath());
             errorBuilder.append("\tFile System: ").append(fileResolved.getAbsolutePath()).append("\n");
         }
-        
+
         boolean unresolvedExists = false;
         boolean resolvedExists = false;
         try {
-        	unresolvedExists = fileUnresolved.exists();
+            unresolvedExists = fileUnresolved.exists();
         } catch (Exception e) {
-        	// On GAE we will get a security exception
+            // On GAE we will get a security exception
         }
         try {
-        	resolvedExists = fileResolved.exists();
+            resolvedExists = fileResolved.exists();
         } catch (Exception e) {
-        	// On GAE we will get a security exception
+            // On GAE we will get a security exception
         }
-		if (unresolvedExists) {
+        if (unresolvedExists) {
             stream = Files.newInputStream(Paths.get(fileUnresolved.toURI()));
         } else if (fileResolved != null && resolvedExists) {
             stream = Files.newInputStream(Paths.get(fileResolved.toURI()));
@@ -163,13 +163,13 @@ public class URIResourceLocator implements ContainerResourceLocator {
             errorBuilder.append("\tURL: ").append(url).append("\n");
 
             if (isHttp) {
-                ((HttpURLConnection)connection).setInstanceFollowRedirects(false);
+                ((HttpURLConnection) connection).setInstanceFollowRedirects(false);
             }
 
             stream = connection.getInputStream();
 
             if (isHttp) {
-                int responseCode = ((HttpURLConnection)connection).getResponseCode();
+                int responseCode = ((HttpURLConnection) connection).getResponseCode();
                 if (responseCode < 200 || responseCode >= 300) {
                     if (stream != null) {
                         try {
@@ -210,11 +210,11 @@ public class URIResourceLocator implements ContainerResourceLocator {
             uri = uri.substring(1);
             return URI.create(uri);
         } else {
-	        uriObj = URI.create(uri);
-	        if (!uriObj.isAbsolute()) {
-	            // Resolve the supplied URI against the baseURI...
-	            uriObj = baseURI.resolve(uriObj);
-	        }
+            uriObj = URI.create(uri);
+            if (!uriObj.isAbsolute()) {
+                // Resolve the supplied URI against the baseURI...
+                uriObj = baseURI.resolve(uriObj);
+            }
         }
 
         return uriObj;
@@ -238,57 +238,61 @@ public class URIResourceLocator implements ContainerResourceLocator {
             this.baseURI = URI.create(baseURIString + '/');
         } else {
             this.baseURI = baseURI;
-		}
-	}
+        }
+    }
 
     /**
      * Get the base URI for this locator instance.
+     *
      * @return The base URI for the locator instance.
      */
     @Override
     public URI getBaseURI() {
-    	return baseURI;
+        return baseURI;
     }
 
     /**
      * Get the system defined base URI.
      * <p/>
      * Defined by the system property {@link #BASE_URI_SYSKEY}.
-	 * @return System base URI.
-	 */
-	public static URI getSystemBaseURI() {
-		return URI.create(System.getProperty(BASE_URI_SYSKEY, "./"));
-	}
-    
+     *
+     * @return System base URI.
+     */
+    public static URI getSystemBaseURI() {
+        return URI.create(System.getProperty(BASE_URI_SYSKEY, "./"));
+    }
+
     /**
      * Extract the base URI from the supplied resource URI.
+     *
      * @param resourceURI The resource URI.
      * @return The base URI for the supplied resource URI.
      */
     public static URI extractBaseURI(String resourceURI) {
         URI uri = URI.create(resourceURI);
-		return extractBaseURI(uri);
+        return extractBaseURI(uri);
     }
 
     /**
      * Extract the base URI from the supplied resource URI.
+     *
      * @param resourceURI The resource URI.
      * @return The base URI for the supplied resource URI.
      */
-	public static URI extractBaseURI(URI resourceURI) {
-		File resFile = new File(resourceURI.getPath());
-        
+    public static URI extractBaseURI(URI resourceURI) {
+        File resFile = new File(resourceURI.getPath());
+
         try {
-        	File configFolder = resFile.getParentFile();
-        	if(configFolder != null) {
-        		return new URI(resourceURI.getScheme(), resourceURI.getUserInfo(), resourceURI.getHost(), resourceURI.getPort(), configFolder.getPath().replace('\\', '/'), resourceURI.getQuery(), resourceURI.getFragment());
-        	}
-		} catch (URISyntaxException e) {
-			LOGGER.debug("Error extracting base URI.", e);
-		}
-    	
-		return DEFAULT_BASE_URI;
-	}
+            File configFolder = resFile.getParentFile();
+            if (configFolder != null) {
+                return new URI(resourceURI.getScheme(), resourceURI.getUserInfo(), resourceURI.getHost(), resourceURI.getPort(), configFolder.getPath().replace('\\', '/'), resourceURI.getQuery(), resourceURI.getFragment());
+            }
+        } catch (URISyntaxException e) {
+            LOGGER.debug("Error extracting base URI.", e);
+        }
+
+        return DEFAULT_BASE_URI;
+    }
 
     private static class ResolvedURI {
         private final String inputURI;

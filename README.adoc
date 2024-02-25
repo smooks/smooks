@@ -837,7 +837,7 @@ Smooks supports two types of globals, default properties and global parameters:
 
 * Global Configuration Parameters: Every in a Smooks configuration can specify elements for configuration parameters. These parameter values are available at runtime through the https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/resource/config/ResourceConfig.html[`+ResourceConfig+`], or are reflectively injected through the `+@Inject+` annotation. Global Configuration Parameters are parameters that are defined centrally (see below) and are accessible to all runtime components via the `+ExecutionContext+` (vs `+ResourceConfig+`). More on this in the following sections.
 
-* Default Properties: Specify default values for attributes. These defaults are automatically applied to `+ResourceConfig+`s  when their corresponding does not specify the attribute. More on this in the following section.
+* Default Properties: Specify default values for attributes. These defaults are automatically applied to `+ResourceConfig+` s  when their corresponding does not specify the attribute. More on this in the following section.
 
 ==== Global Configuration Parameters
 

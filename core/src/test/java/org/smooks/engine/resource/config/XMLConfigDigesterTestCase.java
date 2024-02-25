@@ -47,7 +47,7 @@ import org.smooks.Smooks;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.ExecutionContext;
-import org.smooks.engine.lookup.ResourceConfigListsLookup;
+import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -95,7 +95,7 @@ public class XMLConfigDigesterTestCase {
 	@Test
     public void test_import_filesys() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("src/test/resources/org/smooks/engine/resource/config/testconfig3.cdrl");
-        Iterator<ResourceConfigSeq> listIt = smooks.getApplicationContext().getRegistry().lookup(new ResourceConfigListsLookup()).iterator();
+        Iterator<ResourceConfigSeq> listIt = smooks.getApplicationContext().getRegistry().lookup(new ResourceConfigSeqsLookup()).iterator();
         ResourceConfigSeq list = null;
 
         while(listIt.hasNext()) {
@@ -108,7 +108,7 @@ public class XMLConfigDigesterTestCase {
 	@Test
     public void test_import_classpath() throws IOException, SAXException, URISyntaxException {
         Smooks smooks = new Smooks("/org/smooks/engine/resource/config/testconfig3.cdrl");
-        Iterator<ResourceConfigSeq> listIt = smooks.getApplicationContext().getRegistry().lookup(new ResourceConfigListsLookup()).iterator();
+        Iterator<ResourceConfigSeq> listIt = smooks.getApplicationContext().getRegistry().lookup(new ResourceConfigSeqsLookup()).iterator();
         ResourceConfigSeq list = null;
 
         while(listIt.hasNext()) {
