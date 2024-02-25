@@ -42,6 +42,7 @@
  */
 package org.smooks.engine;
 
+import org.smooks.api.SmooksException;
 import org.smooks.api.memento.MementoCaretaker;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.UnknownProfileMemberException;
@@ -68,27 +69,28 @@ import java.util.*;
  */
 public class DefaultExecutionContext implements ExecutionContext {
 
-    private final ProfileSet targetProfileSet;
+	private final ProfileSet targetProfileSet;
 	private final Map<TypedKey<Object>, Object> attributes = new HashMap<>();
-    private final ContentDeliveryRuntime contentDeliveryRuntime;
+	private final ContentDeliveryRuntime contentDeliveryRuntime;
 	private final MementoCaretaker mementoCaretaker;
 	private final ApplicationContext applicationContext;
 
 	private URI docSource;
 	private String contentEncoding;
-    private Throwable terminationError;
-    private BeanContext beanContext;
+	private Throwable terminationError;
+	private BeanContext beanContext;
 
 	/**
 	 * Public Constructor.
 	 * <p/>
-     * The execution context is constructed within the context of a target profile and
-     * application context.
-	 * @param targetProfile The target base profile for the execution context.
-	 * These parameters are not appended to the supplied requestURI.  This arg must be supplied, even if it's empty.
-     * @param applicationContext The application context.
-     * @param extendedContentHandlerBindings Preconfigured/extended Visitor Configuration Map.
-     * @throws UnknownProfileMemberException Unknown target profile.
+	 * The execution context is constructed within the context of a target profile and
+	 * application context.
+	 *
+	 * @param targetProfile                  The target base profile for the execution context.
+	 *                                       These parameters are not appended to the supplied requestURI.  This arg must be supplied, even if it's empty.
+	 * @param applicationContext             The application context.
+	 * @param extendedContentHandlerBindings Preconfigured/extended Visitor Configuration Map.
+	 * @throws UnknownProfileMemberException Unknown target profile.
 	 */
 	public DefaultExecutionContext(String targetProfile, ApplicationContext applicationContext, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) throws UnknownProfileMemberException {
 		this(targetProfile, applicationContext, "UTF-8", extendedContentHandlerBindings);
@@ -97,15 +99,16 @@ public class DefaultExecutionContext implements ExecutionContext {
 	/**
 	 * Public Constructor.
 	 * <p/>
-     * The execution context is constructed within the context of a target profile and
-     * application context.
-	 * @param targetProfile The target profile (base profile) for this context.
-	 * These parameters are not appended to the supplied requestURI.  This arg must be supplied, even if it's empty.
-     * @param applicationContext The application context.
-	 * @param contentEncoding Character encoding to be used when parsing content.  Null
-	 * defaults to "UTF-8".
-     * @param extendedContentHandlerBindings Preconfigured/extended Visitor Configuration Map.
-     * @throws UnknownProfileMemberException Unknown target profile.
+	 * The execution context is constructed within the context of a target profile and
+	 * application context.
+	 *
+	 * @param targetProfile                  The target profile (base profile) for this context.
+	 *                                       These parameters are not appended to the supplied requestURI.  This arg must be supplied, even if it's empty.
+	 * @param applicationContext             The application context.
+	 * @param contentEncoding                Character encoding to be used when parsing content.  Null
+	 *                                       defaults to "UTF-8".
+	 * @param extendedContentHandlerBindings Preconfigured/extended Visitor Configuration Map.
+	 * @throws UnknownProfileMemberException Unknown target profile.
 	 */
 	public DefaultExecutionContext(String targetProfile, ApplicationContext applicationContext, String contentEncoding, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) throws UnknownProfileMemberException {
 		AssertArgument.isNotNull(targetProfile, "targetProfile");
@@ -113,20 +116,20 @@ public class DefaultExecutionContext implements ExecutionContext {
 
 		this.applicationContext = applicationContext;
 		setContentEncoding(contentEncoding);
-        targetProfileSet = applicationContext.getProfileStore().getProfileSet(targetProfile);
-		contentDeliveryRuntime = applicationContext.getContentDeliveryConfigBuilderFactory().create(targetProfileSet, extendedContentHandlerBindings);
-		
+		targetProfileSet = applicationContext.getProfileStore().getProfileSet(targetProfile);
+		contentDeliveryRuntime = applicationContext.getContentDeliveryRuntimeFactory().create(targetProfileSet, extendedContentHandlerBindings);
+
 		mementoCaretaker = new DefaultMementoCaretaker(this);
-    }
+	}
 
 	@Override
 	public void setDocumentSource(URI docSource) {
-        this.docSource = docSource;
-    }
+		this.docSource = docSource;
+	}
 
 	@Override
 	public URI getDocumentSource() {
-		if(docSource == null) {
+		if (docSource == null) {
 			return ExecutionContext.DOCUMENT_URI;
 		}
 		return docSource;
@@ -149,8 +152,8 @@ public class DefaultExecutionContext implements ExecutionContext {
 
 	/**
 	 * Set the content encoding to be used when parsing content on this standalone request instance.
-	 * @param contentEncoding Character encoding to be used when parsing content.  Null
-	 * defaults to "UTF-8".
+	 *
+	 * @param contentEncoding Character encoding to be used when parsing content. Null defaults to "UTF-8".
 	 * @throws IllegalArgumentException Invalid encoding.
 	 */
 	@Override
@@ -160,13 +163,14 @@ public class DefaultExecutionContext implements ExecutionContext {
 			// Make sure the encoding is supported....
 			Charset.forName(contentEncoding);
 		} catch (UnsupportedCharsetException e) {
-			throw new IllegalArgumentException("Invalid 'contentEncoding' arg [" + contentEncoding + "].  This encoding is not supported.", e);
+			throw new SmooksException("Invalid 'contentEncoding' arg [" + contentEncoding + "].  This encoding is not supported.", e);
 		}
 		this.contentEncoding = contentEncoding;
 	}
 
 	/**
 	 * Get the content encoding to be used when parsing content on this standalone request instance.
+	 *
 	 * @return Character encoding to be used when parsing content.  Defaults to "UTF-8".
 	 */
 	@Override
@@ -176,29 +180,29 @@ public class DefaultExecutionContext implements ExecutionContext {
 
 	@Override
 	public void setTerminationError(Throwable terminationError) {
-        this.terminationError = terminationError;
-    }
+		this.terminationError = terminationError;
+	}
 
 	@Override
 	public Throwable getTerminationError() {
-        return terminationError;
-    }
+		return terminationError;
+	}
 
 	@Override
 	public String getConfigParameter(String name) {
-        return getConfigParameter(name, null);
-    }
+		return getConfigParameter(name, null);
+	}
 
 	@Override
 	public String getConfigParameter(String name, String defaultVal) {
-        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, contentDeliveryRuntime.getContentDeliveryConfig());
-    }
-    
+		return ParameterAccessor.getParameterValue(name, String.class, defaultVal, contentDeliveryRuntime.getContentDeliveryConfig());
+	}
+
 	@Override
 	public <T> void put(TypedKey<T> key, T value) {
 		attributes.put((TypedKey<Object>) key, value);
 	}
-	
+
 	@Override
 	public <T> T get(TypedKey<T> key) {
 		return (T) attributes.get(key);
@@ -208,7 +212,7 @@ public class DefaultExecutionContext implements ExecutionContext {
 	public <T> T getOrDefault(TypedKey<T> key, T value) {
 		return (T) attributes.getOrDefault(key, value);
 	}
-	
+
 	@Override
 	public <T> void remove(TypedKey<T> key) {
 		attributes.remove(key);
@@ -216,13 +220,13 @@ public class DefaultExecutionContext implements ExecutionContext {
 
 	@Override
 	public String toString() {
-        return attributes.toString();
-    }
+		return attributes.toString();
+	}
 
 	@Override
 	public Map<TypedKey<Object>, Object> getAll() {
-    	return Collections.unmodifiableMap(attributes);
-    }
+		return Collections.unmodifiableMap(attributes);
+	}
 
 	@Override
 	public BeanContext getBeanContext() {
@@ -234,9 +238,9 @@ public class DefaultExecutionContext implements ExecutionContext {
 
 	@Override
 	public void setBeanContext(BeanContext beanContext) {
-        this.beanContext = beanContext;
-    }
-    
+		this.beanContext = beanContext;
+	}
+
 	@Override
 	public MementoCaretaker getMementoCaretaker() {
 		return mementoCaretaker;

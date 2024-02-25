@@ -43,24 +43,33 @@
 package org.smooks.engine.resource.config;
 
 import org.smooks.api.SmooksException;
+import org.smooks.api.resource.ContainerResourceLocator;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.resource.config.ResourceConfigSeqFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public class SystemResourceConfigSeqFactory implements ResourceConfigSeqFactory {
 
     private final ClassLoader classLoader;
     private final String resourceFile;
+    private final ContainerResourceLocator resourceLocator;
 
-    public SystemResourceConfigSeqFactory(String resourceFile, ClassLoader classLoader) {
+    public SystemResourceConfigSeqFactory(String resourceFile, ClassLoader classLoader, ContainerResourceLocator resourceLocator) {
         this.classLoader = classLoader;
         this.resourceFile = resourceFile;
+        this.resourceLocator = resourceLocator;
     }
     
     @Override
     public ResourceConfigSeq create() {
-        InputStream resource = getClass().getResourceAsStream(resourceFile);
+        InputStream resource;
+        try {
+            resource = resourceLocator.getResource(resourceFile);
+        } catch (IOException e) {
+            throw new SmooksException(e);
+        }
 
         if (resource == null) {
             throw new IllegalStateException("Failed to load " + resourceFile);

@@ -108,7 +108,7 @@ public class MockApplicationContext implements ApplicationContext {
 	}
 
 	@Override
-	public ContentDeliveryRuntimeFactory getContentDeliveryConfigBuilderFactory() {
-		return applicationContext.getContentDeliveryConfigBuilderFactory();
+	public ContentDeliveryRuntimeFactory getContentDeliveryRuntimeFactory() {
+		return applicationContext.getContentDeliveryRuntimeFactory();
 	}
 }

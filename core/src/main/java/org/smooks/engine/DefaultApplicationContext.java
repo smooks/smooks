@@ -42,22 +42,17 @@
  */
 package org.smooks.engine;
 
-import org.smooks.api.SmooksException;
-import org.smooks.api.profile.ProfileStore;
-import org.smooks.classpath.IsAnnotationPresentFilter;
-import org.smooks.classpath.Scanner;
 import org.smooks.api.ApplicationContext;
-import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
-import org.smooks.api.bean.context.BeanIdStore;
-import org.smooks.engine.bean.context.DefaultBeanIdStore;
-import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.engine.profile.DefaultProfileStore;
 import org.smooks.api.Registry;
+import org.smooks.api.bean.context.BeanIdStore;
+import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
+import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.resource.ContainerResourceLocator;
+import org.smooks.engine.bean.context.DefaultBeanIdStore;
+import org.smooks.engine.profile.DefaultProfileStore;
 import org.smooks.resource.URIResourceLocator;
 
-import jakarta.annotation.Resource;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,11 +70,11 @@ public class DefaultApplicationContext implements ApplicationContext {
 
 	private ContainerResourceLocator resourceLocator;
 	private Registry registry;
-	private final DefaultProfileStore profileStore = new DefaultProfileStore();
+	private final ProfileStore profileStore = new DefaultProfileStore();
 	private final BeanIdStore beanIdStore = new DefaultBeanIdStore();
-    private final List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<BeanContextLifecycleObserver>();
-    private ClassLoader classLoader;
-    private ContentDeliveryRuntimeFactory contentDeliveryConfigBuilderFactory;
+    private final List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<>();
+	private ClassLoader classLoader;
+    private ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory;
     
     /**
      * Private constructor.
@@ -139,13 +134,13 @@ public class DefaultApplicationContext implements ApplicationContext {
         return classLoader;
     }
 
-    public void setContentDeliveryConfigBuilderFactory(final ContentDeliveryRuntimeFactory contentDeliveryConfigBuilderFactory) {
-		this.contentDeliveryConfigBuilderFactory = contentDeliveryConfigBuilderFactory;
+    public void setContentDeliveryRuntimeFactory(ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory) {
+		this.contentDeliveryRuntimeFactory = contentDeliveryRuntimeFactory;
 	}
     
 	@Override
-	public ContentDeliveryRuntimeFactory getContentDeliveryConfigBuilderFactory() {
-		return contentDeliveryConfigBuilderFactory;
+	public ContentDeliveryRuntimeFactory getContentDeliveryRuntimeFactory() {
+		return contentDeliveryRuntimeFactory;
 	}
 
 	void setRegistry(Registry registry) {
