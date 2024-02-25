@@ -56,8 +56,8 @@ import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
 import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
-import org.smooks.engine.delivery.sax.ng.session.Session;
-import org.smooks.engine.delivery.sax.ng.session.SessionInterceptor;
+import org.smooks.engine.delivery.sax.ng.bridge.Bridge;
+import org.smooks.engine.delivery.sax.ng.bridge.BridgeInterceptor;
 import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.io.DocumentInputSource;
 import org.smooks.io.SAXWriter;
@@ -129,15 +129,15 @@ public class DelegateReader implements SmooksXMLReader {
         final InterceptorVisitorChainFactory interceptorVisitorChainFactory = new InterceptorVisitorChainFactory();
         interceptorVisitorChainFactory.setApplicationContext(applicationContext);
 
-        InterceptorVisitorDefinition sessionInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
-        sessionInterceptorVisitorDefinition.setSelector(Optional.of("*"));
-        sessionInterceptorVisitorDefinition.setClass(SessionInterceptor.class);
+        InterceptorVisitorDefinition bridgeInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
+        bridgeInterceptorVisitorDefinition.setSelector(Optional.of("*"));
+        bridgeInterceptorVisitorDefinition.setClass(BridgeInterceptor.class);
 
         InterceptorVisitorDefinition staticProxyInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
         staticProxyInterceptorVisitorDefinition.setSelector(Optional.of("*"));
         staticProxyInterceptorVisitorDefinition.setClass(StaticProxyInterceptor.class);
 
-        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(sessionInterceptorVisitorDefinition);
+        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(bridgeInterceptorVisitorDefinition);
         interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(staticProxyInterceptorVisitorDefinition);
 
         readerSmooks.getApplicationContext().getRegistry().registerObject(interceptorVisitorChainFactory);
@@ -223,9 +223,9 @@ public class DelegateReader implements SmooksXMLReader {
             executionContext.put(executionContextTypedKey, readerExecutionContext);   
         }
         
-        if (Session.isSession(document.getFirstChild())) {
-            final Session session = new Session(document.getFirstChild());
-            readerExecutionContext.put(session.getSourceKey(), session.getSourceValue(executionContext));
+        if (Bridge.isBridge(document.getFirstChild())) {
+            final Bridge bridge = new Bridge(document.getFirstChild());
+            readerExecutionContext.put(bridge.getSourceKey(), bridge.getSourceValue(executionContext));
         }
         
         if (executionContext.get(contentHandlerTypedKey) == null) {

@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng.session;
+package org.smooks.engine.delivery.sax.ng.bridge;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.fragment.NodeFragment;
@@ -52,11 +52,11 @@ import org.smooks.engine.delivery.event.EndFragmentEvent;
 import org.smooks.engine.delivery.event.StartFragmentEvent;
 import org.w3c.dom.Node;
 
-public abstract class SessionAwareExecutionEventListener implements ExecutionEventListener {
+public abstract class BridgeAwareExecutionEventListener implements ExecutionEventListener {
 
     protected final ExecutionContext executionContext;
 
-    public SessionAwareExecutionEventListener(ExecutionContext executionContext) {
+    public BridgeAwareExecutionEventListener(ExecutionContext executionContext) {
         this.executionContext = executionContext;
     }
     
@@ -64,15 +64,15 @@ public abstract class SessionAwareExecutionEventListener implements ExecutionEve
     public void onEvent(final ExecutionEvent executionEvent) {
         if (executionEvent instanceof FragmentEvent<?> && ((FragmentEvent<?>) executionEvent).getFragment() instanceof NodeFragment) {
             final Node node = (Node) ((FragmentEvent<?>) executionEvent).getFragment().unwrap();
-            if (Session.isSession(node)) {
+            if (Bridge.isBridge(node)) {
                 if (executionEvent instanceof StartFragmentEvent<?>) {
-                    Session session = new Session(node);
-                    if (session.getVisit().equals("visitBefore")) {
-                        doOnEvent(new StartFragmentEvent<>(new NodeFragment(executionContext.get(session.getSourceKey()))));
-                    } else if (session.getVisit().equals("visitChildText")) {
-                        doOnEvent(new CharDataFragmentEvent(new NodeFragment(executionContext.get(session.getSourceKey()))));
-                    } else if (session.getVisit().equals("visitAfter")) {
-                        doOnEvent(new EndFragmentEvent(new NodeFragment(executionContext.get(session.getSourceKey()))));
+                    Bridge bridge = new Bridge(node);
+                    if (bridge.getVisit().equals("visitBefore")) {
+                        doOnEvent(new StartFragmentEvent<>(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
+                    } else if (bridge.getVisit().equals("visitChildText")) {
+                        doOnEvent(new CharDataFragmentEvent(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
+                    } else if (bridge.getVisit().equals("visitAfter")) {
+                        doOnEvent(new EndFragmentEvent(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
                     }
                 }
                 return;
