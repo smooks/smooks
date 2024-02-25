@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng.session;
+package org.smooks.engine.delivery.sax.ng.bridge;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.TypedKey;
@@ -51,7 +51,7 @@ import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class SessionInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
+public class BridgeInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
     protected boolean doVisit(final Node node, final String currentVisit, final ExecutionContext executionContext) {
         if (((Element) node).getAttribute("visit").equals(currentVisit)) {
             Node sourceNode = executionContext.get(TypedKey.of(((Element) node).getAttribute("source")));
@@ -66,7 +66,7 @@ public class SessionInterceptor extends AbstractInterceptorVisitor implements El
 
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
-        if (Session.isSession(element)) {
+        if (Bridge.isBridge(element)) {
             if (doVisit(element, "visitBefore", executionContext)) {
                 Object source = executionContext.get(TypedKey.of(element.getAttribute("source")));
                 intercept(visitBeforeInvocation, source, executionContext);
@@ -92,7 +92,7 @@ public class SessionInterceptor extends AbstractInterceptorVisitor implements El
 
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) {
-        if (Session.isSession(element)) {
+        if (Bridge.isBridge(element)) {
             if (doVisit(element, "visitChildText", executionContext) || doVisit(element, "visitAfter", executionContext)) {
                 Object source = executionContext.get(TypedKey.of(element.getAttribute("source")));
                 if (element.getAttribute("visit").equals("visitChildText")) {

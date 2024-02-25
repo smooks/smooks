@@ -58,7 +58,7 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
 import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
-import org.smooks.engine.delivery.sax.ng.session.SessionInterceptor;
+import org.smooks.engine.delivery.sax.ng.bridge.BridgeInterceptor;
 import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
@@ -107,7 +107,7 @@ public class NestedSmooksVisitorTestCase {
 
         InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup(new InterceptorVisitorFactoryLookup());
         List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = interceptorVisitorChainFactory.getInterceptorVisitorDefinitions();
-        assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), SessionInterceptor.class);
+        assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), BridgeInterceptor.class);
         assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), StaticProxyInterceptor.class);
     }
 

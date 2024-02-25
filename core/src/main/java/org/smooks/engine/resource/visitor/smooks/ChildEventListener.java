@@ -50,14 +50,14 @@ import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.engine.delivery.event.FragmentEvent;
-import org.smooks.engine.delivery.sax.ng.session.SessionAwareExecutionEventListener;
+import org.smooks.engine.delivery.sax.ng.bridge.BridgeAwareExecutionEventListener;
 import org.smooks.engine.delivery.event.EndFragmentEvent;
 import org.smooks.engine.delivery.event.StartFragmentEvent;
 import org.w3c.dom.Node;
 
 import java.io.Writer;
 
-class ChildEventListener extends SessionAwareExecutionEventListener {
+class ChildEventListener extends BridgeAwareExecutionEventListener {
     private final NestedSmooksVisitor nestedSmooksVisitor;
     private final NodeFragment visitedFragment;
     private final Writer selectorWriter;

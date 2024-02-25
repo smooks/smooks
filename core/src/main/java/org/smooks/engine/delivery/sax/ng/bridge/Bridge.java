@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng.session;
+package org.smooks.engine.delivery.sax.ng.bridge;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
@@ -49,30 +49,68 @@ import org.smooks.engine.xml.Namespace;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class Session {
+/**
+ * Represents a <i>bridge</i> node and provides convenience methods to retrieve attribute values from the node.
+ * <br/><br/>
+ * A <i>bridge</i> node holds the state of an execution. Formally, a <i>bridge</i> is a pair of attributes:
+ *  <li>
+ *      <il>source: key to an execution context value holding the event</il>
+ *      <il>visit: name of the visit method that the event is targeting</il>
+ *  </li>
+ *
+ *  Bridge nodes are meant for nested Smooks executions (i.e., a Smooks execution within another Smooks execution).
+ *  It allows the outer execution to carry over its visit state to the nested execution with the help of
+ *  {@link BridgeInterceptor}. Without a <i>bridge</i>, the nested Smooks instance
+ *  cannot join the inner execution to the outer one.
+ */
+public class Bridge {
 
     private final Node node;
 
-    public Session(Node node) {
-        if (!isSession(node)) {
-            throw new SmooksException("Node is not a Smooks session");
+    public Bridge(Node node) {
+        if (!isBridge(node)) {
+            throw new SmooksException("Node is not a bridge element");
         }
         this.node = node;
     }
-    
-    public static boolean isSession(Node node) {
-        return node instanceof Element && node.getNamespaceURI() != null && node.getNamespaceURI().equals(Namespace.SMOOKS_URI) && node.getLocalName().equals("session");
+
+    /**
+     * Checks whether a node is a <i>bridge</i> element.
+     *
+     * @param node the node to be tested
+     * @return <code>true</code> if the node is a bridge otherwise <code>false</code>
+     */
+    public static boolean isBridge(Node node) {
+        return node instanceof Element && node.getNamespaceURI() != null &&
+                node.getNamespaceURI().equals(Namespace.SMOOKS_URI) &&
+                node.getLocalName().equals("bridge");
     }
 
+    /**
+     * Gets the execution context key which maps to the node representing the event.
+     *
+     * @return the key of the execution context entry that holds the event node
+     */
     public TypedKey<Node> getSourceKey() {
         return TypedKey.of(node.getAttributes().getNamedItem("source").getNodeValue());
     }
 
+    /**
+     * Gets the name of the visit this <code>Bridge</code> is targeting.
+     *
+     * @return the name of the visit
+     */
     public String getVisit() {
         return node.getAttributes().getNamedItem("visit").getNodeValue();
     }
-    
+
+    /**
+     * Provides a convenience method to retrieve the source node.
+     *
+     * @param executionContext the execution context holding the source
+     * @return the source node or <code>null</code> if not found
+     */
     public Node getSourceValue(ExecutionContext executionContext) {
-        return executionContext.get(TypedKey.of(node.getAttributes().getNamedItem("source").getNodeValue()));
+        return executionContext.get(getSourceKey());
     }
 }

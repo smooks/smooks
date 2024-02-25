@@ -65,7 +65,7 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
 import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
-import org.smooks.engine.delivery.sax.ng.session.SessionInterceptor;
+import org.smooks.engine.delivery.sax.ng.bridge.BridgeInterceptor;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
@@ -98,7 +98,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer, PreExecutionLifecycle {
@@ -113,7 +117,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         OUTPUT_TO
     }
 
-    protected static final TypedKey<Node> SOURCE_SESSION_TYPED_KEY = TypedKey.of();
+    protected static final TypedKey<Node> SOURCE_BRIDGE_TYPED_KEY = TypedKey.of();
     protected static final TypedKey<DocumentBuilder> CACHED_DOCUMENT_BUILDER_TYPED_KEY = TypedKey.of();
     protected static final TypedKey<ExecutionContext> NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = TypedKey.of();
 
@@ -189,10 +193,10 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         final InterceptorVisitorChainFactory interceptorVisitorChainFactory = new InterceptorVisitorChainFactory();
         interceptorVisitorChainFactory.setApplicationContext(applicationContext);
 
-        InterceptorVisitorDefinition sessionInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
-        sessionInterceptorVisitorDefinition.setSelector(Optional.of("*"));
-        sessionInterceptorVisitorDefinition.setClass(SessionInterceptor.class);
-        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(sessionInterceptorVisitorDefinition);
+        InterceptorVisitorDefinition bridgeInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
+        bridgeInterceptorVisitorDefinition.setSelector(Optional.of("*"));
+        bridgeInterceptorVisitorDefinition.setClass(BridgeInterceptor.class);
+        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(bridgeInterceptorVisitorDefinition);
 
         InterceptorVisitorDefinition staticProxyInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
         staticProxyInterceptorVisitorDefinition.setSelector(Optional.of("*"));
@@ -404,12 +408,12 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         
         final Document document = executionContext.get(CACHED_DOCUMENT_BUILDER_TYPED_KEY).newDocument();
         document.setStrictErrorChecking(false);
-        final Element smooksSessionElement = document.createElementNS(Namespace.SMOOKS_URI, "session");
-        smooksSessionElement.setAttribute("visit", visit);
-        smooksSessionElement.setAttribute("source", SOURCE_SESSION_TYPED_KEY.getName());
-        document.appendChild(smooksSessionElement);
+        final Element smooksBridgeElement = document.createElementNS(Namespace.SMOOKS_URI, "bridge");
+        smooksBridgeElement.setAttribute("visit", visit);
+        smooksBridgeElement.setAttribute("source", SOURCE_BRIDGE_TYPED_KEY.getName());
+        document.appendChild(smooksBridgeElement);
 
-        nestedExecutionContextMemento.getState().put(SOURCE_SESSION_TYPED_KEY, rootNodeFragment.unwrap());
+        nestedExecutionContextMemento.getState().put(SOURCE_BRIDGE_TYPED_KEY, rootNodeFragment.unwrap());
         if (writer == null) {
             nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document));
         } else {
