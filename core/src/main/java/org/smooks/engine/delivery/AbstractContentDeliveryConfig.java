@@ -223,7 +223,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
                     stream().
                     flatMap(l -> l.
                             stream().
-                            filter(c -> !c.getResourceConfig().isDefaultResource())).count();
+                            filter(c -> !c.getResourceConfig().isSystem())).count();
             
             if (userContentHandlerBindingsCount > 1) {
                 // If any of the visitor tables have more than 1 visitor instance...
@@ -239,7 +239,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
                     stream().
                     flatMap(l -> l.
                             stream().
-                            filter(c -> !c.getResourceConfig().isDefaultResource())).count();
+                            filter(c -> !c.getResourceConfig().isSystem())).count();
             
             if (userContentHandlerBindingsCount == 1) {
                 FilterBypass filterBypass = getFilterBypass(contentHandlerBindingIndex);
@@ -270,7 +270,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
             ContentHandlerBinding<T> configMap = entry.getValue().get(0);
             ResourceConfig resourceConfig = configMap.getResourceConfig();
 
-            if (!resourceConfig.isDefaultResource()) {
+            if (!resourceConfig.isSystem()) {
                 if (resourceConfig.getSelectorPath() instanceof IndexedSelectorPath &&
                         ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep() instanceof DocumentSelectorStep) {
                     T visitor = configMap.getContentHandler();

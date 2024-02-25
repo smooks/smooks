@@ -68,7 +68,7 @@ public class SystemResourceConfigSeqFactory implements ResourceConfigSeqFactory 
         try {
             ResourceConfigSeq resourceConfigList = XMLConfigDigester.digestConfig(resource, resourceFile, classLoader);
             for (int i = 0; i < resourceConfigList.size(); i++) {
-                resourceConfigList.get(i).setDefaultResource(true);
+                resourceConfigList.get(i).setSystem(true);
             }
             resourceConfigList.setSystemConfigList(true);
 

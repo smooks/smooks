@@ -142,7 +142,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         if(!super.ignoreEvent(event)) {
             if (event instanceof ResourceBasedEvent) {
                 if (!reportConfiguration.showDefaultAppliedResources()) {
-                    return ((ResourceBasedEvent) event).getResourceConfig().isDefaultResource();
+                    return ((ResourceBasedEvent) event).getResourceConfig().isSystem();
                 }
             }
 

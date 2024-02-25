@@ -171,7 +171,7 @@ public class DefaultResourceConfig implements ResourceConfig {
         setTargetProfile(resourceConfig.getTargetProfile());
         setResource(resourceConfig.getResource());
         setSelectorPath(SelectorPathFactory.newSelectorPath(resourceConfig.getSelectorPath()));
-        setDefaultResource(resourceConfig.isDefaultResource());
+        setSystem(resourceConfig.isSystem());
     }
 
     /**
@@ -310,13 +310,13 @@ public class DefaultResourceConfig implements ResourceConfig {
     }
 
     @Override
-    public boolean isDefaultResource() {
+    public boolean isSystem() {
         return defaultResource;
     }
 
     @Override
-    public void setDefaultResource(boolean defaultResource) {
-        this.defaultResource = defaultResource;
+    public void setSystem(boolean isSystem) {
+        this.defaultResource = isSystem;
     }
 
     @Override
