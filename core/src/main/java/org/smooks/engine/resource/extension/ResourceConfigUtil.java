@@ -69,7 +69,7 @@ public final class ResourceConfigUtil {
         } else if (setOn.equals("resourceType")) {
             resourceConfig.setResourceType((String) value);
         } else if (setOn.equals("defaultResource")) {
-            resourceConfig.setDefaultResource(Boolean.parseBoolean((String) value));
+            resourceConfig.setSystem(Boolean.parseBoolean((String) value));
         } else if (setOn.equals("targetProfile")) {
             resourceConfig.setTargetProfile((String) value);
         } else if (setOn.equals("conditionRef")) {
@@ -95,7 +95,7 @@ public final class ResourceConfigUtil {
         } else if (property.equals("resourceType")) {
             resourceConfig.setResourceType(null);
         } else if (property.equals("defaultResource")) {
-            resourceConfig.setDefaultResource(false);
+            resourceConfig.setSystem(false);
         } else if (property.equals("targetProfile")) {
             resourceConfig.setTargetProfile(null);
         } else if (property.equals("condition")) {
@@ -115,7 +115,7 @@ public final class ResourceConfigUtil {
         } else if (fromProperty.equals("resourceType")) {
             setProperty(toResourceConfig, toProperty, fromResourceConfig.getResourceType(), executionContext);
         } else if (fromProperty.equals("defaultResource")) {
-            setProperty(toResourceConfig, toProperty, fromResourceConfig.isDefaultResource(), executionContext);
+            setProperty(toResourceConfig, toProperty, fromResourceConfig.isSystem(), executionContext);
         } else if (fromProperty.equals("targetProfile")) {
             setProperty(toResourceConfig, toProperty, fromResourceConfig.getTargetProfile(), executionContext);
         } else if (fromProperty.equals("condition")) {

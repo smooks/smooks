@@ -269,9 +269,9 @@ public interface ResourceConfig {
      * default when no other resource is targeting the element.
      *
      * @return <code>true</code> if this is a default applied resource, otherwise false
-     * @see    #setDefaultResource(boolean)
+     * @see    #setSystem(boolean)
      */
-    boolean isDefaultResource();
+    boolean isSystem();
 
     /**
      * Set this <code>ResourceConfig</code> as a default applied resource.
@@ -279,9 +279,9 @@ public interface ResourceConfig {
      * System resources (e.g. {@link org.smooks.engine.delivery.sax.ng.SystemConsumeSerializerVisitor}) are applied by
      * default when no other resource is targeting the element.
      *
-     * @param defaultResource whether this <code>ResourceConfig</code> is for a default resource
+     * @param isSystem whether this <code>ResourceConfig</code> is for a default resource
      */
-    void setDefaultResource(boolean defaultResource);
+    void setSystem(boolean isSystem);
 
     /**
      * Get the resource type of this <code>ResourceConfig</code>.
