@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ResourceConfigListsLookup implements Function<Map<Object, Object>, List<ResourceConfigSeq>> {
+public class ResourceConfigSeqsLookup implements Function<Map<Object, Object>, List<ResourceConfigSeq>> {
     @Override
     public List<ResourceConfigSeq> apply(final Map<Object, Object> registryEntries) {
         return (List<ResourceConfigSeq>) registryEntries.get(new TypeResolver().resolve(List.class, ResourceConfigSeq.class));

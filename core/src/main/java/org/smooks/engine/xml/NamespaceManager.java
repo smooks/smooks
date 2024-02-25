@@ -50,7 +50,7 @@ import org.smooks.api.ApplicationContext;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.TypedKey;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
-import org.smooks.engine.lookup.ResourceConfigListsLookup;
+import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
 import org.smooks.namespace.NamespaceDeclarationStack;
 
 import jakarta.annotation.PostConstruct;
@@ -87,9 +87,9 @@ public class NamespaceManager {
 	public void postConstruct() throws SAXPathException {
 		final Properties newNamespaces = resourceConfig.toProperties();
 
-		for (ResourceConfigSeq resourceConfigList : applicationContext.getRegistry().lookup(new ResourceConfigListsLookup())) {
-			for (int i = 0; i < resourceConfigList.size(); i++) {
-				resourceConfigList.get(i).getSelectorPath().setNamespaces(newNamespaces);
+		for (ResourceConfigSeq resourceConfigSeq : applicationContext.getRegistry().lookup(new ResourceConfigSeqsLookup())) {
+			for (int i = 0; i < resourceConfigSeq.size(); i++) {
+				resourceConfigSeq.get(i).getSelectorPath().setNamespaces(newNamespaces);
 			}
 		}
 

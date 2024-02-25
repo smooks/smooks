@@ -66,7 +66,7 @@ public class ResourceConfigsLookup implements Function<Map<Object, Object>, List
     public List<ResourceConfig> apply(final Map<Object, Object> registryEntries) {
         final List<ResourceConfig> resultSet = new ArrayList<>();
 
-        for (ResourceConfigSeq configList : this.registry.lookup(new ResourceConfigListsLookup())) {
+        for (ResourceConfigSeq configList : this.registry.lookup(new ResourceConfigSeqsLookup())) {
             resultSet.addAll(configList.lookupResource(configSearch));
         }
 

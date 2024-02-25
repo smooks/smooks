@@ -66,13 +66,13 @@ public class SystemResourceConfigSeqFactory implements ResourceConfigSeqFactory 
             throw new IllegalStateException("Failed to load " + resourceFile);
         }
         try {
-            ResourceConfigSeq resourceConfigList = XMLConfigDigester.digestConfig(resource, resourceFile, classLoader);
-            for (int i = 0; i < resourceConfigList.size(); i++) {
-                resourceConfigList.get(i).setSystem(true);
+            ResourceConfigSeq resourceConfigSeq = XMLConfigDigester.digestConfig(resource, resourceFile, classLoader);
+            for (int i = 0; i < resourceConfigSeq.size(); i++) {
+                resourceConfigSeq.get(i).setSystem(true);
             }
-            resourceConfigList.setSystemConfigList(true);
+            resourceConfigSeq.setSystemConfigList(true);
 
-            return resourceConfigList;
+            return resourceConfigSeq;
         } catch (Exception e) {
             throw new SmooksException("Error processing resource file '" + resourceFile + "'.", e);
         }

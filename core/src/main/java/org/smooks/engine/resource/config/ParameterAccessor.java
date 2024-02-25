@@ -50,7 +50,7 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.Registry;
-import org.smooks.engine.lookup.ResourceConfigListsLookup;
+import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
 
 import java.util.List;
 import java.util.Map;
@@ -198,7 +198,7 @@ public abstract class ParameterAccessor {
     public static void removeParameter(String name, Smooks smooks) {
         Registry registry = smooks.getApplicationContext().getRegistry();
 
-        for (ResourceConfigSeq list : registry.lookup(new ResourceConfigListsLookup())) {
+        for (ResourceConfigSeq list : registry.lookup(new ResourceConfigSeqsLookup())) {
             for (int i = 0; i < list.size(); i++) {
                 ResourceConfig nextResourceConfig = list.get(i);
                 if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {

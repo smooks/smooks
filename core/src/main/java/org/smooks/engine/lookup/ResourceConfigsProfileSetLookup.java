@@ -72,8 +72,8 @@ public class ResourceConfigsProfileSetLookup implements Function<Map<Object, Obj
     public ResourceConfig[] apply(final Map<Object, Object> registryEntries) {
         final List<ResourceConfig> profileSetResourceConfigs = new ArrayList<>();
 
-        for (final ResourceConfigSeq resourceConfigList : registry.lookup(new ResourceConfigListsLookup())) {
-            final List<ResourceConfig> resourceConfigs = resourceConfigList.getAll(profileSet);
+        for (ResourceConfigSeq resourceConfigSeq : registry.lookup(new ResourceConfigSeqsLookup())) {
+            final List<ResourceConfig> resourceConfigs = resourceConfigSeq.getAll(profileSet);
             profileSetResourceConfigs.addAll(resourceConfigs);
         }
 

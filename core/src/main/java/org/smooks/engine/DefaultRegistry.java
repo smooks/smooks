@@ -49,7 +49,6 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.Registry;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.engine.converter.TypeConverterFactoryLoader;
@@ -63,7 +62,7 @@ import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lifecycle.PreDestroyLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
-import org.smooks.engine.lookup.ResourceConfigListsLookup;
+import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
 import org.smooks.engine.lookup.SystemResourceConfigListLookup;
 import org.smooks.engine.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.api.resource.ContainerResourceLocator;
@@ -194,10 +193,10 @@ public class DefaultRegistry implements Registry {
         AssertArgument.isNotEmpty(baseURI, "baseURI");
         AssertArgument.isNotNull(resourceConfigStream, "resourceConfigStream");
 
-        ResourceConfigSeq resourceConfigList = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
-        registerResourceConfigSeq(resourceConfigList);
+        ResourceConfigSeq resourceConfigSeq = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
+        registerResourceConfigSeq(resourceConfigSeq);
 
-        return resourceConfigList;
+        return resourceConfigSeq;
     }
 
     protected void addProfileSets(List<ProfileSet> profileSets) {
@@ -234,7 +233,7 @@ public class DefaultRegistry implements Registry {
      */
     @Override
     public void registerResourceConfigSeq(ResourceConfigSeq resourceConfigSeq) {
-        lookup(new ResourceConfigListsLookup()).add(resourceConfigSeq);
+        lookup(new ResourceConfigSeqsLookup()).add(resourceConfigSeq);
         lookup(new LifecycleManagerLookup()).applyPhase(resourceConfigSeq, new PostConstructLifecyclePhase(new Scope(this)));
 
         // XSD v1.0 added profiles to the resource config.  If there were any, add them to the

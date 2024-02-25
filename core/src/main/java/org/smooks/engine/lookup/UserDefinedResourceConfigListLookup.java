@@ -61,7 +61,7 @@ public class UserDefinedResourceConfigListLookup implements Function<Map<Object,
     public ResourceConfigSeq apply(final Map<Object, Object> registryEntries) {
         ResourceConfigSeq userDefinedResources = new DefaultResourceConfigSeq("userDefinedResources");
 
-        for (ResourceConfigSeq configList : registry.lookup(new ResourceConfigListsLookup())) {
+        for (ResourceConfigSeq configList : registry.lookup(new ResourceConfigSeqsLookup())) {
             if (!configList.isSystemConfigList()) {
                 userDefinedResources.addAll(configList);
             }

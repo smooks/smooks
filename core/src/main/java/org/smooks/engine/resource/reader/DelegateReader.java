@@ -114,15 +114,15 @@ public class DelegateReader implements SmooksXMLReader {
             throw new SmooksException(e);
         }
         final String smooksResourceList = "<smooks-resource-list xmlns=\"https://www.smooks.org/xsd/smooks-2.0.xsd\">" + resourceConfig.getParameter("resourceConfigs", String.class).getValue() + "</smooks-resource-list>";
-        final ResourceConfigSeq resourceConfigList;
+        final ResourceConfigSeq resourceConfigSeq;
         try {
-            resourceConfigList = XMLConfigDigester.digestConfig(new ByteArrayInputStream(smooksResourceList.getBytes(StandardCharsets.UTF_8)), "./", new HashMap<>(), applicationContext.getClassLoader());
+            resourceConfigSeq = XMLConfigDigester.digestConfig(new ByteArrayInputStream(smooksResourceList.getBytes(StandardCharsets.UTF_8)), "./", new HashMap<>(), applicationContext.getClassLoader());
         } catch (URISyntaxException | SAXException | IOException e) {
             throw new SmooksException(e);
         }
         readerSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
         readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1));
-        for (ResourceConfig resourceConfig : resourceConfigList) {
+        for (ResourceConfig resourceConfig : resourceConfigSeq) {
             readerSmooks.addConfiguration(resourceConfig);
         }
 
