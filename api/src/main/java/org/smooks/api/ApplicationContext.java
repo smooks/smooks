@@ -116,5 +116,5 @@ public interface ApplicationContext {
      */
     ClassLoader getClassLoader();
     
-    ContentDeliveryRuntimeFactory getContentDeliveryConfigBuilderFactory();
+    ContentDeliveryRuntimeFactory getContentDeliveryRuntimeFactory();
 }

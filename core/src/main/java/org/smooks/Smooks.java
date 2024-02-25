@@ -512,7 +512,7 @@ public class Smooks implements Closeable {
                 if (filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
                     // We're done... a filter bypass was applied...
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("FilterBypass '" + filterBypass.getClass().getName() + "' applied.");
+                        LOGGER.debug("FilterBypass {} applied.", filterBypass.getClass().getName());
                     }
                     return;
                 }
