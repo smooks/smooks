@@ -98,7 +98,7 @@ public class DefaultRegistry implements Registry {
 
         // add the default list to the list.
         final ResourceConfigSeq systemResourceConfigList = new DefaultResourceConfigSeq("default");
-        systemResourceConfigList.setSystemConfigList(true);
+        systemResourceConfigList.setSystem(true);
 
         registerObject(ResourceConfigSeq.class, systemResourceConfigList);
 

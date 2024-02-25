@@ -72,7 +72,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
     /**
      * Is the config list one of the "system" installed config lists.
      */
-    private boolean isSystemConfigList;
+    private boolean isSystem;
     /**
      * {@link ProfileSet} list.
      */
@@ -148,17 +148,17 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
      * @return True if this configuration list instance one of the system installed config lists, otherwise false.
      */
     @Override
-    public boolean isSystemConfigList() {
-        return isSystemConfigList;
+    public boolean isSystem() {
+        return isSystem;
     }
 
     /**
      * Set whether or not this configuration list instance is one of the system installed config lists.
-     * @param systemConfigList True if this configuration list instance one of the system installed config lists, otherwise false.
+     * @param isSystem True if this configuration list instance one of the system installed config lists, otherwise false.
      */
     @Override
-    public void setSystemConfigList(boolean systemConfigList) {
-        isSystemConfigList = systemConfigList;
+    public void setSystem(boolean isSystem) {
+        this.isSystem = isSystem;
     }
 
     /**

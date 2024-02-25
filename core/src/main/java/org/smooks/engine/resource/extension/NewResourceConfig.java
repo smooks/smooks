@@ -83,7 +83,7 @@ public class NewResourceConfig implements DOMElementVisitor {
             targetProfile = extensionContext.getDefaultProfile();
         }
 
-        ResourceConfig resourceConfig = resourceConfigFactory.createConfiguration(targetProfile, element);
+        ResourceConfig resourceConfig = resourceConfigFactory.create(targetProfile, element);
         resourceConfig.setResource(resource.orElse(null));
         resourceConfig.getSelectorPath().setConditionEvaluator(extensionContext.getDefaultConditionEvaluator());
 

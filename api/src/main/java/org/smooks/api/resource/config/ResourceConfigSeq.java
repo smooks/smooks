@@ -59,9 +59,9 @@ public interface ResourceConfigSeq extends Iterable<ResourceConfig> {
 
     String getName();
 
-    boolean isSystemConfigList();
+    boolean isSystem();
 
-    void setSystemConfigList(boolean systemConfigList);
+    void setSystem(boolean isSystem);
 
     boolean isEmpty();
 

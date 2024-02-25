@@ -56,7 +56,7 @@ public class DefaultResourceConfigFactory implements ResourceConfigFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultResourceConfigFactory.class);
 
     @Override
-    public ResourceConfig createConfiguration(String defaultProfile, Element element) {
+    public ResourceConfig create(String defaultProfile, Element element) {
         String selector = DomUtils.getAttributeValue(element, "selector");
         String targetProfile = DomUtils.getAttributeValue(element, "target-profile");
         Element resourceElement = DomUtils.getElementByTagName(element, "resource");
