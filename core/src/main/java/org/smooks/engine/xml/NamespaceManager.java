@@ -55,6 +55,7 @@ import org.smooks.namespace.NamespaceDeclarationStack;
 
 import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -91,11 +92,11 @@ public class NamespaceManager {
 				resourceConfigList.get(i).getSelectorPath().setNamespaces(newNamespaces);
 			}
 		}
-		
+
         LOGGER.debug("Adding namespace prefix-to-uri mappings: " + newNamespaces);
-		final Properties currentNamespaces = applicationContext.getRegistry().lookup(new NamespaceManagerLookup(false));
-		if (currentNamespaces != null) {
-			currentNamespaces.putAll(newNamespaces);
+		final Optional<Properties> currentNamespaces = applicationContext.getRegistry().lookup(new NamespaceManagerLookup());
+		if (currentNamespaces.isPresent()) {
+			currentNamespaces.get().putAll(newNamespaces);
 		} else {
 			applicationContext.getRegistry().registerObject(NamespaceManager.class, newNamespaces);
 		}

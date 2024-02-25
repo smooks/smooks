@@ -62,6 +62,7 @@ import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class SaxNgFilterProvider extends AbstractFilterProvider {
 
@@ -71,7 +72,7 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
         final InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorFactoryLookup());
 
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
-            visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
+            visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()).orElse(new Properties()));
 
             if (visitorBinding.getContentHandler() instanceof BeforeVisitor || visitorBinding.getContentHandler() instanceof AfterVisitor) {
                 if (visitorBinding.getContentHandler() instanceof BeforeVisitor || visitorBinding.getContentHandler() instanceof ChildrenVisitor) {

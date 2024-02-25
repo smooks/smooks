@@ -65,6 +65,7 @@ import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class DOMFilterProvider extends AbstractFilterProvider {
     @Override
@@ -83,7 +84,7 @@ public class DOMFilterProvider extends AbstractFilterProvider {
 
             final Visitor visitor = contentHandlerBinding.getContentHandler();
             final ResourceConfig resourceConfig = contentHandlerBinding.getResourceConfig();
-            resourceConfig.getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()));
+            resourceConfig.getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()).orElse(new Properties()));
 
             if (isDOMVisitor(visitor)) {
                 if (visitor instanceof DOMSerializerVisitor) {

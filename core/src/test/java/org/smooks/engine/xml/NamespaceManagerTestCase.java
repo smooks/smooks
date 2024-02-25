@@ -64,7 +64,7 @@ public class NamespaceManagerTestCase {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));		
 		ExecutionContext execContext = smooks.createExecutionContext();
 		ApplicationContext appContext = execContext.getApplicationContext();
-		Properties mappings = appContext.getRegistry().lookup(new NamespaceManagerLookup());
+		Properties mappings = appContext.getRegistry().lookup(new NamespaceManagerLookup()).get();
 
 		assertEquals("http://a", mappings.getProperty("a"));
 		assertEquals("http://b", mappings.getProperty("b"));

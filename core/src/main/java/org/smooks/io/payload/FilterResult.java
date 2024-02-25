@@ -59,7 +59,7 @@ public abstract class FilterResult implements Result {
     private String systemId;
 
     public static void setResults(ExecutionContext executionContext, Result... results) {
-        if(results != null) {
+        if (results != null) {
             executionContext.put(RESULTS_TYPED_KEY, results);
         } else {
             executionContext.remove(RESULTS_TYPED_KEY);
@@ -73,11 +73,11 @@ public abstract class FilterResult implements Result {
     public static Result getResult(ExecutionContext executionContext, Class<? extends Result> resultType) {
         Result[] results = getResults(executionContext);
 
-        if(results != null) {
-            for(int i = 0; i < results.length; i++) {
+        if (results != null) {
+            for (Result result : results) {
                 // Needs to be an exact type match...
-                if(results[i] != null && resultType.isAssignableFrom(results[i].getClass())) {
-                    return results[i];
+                if (result != null && resultType.isAssignableFrom(result.getClass())) {
+                    return result;
                 }
             }
         }

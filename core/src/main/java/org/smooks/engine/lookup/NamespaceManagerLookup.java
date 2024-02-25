@@ -46,33 +46,19 @@ import org.smooks.api.ApplicationContext;
 import org.smooks.engine.xml.NamespaceManager;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
 
 /**
- * Get the prefix-to-namespace mannings from the {@link ApplicationContext}.
+ * Get the prefix-to-namespace mappings from the {@link ApplicationContext}.
  * @param appContext The {@link ApplicationContext}.
  * @return The prefix-to-namespace mannings.
  */
-public class NamespaceManagerLookup implements Function<Map<Object, Object>, Properties> {
+public class NamespaceManagerLookup implements Function<Map<Object, Object>, Optional<Properties>> {
 
-    private final boolean initialise;
-
-    public NamespaceManagerLookup(boolean initialise) {
-        this.initialise = initialise;
-    }
-    
-    public NamespaceManagerLookup() {
-        this(true);
-    }
-    
     @Override
-    public Properties apply(final Map<Object, Object> registryEntries) {
-        final Properties properties = (Properties) registryEntries.get(NamespaceManager.class);
-        if (properties == null && initialise) {
-            return new Properties();
-        } else {
-            return properties;
-        }
+    public Optional<Properties> apply(final Map<Object, Object> registryEntries) {
+        return Optional.ofNullable((Properties) registryEntries.get(NamespaceManager.class));
     }
 }
