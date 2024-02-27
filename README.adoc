@@ -111,10 +111,11 @@ Smooks 2 introduces the https://github.com/smooks/smooks-dfdl-cartridge[DFDL car
 Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code examples] for Smooks 1 with https://github.com/smooks/smooks-examples/tree/v1.0.5[those for Smooks 2] can be a useful guide in migrating to Smooks 2. While not exhaustive, we have compiled a list of notes to assist your migration:
 
 . Smooks 2 no longer supports Java 7. Your application needs to be compiled to at least Java 8 to run Smooks 2.
-. Replace class implementations of:
-* `org.milyn.delivery.ExecutionLifecycleInitializable` with `org.smooks.api.lifecycle.PreExecutionLifecycle`.
-* `org.milyn.delivery.ExecutionLifecycleCleanable` with `org.smooks.api.lifecycle.PostExecutionLifecycle`.
-* `org.milyn.delivery.VisitLifecycleCleanable` with `org.smooks.api.lifecycle.PostFragmentLifecycle`.
+. Replace class interfaces:
+    * `org.milyn.delivery.ExecutionLifecycleInitializable` with `org.smooks.api.lifecycle.PreExecutionLifecycle`
+    * `org.milyn.delivery.ExecutionLifecycleCleanable` with `org.smooks.api.lifecycle.PostExecutionLifecycle`
+    * `org.milyn.delivery.VisitLifecycleCleanable` with `org.smooks.api.lifecycle.PostFragmentLifecycle`
+    * `org.milyn.delivery.ConfigurationExpander` with `org.smooks.api.delivery.ResourceConfigExpander`
 . Remove references to  `org.milyn.util.CollectionsUtil` and write your own implementation for this class.
 . Replace `org.milyn.*` Java package references with `org.smooks.api`, `org.smooks.engine`, `org.smooks.io` or `org.smooks.support`.
 . Inherit from `org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor` instead of `org.milyn.delivery.sax.SAXVisitor`.
@@ -124,7 +125,7 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
 . Replace `ExecutionContext#isDefaultSerializationOn()` method calls with
 `ExecutionContext#getContentDeliveryRuntime().getDeliveryConfig().isDefaultSerializationOn()`.
 . Replace `ExecutionContext#getContext()` method calls with `ExecutionContext#getApplicationContext()`.
-. Replace `org.smooks.delivery.dom.serialize.SerializationVisitor` references with `org.smooks.api.resource.visitor.SerializerVisitor`.
+. Replace `org.milyn.delivery.dom.serialize.Serializer` references with `org.smooks.api.resource.visitor.SerializerVisitor`.
 . Replace `org.smooks.cdr.annotation.AppContext` annotations with `javax.inject.Inject` annotations.
 . Replace `org.smooks.cdr.annotation.ConfigParam` annotations with `javax.inject.Inject` annotations:
     * Substitute the `@ConfigParam` name attribute with the `@javax.inject.Named` annotation.
