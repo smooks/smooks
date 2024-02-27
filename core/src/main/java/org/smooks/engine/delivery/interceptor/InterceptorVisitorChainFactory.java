@@ -54,33 +54,25 @@ import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-/**
- * Namespace Mappings.
- * <p/>
- * This handler loads namespace prefix-to-uri mappings into the {@link ApplicationContext}.
- * 
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
- */
 public class InterceptorVisitorChainFactory {
-
-	@Inject
-	private ResourceConfig resourceConfig;
-
-	@Inject
-	private ApplicationContext applicationContext;
-
 	protected final List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = new ArrayList<>();
-	
+	protected final ApplicationContext applicationContext;
+
+	public InterceptorVisitorChainFactory(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+
 	public ContentHandlerBinding<Visitor> createInterceptorChain(final ContentHandlerBinding<Visitor> visitorBinding) {
 		if (interceptorVisitorDefinitions.isEmpty()) {
 			return visitorBinding;
 		} else {
 			ContentHandlerBinding<Visitor> interceptedVisitorBinding = visitorBinding;
-			for (InterceptorVisitorDefinition interceptorVisitorDefinition : interceptorVisitorDefinitions) {
+			for (InterceptorVisitorDefinition interceptorVisitorDefinition : applyCustomFirstSystemLastOrder(interceptorVisitorDefinitions)) {
 				InterceptorVisitor interceptorVisitor;
 				try {
 					interceptorVisitor = interceptorVisitorDefinition.getInterceptorVisitorClass().newInstance();
@@ -90,8 +82,8 @@ public class InterceptorVisitorChainFactory {
 				interceptorVisitor.setVisitorBinding(interceptedVisitorBinding);
 				
 				final ResourceConfig interceptorResourceConfig = new DefaultResourceConfig(visitorBinding.getResourceConfig());
-				if (interceptorVisitorDefinition.getSelector().isPresent()) {
-					interceptorResourceConfig.setSelector(interceptorVisitorDefinition.getSelector().get(), interceptorResourceConfig.getSelectorPath().getNamespaces());
+				if (!interceptorVisitorDefinition.getResourceConfig().getSelectorPath().getSelector().equals(ResourceConfig.SELECTOR_NONE)) {
+					interceptorResourceConfig.setSelector(interceptorVisitorDefinition.getResourceConfig().getSelectorPath().getSelector(), interceptorResourceConfig.getSelectorPath().getNamespaces());
 				}
 				applicationContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(interceptorVisitor, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), interceptorResourceConfig, interceptorVisitor)));
 				interceptedVisitorBinding = new DefaultContentHandlerBinding<>(interceptorVisitor, interceptorResourceConfig);
@@ -101,11 +93,21 @@ public class InterceptorVisitorChainFactory {
 		}
 	}
 
-	public List<InterceptorVisitorDefinition> getInterceptorVisitorDefinitions() {
-		return interceptorVisitorDefinitions;
+	protected List<InterceptorVisitorDefinition> applyCustomFirstSystemLastOrder(List<InterceptorVisitorDefinition> interceptorVisitorDefinitions) {
+		List<InterceptorVisitorDefinition> systemInterceptorVisitorDefinitions = new ArrayList<>();
+		List<InterceptorVisitorDefinition> nonSystemInterceptorVisitorDefinitions = new ArrayList<>();
+		for (InterceptorVisitorDefinition interceptorVisitorDefinition : interceptorVisitorDefinitions) {
+			if (interceptorVisitorDefinition.getResourceConfig().isSystem()) {
+				systemInterceptorVisitorDefinitions.add(interceptorVisitorDefinition);
+			} else {
+				nonSystemInterceptorVisitorDefinitions.add(interceptorVisitorDefinition);
+			}
+		}
+
+		return Stream.concat(nonSystemInterceptorVisitorDefinitions.stream(), systemInterceptorVisitorDefinitions.stream()).collect(Collectors.toList());
 	}
 
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
+	public List<InterceptorVisitorDefinition> getInterceptorVisitorDefinitions() {
+		return interceptorVisitorDefinitions;
 	}
 }

@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 - 2021 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -42,42 +42,27 @@
  */
 package org.smooks.engine.delivery.interceptor;
 
+import jakarta.annotation.PostConstruct;
 import org.smooks.api.ApplicationContext;
-import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
+import org.smooks.api.Registry;
 import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;
 
-import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Optional;
 
-public class InterceptorVisitorDefinition {
-    
+public class InterceptorsResource {
+
     @Inject
-    private Class<? extends InterceptorVisitor> clazz;
-    
+    private Registry registry;
+
     @Inject
     private ApplicationContext applicationContext;
 
-    @Inject
-    private ResourceConfig resourceConfig;
-    
+
     @PostConstruct
     public void postConstruct() {
-        InterceptorVisitorChainFactory interceptorVisitorChainFactory = applicationContext.getRegistry().lookup(new InterceptorVisitorChainFactoryLookup());
-        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(this);
+        if (registry.lookup(new InterceptorVisitorChainFactoryLookup()) == null) {
+            registry.registerObject(new InterceptorVisitorChainFactory(applicationContext));
+        }
     }
 
-    public Class<? extends InterceptorVisitor> getInterceptorVisitorClass() {
-        return clazz;
-    }
-
-    public void setClass(Class<? extends InterceptorVisitor> clazz) {
-        this.clazz = clazz;
-    }
-
-    public ResourceConfig getResourceConfig() {
-        return resourceConfig;
-    }
 }

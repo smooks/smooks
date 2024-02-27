@@ -55,7 +55,7 @@ import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.engine.delivery.AbstractFilterProvider;
 import org.smooks.engine.delivery.event.DefaultContentDeliveryConfigExecutionEvent;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
-import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
+import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
@@ -69,7 +69,7 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
     @Override
     public SaxNgContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ContentDeliveryConfigExecutionEvent> contentDeliveryConfigExecutionEvents) {
         final SaxNgContentDeliveryConfig saxNgContentDeliveryConfig = new SaxNgContentDeliveryConfig();
-        final InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorFactoryLookup());
+        final InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorChainFactoryLookup());
 
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorBindings) {
             visitorBinding.getResourceConfig().getSelectorPath().setNamespaces(registry.lookup(new NamespaceManagerLookup()).orElse(new Properties()));
