@@ -52,5 +52,5 @@ public interface ResourceConfigFactory {
     /**
      * @return the <code>ResourceConfig</code
      */
-    ResourceConfig createConfiguration(String defaultProfile, Element element);
+    ResourceConfig create(String defaultProfile, Element element);
 }

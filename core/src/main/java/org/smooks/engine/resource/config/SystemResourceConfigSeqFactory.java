@@ -79,7 +79,7 @@ public class SystemResourceConfigSeqFactory implements ResourceConfigSeqFactory 
             for (int i = 0; i < resourceConfigSeq.size(); i++) {
                 resourceConfigSeq.get(i).setSystem(true);
             }
-            resourceConfigSeq.setSystemConfigList(true);
+            resourceConfigSeq.setSystem(true);
 
             return resourceConfigSeq;
         } catch (Exception e) {

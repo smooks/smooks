@@ -438,7 +438,7 @@ public final class XMLConfigDigester {
             }
             try {
                 ResourceConfigFactory resourceConfigFactory = (ResourceConfigFactory) resourceConfigFactoryClass.newInstance();
-                resourceConfig = resourceConfigFactory.createConfiguration(defaultProfile, configElement);
+                resourceConfig = resourceConfigFactory.create(defaultProfile, configElement);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new SmooksConfigException(e.getMessage(), e);
             }
