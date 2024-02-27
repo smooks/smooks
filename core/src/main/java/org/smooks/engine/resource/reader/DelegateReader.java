@@ -123,7 +123,7 @@ public class DelegateReader implements SmooksXMLReader {
         readerSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
         readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1));
         for (ResourceConfig resourceConfig : resourceConfigSeq) {
-            readerSmooks.addConfiguration(resourceConfig);
+            readerSmooks.addResourceConfig(resourceConfig);
         }
 
         final InterceptorVisitorChainFactory interceptorVisitorChainFactory = new InterceptorVisitorChainFactory();

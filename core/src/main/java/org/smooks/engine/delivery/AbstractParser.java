@@ -325,9 +325,9 @@ public class AbstractParser {
         }
     }
 
-    protected void configureReader(XMLReader xmlReader, DefaultHandler2 contentHandler, ExecutionContext execContext, Source source) throws SAXException {
+    protected void configureReader(XMLReader xmlReader, DefaultHandler2 contentHandler, ExecutionContext executionContext, Source source) throws SAXException {
 		if (xmlReader instanceof SmooksXMLReader) {
-            ((SmooksXMLReader) xmlReader).setExecutionContext(execContext);
+            ((SmooksXMLReader) xmlReader).setExecutionContext(executionContext);
         }
 
         if (xmlReader instanceof JavaXMLReader) {

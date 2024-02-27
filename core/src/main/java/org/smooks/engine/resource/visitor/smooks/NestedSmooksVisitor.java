@@ -169,7 +169,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
 
             for (ResourceConfig resourceConfig : resourceConfigSeq) {
-                nestedSmooks.addConfiguration(resourceConfig);
+                nestedSmooks.addResourceConfig(resourceConfig);
             }
         }
 

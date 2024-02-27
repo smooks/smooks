@@ -150,7 +150,7 @@ public class Smooks implements Closeable {
      * Public Default Constructor.
      * <p/>
      * Resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
+     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
      */
     public Smooks() {
         applicationContext = new DefaultApplicationContextBuilder().build();
@@ -161,7 +161,7 @@ public class Smooks implements Closeable {
      * Public Default Constructor.
      * <p/>
      * Resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
+     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
      */
     public Smooks(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -175,7 +175,7 @@ public class Smooks implements Closeable {
      * which resolves the resourceURI parameter using a {@link org.smooks.resource.URIResourceLocator}.
      * <p/>
      * Additional resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String,java.io.InputStream)}.
+     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
      *
      * @param resourceURI XML resource configuration stream URI.
      * @throws IOException  Error reading resource stream.
@@ -210,15 +210,17 @@ public class Smooks implements Closeable {
 
     /**
      * Set the filter settings for this Smooks instance.
+     *
      * @param filterSettings The filter settings to be used.
      */
     public void setFilterSettings(FilterSettings filterSettings) {
         AssertArgument.isNotNull(filterSettings, "filterSettings");
         filterSettings.applySettings(this);
     }
-    
+
     /**
      * Set the Exports for this Smooks instance.
+     *
      * @param exports The exports that will be created by this Smooks instance.
      */
     public Smooks setExports(Exports exports) {
@@ -231,18 +233,20 @@ public class Smooks implements Closeable {
 
     /**
      * Set the configuration for the reader to be used on this Smooks instance.
+     *
      * @param readerConfigurator {@link ReaderConfigurator} instance.
      */
     public void setReaderConfig(ReaderConfigurator readerConfigurator) {
         List<ResourceConfig> resourceConfigs = readerConfigurator.toConfig();
 
-        for(ResourceConfig resourceConfig : resourceConfigs) {
-            addConfiguration(resourceConfig);
+        for (ResourceConfig resourceConfig : resourceConfigs) {
+            addResourceConfig(resourceConfig);
         }
     }
 
     /**
      * Set the namespace prefix-to-uri mappings to be used on this Smooks instance.
+     *
      * @param namespaces The namespace prefix-to-uri mappings.
      */
     public void setNamespaces(Properties namespaces) {
@@ -265,7 +269,7 @@ public class Smooks implements Closeable {
     /**
      * Add a visitor instance to <code>this</code> Smooks instance.
      *
-     * @param visitor The visitor implementation.
+     * @param visitor        The visitor implementation.
      * @param targetSelector The message fragment target selector.
      */
     public ResourceConfig addVisitor(Visitor visitor, String targetSelector) {
@@ -282,11 +286,11 @@ public class Smooks implements Closeable {
     /**
      * Adds a {@link Visitor} to this <code>Smooks</code> via a {@link VisitorAppender}.
      *
-     * @param visitorAppender  the <code>VisitorAppender</code>
+     * @param visitorAppender the <code>VisitorAppender</code>
      */
     public void addVisitors(VisitorAppender visitorAppender) {
         getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitorAppender, new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry())));
-        
+
         for (ContentHandlerBinding<Visitor> visitorBinding : visitorAppender.addVisitors()) {
             getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(visitorBinding.getContentHandler(), new PostConstructLifecyclePhase(new Scope(applicationContext.getRegistry(), visitorBinding.getResourceConfig(), visitorBinding.getContentHandler())));
             this.visitorBindings.add(visitorBinding);
@@ -301,7 +305,7 @@ public class Smooks implements Closeable {
      *
      * @param resourceConfig The resource configuration to be added.
      */
-    public void addConfiguration(ResourceConfig resourceConfig) {
+    public void addResourceConfig(ResourceConfig resourceConfig) {
         AssertArgument.isNotNull(resourceConfig, "resourceConfig");
         assertIsConfigurable();
         applicationContext.getRegistry().registerResourceConfig(resourceConfig);
@@ -346,8 +350,8 @@ public class Smooks implements Closeable {
      * The base URI is required for resolving resource imports.  Just specify
      * the location of the resource file.
      *
-     * @param baseURI The base URI string for the resource configuration list. See
-     *                    {@link org.smooks.resource.URIResourceLocator}.
+     * @param baseURI              The base URI string for the resource configuration list. See
+     *                             {@link org.smooks.resource.URIResourceLocator}.
      * @param resourceConfigStream The resource configuration stream.
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
@@ -440,18 +444,18 @@ public class Smooks implements Closeable {
     }
 
     private synchronized void setNotConfigurable() {
-        if(!isConfigurable) {
+        if (!isConfigurable) {
             return;
         }
         isConfigurable = false;
     }
-    
+
     /**
      * Filter the content in the supplied {@link Source} instance.
      * <p/>
      * Not producing a {@link Result}.
      *
-     * @param source           The content Source.
+     * @param source The content Source.
      * @throws SmooksException Failed to filter.
      */
     public void filterSource(Source source) throws SmooksException {
@@ -462,8 +466,8 @@ public class Smooks implements Closeable {
      * Filter the content in the supplied {@link Source} instance, outputing data
      * to the supplied {@link Result} instances.
      *
-     * @param source           The filter Source.
-     * @param results          The filter Results.
+     * @param source  The filter Source.
+     * @param results The filter Results.
      * @throws SmooksException Failed to filter.
      */
     public void filterSource(Source source, Result... results) throws SmooksException {

@@ -42,24 +42,10 @@
  */
 package org.smooks.engine.xml;
 
-import java.util.Properties;
-
 /**
  * XML Namespace URI static definitions.
  * @author tfennelly
  */
 public interface Namespace {
-
-    Properties SMOOKS_PREFIX_MAPPINGS = new SmooksNamespaceMappings();
-
-    String SMOOKS_URI = SmooksNamespaceMappings.SMOOKS_URI;
-
-    class SmooksNamespaceMappings extends Properties {
-        private static final String SMOOKS_URI = "https://www.smooks.org";
-
-        private SmooksNamespaceMappings() {
-            setProperty("param-type", SMOOKS_URI + "/param-type");
-            setProperty("decoder", SMOOKS_URI + "/decoder");
-        }
-    }
+    String SMOOKS_URI = "https://www.smooks.org";
 }
