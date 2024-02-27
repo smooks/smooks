@@ -73,7 +73,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
     private String visitChildElementExceptionMessage;
 
     @PostConstruct
-    public void postConstructor() {
+    public void postConstruct() {
         terminateOnVisitorException = Boolean.parseBoolean(applicationContext.getRegistry().lookup(new GlobalParamsLookup(applicationContext.getRegistry())).getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true"));
         visitBeforeExceptionMessage = String.format("Error in %s while processing visitBefore SAX NG event", visitorBinding.getContentHandler().getClass().getName());
         visitAfterExceptionMessage = String.format("Error in %s while processing visitAfter SAX NG event", visitorBinding.getContentHandler().getClass().getName());

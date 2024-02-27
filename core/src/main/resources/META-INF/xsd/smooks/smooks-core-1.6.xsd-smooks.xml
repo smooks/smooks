@@ -127,7 +127,7 @@
 
     <resource-config selector="smooks-core:interceptors">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory</param>
+        <param name="resource">org.smooks.engine.delivery.interceptor.InterceptorsResource</param>
     </resource-config>
     <resource-config selector="smooks-core:interceptors/interceptor">
         <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>

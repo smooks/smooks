@@ -85,6 +85,7 @@ public class DefaultRegistry implements Registry {
     private final ClassLoader classLoader;
 
     public DefaultRegistry(ClassLoader classLoader, ContainerResourceLocator containerResourceLocator, ProfileStore profileStore) {
+        AssertArgument.isNotNull(classLoader, "classLoader");
         AssertArgument.isNotNull(containerResourceLocator, "containerResourceLocator");
         AssertArgument.isNotNull(profileStore, "profileStore");
 
@@ -97,14 +98,14 @@ public class DefaultRegistry implements Registry {
         registerObject(LifecycleManager.class, new DefaultLifecycleManager());
 
         // add the default list to the list.
-        final ResourceConfigSeq systemResourceConfigList = new DefaultResourceConfigSeq("default");
-        systemResourceConfigList.setSystem(true);
+        final ResourceConfigSeq systemResourceConfigSeq = new DefaultResourceConfigSeq("default");
+        systemResourceConfigSeq.setSystem(true);
 
-        registerObject(ResourceConfigSeq.class, systemResourceConfigList);
+        registerObject(ResourceConfigSeq.class, systemResourceConfigSeq);
 
-        final List<ResourceConfigSeq> resourceConfigLists = new ArrayList<>();
-        resourceConfigLists.add(systemResourceConfigList);
-        registerObject(new TypeResolver().resolve(List.class, ResourceConfigSeq.class), resourceConfigLists);
+        final List<ResourceConfigSeq> resourceConfigSeqs = new ArrayList<>();
+        resourceConfigSeqs.add(systemResourceConfigSeq);
+        registerObject(new TypeResolver().resolve(List.class, ResourceConfigSeq.class), resourceConfigSeqs);
     }
 
     @Override
@@ -126,7 +127,7 @@ public class DefaultRegistry implements Registry {
         AssertArgument.isNotNull(value, "value");
 
         if (registry.putIfAbsent(key, value) != null) {
-            throw new SmooksException(String.format("Duplicate registration: %s", key));
+            throw new SmooksException(String.format("Duplicate registered object for object with key [%s]", key));
         }
     }
 

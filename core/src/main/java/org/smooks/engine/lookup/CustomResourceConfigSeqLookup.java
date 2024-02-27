@@ -42,15 +42,31 @@
  */
 package org.smooks.engine.lookup;
 
-import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
+import org.smooks.api.resource.config.ResourceConfigSeq;
+import org.smooks.api.Registry;
+import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
 
 import java.util.Map;
 import java.util.function.Function;
 
-public class InterceptorVisitorFactoryLookup implements Function<Map<Object, Object>, InterceptorVisitorChainFactory> {
+public class CustomResourceConfigSeqLookup implements Function<Map<Object, Object>, ResourceConfigSeq> {
+
+    private final Registry registry;
+
+    public CustomResourceConfigSeqLookup(final Registry registry) {
+        this.registry = registry;
+    }
     
     @Override
-    public InterceptorVisitorChainFactory apply(final Map<Object, Object> registryEntries) {
-        return (InterceptorVisitorChainFactory) registryEntries.values().stream().filter(e -> e instanceof InterceptorVisitorChainFactory).findFirst().orElse(new InterceptorVisitorChainFactory());
+    public ResourceConfigSeq apply(final Map<Object, Object> registryEntries) {
+        ResourceConfigSeq userDefinedResources = new DefaultResourceConfigSeq("userDefinedResources");
+
+        for (ResourceConfigSeq configList : registry.lookup(new ResourceConfigSeqsLookup())) {
+            if (!configList.isSystem()) {
+                userDefinedResources.addAll(configList);
+            }
+        }
+
+        return userDefinedResources;
     }
 }

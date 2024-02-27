@@ -64,14 +64,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class FilterBypassTestCase {
 
 	private SimpleVisitor simpleVisitor;
 	private FilterSettings filterSettings;
-	
+
 	@BeforeEach
 	public void setUp() throws Exception {
 		simpleVisitor = null;
@@ -85,7 +84,7 @@ public class FilterBypassTestCase {
 		test("/", true);
 		test("x", false);
 	}
-	
+
 	@Test
 	public void test_dom_bypass_with_visitor() {
 		simpleVisitor = new SimpleVisitor();
@@ -93,7 +92,7 @@ public class FilterBypassTestCase {
 		filterSettings = FilterSettings.DEFAULT_DOM;
 		test("#document", false);
 		test("/", false);
-		test("x", false);		
+		test("x", false);
 	}
 
 	@Test
@@ -103,7 +102,7 @@ public class FilterBypassTestCase {
 		test("/", true);
 		test("x", false);
 	}
-	
+
 	@Test
 	public void test_sax_bypass_with_visitor() {
 		simpleVisitor = new SimpleVisitor();
@@ -111,7 +110,7 @@ public class FilterBypassTestCase {
 		filterSettings = FilterSettings.DEFAULT_SAX_NG;
 		test("#document", false);
 		test("/", false);
-		test("x", false);		
+		test("x", false);
 	}
 
 	public void test(String selector, boolean expectBypass) {
@@ -129,9 +128,9 @@ public class FilterBypassTestCase {
 
 		assertEquals(expectBypass, bypassVisitor.bypassCalled);
 	}
-	
+
 	private static class MyVisitBypass implements DOMVisitBefore, BeforeVisitor, FilterBypass {
-		
+
 		private final boolean expectsVisitCall;
 		private boolean bypassCalled;
 
@@ -147,14 +146,14 @@ public class FilterBypassTestCase {
 
 		@Override
 		public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-			if(!expectsVisitCall) {
+			if (!expectsVisitCall) {
 				fail("Unexpected call to filter visit method.");
 			}
 		}
 	}
-	
+
 	private static class SimpleVisitor implements DOMVisitAfter, AfterVisitor {
-		
+
 		@Override
 		public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
 		}

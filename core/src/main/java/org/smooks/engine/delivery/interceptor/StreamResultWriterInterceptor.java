@@ -61,7 +61,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor, InterceptorVisitor {
+public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor {
     
     protected boolean isStreamResultWriter;
 

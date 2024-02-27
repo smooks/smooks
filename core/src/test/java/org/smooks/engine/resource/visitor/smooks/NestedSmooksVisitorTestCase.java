@@ -59,7 +59,7 @@ import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
 import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
 import org.smooks.engine.delivery.sax.ng.bridge.BridgeInterceptor;
-import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
+import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
@@ -93,7 +93,7 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
-    public void testPostConstructRegistersInterceptorVisitorDefinitions() throws IOException, URISyntaxException, ClassNotFoundException, SAXException {
+    public void testPostConstructRegistersInterceptorVisitorDefinitions() throws IOException, URISyntaxException, ClassNotFoundException, SAXException, ParserConfigurationException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
 
@@ -104,8 +104,9 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setApplicationContext(new DefaultApplicationContextBuilder().build());
 
         nestedSmooksVisitor.postConstruct();
+        nestedSmooksVisitor.getNestedSmooks().createExecutionContext();
 
-        InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup(new InterceptorVisitorFactoryLookup());
+        InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup(new InterceptorVisitorChainFactoryLookup());
         List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = interceptorVisitorChainFactory.getInterceptorVisitorDefinitions();
         assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), BridgeInterceptor.class);
         assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), StaticProxyInterceptor.class);

@@ -71,6 +71,7 @@ import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
 import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
 import org.smooks.engine.xml.Namespace;
@@ -166,14 +167,14 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
                 resourceConfigSeq = new DefaultResourceConfigSeq("./");
                 resourceConfigSeq.add(resourceConfig);
             }
-            nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
-
+            nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).setResourceLocator(applicationContext.getResourceLocator()).build());
             for (ResourceConfig resourceConfig : resourceConfigSeq) {
                 nestedSmooks.addResourceConfig(resourceConfig);
             }
         }
 
-        nestedSmooks.getApplicationContext().getRegistry().registerObject(createInterceptorVisitorChainFactory(applicationContext));
+        nestedSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
+                nestedSmooks.getApplicationContext().getClassLoader(), nestedSmooks.getApplicationContext().getResourceLocator()).create());
         nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
 
         action = actionOptional.orElse(null);
@@ -187,23 +188,6 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         }
         
         domSerializer = new DomSerializer(false, rewriteEntities);
-    }
-
-    protected InterceptorVisitorChainFactory createInterceptorVisitorChainFactory(final ApplicationContext applicationContext) {
-        final InterceptorVisitorChainFactory interceptorVisitorChainFactory = new InterceptorVisitorChainFactory();
-        interceptorVisitorChainFactory.setApplicationContext(applicationContext);
-
-        InterceptorVisitorDefinition bridgeInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
-        bridgeInterceptorVisitorDefinition.setSelector(Optional.of("*"));
-        bridgeInterceptorVisitorDefinition.setClass(BridgeInterceptor.class);
-        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(bridgeInterceptorVisitorDefinition);
-
-        InterceptorVisitorDefinition staticProxyInterceptorVisitorDefinition = new InterceptorVisitorDefinition();
-        staticProxyInterceptorVisitorDefinition.setSelector(Optional.of("*"));
-        staticProxyInterceptorVisitorDefinition.setClass(StaticProxyInterceptor.class);
-        interceptorVisitorChainFactory.getInterceptorVisitorDefinitions().add(staticProxyInterceptorVisitorDefinition);
-
-        return interceptorVisitorChainFactory;
     }
 
     @Override
