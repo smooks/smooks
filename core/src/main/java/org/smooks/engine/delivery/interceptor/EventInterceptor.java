@@ -55,6 +55,7 @@ import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class EventInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
 
@@ -97,7 +98,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements Elem
         }
     }
 
-    private void onEvent(final ExecutionContext executionContext, final Fragment fragment, final VisitSequence visitSequence) {
+    protected void onEvent(final ExecutionContext executionContext, final Fragment<Node> fragment, final VisitSequence visitSequence) {
         for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
             executionEventListener.onEvent(new VisitEvent<>(fragment, getTarget(), visitSequence, executionContext));
         }

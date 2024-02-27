@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * API
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,23 +40,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.delivery.event;
+package org.smooks.api.lifecycle;
 
-import org.smooks.api.SmooksConfigException;
-import org.smooks.api.delivery.ContentDeliveryConfig;
-
-/**
- * Lifecycle listener for events fired during building of the {@link ContentDeliveryConfig}
- * for a profile.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public interface ContentDeliveryConfigBuilderLifecycleListener {
+public interface ContentDeliveryConfigLifecycle {
 
     /**
-     * Event handler.
-     * @param event The event.
-     * @throws SmooksConfigException Smooks configuration exception.
+     * First Event.
+     * <p/>
+     * Content handlers created (and sorted), but the builder instance is not yet created.
      */
-    void handle(final ContentDeliveryConfigBuilderLifecycleEvent event) throws SmooksConfigException;
+    void onContentHandlersCreated();
+
+    /**
+     * Second Event.
+     * <p/>
+     * The builder instance (for the profile) is now created and ready to be used.
+     */
+    void onContentDeliveryBuilderCreated();
+
+    void onContentDeliveryConfigCreated();
 }
