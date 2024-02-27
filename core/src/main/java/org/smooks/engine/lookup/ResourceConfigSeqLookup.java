@@ -47,7 +47,7 @@ import org.smooks.api.resource.config.ResourceConfigSeq;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SystemResourceConfigListLookup implements Function<Map<Object, Object>, ResourceConfigSeq> {
+public class ResourceConfigSeqLookup implements Function<Map<Object, Object>, ResourceConfigSeq> {
     @Override
     public ResourceConfigSeq apply(final Map<Object, Object> registryEntries) {
         return (ResourceConfigSeq) registryEntries.get(ResourceConfigSeq.class);

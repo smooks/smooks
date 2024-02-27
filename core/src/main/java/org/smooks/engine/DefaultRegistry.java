@@ -63,7 +63,7 @@ import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lifecycle.PreDestroyLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
-import org.smooks.engine.lookup.SystemResourceConfigListLookup;
+import org.smooks.engine.lookup.ResourceConfigSeqLookup;
 import org.smooks.engine.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.api.resource.ContainerResourceLocator;
 import org.xml.sax.SAXException;
@@ -223,7 +223,7 @@ public class DefaultRegistry implements Registry {
         AssertArgument.isNotNull(resourceConfig, "resourceConfig");
 
         lookup(new LifecycleManagerLookup()).applyPhase(resourceConfig, new PostConstructLifecyclePhase(new Scope(this)));
-        lookup(new SystemResourceConfigListLookup()).add(resourceConfig);
+        lookup(new ResourceConfigSeqLookup()).add(resourceConfig);
     }
 
     /**
