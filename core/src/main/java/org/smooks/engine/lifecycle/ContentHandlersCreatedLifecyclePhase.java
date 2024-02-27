@@ -1,8 +1,8 @@
 /*-
  * ========================LICENSE_START=================================
- * API
+ * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,26 +40,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.delivery.event;
+package org.smooks.engine.lifecycle;
 
-import org.smooks.api.delivery.ContentDeliveryConfigBuilder;
+import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
+import org.smooks.api.lifecycle.LifecyclePhase;
 
-/**
- * {@link ContentDeliveryConfigBuilder} lifecycle events.
- */
-public enum ContentDeliveryConfigBuilderLifecycleEvent {
-    /**
-     * First Event.
-     * <p/>
-     * Handlers created (and sorted), but the builder instance is not yet created.
-     */
-    HANDLERS_CREATED,
-    /**
-     * Second Event.
-     * <p/>
-     * The builder instance (for the profile) is now created and ready to be used.
-     */
-    CONTENT_DELIVERY_BUILDER_CREATED,
+public class ContentHandlersCreatedLifecyclePhase implements LifecyclePhase {
+    @Override
+    public void apply(Object o) {
+        ((ContentDeliveryConfigLifecycle) o).onContentHandlersCreated();
 
-    CONTENT_DELIVERY_CONFIG_CREATED
+    }
 }
