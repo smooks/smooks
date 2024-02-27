@@ -44,7 +44,7 @@ package org.smooks.engine.delivery.event;
 
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.delivery.event.ResourceBasedEvent;
+import org.smooks.api.delivery.event.ResourceAwareEvent;
 
 import java.util.Arrays;
 
@@ -53,7 +53,7 @@ import java.util.Arrays;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ResourceTargetingExecutionEvent<T> extends FragmentExecutionEvent<T> implements ResourceBasedEvent {
+public class ResourceTargetingExecutionEvent<T> extends FragmentExecutionEvent<T> implements ResourceAwareEvent {
 
     private final ResourceConfig resourceConfig;
     private Object[] metadata;
