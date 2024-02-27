@@ -71,7 +71,7 @@ public class DefaultApplicationContextBuilderTestCase {
                 };
             }
         }).build());
-        assertEquals("No [org.smooks.api.delivery.ContentHandlerFactory] found for content of type 'class'. Hint: ensure the Smooks application context has the correct class loader set", smooksException.getCause().getMessage());
+        assertEquals("org.smooks.api.delivery.ContentHandlerFactory not found for content of type [class]. Hint: ensure the Smooks application context has the correct class loader set", smooksException.getCause().getMessage());
     }
 
     @Test

@@ -45,7 +45,6 @@ package org.smooks.engine.converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
 
 import java.lang.reflect.ParameterizedType;
@@ -69,10 +68,8 @@ public class TypeConverterFactoryLoader {
             final Type sourceType = ((ParameterizedType) typeConverterFactory.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
             final Type targetType = ((ParameterizedType) typeConverterFactory.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1];
 
-            final TypeConverterDescriptor<?, ?> typeConverterDescriptor;
- 
             if (typeConverterFactories.contains(typeConverterFactory.getTypeConverterDescriptor())) {
-                LOGGER.warn("More than one TypeConverter for type '" + targetType.getTypeName() + "' is installed on the classpath.  You must manually configure decoding of this type, where required.");
+                LOGGER.warn("More than one TypeConverter for type [{}] is installed on the classpath.  You must manually configure decoding of this type, where required.", targetType.getTypeName());
                 typeConverterFactories.add(null); // We don't remove, because we need to maintain a record of this!
             } else {
                 typeConverterFactories.add(typeConverterFactory);

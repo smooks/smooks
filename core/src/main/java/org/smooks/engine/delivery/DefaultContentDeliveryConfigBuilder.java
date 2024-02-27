@@ -167,7 +167,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         final List<FilterProvider> candidateFilterProviders = filterProviders.stream().filter(s -> s.isProvider(visitorBindings)).collect(Collectors.toList());
         final String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
         if (filterTypeParam == null && candidateFilterProviders.isEmpty()) {
-            throw new SmooksException("Ambiguous Resource Configuration set.  All Element Content Handlers must support processing on the SAX and/or DOM Filter:\n" + getResourceFilterCharacteristics());
+            throw new SmooksConfigException("Ambiguous Resource Config set. All content handlers must support processing on the SAX and/or DOM Filter:\n" + getResourceFilterCharacteristics());
         } else if (filterTypeParam == null) {
             return candidateFilterProviders.get(0);
         } else {
@@ -175,13 +175,14 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             if (filterProviderOptional.isPresent()) {
                 return filterProviderOptional.get();
             } else {
-                throw new SmooksException("The configured Filter ('" + filterTypeParam + "') cannot be used: " + Arrays.toString(candidateFilterProviders.stream().map(FilterProvider::getName).collect(Collectors.toList()).toArray()) + " filters can be used for the given set of visitors. Turn on debug logging for more information.");
+                throw new SmooksConfigException("The configured Filter ('" + filterTypeParam + "') cannot be used: " + Arrays.toString(candidateFilterProviders.stream().map(FilterProvider::getName).collect(Collectors.toList()).toArray()) + " filters can be used for the given set of visitors. Turn on debug logging for more information.");
             }
         }
     }
 
     /**
      * Logging support function.
+     *
      * @return Verbose characteristics string.
      */
     private String getResourceFilterCharacteristics() {
@@ -219,20 +220,20 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         stringBuf.append(contentHandlerBinding.getResourceConfig())
                 .append("\n");
     }
-    
+
     /**
-	 * Build the ContentDeliveryConfigBuilder for the specified device.
-	 * <p/>
-	 * Creates the buildTable instance and populates it with the ProcessingUnit matrix
-	 * for the specified device.
-	 */
-	private void load(ProfileSet profileSet) {
+     * Build the ContentDeliveryConfigBuilder for the specified device.
+     * <p/>
+     * Creates the buildTable instance and populates it with the ProcessingUnit matrix
+     * for the specified device.
+     */
+    private void load(ProfileSet profileSet) {
         resourceConfigs.clear();
         resourceConfigs.addAll(Arrays.asList(registry.lookup(new ResourceConfigsProfileSetLookup(registry, profileSet))));
 
-		// Build and sort the resourceConfigTable table - non-transforming elements.
-		buildResourceConfigTable(resourceConfigs);
-		sortResourceConfigs(resourceConfigTable, profileSet);
+        // Build and sort the resourceConfigTable table - non-transforming elements.
+        buildResourceConfigTable(resourceConfigs);
+        sortResourceConfigs(resourceConfigTable, profileSet);
 
         // Extract the ContentDeliveryUnits and build the tables
         extractContentHandlers();
@@ -380,7 +381,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             if (resourceConfig.isJavaResource()) {
                 final ContentHandlerFactory<?> contentHandlerFactory = registry.lookup(new ContentHandlerFactoryLookup("class"));
                 if (contentHandlerFactory == null) {
-                    throw new SmooksException(String.format("No [%s] found for content of type 'class'. Hint: ensure the Smooks application context has the correct class loader set", ContentHandlerFactory.class.getName()));
+                    throw new SmooksConfigException(String.format("%s not found for content of type [class]. Hint: ensure the Smooks application context has the correct class loader set", ContentHandlerFactory.class.getName()));
                 }
                 // Job done - it's a CDU and we've added it!
                 return addContentDeliveryUnit(resourceConfig, contentHandlerFactory);
@@ -459,8 +460,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             }
 
             // Content delivery units are allowed to dynamically add new configurations...
-            if (contentHandler instanceof ConfigurationExpander) {
-                List<ResourceConfig> additionalConfigs = ((ConfigurationExpander) contentHandler).expandConfigurations();
+            if (contentHandler instanceof ResourceConfigExpander) {
+                List<ResourceConfig> additionalConfigs = ((ResourceConfigExpander) contentHandler).expandConfigurations();
                 if (additionalConfigs != null && !additionalConfigs.isEmpty()) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Adding expansion resource configurations created by: " + resourceConfig);

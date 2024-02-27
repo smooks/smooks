@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface ConfigurationExpander extends ContentHandler {
+public interface ResourceConfigExpander extends ContentHandler {
 
     /**
      * Get the additional configurations to be added to the delivery config by
