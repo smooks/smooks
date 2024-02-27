@@ -117,8 +117,9 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
     * `org.milyn.delivery.VisitLifecycleCleanable` with `org.smooks.api.lifecycle.PostFragmentLifecycle`
     * `org.milyn.delivery.ConfigurationExpander` with `org.smooks.api.delivery.ResourceConfigExpander`
 . Remove references to  `org.milyn.util.CollectionsUtil` and write your own implementation for this class.
+. Implement from `org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor` instead of `org.milyn.delivery.sax.SAXVisitor`.
+. Replace `Smooks#addConfiguration(...)` method calls with `Smooks#addResourceConfig(...)`.
 . Replace `org.milyn.*` Java package references with `org.smooks.api`, `org.smooks.engine`, `org.smooks.io` or `org.smooks.support`.
-. Inherit from `org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor` instead of `org.milyn.delivery.sax.SAXVisitor`.
 . Change legacy document root fragment selectors from `$document` to `#document`.
 . Remove the `milyn-smooks-all` dependency from the Maven POM and import the https://www.smooks.org/maven#bill_of_materials_bom[Smooks BOM] instead. Declare the corresponding dependency of each Smooks cartridge used within the project but omit the artifact version.
 . Replace Smooks Maven coordinates to match the coordinates as described in the https://www.smooks.org/maven[Maven guide].

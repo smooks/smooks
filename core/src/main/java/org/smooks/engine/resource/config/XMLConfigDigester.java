@@ -91,7 +91,7 @@ public final class XMLConfigDigester {
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLConfigDigester.class);
     private static final ThreadLocal<Boolean> EXTENSION_DIGEST_ON = new ThreadLocal<>();
 
-    private final ResourceConfigSeq resourceConfigSeq;
+    private final ResourceConfigSeq resourceConfigList;
     private final Stack<SmooksConfig> configStack = new Stack<>();
     private final ExpressionEvaluatorFactory expressionEvaluatorFactory = new ExpressionEvaluatorFactory();
 
@@ -113,10 +113,10 @@ public final class XMLConfigDigester {
      * public/private nature of these methods may effect the behavior of the {@link #EXTENSION_DIGEST_ON}
      * ThreadLocal.
      *
-     * @param resourceConfigSeq Config list.
+     * @param resourceConfigList Config list.
      */
-    public XMLConfigDigester(ResourceConfigSeq resourceConfigSeq) {
-        this.resourceConfigSeq = resourceConfigSeq;
+    public XMLConfigDigester(ResourceConfigSeq resourceConfigList) {
+        this.resourceConfigList = resourceConfigList;
         configStack.push(new SmooksConfig("root-config"));
     }
 
@@ -216,7 +216,7 @@ public final class XMLConfigDigester {
      * @return The active resource configuration list.
      */
     public ResourceConfigSeq getResourceList() {
-        return resourceConfigSeq;
+        return resourceConfigList;
     }
 
     private void digestConfigRecursively(Reader stream, String baseURI) throws IOException, SAXException, URISyntaxException, SmooksConfigException {
@@ -241,7 +241,7 @@ public final class XMLConfigDigester {
             throw new SAXException("Cannot parse Smooks configuration.  Unsupported default Namespace '" + defaultNS + "'.");
         }
 
-        if (resourceConfigSeq.isEmpty()) {
+        if (resourceConfigList.isEmpty()) {
             throw new SAXException("Invalid Content Delivery Resource archive definition file: 0 Content Delivery Resource definitions.");
         }
     }
@@ -292,7 +292,7 @@ public final class XMLConfigDigester {
             ResourceConfig globalParamsConfig = new DefaultResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS, new Properties());
 
             digestParameters(paramsElement, globalParamsConfig);
-            resourceConfigSeq.add(globalParamsConfig);
+            resourceConfigList.add(globalParamsConfig);
         }
     }
 
@@ -369,7 +369,7 @@ public final class XMLConfigDigester {
         configureFeatures(configElement, resourceConfig);
         configureParams(configElement, resourceConfig);
 
-        resourceConfigSeq.add(resourceConfig);
+        resourceConfigList.add(resourceConfig);
     }
 
     private void configureHandlers(Element configElement, ResourceConfig resourceConfig) {
@@ -459,9 +459,9 @@ public final class XMLConfigDigester {
         // Add the parameters...
         digestParameters(configElement, resourceConfig);
 
-        resourceConfigSeq.add(resourceConfig);
+        resourceConfigList.add(resourceConfig);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Adding smooks-resource config from [" + resourceConfigSeq.getName() + "]: " + resourceConfig);
+            LOGGER.debug("Adding smooks-resource config from [" + resourceConfigList.getName() + "]: " + resourceConfig);
         }
     }
 
@@ -489,7 +489,7 @@ public final class XMLConfigDigester {
         // Copy the created resources from the ExtensionContext and onto the ResourceConfigList...
         List<ResourceConfig> resources = extentionContext.getResources();
         for (ResourceConfig resource : resources) {
-            resourceConfigSeq.add(resource);
+            resourceConfigList.add(resource);
         }
     }
 
@@ -622,7 +622,7 @@ public final class XMLConfigDigester {
                     profileSet.addProfiles(subProfiles.split(","));
                 }
 
-                resourceConfigSeq.add(profileSet);
+                resourceConfigList.add(profileSet);
             }
         }
     }

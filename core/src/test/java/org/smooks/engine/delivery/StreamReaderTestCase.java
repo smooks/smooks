@@ -76,7 +76,7 @@ public class StreamReaderTestCase
     @BeforeEach
     public void setup() {
         smooks = new Smooks();
-        smooks.addConfiguration(new DefaultResourceConfig("org.xml.sax.driver", new Properties(), MockReader.class.getName()));
+        smooks.addResourceConfig(new DefaultResourceConfig("org.xml.sax.driver", new Properties(), MockReader.class.getName()));
     }
 
     @Test
