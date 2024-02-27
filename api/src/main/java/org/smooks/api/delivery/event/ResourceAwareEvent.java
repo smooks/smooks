@@ -49,7 +49,7 @@ import org.smooks.api.resource.config.ResourceConfig;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface ResourceBasedEvent {
+public interface ResourceAwareEvent {
 
     ResourceConfig getResourceConfig();
 }

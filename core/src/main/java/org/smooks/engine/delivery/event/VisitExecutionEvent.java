@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
-import org.smooks.api.delivery.event.ResourceBasedEvent;
+import org.smooks.api.delivery.event.ResourceAwareEvent;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.VisitAfterReport;
@@ -68,7 +68,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class VisitExecutionEvent<F, T extends Visitor> extends FragmentExecutionEvent<F> implements ResourceBasedEvent {
+public class VisitExecutionEvent<F, T extends Visitor> extends FragmentExecutionEvent<F> implements ResourceAwareEvent {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VisitExecutionEvent.class);
 

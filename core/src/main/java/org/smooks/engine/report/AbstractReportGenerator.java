@@ -46,7 +46,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.*;
 import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
-import org.smooks.api.delivery.event.ResourceBasedEvent;
+import org.smooks.api.delivery.event.ResourceAwareEvent;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.event.VisitSequence;
@@ -140,9 +140,9 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     @Override
     protected boolean ignoreEvent(ExecutionEvent event) {
         if(!super.ignoreEvent(event)) {
-            if (event instanceof ResourceBasedEvent) {
+            if (event instanceof ResourceAwareEvent) {
                 if (!reportConfiguration.showDefaultAppliedResources()) {
-                    return ((ResourceBasedEvent) event).getResourceConfig().isSystem();
+                    return ((ResourceAwareEvent) event).getResourceConfig().isSystem();
                 }
             }
 

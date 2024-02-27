@@ -116,9 +116,21 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
     * `org.milyn.delivery.ExecutionLifecycleCleanable` with `org.smooks.api.lifecycle.PostExecutionLifecycle`
     * `org.milyn.delivery.VisitLifecycleCleanable` with `org.smooks.api.lifecycle.PostFragmentLifecycle`
     * `org.milyn.delivery.ConfigurationExpander` with `org.smooks.api.delivery.ResourceConfigExpander`
+    * `org.milyn.event.ResourceBasedEvent` with `org.smooks.api.delivery.event.ResourceAwareEvent`
 . Remove references to  `org.milyn.util.CollectionsUtil` and write your own implementation for this class.
 . Implement from `org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor` instead of `org.milyn.delivery.sax.SAXVisitor`.
 . Replace `Smooks#addConfiguration(...)` method calls with `Smooks#addResourceConfig(...)`.
+. Replace references to:
+    * `org.milyn.javabean.DataDecode` with `org.smooks.api.converter.TypeConverterFactory`.
+    * `org.milyn.cdr.annotation.Configurator` with `org.smooks.api.lifecycle.LifecycleManager`.
+    * `org.milyn.javabean.DataDecoderException` with `org.smooks.api.converter.TypeConverterException`.
+    * `org.milyn.cdr.SmooksResourceConfigurationStore` with `org.smooks.api.Registry`.
+    * `org.milyn.cdr.SmooksResourceConfiguration` with `org.smooks.api.resource.config.ResourceConfig`.
+        ** Replace calls to `setDefaultResource()` with `setSystem()`
+        ** Replace calls to `isDefaultResource()` with `isSystem()`
+    * `org.milyn.delivery.sax.SAXToXMLWriter` with `org.smooks.io.DomSerializer`.
+    * `org.milyn.delivery.dom.serialize.Serializer` references with `org.smooks.api.resource.visitor.SerializerVisitor`
+    * `org.milyn.event.types.ConfigBuilderEvent` references with `org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent`
 . Replace `org.milyn.*` Java package references with `org.smooks.api`, `org.smooks.engine`, `org.smooks.io` or `org.smooks.support`.
 . Change legacy document root fragment selectors from `$document` to `#document`.
 . Remove the `milyn-smooks-all` dependency from the Maven POM and import the https://www.smooks.org/maven#bill_of_materials_bom[Smooks BOM] instead. Declare the corresponding dependency of each Smooks cartridge used within the project but omit the artifact version.
@@ -126,21 +138,12 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
 . Replace `ExecutionContext#isDefaultSerializationOn()` method calls with
 `ExecutionContext#getContentDeliveryRuntime().getDeliveryConfig().isDefaultSerializationOn()`.
 . Replace `ExecutionContext#getContext()` method calls with `ExecutionContext#getApplicationContext()`.
-. Replace `org.milyn.delivery.dom.serialize.Serializer` references with `org.smooks.api.resource.visitor.SerializerVisitor`.
-. Replace `org.smooks.cdr.annotation.AppContext` annotations with `javax.inject.Inject` annotations.
-. Replace `org.smooks.cdr.annotation.ConfigParam` annotations with `javax.inject.Inject` annotations:
+. Replace `org.milyn.cdr.annotation.AppContext` annotations with `javax.inject.Inject` annotations.
+. Replace `org.milyn.cdr.annotation.ConfigParam` annotations with `javax.inject.Inject` annotations:
     * Substitute the `@ConfigParam` name attribute with the `@javax.inject.Named` annotation.
     * Wrap `java.util.Optional` around the field to mimic the behaviour of the `@ConfigParam` optional attribute.
-. Replace `org.smooks.delivery.annotation.Initialize` annotations with `jakarta.annotation.PostConstruct` annotations.
-. Replace `org.smooks.delivery.annotation.Uninitialize` annotations with `jakarta.annotation.PreDestroy` annotations.
-. Replace references to `org.smooks.javabean.DataDecode` with `org.smooks.api.converter.TypeConverterFactory`.
-. Replace references to `org.smooks.cdr.annotation.Configurator` with `org.smooks.api.lifecycle.LifecycleManager`.
-. Replace references to `org.smooks.javabean.DataDecoderException` with `org.smooks.api.converter.TypeConverterException`.
-. Replace references to `org.smooks.cdr.SmooksResourceConfigurationStore` with `org.smooks.api.Registry`.
-. Replace references to `org.milyn.cdr.SmooksResourceConfiguration` with `org.smooks.api.resource.config.ResourceConfig`.
-    * Replace calls to `setDefaultResource()` with `setSystem()`
-    * Replace calls to `isDefaultResource()` with `isSystem()`
-. Replace references to `org.milyn.delivery.sax.SAXToXMLWriter` with `org.smooks.io.DomSerializer`.
+. Replace `org.milyn.delivery.annotation.Initialize` annotations with `jakarta.annotation.PostConstruct` annotations.
+. Replace `org.milyn.delivery.annotation.Uninitialize` annotations with `jakarta.annotation.PreDestroy` annotations.
 . Follow the https://github.com/smooks/smooks-examples/tree/master/edifact-to-java[EDIFACT-to-Java example] to migrate an implementation that binds an EDIFACT document to a POJO.
 . Follow the https://github.com/smooks/smooks-examples/tree/master/java-to-edifact[Java-to-EDIFACT example] to migrate an implementation that deserialises a POJO into an EDIFACT document.
 . Set `ContainerResourceLocator` from `DefaultApplicationContextBuilder#setResourceLocator` instead from `ApplicationContext#setResourceLocator`.
