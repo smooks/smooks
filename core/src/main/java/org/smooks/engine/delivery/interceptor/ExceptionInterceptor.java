@@ -53,7 +53,7 @@ import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
-import org.smooks.engine.delivery.event.VisitEvent;
+import org.smooks.engine.delivery.event.VisitExecutionEvent;
 import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.sax.ng.terminate.TerminateException;
@@ -111,7 +111,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
     
     private void processVisitorException(final Throwable t, final String exceptionMessage, final ExecutionContext executionContext, final Fragment<?> fragment, final VisitSequence visitSequence, final ContentHandlerBinding<Visitor> visitorBinding) {
         for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
-            executionEventListener.onEvent(new VisitEvent<>(fragment, visitorBinding, visitSequence, executionContext, t));
+            executionEventListener.onEvent(new VisitExecutionEvent<>(fragment, visitorBinding, visitSequence, executionContext, t));
         }
         
         if (t instanceof TerminateException) {

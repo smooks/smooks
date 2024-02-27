@@ -42,20 +42,34 @@
  */
 package org.smooks.engine.delivery.event;
 
+import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.engine.delivery.event.FragmentEvent;
+import org.smooks.support.DomUtils;
+import org.w3c.dom.Element;
 
 /**
- * Element Present Event.
- * <p/>
- * This event is fired for all elements in message.
+ * An element processing related event.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class EndFragmentEvent extends FragmentEvent {
-    
-    public EndFragmentEvent(final Fragment fragment) {
-        super(fragment);
+public abstract class FragmentExecutionEvent<T> implements ExecutionEvent {
+
+    private final Fragment<T> fragment;
+
+    public FragmentExecutionEvent(Fragment<T> fragment) {
+        this.fragment = fragment;
+    }
+
+    public Fragment<T> getFragment() {
+        return fragment;
+    }
+
+    public int getDepth() {
+        T unwrappedFragment = fragment.unwrap();
+        if (unwrappedFragment instanceof Element) {
+            return DomUtils.getDepth((Element) unwrappedFragment);
+        }
+
+        return 0;
     }
 }
-              

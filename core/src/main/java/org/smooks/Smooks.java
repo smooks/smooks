@@ -64,7 +64,7 @@ import org.smooks.engine.DefaultExecutionContext;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.engine.delivery.AbstractFilter;
 import org.smooks.engine.delivery.DefaultContentHandlerBinding;
-import org.smooks.engine.delivery.event.FilterLifecycleEvent;
+import org.smooks.engine.delivery.event.FilterLifecycleExecutionEvent;
 import org.smooks.engine.injector.Scope;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.engine.bean.context.preinstalled.Time;
@@ -506,7 +506,7 @@ public class Smooks implements Closeable {
 
         try {
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                executionEventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.STARTED, executionContext));
+                executionEventListener.onEvent(new FilterLifecycleExecutionEvent(FilterLifecycleExecutionEvent.EventType.STARTED, executionContext));
             }
 
             ContentDeliveryConfig contentDeliveryConfig = contentDeliveryRuntime.getContentDeliveryConfig();
@@ -572,7 +572,7 @@ public class Smooks implements Closeable {
             }
         } finally {
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                executionEventListener.onEvent(new FilterLifecycleEvent(FilterLifecycleEvent.EventType.FINISHED, executionContext));
+                executionEventListener.onEvent(new FilterLifecycleExecutionEvent(FilterLifecycleExecutionEvent.EventType.FINISHED, executionContext));
             }
         }
     }

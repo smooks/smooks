@@ -47,12 +47,12 @@ import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
-import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
+import org.smooks.engine.delivery.sax.ng.CharDataFragmentExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
-import org.smooks.engine.delivery.event.FragmentEvent;
+import org.smooks.engine.delivery.event.FragmentExecutionEvent;
 import org.smooks.engine.delivery.sax.ng.bridge.BridgeAwareExecutionEventListener;
-import org.smooks.engine.delivery.event.EndFragmentEvent;
-import org.smooks.engine.delivery.event.StartFragmentEvent;
+import org.smooks.engine.delivery.event.EndFragmentExecutionEvent;
+import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.w3c.dom.Node;
 
 import java.io.Writer;
@@ -72,18 +72,18 @@ class ChildEventListener extends BridgeAwareExecutionEventListener {
 
     @Override
     public void doOnEvent(final ExecutionEvent executionEvent) {
-        if (executionEvent instanceof FragmentEvent) {
-            final Fragment<Node> childFragment = ((FragmentEvent<Node>) executionEvent).getFragment();
+        if (executionEvent instanceof FragmentExecutionEvent) {
+            final Fragment<Node> childFragment = ((FragmentExecutionEvent<Node>) executionEvent).getFragment();
             final VisitorMemento<Node> sourceTreeMemento = new SimpleVisitorMemento<>(visitedFragment, nestedSmooksVisitor, visitedFragment.unwrap());
             executionContext.getMementoCaretaker().restore(sourceTreeMemento);
 
-            if (executionEvent instanceof StartFragmentEvent) {
+            if (executionEvent instanceof StartFragmentExecutionEvent) {
                 if (!visitedFragment.equals(childFragment)) {
                     visitBefore(sourceTreeMemento, childFragment);
                 }
-            } else if (executionEvent instanceof CharDataFragmentEvent) {
+            } else if (executionEvent instanceof CharDataFragmentExecutionEvent) {
                 visitChildText(sourceTreeMemento, childFragment);
-            } else if (executionEvent instanceof EndFragmentEvent) {
+            } else if (executionEvent instanceof EndFragmentExecutionEvent) {
                 if (!visitedFragment.equals(childFragment)) {
                     visitAfter(sourceTreeMemento);
                 }

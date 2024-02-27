@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2021 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -42,44 +42,40 @@
  */
 package org.smooks.engine.delivery.event;
 
-import org.smooks.api.ExecutionContext;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 
-/**
- * Smooks DOM filter Lifecycle event.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- * @see DOMFilterLifecycleEvent.DOMEventType
- */
-public class DOMFilterLifecycleEvent extends FilterLifecycleEvent {
+public class DefaultContentDeliveryConfigExecutionEvent implements ContentDeliveryConfigExecutionEvent {
+    private ResourceConfig resourceConfig;
+    private final String message;
+    private Throwable thrown;
 
-    public enum DOMEventType {
-        /**
-         * The filtering process has started.
-         */
-        ASSEMBLY_STARTED,
-        /**
-         * The filtering process has finished.
-         */
-        PROCESSING_STARTED,
-        /**
-         * The filtering process has finished.
-         */
-        SERIALIZATION_STARTED,
+    public DefaultContentDeliveryConfigExecutionEvent(String message) {
+        this.message = message;
     }
 
-    private final DOMEventType eventType;
-
-    public DOMFilterLifecycleEvent(DOMEventType eventType, ExecutionContext executionContext) {
-        super(executionContext);
-        this.eventType = eventType;
+    public DefaultContentDeliveryConfigExecutionEvent(ResourceConfig resourceConfig, String message) {
+        this.resourceConfig = resourceConfig;
+        this.message = message;
     }
 
-    public DOMEventType getDOMEventType() {
-        return eventType;
+    public DefaultContentDeliveryConfigExecutionEvent(ResourceConfig resourceConfig, String message, Throwable thrown) {
+        this(resourceConfig, message);
+        this.thrown = thrown;
     }
 
     @Override
-    public String toString() {
-        return eventType.toString();
+    public ResourceConfig getResourceConfig() {
+        return resourceConfig;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public Throwable getThrown() {
+        return thrown;
     }
 }

@@ -42,7 +42,7 @@
  */
 package org.smooks.api.delivery;
 
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
+import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
@@ -127,7 +127,7 @@ public interface ContentDeliveryConfig {
      * the configuration.
      * @return The list of events.
      */
-    List<ConfigBuilderEvent> getConfigBuilderEvents();
+    List<ContentDeliveryConfigExecutionEvent> getContentDeliveryConfigExecutionEvents();
 
     /**
      * Is default serialization on..

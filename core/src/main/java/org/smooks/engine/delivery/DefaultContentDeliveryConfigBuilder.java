@@ -55,7 +55,7 @@ import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterProvider;
 import org.smooks.api.delivery.ResourceConfigExpander;
 import org.smooks.api.delivery.VisitorAppender;
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
+import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
 import org.smooks.api.lifecycle.LifecyclePhase;
 import org.smooks.api.profile.ProfileSet;
@@ -65,7 +65,7 @@ import org.smooks.api.resource.config.ResourceConfigSortComparator;
 import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.engine.delivery.event.DefaultConfigBuilderEvent;
+import org.smooks.engine.delivery.event.DefaultContentDeliveryConfigExecutionEvent;
 import org.smooks.engine.lifecycle.ContentDeliveryBuilderCreatedLifecyclePhase;
 import org.smooks.engine.lifecycle.ContentDeliveryConfigCreatedLifecyclePhase;
 import org.smooks.engine.lifecycle.ContentHandlersCreatedLifecyclePhase;
@@ -122,7 +122,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     /**
      * Config builder events list.
      */
-    private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<>();
+    private final List<ContentDeliveryConfigExecutionEvent> configBuilderEvents = new ArrayList<>();
     private final List<FilterProvider> filterProviders;
 
     private volatile ContentDeliveryConfig contentDeliveryConfig;
@@ -177,8 +177,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         FilterProvider filterProvider = getFilterProvider();
 
         LOGGER.debug("Activating {} filter", filterProvider.getName());
-        configBuilderEvents.add(new DefaultConfigBuilderEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
-        configBuilderEvents.add(new DefaultConfigBuilderEvent(String.format("Activating %s filter", filterProvider.getName())));
+        configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
+        configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent(String.format("Activating %s filter", filterProvider.getName())));
 
         ContentDeliveryConfig contentDeliveryConfig = filterProvider.createContentDeliveryConfig(visitorBindings, registry, resourceConfigTable, configBuilderEvents);
         fireEvent(Event.CONTENT_DELIVERY_CONFIG_CREATED);
@@ -374,7 +374,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     }
 
     private void logExecutionEvent(ResourceConfig resourceConfig, String message) {
-        configBuilderEvents.add(new DefaultConfigBuilderEvent(resourceConfig, message));
+        configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent(resourceConfig, message));
     }
 
     private void fireEvent(Event event) {
@@ -490,7 +490,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             } catch (Throwable thrown) {
                 String message = "ContentHandlerFactory [" + contentHandlerFactory.getClass().getName() + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
                 LOGGER.error(message + thrown.getMessage(), thrown);
-                configBuilderEvents.add(new DefaultConfigBuilderEvent(resourceConfig, message, thrown));
+                configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent(resourceConfig, message, thrown));
 
                 return false;
             }

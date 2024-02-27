@@ -49,8 +49,8 @@ import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
-import org.smooks.engine.delivery.event.ResourceTargetingEvent;
-import org.smooks.engine.delivery.event.VisitEvent;
+import org.smooks.engine.delivery.event.ResourceTargetingExecutionEvent;
+import org.smooks.engine.delivery.event.VisitExecutionEvent;
 import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.w3c.dom.CharacterData;
@@ -63,7 +63,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements Elem
     public void visitBefore(Element element, ExecutionContext executionContext) {
         if (getTarget().getContentHandler() instanceof BeforeVisitor) {
             for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
-                executionEventListener.onEvent(new ResourceTargetingEvent(new NodeFragment(element), getTarget().getResourceConfig(), VisitSequence.BEFORE));
+                executionEventListener.onEvent(new ResourceTargetingExecutionEvent(new NodeFragment(element), getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }
             intercept(visitBeforeInvocation, element, executionContext);
             onEvent(executionContext, new NodeFragment(element), VisitSequence.BEFORE);
@@ -100,7 +100,7 @@ public class EventInterceptor extends AbstractInterceptorVisitor implements Elem
 
     protected void onEvent(final ExecutionContext executionContext, final Fragment<Node> fragment, final VisitSequence visitSequence) {
         for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
-            executionEventListener.onEvent(new VisitEvent<>(fragment, getTarget(), visitSequence, executionContext));
+            executionEventListener.onEvent(new VisitExecutionEvent<>(fragment, getTarget(), visitSequence, executionContext));
         }
     }
 }

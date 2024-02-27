@@ -42,34 +42,44 @@
  */
 package org.smooks.engine.delivery.event;
 
-import org.smooks.api.delivery.event.ExecutionEvent;
-import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.support.DomUtils;
-import org.w3c.dom.Element;
+import org.smooks.api.ExecutionContext;
 
 /**
- * An element processing related event.
+ * Smooks DOM filter Lifecycle event.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ * @see DOMFilterLifecycleExecutionEvent.DOMEventType
  */
-public abstract class FragmentEvent<T> implements ExecutionEvent {
+public class DOMFilterLifecycleExecutionEvent extends FilterLifecycleExecutionEvent {
 
-    private final Fragment<T> fragment;
-
-    public FragmentEvent(Fragment<T> fragment) {
-        this.fragment = fragment;
+    public enum DOMEventType {
+        /**
+         * The filtering process has started.
+         */
+        ASSEMBLY_STARTED,
+        /**
+         * The filtering process has finished.
+         */
+        PROCESSING_STARTED,
+        /**
+         * The filtering process has finished.
+         */
+        SERIALIZATION_STARTED,
     }
 
-    public Fragment<T> getFragment() {
-        return fragment;
+    private final DOMEventType eventType;
+
+    public DOMFilterLifecycleExecutionEvent(DOMEventType eventType, ExecutionContext executionContext) {
+        super(executionContext);
+        this.eventType = eventType;
     }
 
-    public int getDepth() {
-        T unwrappedFragment = fragment.unwrap();
-        if (unwrappedFragment instanceof Element) {
-            return DomUtils.getDepth((Element) unwrappedFragment);
-        }
+    public DOMEventType getDOMEventType() {
+        return eventType;
+    }
 
-        return 0;
+    @Override
+    public String toString() {
+        return eventType.toString();
     }
 }

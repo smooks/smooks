@@ -53,7 +53,7 @@ import java.util.Arrays;
  * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ResourceTargetingEvent extends FragmentEvent implements ResourceBasedEvent {
+public class ResourceTargetingExecutionEvent<T> extends FragmentExecutionEvent<T> implements ResourceBasedEvent {
 
     private final ResourceConfig resourceConfig;
     private Object[] metadata;
@@ -66,7 +66,7 @@ public class ResourceTargetingEvent extends FragmentEvent implements ResourceBas
      * @param resourceConfig The resource configuration.
      * @param metadata Optional event metadata.
      */
-    public ResourceTargetingEvent(Fragment fragment, ResourceConfig resourceConfig, Object... metadata) {
+    public ResourceTargetingExecutionEvent(Fragment<T> fragment, ResourceConfig resourceConfig, Object... metadata) {
         super(fragment);
         this.resourceConfig = resourceConfig;
         this.metadata = metadata;
@@ -79,7 +79,7 @@ public class ResourceTargetingEvent extends FragmentEvent implements ResourceBas
      * @param resourceConfig The resource configuration.
      * @param metadata Optional event metadata.
      */
-    public ResourceTargetingEvent(Fragment fragment, ResourceConfig resourceConfig, VisitSequence sequence, Object... metadata) {
+    public ResourceTargetingExecutionEvent(Fragment fragment, ResourceConfig resourceConfig, VisitSequence sequence, Object... metadata) {
         this(fragment, resourceConfig, metadata);
         this.sequence = sequence;
     }

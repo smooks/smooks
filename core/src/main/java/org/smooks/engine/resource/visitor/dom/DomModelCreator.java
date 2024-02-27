@@ -51,10 +51,10 @@ import org.smooks.api.delivery.ordering.Producer;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.engine.delivery.event.EndFragmentEvent;
-import org.smooks.engine.delivery.event.StartFragmentEvent;
+import org.smooks.engine.delivery.event.EndFragmentExecutionEvent;
+import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
+import org.smooks.engine.delivery.sax.ng.CharDataFragmentExecutionEvent;
 import org.smooks.engine.delivery.sax.ng.bridge.BridgeAwareExecutionEventListener;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
@@ -234,8 +234,8 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
 
         @Override
         public void doOnEvent(ExecutionEvent executionEvent) {
-            if (executionEvent instanceof StartFragmentEvent) {
-                StartFragmentEvent<NodeFragment> startFragmentEvent = (StartFragmentEvent<NodeFragment>) executionEvent;
+            if (executionEvent instanceof StartFragmentExecutionEvent) {
+                StartFragmentExecutionEvent<NodeFragment> startFragmentEvent = (StartFragmentExecutionEvent<NodeFragment>) executionEvent;
                 Fragment<NodeFragment> fragment = startFragmentEvent.getFragment();
                 Element importNode = (Element) document.importNode((Node) fragment.unwrap(), true);
 
@@ -245,13 +245,13 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
 
                 currentNode.appendChild(importNode);
                 currentNode = importNode;
-            } else if (executionEvent instanceof CharDataFragmentEvent) {
+            } else if (executionEvent instanceof CharDataFragmentExecutionEvent) {
                 if (currentNode == document) {
                     // Just ignore for now...
                     return;
                 }
 
-                CharacterData characterData = (CharacterData) ((CharDataFragmentEvent) executionEvent).getFragment().unwrap();
+                CharacterData characterData = (CharacterData) ((CharDataFragmentExecutionEvent) executionEvent).getFragment().unwrap();
                 String textContent = characterData.getTextContent();
                 if (textContent.trim().isEmpty()) {
                     // Ignore pure whitespace...
@@ -270,7 +270,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
                         currentNode.appendChild(document.createComment(textContent));
                         break;
                 }
-            } else if (executionEvent instanceof EndFragmentEvent) {
+            } else if (executionEvent instanceof EndFragmentExecutionEvent) {
                 currentNode = currentNode.getParentNode();
             }
         }

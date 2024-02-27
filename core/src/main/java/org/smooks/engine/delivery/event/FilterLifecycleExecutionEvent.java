@@ -51,7 +51,7 @@ import org.smooks.api.delivery.event.ExecutionEvent;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  * @see EventType
  */
-public class FilterLifecycleEvent implements ExecutionEvent {
+public class FilterLifecycleExecutionEvent implements ExecutionEvent {
 
     protected final ExecutionContext executionContext;
 
@@ -68,12 +68,12 @@ public class FilterLifecycleEvent implements ExecutionEvent {
 
     private EventType eventType;
 
-    protected FilterLifecycleEvent(ExecutionContext executionContext) {
+    protected FilterLifecycleExecutionEvent(ExecutionContext executionContext) {
         // Allow package level extension...
         this.executionContext = executionContext;
     }
 
-    public FilterLifecycleEvent(EventType eventType, ExecutionContext executionContext) {
+    public FilterLifecycleExecutionEvent(EventType eventType, ExecutionContext executionContext) {
         this.eventType = eventType;
         this.executionContext = executionContext;
     }
