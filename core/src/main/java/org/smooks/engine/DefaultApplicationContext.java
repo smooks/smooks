@@ -116,6 +116,7 @@ public class DefaultApplicationContext implements ApplicationContext {
 		return beanIdStore;
 	}
 
+	@Override
     public void addBeanContextLifecycleObserver(BeanContextLifecycleObserver observer) {
         beanContextObservers.add(observer);
     }

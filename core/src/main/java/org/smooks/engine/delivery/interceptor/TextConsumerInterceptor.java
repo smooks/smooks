@@ -48,6 +48,7 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.sax.TextConsumer;
 import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
@@ -62,7 +63,7 @@ import org.w3c.dom.Node;
 
 import jakarta.annotation.PostConstruct;
 
-public class TextConsumerInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, InterceptorVisitor {
+public class TextConsumerInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor {
     
     protected boolean isTextConsumer;
 

@@ -51,9 +51,10 @@ import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
-import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
+import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.tck.MockApplicationContext;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -95,8 +96,8 @@ public class SaxNgFilterProviderTestCase {
 
             @Override
             public <R> R lookup(Function<Map<Object, Object>, R> function) {
-                if (function instanceof InterceptorVisitorFactoryLookup) {
-                    return (R) new InterceptorVisitorChainFactory();
+                if (function instanceof InterceptorVisitorChainFactoryLookup) {
+                    return (R) new InterceptorVisitorChainFactory(new MockApplicationContext());
                 } else if (function instanceof NamespaceManagerLookup) {
                     return (R) Optional.of(new Properties());
                 }
