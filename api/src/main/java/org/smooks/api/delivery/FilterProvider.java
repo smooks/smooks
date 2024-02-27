@@ -42,7 +42,7 @@
  */
 package org.smooks.api.delivery;
 
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
+import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.Registry;
@@ -61,7 +61,7 @@ import java.util.Map;
  */
 public interface FilterProvider {
 
-    ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, List<ConfigBuilderEvent> configBuilderEvents);
+    ContentDeliveryConfig createContentDeliveryConfig(List<ContentHandlerBinding<Visitor>> visitorBindings, Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, List<ContentDeliveryConfigExecutionEvent> contentDeliveryConfigExecutionEvents);
     
     Boolean isProvider(List<ContentHandlerBinding<Visitor>> visitorBindings);
     

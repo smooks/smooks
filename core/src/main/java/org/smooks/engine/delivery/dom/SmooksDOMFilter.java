@@ -412,7 +412,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
         // Register the DOM phase events...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new DOMFilterLifecycleEvent(DOMFilterLifecycleEvent.DOMEventType.ASSEMBLY_STARTED, executionContext));
+            executionEventListener.onEvent(new DOMFilterLifecycleExecutionEvent(DOMFilterLifecycleExecutionEvent.DOMEventType.ASSEMBLY_STARTED, executionContext));
         }
         
         // Apply assembly phase, skipping it if there are no configured assembly units...
@@ -430,7 +430,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
         // Register the DOM phase events...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new DOMFilterLifecycleEvent(DOMFilterLifecycleEvent.DOMEventType.PROCESSING_STARTED, executionContext));
+            executionEventListener.onEvent(new DOMFilterLifecycleExecutionEvent(DOMFilterLifecycleExecutionEvent.DOMEventType.PROCESSING_STARTED, executionContext));
         }
         
         // Apply processing phase...
@@ -483,7 +483,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
         // Register the "presence" of the element...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new StartFragmentEvent<>(new NodeFragment(element)));
+            executionEventListener.onEvent(new StartFragmentExecutionEvent<>(new NodeFragment(element)));
         }
         
         List<ContentHandlerBinding<DOMVisitBefore>> elementVisitBefores;
@@ -536,7 +536,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
             // Register the targeting event.  No need to register it again in the visitAfter loop...
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                executionEventListener.onEvent(new ResourceTargetingEvent(nodeFragment, resourceConfig, VisitSequence.BEFORE, VisitPhase.ASSEMBLY));
+                executionEventListener.onEvent(new ResourceTargetingExecutionEvent(nodeFragment, resourceConfig, VisitSequence.BEFORE, VisitPhase.ASSEMBLY));
             }
 
             DOMVisitBefore assemblyUnit = configMap.getContentHandler();
@@ -546,7 +546,7 @@ public class SmooksDOMFilter extends AbstractFilter {
                 }
                 assemblyUnit.visitBefore(element, executionContext);
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new VisitEvent<>(nodeFragment, configMap, VisitSequence.BEFORE, executionContext));
+                    executionEventListener.onEvent(new VisitExecutionEvent<>(nodeFragment, configMap, VisitSequence.BEFORE, executionContext));
                 }
             } catch (Throwable e) {
                 String errorMsg =
@@ -586,7 +586,7 @@ public class SmooksDOMFilter extends AbstractFilter {
             }
             visitAfter.visitAfter(element, executionContext);
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                executionEventListener.onEvent(new VisitEvent<>(nodeFragment, visitAfterBinding, VisitSequence.AFTER, executionContext));
+                executionEventListener.onEvent(new VisitExecutionEvent<>(nodeFragment, visitAfterBinding, VisitSequence.AFTER, executionContext));
             }
         } catch (Throwable e) {
             String errorMsg = "(Assembly) visitAfter failed [" + visitAfter.getClass().getName() + "] on [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -610,7 +610,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
         // Register the "presence" of the element...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new StartFragmentEvent<>(new NodeFragment(element)));
+            executionEventListener.onEvent(new StartFragmentExecutionEvent<>(new NodeFragment(element)));
         }
 
         elementName = DomUtils.getName(element);
@@ -810,7 +810,7 @@ public class SmooksDOMFilter extends AbstractFilter {
             if (visitSequence == VisitSequence.BEFORE) {
                 // Register the targeting event...
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new ResourceTargetingEvent(nodeFragment, resourceConfig, VisitSequence.BEFORE));
+                    executionEventListener.onEvent(new ResourceTargetingExecutionEvent(nodeFragment, resourceConfig, VisitSequence.BEFORE));
                 }
 
                 DOMVisitBefore visitor = (DOMVisitBefore) visitorBinding.getContentHandler();
@@ -820,7 +820,7 @@ public class SmooksDOMFilter extends AbstractFilter {
                     }
                     visitor.visitBefore(element, executionContext);
                     for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                        executionEventListener.onEvent(new VisitEvent<>(nodeFragment, visitorBinding, VisitSequence.BEFORE, executionContext));
+                        executionEventListener.onEvent(new VisitExecutionEvent<>(nodeFragment, visitorBinding, VisitSequence.BEFORE, executionContext));
                     }
                 } catch (Throwable e) {
                     String errorMsg = "Failed to apply processing unit [" + visitor.getClass().getName() + "] to [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -829,7 +829,7 @@ public class SmooksDOMFilter extends AbstractFilter {
             } else if (visitSequence == VisitSequence.AFTER) {
                 // Register the targeting event...
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new ResourceTargetingEvent(nodeFragment, resourceConfig, VisitSequence.AFTER));
+                    executionEventListener.onEvent(new ResourceTargetingExecutionEvent(nodeFragment, resourceConfig, VisitSequence.AFTER));
                 }
 
                 DOMVisitAfter visitor = (DOMVisitAfter) visitorBinding.getContentHandler();
@@ -839,7 +839,7 @@ public class SmooksDOMFilter extends AbstractFilter {
                     }
                     visitor.visitAfter(element, executionContext);
                     for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                        executionEventListener.onEvent(new VisitEvent<>(nodeFragment, visitorBinding, VisitSequence.AFTER, executionContext));
+                        executionEventListener.onEvent(new VisitExecutionEvent<>(nodeFragment, visitorBinding, VisitSequence.AFTER, executionContext));
                     }
                 } catch (Throwable e) {
                     String errorMsg = "Failed to apply processing unit [" + visitor.getClass().getName() + "] to [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -848,7 +848,7 @@ public class SmooksDOMFilter extends AbstractFilter {
             } else if (visitSequence == VisitSequence.CLEAN) {
                 // Register the targeting event...
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new ResourceTargetingEvent(nodeFragment, resourceConfig, VisitSequence.CLEAN));
+                    executionEventListener.onEvent(new ResourceTargetingExecutionEvent(nodeFragment, resourceConfig, VisitSequence.CLEAN));
                 }
 
                 ContentHandler contentHandler = visitorBinding.getContentHandler();
@@ -860,7 +860,7 @@ public class SmooksDOMFilter extends AbstractFilter {
                         }
                         lifecycleManager.applyPhase(visitor, new PostFragmentPhase(nodeFragment, executionContext));
                         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                            executionEventListener.onEvent(new VisitEvent<>(nodeFragment, visitorBinding, VisitSequence.CLEAN, executionContext));
+                            executionEventListener.onEvent(new VisitExecutionEvent<>(nodeFragment, visitorBinding, VisitSequence.CLEAN, executionContext));
                         }
                     } catch (Throwable e) {
                         String errorMsg = "Failed to clean up [" + visitor.getClass().getName() + "]. Targeted at [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
@@ -873,7 +873,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
     private void processVisitorException(Fragment<?> fragment, Throwable error, ContentHandlerBinding<? extends Visitor> configMapping, VisitSequence visitSequence, String errorMsg) throws SmooksException {
         for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
-            executionEventListener.onEvent(new VisitEvent<>(fragment, configMapping, visitSequence, executionContext, error));
+            executionEventListener.onEvent(new VisitExecutionEvent<>(fragment, configMapping, visitSequence, executionContext, error));
         }
 
         executionContext.setTerminationError(error);

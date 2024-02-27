@@ -1,8 +1,8 @@
 /*-
  * ========================LICENSE_START=================================
- * Core
+ * API
  * %%
- * Copyright (C) 2020 - 2021 Smooks
+ * Copyright (C) 2020 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,42 +40,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.event;
+package org.smooks.api.delivery.event;
 
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
 
-public class DefaultConfigBuilderEvent implements ConfigBuilderEvent {
-    private ResourceConfig resourceConfig;
-    private final String message;
-    private Throwable thrown;
+/**
+ * Configuration Builder Event.
+ * 
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public interface ContentDeliveryConfigExecutionEvent extends ExecutionEvent {
+    
+    ResourceConfig getResourceConfig();
 
-    public DefaultConfigBuilderEvent(String message) {
-        this.message = message;
-    }
+    String getMessage();
 
-    public DefaultConfigBuilderEvent(ResourceConfig resourceConfig, String message) {
-        this.resourceConfig = resourceConfig;
-        this.message = message;
-    }
-
-    public DefaultConfigBuilderEvent(ResourceConfig resourceConfig, String message, Throwable thrown) {
-        this(resourceConfig, message);
-        this.thrown = thrown;
-    }
-
-    @Override
-    public ResourceConfig getResourceConfig() {
-        return resourceConfig;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
-    @Override
-    public Throwable getThrown() {
-        return thrown;
-    }
+    Throwable getThrown();
 }

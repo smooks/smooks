@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * API
+ * Core
  * %%
  * Copyright (C) 2020 Smooks
  * %%
@@ -40,20 +40,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api.delivery.event;
+package org.smooks.engine.delivery.sax.ng;
 
-import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.engine.delivery.event.FragmentExecutionEvent;
+import org.w3c.dom.Node;
 
-/**
- * Configuration Builder Event.
- * 
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public interface ConfigBuilderEvent extends ExecutionEvent {
+public class CharDataFragmentExecutionEvent extends FragmentExecutionEvent<Node> {
     
-    ResourceConfig getResourceConfig();
-
-    String getMessage();
-
-    Throwable getThrown();
+    public CharDataFragmentExecutionEvent(final Fragment<Node> fragment) {
+        super(fragment);
+    }
 }

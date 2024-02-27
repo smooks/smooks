@@ -56,8 +56,8 @@ import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.smooks.engine.delivery.SmooksContentHandler;
-import org.smooks.engine.delivery.event.EndFragmentEvent;
-import org.smooks.engine.delivery.event.StartFragmentEvent;
+import org.smooks.engine.delivery.event.EndFragmentExecutionEvent;
+import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.replay.EndElementEvent;
 import org.smooks.engine.delivery.replay.StartElementEvent;
@@ -159,7 +159,7 @@ public class SaxNgHandler extends SmooksContentHandler {
             contentHandlerState.setNullProcessor(true);
             contentHandlerState.setPreviousContentHandlerState(currentContentHandlerState);
             currentContentHandlerState = contentHandlerState;
-            final StartFragmentEvent<Node> startFragmentEvent = new StartFragmentEvent<>(currentNodeFragment);
+            final StartFragmentExecutionEvent<Node> startFragmentEvent = new StartFragmentExecutionEvent<>(currentNodeFragment);
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                 executionEventListener.onEvent(startFragmentEvent);
             }
@@ -191,7 +191,7 @@ public class SaxNgHandler extends SmooksContentHandler {
     @Override
     public void endElement(final EndElementEvent endEvent) throws SAXException {
         if (!contentDeliveryRuntime.getExecutionEventListeners().isEmpty()) {
-            final EndFragmentEvent endFragmentEvent = new EndFragmentEvent(currentNodeFragment);
+            final EndFragmentExecutionEvent endFragmentEvent = new EndFragmentExecutionEvent(currentNodeFragment);
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                 executionEventListener.onEvent(endFragmentEvent);
             }
@@ -289,7 +289,7 @@ public class SaxNgHandler extends SmooksContentHandler {
         }
 
         if (!contentDeliveryRuntime.getExecutionEventListeners().isEmpty()) {
-            final StartFragmentEvent<Node> startFragmentEvent = new StartFragmentEvent<>(currentNodeFragment);
+            final StartFragmentExecutionEvent<Node> startFragmentEvent = new StartFragmentExecutionEvent<>(currentNodeFragment);
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                 executionEventListener.onEvent(startFragmentEvent);
             }
@@ -375,7 +375,7 @@ public class SaxNgHandler extends SmooksContentHandler {
             }
             
             if (!contentDeliveryRuntime.getExecutionEventListeners().isEmpty()) {
-                final CharDataFragmentEvent charFragmentEvent = new CharDataFragmentEvent(new NodeFragment(characterData));
+                final CharDataFragmentExecutionEvent charFragmentEvent = new CharDataFragmentExecutionEvent(new NodeFragment(characterData));
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                     executionEventListener.onEvent(charFragmentEvent);
                 }

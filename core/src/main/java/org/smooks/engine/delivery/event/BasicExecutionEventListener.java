@@ -112,9 +112,9 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
     }
 
     protected boolean ignoreEvent(ExecutionEvent event) {
-        if(event instanceof FilterLifecycleEvent) {
+        if(event instanceof FilterLifecycleExecutionEvent) {
             return false;
-        } else if(event instanceof StartFragmentEvent) {
+        } else if(event instanceof StartFragmentExecutionEvent) {
             return false;
         }
 
@@ -122,8 +122,8 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
             return true;
         }
 
-        if(event instanceof VisitEvent) {
-            VisitEvent visitEvent = (VisitEvent) event;
+        if(event instanceof VisitExecutionEvent) {
+            VisitExecutionEvent visitEvent = (VisitExecutionEvent) event;
             ContentHandler handler = visitEvent.getVisitorBinding().getContentHandler();
             if(visitEvent.getSequence() == VisitSequence.BEFORE) {
                 VisitBeforeReport reportAnnotation = handler.getClass().getAnnotation(VisitBeforeReport.class);
@@ -141,7 +141,7 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
         return false;
     }
 
-    private boolean evalReportCondition(VisitEvent visitEvent, String condition) {
+    private boolean evalReportCondition(VisitExecutionEvent visitEvent, String condition) {
         MVELExpressionEvaluator conditionEval = new MVELExpressionEvaluator();
         conditionEval.setExpression(condition);
         return conditionEval.eval(visitEvent.getResourceConfig());

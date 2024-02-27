@@ -45,8 +45,8 @@ package org.smooks.engine.report;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.event.ExecutionEvent;
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
-import org.smooks.engine.delivery.event.VisitEvent;
+import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
+import org.smooks.engine.delivery.event.VisitExecutionEvent;
 
 import java.io.File;
 import java.io.Writer;
@@ -72,7 +72,7 @@ public class ReportConfiguration {
     public ReportConfiguration(Writer outputWriter) {
         AssertArgument.isNotNull(outputWriter, "outputWriter");
         this.outputWriter = outputWriter;
-        filterEvents = new Class[] {ConfigBuilderEvent.class, VisitEvent.class};
+        filterEvents = new Class[] {ContentDeliveryConfigExecutionEvent.class, VisitExecutionEvent.class};
     }
 
     public void setOutputWriter(Writer outputWriter) {

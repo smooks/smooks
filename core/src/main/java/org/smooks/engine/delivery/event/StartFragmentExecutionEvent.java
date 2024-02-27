@@ -40,15 +40,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng;
+package org.smooks.engine.delivery.event;
 
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.engine.delivery.event.FragmentEvent;
-import org.w3c.dom.Node;
 
-public class CharDataFragmentEvent extends FragmentEvent<Node> {
+/**
+ * Element Present Event.
+ * <p/>
+ * This event is fired for all elements in message.
+ *
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class StartFragmentExecutionEvent<T> extends FragmentExecutionEvent<T> {
     
-    public CharDataFragmentEvent(final Fragment<Node> fragment) {
+    public StartFragmentExecutionEvent(final Fragment<T> fragment) {
         super(fragment);
     }
 }
+              

@@ -50,7 +50,7 @@ import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
+import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.lifecycle.PostExecutionLifecycle;
 import org.smooks.api.lifecycle.PreExecutionLifecycle;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -92,7 +92,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     /**
      * Config builder events list.
      */
-    private final List<ConfigBuilderEvent> configBuilderEvents = new ArrayList<>();
+    private final List<ContentDeliveryConfigExecutionEvent> configBuilderEvents = new ArrayList<>();
 
     private final Set<PreExecutionLifecycle> preExecutionLifecycles = new LinkedHashSet<>();
     private final Set<PostExecutionLifecycle> postExecutionLifecycles = new LinkedHashSet<>();
@@ -171,7 +171,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     }
 
     @Override
-    public List<ConfigBuilderEvent> getConfigBuilderEvents() {
+    public List<ContentDeliveryConfigExecutionEvent> getContentDeliveryConfigExecutionEvents() {
         return configBuilderEvents;
     }
 

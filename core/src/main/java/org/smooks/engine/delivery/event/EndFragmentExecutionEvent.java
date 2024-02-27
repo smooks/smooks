@@ -43,7 +43,6 @@
 package org.smooks.engine.delivery.event;
 
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.engine.delivery.event.FragmentEvent;
 
 /**
  * Element Present Event.
@@ -52,9 +51,9 @@ import org.smooks.engine.delivery.event.FragmentEvent;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class StartFragmentEvent<T> extends FragmentEvent<T> {
+public class EndFragmentExecutionEvent<T> extends FragmentExecutionEvent<T> {
     
-    public StartFragmentEvent(final Fragment<T> fragment) {
+    public EndFragmentExecutionEvent(final Fragment<T> fragment) {
         super(fragment);
     }
 }

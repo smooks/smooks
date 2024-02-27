@@ -56,9 +56,9 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.SerializerVisitor;
 import org.smooks.engine.delivery.ContentHandlerBindingIndex;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
-import org.smooks.engine.delivery.event.DOMFilterLifecycleEvent;
-import org.smooks.engine.delivery.event.ResourceTargetingEvent;
-import org.smooks.engine.delivery.event.StartFragmentEvent;
+import org.smooks.engine.delivery.event.DOMFilterLifecycleExecutionEvent;
+import org.smooks.engine.delivery.event.ResourceTargetingExecutionEvent;
+import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.ResourceConfigurationNotFoundException;
@@ -170,7 +170,7 @@ public class Serializer {
 
         // Register the DOM phase events...
         for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
-            executionEventListener.onEvent(new DOMFilterLifecycleEvent(DOMFilterLifecycleEvent.DOMEventType.SERIALIZATION_STARTED, executionContext));
+            executionEventListener.onEvent(new DOMFilterLifecycleExecutionEvent(DOMFilterLifecycleExecutionEvent.DOMEventType.SERIALIZATION_STARTED, executionContext));
         }
 
         if (node instanceof Document) {
@@ -269,7 +269,7 @@ public class Serializer {
         final Fragment<Node> nodeFragment = new NodeFragment(element);
         // Register the "presence" of the element...
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new StartFragmentEvent(nodeFragment));
+            executionEventListener.onEvent(new StartFragmentExecutionEvent(nodeFragment));
         }
 
         if (isRoot) {
@@ -294,7 +294,7 @@ public class Serializer {
 
                 // Register the targeting event...
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                    executionEventListener.onEvent(new ResourceTargetingEvent(nodeFragment, resourceConfig));
+                    executionEventListener.onEvent(new ResourceTargetingExecutionEvent(nodeFragment, resourceConfig));
                 }
 
                 if (LOGGER.isDebugEnabled()) {

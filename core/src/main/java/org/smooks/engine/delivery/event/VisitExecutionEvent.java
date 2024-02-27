@@ -68,9 +68,9 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implements ResourceBasedEvent {
+public class VisitExecutionEvent<F, T extends Visitor> extends FragmentExecutionEvent<F> implements ResourceBasedEvent {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(VisitEvent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VisitExecutionEvent.class);
 
     private final ContentHandlerBinding<T> visitorBinding;
     private final VisitSequence sequence;
@@ -80,14 +80,14 @@ public class VisitEvent<F, T extends Visitor> extends FragmentEvent<F> implement
     private String reportSummary;
     private String reportDetail;
 
-    public VisitEvent(Fragment<F> fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext) {
+    public VisitExecutionEvent(Fragment<F> fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext) {
         super(fragment);
         this.visitorBinding = visitorBinding;
         this.sequence = sequence;
         this.executionContext = executionContext;
     }
 
-    public VisitEvent(Fragment<F> fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext, Throwable error) {
+    public VisitExecutionEvent(Fragment<F> fragment, ContentHandlerBinding<T> visitorBinding, VisitSequence sequence, ExecutionContext executionContext, Throwable error) {
         this(fragment, visitorBinding, sequence, executionContext);
         this.error = error;
     }

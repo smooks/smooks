@@ -45,7 +45,7 @@ package org.smooks.engine.delivery.sax.ng;
 import org.smooks.api.Registry;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentHandlerBinding;
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
+import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.Visitor;
@@ -53,7 +53,7 @@ import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.engine.delivery.AbstractFilterProvider;
-import org.smooks.engine.delivery.event.DefaultConfigBuilderEvent;
+import org.smooks.engine.delivery.event.DefaultContentDeliveryConfigExecutionEvent;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.lookup.InterceptorVisitorFactoryLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
@@ -67,7 +67,7 @@ import java.util.Properties;
 public class SaxNgFilterProvider extends AbstractFilterProvider {
 
     @Override
-    public SaxNgContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents) {
+    public SaxNgContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ContentDeliveryConfigExecutionEvent> contentDeliveryConfigExecutionEvents) {
         final SaxNgContentDeliveryConfig saxNgContentDeliveryConfig = new SaxNgContentDeliveryConfig();
         final InterceptorVisitorChainFactory interceptorVisitorChainFactory = registry.lookup(new InterceptorVisitorFactoryLookup());
 
@@ -106,13 +106,13 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
                     }
                 }
 
-                configBuilderEvents.add(new DefaultConfigBuilderEvent(interceptorChain.getResourceConfig(), "Added as a SAX NG visitor."));
+                contentDeliveryConfigExecutionEvents.add(new DefaultContentDeliveryConfigExecutionEvent(interceptorChain.getResourceConfig(), "Added as a SAX NG visitor."));
             }
         }
         
         saxNgContentDeliveryConfig.setRegistry(registry);
         saxNgContentDeliveryConfig.setResourceConfigs(resourceConfigTable);
-        saxNgContentDeliveryConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
+        saxNgContentDeliveryConfig.getContentDeliveryConfigExecutionEvents().addAll(contentDeliveryConfigExecutionEvents);
         saxNgContentDeliveryConfig.addToExecutionLifecycleSets();
         
         return saxNgContentDeliveryConfig;

@@ -46,7 +46,7 @@ import org.smooks.api.Registry;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
-import org.smooks.api.delivery.event.ConfigBuilderEvent;
+import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.xpath.SelectorStep;
@@ -58,7 +58,7 @@ import org.smooks.api.resource.visitor.dom.Phase;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
 import org.smooks.engine.delivery.AbstractFilterProvider;
 import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
-import org.smooks.engine.delivery.event.DefaultConfigBuilderEvent;
+import org.smooks.engine.delivery.event.DefaultContentDeliveryConfigExecutionEvent;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
@@ -69,7 +69,7 @@ import java.util.Properties;
 
 public class DOMFilterProvider extends AbstractFilterProvider {
     @Override
-    public DOMContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ConfigBuilderEvent> configBuilderEvents) {
+    public DOMContentDeliveryConfig createContentDeliveryConfig(final List<ContentHandlerBinding<Visitor>> visitorBindings, final Registry registry, Map<String, List<ResourceConfig>> resourceConfigTable, final List<ContentDeliveryConfigExecutionEvent> contentDeliveryConfigExecutionEvents) {
         DOMContentDeliveryConfig domConfig = new DOMContentDeliveryConfig();
 
         for (ContentHandlerBinding<Visitor> contentHandlerBinding : visitorBindings) {
@@ -89,7 +89,7 @@ public class DOMFilterProvider extends AbstractFilterProvider {
             if (isDOMVisitor(visitor)) {
                 if (visitor instanceof DOMSerializerVisitor) {
                     domConfig.getSerializerVisitorIndex().put(targetElement, resourceConfig, (SerializerVisitor) visitor);
-                    configBuilderEvents.add(new DefaultConfigBuilderEvent(resourceConfig, "Added as a DOM " + SerializerVisitor.class.getSimpleName() + " resource."));
+                    contentDeliveryConfigExecutionEvents.add(new DefaultContentDeliveryConfigExecutionEvent(resourceConfig, "Added as a DOM " + SerializerVisitor.class.getSimpleName() + " resource."));
                 } else {
                     Phase phaseAnnotation = contentHandlerBinding.getContentHandler().getClass().getAnnotation(Phase.class);
                     String visitPhase = resourceConfig.getParameterValue("VisitPhase", String.class, VisitPhase.PROCESSING.toString());
@@ -120,7 +120,7 @@ public class DOMFilterProvider extends AbstractFilterProvider {
                         }
                     }
 
-                    configBuilderEvents.add(new DefaultConfigBuilderEvent(resourceConfig, "Added as a DOM " + visitPhase + " Phase resource."));
+                    contentDeliveryConfigExecutionEvents.add(new DefaultContentDeliveryConfigExecutionEvent(resourceConfig, "Added as a DOM " + visitPhase + " Phase resource."));
                 }
             }
 
@@ -131,7 +131,7 @@ public class DOMFilterProvider extends AbstractFilterProvider {
 
         domConfig.setRegistry(registry);
         domConfig.setResourceConfigs(resourceConfigTable);
-        domConfig.getConfigBuilderEvents().addAll(configBuilderEvents);
+        domConfig.getContentDeliveryConfigExecutionEvents().addAll(contentDeliveryConfigExecutionEvents);
 
         if (ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable)) {
             domConfig.sort();

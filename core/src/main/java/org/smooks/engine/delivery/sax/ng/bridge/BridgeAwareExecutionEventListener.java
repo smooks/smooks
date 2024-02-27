@@ -44,12 +44,12 @@ package org.smooks.engine.delivery.sax.ng.bridge;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.sax.ng.CharDataFragmentEvent;
+import org.smooks.engine.delivery.sax.ng.CharDataFragmentExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEventListener;
-import org.smooks.engine.delivery.event.FragmentEvent;
-import org.smooks.engine.delivery.event.EndFragmentEvent;
-import org.smooks.engine.delivery.event.StartFragmentEvent;
+import org.smooks.engine.delivery.event.FragmentExecutionEvent;
+import org.smooks.engine.delivery.event.EndFragmentExecutionEvent;
+import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.w3c.dom.Node;
 
 public abstract class BridgeAwareExecutionEventListener implements ExecutionEventListener {
@@ -62,17 +62,17 @@ public abstract class BridgeAwareExecutionEventListener implements ExecutionEven
     
     @Override
     public void onEvent(final ExecutionEvent executionEvent) {
-        if (executionEvent instanceof FragmentEvent<?> && ((FragmentEvent<?>) executionEvent).getFragment() instanceof NodeFragment) {
-            final Node node = (Node) ((FragmentEvent<?>) executionEvent).getFragment().unwrap();
+        if (executionEvent instanceof FragmentExecutionEvent<?> && ((FragmentExecutionEvent<?>) executionEvent).getFragment() instanceof NodeFragment) {
+            final Node node = (Node) ((FragmentExecutionEvent<?>) executionEvent).getFragment().unwrap();
             if (Bridge.isBridge(node)) {
-                if (executionEvent instanceof StartFragmentEvent<?>) {
+                if (executionEvent instanceof StartFragmentExecutionEvent<?>) {
                     Bridge bridge = new Bridge(node);
                     if (bridge.getVisit().equals("visitBefore")) {
-                        doOnEvent(new StartFragmentEvent<>(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
+                        doOnEvent(new StartFragmentExecutionEvent<>(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
                     } else if (bridge.getVisit().equals("visitChildText")) {
-                        doOnEvent(new CharDataFragmentEvent(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
+                        doOnEvent(new CharDataFragmentExecutionEvent(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
                     } else if (bridge.getVisit().equals("visitAfter")) {
-                        doOnEvent(new EndFragmentEvent(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
+                        doOnEvent(new EndFragmentExecutionEvent(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
                     }
                 }
                 return;
