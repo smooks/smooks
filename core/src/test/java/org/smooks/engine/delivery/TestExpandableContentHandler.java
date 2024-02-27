@@ -43,7 +43,7 @@
 package org.smooks.engine.delivery;
 
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.delivery.ConfigurationExpander;
+import org.smooks.api.delivery.ResourceConfigExpander;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.ExecutionContext;
@@ -58,7 +58,7 @@ import java.util.Properties;
 /**
  * @author
  */
-public class TestExpandableContentHandler implements DOMElementVisitor, ConfigurationExpander {
+public class TestExpandableContentHandler implements DOMElementVisitor, ResourceConfigExpander {
 
     public void setConfiguration(ResourceConfig resourceConfig) throws SmooksConfigException {
     }

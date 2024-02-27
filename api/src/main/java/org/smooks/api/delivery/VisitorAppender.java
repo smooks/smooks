@@ -49,7 +49,7 @@ import java.util.List;
 /**
  * Vistor appender.
  * <p/>
- * A visitor appender is somewhat like a {@link ConfigurationExpander},
+ * A visitor appender is somewhat like a {@link ResourceConfigExpander},
  * accept it appends fully configured Visitor instances.
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
