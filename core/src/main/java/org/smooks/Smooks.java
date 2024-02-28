@@ -523,7 +523,6 @@ public class Smooks implements Closeable {
             }
 
             Filter filter = contentDeliveryConfig.newFilter(executionContext);
-            AbstractFilter.setFilter(filter);
             try {
                 // Attach the source and results to the context...
                 FilterSource.setSource(executionContext, source);
@@ -563,7 +562,6 @@ public class Smooks implements Closeable {
                 executionContext.setTerminationError(t);
                 throw new SmooksException("Smooks Filtering operation failed.", t);
             } finally {
-                AbstractFilter.removeCurrentFilter();
                 try {
                     filter.close();
                 } catch (IOException e) {
