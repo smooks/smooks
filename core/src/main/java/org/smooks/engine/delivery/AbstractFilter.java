@@ -45,21 +45,27 @@ package org.smooks.engine.delivery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.Filter;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.io.NullReader;
 import org.smooks.io.NullWriter;
 import org.smooks.io.Stream;
-import org.smooks.thread.StackedThreadLocal;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -70,12 +76,6 @@ import java.nio.charset.StandardCharsets;
 public abstract class AbstractFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFilter.class);
-  
-    /**
-     * The Threadlocal storage instance for the ExecutionContext associated with the "current" SmooksDOMFilter thread instance.
-     */
-    private static final StackedThreadLocal<Filter> filterThreadLocal = new StackedThreadLocal<>("Filter");
-
 
     /**
      * Set the default stream filter type on the supplied Smooks instance.
@@ -85,35 +85,6 @@ public abstract class AbstractFilter implements Filter {
      */
     public static void setFilterType(Smooks smooks, org.smooks.StreamFilterType filterType) {
         ParameterAccessor.setParameter(STREAM_FILTER_TYPE, filterType.toString(), smooks);
-    }
-
-    /**
-     * Get the {@link Filter} instance for the current thread.
-     *
-     * @return The thread-bound {@link Filter} instance.
-     */
-    public static Filter getFilter() {
-        Filter filter = AbstractFilter.filterThreadLocal.get();
-        if (filter == null) {
-            throw new IllegalStateException("Call to getFilter() before the filter is set for the Thread.  This method can only be called within the context of a Smooks execution, which sets the filter.");
-        }
-        return filter;
-    }
-
-    /**
-     * Set the {@link Filter} instance for the current thread.
-     *
-     * @param filter The thread-bound {@link Filter} instance.
-     */
-    public static void setFilter(Filter filter) {
-        AbstractFilter.filterThreadLocal.set(filter);
-    }
-
-    /**
-     * Remove the {@link Filter} bound to the current thread.
-     */
-    public static void removeCurrentFilter() {
-        AbstractFilter.filterThreadLocal.remove();
     }
 
     protected Reader getReader(Source source, ExecutionContext executionContext) {
