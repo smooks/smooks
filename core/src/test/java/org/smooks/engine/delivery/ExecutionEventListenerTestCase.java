@@ -46,7 +46,6 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.event.BasicExecutionEventListener;
-import org.smooks.engine.delivery.event.FilterLifecycleExecutionEvent;
 import org.smooks.engine.delivery.event.ResourceTargetingExecutionEvent;
 import org.smooks.io.NullWriter;
 import org.xml.sax.SAXException;
@@ -68,7 +67,7 @@ public class ExecutionEventListenerTestCase {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
         testListener(eventListener, "smooks-config-dom.xml");
-        assertEquals(62, eventListener.getEvents().size());
+        assertEquals(57, eventListener.getEvents().size());
     }
 
 	@Test
@@ -76,16 +75,7 @@ public class ExecutionEventListenerTestCase {
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
         testListener(eventListener, "smooks-config-sax.xml");
-        assertEquals(56, eventListener.getEvents().size());
-    }
-
-	@Test
-    public void test_02_dom() throws IOException, SAXException {
-        BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
-
-        eventListener.setFilterEvents(FilterLifecycleExecutionEvent.class);
-        testListener(eventListener, "smooks-config-dom.xml");
-        assertEquals(23, eventListener.getEvents().size());
+        assertEquals(54, eventListener.getEvents().size());
     }
 
 	@Test
@@ -94,16 +84,7 @@ public class ExecutionEventListenerTestCase {
 
         eventListener.setFilterEvents(ResourceTargetingExecutionEvent.class);
         testListener(eventListener, "smooks-config-dom.xml");
-        assertEquals(42, eventListener.getEvents().size());
-    }
-
-	@Test
-    public void test_04_dom() throws IOException, SAXException {
-        BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
-
-        eventListener.setFilterEvents(FilterLifecycleExecutionEvent.class, ResourceTargetingExecutionEvent.class);
-        testListener(eventListener, "smooks-config-dom.xml");
-        assertEquals(42, eventListener.getEvents().size());
+        assertEquals(37, eventListener.getEvents().size());
     }
 
     private void testListener(BasicExecutionEventListener eventListener, String config) throws IOException, SAXException {

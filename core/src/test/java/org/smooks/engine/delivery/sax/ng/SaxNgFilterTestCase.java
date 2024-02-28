@@ -291,7 +291,7 @@ public class SaxNgFilterTestCase {
         ExecutionContext executionContext = smooks.createExecutionContext();
         StringWriter reportWriter = new StringWriter();
 
-        executionContext.getContentDeliveryRuntime().addExecutionEventListener(new FlatReportGenerator(reportWriter));
+        executionContext.getContentDeliveryRuntime().addExecutionEventListener(new FlatReportGenerator(reportWriter, smooks.getApplicationContext()));
         smooks.filterSource(executionContext, new StreamSource(new StringReader("<c/>")), null);
 
         assertTrue(compareCharStreams(getClass().getResourceAsStream("report-expected.txt"), new ByteArrayInputStream(reportWriter.toString().getBytes())));

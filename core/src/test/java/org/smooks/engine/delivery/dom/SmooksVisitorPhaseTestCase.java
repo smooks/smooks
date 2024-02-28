@@ -62,6 +62,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.smooks.tck.Assertions.compareCharStreams;
 
@@ -88,20 +89,20 @@ public class SmooksVisitorPhaseTestCase {
         List<ContentHandlerBinding<DOMVisitBefore>> assemblyVBs = config.getAssemblyVisitBeforeIndex().get("a");
         List<ContentHandlerBinding<DOMVisitAfter>> assemblyVAs = config.getAssemblyVisitAfterIndex().get("a");
         assertEquals(2, assemblyVBs.size());
-        assertTrue(assemblyVBs.get(0).getContentHandler() instanceof AssemblyVisitor1);
-        assertTrue(assemblyVBs.get(1).getContentHandler() instanceof ConfigurableVisitor);
+        assertInstanceOf(AssemblyVisitor1.class, assemblyVBs.get(0).getContentHandler());
+        assertInstanceOf(ConfigurableVisitor.class, assemblyVBs.get(1).getContentHandler());
         assertEquals(2, assemblyVAs.size());
-        assertTrue(assemblyVAs.get(0).getContentHandler() instanceof ConfigurableVisitor);
-        assertTrue(assemblyVAs.get(1).getContentHandler() instanceof AssemblyVisitor1);
+        assertInstanceOf(ConfigurableVisitor.class, assemblyVAs.get(0).getContentHandler());
+        assertInstanceOf(AssemblyVisitor1.class, assemblyVAs.get(1).getContentHandler());
 
         List<ContentHandlerBinding<DOMVisitBefore>> processingVBs = config.getProcessingVisitBeforeIndex().get("a");
         List<ContentHandlerBinding<DOMVisitAfter>> processingVAs = config.getProcessingVisitAfterIndex().get("a");
         assertEquals(2, processingVBs.size());
-        assertTrue(processingVBs.get(0).getContentHandler() instanceof ProcessorVisitor1);
-        assertTrue(processingVBs.get(1).getContentHandler() instanceof ConfigurableVisitor);
+        assertInstanceOf(ProcessorVisitor1.class, processingVBs.get(0).getContentHandler());
+        assertInstanceOf(ConfigurableVisitor.class, processingVBs.get(1).getContentHandler());
         assertEquals(2, processingVAs.size());
-        assertTrue(processingVAs.get(0).getContentHandler() instanceof ConfigurableVisitor);
-        assertTrue(processingVAs.get(1).getContentHandler() instanceof ProcessorVisitor1);
+        assertInstanceOf(ConfigurableVisitor.class, processingVAs.get(0).getContentHandler());
+        assertInstanceOf(ProcessorVisitor1.class, processingVAs.get(1).getContentHandler());
     }
 
 	@Test
@@ -121,6 +122,6 @@ public class SmooksVisitorPhaseTestCase {
         LOGGER.debug(outputWriter.toString());
         byte[] expected = StreamUtils.readStream(getClass().getResourceAsStream("testxml1-expected.xml"));
         assertTrue(compareCharStreams(new ByteArrayInputStream(expected), new ByteArrayInputStream(outputWriter.toString().getBytes())));
-        assertEquals(48, eventListener.getEvents().size());
+        assertEquals(43, eventListener.getEvents().size());
     }
 }

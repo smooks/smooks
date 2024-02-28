@@ -1,8 +1,8 @@
 /*-
  * ========================LICENSE_START=================================
- * Core
+ * API
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,31 +40,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.report;
+package org.smooks.api.lifecycle;
 
-import org.smooks.api.ApplicationContext;
-import org.smooks.api.delivery.event.ExecutionEventListener;
-import org.smooks.engine.report.model.Report;
+import org.smooks.api.ExecutionContext;
 
-import java.io.IOException;
-import java.io.Writer;
+public interface FilterLifecycle {
 
-/**
- * Flat Execution Report generating {@link ExecutionEventListener}.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public class FlatReportGenerator extends AbstractReportGenerator {
-
-    public FlatReportGenerator(Writer outputWriter, ApplicationContext applicationContext) {
-        this(new ReportConfiguration(outputWriter), applicationContext);
-    }
-
-    public FlatReportGenerator(ReportConfiguration reportConfiguration, ApplicationContext applicationContext) {
-        super(reportConfiguration, applicationContext);
-    }
-
-    @Override
-    public void applyTemplate(Report report) throws IOException {
-    }
+    void onStarted(ExecutionContext executionContext);
+    void onFinished(ExecutionContext executionContext);
 }

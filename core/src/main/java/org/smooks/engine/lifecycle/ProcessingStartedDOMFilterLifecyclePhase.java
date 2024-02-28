@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,31 +40,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.report;
+package org.smooks.engine.lifecycle;
 
-import org.smooks.api.ApplicationContext;
-import org.smooks.api.delivery.event.ExecutionEventListener;
-import org.smooks.engine.report.model.Report;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.lifecycle.DOMFilterLifecycle;
+import org.smooks.api.lifecycle.LifecyclePhase;
 
-import java.io.IOException;
-import java.io.Writer;
+public class ProcessingStartedDOMFilterLifecyclePhase implements LifecyclePhase {
 
-/**
- * Flat Execution Report generating {@link ExecutionEventListener}.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public class FlatReportGenerator extends AbstractReportGenerator {
+    private final ExecutionContext executionContext;
 
-    public FlatReportGenerator(Writer outputWriter, ApplicationContext applicationContext) {
-        this(new ReportConfiguration(outputWriter), applicationContext);
-    }
-
-    public FlatReportGenerator(ReportConfiguration reportConfiguration, ApplicationContext applicationContext) {
-        super(reportConfiguration, applicationContext);
+    public ProcessingStartedDOMFilterLifecyclePhase(ExecutionContext executionContext) {
+        this.executionContext = executionContext;
     }
 
     @Override
-    public void applyTemplate(Report report) throws IOException {
+    public void apply(Object o) {
+        ((DOMFilterLifecycle) o).onProcessingStarted(executionContext);
     }
 }

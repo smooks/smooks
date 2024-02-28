@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,54 +40,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.event;
+package org.smooks.engine.lifecycle;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.event.ExecutionEvent;
+import org.smooks.api.lifecycle.FilterLifecycle;
+import org.smooks.api.lifecycle.LifecyclePhase;
 
-/**
- * Smooks filter Lifecycle event.
- * 
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- * @see EventType
- */
-public class FilterLifecycleExecutionEvent implements ExecutionEvent {
+public class FilterFinishedLifecyclePhase implements LifecyclePhase {
 
-    protected final ExecutionContext executionContext;
+    private final ExecutionContext executionContext;
 
-    public enum EventType {
-        /**
-         * The filtering process has started.
-         */
-        STARTED, 
-        /**
-         * The filtering process has finished.
-         */
-        FINISHED,
-    }
-
-    private EventType eventType;
-
-    protected FilterLifecycleExecutionEvent(ExecutionContext executionContext) {
-        // Allow package level extension...
+    public FilterFinishedLifecyclePhase(ExecutionContext executionContext) {
         this.executionContext = executionContext;
-    }
-
-    public FilterLifecycleExecutionEvent(EventType eventType, ExecutionContext executionContext) {
-        this.eventType = eventType;
-        this.executionContext = executionContext;
-    }
-
-    public EventType getEventType() {
-        return eventType;
     }
 
     @Override
-    public String toString() {
-        return eventType.toString();
-    }
-
-    public ExecutionContext getExecutionContext() {
-        return executionContext;
+    public void apply(Object o) {
+        ((FilterLifecycle) o).onFinished(executionContext);
     }
 }
