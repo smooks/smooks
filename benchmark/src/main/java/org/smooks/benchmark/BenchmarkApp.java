@@ -150,7 +150,7 @@ public class BenchmarkApp {
         }
 
         final Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(true).build());
-        smooks.addConfigurations(BenchmarkApp.class.getResourceAsStream("/smooks-config.xml"));
+        smooks.addResourceConfigs(BenchmarkApp.class.getResourceAsStream("/smooks-config.xml"));
         IntStream.range(0, Math.min(2, Runtime.getRuntime().availableProcessors())).parallel().forEach(value -> {
             try {
                 final CountingInputStream inputStream = new CountingInputStream(new GZIPInputStream(Files.newInputStream(Paths.get(testDatasetFile.toURI()))));

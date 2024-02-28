@@ -80,7 +80,7 @@ public class SmooksVisitorPhaseTestCase {
         ExecutionContext execContext;
         DOMContentDeliveryConfig config;
 
-        smooks.addConfigurations("config1.xml", getClass().getResourceAsStream("config1.xml"));
+        smooks.addResourceConfigs("config1.xml", getClass().getResourceAsStream("config1.xml"));
         execContext = smooks.createExecutionContext();
         config = (DOMContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
@@ -109,7 +109,7 @@ public class SmooksVisitorPhaseTestCase {
         Smooks smooks = new Smooks();
         BasicExecutionEventListener eventListener = new BasicExecutionEventListener();
 
-        smooks.addConfigurations("config2.xml", getClass().getResourceAsStream("config2.xml"));
+        smooks.addResourceConfigs("config2.xml", getClass().getResourceAsStream("config2.xml"));
         // Create an exec context - no profiles....
         ExecutionContext executionContext = smooks.createExecutionContext();
         CharArrayWriter outputWriter = new CharArrayWriter();

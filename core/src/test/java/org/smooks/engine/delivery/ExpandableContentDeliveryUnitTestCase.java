@@ -70,7 +70,7 @@ public class ExpandableContentDeliveryUnitTestCase {
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.addConfigurations("expansion-config.xml", getClass().getResourceAsStream("expansion-config.xml"));
+        smooks.addResourceConfigs("expansion-config.xml", getClass().getResourceAsStream("expansion-config.xml"));
         ExecutionContext executionContext = smooks.createExecutionContext();
 
         DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();

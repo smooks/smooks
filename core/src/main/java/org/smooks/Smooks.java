@@ -150,7 +150,7 @@ public class Smooks implements Closeable {
      * Public Default Constructor.
      * <p/>
      * Resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
+     * {@link #addResourceConfigs(String)} or {@link #addResourceConfigs(String, java.io.InputStream)}.
      */
     public Smooks() {
         applicationContext = new DefaultApplicationContextBuilder().build();
@@ -161,7 +161,7 @@ public class Smooks implements Closeable {
      * Public Default Constructor.
      * <p/>
      * Resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
+     * {@link #addResourceConfigs(String)} or {@link #addResourceConfigs(String, java.io.InputStream)}.
      */
     public Smooks(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -171,11 +171,11 @@ public class Smooks implements Closeable {
     /**
      * Public constructor.
      * <p/>
-     * Adds the set of {@link ResourceConfig resources} via the {@link #addConfigurations(String)} method,
+     * Adds the set of {@link ResourceConfig resources} via the {@link #addResourceConfigs(String)} method,
      * which resolves the resourceURI parameter using a {@link org.smooks.resource.URIResourceLocator}.
      * <p/>
      * Additional resource configurations can be added through calls to
-     * {@link #addConfigurations(String)} or {@link #addConfigurations(String, java.io.InputStream)}.
+     * {@link #addResourceConfigs(String)} or {@link #addResourceConfigs(String, java.io.InputStream)}.
      *
      * @param resourceURI XML resource configuration stream URI.
      * @throws IOException  Error reading resource stream.
@@ -187,13 +187,13 @@ public class Smooks implements Closeable {
         resourceLocator.setBaseURI(URIResourceLocator.extractBaseURI(resourceURI));
         applicationContext = new DefaultApplicationContextBuilder().setResourceLocator(resourceLocator).build();
         visitorBindings = new ArrayList<>();
-        addConfigurations(resourceURI);
+        addResourceConfigs(resourceURI);
     }
 
     /**
      * Public constructor.
      * <p/>
-     * Adds the set of {@link ResourceConfig resources} via the {@link #addConfigurations(java.io.InputStream)}.
+     * Adds the set of {@link ResourceConfig resources} via the {@link #addResourceConfigs(java.io.InputStream)}.
      * <p/>
      * Additional resource configurations can be added through calls to
      * <code>addConfigurations</code> method set.
@@ -205,7 +205,7 @@ public class Smooks implements Closeable {
      */
     public Smooks(InputStream resourceConfigStream) throws IOException, SAXException {
         this();
-        addConfigurations(resourceConfigStream);
+        addResourceConfigs(resourceConfigStream);
     }
 
     /**
@@ -324,7 +324,7 @@ public class Smooks implements Closeable {
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
      */
-    public void addConfigurations(String resourceURI) throws IOException, SAXException {
+    public void addResourceConfigs(String resourceURI) throws IOException, SAXException {
         AssertArgument.isNotNullAndNotEmpty(resourceURI, "resourceURI");
 
         InputStream resourceConfigStream;
@@ -333,7 +333,7 @@ public class Smooks implements Closeable {
         resourceConfigStream = resourceLocator.getResource(resourceURI);
         try {
             URI resourceURIObj = new URI(resourceURI);
-            addConfigurations(URIUtil.getParent(resourceURIObj).toString(), resourceConfigStream);
+            addResourceConfigs(URIUtil.getParent(resourceURIObj).toString(), resourceConfigStream);
         } catch (URISyntaxException e) {
             LOGGER.error("Failed to load Smooks resource configuration '" + resourceURI + "'.", e);
         } finally {
@@ -356,7 +356,7 @@ public class Smooks implements Closeable {
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
      */
-    public void addConfigurations(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException {
+    public void addResourceConfigs(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException {
         assertIsConfigurable();
         AssertArgument.isNotNullAndNotEmpty(baseURI, "baseURI");
         AssertArgument.isNotNull(resourceConfigStream, "resourceConfigStream");
@@ -370,7 +370,7 @@ public class Smooks implements Closeable {
     /**
      * Add a set of resource configurations to this Smooks instance.
      * <p/>
-     * Calls {@link #addConfigurations(String, java.io.InputStream)} with a baseURI of "./",
+     * Calls {@link #addResourceConfigs(String, java.io.InputStream)} with a baseURI of "./",
      * which is the default base URI on all {@link org.smooks.resource.URIResourceLocator}
      * instances.
      *
@@ -378,8 +378,8 @@ public class Smooks implements Closeable {
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
      */
-    public void addConfigurations(InputStream resourceConfigStream) throws SAXException, IOException {
-        addConfigurations("./", resourceConfigStream);
+    public void addResourceConfigs(InputStream resourceConfigStream) throws SAXException, IOException {
+        addResourceConfigs("./", resourceConfigStream);
     }
 
     /**

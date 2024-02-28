@@ -62,8 +62,8 @@ public class PreconfiguredSmooks extends Smooks {
         SmooksUtil.registerProfileSet(new DefaultProfileSet("msie6", new String[] {"html4", "html"}), this);
         SmooksUtil.registerProfileSet(new DefaultProfileSet("firefox", new String[] {"html4", "html"}), this);
 
-        addConfigurations("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
-        addConfigurations("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
+        addResourceConfigs("/org/smooks/parameters.cdrl", getClass().getResourceAsStream("/org/smooks/parameters.cdrl"));
+        addResourceConfigs("/org/smooks/test.cdrl", getClass().getResourceAsStream("/org/smooks/test.cdrl"));
 	}
 
 }

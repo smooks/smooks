@@ -120,6 +120,7 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
 . Remove references to  `org.milyn.util.CollectionsUtil` and write your own implementation for this class.
 . Implement from `org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor` instead of `org.milyn.delivery.sax.SAXVisitor`.
 . Replace `Smooks#addConfiguration(...)` method calls with `Smooks#addResourceConfig(...)`.
+. Replace `Smooks#addConfigurations(...)` method calls with `Smooks#addResourceConfigs(...)`.
 . Replace references to:
     * `org.milyn.javabean.DataDecode` with `org.smooks.api.converter.TypeConverterFactory`.
     * `org.milyn.cdr.annotation.Configurator` with `org.smooks.api.lifecycle.LifecycleManager`.
