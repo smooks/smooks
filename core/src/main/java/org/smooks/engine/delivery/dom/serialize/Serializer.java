@@ -182,10 +182,6 @@ public class Serializer {
             lifecycleManager.applyPhase(domFilterLifecycle, serializationStartedDOMFilterLifecyclePhase);
         }
 
-        for (DOMFilterLifecycle domFilterLifecycle : executionContext.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(DOMFilterLifecycle.class)).values()) {
-            domFilterLifecycle.onSerializationStarted(executionContext);
-        }
-
         if (node instanceof Document) {
             Document doc = (Document) node;
             Element rootElement = doc.getDocumentElement();

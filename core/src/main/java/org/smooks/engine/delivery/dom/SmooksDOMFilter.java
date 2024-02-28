@@ -423,10 +423,6 @@ public class SmooksDOMFilter extends AbstractFilter {
         for (DOMFilterLifecycle domFilterLifecycle : registry.lookup(new InstanceLookup<>(DOMFilterLifecycle.class)).values()) {
             lifecycleManager.applyPhase(domFilterLifecycle, assemblyStartedDOMFilterLifecyclePhase);
         }
-
-        for (DOMFilterLifecycle domFilterLifecycle : executionContext.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(DOMFilterLifecycle.class)).values()) {
-            domFilterLifecycle.onAssemblyStarted(executionContext);
-        }
         
         // Apply assembly phase, skipping it if there are no configured assembly units...
         if (applyAssembly(visitBeforeContentHandlerBindingIndex, visitAfterContentHandlerBindingIndex)) {
