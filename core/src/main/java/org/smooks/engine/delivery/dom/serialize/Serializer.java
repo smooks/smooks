@@ -45,6 +45,7 @@ package org.smooks.engine.delivery.dom.serialize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.Registry;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentDeliveryRuntime;
@@ -52,14 +53,19 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
+import org.smooks.api.lifecycle.DOMFilterLifecycle;
+import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.SerializerVisitor;
 import org.smooks.engine.delivery.ContentHandlerBindingIndex;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
-import org.smooks.engine.delivery.event.DOMFilterLifecycleExecutionEvent;
 import org.smooks.engine.delivery.event.ResourceTargetingExecutionEvent;
 import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.lifecycle.SerializationStartedDOMFilterLifecyclePhase;
+import org.smooks.engine.lookup.InstanceLookup;
+import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.ResourceConfigurationNotFoundException;
 import org.smooks.engine.xml.DocType;
@@ -169,8 +175,15 @@ public class Serializer {
         }
 
         // Register the DOM phase events...
-        for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
-            executionEventListener.onEvent(new DOMFilterLifecycleExecutionEvent(DOMFilterLifecycleExecutionEvent.DOMEventType.SERIALIZATION_STARTED, executionContext));
+        Registry registry = executionContext.getApplicationContext().getRegistry();
+        LifecycleManager lifecycleManager = registry.lookup(new LifecycleManagerLookup());
+        SerializationStartedDOMFilterLifecyclePhase serializationStartedDOMFilterLifecyclePhase = new SerializationStartedDOMFilterLifecyclePhase(executionContext);
+        for (DOMFilterLifecycle domFilterLifecycle : registry.lookup(new InstanceLookup<>(DOMFilterLifecycle.class)).values()) {
+            lifecycleManager.applyPhase(domFilterLifecycle, serializationStartedDOMFilterLifecyclePhase);
+        }
+
+        for (DOMFilterLifecycle domFilterLifecycle : executionContext.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(DOMFilterLifecycle.class)).values()) {
+            domFilterLifecycle.onSerializationStarted(executionContext);
         }
 
         if (node instanceof Document) {

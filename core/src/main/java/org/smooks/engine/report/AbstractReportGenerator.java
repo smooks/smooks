@@ -42,11 +42,14 @@
  */
 package org.smooks.engine.report;
 
+import org.smooks.api.ApplicationContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.*;
 import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.api.delivery.event.ResourceAwareEvent;
+import org.smooks.api.lifecycle.DOMFilterLifecycle;
+import org.smooks.api.lifecycle.FilterLifecycle;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.event.VisitSequence;
@@ -71,13 +74,10 @@ import java.util.Stack;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public abstract class AbstractReportGenerator extends BasicExecutionEventListener {
+public abstract class AbstractReportGenerator extends BasicExecutionEventListener implements FilterLifecycle, DOMFilterLifecycle {
 
     private final ReportConfiguration reportConfiguration;
-
     private Report report;
-
-    private ExecutionContext executionContext;
     private int messageNodeCounter;
     private int reportInfoNodeCounter;
     private final List<ExecutionEvent> preProcessingEvents = new ArrayList<>();
@@ -85,8 +85,11 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     private final Stack<ReportNode> reportNodeStack = new Stack<>();
     private final List<ReportNode> allNodes = new ArrayList<>();
 
-    protected AbstractReportGenerator(ReportConfiguration reportConfiguration) {
+    protected AbstractReportGenerator(ReportConfiguration reportConfiguration, ApplicationContext applicationContext) {
         AssertArgument.isNotNull(reportConfiguration, "reportConfiguration");
+        AssertArgument.isNotNull(applicationContext, "applicationContext");
+
+        applicationContext.getRegistry().registerObject(this);
         this.reportConfiguration = reportConfiguration;
         setFilterEvents(reportConfiguration.getFilterEvents());
     }
@@ -108,14 +111,12 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     public void onEvent(ExecutionEvent executionEvent) {
         AssertArgument.isNotNull(executionEvent, "executionEvent");
 
-        if(ignoreEvent(executionEvent)) {
+        if (ignoreEvent(executionEvent)) {
             // Don't capture this event...
             return;
         }
 
-        if (executionEvent instanceof FilterLifecycleExecutionEvent) {
-            processLifecycleEvent((FilterLifecycleExecutionEvent) executionEvent);
-        } else if (executionEvent instanceof StartFragmentExecutionEvent) {
+        if (executionEvent instanceof StartFragmentExecutionEvent) {
             ReportNode node = new ReportNode((StartFragmentExecutionEvent) executionEvent);
             allNodes.add(node);
             processNewElementEvent(node);
@@ -138,8 +139,56 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     }
 
     @Override
+    public void onAssemblyStarted(ExecutionContext executionContext) {
+        // Assembly phase is done... output assembly report just at the start of the
+        // processing phase...
+        try {
+            mapMessageNodeVisits(((DOMReport) report).getAssemblies());
+        } catch (IOException e) {
+            throw new SmooksException(e);
+        }
+    }
+
+    @Override
+    public void onProcessingStarted(ExecutionContext executionContext) {
+
+    }
+
+    @Override
+    public void onSerializationStarted(ExecutionContext executionContext) {
+        // Processing phase is done (if it was)... output processing report just at the start of the
+        // serialization phase...
+        try {
+            mapMessageNodeVisits(report.getProcessings());
+        } catch (IOException e) {
+            throw new SmooksException(e);
+        }
+    }
+
+    @Override
+    public void onStarted(ExecutionContext executionContext) {
+        ContentDeliveryConfig contentDeliveryConfig = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();
+        if (contentDeliveryConfig instanceof DOMContentDeliveryConfig) {
+            report = new DOMReport();
+        } else {
+            report = new Report();
+        }
+        // Output the configuration builder events...
+        mapConfigBuilderEvents(contentDeliveryConfig.getContentDeliveryConfigExecutionEvents());
+    }
+
+    @Override
+    public void onFinished(ExecutionContext executionContext) {
+        try {
+            processFinishEvent(executionContext);
+        } catch (IOException e) {
+            throw new SmooksException(e);
+        }
+    }
+
+    @Override
     protected boolean ignoreEvent(ExecutionEvent event) {
-        if(!super.ignoreEvent(event)) {
+        if (!super.ignoreEvent(event)) {
             if (event instanceof ResourceAwareEvent) {
                 if (!reportConfiguration.showDefaultAppliedResources()) {
                     return ((ResourceAwareEvent) event).getResourceConfig().isSystem();
@@ -152,69 +201,34 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         return true;
     }
 
-    private void processLifecycleEvent(FilterLifecycleExecutionEvent event) {
-
-        try {
-            if (event.getEventType() != FilterLifecycleExecutionEvent.EventType.FINISHED) {
-                ContentDeliveryConfig deliveryConfig = event.getExecutionContext().getContentDeliveryRuntime().getContentDeliveryConfig();
-                if (event instanceof DOMFilterLifecycleExecutionEvent) {
-                    DOMFilterLifecycleExecutionEvent domEvent = (DOMFilterLifecycleExecutionEvent) event;
-                    if (domEvent.getDOMEventType() == DOMFilterLifecycleExecutionEvent.DOMEventType.PROCESSING_STARTED) {
-                        // Assembly phase is done... output assembly report just at the start of the
-                        // processing phase...
-                        mapMessageNodeVists(((DOMReport)report).getAssemblies());
-                    } else if (domEvent.getDOMEventType() == DOMFilterLifecycleExecutionEvent.DOMEventType.SERIALIZATION_STARTED) {
-                        // Processing phase is done (if it was)... output processing report just at the start of the
-                        // serialization phase...
-                        mapMessageNodeVists(report.getProcessings());
-                    }
-                } else if (event.getEventType() == FilterLifecycleExecutionEvent.EventType.STARTED) {
-                    executionContext = event.getExecutionContext();
-
-                    if(deliveryConfig instanceof DOMContentDeliveryConfig) {
-                        report = new DOMReport();
-                    } else {
-                        report = new Report();
-                    }
-                    // Output the configuration builder events...
-                    mapConfigBuilderEvents(deliveryConfig.getContentDeliveryConfigExecutionEvents());
-                }
+    protected void processFinishEvent(ExecutionContext executionContext) throws IOException {
+        if (report instanceof DOMReport) {
+            if (report.getProcessings().isEmpty()) {
+                mapMessageNodeVisits(report.getProcessings());
             } else {
-                processFinishEvent();
-            }
-        } catch (IOException e) {
-            throw new SmooksException("Failed to write report.", e);
-        }
-    }
-
-    private void processFinishEvent() throws IOException {
-        if(report instanceof DOMReport) {
-            if(report.getProcessings().isEmpty()) {
-                mapMessageNodeVists(report.getProcessings());
-            } else {
-                mapMessageNodeVists(((DOMReport)report).getSerializations());
+                mapMessageNodeVisits(((DOMReport) report).getSerializations());
             }
         } else {
-            mapMessageNodeVists(report.getProcessings());
+            mapMessageNodeVisits(report.getProcessings());
         }
 
         List<ResultNode> resultNodes = new ArrayList<>();
         Result[] results = FilterResult.getResults(executionContext);
         report.setResults(resultNodes);
-        if(results != null) {
-            for(Result result : results) {
-                if(result != null) {
-                	ResultNode resultNode = new ResultNode();
-	                resultNodes.add(resultNode);
-	                if(result instanceof JavaResult) {
-	                    resultNode.setSummary("This Smooks Filtering operation produced a JavaResult.  The following is an XML serialization of the JavaResult bean Map entries.");
-	                } else if(result instanceof StringResult) {
-	                    resultNode.setSummary("This Smooks Filtering operation produced the following StreamResult.");
-	                } else {
-	                    resultNode.setSummary("Cannot show Smooks Filtering Result.  Modify the code and use a '" + StringResult.class.getName() + "' Result in the call to the Smooks.filter() method.");
-	                }
+        if (results != null) {
+            for (Result result : results) {
+                if (result != null) {
+                    ResultNode resultNode = new ResultNode();
+                    resultNodes.add(resultNode);
+                    if (result instanceof JavaResult) {
+                        resultNode.setSummary("This Smooks Filtering operation produced a JavaResult.  The following is an XML serialization of the JavaResult bean Map entries.");
+                    } else if (result instanceof StringResult) {
+                        resultNode.setSummary("This Smooks Filtering operation produced the following StreamResult.");
+                    } else {
+                        resultNode.setSummary("Cannot show Smooks Filtering Result.  Modify the code and use a '" + StringResult.class.getName() + "' Result in the call to the Smooks.filter() method.");
+                    }
 
-                	resultNode.setDetail(result.toString());
+                    resultNode.setDetail(result.toString());
                 }
             }
         }
@@ -226,7 +240,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
             try {
                 writer.flush();
             } finally {
-                if(reportConfiguration.autoCloseWriter()) {
+                if (reportConfiguration.autoCloseWriter()) {
                     writer.close();
                 }
             }
@@ -261,7 +275,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     private void mapConfigBuilderEvents(List<ContentDeliveryConfigExecutionEvent> configBuilderEvents) {
     }
 
-    private void mapMessageNodeVists(List<MessageNode> visits) throws IOException {
+    private void mapMessageNodeVisits(List<MessageNode> visits) throws IOException {
         if (!allNodes.isEmpty()) {
             mapNode(reportNodeStack.elementAt(0), visits);
         }
@@ -273,7 +287,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         allNodes.clear();
     }
 
-    private void mapNode(ReportNode reportNode, List<MessageNode> visits) throws IOException {
+    private void mapNode(ReportNode reportNode, List<MessageNode> visits) {
         List<ReportNode> children;
         MessageNode messageNode;
 
@@ -355,7 +369,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
             return DomUtils.getName((Element) element);
         }
 
-        
+
         @Override
         public String toString() {
             return (element + " (depth " + depth + ")");

@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,46 +40,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.event;
+package org.smooks.engine.lifecycle;
 
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.lifecycle.DOMFilterLifecycle;
+import org.smooks.api.lifecycle.LifecyclePhase;
 
-/**
- * Smooks DOM filter Lifecycle event.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- * @see DOMFilterLifecycleExecutionEvent.DOMEventType
- */
-public class DOMFilterLifecycleExecutionEvent extends FilterLifecycleExecutionEvent {
+public class SerializationStartedDOMFilterLifecyclePhase implements LifecyclePhase {
 
-    public enum DOMEventType {
-        /**
-         * The filtering process has started.
-         */
-        ASSEMBLY_STARTED,
-        /**
-         * The filtering process has finished.
-         */
-        PROCESSING_STARTED,
-        /**
-         * The filtering process has finished.
-         */
-        SERIALIZATION_STARTED,
-    }
+    private final ExecutionContext executionContext;
 
-    private final DOMEventType eventType;
-
-    public DOMFilterLifecycleExecutionEvent(DOMEventType eventType, ExecutionContext executionContext) {
-        super(executionContext);
-        this.eventType = eventType;
-    }
-
-    public DOMEventType getDOMEventType() {
-        return eventType;
+    public SerializationStartedDOMFilterLifecyclePhase(ExecutionContext executionContext) {
+        this.executionContext = executionContext;
     }
 
     @Override
-    public String toString() {
-        return eventType.toString();
+    public void apply(Object o) {
+        ((DOMFilterLifecycle) o).onSerializationStarted(executionContext);
     }
 }

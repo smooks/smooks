@@ -45,6 +45,7 @@ package org.smooks.engine.delivery.dom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.Registry;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 import org.smooks.api.delivery.ContentDeliveryRuntime;
@@ -53,6 +54,8 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
+import org.smooks.api.lifecycle.DOMFilterLifecycle;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -69,7 +72,10 @@ import org.smooks.engine.delivery.dom.serialize.Serializer;
 import org.smooks.engine.delivery.dom.serialize.TextSerializerVisitor;
 import org.smooks.engine.delivery.event.*;
 import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.lifecycle.AssemblyStartedDOMFilterLifecyclePhase;
 import org.smooks.engine.lifecycle.PostFragmentPhase;
+import org.smooks.engine.lifecycle.ProcessingStartedDOMFilterLifecyclePhase;
+import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.report.AbstractReportGenerator;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
@@ -411,8 +417,15 @@ public class SmooksDOMFilter extends AbstractFilter {
         globalAssemblyAfters = visitAfterContentHandlerBindingIndex.get(GLOBAL_SELECTORS);
 
         // Register the DOM phase events...
-        for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new DOMFilterLifecycleExecutionEvent(DOMFilterLifecycleExecutionEvent.DOMEventType.ASSEMBLY_STARTED, executionContext));
+        Registry registry = executionContext.getApplicationContext().getRegistry();
+        LifecycleManager lifecycleManager = registry.lookup(new LifecycleManagerLookup());
+        AssemblyStartedDOMFilterLifecyclePhase assemblyStartedDOMFilterLifecyclePhase = new AssemblyStartedDOMFilterLifecyclePhase(executionContext);
+        for (DOMFilterLifecycle domFilterLifecycle : registry.lookup(new InstanceLookup<>(DOMFilterLifecycle.class)).values()) {
+            lifecycleManager.applyPhase(domFilterLifecycle, assemblyStartedDOMFilterLifecyclePhase);
+        }
+
+        for (DOMFilterLifecycle domFilterLifecycle : executionContext.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(DOMFilterLifecycle.class)).values()) {
+            domFilterLifecycle.onAssemblyStarted(executionContext);
         }
         
         // Apply assembly phase, skipping it if there are no configured assembly units...
@@ -429,8 +442,9 @@ public class SmooksDOMFilter extends AbstractFilter {
         }
 
         // Register the DOM phase events...
-        for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-            executionEventListener.onEvent(new DOMFilterLifecycleExecutionEvent(DOMFilterLifecycleExecutionEvent.DOMEventType.PROCESSING_STARTED, executionContext));
+        ProcessingStartedDOMFilterLifecyclePhase processingStartedDOMFilterLifecyclePhase = new ProcessingStartedDOMFilterLifecyclePhase(executionContext);
+        for (DOMFilterLifecycle domFilterLifecycle : registry.lookup(new InstanceLookup<>(DOMFilterLifecycle.class)).values()) {
+            lifecycleManager.applyPhase(domFilterLifecycle, processingStartedDOMFilterLifecyclePhase);
         }
         
         // Apply processing phase...

@@ -43,6 +43,7 @@
 package org.smooks.engine.report;
 
 import freemarker.template.utility.HtmlEscape;
+import org.smooks.api.ApplicationContext;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.engine.report.model.DOMReport;
 import org.smooks.engine.report.model.Report;
@@ -64,21 +65,21 @@ import java.util.Map;
  */
 public class HtmlReportGenerator extends AbstractReportGenerator {
 
-    public HtmlReportGenerator(Writer outputWriter) {
-        this(new ReportConfiguration(outputWriter));
+    public HtmlReportGenerator(Writer outputWriter, ApplicationContext applicationContext) {
+        this(new ReportConfiguration(outputWriter), applicationContext);
     }
 
-    public HtmlReportGenerator(String outputFile) throws IOException {
-        super(new ReportConfiguration(createOutputWriter(outputFile)));
+    public HtmlReportGenerator(String outputFile, ApplicationContext applicationContext) throws IOException {
+        super(new ReportConfiguration(createOutputWriter(outputFile)), applicationContext);
 
         File file = new File(outputFile);
-        if(file.getParentFile() != null) {
+        if (file.getParentFile() != null) {
             getReportConfiguration().setTempOutDir(file.getParentFile());
         }
     }
 
-    protected HtmlReportGenerator(ReportConfiguration reportConfiguration) {
-        super(reportConfiguration);
+    protected HtmlReportGenerator(ReportConfiguration reportConfiguration, ApplicationContext applicationContext) {
+        super(reportConfiguration, applicationContext);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
         System.out.println("****************************************************************************************");
         System.out.println();
 
-        if(report instanceof DOMReport) {
+        if (report instanceof DOMReport) {
             template = new FreeMarkerTemplate("html/template-dom.html", HtmlReportGenerator.class);
         } else {
             template = new FreeMarkerTemplate("html/template-sax.html", HtmlReportGenerator.class);
@@ -110,7 +111,7 @@ public class HtmlReportGenerator extends AbstractReportGenerator {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static Writer createOutputWriter(String outputFile) throws IOException {
         File file = new File(outputFile);
-        if(file.getParentFile() != null) {
+        if (file.getParentFile() != null) {
             file.getParentFile().mkdirs();
         }
 

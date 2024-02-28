@@ -46,40 +46,49 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.Registry;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedMap;
-import org.smooks.api.delivery.*;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.api.delivery.ContentDeliveryConfig;
+import org.smooks.api.delivery.ContentDeliveryRuntime;
+import org.smooks.api.delivery.ContentHandler;
+import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.delivery.Filter;
+import org.smooks.api.delivery.FilterBypass;
+import org.smooks.api.delivery.VisitorAppender;
+import org.smooks.api.delivery.event.ExecutionEventListener;
+import org.smooks.api.lifecycle.FilterLifecycle;
+import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.profile.Profile;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.UnknownProfileMemberException;
-import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ReaderConfigurator;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.api.resource.visitor.Visitor;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.classpath.CascadingClassLoaderSet;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.DefaultExecutionContext;
-import org.smooks.api.delivery.event.ExecutionEventListener;
-import org.smooks.engine.delivery.AbstractFilter;
-import org.smooks.engine.delivery.DefaultContentHandlerBinding;
-import org.smooks.engine.delivery.event.FilterLifecycleExecutionEvent;
-import org.smooks.engine.injector.Scope;
-import org.smooks.api.bean.context.BeanContext;
 import org.smooks.engine.bean.context.preinstalled.Time;
 import org.smooks.engine.bean.context.preinstalled.UniqueID;
-import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.engine.delivery.DefaultContentHandlerBinding;
+import org.smooks.engine.injector.Scope;
+import org.smooks.engine.lifecycle.FilterFinishedLifecyclePhase;
+import org.smooks.engine.lifecycle.FilterStartedLifecyclePhase;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
-import org.smooks.support.URIUtil;
+import org.smooks.engine.lookup.InstanceLookup;
+import org.smooks.engine.lookup.LifecycleManagerLookup;
+import org.smooks.engine.xml.NamespaceManager;
 import org.smooks.io.payload.Exports;
 import org.smooks.io.payload.FilterResult;
 import org.smooks.io.payload.FilterSource;
 import org.smooks.io.payload.JavaResult;
-import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.resource.URIResourceLocator;
-import org.smooks.engine.xml.NamespaceManager;
 import org.smooks.support.SmooksUtil;
+import org.smooks.support.URIUtil;
 import org.xml.sax.SAXException;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -503,10 +512,16 @@ public class Smooks implements Closeable {
 
     private void _filter(ExecutionContext executionContext, Source source, Result... results) {
         ContentDeliveryRuntime contentDeliveryRuntime = executionContext.getContentDeliveryRuntime();
+        Registry registry = applicationContext.getRegistry();
+        LifecycleManager lifecycleManager = registry.lookup(new LifecycleManagerLookup());
+        FilterStartedLifecyclePhase filterStartedLifecyclePhase = new FilterStartedLifecyclePhase(executionContext);
+        for (FilterLifecycle filterLifecycle : registry.lookup(new InstanceLookup<>(FilterLifecycle.class)).values()) {
+            lifecycleManager.applyPhase(filterLifecycle, filterStartedLifecyclePhase);
+        }
 
         try {
-            for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                executionEventListener.onEvent(new FilterLifecycleExecutionEvent(FilterLifecycleExecutionEvent.EventType.STARTED, executionContext));
+            for (FilterLifecycle filterLifecycle : applicationContext.getRegistry().lookup(new InstanceLookup<>(FilterLifecycle.class)).values()) {
+                filterLifecycle.onStarted(executionContext);
             }
 
             ContentDeliveryConfig contentDeliveryConfig = contentDeliveryRuntime.getContentDeliveryConfig();
@@ -569,8 +584,9 @@ public class Smooks implements Closeable {
                 }
             }
         } finally {
-            for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
-                executionEventListener.onEvent(new FilterLifecycleExecutionEvent(FilterLifecycleExecutionEvent.EventType.FINISHED, executionContext));
+            FilterFinishedLifecyclePhase filterFinishedLifecyclePhase = new FilterFinishedLifecyclePhase(executionContext);
+            for (FilterLifecycle filterLifecycle : applicationContext.getRegistry().lookup(new InstanceLookup<>(FilterLifecycle.class)).values()) {
+                lifecycleManager.applyPhase(filterLifecycle, filterFinishedLifecyclePhase);
             }
         }
     }

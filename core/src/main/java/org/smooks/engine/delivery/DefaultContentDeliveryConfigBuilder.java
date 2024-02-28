@@ -57,6 +57,7 @@ import org.smooks.api.delivery.ResourceConfigExpander;
 import org.smooks.api.delivery.VisitorAppender;
 import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
+import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.lifecycle.LifecyclePhase;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.resource.config.Parameter;
@@ -393,8 +394,9 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                 throw new UnsupportedOperationException();
         }
 
+        LifecycleManager lifecycleManager = registry.lookup(new LifecycleManagerLookup());
         for (ContentDeliveryConfigLifecycle contentDeliveryConfigLifecycle : registry.lookup(new InstanceLookup<>(ContentDeliveryConfigLifecycle.class)).values()) {
-            registry.lookup(new LifecycleManagerLookup()).applyPhase(contentDeliveryConfigLifecycle, lifecyclePhase);
+            lifecycleManager.applyPhase(contentDeliveryConfigLifecycle, lifecyclePhase);
         }
     }
 

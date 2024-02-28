@@ -60,7 +60,7 @@ import java.util.List;
  * <p/>
  * This event listener listens to and captures published events.
  * The list of captured events can be filtered by setting a list of
- * {@link #setFilterEvents filter event types}. 
+ * {@link #setFilterEvents filter event types}.
  * <p/>
  * This listener should be used with great care.  It could quite easily consume
  * large amounts of memory if not used properly.  If access to this information
@@ -73,7 +73,7 @@ import java.util.List;
 public class BasicExecutionEventListener implements ExecutionEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicExecutionEventListener.class);
-    
+
     private final List<ExecutionEvent> events = new ArrayList<ExecutionEvent>();
     private List<? extends Class<? extends ExecutionEvent>> filterEvents;
 
@@ -86,7 +86,7 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
      * @param filterEvents Filter events.
      */
     public void setFilterEvents(Class<? extends ExecutionEvent>... filterEvents) {
-        if(filterEvents != null) {
+        if (filterEvents != null) {
             this.filterEvents = Arrays.asList(filterEvents);
         } else {
             this.filterEvents = null;
@@ -95,16 +95,17 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
 
     /**
      * Process the {@link ExecutionEvent}.
+     *
      * @param executionEvent The {@link ExecutionEvent}.
      */
     @Override
     public void onEvent(ExecutionEvent executionEvent) {
-        if(ignoreEvent(executionEvent)) {
+        if (ignoreEvent(executionEvent)) {
             // Don't capture this event...
             return;
         }
 
-        if(executionEvent != null) {
+        if (executionEvent != null) {
             events.add(executionEvent);
         } else {
             LOGGER.warn("Invalid call to onEvent method.  null 'event' arg.");
@@ -112,27 +113,25 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
     }
 
     protected boolean ignoreEvent(ExecutionEvent event) {
-        if(event instanceof FilterLifecycleExecutionEvent) {
-            return false;
-        } else if(event instanceof StartFragmentExecutionEvent) {
+        if (event instanceof StartFragmentExecutionEvent) {
             return false;
         }
 
-        if(filterEvents != null && !filterEvents.contains(event.getClass())) {
+        if (filterEvents != null && !filterEvents.contains(event.getClass())) {
             return true;
         }
 
-        if(event instanceof VisitExecutionEvent) {
-            VisitExecutionEvent visitEvent = (VisitExecutionEvent) event;
+        if (event instanceof VisitExecutionEvent) {
+            VisitExecutionEvent<?, ?> visitEvent = (VisitExecutionEvent<?, ?>) event;
             ContentHandler handler = visitEvent.getVisitorBinding().getContentHandler();
-            if(visitEvent.getSequence() == VisitSequence.BEFORE) {
+            if (visitEvent.getSequence() == VisitSequence.BEFORE) {
                 VisitBeforeReport reportAnnotation = handler.getClass().getAnnotation(VisitBeforeReport.class);
-                if(reportAnnotation != null) {
+                if (reportAnnotation != null) {
                     return !evalReportCondition(visitEvent, reportAnnotation.condition());
                 }
             } else {
                 VisitAfterReport reportAnnotation = handler.getClass().getAnnotation(VisitAfterReport.class);
-                if(reportAnnotation != null) {
+                if (reportAnnotation != null) {
                     return !evalReportCondition(visitEvent, reportAnnotation.condition());
                 }
             }
@@ -149,6 +148,7 @@ public class BasicExecutionEventListener implements ExecutionEventListener {
 
     /**
      * Get the {@link ExecutionEvent} list.
+     *
      * @return The {@link ExecutionEvent} list.
      */
     public List<ExecutionEvent> getEvents() {
