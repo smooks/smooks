@@ -88,7 +88,7 @@ public class XMLConfigDigesterTestCase {
     public void test_profile_expansion() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.addConfigurations("testconfig2.cdrl", getClass().getResourceAsStream("testconfig2.cdrl"));
+        smooks.addResourceConfigs("testconfig2.cdrl", getClass().getResourceAsStream("testconfig2.cdrl"));
         assertProfilesOK(smooks);
     }
 

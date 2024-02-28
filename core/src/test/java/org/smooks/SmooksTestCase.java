@@ -83,7 +83,7 @@ public class SmooksTestCase {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         TestClassLoader classLoader = new TestClassLoader(contextClassLoader);
         Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setClassLoader(classLoader).build());
-        smooks.addConfigurations(getClass().getResourceAsStream("test_setClassLoader_01.xml"));
+        smooks.addResourceConfigs(getClass().getResourceAsStream("test_setClassLoader_01.xml"));
                 
         StringResult result = new StringResult();
         
