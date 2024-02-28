@@ -47,7 +47,7 @@
                       default-target-profile="*">
 
     <core:interceptors>
-        <core:interceptor class="org.smooks.engine.delivery.interceptor.EventInterceptor"/>
+        <core:interceptor class="org.smooks.engine.delivery.interceptor.ExecutionEventInterceptor"/>
         <core:interceptor class="org.smooks.engine.delivery.interceptor.TextConsumerInterceptor"/>
         <core:interceptor class="org.smooks.engine.delivery.interceptor.StreamResultWriterInterceptor"/>
         <core:interceptor class="org.smooks.engine.delivery.interceptor.ExceptionInterceptor"/>

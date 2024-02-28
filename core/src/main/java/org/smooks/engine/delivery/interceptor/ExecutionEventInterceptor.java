@@ -57,7 +57,7 @@ import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class EventInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
+public class ExecutionEventInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) {
