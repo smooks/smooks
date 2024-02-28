@@ -511,20 +511,14 @@ public class Smooks implements Closeable {
     }
 
     private void _filter(ExecutionContext executionContext, Source source, Result... results) {
-        ContentDeliveryRuntime contentDeliveryRuntime = executionContext.getContentDeliveryRuntime();
+        ContentDeliveryConfig contentDeliveryConfig = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();
         Registry registry = applicationContext.getRegistry();
         LifecycleManager lifecycleManager = registry.lookup(new LifecycleManagerLookup());
-        FilterStartedLifecyclePhase filterStartedLifecyclePhase = new FilterStartedLifecyclePhase(executionContext);
-        for (FilterLifecycle filterLifecycle : registry.lookup(new InstanceLookup<>(FilterLifecycle.class)).values()) {
-            lifecycleManager.applyPhase(filterLifecycle, filterStartedLifecyclePhase);
-        }
-
         try {
-            for (FilterLifecycle filterLifecycle : applicationContext.getRegistry().lookup(new InstanceLookup<>(FilterLifecycle.class)).values()) {
-                filterLifecycle.onStarted(executionContext);
+            FilterStartedLifecyclePhase filterStartedLifecyclePhase = new FilterStartedLifecyclePhase(executionContext);
+            for (FilterLifecycle filterLifecycle : registry.lookup(new InstanceLookup<>(FilterLifecycle.class)).values()) {
+                lifecycleManager.applyPhase(filterLifecycle, filterStartedLifecyclePhase);
             }
-
-            ContentDeliveryConfig contentDeliveryConfig = contentDeliveryRuntime.getContentDeliveryConfig();
 
             if (results != null && results.length == 1 && results[0] != null) {
                 FilterBypass filterBypass = contentDeliveryConfig.getFilterBypass();
