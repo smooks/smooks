@@ -197,7 +197,7 @@ All of these actors are explained in later sections. Several sources and result 
 * CSV to ...
 * ... to ...
 
-Smooks maps the source to the result with the help of a highly-tunable SAX event model. The hierarchical events generated from an XML source (_startElement_, _endElement_, etc...) drive the SAX event model though the event model can be just as easily applied to other structured data sources (EDI, CSV, POJO, etc...). The most important events are typically the _before_ and _after_ visit events. The following illustration conveys the hierarchical nature of these events.
+Smooks maps the source to the result with the help of a highly-tunable SAX event model. The hierarchical events generated from an XML source (_startElement_, _endElement_, etc...) drive the SAX event model though the event model can be just as easily applied to other structured data sources (EDI, CSV, POJO, etc...). The most important events are typically the _before_ and _after_ visit events. The following illustration conveys the hierarchical nature of these events:
 
 image:docs/images/Event-model.gif[Image:event-model.gif]
 
