@@ -184,9 +184,7 @@ Smooks's fundamental behaviour is to take an input _source_, such as CSV, and fr
 * registry
 * listeners
 
-All of these actors are explained in later sections.
-
-Several sources and result types are supported which equate to different transformation types, including but not limited to:
+All of these actors are explained in later sections. Several sources and result types are supported which equate to different transformation types, including but not limited to:
 
 * XML to XML
 * XML to POJO
