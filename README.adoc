@@ -2194,7 +2194,7 @@ To instrument Smooks, you need to:
 ----
 <dependency>
     <groupId>org.smooks</groupId>
-    <artifactId>smooks-management</artifactId>notificaitons
+    <artifactId>smooks-management</artifactId>
     <version>TBA</version>
 </dependency>
 ----
