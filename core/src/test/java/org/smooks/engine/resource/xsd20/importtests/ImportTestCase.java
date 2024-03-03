@@ -71,6 +71,6 @@ public class ImportTestCase {
 
     private void testConfig(String config) throws IOException, SAXException {
         Smooks smooks = new Smooks("/org/smooks/engine/resource/xsd20/importtests/" + config);
-        smooks.filterSource(new StringSource("<a/>"), null);
+        smooks.filterSource(new StringSource("<a/>"));
     }
 }

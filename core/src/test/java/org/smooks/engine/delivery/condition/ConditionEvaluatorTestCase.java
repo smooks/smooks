@@ -82,14 +82,14 @@ public class ConditionEvaluatorTestCase {
         SAXAndDOMVisitor.visited = false;
         smooks = new Smooks(getClass().getResourceAsStream("test-config-DOM-01.xml"));
         execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")), null);
+        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")));
         assertEquals(execContext, TestExecutionContextExpressionEvaluator.context);
         assertTrue(SAXAndDOMVisitor.visited);
 
         SAXAndDOMVisitor.visited = false;
         smooks = new Smooks(getClass().getResourceAsStream("test-config-DOM-02.xml"));
         execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")), null);
+        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")));
         assertEquals(execContext, TestExecutionContextExpressionEvaluator.context);
         assertFalse(SAXAndDOMVisitor.visited);
     }
@@ -102,14 +102,14 @@ public class ConditionEvaluatorTestCase {
         SAXAndDOMVisitor.visited = false;
         smooks = new Smooks(getClass().getResourceAsStream("test-config-SAX-01.xml"));
         execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")), null);
+        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")));
         assertEquals(execContext, TestExecutionContextExpressionEvaluator.context);
         assertTrue(SAXAndDOMVisitor.visited);
 
         SAXAndDOMVisitor.visited = false;
         smooks = new Smooks(getClass().getResourceAsStream("test-config-SAX-02.xml"));
         execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")), null);
+        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")));
         assertEquals(execContext, TestExecutionContextExpressionEvaluator.context);
         assertFalse(SAXAndDOMVisitor.visited);
     }

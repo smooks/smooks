@@ -77,7 +77,7 @@ public class ExecutionLifecycleTestCase {
     public void test_dom_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("dom-config-01.xml"));
 
-        smooks.filterSource(new StringSource("<a><b/><c/><d/><e/></a>"), null);
+        smooks.filterSource(new StringSource("<a><b/><c/><d/><e/></a>"));
         assertTrue(DomAssemblyBefore.cleaned);
         assertTrue(DomAssemblyAfter.cleaned);
         assertTrue(DomAssemblyAfterWithException.cleaned);
@@ -90,7 +90,7 @@ public class ExecutionLifecycleTestCase {
     public void test_dom_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("dom-config-02.xml"));
 
-        smooks.filterSource(new StringSource("<a></a>"), null);
+        smooks.filterSource(new StringSource("<a></a>"));
         assertTrue(DomProcessingPostFragmentLifecycle.cleaned);
     }
 
@@ -98,7 +98,7 @@ public class ExecutionLifecycleTestCase {
     public void test_SAX_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("sax-config-01.xml"));
 
-        smooks.filterSource(new StringSource("<a><b/><c/><d/><e/></a>"), null);
+        smooks.filterSource(new StringSource("<a><b/><c/><d/><e/></a>"));
         assertTrue(SaxVisitBefore.initialized);
         assertTrue(SaxVisitBefore.cleaned);
         assertTrue(SaxVisitAfter.cleaned);
@@ -108,7 +108,7 @@ public class ExecutionLifecycleTestCase {
     public void test_SAX_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("sax-config-02.xml"));
 
-        smooks.filterSource(new StringSource("<a></a>"), null);
+        smooks.filterSource(new StringSource("<a></a>"));
         assertTrue(SaxVisitPostFragmentLifecycle.cleaned);
     }
 }
