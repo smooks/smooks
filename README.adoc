@@ -2273,6 +2273,8 @@ import org.smooks.api.management.InstrumentationAgent;
 import org.smooks.api.management.InstrumentationResource;
 import org.smooks.management.annotation.ManagedResource;
 
+import javax.management.ObjectName;
+
 @ManagedResource(description = "My Class")
 public class MyManagedClass {
 
@@ -2280,7 +2282,7 @@ public class MyManagedClass {
         InstrumentationResource instrumentationResource = applicationContext.getRegistry().lookup(InstrumentationResource.INSTRUMENTATION_RESOURCE_TYPED_KEY);
         InstrumentationAgent instrumentationAgent = instrumentationResource.getInstrumentationAgent();
 
-        instrumentationAgent.register(this, "MyManagedClass");
+        instrumentationAgent.register(this, new ObjectName("org.smooks:type=app,name=MyClass"));
     }
 
     ...
@@ -2288,7 +2290,7 @@ public class MyManagedClass {
 }
 ----
 
-Line 17 from the snippet above uses `InsturmentationAgent` to register the `@ManagedResource` annotated object with the MBean server so that it can be queried and invoked by JMX clients. `InstrumentationAgent` is obtained from an instance of `org.smooks.api.management.InstrumentationResource`. The singleton `InstrumentationResource` can be looked up from the Smooks registry as shown in line 12.
+Line 15 from the snippet above uses `InstrumentationAgent` to register the `@ManagedResource` annotated object with the MBean server so that it can be queried and invoked by JMX clients. `InstrumentationAgent` is obtained from an instance of `org.smooks.api.management.InstrumentationResource`. The singleton `InstrumentationResource` can be looked up from the Smooks registry as shown in line 12.
 
 IMPORTANT: link:#_activating_instrumentation[Instrumentation needs to be activated] in order to obtain a non-null `InstrumentationResource` from the lookup.
 
@@ -2359,6 +2361,7 @@ import org.smooks.management.annotation.ManagedResource;
 
 import javax.management.MBeanException;
 import javax.management.Notification;
+import javax.management.ObjectName;
 import javax.management.modelmbean.ModelMBeanInfo;
 import javax.management.modelmbean.RequiredModelMBean;
 
@@ -2377,7 +2380,7 @@ public class MyManagedClass {
 
         ModelMBeanAssembler modelMBeanAssembler = new ModelMBeanAssembler();
         ModelMBeanInfo modelMBeanInfo = modelMBeanAssembler.getModelMbeanInfo(this.getClass());
-        requiredModelMBean = instrumentationAgent.register(this, this.getObjectName(), modelMBeanInfo, false);
+        requiredModelMBean = instrumentationAgent.register(this, new ObjectName("org.smooks:type=app,name=MyClass"), modelMBeanInfo, false);
     }
 
     public void sendNotification(String message) throws MBeanException {
@@ -2387,7 +2390,7 @@ public class MyManagedClass {
 }
 ----
 
-As illustrated above in lines 25-31, to register a `@ManagedNotification` instance, the MBean descriptor should be assembled dynamically with `org.smooks.management.ModelMBeanAssembler`. The assembled `javax.management.modelmbean.ModelMBeanInfo` is then registered using `InstrumentationAgent` as shown in line 32. `InstrumentationAgent.register(Object, ObjectName, ModelMBeanInfo, boolean)` returns a `RequiredModelMBean` object that can be referenced to broadcast notifications, seen in line 37.
+As illustrated above in lines 28-29, to register a `@ManagedNotification` instance, the MBean descriptor should be assembled dynamically with `org.smooks.management.ModelMBeanAssembler`. The assembled `javax.management.modelmbean.ModelMBeanInfo` is then registered using `InstrumentationAgent` as shown in line 30. `InstrumentationAgent.register(Object, ObjectName, ModelMBeanInfo, boolean)` returns a `RequiredModelMBean` object that can be referenced to broadcast notifications, seen in lines 34-35.
 
 ==== @ManagedNotifications
 
@@ -2407,6 +2410,7 @@ import org.smooks.management.annotation.ManagedResource;
 
 import javax.management.MBeanException;
 import javax.management.Notification;
+import javax.management.ObjectName;
 import javax.management.modelmbean.ModelMBeanInfo;
 import javax.management.modelmbean.RequiredModelMBean;
 
@@ -2426,7 +2430,7 @@ public class MyManagedClass {
 
         ModelMBeanAssembler modelMBeanAssembler = new ModelMBeanAssembler();
         ModelMBeanInfo modelMBeanInfo = modelMBeanAssembler.getModelMbeanInfo(this.getClass());
-        requiredModelMBean = instrumentationAgent.register(this, this.getObjectName(), modelMBeanInfo, false);
+        requiredModelMBean = instrumentationAgent.register(this, new ObjectName("org.smooks:type=app,name=MyClass"), modelMBeanInfo, false);
     }
 
     public void sendMyNotification(String message) throws MBeanException {
