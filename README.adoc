@@ -2256,9 +2256,9 @@ To activate instrumentation in Smooks, you need to:
 </smooks-resource-list>
 ----
 
-=== Instrumenting application classes
+=== Application classes
 
-In addition to the Smooks classes that are already instrumented, you can further instrument your own classes with the help of annotations located in the `org.smooks.management.annotation` package which are listed below:
+In addition to the Smooks classes that are already instrumented, you can instrument your own classes with the help of annotations located in the `org.smooks.management.annotation` package which are listed below:
 
 ==== @ManagedResource
 
