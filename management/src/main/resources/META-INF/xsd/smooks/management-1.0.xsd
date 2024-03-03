@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:smooks="https://www.smooks.org/xsd/smooks-2.0.xsd"
+			xmlns:management="https://www.smooks.org/xsd/smooks/management-1.0.xsd"
+			targetNamespace="https://www.smooks.org/xsd/smooks/management-1.0.xsd"
+			elementFormDefault="qualified">
+
+    <xsd:import namespace="https://www.smooks.org/xsd/smooks-2.0.xsd"/>
+
+    <xsd:annotation>
+        <xsd:documentation xml:lang="en">Smooks Management Configuration</xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="instrumentationResource" substitutionGroup="smooks:abstract-resource-config"
+                 type="management:instrumentationResource"/>
+    <xsd:complexType name="instrumentationResource">
+        <xsd:complexContent>
+            <xsd:extension base="smooks:abstract-resource-config">
+                <xsd:attribute name="usePlatformMBeanServer" type="xsd:boolean" default="true">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            Whether to use the MBeanServer from this JVM.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="mBeanServerDefaultDomain" type="xsd:string" default="org.smooks">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            The default JMX domain of the MBeanServer.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="mBeanObjectDomainName" type="xsd:string" default="org.smooks">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            The JMX domain that all object names will use.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="includeHostName" type="xsd:boolean" default="false">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            Whether to include the hostname in the MBean naming.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+</xsd:schema>

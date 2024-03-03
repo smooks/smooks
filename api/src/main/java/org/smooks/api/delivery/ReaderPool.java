@@ -6,7 +6,7 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
  * 
  * ======================================================================
@@ -44,20 +44,32 @@ package org.smooks.api.delivery;
 
 import org.xml.sax.XMLReader;
 
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.Map;
+import java.util.Properties;
+
+@ThreadSafe
 public interface ReaderPool {
 
     /**
-     * Get an {@link XMLReader} instance from the 
+     * Gets an {@link XMLReader} instance from the
      * reader pool associated with this ContentDelivery config instance.
-     * @return An XMLReader instance if the pool is not empty, otherwise null.
+     *
+     * @return An XMLReader instance if the pool is not empty, otherwise null
      */
     XMLReader borrowXMLReader();
 
     /**
-     * Return an {@link XMLReader} instance to the
-     * reader pool associated with this ContentDelivery config instance.
-     * @param xmlReader The XMLReader instance to be returned.  If the pool is full, the instance
-     * is left to the GC (i.e. lost).
+     * Returns an {@link XMLReader} instance to the reader pool associated with this ContentDelivery config instance.
+     *
+     * @param xmlReader XMLReader instance to be returned
      */
     void returnXMLReader(XMLReader xmlReader);
+
+    /**
+     * Returns implementation-specific {@link Properties}.
+     *
+     * @return Implementation-specific {@link Properties} of <code>this</code> reader pool
+     */
+    Map<String, String> getProperties();
 }

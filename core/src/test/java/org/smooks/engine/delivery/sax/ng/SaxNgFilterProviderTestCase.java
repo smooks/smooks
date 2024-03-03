@@ -44,6 +44,7 @@ package org.smooks.engine.delivery.sax.ng;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.api.Registry;
+import org.smooks.api.TypedKey;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
@@ -106,6 +107,11 @@ public class SaxNgFilterProviderTestCase {
 
             @Override
             public <T> T lookup(Object key) {
+                return null;
+            }
+
+            @Override
+            public <T> T lookup(TypedKey<T> key) {
                 return null;
             }
 

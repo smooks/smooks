@@ -81,21 +81,21 @@ public class DefaultResourceConfig implements ResourceConfig {
      * Logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultResourceConfig.class);
-    
+
     /**
      * URI resource locator.
      */
     private static final URIResourceLocator uriResourceLocator = new URIResourceLocator();
-    
+
     /**
      * Selector steps.
      */
     private SelectorPath selectorPath;
-    
+
     /**
      * Target profile.
      */
-    private String targetProfile;
+    private String profile;
     /**
      * List of device/profile names on which the Content Delivery Resource is to be applied
      * for instances of selector.
@@ -115,18 +115,18 @@ public class DefaultResourceConfig implements ResourceConfig {
      * referenced through a URI.
      */
     private boolean isInline;
-  
+
     /**
      * The type of the resource.  "class", "groovy", "xsl" etc....
      */
     private String resourceType;
-   
+
     /**
      * ResourceConfig parameters - String name and String value.
      */
     private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
     private int parameterCount;
-   
+
     /**
      * Flag indicating whether or not the resource is a default applied resource
      * e.g. {@link DefaultDOMSerializerVisitor} or
@@ -143,32 +143,32 @@ public class DefaultResourceConfig implements ResourceConfig {
      * Public default constructor.
      *
      * @see #setSelector(String)
-     * @see #setTargetProfile(String)
+     * @see #setProfile(String)
      * @see #setResource(String)
      * @see #setResourceType(String)
      * @see #setParameter(String, Object)
      */
     public DefaultResourceConfig() {
         setSelector(SELECTOR_NONE, new Properties());
-        setTargetProfile(Profile.DEFAULT_PROFILE);
+        setProfile(Profile.DEFAULT_PROFILE);
     }
 
     /**
      * Public constructor.
      *
      * @param selector The selector definition.
-     * @see #setTargetProfile(String)
+     * @see #setProfile(String)
      * @see #setResource(String)
      * @see #setResourceType(String)
      * @see #setParameter(String, Object)
      */
     public DefaultResourceConfig(String selector, Properties namespaces) {
         setSelector(selector, namespaces);
-        setTargetProfile(Profile.DEFAULT_PROFILE);
+        setProfile(Profile.DEFAULT_PROFILE);
     }
-    
+
     public DefaultResourceConfig(ResourceConfig resourceConfig) {
-        setTargetProfile(resourceConfig.getTargetProfile());
+        setProfile(resourceConfig.getProfile());
         setResource(resourceConfig.getResource());
         setSelectorPath(SelectorPathFactory.newSelectorPath(resourceConfig.getSelectorPath()));
         setSystem(resourceConfig.isSystem());
@@ -179,7 +179,7 @@ public class DefaultResourceConfig implements ResourceConfig {
      *
      * @param selector The selector definition.
      * @param resource The resource.
-     * @see #setTargetProfile(String)
+     * @see #setProfile(String)
      * @see #setResourceType(String)
      * @see #setParameter(String, Object)
      */
@@ -191,16 +191,16 @@ public class DefaultResourceConfig implements ResourceConfig {
      * Public constructor.
      *
      * @param selector      The selector definition.
-     * @param targetProfile Target Profile(s).  Comma separated list of
+     * @param profile Target Profile(s).  Comma separated list of
      *                      {@link ProfileTargetingExpression ProfileTargetingExpressions}.
      * @param resource      The resource.
      * @see #setResourceType(String)
      * @see #setParameter(String, Object)
      */
-    public DefaultResourceConfig(String selector, Properties namespaces, String targetProfile, String resource) {
+    public DefaultResourceConfig(String selector, Properties namespaces, String profile, String resource) {
         this(selector, namespaces);
 
-        setTargetProfile(targetProfile);
+        setProfile(profile);
         setResource(resource);
     }
 
@@ -210,7 +210,7 @@ public class DefaultResourceConfig implements ResourceConfig {
         DefaultResourceConfig copyResourceConfig = new DefaultResourceConfig();
 
         copyResourceConfig.selectorPath = SelectorPathFactory.newSelectorPath(selectorPath);
-        copyResourceConfig.targetProfile = targetProfile;
+        copyResourceConfig.profile = profile;
         copyResourceConfig.defaultResource = defaultResource;
         copyResourceConfig.profileTargetingExpressionStrings = profileTargetingExpressionStrings;
         copyResourceConfig.profileTargetingExpressions = profileTargetingExpressions;
@@ -225,7 +225,7 @@ public class DefaultResourceConfig implements ResourceConfig {
         return copyResourceConfig;
     }
 
-	@Override
+    @Override
     public void addParameters(ResourceConfig resourceConfig) {
         parameters.putAll(resourceConfig.getParameters());
     }
@@ -269,18 +269,18 @@ public class DefaultResourceConfig implements ResourceConfig {
     }
 
     @Override
-    public String getTargetProfile() {
-        return targetProfile;
+    public String getProfile() {
+        return profile;
     }
 
     @Override
-    public void setTargetProfile(String targetProfile) {
-        if (targetProfile == null || targetProfile.trim().isEmpty()) {
+    public void setProfile(String profile) {
+        if (profile == null || profile.trim().isEmpty()) {
             // Default the target profile to everything if not specified.
-            targetProfile = Profile.DEFAULT_PROFILE;
+            profile = Profile.DEFAULT_PROFILE;
         }
-        this.targetProfile = targetProfile;
-        parseTargetingExpressions(targetProfile);
+        this.profile = profile;
+        parseTargetingExpressions(profile);
     }
 
     @Override
@@ -425,7 +425,7 @@ public class DefaultResourceConfig implements ResourceConfig {
         } else if (parameter instanceof Parameter) {
             return (Parameter<T>) parameter;
         }
-        
+
         return null;
     }
 
@@ -489,7 +489,7 @@ public class DefaultResourceConfig implements ResourceConfig {
     public void removeParameter(String name) {
         parameters.remove(name);
     }
-    
+
     @Override
     public String toString() {
         return "Target Profile: [" + Arrays.asList(profileTargetingExpressionStrings) + "], Selector: [" + selectorPath.getSelector() + "], Resource: [" + resource + "], Num Params: [" + getParameterCount() + "]";
@@ -499,7 +499,7 @@ public class DefaultResourceConfig implements ResourceConfig {
     public byte[] getBytes() {
         // Defines the resource in a resource element, so it can be used to specify a path
         // or inlined resourcec data ala the "resdata" parameter in the 1.0 DTD.
-        
+
         if (resource != null) {
             InputStream resStream;
             try {
@@ -539,7 +539,7 @@ public class DefaultResourceConfig implements ResourceConfig {
      * Returns the resource as a Java Class instance.
      *
      * @return The Java Class instance refered to be this resource configuration, or null
-     *         if the resource doesn't refer to a Java Class.
+     * if the resource doesn't refer to a Java Class.
      */
     protected Class<?> toJavaResource() {
         String className;
@@ -558,11 +558,11 @@ public class DefaultResourceConfig implements ResourceConfig {
 
             return null;
         } catch (IllegalArgumentException e) {
-    		if (resource.equals(className)) {
-    			LOGGER.debug("The string [" + resource + "] contains unescaped characters that are illegal in a Java resource name.");
-    		}
+            if (resource.equals(className)) {
+                LOGGER.debug("The string [" + resource + "] contains unescaped characters that are illegal in a Java resource name.");
+            }
 
-    		return null;
+            return null;
         }
     }
 
@@ -586,12 +586,12 @@ public class DefaultResourceConfig implements ResourceConfig {
         StringBuilder builder = new StringBuilder();
 
         builder.append("<resource-config selector=\"")
-               .append(selectorPath.getSelector())
-               .append("\"");
-        if (targetProfile != null && !targetProfile.equals(Profile.DEFAULT_PROFILE)) {
+                .append(selectorPath.getSelector())
+                .append("\"");
+        if (profile != null && !profile.equals(Profile.DEFAULT_PROFILE)) {
             builder.append(" target-profile=\"")
-                   .append(targetProfile)
-                   .append("\"");
+                    .append(profile)
+                    .append("\"");
         }
         builder.append(">\n");
 
@@ -604,19 +604,19 @@ public class DefaultResourceConfig implements ResourceConfig {
             }
 
             builder.append("\t")
-                   .append(resourceStartEl);
+                    .append(resourceStartEl);
             if (resource.length() < 300) {
-               builder.append(resource)
-                       .append("</resource>\n");
+                builder.append(resource)
+                        .append("</resource>\n");
             } else {
-               builder.append(resource, 0, 300)
-                       .append(" ... more</resource>\n");
+                builder.append(resource, 0, 300)
+                        .append(" ... more</resource>\n");
             }
         }
 
         if (selectorPath.getConditionEvaluator() != null) {
             builder.append("\t<condition evaluator=\"").append(selectorPath.getConditionEvaluator().getClass().getName()).append("\">").append(selectorPath.getConditionEvaluator().getExpression())
-                   .append("</condition>\n");
+                    .append("</condition>\n");
         }
 
         if (parameters != null) {
@@ -633,10 +633,10 @@ public class DefaultResourceConfig implements ResourceConfig {
                         value = ((Parameter) param).getValue();
                     }
                     builder.append("\t<param name=\"")
-                           .append(paramName)
-                           .append("\">")
-                           .append(value)
-                           .append("</param>\n");
+                            .append(paramName)
+                            .append("\">")
+                            .append(value)
+                            .append("</param>\n");
                 }
             }
         }
@@ -657,16 +657,16 @@ public class DefaultResourceConfig implements ResourceConfig {
         Properties properties = new Properties();
         Set<String> names = parameters.keySet();
 
-        for(String name : names) {
+        for (String name : names) {
             properties.setProperty(name, getParameterValue(name).toString());
         }
 
         return properties;
     }
 
-    private void fireChangedEvent() {
-        if(!changeListeners.isEmpty()) {
-            for(ResourceConfigChangeListener listener : changeListeners) {
+    protected void fireChangedEvent() {
+        if (!changeListeners.isEmpty()) {
+            for (ResourceConfigChangeListener listener : changeListeners) {
                 listener.changed(this);
             }
         }

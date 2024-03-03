@@ -125,6 +125,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      */
     private final List<ContentDeliveryConfigExecutionEvent> configBuilderEvents = new ArrayList<>();
     private final List<FilterProvider> filterProviders;
+    private final LifecycleManager lifecycleManager;
 
     private volatile ContentDeliveryConfig contentDeliveryConfig;
 
@@ -148,6 +149,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         this.profileSet = profileSet;
         this.registry = registry;
         this.filterProviders = filterProviders;
+
+        lifecycleManager = registry.lookup(new LifecycleManagerLookup());
     }
 
     /**
@@ -171,7 +174,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         return contentDeliveryConfig;
     }
 
-    private ContentDeliveryConfig buildConfig(List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) {
+    protected ContentDeliveryConfig buildConfig(List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings) {
         if (extendedContentHandlerBindings != null) {
             visitorBindings.addAll(extendedContentHandlerBindings);
         }
@@ -187,7 +190,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         return contentDeliveryConfig;
     }
 
-    private FilterProvider getFilterProvider() {
+    protected FilterProvider getFilterProvider() {
         final List<FilterProvider> candidateFilterProviders = filterProviders.stream().filter(s -> s.isProvider(visitorBindings)).collect(Collectors.toList());
         final String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
         if (filterTypeParam == null && candidateFilterProviders.isEmpty()) {
@@ -209,7 +212,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      *
      * @return Verbose characteristics string.
      */
-    private String getResourceFilterCharacteristics() {
+    protected String getResourceFilterCharacteristics() {
         StringBuffer stringBuf = new StringBuffer();
         List<ContentHandler> printedHandlers = new ArrayList<>();
 
@@ -225,7 +228,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         return stringBuf.toString();
     }
 
-    private void printHandlerCharacteristics(ContentHandlerBinding<Visitor> contentHandlerBinding, StringBuffer stringBuf, List<ContentHandler> printedHandlers) {
+    protected void printHandlerCharacteristics(ContentHandlerBinding<Visitor> contentHandlerBinding, StringBuffer stringBuf, List<ContentHandler> printedHandlers) {
         ContentHandler handler = contentHandlerBinding.getContentHandler();
 
         if (printedHandlers.contains(handler)) {
@@ -251,7 +254,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * Creates the buildTable instance and populates it with the ProcessingUnit matrix
      * for the specified device.
      */
-    private void load(ProfileSet profileSet) {
+    protected void load(ProfileSet profileSet) {
         resourceConfigs.clear();
         resourceConfigs.addAll(Arrays.asList(registry.lookup(new ResourceConfigsProfileSetLookup(registry, profileSet))));
 
@@ -273,7 +276,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
     /**
      * Print a debug log of the resource configurations for the associated profile.
      */
-    private void logResourceConfig(ProfileSet profileSet) {
+    protected void logResourceConfig(ProfileSet profileSet) {
         LOGGER.debug("==================================================================================================");
         LOGGER.debug("Resource configuration (sorted) for profile [" + profileSet.getBaseProfile() + "].  Sub Profiles: [" + profileSet + "]");
         Iterator configurations = resourceConfigTable.entrySet().iterator();
@@ -296,7 +299,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      *
      * @param resourceConfigs List of ResourceConfigs.
      */
-    private void buildResourceConfigTable(List<ResourceConfig> resourceConfigs) {
+    protected void buildResourceConfigTable(List<ResourceConfig> resourceConfigs) {
         for (final ResourceConfig resourceConfig : resourceConfigs) {
             addResourceConfig(resourceConfig);
         }
@@ -308,7 +311,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      *
      * @param config The configuration to be added.
      */
-    private void addResourceConfig(ResourceConfig config) {
+    protected void addResourceConfig(ResourceConfig config) {
         String target = config.getSelectorPath().getSelector();
 
         // If it's contextual, it's targeting an XML element...
@@ -331,7 +334,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * @param element        The element to which the config is to be added.
      * @param resourceConfig The Object to be added.
      */
-    private void addResourceConfig(String element, ResourceConfig resourceConfig) {
+    protected void addResourceConfig(String element, ResourceConfig resourceConfig) {
         // Add it to the unsorted list...
         if (!resourceConfigs.contains(resourceConfig)) {
             resourceConfigs.add(resourceConfig);
@@ -349,7 +352,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * on each element.  Ordered by specificity.
      */
     @SuppressWarnings("unchecked")
-    private void sortResourceConfigs(Map<String, List<ResourceConfig>> table, ProfileSet profileSet) {
+    protected void sortResourceConfigs(Map<String, List<ResourceConfig>> table, ProfileSet profileSet) {
         Parameter<String> sortParam = ParameterAccessor.getParameter("sort.resources", String.class, table);
         if (sortParam != null && sortParam.getValue().trim().equalsIgnoreCase("true")) {
             for (Entry<String, List<ResourceConfig>> entry : table.entrySet()) {
@@ -367,18 +370,18 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      * Extract the ContentHandler instances from the ResourceConfig table and add them to
      * their respective tables.
      */
-    private void extractContentHandlers() {
+    protected void extractContentHandlers() {
         ContentHandlerExtractionStrategy contentHandlerExtractionStrategy = new ContentHandlerExtractionStrategy(registry);
         ResourceConfigTableIterator resourceConfigTableIterator = new ResourceConfigTableIterator(contentHandlerExtractionStrategy);
 
         resourceConfigTableIterator.iterate();
     }
 
-    private void logExecutionEvent(ResourceConfig resourceConfig, String message) {
+    protected void logExecutionEvent(ResourceConfig resourceConfig, String message) {
         configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent(resourceConfig, message));
     }
 
-    private void fireEvent(Event event) {
+    protected void fireEvent(Event event) {
         final LifecyclePhase lifecyclePhase;
         switch (event) {
             case CONTENT_HANDLERS_CREATED:
@@ -394,10 +397,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                 throw new UnsupportedOperationException();
         }
 
-        LifecycleManager lifecycleManager = registry.lookup(new LifecycleManagerLookup());
-        for (ContentDeliveryConfigLifecycle contentDeliveryConfigLifecycle : registry.lookup(new InstanceLookup<>(ContentDeliveryConfigLifecycle.class)).values()) {
-            lifecycleManager.applyPhase(contentDeliveryConfigLifecycle, lifecyclePhase);
-        }
+        lifecycleManager.applyPhase(registry.lookup(new InstanceLookup<>(ContentDeliveryConfigLifecycle.class)).values(), lifecyclePhase);
     }
 
     /**
@@ -428,7 +428,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                     throw new SmooksConfigException(String.format("%s not found for content of type [class]. Hint: ensure the Smooks application context has the correct class loader set", ContentHandlerFactory.class.getName()));
                 }
                 // Job done - it's a CDU and we've added it!
-                return addContentDeliveryUnit(resourceConfig, contentHandlerFactory);
+                return addContentHandler(resourceConfig, contentHandlerFactory);
 
             } else {
                 // Get the resource type and "try" creating a ContentHandlerFactory for that resource
@@ -441,7 +441,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
                 // we tried this above.
                 if (contentHandlerFactory != null) {
                     if (!(contentHandlerFactory instanceof JavaContentHandlerFactory)) {
-                        return addContentDeliveryUnit(resourceConfig, contentHandlerFactory);
+                        return addContentHandler(resourceConfig, contentHandlerFactory);
                     }
                 } else {
                     // Just ignore it - something else will use it (hopefully)
@@ -481,7 +481,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
          * @param contentHandlerFactory CDU Creator class.
          * @return True if the CDU was added, otherwise false.
          */
-        private boolean addContentDeliveryUnit(ResourceConfig resourceConfig, ContentHandlerFactory<?> contentHandlerFactory) {
+        private boolean addContentHandler(ResourceConfig resourceConfig, ContentHandlerFactory<?> contentHandlerFactory) {
             Object contentHandler;
 
             // Create the ContentHandler.
@@ -490,11 +490,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
             } catch (SmooksConfigException e) {
                 throw e;
             } catch (Throwable thrown) {
-                String message = "ContentHandlerFactory [" + contentHandlerFactory.getClass().getName() + "] unable to create resource processing instance for resource [" + resourceConfig + "]. ";
-                LOGGER.error(message + thrown.getMessage(), thrown);
-                configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent(resourceConfig, message, thrown));
-
-                return false;
+                LOGGER.error("ContentHandlerFactory [{}] unable to create content handler for resource [{}] ", contentHandlerFactory.getClass().getName(), resourceConfig);
+                throw thrown;
             }
 
             //TODO: register object

@@ -81,7 +81,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-public class SaxNgHandler extends SmooksContentHandler {
+public class SaxNgContentHandler extends SmooksContentHandler {
     
     private final StringBuilder cdataNodeBuilder = new StringBuilder();
     private final ExecutionContext executionContext;
@@ -101,11 +101,11 @@ public class SaxNgHandler extends SmooksContentHandler {
     private NodeFragment currentNodeFragment;
     private Document document;
 
-    public SaxNgHandler(final ExecutionContext executionContext, final DocumentBuilder documentBuilder) {
+    public SaxNgContentHandler(final ExecutionContext executionContext, final DocumentBuilder documentBuilder) {
         this(executionContext, documentBuilder, null);
     }
 
-    public SaxNgHandler(final ExecutionContext executionContext, final DocumentBuilder documentBuilder, final SmooksContentHandler parentContentHandler) {
+    public SaxNgContentHandler(final ExecutionContext executionContext, final DocumentBuilder documentBuilder, final SmooksContentHandler parentContentHandler) {
         super(executionContext, parentContentHandler);
 
         this.executionContext = executionContext;

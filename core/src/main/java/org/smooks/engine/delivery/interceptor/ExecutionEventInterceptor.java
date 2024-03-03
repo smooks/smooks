@@ -63,7 +63,7 @@ public class ExecutionEventInterceptor extends AbstractInterceptorVisitor implem
     public void visitBefore(Element element, ExecutionContext executionContext) {
         if (getTarget().getContentHandler() instanceof BeforeVisitor) {
             for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
-                executionEventListener.onEvent(new ResourceTargetingExecutionEvent(new NodeFragment(element), getTarget().getResourceConfig(), VisitSequence.BEFORE));
+                executionEventListener.onEvent(new ResourceTargetingExecutionEvent<>(new NodeFragment(element), getTarget().getResourceConfig(), VisitSequence.BEFORE));
             }
             intercept(visitBeforeInvocation, element, executionContext);
             onEvent(executionContext, new NodeFragment(element), VisitSequence.BEFORE);

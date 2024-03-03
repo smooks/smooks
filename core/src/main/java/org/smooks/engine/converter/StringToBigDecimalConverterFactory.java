@@ -69,9 +69,9 @@ public class StringToBigDecimalConverterFactory implements TypeConverterFactory<
                     try {
                         Number number = numberFormat.parse(value.trim());
 
-                        if(number instanceof BigDecimal) {
+                        if (number instanceof BigDecimal) {
                             return (BigDecimal) number;
-                        } else if(number instanceof BigInteger) {
+                        } else if (number instanceof BigInteger) {
                             return new BigDecimal((BigInteger) number);
                         }
 

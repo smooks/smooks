@@ -105,6 +105,7 @@ Smooks 2 introduces the https://github.com/smooks/smooks-dfdl-cartridge[DFDL car
 * Numerous dependency updates
 * Maven coordinates change: we are now publishing Smooks artifacts under Maven group IDs prefixed with `+org.smooks+`
 * Replaced default SAX parser implementation from Apache Xerces to https://github.com/FasterXML/woodstox[FasterXML's Woodstox]: benchmarks consistently showed Woodstox outperforming Xerces
+* link:#_instrumentation[Monitoring and management support] with JMX
 
 === Migrating from Smooks 1.7 to 2.0
 
@@ -1201,7 +1202,7 @@ Smooks supports a number of options when it comes to splitting and routing fragm
 // tag::extending-smooks[]
 == Extending Smooks
 
-All existing Smooks functionality (Java Binding, EDI processing, etc...) is built through extension of a number of well defined APIs. We will look at these APIs in the coming sections.
+All existing Smooks functionality (Java Binding, EDI processing, etc...) is built through extension of a number of well-defined APIs. We will look at these APIs in the coming sections.
 
 The main extension points/APIs in Smooks are:
 
@@ -2173,6 +2174,276 @@ public class MySmooksResource {
 }
 ----
 // end::extending-smooks[]
+
+// tag::instrumentation[]
+== Instrumentation
+
+NOTE: Smooks instrumentation is available starting from v2.0.0-RC4.
+
+A Smooks application can be instrumented with https://docs.oracle.com/javase/8/docs/technotes/guides/jmx/index.html[JMX] which allows IT operations to monitor and manage Smooks from tools such as JConsole, Grafana, and NewRelic. Apart from the MBeans provided by the Java runtime and third-party libraries, Smooks provides MBeans for:
+
+* resources (e.g., resource config parameters)
+* visitors (e.g., performance metrics, failure visit count, events visited)
+* reader pools (e.g., no. of active readers)
+
+=== Activating instrumentation
+
+To instrument Smooks, you need to:
+
+1. Add the `smooks-management` module to your Java class path. The Maven coordinates for this module are:
++
+[source,xml]
+----
+<dependency>
+    <groupId>org.smooks</groupId>
+    <artifactId>smooks-management</artifactId>notificaitons
+    <version>TBA</version>
+</dependency>
+----
+
+2. Declare `management:instrumentationResource` in the Smooks config to activate instrumentation:
++
+[source,xml]
+----
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
+                      xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
+                      xmlns:management="https://www.smooks.org/xsd/smooks/management-1.0.xsd">
+
+    <management:instrumentationResource/>
+
+    ...
+    ...
+</smooks-resource-list>
+----
++
+`management:instrumentationResource` supports the following attributes:
++
+[cols="1,1,1"]
+|===
+|Name |Description | Default
+
+|usePlatformMBeanServer
+|Whether to use the MBeanServer from this JVM.
+|true
+
+|mBeanServerDefaultDomain
+|The default JMX domain of the MBeanServer.
+|org.smooks
+
+|mBeanObjectDomainName
+|The JMX domain that all object names will use.
+|org.smooks
+
+|includeHostName
+|Whether to include the hostname in the MBean naming.
+|false
+|===
+
+3. Optionally, declare the `org.smooks.management.InstrumentationInterceptor` interceptor to instrument visitors:
++
+[source,xml]
+----
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
+                      xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
+                      xmlns:management="https://www.smooks.org/xsd/smooks/management-1.0.xsd">
+
+    <management:instrumentationResource/>
+
+    <core:interceptors>
+        <core:interceptor class="org.smooks.management.InstrumentationInterceptor"/>
+    </core:interceptors>
+
+    ...
+    ...
+</smooks-resource-list>
+----
+
+=== Instrumenting application classes
+
+In addition to the Smooks classes that are already instrumented, you can further instrument your own classes with the help of annotations located in the `org.smooks.management.annotation` package which are listed below:
+
+=== @ManagedResource
+
+Annotating a class with `org.smooks.management.annotation.ManagedResource` effectively turns the class into an MBean which allows an instance of the class to be registered with an MBean server. Here is an example of a class annotated with `@ManagedResource`:
+
+[source,java,linenums]
+----
+...
+...
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.management.InstrumentationAgent;
+import org.smooks.api.management.InstrumentationResource;
+import org.smooks.management.annotation.ManagedResource;
+
+@ManagedResource(description = "My Class")
+public class MyManagedClass {
+
+    public MyManagedClass(ApplicationContext applicationContext) {
+        InstrumentationResource instrumentationResource = applicationContext.getRegistry().lookup(InstrumentationResource.INSTRUMENTATION_RESOURCE_TYPED_KEY);
+        InstrumentationAgent instrumentationAgent = instrumentationResource.getInstrumentationAgent();
+
+        instrumentationAgent.register(this, "MyManagedClass");
+    }
+
+    ...
+    ...
+}
+----
+
+Line 17 from the snippet above uses `InsturmentationAgent` to register the `@ManagedResource` annotated object with the MBean server so that it can be queried and invoked by JMX clients. `InstrumentationAgent` is obtained from an instance of `org.smooks.api.management.InstrumentationResource`. The singleton `InstrumentationResource` can be looked up from the Smooks registry as shown in line 12.
+
+IMPORTANT: link:#_activating_instrumentation[Instrumentation needs to be activated] in order to obtain a non-null `InstrumentationResource` from the lookup.
+
+=== @ManagedAttribute
+
+Annotating a method with `org.smooks.management.annotation.ManagedAttribute` exposes the method as an MBean attribute. Here is an example of a method annotated with `@ManagedAttribute`:
+
+[source,java]
+----
+...
+...
+import org.smooks.management.annotation.ManagedAnnotation;
+import org.smooks.management.annotation.ManagedResource;
+
+@ManagedResource
+public class MyManagedClass {
+
+    private String myAttribute;
+    ...
+    ...
+
+    @ManagedAttribute(description = "My attribute")
+    public String getMyAttribute() {
+        return myAttribute;
+    }
+}
+----
+
+=== @ManagedOperation
+
+Annotating a method with `org.smooks.management.annotation.ManagedOperation` exposes the method and its parameters as an MBean operation. Here is an example of a method annotated with `@ManagedOperation`:
+
+[source,java]
+----
+...
+...
+import org.smooks.management.annotation.ManagedOperation;
+import org.smooks.management.annotation.ManagedResource;
+
+@ManagedResource
+public class MyManagedClass {
+
+    ...
+    ...
+
+    @ManagedOperation(description = "My operation")
+    public void myOperation(String myFirstParam, Integer mySecondParam) {
+        ...
+        ...
+    }
+}
+----
+
+=== @ManagedNotification
+
+Annotating a class with `org.smooks.management.annotation.ManagedNotification` allows JMX clients to subscribe to notifications broadcasted from instances of this class. Here is an example of a method annotated with `@ManagedNotification`:
+
+[source,java,linenums]
+----
+...
+...
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.management.InstrumentationAgent;
+import org.smooks.api.management.InstrumentationResource;
+import org.smooks.management.ModelMBeanAssembler;
+import org.smooks.management.annotation.ManagedNotification;
+import org.smooks.management.annotation.ManagedResource;
+
+import javax.management.MBeanException;
+import javax.management.Notification;
+import javax.management.modelmbean.ModelMBeanInfo;
+import javax.management.modelmbean.RequiredModelMBean;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+@ManagedResource
+@ManagedNotification(name = "My Notification", notificationTypes = {"javax.management.Notification"})
+public class MyManagedClass {
+
+    private final RequiredModelMBean requiredModelMBean;
+    private final AtomicLong sequenceNumber = new AtomicLong();
+
+    public MyManagedClass(ApplicationContext applicationContext) {
+        InstrumentationResource instrumentationResource = applicationContext.getRegistry().lookup(InstrumentationResource.INSTRUMENTATION_RESOURCE_TYPED_KEY);
+        InstrumentationAgent instrumentationAgent = instrumentationResource.getInstrumentationAgent();
+
+        ModelMBeanAssembler modelMBeanAssembler = new ModelMBeanAssembler();
+        ModelMBeanInfo modelMBeanInfo = modelMBeanAssembler.getModelMbeanInfo(this.getClass());
+        requiredModelMBean = instrumentationAgent.register(this, this.getObjectName(), modelMBeanInfo, false);
+    }
+
+    public void sendNotification(String message) throws MBeanException {
+        Notification notification = new Notification("My Notification", requiredModelMBean, sequenceNumber.addAndGet(1), message);
+        requiredModelMBean.sendNotification(message);
+    }
+}
+----
+
+As illustrated above in lines 25-31, to register a `@ManagedNotification` instance, the MBean descriptor should be assembled dynamically with `org.smooks.management.ModelMBeanAssembler`. The assembled `javax.management.modelmbean.ModelMBeanInfo` is then registered using `InstrumentationAgent` as shown in line 32. `InstrumentationAgent.register(Object, ObjectName, ModelMBeanInfo, boolean)` returns a `RequiredModelMBean` object that can be referenced to broadcast notifications, seen in line 37.
+
+=== @ManagedNotifications
+
+Adding more than one notification type can be achieved with `org.smooks.management.annotation.ManagedNotifications`. Here is an example of a method annotated with `@ManagedNotifications`:
+
+[source,java]
+----
+...
+...
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.management.InstrumentationAgent;
+import org.smooks.api.management.InstrumentationResource;
+import org.smooks.management.ModelMBeanAssembler;
+import org.smooks.management.annotation.ManagedNotification;
+import org.smooks.management.annotation.ManagedNotifications;
+import org.smooks.management.annotation.ManagedResource;
+
+import javax.management.MBeanException;
+import javax.management.Notification;
+import javax.management.modelmbean.ModelMBeanInfo;
+import javax.management.modelmbean.RequiredModelMBean;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+@ManagedResource
+@ManagedNotifications(value = {@ManagedNotification(name = "My Notification", notificationTypes = {"javax.management.Notification"}),
+@ManagedNotification(name = "Another Notification", notificationTypes = {"javax.management.Notification"})})
+public class MyManagedClass {
+
+    private final RequiredModelMBean requiredModelMBean;
+    private final AtomicLong sequenceNumber = new AtomicLong();
+
+    public MyManagedClass(ApplicationContext applicationContext) {
+        InstrumentationResource instrumentationResource = applicationContext.getRegistry().lookup(InstrumentationResource.INSTRUMENTATION_RESOURCE_TYPED_KEY);
+        InstrumentationAgent instrumentationAgent = instrumentationResource.getInstrumentationAgent();
+
+        ModelMBeanAssembler modelMBeanAssembler = new ModelMBeanAssembler();
+        ModelMBeanInfo modelMBeanInfo = modelMBeanAssembler.getModelMbeanInfo(this.getClass());
+        requiredModelMBean = instrumentationAgent.register(this, this.getObjectName(), modelMBeanInfo, false);
+    }
+
+    public void sendMyNotification(String message) throws MBeanException {
+        Notification notification = new Notification("My Notification", requiredModelMBean, sequenceNumber.addAndGet(1), message);
+        requiredModelMBean.sendNotification(message);
+    }
+
+    public void sendAnotherNotification(String message) throws MBeanException {
+        Notification notification = new Notification("Another Notification", requiredModelMBean, sequenceNumber.addAndGet(1), message);
+        requiredModelMBean.sendNotification(message);
+    }
+}
+----
+
+// end::instrumentation[]
 
 == Community
 

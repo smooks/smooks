@@ -59,14 +59,14 @@ public class CustomResourceConfigSeqLookup implements Function<Map<Object, Objec
     
     @Override
     public ResourceConfigSeq apply(final Map<Object, Object> registryEntries) {
-        ResourceConfigSeq userDefinedResources = new DefaultResourceConfigSeq("userDefinedResources");
+        ResourceConfigSeq customResourceConfigSeq = new DefaultResourceConfigSeq("customResources");
 
-        for (ResourceConfigSeq configList : registry.lookup(new ResourceConfigSeqsLookup())) {
-            if (!configList.isSystem()) {
-                userDefinedResources.addAll(configList);
+        for (ResourceConfigSeq resourceConfigSeq : registry.lookup(new ResourceConfigSeqsLookup())) {
+            if (!resourceConfigSeq.isSystem()) {
+                customResourceConfigSeq.addAll(resourceConfigSeq);
             }
         }
 
-        return userDefinedResources;
+        return customResourceConfigSeq;
     }
 }

@@ -42,9 +42,10 @@
  */
 package org.smooks.engine.delivery.sax.ng.terminate;
 
+import org.smooks.api.SmooksException;
 import org.w3c.dom.Element;
 
-public class TerminateException extends RuntimeException {
+public class TerminateException extends SmooksException {
 	
 	private final Element element;
 

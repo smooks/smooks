@@ -96,11 +96,11 @@ public class SaxNgFilter extends AbstractFilter {
 
     protected void doFilter(final Source source, final Result result) {
         if (!(source instanceof StreamSource || source instanceof JavaSource || source instanceof DOMSource)) {
-            throw new IllegalArgumentException("Unsupported " + source.getClass().getName() + " source type: SAX NG filter supports StreamSource, JavaSource, and DOMSource");
+            throw new SmooksException(String.format("Unsupported [%s] source type: SAX NG filter supports StreamSource, JavaSource, and DOMSource", source.getClass().getName()));
         }
         if (!(result instanceof FilterResult)) {
             if (result != null && !(result instanceof StreamResult) && !(result instanceof DOMResult)) {
-                throw new IllegalArgumentException("Unsupported " + result.getClass().getName() + " result type: SAX NG filter supports StreamResult and DOMResult.");
+                throw new SmooksException(String.format("Unsupported [%s] result type: SAX NG filter supports StreamResult and DOMResult", result.getClass().getName()));
             }
         }
 
@@ -116,7 +116,7 @@ public class SaxNgFilter extends AbstractFilter {
             }
         } catch (TerminateException e) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Terminated filtering on element '" + DomUtils.getXPath(e.getElement()) + "'.");
+                LOGGER.debug("Terminated filtering on element {}", DomUtils.getXPath(e.getElement()));
             }
         } catch (Exception e) {
             throw new SmooksException("Failed to filter source", e);

@@ -69,9 +69,9 @@ import java.util.Stack;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @SuppressWarnings("unchecked")
-public class DOMBuilder extends SmooksContentHandler {
+public class DOMBuilderContentHandler extends SmooksContentHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DOMBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DOMBuilderContentHandler.class);
     private static final DocumentBuilder documentBuilder;
 
     private final ExecutionContext execContext;
@@ -90,11 +90,11 @@ public class DOMBuilder extends SmooksContentHandler {
 		}
     }
 
-    public DOMBuilder(ExecutionContext execContext) {
+    public DOMBuilderContentHandler(ExecutionContext execContext) {
         this(execContext, null);
     }
 
-    public DOMBuilder(ExecutionContext execContext, SmooksContentHandler parentContentHandler) {
+    public DOMBuilderContentHandler(ExecutionContext execContext, SmooksContentHandler parentContentHandler) {
         super(execContext, parentContentHandler);
 
         this.execContext = execContext;

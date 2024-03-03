@@ -42,11 +42,13 @@
  */
 package org.smooks.api.resource.config;
 
+import org.smooks.api.SmooksException;
+
 /**
  * Unable to decode smooks-resource parameter value.
  * @author tfennelly
  */
-public class ParameterDecodeException extends RuntimeException {
+public class ParameterDecodeException extends SmooksException {
 
 	/**
      * 

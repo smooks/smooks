@@ -45,8 +45,10 @@ package org.smooks.api.delivery;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.resource.visitor.Visitor;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.List;
 
+@ThreadSafe
 public interface ContentDeliveryRuntimeFactory {
 
     ContentDeliveryRuntime create(ProfileSet profileSet, List<ContentHandlerBinding<Visitor>> extendedContentHandlerBindings);
