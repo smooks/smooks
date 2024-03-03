@@ -46,6 +46,6 @@ import org.smooks.api.ExecutionContext;
 
 public interface FilterLifecycle {
 
-    void onStarted(ExecutionContext executionContext);
-    void onFinished(ExecutionContext executionContext);
+    void onPreFilter(ExecutionContext executionContext);
+    void onPostFilter(ExecutionContext executionContext);
 }

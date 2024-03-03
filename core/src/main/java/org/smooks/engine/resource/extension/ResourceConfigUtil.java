@@ -71,7 +71,7 @@ public final class ResourceConfigUtil {
         } else if (setOn.equals("defaultResource")) {
             resourceConfig.setSystem(Boolean.parseBoolean((String) value));
         } else if (setOn.equals("targetProfile")) {
-            resourceConfig.setTargetProfile((String) value);
+            resourceConfig.setProfile((String) value);
         } else if (setOn.equals("conditionRef")) {
             ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
             resourceConfig.getSelectorPath().setConditionEvaluator(extensionContext.getXmlConfigDigester().getConditionEvaluator((String) value));
@@ -97,7 +97,7 @@ public final class ResourceConfigUtil {
         } else if (property.equals("defaultResource")) {
             resourceConfig.setSystem(false);
         } else if (property.equals("targetProfile")) {
-            resourceConfig.setTargetProfile(null);
+            resourceConfig.setProfile(null);
         } else if (property.equals("condition")) {
             resourceConfig.getSelectorPath().setConditionEvaluator(null);
         } else if (property.equals("conditionRef")) {
@@ -117,7 +117,7 @@ public final class ResourceConfigUtil {
         } else if (fromProperty.equals("defaultResource")) {
             setProperty(toResourceConfig, toProperty, fromResourceConfig.isSystem(), executionContext);
         } else if (fromProperty.equals("targetProfile")) {
-            setProperty(toResourceConfig, toProperty, fromResourceConfig.getTargetProfile(), executionContext);
+            setProperty(toResourceConfig, toProperty, fromResourceConfig.getProfile(), executionContext);
         } else if (fromProperty.equals("condition")) {
             toResourceConfig.getSelectorPath().setConditionEvaluator(fromResourceConfig.getSelectorPath().getConditionEvaluator());
         } else if (fromProperty.equals("conditionRef")) {

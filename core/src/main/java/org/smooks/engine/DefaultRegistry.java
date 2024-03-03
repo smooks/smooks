@@ -46,6 +46,7 @@ import com.fasterxml.classmate.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.SmooksException;
+import org.smooks.api.TypedKey;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -73,7 +74,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -114,7 +120,12 @@ public class DefaultRegistry implements Registry {
 
         final String name;
         if (value.getClass().isAnnotationPresent(Resource.class) && !value.getClass().getAnnotation(Resource.class).name().isEmpty()) {
-            name = value.getClass().getAnnotation(Resource.class).name();
+            String candidateName = value.getClass().getAnnotation(Resource.class).name();
+            if (registry.containsKey(candidateName)) {
+                name = candidateName + ":" + UUID.randomUUID();
+            } else {
+                name = candidateName;
+            }
         } else {
             name = value.getClass().getName() + ":" + UUID.randomUUID();
         }
@@ -137,45 +148,18 @@ public class DefaultRegistry implements Registry {
     }
 
     @Override
-    public <R> R lookup(final Function<Map<Object, Object>, R> function) {
+    public <R> R lookup(Function<Map<Object, Object>, R> function) {
         return function.apply(Collections.unmodifiableMap(registry));
     }
 
     @Override
-    public <T> T lookup(final Object key) {
+    public <T> T lookup(Object key) {
         return (T) registry.get(key);
     }
 
-    /**
-     * Load all .cdrl files listed in the BufferedReader stream.
-     * <p/>
-     * Because this method uses the ContainerResourceLocator it may be possible
-     * to load external cdrl files.  If the ContainerResourceLocator is a
-     * ServletResourceLocator the lines in the BufferedReader param can contain
-     * external URLs.
-     *
-     * @param cdrlLoadList BufferedReader cdrl list - one cdrl def per line.
-     * @throws java.io.IOException Error reading list buffer.
-     */
-    public void load(BufferedReader cdrlLoadList) throws IOException {
-        String uri;
-
-        while ((uri = cdrlLoadList.readLine()) != null) {
-            uri = uri.trim();
-            if (uri.equals("") || uri.charAt(0) == '#') {
-                continue;
-            }
-
-            try {
-                InputStream resource = containerResourceLocator.getResource(uri);
-
-                LOGGER.info("Loading Smooks Resources from uri [" + uri + "].");
-                registerResources(uri, resource);
-                LOGGER.debug("[" + uri + "] Loaded.");
-            } catch (IllegalArgumentException | IOException | SAXException | URISyntaxException e) {
-                LOGGER.error("[" + uri + "] Load failure. " + e.getMessage(), e);
-            }
-        }
+    @Override
+    public <T> T lookup(TypedKey<T> key) {
+        return lookup((Object) key);
     }
 
     /**

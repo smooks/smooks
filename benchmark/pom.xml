@@ -63,8 +63,8 @@
         </dependency>
         <dependency>
             <groupId>org.smooks</groupId>
-            <artifactId>smooks-core</artifactId>
-            <version>${project.parent.version}</version>
+            <artifactId>smooks-management</artifactId>
+            <version>${parent.version}</version>
         </dependency>
     </dependencies>
 </project>

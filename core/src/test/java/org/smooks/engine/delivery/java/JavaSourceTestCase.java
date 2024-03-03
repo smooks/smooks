@@ -44,8 +44,8 @@ package org.smooks.engine.delivery.java;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.io.payload.JavaSource;
 import org.smooks.io.payload.StringResult;
 import org.xml.sax.SAXException;
@@ -53,7 +53,11 @@ import org.xml.sax.SAXException;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -144,7 +148,7 @@ public class JavaSourceTestCase {
         try {
             smooks.filterSource(javaSource);
         } catch(SmooksException e) {
-            assertEquals("Invalid Smooks configuration.  Feature '" + JavaSource.FEATURE_GENERATE_EVENT_STREAM + "' is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired).", e.getCause().getMessage());
+            assertEquals("Invalid Smooks configuration. Feature [" + JavaSource.FEATURE_GENERATE_EVENT_STREAM + "] is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired).", e.getCause().getMessage());
         }
     }
 

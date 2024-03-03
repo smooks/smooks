@@ -60,7 +60,7 @@ import java.io.IOException;
 public class SaxNgParser extends AbstractParser implements Closeable {
 
     private final DocumentBuilder documentBuilder;
-    private SaxNgHandler saxHandler;
+    private SaxNgContentHandler saxHandler;
 
     public SaxNgParser(final ExecutionContext executionContext, final DocumentBuilder documentBuilder) {
         super(executionContext);
@@ -68,34 +68,35 @@ public class SaxNgParser extends AbstractParser implements Closeable {
     }
 
     protected void parse(Source source, ExecutionContext executionContext) throws SAXException, IOException {
-        saxHandler = new SaxNgHandler(getExecutionContext(), documentBuilder);
+        saxHandler = new SaxNgContentHandler(executionContext, documentBuilder);
         ReaderPool readerPool = executionContext.getContentDeliveryRuntime().getReaderPool();
         
-        XMLReader saxReader = null;
+        XMLReader xmlReader = null;
         try {
-            saxReader = readerPool.borrowXMLReader();
-            if (saxReader == null) {
-                saxReader = createXMLReader();
+            xmlReader = readerPool.borrowXMLReader();
+            if (xmlReader == null) {
+                xmlReader = createXMLReader();
             }
 
             executionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, new NamespaceDeclarationStack());
-            configureReader(saxReader, saxHandler, executionContext, source);
-            if (saxReader instanceof HierarchyChangeReader) {
-                ((HierarchyChangeReader) saxReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
+            configureReader(xmlReader, saxHandler, executionContext, source);
+            if (xmlReader instanceof HierarchyChangeReader) {
+                ((HierarchyChangeReader) xmlReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
             }
-            saxReader.parse(createInputSource(source, executionContext.getContentEncoding()));
+
+            xmlReader.parse(createInputSource(source, executionContext.getContentEncoding()));
         } finally {
             try {
-                if (saxReader instanceof HierarchyChangeReader) {
-                    ((HierarchyChangeReader) saxReader).setHierarchyChangeListener(null);
+                if (xmlReader instanceof HierarchyChangeReader) {
+                    ((HierarchyChangeReader) xmlReader).setHierarchyChangeListener(null);
                 }
             } finally {
                 try {
-                    if (saxReader != null) {
+                    if (xmlReader != null) {
                         try {
                             detachXMLReader(executionContext);
                         } finally {
-                            readerPool.returnXMLReader(saxReader);
+                            readerPool.returnXMLReader(xmlReader);
                         }
                     }
                 } finally {

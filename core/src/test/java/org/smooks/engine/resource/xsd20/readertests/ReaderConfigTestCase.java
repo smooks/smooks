@@ -71,7 +71,7 @@ public class ReaderConfigTestCase {
 
         assertEquals("com.ZZZZReader", readerConfig.getResource());
 
-        assertEquals("A", readerConfig.getTargetProfile());
+        assertEquals("A", readerConfig.getProfile());
 
         List handlers = readerConfig.getParameters("sax-handler");
         assertEquals("[com.X, com.Y]", handlers.toString());

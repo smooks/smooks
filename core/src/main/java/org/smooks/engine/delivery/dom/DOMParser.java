@@ -94,111 +94,116 @@ public class DOMParser extends AbstractParser {
 	 * <p/>
 	 * This constructor attempts to lookup a SAX Parser config under the "org.xml.sax.driver" selector string.
 	 * See <a href="#parserconfig">.cdrl Configuration</a>.
-	 * @param execContext The execution context that the parser is being instantiated on behalf of.
+	 *
+	 * @param executionContext The execution context that the parser is being instantiated on behalf of.
 	 */
-	public DOMParser(ExecutionContext execContext) {
-        super(execContext);
+	public DOMParser(ExecutionContext executionContext) {
+		super(executionContext);
 	}
 
 	/**
 	 * Public constructor.
-	 * @param execContext The Smooks Container Request that the parser is being instantiated on behalf of.
+	 *
+	 * @param executionContext     The Smooks Container Request that the parser is being instantiated on behalf of.
 	 * @param saxDriverConfig SAX Parser configuration. See <a href="#parserconfig">.cdrl Configuration</a>.
 	 */
-    public DOMParser(ExecutionContext execContext, ResourceConfig saxDriverConfig) {
-        super(execContext, saxDriverConfig);
-    }
+	public DOMParser(ExecutionContext executionContext, ResourceConfig saxDriverConfig) {
+		super(executionContext, saxDriverConfig);
+	}
 
-    /**
+	/**
 	 * Document parser.
+	 *
 	 * @param source Source content stream to be parsed.
 	 * @return W3C ownerDocument.
 	 * @throws SAXException Unable to parse the content.
-	 * @throws IOException Unable to read the input stream.
+	 * @throws IOException  Unable to read the input stream.
 	 */
 	public Document parse(Source source) throws IOException, SAXException {
-	   	DOMBuilder contentHandler = new DOMBuilder(getExecutionContext());
+		DOMBuilderContentHandler contentHandler = new DOMBuilderContentHandler(getExecutionContext());
 
-	   	parse(source, contentHandler);
+		parse(source, contentHandler);
 
 		return contentHandler.getDocument();
 	}
 
-      /**
-  	 * Append the content, behind the supplied input stream, to suplied
-  	 * document element.
-  	 * <p/>
-  	 * Used to merge document fragments into a document.
-  	 * @param source Source content stream to be parsed.
-  	 * @param appendElement DOM element to which the content fragment is to
-  	 * be added.
-  	 * @throws SAXException Unable to parse the content.
-  	 * @throws IOException Unable to read the input stream.
-  	 */
-  	public void append(Source source, Element appendElement) throws IOException, SAXException {
-  	   	DOMBuilder contentHandler = new DOMBuilder(getExecutionContext());
+	/**
+	 * Append the content, behind the supplied input stream, to suplied
+	 * document element.
+	 * <p/>
+	 * Used to merge document fragments into a document.
+	 *
+	 * @param source        Source content stream to be parsed.
+	 * @param appendElement DOM element to which the content fragment is to
+	 *                      be added.
+	 * @throws SAXException Unable to parse the content.
+	 * @throws IOException  Unable to read the input stream.
+	 */
+	public void append(Source source, Element appendElement) throws IOException, SAXException {
+		DOMBuilderContentHandler contentHandler = new DOMBuilderContentHandler(getExecutionContext());
 
-  		contentHandler.setAppendElement(appendElement);
-  	   	parse(source, contentHandler);
-  	}
+		contentHandler.setAppendElement(appendElement);
+		parse(source, contentHandler);
+	}
 
-      /**
-  	 * Perform the actual parse into the supplied content handler.
-  	 * @param source Source content stream to be parsed.
-  	 * @param contentHandler Content handler instance that will build/append-to the DOM.
-  	 * @throws SAXException Unable to parse the content.
-  	 * @throws IOException Unable to read the input stream.
-  	 */
-  	private void parse(Source source, DOMBuilder contentHandler) throws SAXException, IOException {
-  		ExecutionContext executionContext = getExecutionContext();
-  		
-  		if(executionContext != null) {
+	/**
+	 * Perform the actual parse into the supplied content handler.
+	 *
+	 * @param source         Source content stream to be parsed.
+	 * @param contentHandler Content handler instance that will build/append-to the DOM.
+	 * @throws SAXException Unable to parse the content.
+	 * @throws IOException  Unable to read the input stream.
+	 */
+	private void parse(Source source, DOMBuilderContentHandler contentHandler) throws SAXException, IOException {
+		ExecutionContext executionContext = getExecutionContext();
+
+		if (executionContext != null) {
 			ReaderPool readerPool = executionContext.getContentDeliveryRuntime().getReaderPool();
 
-	  		XMLReader domReader = getXMLReader(executionContext);
+			XMLReader domReader = getXMLReader(executionContext);
 
-	  		try {
-                if(domReader == null) {
-                    domReader = readerPool.borrowXMLReader();
-                }
-                if(domReader == null) {
-                    domReader = createXMLReader();
-                }
+			try {
+				if (domReader == null) {
+					domReader = readerPool.borrowXMLReader();
+				}
+				if (domReader == null) {
+					domReader = createXMLReader();
+				}
 
-                if(domReader instanceof HierarchyChangeReader) {
-                    ((HierarchyChangeReader)domReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
-                }
+				if (domReader instanceof HierarchyChangeReader) {
+					((HierarchyChangeReader) domReader).setHierarchyChangeListener(new XMLReaderHierarchyChangeListener(executionContext));
+				}
 
-                NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
-                executionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, namespaceDeclarationStack);
-                attachNamespaceDeclarationStack(domReader, executionContext);
+				NamespaceDeclarationStack namespaceDeclarationStack = new NamespaceDeclarationStack();
+				executionContext.put(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY, namespaceDeclarationStack);
+				attachNamespaceDeclarationStack(domReader, executionContext);
 
-                attachXMLReader(domReader, executionContext);
-                configureReader(domReader, contentHandler, executionContext, source);
-		        domReader.parse(createInputSource(source, executionContext.getContentEncoding()));
-	  		} finally {
-                try {
-                    if(domReader instanceof HierarchyChangeReader) {
-                        ((HierarchyChangeReader)domReader).setHierarchyChangeListener(null);
-                    }
-                } finally {
-                    try {
-                        try {
-                            detachXMLReader(executionContext);
-                        } finally {
-                            if(domReader != null) {
+				attachXMLReader(domReader, executionContext);
+				configureReader(domReader, contentHandler, executionContext, source);
+				domReader.parse(createInputSource(source, executionContext.getContentEncoding()));
+			} finally {
+				try {
+					if (domReader instanceof HierarchyChangeReader) {
+						((HierarchyChangeReader) domReader).setHierarchyChangeListener(null);
+					}
+				} finally {
+					try {
+						try {
+							detachXMLReader(executionContext);
+						} finally {
+							if (domReader != null) {
 								readerPool.returnXMLReader(domReader);
-                            }
-                        }
-                    } finally {
-                        contentHandler.detachHandler();
-                    }
-                }
-	  		}
-  		} else {
-	  		XMLReader domReader = createXMLReader();
-	        configureReader(domReader, contentHandler, null, source);
-	        domReader.parse(createInputSource(source, Charset.defaultCharset().name()));
-  		}
-  	}
+							}
+						}
+					} finally {
+						contentHandler.detachHandler();
+					}
+				}
+			}
+		} else {
+			XMLReader domReader = createXMLReader();
+			configureReader(domReader, contentHandler, null, source);
+			domReader.parse(createInputSource(source, Charset.defaultCharset().name()));
+		}
+	}
 }

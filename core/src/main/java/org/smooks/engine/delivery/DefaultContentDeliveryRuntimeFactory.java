@@ -42,31 +42,41 @@
  */
 package org.smooks.engine.delivery;
 
+import org.smooks.api.Registry;
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentDeliveryConfigBuilder;
 import org.smooks.api.delivery.ContentDeliveryRuntime;
 import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.ReaderPool;
+import org.smooks.api.delivery.ReaderPoolFactory;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.engine.delivery.dom.DOMFilterProvider;
 import org.smooks.engine.delivery.sax.ng.SaxNgFilterProvider;
-import org.smooks.api.Registry;
 import org.smooks.engine.lookup.GlobalParamsLookup;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRuntimeFactory {
     private final Map<ContentDeliveryConfigBuilder, ReaderPool> readerPools = new HashMap<>();
     private final Map<String, ContentDeliveryConfigBuilder> contentDeliveryConfigBuilders = new HashMap<>();
     private final Registry registry;
+    private final ReaderPoolFactory readerPoolFactory;
 
-    public DefaultContentDeliveryRuntimeFactory(final Registry registry) {
+    public DefaultContentDeliveryRuntimeFactory(Registry registry) {
         this.registry = registry;
+        Iterator<ReaderPoolFactory> readerPoolFactoryIterator = ServiceLoader.load(ReaderPoolFactory.class, registry.getClassLoader()).iterator();
+        if (!readerPoolFactoryIterator.hasNext()) {
+            throw new SmooksConfigException(String.format("%s service not found. Hint: ensure the Smooks application context has the correct class loader set", ReaderPoolFactory.class.getName()));
+        }
+        readerPoolFactory = readerPoolFactoryIterator.next();
     }
     
     @Override
@@ -77,11 +87,7 @@ public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRunt
                 if (contentDeliveryConfigBuilders.get(profileSet.getBaseProfile()) == null) {
                     contentDeliveryConfigBuilder = new DefaultContentDeliveryConfigBuilder(profileSet, registry, Arrays.asList(new SaxNgFilterProvider(), new DOMFilterProvider()));
                     final int readerPoolSize = Integer.parseInt(registry.lookup(new GlobalParamsLookup(registry)).getParameterValue(Filter.READER_POOL_SIZE, String.class, "0"));
-                    if (readerPoolSize == -1) {
-                        readerPools.put(contentDeliveryConfigBuilder, new DynamicReaderPool());
-                    } else {
-                        readerPools.put(contentDeliveryConfigBuilder, new DefaultReaderPool(readerPoolSize));
-                    }
+                    readerPools.put(contentDeliveryConfigBuilder, readerPoolFactory.create(readerPoolSize));
                     contentDeliveryConfigBuilders.put(profileSet.getBaseProfile(), contentDeliveryConfigBuilder);
                 } else {
                     contentDeliveryConfigBuilder = contentDeliveryConfigBuilders.get(profileSet.getBaseProfile());

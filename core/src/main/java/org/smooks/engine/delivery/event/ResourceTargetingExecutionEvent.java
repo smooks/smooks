@@ -79,7 +79,7 @@ public class ResourceTargetingExecutionEvent<T> extends FragmentExecutionEvent<T
      * @param resourceConfig The resource configuration.
      * @param metadata Optional event metadata.
      */
-    public ResourceTargetingExecutionEvent(Fragment fragment, ResourceConfig resourceConfig, VisitSequence sequence, Object... metadata) {
+    public ResourceTargetingExecutionEvent(Fragment<T> fragment, ResourceConfig resourceConfig, VisitSequence sequence, Object... metadata) {
         this(fragment, resourceConfig, metadata);
         this.sequence = sequence;
     }

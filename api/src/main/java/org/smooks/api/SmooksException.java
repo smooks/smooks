@@ -49,6 +49,10 @@ public class SmooksException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
+	public SmooksException() {
+		super();
+	}
+
     public SmooksException(String message) {
         super(message);
     }

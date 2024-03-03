@@ -208,17 +208,17 @@ public interface ResourceConfig {
      * Gets the target profile/s of this <code>ResourceConfig</code>.
      *
      * @return target profile/s
-     * @see    #setTargetProfile(String)
+     * @see    #setProfile(String)
      */
-    String getTargetProfile();
+    String getProfile();
 
     /**
      * Sets the target profile of this <code>ResourceConfig</code>.
      *
-     * @param targetProfile comma-separated list of {@link ProfileTargetingExpression ProfileTargetingExpressions}
-     * @see                 #getTargetProfile()
+     * @param profile comma-separated list of {@link ProfileTargetingExpression ProfileTargetingExpressions}
+     * @see                 #getProfile()
      */
-    void setTargetProfile(String targetProfile);
+    void setProfile(String profile);
 
     /**
      * Sets the resource type (e.g., "class", "xsl", "groovy", etc...)

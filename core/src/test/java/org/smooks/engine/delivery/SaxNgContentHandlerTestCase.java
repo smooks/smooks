@@ -53,6 +53,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.engine.delivery.sax.ng.SaxNgContentHandler;
 import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;
@@ -64,15 +65,15 @@ import java.util.Properties;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
-import static org.smooks.engine.delivery.SaxNgHandlerTestCase.SAXMatchers.isSaxElementWithQName;
-import static org.smooks.engine.delivery.SaxNgHandlerTestCase.SAXMatchers.isSaxFragmentWithQName;
+import static org.smooks.engine.delivery.SaxNgContentHandlerTestCase.SAXMatchers.isSaxElementWithQName;
+import static org.smooks.engine.delivery.SaxNgContentHandlerTestCase.SAXMatchers.isSaxFragmentWithQName;
 
 /**
- * Test for {@link org.smooks.engine.delivery.sax.ng.SaxNgHandler}.
+ * Test for {@link SaxNgContentHandler}.
  *
  * @author Michael Kr&uuml;ske
  */
-public class SaxNgHandlerTestCase {
+public class SaxNgContentHandlerTestCase {
     private static final String SIMPLE_SAMPLE_XML = "SAXHandlerTest.xml";
 
     private static final String URN_SIMPLE = "urn:simple";
@@ -139,7 +140,7 @@ public class SaxNgHandlerTestCase {
     }
 
     private StreamSource createSource() {
-        final InputStream inputStream = SaxNgHandlerTestCase.class
+        final InputStream inputStream = SaxNgContentHandlerTestCase.class
                 .getResourceAsStream(SIMPLE_SAMPLE_XML);
         StreamSource source = new StreamSource(inputStream);
         return source;

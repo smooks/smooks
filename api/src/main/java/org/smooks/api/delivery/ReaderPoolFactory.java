@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * Core
+ * API
  * %%
  * Copyright (C) 2020 - 2024 Smooks
  * %%
@@ -40,22 +40,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.lifecycle;
+package org.smooks.api.delivery;
 
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.lifecycle.FilterLifecycle;
-import org.smooks.api.lifecycle.LifecyclePhase;
+public interface ReaderPoolFactory {
 
-public class FilterStartedLifecyclePhase implements LifecyclePhase {
-
-    private final ExecutionContext executionContext;
-
-    public FilterStartedLifecyclePhase(ExecutionContext executionContext) {
-        this.executionContext = executionContext;
-    }
-
-    @Override
-    public void apply(Object o) {
-        ((FilterLifecycle) o).onStarted(executionContext);
-    }
+    ReaderPool create(int readerPoolSize);
 }

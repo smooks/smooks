@@ -43,7 +43,14 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-                      xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
+                      xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
+                      xmlns:management="https://www.smooks.org/xsd/smooks/management-1.0.xsd">
+
+    <core:interceptors>
+        <core:interceptor class="org.smooks.management.InstrumentationInterceptor"/>
+    </core:interceptors>
+
+    <management:instrumentationResource/>
 
     <resource-config selector="org.xml.sax.driver">
         <resource>com.fasterxml.aalto.sax.BenchmarkAaltoXMLReader</resource>

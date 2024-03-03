@@ -45,6 +45,7 @@ package org.smooks.engine.delivery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 import org.smooks.api.delivery.ContentDeliveryConfig;
@@ -278,7 +279,7 @@ public class AbstractParser {
             JavaSource javaSource = (JavaSource) source;
 
             if (isFeatureOn(JavaSource.FEATURE_GENERATE_EVENT_STREAM, saxDriverConfig) && !javaSource.isEventStreamRequired()) {
-                throw new SAXException("Invalid Smooks configuration.  Feature '" + JavaSource.FEATURE_GENERATE_EVENT_STREAM + "' is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired).");
+                throw new SmooksConfigException(String.format("Invalid Smooks configuration. Feature [%s] is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired).", JavaSource.FEATURE_GENERATE_EVENT_STREAM));
             }
 
             // Event streaming must be explicitly turned off.  If is on as long as it is (a) not configured "off" in
@@ -332,7 +333,7 @@ public class AbstractParser {
 
         if (xmlReader instanceof JavaXMLReader) {
             if (!(source instanceof JavaSource)) {
-                throw new SAXException("A " + JavaSource.class.getName() + " source must be supplied for " + JavaXMLReader.class.getName() + " implementations.");
+                throw new SmooksException("A " + JavaSource.class.getName() + " source must be supplied for " + JavaXMLReader.class.getName() + " implementations.");
             }
             ((JavaXMLReader) xmlReader).setSourceObjects(((JavaSource) source).getSourceObjects());
         }
@@ -346,7 +347,7 @@ public class AbstractParser {
         }
     }
 
-    private void setHandlers(XMLReader reader) throws SAXException {
+    private void setHandlers(XMLReader reader) {
         if (saxDriverConfig != null) {
             List<Parameter<?>> handlers;
 
@@ -369,11 +370,11 @@ public class AbstractParser {
         }
     }
 
-    private Object createHandler(String handlerName) throws SAXException {
+    private Object createHandler(String handlerName) {
         try {
             return ClassUtils.forName(handlerName, getClass()).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new SAXException("Failed to create SAX Handler '" + handlerName + "'.", e);
+            throw new SmooksException("Failed to create SAX Handler '" + handlerName + "'.", e);
         }
     }
 
@@ -411,23 +412,23 @@ public class AbstractParser {
         }
     }
 
-    public static boolean isFeatureOn(String name, ResourceConfig saxDriverConfig) throws SAXException {
+    public static boolean isFeatureOn(String name, ResourceConfig saxDriverConfig) {
         boolean featureOn = isFeature(name, FeatureValue.ON, saxDriverConfig);
 
         // Make sure the same feature is not also configured off...
         if (featureOn && isFeature(name, FeatureValue.OFF, saxDriverConfig)) {
-            throw new SAXException("Invalid Smooks configuration.  Feature '" + name + "' is explicitly configured 'on' and 'off'.  Must be one or the other!");
+            throw new SmooksException("Invalid Smooks configuration.  Feature '" + name + "' is explicitly configured 'on' and 'off'.  Must be one or the other!");
         }
 
         return featureOn;
     }
 
-    public static boolean isFeatureOff(String name, ResourceConfig saxDriverConfig) throws SAXException {
+    public static boolean isFeatureOff(String name, ResourceConfig saxDriverConfig) {
         boolean featureOff = isFeature(name, FeatureValue.OFF, saxDriverConfig);
 
         // Make sure the same feature is not also configured on...
         if (featureOff && isFeature(name, FeatureValue.ON, saxDriverConfig)) {
-            throw new SAXException("Invalid Smooks configuration.  Feature '" + name + "' is explicitly configured 'on' and 'off'.  Must be one or the other!");
+            throw new SmooksException("Invalid Smooks configuration.  Feature '" + name + "' is explicitly configured 'on' and 'off'.  Must be one or the other!");
         }
 
         return featureOff;

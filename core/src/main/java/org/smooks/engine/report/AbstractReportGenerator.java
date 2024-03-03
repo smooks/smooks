@@ -166,7 +166,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     }
 
     @Override
-    public void onStarted(ExecutionContext executionContext) {
+    public void onPreFilter(ExecutionContext executionContext) {
         ContentDeliveryConfig contentDeliveryConfig = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();
         if (contentDeliveryConfig instanceof DOMContentDeliveryConfig) {
             report = new DOMReport();
@@ -178,7 +178,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
     }
 
     @Override
-    public void onFinished(ExecutionContext executionContext) {
+    public void onPostFilter(ExecutionContext executionContext) {
         try {
             processFinishEvent(executionContext);
         } catch (IOException e) {

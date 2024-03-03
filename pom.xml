@@ -14,8 +14,7 @@
     <url>https://www.smooks.org</url>
 
     <description>
-        Smooks is an extensible data integration Java framework for building XML and non-XML fragment-based
-        applications.
+        Smooks is an extensible data integration Java framework for building XML and non-XML fragment-based applications.
     </description>
 
     <licenses>
@@ -79,6 +78,7 @@
         <module>api</module>
         <module>commons</module>
         <module>core</module>
+        <module>management</module>
         <module>tck</module>
         <module>benchmark</module>
     </modules>

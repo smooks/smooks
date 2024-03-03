@@ -67,7 +67,7 @@ public interface Registry {
      * Registers an object with its key derived from the object's {@link Resource#name()} attribute or the object's class name.
      *
      * @param value object to register
-     * @throws SmooksException if the value with the assigned name already exists
+     * @throws SmooksException          if the value with the assigned name already exists
      * @throws IllegalArgumentException if the value is null
      */
     void registerObject(Object value);
@@ -75,9 +75,9 @@ public interface Registry {
     /**
      * Adds an object with the given key to this <code>Registry</code>.
      *
-     * @param key object that maps to the <code>value</code> to register
+     * @param key   object that maps to the <code>value</code> to register
      * @param value object to register which can be retrieved by its <code>key</code>
-     * @throws SmooksException if the value with the assigned name already exists
+     * @throws SmooksException          if the value with the assigned name already exists
      * @throws IllegalArgumentException if the name or the value is null
      */
     void registerObject(Object key, Object value);
@@ -93,7 +93,7 @@ public interface Registry {
      * Looks up a registered object by function.
      *
      * @param function function to apply for looking up an object
-     * @param <R> type of object to be returned
+     * @param <R>      type of object to be returned
      * @return registered object if it exists or null
      */
     <R> R lookup(Function<Map<Object, Object>, R> function);
@@ -108,9 +108,18 @@ public interface Registry {
     <T> T lookup(Object key);
 
     /**
+     * Looks up a registered object by its typed key.
+     *
+     * @param key typed key of registered object
+     * @param <T> type of object to be returned
+     * @return the registered object if it exists or null
+     */
+    <T> T lookup(TypedKey<T> key);
+
+    /**
      * Registers the set of resources specified in the supplied XML configuration stream.
      *
-     * @param baseURI base URI to be associated with the configuration stream
+     * @param baseURI              base URI to be associated with the configuration stream
      * @param resourceConfigStream XML resource configuration stream
      * @return {@link ResourceConfigSeq} created from the added resource configuration
      * @throws SAXException if error happens while parsing the resource stream

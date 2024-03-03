@@ -52,13 +52,11 @@ import org.smooks.api.TypedMap;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.delivery.ContentDeliveryConfig;
-import org.smooks.api.delivery.ContentDeliveryRuntime;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
 import org.smooks.api.delivery.VisitorAppender;
-import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.lifecycle.FilterLifecycle;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.profile.Profile;
@@ -76,8 +74,8 @@ import org.smooks.engine.bean.context.preinstalled.Time;
 import org.smooks.engine.bean.context.preinstalled.UniqueID;
 import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.injector.Scope;
-import org.smooks.engine.lifecycle.FilterFinishedLifecyclePhase;
-import org.smooks.engine.lifecycle.FilterStartedLifecyclePhase;
+import org.smooks.engine.lifecycle.PostFilterLifecyclePhase;
+import org.smooks.engine.lifecycle.PreFilterLifecyclePhase;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
@@ -149,6 +147,10 @@ public class Smooks implements Closeable {
      * an XML configuration stream.
      */
     private final List<ContentHandlerBinding<Visitor>> visitorBindings;
+
+    private final LifecycleManager lifecycleManager;
+    private final Registry registry;
+
     /**
      * Flag indicating whether or not the Smooks instance is configurable.  It becomes un-configurable
      * after the first execution context has been created.
@@ -162,8 +164,7 @@ public class Smooks implements Closeable {
      * {@link #addResourceConfigs(String)} or {@link #addResourceConfigs(String, java.io.InputStream)}.
      */
     public Smooks() {
-        applicationContext = new DefaultApplicationContextBuilder().build();
-        visitorBindings = new ArrayList<>();
+        this(new DefaultApplicationContextBuilder().build());
     }
 
     /**
@@ -175,6 +176,8 @@ public class Smooks implements Closeable {
     public Smooks(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
         visitorBindings = new ArrayList<>();
+        registry = applicationContext.getRegistry();
+        lifecycleManager = registry.lookup(new LifecycleManagerLookup());
     }
 
     /**
@@ -195,6 +198,8 @@ public class Smooks implements Closeable {
         URIResourceLocator resourceLocator = new URIResourceLocator();
         resourceLocator.setBaseURI(URIResourceLocator.extractBaseURI(resourceURI));
         applicationContext = new DefaultApplicationContextBuilder().setResourceLocator(resourceLocator).build();
+        registry = applicationContext.getRegistry();
+        lifecycleManager = registry.lookup(new LifecycleManagerLookup());
         visitorBindings = new ArrayList<>();
         addResourceConfigs(resourceURI);
     }
@@ -341,8 +346,8 @@ public class Smooks implements Closeable {
 
         resourceConfigStream = resourceLocator.getResource(resourceURI);
         try {
-            URI resourceURIObj = new URI(resourceURI);
-            addResourceConfigs(URIUtil.getParent(resourceURIObj).toString(), resourceConfigStream);
+            URI resourceConfigsUri = new URI(resourceURI);
+            addResourceConfigs(URIUtil.getParent(resourceConfigsUri).toString(), resourceConfigStream);
         } catch (URISyntaxException e) {
             LOGGER.error("Failed to load Smooks resource configuration '" + resourceURI + "'.", e);
         } finally {
@@ -512,20 +517,15 @@ public class Smooks implements Closeable {
 
     private void _filter(ExecutionContext executionContext, Source source, Result... results) {
         ContentDeliveryConfig contentDeliveryConfig = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();
-        Registry registry = applicationContext.getRegistry();
-        LifecycleManager lifecycleManager = registry.lookup(new LifecycleManagerLookup());
         try {
-            FilterStartedLifecyclePhase filterStartedLifecyclePhase = new FilterStartedLifecyclePhase(executionContext);
-            for (FilterLifecycle filterLifecycle : registry.lookup(new InstanceLookup<>(FilterLifecycle.class)).values()) {
-                lifecycleManager.applyPhase(filterLifecycle, filterStartedLifecyclePhase);
-            }
+            lifecycleManager.applyPhase(registry.lookup(new InstanceLookup<>(FilterLifecycle.class)).values(), new PreFilterLifecyclePhase(executionContext));
 
             if (results != null && results.length == 1 && results[0] != null) {
                 FilterBypass filterBypass = contentDeliveryConfig.getFilterBypass();
                 if (filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
                     // We're done... a filter bypass was applied...
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("FilterBypass {} applied.", filterBypass.getClass().getName());
+                        LOGGER.debug("FilterBypass {} applied", filterBypass.getClass().getName());
                     }
                     return;
                 }
@@ -569,7 +569,7 @@ public class Smooks implements Closeable {
                 throw e;
             } catch (Throwable t) {
                 executionContext.setTerminationError(t);
-                throw new SmooksException("Smooks Filtering operation failed.", t);
+                throw new SmooksException("Smooks Filtering operation failed", t);
             } finally {
                 try {
                     filter.close();
@@ -578,10 +578,7 @@ public class Smooks implements Closeable {
                 }
             }
         } finally {
-            FilterFinishedLifecyclePhase filterFinishedLifecyclePhase = new FilterFinishedLifecyclePhase(executionContext);
-            for (FilterLifecycle filterLifecycle : applicationContext.getRegistry().lookup(new InstanceLookup<>(FilterLifecycle.class)).values()) {
-                lifecycleManager.applyPhase(filterLifecycle, filterFinishedLifecyclePhase);
-            }
+            lifecycleManager.applyPhase(registry.lookup(new InstanceLookup<>(FilterLifecycle.class)).values(), new PostFilterLifecyclePhase(executionContext));
         }
     }
 

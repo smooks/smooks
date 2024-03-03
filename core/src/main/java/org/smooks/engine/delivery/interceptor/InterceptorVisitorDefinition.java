@@ -73,11 +73,27 @@ public class InterceptorVisitorDefinition {
         return clazz;
     }
 
-    public void setClass(Class<? extends InterceptorVisitor> clazz) {
+    public ResourceConfig getResourceConfig() {
+        return resourceConfig;
+    }
+
+    public Class<? extends InterceptorVisitor> getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class<? extends InterceptorVisitor> clazz) {
         this.clazz = clazz;
     }
 
-    public ResourceConfig getResourceConfig() {
-        return resourceConfig;
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    public void setResourceConfig(ResourceConfig resourceConfig) {
+        this.resourceConfig = resourceConfig;
     }
 }

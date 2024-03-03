@@ -104,7 +104,7 @@ public class GenericReaderConfigurator implements ReaderConfigurator {
         }
 
         if (targetProfile != null) {
-            resourceConfig.setTargetProfile(targetProfile);
+            resourceConfig.setProfile(targetProfile);
         }
 
         // Add the parameters...

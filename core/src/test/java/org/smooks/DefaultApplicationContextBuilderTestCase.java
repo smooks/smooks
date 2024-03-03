@@ -43,13 +43,16 @@
 package org.smooks;
 
 import org.junit.jupiter.api.Test;
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 
 import java.net.URL;
 import java.util.Enumeration;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 public class DefaultApplicationContextBuilderTestCase {
 
@@ -71,7 +74,7 @@ public class DefaultApplicationContextBuilderTestCase {
                 };
             }
         }).build());
-        assertEquals("org.smooks.api.delivery.ContentHandlerFactory not found for content of type [class]. Hint: ensure the Smooks application context has the correct class loader set", smooksException.getCause().getMessage());
+        assertEquals("org.smooks.api.delivery.ReaderPoolFactory service not found. Hint: ensure the Smooks application context has the correct class loader set", smooksException.getCause().getMessage());
     }
 
     @Test

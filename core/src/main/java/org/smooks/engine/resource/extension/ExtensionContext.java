@@ -161,7 +161,7 @@ public class ExtensionContext {
      * @return The active resource configuration list.
      */
     public ResourceConfigSeq getResourceList() {
-        return xmlConfigDigester.getResourceList();
+        return xmlConfigDigester.getResourceConfigSeq();
     }
 
     public ResourceConfig getCurrentConfig() {
@@ -206,6 +206,6 @@ public class ExtensionContext {
      * @return List of matches resources, or an empty List if no matches are found.
      */
     public List<ResourceConfig> lookupResource(ConfigSearch searchCriteria) {
-        return xmlConfigDigester.getResourceList().lookupResource(searchCriteria);
+        return xmlConfigDigester.getResourceConfigSeq().lookupResource(searchCriteria);
     }
 }
