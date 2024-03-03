@@ -100,13 +100,13 @@ public class VisitorExceptionTestCase {
 
         if(expectException) {
             try {
-                smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<doc/>")), null);
+                smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<doc/>")));
                 fail("Expected SmooksException");
             } catch(SmooksException e) {
                 assertEquals("Terminate Exception", e.getCause().getMessage());
             }
         } else {
-            smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<doc/>")), null);
+            smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<doc/>")));
         }
     }
 }

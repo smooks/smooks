@@ -60,7 +60,7 @@ public class ElementWritingTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("OnWriterPerElementTest.xml"));
 
         try {
-            smooks.filterSource(smooks.createExecutionContext(), new StringSource("<a/>"), null);
+            smooks.filterSource(smooks.createExecutionContext(), new StringSource("<a/>"));
             fail("Expected SAXWriterAccessException");
         } catch (SmooksException e) {
             assertEquals("Illegal access to fragment 'a': fragment is exclusively acquired by another writer. Hint: release fragment before acquiring it from a different writer", e.getCause().getMessage());

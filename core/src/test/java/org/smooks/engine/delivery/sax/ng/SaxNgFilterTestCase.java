@@ -133,7 +133,7 @@ public class SaxNgFilterTestCase {
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
-        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), null);
+        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())));
         assertEquals("h", Visitor01.element.getLocalName());
         assertEquals("y", Visitor01.element.getPrefix());
         assertEquals("http://y", Visitor01.element.getNamespaceURI());
@@ -173,7 +173,7 @@ public class SaxNgFilterTestCase {
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
-        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), null);
+        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())));
         assertEquals("h", Visitor01.element.getLocalName());
         assertEquals("y", Visitor01.element.getPrefix());
         assertEquals("http://y", Visitor01.element.getNamespaceURI());
@@ -195,7 +195,7 @@ public class SaxNgFilterTestCase {
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
-        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), null);
+        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())));
         assertEquals("xx", Visitor01.element.getLocalName());
         assertEquals("xx", Visitor02.element.getLocalName());
         assertNull(Visitor03.element);
@@ -205,7 +205,7 @@ public class SaxNgFilterTestCase {
     public void test_visitBeforeOnly() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<a/>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<a/>")));
         assertTrue(VisitBeforeVisitor.visited);
         assertEquals("Hi There!", VisitBeforeVisitor.staticInjectedParam);
     }
@@ -214,25 +214,25 @@ public class SaxNgFilterTestCase {
     public void test_visitBeforeAndChildren() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<b/>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<b/>")));
         assertTrue(BeforeVisitorAndChildrenVisitor.visited);
         assertFalse(BeforeVisitorAndChildrenVisitor.onChildText);
         assertFalse(BeforeVisitorAndChildrenVisitor.onChildElement);
         BeforeVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<b>text</b>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<b>text</b>")));
         assertTrue(BeforeVisitorAndChildrenVisitor.visited);
         assertTrue(BeforeVisitorAndChildrenVisitor.onChildText);
         assertFalse(BeforeVisitorAndChildrenVisitor.onChildElement);
         BeforeVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<b><x/></b>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<b><x/></b>")));
         assertTrue(BeforeVisitorAndChildrenVisitor.visited);
         assertFalse(BeforeVisitorAndChildrenVisitor.onChildText);
         assertTrue(BeforeVisitorAndChildrenVisitor.onChildElement);
         BeforeVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<b>text<x/></b>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<b>text<x/></b>")));
         assertTrue(BeforeVisitorAndChildrenVisitor.visited);
         assertTrue(BeforeVisitorAndChildrenVisitor.onChildText);
         assertTrue(BeforeVisitorAndChildrenVisitor.onChildElement);
@@ -243,7 +243,7 @@ public class SaxNgFilterTestCase {
     public void test_visitAfterOnly() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<c/>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<c/>")));
         assertTrue(VisitAfterVisitor.visited);
     }
 
@@ -251,7 +251,7 @@ public class SaxNgFilterTestCase {
     public void test_max_node_depth() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-06.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<a><b><c><d>foo</d></c><e><f><g>bar</g></f></e></b></a>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<a><b><c><d>foo</d></c><e><f><g>bar</g></f></e></b></a>")));
         assertNotNull(MaxNodeDepthVisitor.element);
     }
 
@@ -259,25 +259,25 @@ public class SaxNgFilterTestCase {
     public void test_visitAfterAndChildren() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<d/>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<d/>")));
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertFalse(AfterVisitorAndChildrenVisitor.onChildText);
         assertFalse(AfterVisitorAndChildrenVisitor.onChildElement);
         AfterVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<d>text</d>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<d>text</d>")));
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildText);
         assertFalse(AfterVisitorAndChildrenVisitor.onChildElement);
         AfterVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<d><x/></d>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<d><x/></d>")));
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertFalse(AfterVisitorAndChildrenVisitor.onChildText);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildElement);
         AfterVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<d>text<x/></d>")), null);
+        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<d>text<x/></d>")));
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildText);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildElement);
@@ -292,7 +292,7 @@ public class SaxNgFilterTestCase {
         StringWriter reportWriter = new StringWriter();
 
         executionContext.getContentDeliveryRuntime().addExecutionEventListener(new FlatReportGenerator(reportWriter, smooks.getApplicationContext()));
-        smooks.filterSource(executionContext, new StreamSource(new StringReader("<c/>")), null);
+        smooks.filterSource(executionContext, new StreamSource(new StringReader("<c/>")));
 
         assertTrue(compareCharStreams(getClass().getResourceAsStream("report-expected.txt"), new ByteArrayInputStream(reportWriter.toString().getBytes())));
     }

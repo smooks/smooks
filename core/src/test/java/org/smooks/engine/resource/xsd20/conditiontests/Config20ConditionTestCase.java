@@ -129,7 +129,7 @@ public class Config20ConditionTestCase {
     private void testConfig(String config, String expected) throws IOException, SAXException {
         Smooks smooks = new Smooks("/org/smooks/engine/resource/xsd20/conditiontests/" + config);
 
-        smooks.filterSource(new StringSource("<a/>"), null);
+        smooks.filterSource(new StringSource("<a/>"));
         assertEquals(expected, ConditionTestVisitor.messagesUsed.toString());
         ConditionTestVisitor.messagesUsed.clear();
     }
