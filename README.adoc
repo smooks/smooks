@@ -2260,7 +2260,7 @@ To instrument Smooks, you need to:
 
 In addition to the Smooks classes that are already instrumented, you can further instrument your own classes with the help of annotations located in the `org.smooks.management.annotation` package which are listed below:
 
-=== @ManagedResource
+==== @ManagedResource
 
 Annotating a class with `org.smooks.management.annotation.ManagedResource` effectively turns the class into an MBean which allows an instance of the class to be registered with an MBean server. Here is an example of a class annotated with `@ManagedResource`:
 
@@ -2292,7 +2292,7 @@ Line 17 from the snippet above uses `InsturmentationAgent` to register the `@Man
 
 IMPORTANT: link:#_activating_instrumentation[Instrumentation needs to be activated] in order to obtain a non-null `InstrumentationResource` from the lookup.
 
-=== @ManagedAttribute
+==== @ManagedAttribute
 
 Annotating a method with `org.smooks.management.annotation.ManagedAttribute` exposes the method as an MBean attribute. Here is an example of a method annotated with `@ManagedAttribute`:
 
@@ -2317,7 +2317,7 @@ public class MyManagedClass {
 }
 ----
 
-=== @ManagedOperation
+==== @ManagedOperation
 
 Annotating a method with `org.smooks.management.annotation.ManagedOperation` exposes the method and its parameters as an MBean operation. Here is an example of a method annotated with `@ManagedOperation`:
 
@@ -2342,7 +2342,7 @@ public class MyManagedClass {
 }
 ----
 
-=== @ManagedNotification
+==== @ManagedNotification
 
 Annotating a class with `org.smooks.management.annotation.ManagedNotification` allows JMX clients to subscribe to notifications broadcasted from instances of this class. Here is an example of a method annotated with `@ManagedNotification`:
 
@@ -2389,7 +2389,7 @@ public class MyManagedClass {
 
 As illustrated above in lines 25-31, to register a `@ManagedNotification` instance, the MBean descriptor should be assembled dynamically with `org.smooks.management.ModelMBeanAssembler`. The assembled `javax.management.modelmbean.ModelMBeanInfo` is then registered using `InstrumentationAgent` as shown in line 32. `InstrumentationAgent.register(Object, ObjectName, ModelMBeanInfo, boolean)` returns a `RequiredModelMBean` object that can be referenced to broadcast notifications, seen in line 37.
 
-=== @ManagedNotifications
+==== @ManagedNotifications
 
 Adding more than one notification type can be achieved with `org.smooks.management.annotation.ManagedNotifications`. Here is an example of a method annotated with `@ManagedNotifications`:
 
