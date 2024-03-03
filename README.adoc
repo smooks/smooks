@@ -2184,9 +2184,9 @@ A Smooks application can be instrumented with https://docs.oracle.com/javase/8/d
 * visitors (e.g., performance metrics, failure visit count, events visited)
 * reader pools (e.g., no. of active readers)
 
-=== Activating instrumentation
+=== Activation
 
-To instrument Smooks, you need to:
+To activate instrumentation in Smooks, you need to:
 
 1. Add the `smooks-management` module to your Java class path. The Maven coordinates for this module are:
 +
