@@ -102,7 +102,7 @@ public class InstrumentationInterceptor extends AbstractInterceptorVisitor imple
     public void visitChildElement(Element childElement, ExecutionContext executionContext) {
         if (visitorBinding.getContentHandler() instanceof ChildrenVisitor) {
             managedVisitor.incrementVisitChildTextCounter();
-            manageVisit( visitChildElementInvocation, childElement, executionContext);
+            manageVisit(visitChildElementInvocation, childElement, executionContext);
         }
     }
 

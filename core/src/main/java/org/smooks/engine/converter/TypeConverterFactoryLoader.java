@@ -75,11 +75,11 @@ public class TypeConverterFactoryLoader {
                 typeConverterFactories.add(typeConverterFactory);
             }
         }
-        
+
         return typeConverterFactories;
     }
-    
-    private void assertTypeConverterFactoryInterface(TypeConverterFactory<? , ?> typeConverterFactory) {
+
+    private void assertTypeConverterFactoryInterface(TypeConverterFactory<?, ?> typeConverterFactory) {
         Type[] genericInterfaces = typeConverterFactory.getClass().getGenericInterfaces();
         boolean assertion = false;
         if (genericInterfaces.length >= 1) {
@@ -88,7 +88,7 @@ public class TypeConverterFactoryLoader {
                     assertion = true;
                 }
             }
-            
+
             if (!assertion) {
                 throw new SmooksConfigException(String.format("%s must immediately extend org.smooks.converter.factory.TypeConverterFactory", typeConverterFactory.getClass()));
             }

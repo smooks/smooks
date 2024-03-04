@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -84,62 +84,64 @@ import java.util.Vector;
  * <p/>
  * Note, we will make this filter easier in the next release.  You'll be able to call a method such
  * as "getDecodedParameter" on the {@link ResourceConfig}, returning a decoded parameter Object.
- *
+ * <p>
  * See {@link ResourceConfig}.
+ *
  * @author tfennelly
  */
 public class TokenizedStringParameterDecoder extends ParameterDecoder<String> {
-	private Class   returnType;
-	private String  delims;
-	private boolean returnDelims;
-	private boolean trimTokens;
+    private Class returnType;
+    private String delims;
+    private boolean returnDelims;
+    private boolean trimTokens;
 
-	/**
-	 * Public constructor.
-	 * @param resourceConfig Configuration.
-	 */
-	public void setConfiguration(ResourceConfig resourceConfig) {
-		delims = resourceConfig.getParameterValue("delims", String.class, ",");
-		returnDelims = resourceConfig.getParameterValue("returnDelims", Boolean.class, false);
-		trimTokens = resourceConfig.getParameterValue("trimTokens", Boolean.class, true);
+    /**
+     * Public constructor.
+     *
+     * @param resourceConfig Configuration.
+     */
+    public void setConfiguration(ResourceConfig resourceConfig) {
+        delims = resourceConfig.getParameterValue("delims", String.class, ",");
+        returnDelims = resourceConfig.getParameterValue("returnDelims", Boolean.class, false);
+        trimTokens = resourceConfig.getParameterValue("trimTokens", Boolean.class, true);
 
-		String paramType = resourceConfig.getParameterValue(Parameter.PARAM_TYPE_PREFIX, String.class, "string-list");
-		if(paramType.equals("string-list")) {
-			returnType = Vector.class;
-		} else if(paramType.equals("string-hashset")) {
-			returnType = LinkedHashSet.class;
-		} else {
-			throw new ParameterDecodeException("Unsupported decoded return type [" + paramType + "]");
-		}
-	}
+        String paramType = resourceConfig.getParameterValue(Parameter.PARAM_TYPE_PREFIX, String.class, "string-list");
+        if (paramType.equals("string-list")) {
+            returnType = Vector.class;
+        } else if (paramType.equals("string-hashset")) {
+            returnType = LinkedHashSet.class;
+        } else {
+            throw new ParameterDecodeException("Unsupported decoded return type [" + paramType + "]");
+        }
+    }
 
-	/**
-	 * Decodes the value based on the smooks-resource configuration passed in the constructor.
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public Object decodeValue(String value) throws ParameterDecodeException {
-		Collection returnVal;
-		StringTokenizer tokenizer;
+    /**
+     * Decodes the value based on the smooks-resource configuration passed in the constructor.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object decodeValue(String value) throws ParameterDecodeException {
+        Collection returnVal;
+        StringTokenizer tokenizer;
 
-		// Create the desired Collection.
-		try {
-			returnVal = (Collection)returnType.newInstance();
-		} catch (Exception e) {
-			throw new IllegalStateException("Unable to construct Collection instance.", e);
-		}
+        // Create the desired Collection.
+        try {
+            returnVal = (Collection) returnType.newInstance();
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to construct Collection instance.", e);
+        }
 
-		// Create the tokenizer.
-		tokenizer = new StringTokenizer(value, delims, returnDelims);
-		while(tokenizer.hasMoreTokens()) {
-			if(trimTokens) {
-				returnVal.add(tokenizer.nextToken().trim());
-			} else {
-				returnVal.add(tokenizer.nextToken());
-			}
-		}
+        // Create the tokenizer.
+        tokenizer = new StringTokenizer(value, delims, returnDelims);
+        while (tokenizer.hasMoreTokens()) {
+            if (trimTokens) {
+                returnVal.add(tokenizer.nextToken().trim());
+            } else {
+                returnVal.add(tokenizer.nextToken());
+            }
+        }
 
-		return returnVal;
-	}
+        return returnVal;
+    }
 
 }

@@ -15,7 +15,7 @@
     <properties>
         <hsqldb.version>2.5.2</hsqldb.version>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.hsqldb</groupId>

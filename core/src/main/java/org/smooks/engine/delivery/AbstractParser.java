@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -93,18 +93,18 @@ public class AbstractParser {
     public static final String ORG_XML_SAX_DRIVER = "org.xml.sax.driver";
     public static final String FEATURE_ON = "feature-on";
     public static final String FEATURE_OFF = "feature-off";
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractParser.class);
     private static final TypedKey<Stack<XMLReader>> XML_READER_STACK_TYPED_KEY = TypedKey.of();
-    
+
     private final ExecutionContext executionContext;
     private final ResourceConfig saxDriverConfig;
 
     /**
      * Public constructor.
      *
-     * @param executionContext     The Smooks Container Request that the parser is being instantiated on behalf of.
-     * @param saxDriverConfig SAX Parser configuration. See <a href="#parserconfig">.cdrl Configuration</a>.
+     * @param executionContext The Smooks Container Request that the parser is being instantiated on behalf of.
+     * @param saxDriverConfig  SAX Parser configuration. See <a href="#parserconfig">.cdrl Configuration</a>.
      */
     public AbstractParser(ExecutionContext executionContext, ResourceConfig saxDriverConfig) {
         AssertArgument.isNotNull(executionContext, "executionContext");
@@ -138,7 +138,7 @@ public class AbstractParser {
     public static XMLReader getXMLReader(ExecutionContext executionContext) {
         Stack<XMLReader> xmlReaderStack = getReaders(executionContext);
 
-        if(!xmlReaderStack.isEmpty()) {
+        if (!xmlReaderStack.isEmpty()) {
             return xmlReaderStack.peek();
         } else {
             return null;
@@ -148,7 +148,7 @@ public class AbstractParser {
     public static void detachXMLReader(ExecutionContext executionContext) {
         Stack<XMLReader> xmlReaderStack = getReaders(executionContext);
 
-        if(!xmlReaderStack.isEmpty()) {
+        if (!xmlReaderStack.isEmpty()) {
             xmlReaderStack.pop();
             executionContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY).popReader();
         }
@@ -158,7 +158,7 @@ public class AbstractParser {
     public static Stack<XMLReader> getReaders(ExecutionContext executionContext) {
         Stack<XMLReader> readers = executionContext.get(XML_READER_STACK_TYPED_KEY);
 
-        if(readers == null) {
+        if (readers == null) {
             readers = new Stack<>();
             setReaders(readers, executionContext);
         }
@@ -174,7 +174,7 @@ public class AbstractParser {
      *
      * @param deliveryConfig Content delivery configuration.
      * @return Returns the SAX Parser configuration for the profile associated with the supplied delivery
-     *         configuration, or null if no parser configuration is specified.
+     * configuration, or null if no parser configuration is specified.
      */
     public static ResourceConfig getSAXParserConfiguration(ContentDeliveryConfig deliveryConfig) {
         if (deliveryConfig == null) {
@@ -191,9 +191,9 @@ public class AbstractParser {
         return saxDriverConfig;
     }
 
-	private static Reader systemIdToReader(String systemId, String contentEncoding) {
+    private static Reader systemIdToReader(String systemId, String contentEncoding) {
         return streamToReader(systemIdToStream(systemId), contentEncoding);
-	}
+    }
 
     private static InputStream systemIdToStream(String systemId) {
         try {
@@ -203,27 +203,26 @@ public class AbstractParser {
         }
     }
 
-	private static URL systemIdToURL(final String systemId)
-	{
-		try {
-			return new URL(systemId);
-		} catch (MalformedURLException e) {
-		    throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Must be a valid URL.", e);
-		}
+    private static URL systemIdToURL(final String systemId) {
+        try {
+            return new URL(systemId);
+        } catch (MalformedURLException e) {
+            throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Must be a valid URL.", e);
+        }
 
-	}
+    }
 
-	private static Reader streamToReader(InputStream inputStream, String contentEncoding) {
-		try {
-		    if (contentEncoding != null) {
-		        return new InputStreamReader(inputStream, contentEncoding);
-		    } else {
-		        return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-		    }
-		} catch (UnsupportedEncodingException e) {
-		    throw new SmooksException("Unable to decode input stream.", e);
-		}
-	}
+    private static Reader streamToReader(InputStream inputStream, String contentEncoding) {
+        try {
+            if (contentEncoding != null) {
+                return new InputStreamReader(inputStream, contentEncoding);
+            } else {
+                return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            }
+        } catch (UnsupportedEncodingException e) {
+            throw new SmooksException("Unable to decode input stream.", e);
+        }
+    }
 
     protected InputSource createInputSource(Source source, String contentEncoding) {
         // Also attach the underlying stream to the InputSource...
@@ -246,7 +245,7 @@ public class AbstractParser {
             inputSource.setCharacterStream(reader);
 
             return inputSource;
-        } else if (source instanceof DOMSource)  {
+        } else if (source instanceof DOMSource) {
             return new DocumentInputSource((Document) ((DOMSource) source).getNode());
         } else if (source.getSystemId() != null) {
             return new InputSource(systemIdToReader(source.getSystemId(), contentEncoding));
@@ -327,7 +326,7 @@ public class AbstractParser {
     }
 
     protected void configureReader(XMLReader xmlReader, DefaultHandler2 contentHandler, ExecutionContext executionContext, Source source) throws SAXException {
-		if (xmlReader instanceof SmooksXMLReader) {
+        if (xmlReader instanceof SmooksXMLReader) {
             ((SmooksXMLReader) xmlReader).setExecutionContext(executionContext);
         }
 
@@ -387,7 +386,7 @@ public class AbstractParser {
         }
         // Report namespace decls as per SAX 2.0.2 spec...
         try {
-        	// http://www.saxproject.org/apidoc/org/xml/sax/package-summary.html#package_description
+            // http://www.saxproject.org/apidoc/org/xml/sax/package-summary.html#package_description
             reader.setFeature("http://xml.org/sax/features/xmlns-uris", true);
         } catch (Throwable t) {
             // Not a SAX 2.0.2 compliant parser... Ignore

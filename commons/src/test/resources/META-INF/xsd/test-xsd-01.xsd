@@ -7,13 +7,13 @@
     <xs:element name="nameValuePairs">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="yyy:abstractNVP" minOccurs="1" maxOccurs="unbounded" />
+                <xs:element ref="yyy:abstractNVP" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="abstractNVP" type="yyy:abstractNVP" abstract="true" />
-    <xs:complexType name="abstractNVP" abstract="true" />
+    <xs:element name="abstractNVP" type="yyy:abstractNVP" abstract="true"/>
+    <xs:complexType name="abstractNVP" abstract="true"/>
 
     <xs:element name="nameValuePair" substitutionGroup="yyy:abstractNVP">
         <xs:complexType>

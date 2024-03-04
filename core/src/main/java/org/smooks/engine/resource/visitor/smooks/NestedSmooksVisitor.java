@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -87,6 +87,7 @@ import org.xml.sax.SAXException;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
@@ -107,7 +108,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer, PreExecutionLifecycle {
-    
+
     public enum Action {
         REPLACE,
         PREPEND_BEFORE,
@@ -125,7 +126,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     protected BeanId bindBeanId;
 
     protected Action action;
-    
+
     @Inject
     @Named("action")
     protected Optional<Action> actionOptional;
@@ -137,13 +138,13 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     @Inject
     @Named("outputStreamResource")
     protected Optional<String> outputStreamResourceOptional;
-    
+
     @Inject
     protected ResourceConfig resourceConfig;
-    
+
     @Inject
     protected Integer maxNodeDepth = 1;
-    
+
     @Inject
     protected ApplicationContext applicationContext;
 
@@ -154,7 +155,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     protected ResourceConfigSeq resourceConfigSeq;
     protected Smooks nestedSmooks;
     protected DomSerializer domSerializer;
-    
+
     @PostConstruct
     public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
         if (nestedSmooks == null) {
@@ -186,7 +187,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
                 AssertArgument.isNotNull(outputStreamResourceOptional.orElse(null), "outputStreamResource");
             }
         }
-        
+
         domSerializer = new DomSerializer(false, rewriteEntities);
     }
 
@@ -200,16 +201,16 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         }
         executionContext.put(CACHED_DOCUMENT_BUILDER_TYPED_KEY, documentBuilder);
     }
-    
+
     protected Node deAttach(final Node node, ExecutionContext executionContext) {
         final Document document = executionContext.get(CACHED_DOCUMENT_BUILDER_TYPED_KEY).newDocument();
         document.setStrictErrorChecking(false);
         final Node copyNode = document.importNode(node, true);
         document.appendChild(copyNode);
-        
+
         return copyNode;
     }
-    
+
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
         final Node rootNode = deAttach(element, executionContext);
@@ -263,7 +264,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         executionContext.getContentDeliveryRuntime().addExecutionEventListener(childEventListener);
         executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(visitedFragment, this, childEventListener));
     }
-    
+
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) {
         final NodeFragment visitedFragment = new NodeFragment(element);
@@ -321,7 +322,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
 
         filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterVisitorMemento.getState(), executionContext, "visitAfter");
     }
-    
+
     protected Writer prependBefore(final Fragment<Node> visitedNodeFragment, final Action action, final Element rootElement, final ExecutionContext executionContext) {
         final NodeFragment rootNodeFragment = new NodeFragment(rootElement, true);
         final FragmentWriter fragmentWriter = new FragmentWriter(executionContext, rootNodeFragment, false);
@@ -338,7 +339,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
 
         return fragmentWriter;
     }
-    
+
     protected void prependAfter(final Fragment<Node> visitedNodeFragment, final Element rootElement, final ExecutionContext executionContext) {
         final NodeFragment rootNodeFragment = new NodeFragment(rootElement);
         final VisitorMemento<FragmentWriter> fragmentWriterMemento = new SimpleVisitorMemento<>(rootNodeFragment, this, new FragmentWriter(executionContext, rootNodeFragment));
@@ -389,7 +390,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY, nestedExecutionContext);
             mementoCaretaker.capture(nestedExecutionContextMemento);
         }
-        
+
         final Document document = executionContext.get(CACHED_DOCUMENT_BUILDER_TYPED_KEY).newDocument();
         document.setStrictErrorChecking(false);
         final Element smooksBridgeElement = document.createElementNS(Namespace.SMOOKS_URI, "bridge");
@@ -404,7 +405,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document), new StreamResult(writer));
         }
     }
-    
+
     public int getMaxNodeDepth() {
         if (action != null && (action.equals(Action.PREPEND_BEFORE) || action.equals(Action.PREPEND_AFTER))) {
             return Integer.MAX_VALUE;
@@ -457,7 +458,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     public void setOutputStreamResourceOptional(Optional<String> outputStreamResourceOptional) {
         this.outputStreamResourceOptional = outputStreamResourceOptional;
     }
-    
+
     @PreDestroy
     public void preDestroy() {
         if (nestedSmooks != null) {

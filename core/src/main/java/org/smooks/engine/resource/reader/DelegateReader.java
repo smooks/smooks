@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -69,6 +69,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
 import jakarta.annotation.PostConstruct;
+
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -85,7 +86,7 @@ import java.util.HashMap;
 public class DelegateReader implements SmooksXMLReader {
     private final TypedKey<Writer> contentHandlerTypedKey = TypedKey.of();
     private final TypedKey<ExecutionContext> executionContextTypedKey = TypedKey.of();
-    
+
     private ContentHandler contentHandler;
     private Smooks readerSmooks;
     private ErrorHandler errorHandler;
@@ -96,7 +97,7 @@ public class DelegateReader implements SmooksXMLReader {
 
     @Inject
     private ApplicationContext applicationContext;
-    
+
     private DocumentBuilder documentBuilder;
 
     @PostConstruct
@@ -125,7 +126,7 @@ public class DelegateReader implements SmooksXMLReader {
             readerSmooks.addResourceConfig(resourceConfig);
         }
     }
-    
+
     @Override
     public void setExecutionContext(ExecutionContext executionContext) {
         this.executionContext = executionContext;
@@ -189,7 +190,7 @@ public class DelegateReader implements SmooksXMLReader {
     public ErrorHandler getErrorHandler() {
         return errorHandler;
     }
-    
+
     @Override
     public void parse(final InputSource inputSource) throws IOException, SAXException {
         final Document document;
@@ -199,18 +200,18 @@ public class DelegateReader implements SmooksXMLReader {
             document = documentBuilder.parse(inputSource);
             document.setStrictErrorChecking(false);
         }
-        
+
         ExecutionContext readerExecutionContext = executionContext.get(executionContextTypedKey);
         if (readerExecutionContext == null) {
             readerExecutionContext = readerSmooks.createExecutionContext();
-            executionContext.put(executionContextTypedKey, readerExecutionContext);   
+            executionContext.put(executionContextTypedKey, readerExecutionContext);
         }
-        
+
         if (Bridge.isBridge(document.getFirstChild())) {
             final Bridge bridge = new Bridge(document.getFirstChild());
             readerExecutionContext.put(bridge.getSourceKey(), bridge.getSourceValue(executionContext));
         }
-        
+
         if (executionContext.get(contentHandlerTypedKey) == null) {
             executionContext.put(contentHandlerTypedKey, new SAXWriter(contentHandler));
         }

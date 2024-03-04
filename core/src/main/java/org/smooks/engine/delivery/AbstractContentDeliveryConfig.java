@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -74,7 +74,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractContentDeliveryConfig.class);
 
-	/**
+    /**
      * Container context.
      */
     private Registry registry;
@@ -107,6 +107,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     /**
      * Get the list of {@link ResourceConfig}s for the specified selector definition.
+     *
      * @param selector The configuration "selector" attribute value from the .cdrl file in the .cdrar.
      * @return List of ResourceConfig instances, or null.
      */
@@ -133,11 +134,12 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     public Map<String, List<ResourceConfig>> getResourceConfigs() {
         return resourceConfigTable;
     }
-    
+
     /**
      * Get a list {@link Object}s from the supplied {@link ResourceConfig} selector value.
      * <p/>
      * Uses {@link Registry#getObject(ResourceConfig)} to construct the object.
+     *
      * @param selector selector attribute value from the .cdrl file in the .cdrar.
      * @return List of Object instances.  An empty list is returned where no
      * selectors exist.
@@ -217,14 +219,14 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     }
 
     protected FilterBypass getFilterBypass(ContentHandlerBindingIndex<?>... contentHandlerBindingIndexes) {
-    	for (ContentHandlerBindingIndex contentHandlerBindingIndex : contentHandlerBindingIndexes) {
+        for (ContentHandlerBindingIndex contentHandlerBindingIndex : contentHandlerBindingIndexes) {
             Collection<List<ContentHandlerBinding<?>>> contentHandlerBindings = contentHandlerBindingIndex.values();
             long userContentHandlerBindingsCount = contentHandlerBindings.
                     stream().
                     flatMap(l -> l.
                             stream().
                             filter(c -> !c.getResourceConfig().isSystem())).count();
-            
+
             if (userContentHandlerBindingsCount > 1) {
                 // If any of the visitor tables have more than 1 visitor instance...
                 return null;
@@ -240,7 +242,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
                     flatMap(l -> l.
                             stream().
                             filter(c -> !c.getResourceConfig().isSystem())).count();
-            
+
             if (userContentHandlerBindingsCount == 1) {
                 FilterBypass filterBypass = getFilterBypass(contentHandlerBindingIndex);
 
@@ -286,12 +288,12 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
         return null;
     }
-    
+
     protected boolean getCloseSource() {
         if (closeSource == null) {
             closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", this));
         }
-        
+
         return closeSource;
     }
 

@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -83,7 +83,7 @@ public class XsdDOMValidator extends XsdValidator {
 
         // Get the default namespace...
         String defaultNamespaceString = getDefaultNamespace(document.getDocumentElement());
-        if(defaultNamespaceString != null) {
+        if (defaultNamespaceString != null) {
             try {
                 defaultNamespace = new URI(defaultNamespaceString);
             } catch (URISyntaxException e) {
@@ -93,7 +93,7 @@ public class XsdDOMValidator extends XsdValidator {
 
         // Get the full namespace list...
         namespaces.addAll(collectNamespaces(document.getDocumentElement()));
-        
+
         this.setSchemaSourceResolver((type, namespaceURI, publicId, systemId, baseURI) -> new LSInput() {
             @Override
             public Reader getCharacterStream() {
@@ -195,8 +195,9 @@ public class XsdDOMValidator extends XsdValidator {
 
     /**
      * Validate the document against the namespaces referenced in it.
+     *
      * @throws SAXException Validation error.
-     * @throws IOException Error reading the XSD Sources.
+     * @throws IOException  Error reading the XSD Sources.
      */
     public void validate() throws SAXException, IOException {
         validate(new DOMSource(document));
@@ -204,6 +205,7 @@ public class XsdDOMValidator extends XsdValidator {
 
     /**
      * Get the default namespace associated with the supplied element.
+     *
      * @param element The element to be checked.
      * @return The default namespace, or null if none was found.
      */
@@ -211,10 +213,10 @@ public class XsdDOMValidator extends XsdValidator {
         NamedNodeMap attributes = element.getAttributes();
         int attributeCount = attributes.getLength();
 
-        for(int i = 0; i < attributeCount; i++) {
+        for (int i = 0; i < attributeCount; i++) {
             Attr attribute = (Attr) attributes.item(i);
 
-            if(XMLConstants.XMLNS_ATTRIBUTE.equals(attribute.getName()) && XMLConstants.XMLNS_ATTRIBUTE.equals(attribute.getLocalName())) {
+            if (XMLConstants.XMLNS_ATTRIBUTE.equals(attribute.getName()) && XMLConstants.XMLNS_ATTRIBUTE.equals(attribute.getLocalName())) {
                 return attribute.getValue();
             }
         }
@@ -227,11 +229,11 @@ public class XsdDOMValidator extends XsdValidator {
         NamedNodeMap attributes = element.getAttributes();
         int attributeCount = attributes.getLength();
 
-        for(int i = 0; i < attributeCount; i++) {
+        for (int i = 0; i < attributeCount; i++) {
             Attr attribute = (Attr) attributes.item(i);
             String namespace = attribute.getNamespaceURI();
 
-            if(XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(namespace)) {
+            if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(namespace)) {
                 try {
                     namespaceSources.add(new URI(attribute.getValue()));
                 } catch (URISyntaxException e) {
@@ -242,14 +244,14 @@ public class XsdDOMValidator extends XsdValidator {
 
         NodeList childNodes = element.getChildNodes();
         int childCount = childNodes.getLength();
-        for(int i = 0; i < childCount; i++) {
+        for (int i = 0; i < childCount; i++) {
             Node child = childNodes.item(i);
 
-            if(child.getNodeType() == Node.ELEMENT_NODE) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
                 namespaceSources.addAll(collectNamespaces((Element) child));
             }
         }
-        
+
         return namespaceSources;
     }
 
@@ -264,7 +266,7 @@ public class XsdDOMValidator extends XsdValidator {
                 try {
                     return new String(StreamUtils.readStream(xsdStream));
                 } catch (IOException e) {
-                   throw new SmooksException(e.getMessage(), e);
+                    throw new SmooksException(e.getMessage(), e);
                 }
             }
         } else {

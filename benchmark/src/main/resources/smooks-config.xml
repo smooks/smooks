@@ -60,12 +60,13 @@
         <param name="entities.rewrite">false</param>
         <param name="default.serialization.on">false</param>
     </resource-config>
-    
+
     <resource-config selector="author">
         <resource>org.smooks.benchmark.CounterVisitor</resource>
     </resource-config>
-    
-    <core:smooks filterSourceOn="article,inproceedings,proceedings,book,incollection,phdthesis,mastersthesis,www" maxNodeDepth="0">
+
+    <core:smooks filterSourceOn="article,inproceedings,proceedings,book,incollection,phdthesis,mastersthesis,www"
+                 maxNodeDepth="0">
         <core:config>
             <smooks-resource-list>
                 <core:delegate-reader>

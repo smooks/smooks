@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -96,38 +96,38 @@ public final class XmlUtil {
          */
         XSD,
     }
-    
+
     private static final Set<String> XML_RESERVED_NAMESPACES = new HashSet<>();
-    
+
     static {
-    	XML_RESERVED_NAMESPACES.add(XMLConstants.NULL_NS_URI);
-    	XML_RESERVED_NAMESPACES.add(XMLConstants.RELAXNG_NS_URI);
-    	XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-    	XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-    	XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XPATH_DATATYPE_NS_URI);
-    	XML_RESERVED_NAMESPACES.add(XMLConstants.XML_DTD_NS_URI);
-    	XML_RESERVED_NAMESPACES.add(XMLConstants.XML_NS_URI);
-    	XML_RESERVED_NAMESPACES.add(XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
+        XML_RESERVED_NAMESPACES.add(XMLConstants.NULL_NS_URI);
+        XML_RESERVED_NAMESPACES.add(XMLConstants.RELAXNG_NS_URI);
+        XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+        XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XPATH_DATATYPE_NS_URI);
+        XML_RESERVED_NAMESPACES.add(XMLConstants.XML_DTD_NS_URI);
+        XML_RESERVED_NAMESPACES.add(XMLConstants.XML_NS_URI);
+        XML_RESERVED_NAMESPACES.add(XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
     }
 
-    public static final char[] LT = new char[] {'&', 'l', 't', ';'};
-    public static final char[] GT = new char[] {'&', 'g', 't', ';'};
-    public static final char[] AMP = new char[] {'&', 'a', 'm', 'p', ';'};
-    public static final char[] QUOT = new char[] {'&', 'q', 'u', 'o', 't', ';'};
-    public static final char[] APOS = new char[] {'&', 'a', 'p', 'o', 's', ';'};
+    public static final char[] LT = new char[]{'&', 'l', 't', ';'};
+    public static final char[] GT = new char[]{'&', 'g', 't', ';'};
+    public static final char[] AMP = new char[]{'&', 'a', 'm', 'p', ';'};
+    public static final char[] QUOT = new char[]{'&', 'q', 'u', 'o', 't', ';'};
+    public static final char[] APOS = new char[]{'&', 'a', 'p', 'o', 's', ';'};
 
     private static final String COMMENT_START = "<!--";
-    private static final String COMMENT_END   = "-->";
-    private static final String CDATA_START   = "<![CDATA[";
-    private static final String CDATA_END     = "]]>";
-    
+    private static final String COMMENT_END = "-->";
+    private static final String CDATA_START = "<![CDATA[";
+    private static final String CDATA_END = "]]>";
+
     private XmlUtil() {
-        
+
     }
-    
-	public static boolean isXMLReservedNamespace(String namespace) {
-		return XML_RESERVED_NAMESPACES.contains(namespace);
-	}
+
+    public static boolean isXMLReservedNamespace(String namespace) {
+        return XML_RESERVED_NAMESPACES.contains(namespace);
+    }
 
     /**
      * Remove all entities from the supplied <code>Reader</code> stream
@@ -393,6 +393,7 @@ public final class XmlUtil {
 
     /**
      * Basic DOM namespace aware parse.
+     *
      * @param stream Document stream.
      * @return Document instance.
      */
@@ -402,6 +403,7 @@ public final class XmlUtil {
 
     /**
      * Basic DOM namespace aware parse.
+     *
      * @param stream Document stream.
      * @return Document instance.
      */
@@ -411,10 +413,11 @@ public final class XmlUtil {
 
     /**
      * Basic DOM namespace aware parse.
-     * @param stream Document stream.
+     *
+     * @param stream       Document stream.
      * @param errorHandler {@link ErrorHandler} to be set on the DocumentBuilder.
-     *                      This can be used to controll error reporting. If null
-     *                      the default error handler will be used.
+     *                     This can be used to controll error reporting. If null
+     *                     the default error handler will be used.
      * @return Document instance.
      */
     public static Document parseStream(final Reader stream, final ErrorHandler errorHandler) throws ParserConfigurationException, IOException, SAXException {
@@ -437,8 +440,8 @@ public final class XmlUtil {
     private static Schema getSchema(EntityResolver entityResolver) throws SAXException, IOException {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
-        if(entityResolver instanceof LocalXSDEntityResolver) {
-            return schemaFactory.newSchema(((LocalXSDEntityResolver)entityResolver).getSchemaSources());
+        if (entityResolver instanceof LocalXSDEntityResolver) {
+            return schemaFactory.newSchema(((LocalXSDEntityResolver) entityResolver).getSchemaSources());
         }
 
         return schemaFactory.newSchema(new StreamSource(entityResolver.resolveEntity("default", "default").getByteStream()));
@@ -454,7 +457,7 @@ public final class XmlUtil {
      * @param node  The document node to be searched.
      * @param xpath The XPath String to be used in the selection.
      * @return The W3C NodeList instance at the specified location in the
-     *         document, or null.
+     * document, or null.
      */
     public static NodeList getNodeList(Node node, String xpath) {
         if (node == null) {
@@ -469,7 +472,7 @@ public final class XmlUtil {
 
             if (xpath.endsWith(ELEMENT_NAME_FUNC)) {
                 return (NodeList) xpathEvaluater.evaluate(xpath.substring(0,
-                        xpath.length() - ELEMENT_NAME_FUNC.length()), node,
+                                xpath.length() - ELEMENT_NAME_FUNC.length()), node,
                         XPathConstants.NODESET);
             } else {
                 return (NodeList) xpathEvaluater.evaluate(xpath, node,
@@ -487,7 +490,7 @@ public final class XmlUtil {
      * @param node  The document node to be searched.
      * @param xpath The XPath String to be used in the selection.
      * @return The W3C Node instance at the specified location in the document,
-     *         or null.
+     * or null.
      */
     public static Node getNode(Node node, String xpath) {
         NodeList nodeList = getNodeList(node, xpath);
@@ -505,7 +508,7 @@ public final class XmlUtil {
      * @param node  The node to be searched.
      * @param xpath The XPath String to be used in the selection.
      * @return The string data located at the specified location in the
-     *         document, or an empty string for an empty resultset query.
+     * document, or an empty string for an empty resultset query.
      */
     public static String getString(Node node, String xpath) {
         NodeList nodeList = getNodeList(node, xpath);
@@ -524,11 +527,11 @@ public final class XmlUtil {
             return serialize(nodeList, false);
         }
     }
-    
+
     public static String serialize(Node node) throws DOMException {
         return serialize(node, false, false);
     }
-    
+
     /**
      * Serialise the supplied W3C DOM subtree.
      * <p/>
@@ -545,7 +548,7 @@ public final class XmlUtil {
     /**
      * Serialise the supplied W3C DOM subtree.
      *
-     * @param node The DOM node to be serialized.
+     * @param node   The DOM node to be serialized.
      * @param format Format the output.
      * @return The subtree in serailised form.
      * @throws DOMException Unable to serialise the DOM.
@@ -559,13 +562,13 @@ public final class XmlUtil {
     /**
      * Serialise the supplied W3C DOM subtree.
      *
-     * @param node The DOM node to be serialized.
+     * @param node   The DOM node to be serialized.
      * @param format Format the output.
      * @param writer The target writer for serialization.
      * @throws DOMException Unable to serialise the DOM.
      */
     public static void serialize(final Node node, boolean format, Writer writer, boolean closeEmptyElements) throws DOMException {
-        if(node.getNodeType() == Node.DOCUMENT_NODE) {
+        if (node.getNodeType() == Node.DOCUMENT_NODE) {
             serialize(node.getChildNodes(), format, writer, closeEmptyElements);
         } else {
             serialize(new NodeList() {
@@ -586,7 +589,7 @@ public final class XmlUtil {
      * Serialise the supplied W3C DOM subtree.
      *
      * @param nodeList The DOM subtree as a NodeList.
-     * @param format Format the output.
+     * @param format   Format the output.
      * @return The subtree in serailised form.
      * @throws DOMException Unable to serialise the DOM.
      */
@@ -600,8 +603,8 @@ public final class XmlUtil {
      * Serialise the supplied W3C DOM subtree.
      *
      * @param nodeList The DOM subtree as a NodeList.
-     * @param format Format the output.
-     * @param writer The target writer for serialization.
+     * @param format   Format the output.
+     * @param writer   The target writer for serialization.
      * @throws DOMException Unable to serialise the DOM.
      */
     public static void serialize(NodeList nodeList, boolean format, Writer writer, boolean closeEmptyElements) throws DOMException {
@@ -659,7 +662,7 @@ public final class XmlUtil {
      * The indents are only inserted after newlines, where the first non-whitespace character
      * is '<'.
      *
-     * @param xml The XML to indent.
+     * @param xml    The XML to indent.
      * @param indent The number of spaces to insert as the indent.
      * @return The indented XML string.
      */
@@ -671,13 +674,13 @@ public final class XmlUtil {
         Arrays.fill(indentChars, ' ');
 
         int i = 0;
-        while(i < xmlLen) {
-            if(isStartOf(xml, i, COMMENT_START)) {
+        while (i < xmlLen) {
+            if (isStartOf(xml, i, COMMENT_START)) {
                 int commentEnd = xml.indexOf(COMMENT_END, i);
                 indentedXml.append(xml, i, commentEnd);
                 i = commentEnd;
-            } else if(isStartOf(xml, i, CDATA_START)) {
-                int cdataEnd  = xml.indexOf(CDATA_END, i);
+            } else if (isStartOf(xml, i, CDATA_START)) {
+                int cdataEnd = xml.indexOf(CDATA_END, i);
                 indentedXml.append(xml, i, cdataEnd);
                 i = cdataEnd;
             } else {
@@ -685,7 +688,7 @@ public final class XmlUtil {
 
                 indentedXml.append(nextChar);
 
-                if(nextChar == '\n') {
+                if (nextChar == '\n') {
                     // We're at the start of a new line.  Need to determine
                     // if the next sequence of non-whitespace characters are the start/end of
                     // an XML element.  If it is... add an indent before....
@@ -736,16 +739,16 @@ public final class XmlUtil {
     }
 
     public static void encodeTextValue(char[] characters, int offset, int length, Writer writer) throws IOException {
-        for(int i = offset; i < offset + length; i++) {
+        for (int i = offset; i < offset + length; i++) {
             char c = characters[i];
-            switch(c) {
-                case '<' :
+            switch (c) {
+                case '<':
                     writer.write(LT, 0, LT.length);
                     break;
-                case '>' :
+                case '>':
                     writer.write(GT, 0, GT.length);
                     break;
-                case '&' :
+                case '&':
                     writer.write(AMP, 0, AMP.length);
                     break;
                 default:
@@ -755,22 +758,22 @@ public final class XmlUtil {
     }
 
     public static void encodeAttributeValue(char[] characters, int offset, int length, Writer writer) throws IOException {
-        for(int i = offset; i < offset + length; i++) {
+        for (int i = offset; i < offset + length; i++) {
             char c = characters[i];
-            switch(c) {
-                case '<' :
+            switch (c) {
+                case '<':
                     writer.write(LT, 0, LT.length);
                     break;
-                case '>' :
+                case '>':
                     writer.write(GT, 0, GT.length);
                     break;
-                case '&' :
+                case '&':
                     writer.write(AMP, 0, AMP.length);
                     break;
-                case '\'' :
+                case '\'':
                     writer.write(APOS, 0, APOS.length);
                     break;
-                case '\"' :
+                case '\"':
                     writer.write(QUOT, 0, QUOT.length);
                     break;
                 default:
@@ -807,35 +810,35 @@ public final class XmlUtil {
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
-           */
+         * (non-Javadoc)
+         *
+         * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
+         */
         @Override
         public void warning(SAXParseException arg0) throws SAXException {
             throw arg0;
         }
 
         /*
-           * (non-Javadoc)
-           *
-           * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
-           */
+         * (non-Javadoc)
+         *
+         * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
+         */
         @Override
         public void error(SAXParseException arg0) throws SAXException {
-			throw arg0;
-		}
+            throw arg0;
+        }
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
-		 */
+        /*
+         * (non-Javadoc)
+         *
+         * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+         */
         @Override
         public void fatalError(SAXParseException arg0) throws SAXException {
-			throw arg0;
-		}
-	}
+            throw arg0;
+        }
+    }
 
     public static QName toQName(String namespaceURI, String localName, String qName) {
         if (namespaceURI != null) {

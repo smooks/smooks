@@ -56,7 +56,7 @@ import org.smooks.support.ClassUtils;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class ClassConverterFactory implements TypeConverterFactory<String, Class> {
-    
+
     @Override
     public TypeConverter<String, Class> createTypeConverter() {
         return value -> {
