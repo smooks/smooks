@@ -105,7 +105,7 @@ Smooks 2 introduces the https://github.com/smooks/smooks-dfdl-cartridge[DFDL car
 * Numerous dependency updates
 * Maven coordinates change: we are now publishing Smooks artifacts under Maven group IDs prefixed with `+org.smooks+`
 * Replaced default SAX parser implementation from Apache Xerces to https://github.com/FasterXML/woodstox[FasterXML's Woodstox]: benchmarks consistently showed Woodstox outperforming Xerces
-* link:#_instrumentation[Monitoring and management support] with JMX
+* link:#instrumentation[Monitoring and management support] with JMX
 
 === Migrating from Smooks 1.7 to 2.0
 
@@ -2292,7 +2292,7 @@ public class MyManagedClass {
 
 Line 15 from the snippet above uses `InstrumentationAgent` to register the `@ManagedResource` annotated object with the MBean server so that it can be queried and invoked by JMX clients. `InstrumentationAgent` is obtained from an instance of `org.smooks.api.management.InstrumentationResource`. The singleton `InstrumentationResource` can be looked up from the Smooks registry as shown in line 12.
 
-IMPORTANT: link:#_activating_instrumentation[Instrumentation needs to be activated] in order to obtain a non-null `InstrumentationResource` from the lookup.
+IMPORTANT: link:#activating_instrumentation[Instrumentation needs to be activated] in order to obtain a non-null `InstrumentationResource` from the lookup.
 
 ==== @ManagedAttribute
 
