@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -52,7 +52,6 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import java.util.*;
 
 /**
- *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class Sorter {
@@ -109,7 +108,7 @@ public class Sorter {
         // This ordering process is very simple... for each entry in the list,
         // make sure it's higher up the list than it's dependants...
         boolean iterate = true;
-        while(iterate) {
+        while (iterate) {
             iterate = applySort(dependancySpecs);
         }
 
@@ -128,19 +127,20 @@ public class Sorter {
                 int leftScore = score(left);
                 int rightScore = score(right);
 
-                if(leftScore > rightScore) {
+                if (leftScore > rightScore) {
                     return -1;
-                } else if(leftScore < rightScore) {
+                } else if (leftScore < rightScore) {
                     return 1;
                 }
                 return 0;
             }
+
             private int score(DependencySpec spec) {
                 int score = 0;
-                if(spec.visitor.getContentHandler() instanceof Producer) {
+                if (spec.visitor.getContentHandler() instanceof Producer) {
                     score += 2;
                 }
-                if(spec.visitor.getContentHandler() instanceof Consumer) {
+                if (spec.visitor.getContentHandler() instanceof Consumer) {
                     score -= 1;
                 }
                 return score;
@@ -148,11 +148,11 @@ public class Sorter {
         });
 
         dependancySpecs.clear();
-        if(sortOrder == SortOrder.PRODUCERS_FIRST) {
+        if (sortOrder == SortOrder.PRODUCERS_FIRST) {
             dependancySpecs.addAll(Arrays.asList(array));
         } else {
             // Add them in reverse order...
-            for(DependencySpec spec : array) {
+            for (DependencySpec spec : array) {
                 dependancySpecs.add(0, spec);
             }
         }
@@ -170,7 +170,7 @@ public class Sorter {
                 DependencySpec dependant = dependants.get(ii);
                 int dependantIndex = dependencySpecs.indexOf(dependant);
 
-                if(dependantIndex < i) {
+                if (dependantIndex < i) {
                     // Remove the dependancy from the list and re-add it
                     // in front of the dependant...
                     dependencySpecs.remove(i);
@@ -190,7 +190,7 @@ public class Sorter {
     private static <T extends ContentHandler> void remapList(List<DependencySpec> dependancySpecs, List<ContentHandlerBinding<T>> visitors) {
         visitors.clear();
 
-        for(DependencySpec dependancySpec : dependancySpecs) {
+        for (DependencySpec dependancySpec : dependancySpecs) {
             visitors.add(dependancySpec.visitor);
         }
     }
@@ -198,7 +198,7 @@ public class Sorter {
     @SuppressWarnings("unchecked")
     private static void assertNo2WayDependencies(List<DependencySpec> dependancySpecs) throws SmooksConfigException {
         Stack<DependencySpec> dependencyStack = new Stack<DependencySpec>();
-        for(DependencySpec spec : dependancySpecs) {
+        for (DependencySpec spec : dependancySpecs) {
             dependencyStack.push(spec);
             assertNo2WayDependencies(spec, spec.dependants, dependencyStack);
             dependencyStack.pop();
@@ -207,9 +207,9 @@ public class Sorter {
 
     @SuppressWarnings("unchecked")
     private static void assertNo2WayDependencies(DependencySpec spec, List<DependencySpec> dependancySpecs, Stack<DependencySpec> dependencyStack) {
-        for(DependencySpec dependancy : dependancySpecs) {
+        for (DependencySpec dependancy : dependancySpecs) {
             dependencyStack.push(dependancy);
-            if(dependancy.isDependant(spec)) {
+            if (dependancy.isDependant(spec)) {
                 dependencyStack.push(spec);
                 throw new SmooksConfigException("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" + getDependencyStackTrace(dependencyStack));
             }
@@ -220,7 +220,7 @@ public class Sorter {
         }
     }
 
-    private static class DependencySpec<T extends ContentHandler>  {
+    private static class DependencySpec<T extends ContentHandler> {
 
         private final ContentHandlerBinding<T> visitor;
 
@@ -232,12 +232,12 @@ public class Sorter {
         }
 
         private boolean isDependant(DependencySpec visitor) {
-            if(visitor == this) {
+            if (visitor == this) {
                 throw new IllegalStateException("Unexpected call to 'isDependant' with this Visitor.");
             }
 
-            for(DependencySpec dependant : dependants) {
-                if(dependant == visitor) {
+            for (DependencySpec dependant : dependants) {
+                if (dependant == visitor) {
                     return true;
                 }
             }
@@ -254,7 +254,7 @@ public class Sorter {
         appendTabs(++numTabs, builder);
         builder.append(dependencyStack.pop().visitor.getResourceConfig());
         builder.append("\n");
-        while(!dependencyStack.isEmpty()) {
+        while (!dependencyStack.isEmpty()) {
             appendTabs(++numTabs, builder);
             builder.append("depends-on: ");
             builder.append(dependencyStack.pop().visitor.getResourceConfig());
@@ -265,7 +265,7 @@ public class Sorter {
     }
 
     private static void appendTabs(int count, StringBuilder builder) {
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             builder.append('\t');
         }
     }

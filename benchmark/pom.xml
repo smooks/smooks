@@ -8,10 +8,10 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    
+
     <name>Benchmark</name>
     <artifactId>benchmark-app</artifactId>
-    
+
     <build>
         <plugins>
             <plugin>

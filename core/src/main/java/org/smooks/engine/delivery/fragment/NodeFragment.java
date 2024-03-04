@@ -73,7 +73,7 @@ public class NodeFragment implements Fragment<Node> {
             dst.setUserData(key, data, this);
         }
     };
-    
+
     public static final String RESERVATIONS_USER_DATA_KEY = "reservations";
     public static final String ID_USER_DATA_KEY = "id";
 
@@ -99,7 +99,7 @@ public class NodeFragment implements Fragment<Node> {
             return inheritable;
         }
     }
-    
+
     public NodeFragment(final Node node) {
         this(node, false);
     }
@@ -107,13 +107,13 @@ public class NodeFragment implements Fragment<Node> {
     public NodeFragment(final Node node, final boolean isReservationInheritable) {
         this.node = node;
         this.isReservationInheritable = isReservationInheritable;
-        
+
         Map<Long, Reservation> reservations = (Map<Long, Reservation>) node.getUserData(RESERVATIONS_USER_DATA_KEY);
         if (reservations == null) {
             reservations = new HashMap<>();
             node.setUserData(RESERVATIONS_USER_DATA_KEY, reservations, COPY_USER_DATA_HANDLER);
-        } 
-        
+        }
+
         Node parentNode = node.getParentNode();
         while (parentNode != null) {
             final Map<Long, Reservation> parentNodeReservations = (Map<Long, Reservation>) parentNode.getUserData(RESERVATIONS_USER_DATA_KEY);

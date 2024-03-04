@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -67,45 +67,61 @@ import java.util.*;
  * <p>
  * <code>SAXWriter</code> writes a DOM tree to a SAX ContentHandler.
  * </p>
- * 
+ *
  * @author <a href="mailto:james.strachan@metastuff.com">James Strachan </a>
  * @version $Revision: 1.24 $
  */
 public class DOMReader implements SmooksXMLReader {
     protected static final String[] LEXICAL_HANDLER_NAMES = {
             "http://xml.org/sax/properties/lexical-handler",
-            "http://xml.org/sax/handlers/LexicalHandler" };
+            "http://xml.org/sax/handlers/LexicalHandler"};
 
-    protected static final String FEATURE_NAMESPACE_PREFIXES 
+    protected static final String FEATURE_NAMESPACE_PREFIXES
             = "http://xml.org/sax/features/namespace-prefixes";
 
-    protected static final String FEATURE_NAMESPACES 
+    protected static final String FEATURE_NAMESPACES
             = "http://xml.org/sax/features/namespaces";
 
-    /** <code>ContentHandler</code> to which SAX events are raised */
+    /**
+     * <code>ContentHandler</code> to which SAX events are raised
+     */
     private ContentHandler contentHandler;
 
-    /** <code>DTDHandler</code> fired when a document has a DTD */
+    /**
+     * <code>DTDHandler</code> fired when a document has a DTD
+     */
     private DTDHandler dtdHandler;
 
-    /** <code>EntityResolver</code> fired when a document has a DTD */
+    /**
+     * <code>EntityResolver</code> fired when a document has a DTD
+     */
     private EntityResolver entityResolver;
 
     private ErrorHandler errorHandler;
 
-    /** <code>LexicalHandler</code> fired on Entity and CDATA sections */
+    /**
+     * <code>LexicalHandler</code> fired on Entity and CDATA sections
+     */
     private LexicalHandler lexicalHandler;
 
-    /** <code>AttributesImpl</code> used when generating the Attributes */
+    /**
+     * <code>AttributesImpl</code> used when generating the Attributes
+     */
     private AttributesImpl attributes = new AttributesImpl();
 
-    /** Stores the features */
+    /**
+     * Stores the features
+     */
     private Map<String, Boolean> features = new HashMap();
 
-    /** Stores the properties */
+    /**
+     * Stores the properties
+     */
     private Map<String, Object> properties = new HashMap();
 
-    /** Whether namespace declarations are exported as attributes or not */
+    /**
+     * Whether namespace declarations are exported as attributes or not
+     */
     private boolean declareNamespaceAttributes;
     private ExecutionContext executionContext;
 
@@ -136,12 +152,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * A polymorphic method to write any Node to this SAX stream
-     * 
-     * @param node
-     *            DOCUMENT ME!
-     * 
-     * @throws SAXException
-     *             DOCUMENT ME!
+     *
+     * @param node DOCUMENT ME!
+     * @throws SAXException DOCUMENT ME!
      */
     public void write(Node node) throws SAXException {
         int nodeType = node.getNodeType();
@@ -186,12 +199,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Generates SAX events for the given Document and all its content
-     * 
-     * @param document
-     *            is the Document to parse
-     * 
-     * @throws SAXException
-     *             if there is a SAX error processing the events
+     *
+     * @param document is the Document to parse
+     * @throws SAXException if there is a SAX error processing the events
      */
     public void write(Document document) throws SAXException {
         if (document != null) {
@@ -209,12 +219,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Generates SAX events for the given Element and all its content
-     * 
-     * @param element
-     *            is the Element to parse
-     * 
-     * @throws SAXException
-     *             if there is a SAX error processing the events
+     *
+     * @param element is the Element to parse
+     * @throws SAXException if there is a SAX error processing the events
      */
     public void write(Element element) throws SAXException {
         write(element, new Stack<>());
@@ -225,12 +232,9 @@ public class DOMReader implements SmooksXMLReader {
      * Writes the opening tag of an {@link Element}, including its {@link
      * Attribute}s but without its content.
      * </p>
-     * 
-     * @param element
-     *            <code>Element</code> to output.
-     * 
-     * @throws SAXException
-     *             DOCUMENT ME!
+     *
+     * @param element <code>Element</code> to output.
+     * @throws SAXException DOCUMENT ME!
      */
     public void writeOpen(Element element) throws SAXException {
         startElement(element, null);
@@ -240,12 +244,9 @@ public class DOMReader implements SmooksXMLReader {
      * <p>
      * Writes the closing tag of an {@link Element}
      * </p>
-     * 
-     * @param element
-     *            <code>Element</code> to output.
-     * 
-     * @throws SAXException
-     *             DOCUMENT ME!
+     *
+     * @param element <code>Element</code> to output.
+     * @throws SAXException DOCUMENT ME!
      */
     public void writeClose(Element element) throws SAXException {
         endElement(element);
@@ -253,12 +254,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Generates SAX events for the given text
-     * 
-     * @param text
-     *            is the text to send to the SAX ContentHandler
-     * 
-     * @throws SAXException
-     *             if there is a SAX error processing the events
+     *
+     * @param text is the text to send to the SAX ContentHandler
+     * @throws SAXException if there is a SAX error processing the events
      */
     public void write(String text) throws SAXException {
         if (text != null) {
@@ -269,12 +267,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Generates SAX events for the given CDATA
-     * 
-     * @param cdata
-     *            is the CDATA to parse
-     * 
-     * @throws SAXException
-     *             if there is a SAX error processing the events
+     *
+     * @param cdata is the CDATA to parse
+     * @throws SAXException if there is a SAX error processing the events
      */
     public void write(CDATASection cdata) throws SAXException {
         String text = cdata.getData();
@@ -290,12 +285,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Generates SAX events for the given Comment
-     * 
-     * @param comment
-     *            is the Comment to parse
-     * 
-     * @throws SAXException
-     *             if there is a SAX error processing the events
+     *
+     * @param comment is the Comment to parse
+     * @throws SAXException if there is a SAX error processing the events
      */
     public void write(Comment comment) throws SAXException {
         if (lexicalHandler != null) {
@@ -307,12 +299,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Generates SAX events for the given Entity
-     * 
-     * @param entity
-     *            is the Entity to parse
-     * 
-     * @throws SAXException
-     *             if there is a SAX error processing the events
+     *
+     * @param entity is the Entity to parse
+     * @throws SAXException if there is a SAX error processing the events
      */
     public void write(Entity entity) throws SAXException {
         String text = entity.getTextContent();
@@ -329,12 +318,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Generates SAX events for the given ProcessingInstruction
-     * 
-     * @param pi
-     *            is the ProcessingInstruction to parse
-     * 
-     * @throws SAXException
-     *             if there is a SAX error processing the events
+     *
+     * @param pi is the ProcessingInstruction to parse
+     * @throws SAXException if there is a SAX error processing the events
      */
     public void write(ProcessingInstruction pi) throws SAXException {
         String target = pi.getTarget();
@@ -347,7 +333,7 @@ public class DOMReader implements SmooksXMLReader {
      * property defaults to <code>false</code> as per the SAX specification.
      * This property is set via the SAX feature
      * "http://xml.org/sax/features/namespace-prefixes"
-     * 
+     *
      * @return DOCUMENT ME!
      */
     public boolean isDeclareNamespaceAttributes() {
@@ -358,9 +344,8 @@ public class DOMReader implements SmooksXMLReader {
      * Sets whether namespace declarations should be exported as "xmlns"
      * attributes or not. This property is set from the SAX feature
      * "http://xml.org/sax/features/namespace-prefixes"
-     * 
-     * @param declareNamespaceAttrs
-     *            DOCUMENT ME!
+     *
+     * @param declareNamespaceAttrs DOCUMENT ME!
      */
     public void setDeclareNamespaceAttributes(boolean declareNamespaceAttrs) {
         this.declareNamespaceAttributes = declareNamespaceAttrs;
@@ -371,9 +356,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * DOCUMENT ME!
-     * 
+     *
      * @return the <code>ContentHandler</code> called when SAX events are
-     *         raised
+     * raised
      */
     public ContentHandler getContentHandler() {
         return contentHandler;
@@ -381,10 +366,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Sets the <code>ContentHandler</code> called when SAX events are raised
-     * 
-     * @param contentHandler
-     *            is the <code>ContentHandler</code> called when SAX events
-     *            are raised
+     *
+     * @param contentHandler is the <code>ContentHandler</code> called when SAX events
+     *                       are raised
      */
     public void setContentHandler(ContentHandler contentHandler) {
         this.contentHandler = contentHandler;
@@ -392,7 +376,7 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * DOCUMENT ME!
-     * 
+     *
      * @return the <code>DTDHandler</code>
      */
     public DTDHandler getDTDHandler() {
@@ -401,9 +385,8 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Sets the <code>DTDHandler</code>.
-     * 
-     * @param handler
-     *            DOCUMENT ME!
+     *
+     * @param handler DOCUMENT ME!
      */
     public void setDTDHandler(DTDHandler handler) {
         this.dtdHandler = handler;
@@ -411,7 +394,7 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * DOCUMENT ME!
-     * 
+     *
      * @return the <code>ErrorHandler</code>
      */
     public ErrorHandler getErrorHandler() {
@@ -420,9 +403,8 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Sets the <code>ErrorHandler</code>.
-     * 
-     * @param errorHandler
-     *            DOCUMENT ME!
+     *
+     * @param errorHandler DOCUMENT ME!
      */
     public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
@@ -430,9 +412,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * DOCUMENT ME!
-     * 
+     *
      * @return the <code>EntityResolver</code> used when a Document contains a
-     *         DTD
+     * DTD
      */
     public EntityResolver getEntityResolver() {
         return entityResolver;
@@ -440,9 +422,8 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Sets the <code>EntityResolver</code>.
-     * 
-     * @param entityResolver
-     *            is the <code>EntityResolver</code>
+     *
+     * @param entityResolver is the <code>EntityResolver</code>
      */
     public void setEntityResolver(EntityResolver entityResolver) {
         this.entityResolver = entityResolver;
@@ -450,9 +431,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * DOCUMENT ME!
-     * 
+     *
      * @return the <code>LexicalHandler</code> used when a Document contains a
-     *         DTD
+     * DTD
      */
     public LexicalHandler getLexicalHandler() {
         return lexicalHandler;
@@ -460,9 +441,8 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Sets the <code>LexicalHandler</code>.
-     * 
-     * @param lexicalHandler
-     *            is the <code>LexicalHandler</code>
+     *
+     * @param lexicalHandler is the <code>LexicalHandler</code>
      */
     public void setLexicalHandler(LexicalHandler lexicalHandler) {
         this.lexicalHandler = lexicalHandler;
@@ -470,9 +450,8 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Sets the <code>XMLReader</code> used to write SAX events to
-     * 
-     * @param xmlReader
-     *            is the <code>XMLReader</code>
+     *
+     * @param xmlReader is the <code>XMLReader</code>
      */
     public void setXMLReader(XMLReader xmlReader) {
         setContentHandler(xmlReader.getContentHandler());
@@ -483,16 +462,11 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Looks up the value of a feature.
-     * 
-     * @param name
-     *            DOCUMENT ME!
-     * 
+     *
+     * @param name DOCUMENT ME!
      * @return DOCUMENT ME!
-     * 
-     * @throws SAXNotRecognizedException
-     *             DOCUMENT ME!
-     * @throws SAXNotSupportedException
-     *             DOCUMENT ME!
+     * @throws SAXNotRecognizedException DOCUMENT ME!
+     * @throws SAXNotSupportedException  DOCUMENT ME!
      */
     public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         Boolean answer = features.get(name);
@@ -503,16 +477,11 @@ public class DOMReader implements SmooksXMLReader {
     /**
      * This implementation does actually use any features but just stores them
      * for later retrieval
-     * 
-     * @param name
-     *            DOCUMENT ME!
-     * @param value
-     *            DOCUMENT ME!
-     * 
-     * @throws SAXNotRecognizedException
-     *             DOCUMENT ME!
-     * @throws SAXNotSupportedException
-     *             DOCUMENT ME!
+     *
+     * @param name  DOCUMENT ME!
+     * @param value DOCUMENT ME!
+     * @throws SAXNotRecognizedException DOCUMENT ME!
+     * @throws SAXNotSupportedException  DOCUMENT ME!
      */
     public void setFeature(String name, boolean value)
             throws SAXNotRecognizedException, SAXNotSupportedException {
@@ -530,11 +499,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Sets the given SAX property
-     * 
-     * @param name
-     *            DOCUMENT ME!
-     * @param value
-     *            DOCUMENT ME!
+     *
+     * @param name  DOCUMENT ME!
+     * @param value DOCUMENT ME!
      */
     public void setProperty(String name, Object value) {
         for (String lexicalHandlerName : LEXICAL_HANDLER_NAMES) {
@@ -550,16 +517,11 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * Gets the given SAX property
-     * 
-     * @param name
-     *            DOCUMENT ME!
-     * 
+     *
+     * @param name DOCUMENT ME!
      * @return DOCUMENT ME!
-     * 
-     * @throws SAXNotRecognizedException
-     *             DOCUMENT ME!
-     * @throws SAXNotSupportedException
-     *             DOCUMENT ME!
+     * @throws SAXNotRecognizedException DOCUMENT ME!
+     * @throws SAXNotSupportedException  DOCUMENT ME!
      */
     public Object getProperty(String name) throws SAXNotRecognizedException,
             SAXNotSupportedException {
@@ -574,12 +536,9 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * This method is not supported.
-     * 
-     * @param systemId
-     *            DOCUMENT ME!
-     * 
-     * @throws SAXNotSupportedException
-     *             DOCUMENT ME!
+     *
+     * @param systemId DOCUMENT ME!
+     * @throws SAXNotSupportedException DOCUMENT ME!
      */
     public void parse(String systemId) throws SAXNotSupportedException {
         throw new SAXNotSupportedException("This XMLReader can only accept"
@@ -589,14 +548,10 @@ public class DOMReader implements SmooksXMLReader {
     /**
      * Parses an XML document. This method can only accept DocumentInputSource
      * inputs otherwise a {@link SAXNotSupportedException}exception is thrown.
-     * 
-     * @param input
-     *            DOCUMENT ME!
-     * 
-     * @throws SAXException
-     *             DOCUMENT ME!
-     * @throws SAXNotSupportedException
-     *             if the input source is not wrapping a dom4j document
+     *
+     * @param input DOCUMENT ME!
+     * @throws SAXException             DOCUMENT ME!
+     * @throws SAXNotSupportedException if the input source is not wrapping a dom4j document
      */
     public void parse(InputSource input) throws SAXException {
         if (input instanceof DocumentInputSource) {
@@ -643,12 +598,9 @@ public class DOMReader implements SmooksXMLReader {
      * number. Since we are processing an in memory tree which will probably
      * have its line number information removed, we'll just use -1 for the line
      * and column numbers.
-     * 
-     * @param document
-     *            DOCUMENT ME!
-     * 
-     * @throws SAXException
-     *             DOCUMENT ME!
+     *
+     * @param document DOCUMENT ME!
+     * @throws SAXException DOCUMENT ME!
      */
     protected void documentLocator(Document document) throws SAXException {
         LocatorImpl locator = new LocatorImpl();
@@ -699,12 +651,9 @@ public class DOMReader implements SmooksXMLReader {
     /**
      * We do not yet support DTD or XML Schemas so this method does nothing
      * right now.
-     * 
-     * @param document
-     *            DOCUMENT ME!
-     * 
-     * @throws SAXException
-     *             DOCUMENT ME!
+     *
+     * @param document DOCUMENT ME!
+     * @throws SAXException DOCUMENT ME!
      */
     protected void dtdHandler(Document document) throws SAXException {
     }
@@ -730,16 +679,11 @@ public class DOMReader implements SmooksXMLReader {
     /**
      * Fires a SAX startPrefixMapping event for all the namespaceStack which
      * have just come into scope
-     * 
-     * @param element
-     *            DOCUMENT ME!
-     * @param namespaceStack
-     *            DOCUMENT ME!
-     * 
+     *
+     * @param element        DOCUMENT ME!
+     * @param namespaceStack DOCUMENT ME!
      * @return DOCUMENT ME!
-     * 
-     * @throws SAXException
-     *             DOCUMENT ME!
+     * @throws SAXException DOCUMENT ME!
      */
     protected AttributesImpl startPrefixMapping(Element element, Stack<QName> namespaceStack) throws SAXException {
         AttributesImpl namespaceAttributes = null;
@@ -753,7 +697,7 @@ public class DOMReader implements SmooksXMLReader {
         } else {
             elementQName = new QName(elementNamespace, elementLocalName, element.getPrefix());
         }
-        
+
         if ((elementNamespace != null) && !isIgnoreableNamespace(elementQName, namespaceStack)) {
             namespaceStack.push(elementQName);
             contentHandler.startPrefixMapping(element.getPrefix(), elementNamespace);
@@ -778,14 +722,10 @@ public class DOMReader implements SmooksXMLReader {
     /**
      * Fires a SAX endPrefixMapping event for all the namespaceStack which have
      * gone out of scope
-     * 
-     * @param stack
-     *            DOCUMENT ME!
-     * @param stackSize
-     *            DOCUMENT ME!
-     * 
-     * @throws SAXException
-     *             DOCUMENT ME!
+     *
+     * @param stack     DOCUMENT ME!
+     * @param stackSize DOCUMENT ME!
+     * @throws SAXException DOCUMENT ME!
      */
     protected void endPrefixMapping(Stack<QName> stack, int stackSize) throws SAXException {
         while (stack.size() > stackSize) {
@@ -813,14 +753,14 @@ public class DOMReader implements SmooksXMLReader {
         if (namespaceAttributes != null) {
             attributes.setAttributes(namespaceAttributes);
         }
-        
+
         NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             Node attribute = attributes.item(i);
             String localName = attribute.getLocalName() == null ? attribute.getNodeName() : attribute.getLocalName();
-            this.attributes.addAttribute(attribute.getNamespaceURI(), localName, getQName(attribute.getPrefix(), localName), "CDATA", attribute.getNodeValue()); 
+            this.attributes.addAttribute(attribute.getNamespaceURI(), localName, getQName(attribute.getPrefix(), localName), "CDATA", attribute.getNodeValue());
         }
-        
+
         return this.attributes;
     }
 
@@ -828,12 +768,9 @@ public class DOMReader implements SmooksXMLReader {
      * If isDelcareNamespaceAttributes() is enabled then this method will add
      * the given namespace declaration to the supplied attributes object,
      * creating one if it does not exist.
-     * 
-     * @param attrs
-     *            DOCUMENT ME!
-     * @param namespace
-     *            DOCUMENT ME!
-     * 
+     *
+     * @param attrs     DOCUMENT ME!
+     * @param namespace DOCUMENT ME!
      * @return DOCUMENT ME!
      */
     protected AttributesImpl addNamespaceAttribute(AttributesImpl attrs, QName namespace) {
@@ -865,15 +802,12 @@ public class DOMReader implements SmooksXMLReader {
 
     /**
      * DOCUMENT ME!
-     * 
-     * @param namespace
-     *            DOCUMENT ME!
-     * @param namespaceStack
-     *            DOCUMENT ME!
-     * 
+     *
+     * @param namespace      DOCUMENT ME!
+     * @param namespaceStack DOCUMENT ME!
      * @return true if the given namespace is an ignorable namespace (such as
-     *         Namespace.NO_NAMESPACE or Namespace.XML_NAMESPACE) or if the
-     *         namespace has already been declared in the current scope
+     * Namespace.NO_NAMESPACE or Namespace.XML_NAMESPACE) or if the
+     * namespace has already been declared in the current scope
      */
     protected boolean isIgnoreableNamespace(QName namespace, Stack<QName> namespaceStack) {
         if ((namespace.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX) && namespace.getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) || (namespace.getPrefix().equals(XMLConstants.XML_NS_PREFIX) && namespace.getNamespaceURI().equals(XMLConstants.XML_NS_URI))) {
@@ -885,7 +819,7 @@ public class DOMReader implements SmooksXMLReader {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -909,24 +843,24 @@ public class DOMReader implements SmooksXMLReader {
  * Redistribution and use of this software and associated documentation
  * ("Software"), with or without modification, are permitted provided that the
  * following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain copyright statements and
  * notices. Redistributions must also contain a copy of this document.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The name "DOM4J" must not be used to endorse or promote products derived
  * from this Software without prior written permission of MetaStuff, Ltd. For
  * written permission, please contact dom4j-info@metastuff.com.
- * 
+ *
  * 4. Products derived from this Software may not be called "DOM4J" nor may
  * "DOM4J" appear in their names without prior written permission of MetaStuff,
  * Ltd. DOM4J is a registered trademark of MetaStuff, Ltd.
- * 
+ *
  * 5. Due credit should be given to the DOM4J Project - http://www.dom4j.org
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY METASTUFF, LTD. AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -938,6 +872,6 @@ public class DOMReader implements SmooksXMLReader {
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved.
  */

@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -66,7 +66,7 @@ import java.util.Map;
  *     &lt;/features&gt;
  * &lt;/reader&gt;
  * </pre>
- *
+ * <p>
  * Turning off event stream generation can make sense in many situations.  In some use cases event stream
  * generation may add no value and may just reduces performance e.g. where you simply wish to apply a
  * template to the supplied Java Object(s).
@@ -99,7 +99,7 @@ public class JavaSource extends FilterSource {
         AssertArgument.isNotNull(sourceObject, "sourceObject");
         sourceObjects = new ArrayList<Object>();
         sourceObjects.add(sourceObject);
-        if(sourceObject instanceof Map) {
+        if (sourceObject instanceof Map) {
             beans = (Map<String, Object>) sourceObject;
         } else {
             beans = new HashMap<String, Object>();
@@ -110,7 +110,7 @@ public class JavaSource extends FilterSource {
     /**
      * Construct a JavaSource from the supplied source object.
      *
-     * @param objectName The object name the sourceObject is known under
+     * @param objectName   The object name the sourceObject is known under
      * @param sourceObject The source object.
      */
     public JavaSource(String objectName, Object sourceObject) {
@@ -155,6 +155,7 @@ public class JavaSource extends FilterSource {
 
     /**
      * Get the source object list.
+     *
      * @return The source object list.
      */
     public List<Object> getSourceObjects() {
@@ -183,9 +184,9 @@ public class JavaSource extends FilterSource {
         StringBuilder stringBuilder = new StringBuilder(simpleName);
         int stringLength = stringBuilder.length();
 
-        for(int i = 0; i < stringLength; i++) {
+        for (int i = 0; i < stringLength; i++) {
             char charAt = stringBuilder.charAt(i);
-            if(Character.isLowerCase(charAt)) {
+            if (Character.isLowerCase(charAt)) {
                 break;
             }
             stringBuilder.setCharAt(i, Character.toLowerCase(charAt));

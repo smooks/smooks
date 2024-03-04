@@ -109,12 +109,12 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
                 contentDeliveryConfigExecutionEvents.add(new DefaultContentDeliveryConfigExecutionEvent(interceptorChain.getResourceConfig(), "Added as a SAX NG visitor."));
             }
         }
-        
+
         saxNgContentDeliveryConfig.setRegistry(registry);
         saxNgContentDeliveryConfig.setResourceConfigs(resourceConfigTable);
         saxNgContentDeliveryConfig.getContentDeliveryConfigExecutionEvents().addAll(contentDeliveryConfigExecutionEvents);
         saxNgContentDeliveryConfig.addToExecutionLifecycleSets();
-        
+
         return saxNgContentDeliveryConfig;
     }
 

@@ -39,9 +39,9 @@ import com.fasterxml.aalto.util.URLUtil;
 public class BenchmarkAaltoXMLReader
         extends SAXParser
         implements Parser // SAX1
-        ,XMLReader // SAX2
-        ,Attributes2 // SAX2
-        ,Locator2 // SAX2
+        , XMLReader // SAX2
+        , Attributes2 // SAX2
+        , Locator2 // SAX2
 {
     final InputFactoryImpl _staxFactory;
 
@@ -76,8 +76,7 @@ public class BenchmarkAaltoXMLReader
     /**********************************************************************
      */
 
-    public BenchmarkAaltoXMLReader()
-    {
+    public BenchmarkAaltoXMLReader() {
         InputFactoryImpl inputFactory = new InputFactoryImpl();
         inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
         inputFactory.setProperty(AaltoInputProperties.P_RETAIN_ATTRIBUTE_GENERAL_ENTITIES, true);
@@ -86,14 +85,12 @@ public class BenchmarkAaltoXMLReader
     }
 
     @Override
-    public final Parser getParser()
-    {
+    public final Parser getParser() {
         return this;
     }
 
     @Override
-    public final XMLReader getXMLReader()
-    {
+    public final XMLReader getXMLReader() {
         return this;
     }
 
@@ -115,22 +112,21 @@ public class BenchmarkAaltoXMLReader
 
     @Override
     public Object getProperty(String name)
-        throws SAXNotRecognizedException, SAXNotSupportedException
-    {
+            throws SAXNotRecognizedException, SAXNotSupportedException {
         SAXProperty stdProp = SAXUtil.findStdProperty(name);
         if (stdProp != null) {
             switch (stdProp) {
-            case DECLARATION_HANDLER:
-                return _declHandler;
-            case DOCUMENT_XML_VERSION:
-                // as per [Issue 9], provide version info (is it ok to return potentially null?)
-                return _scanner.getConfig().getXmlDeclVersion();
-            case DOM_NODE: // not implemented, won't be
-                return null;
-            case LEXICAL_HANDLER:
-                return _lexicalHandler;
-            case XML_STRING: // not implemented, won't be
-                return null;
+                case DECLARATION_HANDLER:
+                    return _declHandler;
+                case DOCUMENT_XML_VERSION:
+                    // as per [Issue 9], provide version info (is it ok to return potentially null?)
+                    return _scanner.getConfig().getXmlDeclVersion();
+                case DOM_NODE: // not implemented, won't be
+                    return null;
+                case LEXICAL_HANDLER:
+                    return _lexicalHandler;
+                case XML_STRING: // not implemented, won't be
+                    return null;
             }
         }
         SAXUtil.reportUnknownProperty(name);
@@ -139,26 +135,25 @@ public class BenchmarkAaltoXMLReader
 
     @Override
     public void setProperty(String name, Object value)
-        throws SAXNotRecognizedException, SAXNotSupportedException
-    {
+            throws SAXNotRecognizedException, SAXNotSupportedException {
         SAXProperty stdProp = SAXUtil.findStdProperty(name);
 
         if (stdProp != null) {
             switch (stdProp) {
-            case DECLARATION_HANDLER:
-                _declHandler = (DeclHandler) value;
-                return;
-            case DOCUMENT_XML_VERSION:
-                // as per [Issue 9]:
-                _scanner.getConfig().setXmlVersion((value == null) ? null : String.valueOf(value));
-                return;
-            case DOM_NODE: // not implemented, won't be
-                return;
-            case LEXICAL_HANDLER:
-                _lexicalHandler = (LexicalHandler) value;
-                return;
-            case XML_STRING: // not implemented, won't be
-                return;
+                case DECLARATION_HANDLER:
+                    _declHandler = (DeclHandler) value;
+                    return;
+                case DOCUMENT_XML_VERSION:
+                    // as per [Issue 9]:
+                    _scanner.getConfig().setXmlVersion((value == null) ? null : String.valueOf(value));
+                    return;
+                case DOM_NODE: // not implemented, won't be
+                    return;
+                case LEXICAL_HANDLER:
+                    _lexicalHandler = (LexicalHandler) value;
+                    return;
+                case XML_STRING: // not implemented, won't be
+                    return;
             }
         }
         SAXUtil.reportUnknownFeature(name);
@@ -177,8 +172,7 @@ public class BenchmarkAaltoXMLReader
 
     @Override
     public void parse(InputSource is, HandlerBase hb)
-        throws SAXException, IOException
-    {
+            throws SAXException, IOException {
         if (hb != null) {
             /* Ok: let's ONLY set if there are no explicit sets... not
              * extremely clear, but JDK tries to set them always so
@@ -202,8 +196,7 @@ public class BenchmarkAaltoXMLReader
 
     @Override
     public void parse(InputSource is, DefaultHandler dh)
-        throws SAXException, IOException
-    {
+            throws SAXException, IOException {
         if (dh != null) {
             /* Ok: let's ONLY set if there are no explicit sets... not
              * extremely clear, but JDK tries to set them always so
@@ -253,8 +246,7 @@ public class BenchmarkAaltoXMLReader
 
     @Override
     public boolean getFeature(String name)
-        throws SAXNotRecognizedException
-    {
+            throws SAXNotRecognizedException {
         // Standard feature?
         SAXFeature stdFeat = SAXUtil.findStdFeature(name);
         if (stdFeat != null) {
@@ -265,12 +257,12 @@ public class BenchmarkAaltoXMLReader
             }
             // ok, may change:
             switch (stdFeat) {
-            case IS_STANDALONE: // read-only, but only during parsing
-                // !!! TBI
-                return true;
-            case EXTERNAL_GENERAL_ENTITIES:
-                return Boolean.FALSE.equals(_staxFactory.getProperty(AaltoInputProperties.P_RETAIN_ATTRIBUTE_GENERAL_ENTITIES));
-            default:
+                case IS_STANDALONE: // read-only, but only during parsing
+                    // !!! TBI
+                    return true;
+                case EXTERNAL_GENERAL_ENTITIES:
+                    return Boolean.FALSE.equals(_staxFactory.getProperty(AaltoInputProperties.P_RETAIN_ATTRIBUTE_GENERAL_ENTITIES));
+                default:
             }
         } else {
             // any non-standard one we may support?
@@ -312,8 +304,7 @@ public class BenchmarkAaltoXMLReader
 
     @Override
     public void setFeature(String name, boolean value)
-        throws SAXNotRecognizedException
-    {
+            throws SAXNotRecognizedException {
         // Standard feature?
         SAXFeature stdFeat = SAXUtil.findStdFeature(name);
         if (stdFeat != null) {
@@ -340,8 +331,7 @@ public class BenchmarkAaltoXMLReader
      */
 
     @Override
-    public void parse(InputSource input) throws SAXException
-    {
+    public void parse(InputSource input) throws SAXException {
         String enc = input.getEncoding();
         String systemId = input.getSystemId();
         /* Let's ask for default (non-event-reader-bound) reader
@@ -350,7 +340,7 @@ public class BenchmarkAaltoXMLReader
          * 'isForEventReader')
          */
         ReaderConfig cfg = _staxFactory.getNonSharedConfig
-            (systemId, input.getPublicId(), enc, false, false);
+                (systemId, input.getPublicId(), enc, false, false);
         /* But let's disable lazy parsing: with SAX there's no good
          * way to make use of it (similar to why it's disabled for
          * event readers)
@@ -429,8 +419,7 @@ public class BenchmarkAaltoXMLReader
     }
 
     @Override
-    public void parse(String systemId) throws SAXException
-    {
+    public void parse(String systemId) throws SAXException {
         InputSource src = new InputSource(systemId);
         parse(src);
     }
@@ -449,8 +438,7 @@ public class BenchmarkAaltoXMLReader
      * just copy the little code stream reader's next() method has.
      */
     private final void fireEvents()
-        throws SAXException, XMLStreamException
-    {
+            throws SAXException, XMLStreamException {
         // First we are in prolog:
         int type;
 
@@ -496,8 +484,7 @@ public class BenchmarkAaltoXMLReader
     }
 
     private final void fireAuxEvent(int type, boolean inTree)
-            throws SAXException, XMLStreamException
-    {
+            throws SAXException, XMLStreamException {
         switch (type) {
             case XMLStreamConstants.COMMENT:
                 _scanner.fireSaxCommentEvent(_lexicalHandler);
@@ -534,22 +521,20 @@ public class BenchmarkAaltoXMLReader
                 break;
             default:
                 if (type == XmlScanner.TOKEN_EOI) {
-                    throwSaxException("Unexpected end-of-input in "+(inTree ? "tree" : "prolog"));
+                    throwSaxException("Unexpected end-of-input in " + (inTree ? "tree" : "prolog"));
                 }
-                throw new RuntimeException("Internal error: unexpected type, "+type);
+                throw new RuntimeException("Internal error: unexpected type, " + type);
         }
     }
 
     private final void fireStartTag()
-        throws SAXException
-    {
+            throws SAXException {
         _attrCount = _scanner.getAttrCount();
         _scanner.fireSaxStartElement(_contentHandler, this);
     }
 
     private final void fireEndTag()
-        throws SAXException
-    {
+            throws SAXException {
         _scanner.fireSaxEndElement(_contentHandler);
     }
 
@@ -566,14 +551,12 @@ public class BenchmarkAaltoXMLReader
     //public void setErrorHandler(ErrorHandler handler)
 
     @Override
-    public void setDocumentHandler(DocumentHandler handler)
-    {
+    public void setDocumentHandler(DocumentHandler handler) {
         setContentHandler(new DocHandlerWrapper(handler));
     }
 
     @Override
-    public void setLocale(java.util.Locale locale)
-    {
+    public void setLocale(java.util.Locale locale) {
         // Not supported, let's just ignore
     }
 
@@ -584,66 +567,57 @@ public class BenchmarkAaltoXMLReader
      */
 
     @Override
-    public int getIndex(String qName)
-    {
+    public int getIndex(String qName) {
         return (_attrCollector == null) ? -1 :
-            _attrCollector.findIndex(null, qName);
+                _attrCollector.findIndex(null, qName);
     }
 
     @Override
-    public int getIndex(String uri, String localName)
-    {
+    public int getIndex(String uri, String localName) {
         return (_attrCollector == null) ? -1 :
-            _attrCollector.findIndex(uri, localName);
+                _attrCollector.findIndex(uri, localName);
     }
 
     @Override
-    public int getLength()
-    {
+    public int getLength() {
         return _attrCount;
     }
 
     @Override
-    public String getLocalName(int index)
-    {
+    public String getLocalName(int index) {
         return (index < 0 || index >= _attrCount) ? null :
-            _attrCollector.getName(index).getLocalName();
+                _attrCollector.getName(index).getLocalName();
     }
 
     @Override
-    public String getQName(int index)
-    {
+    public String getQName(int index) {
         return (index < 0 || index >= _attrCount) ? null :
-            _attrCollector.getName(index).getPrefixedName();
+                _attrCollector.getName(index).getPrefixedName();
     }
 
     @Override
-    public String getType(int index)
-    {
+    public String getType(int index) {
         /* 13-Sep-2006, tatus: Note: not yet really implemented, will
          *   just return "CDATA".
          */
         return (index < 0 || index >= _attrCount) ? null :
-            _scanner.getAttrType(index);
+                _scanner.getAttrType(index);
     }
 
     @Override
-    public String getType(String qName)
-    {
+    public String getType(String qName) {
         int ix = getIndex(qName);
         return (ix < 0) ? null : _scanner.getAttrType(ix);
     }
 
     @Override
-    public String getType(String uri, String localName)
-    {
+    public String getType(String uri, String localName) {
         int ix = getIndex(uri, localName);
         return (ix < 0) ? null : _scanner.getAttrType(ix);
     }
 
     @Override
-    public String getURI(int index)
-    {
+    public String getURI(int index) {
         if (index < 0 || index >= _attrCount) {
             return null;
         }
@@ -652,24 +626,21 @@ public class BenchmarkAaltoXMLReader
     }
 
     @Override
-    public String getValue(int index)
-    {
+    public String getValue(int index) {
         return (index < 0 || index >= _attrCount) ? null :
-            _attrCollector.getValue(index);
+                _attrCollector.getValue(index);
     }
 
     @Override
-    public String getValue(String qName)
-    {
+    public String getValue(String qName) {
         int ix = getIndex(qName);
-        return (ix < 0) ? null :  _attrCollector.getValue(ix);
+        return (ix < 0) ? null : _attrCollector.getValue(ix);
     }
 
     @Override
-    public String getValue(String uri, String localName)
-    {
+    public String getValue(String uri, String localName) {
         int ix = getIndex(uri, localName);
-        return (ix < 0) ? null :  _attrCollector.getValue(ix);
+        return (ix < 0) ? null : _attrCollector.getValue(ix);
     }
 
     /*
@@ -746,8 +717,7 @@ public class BenchmarkAaltoXMLReader
      */
 
     @Override
-    public String getEncoding()
-    {
+    public String getEncoding() {
         ReaderConfig cfg = _scanner.getConfig();
         String enc = cfg.getActualEncoding();
         if (enc == null) {
@@ -771,8 +741,7 @@ public class BenchmarkAaltoXMLReader
      */
 
     private void throwSaxException(Exception e)
-        throws SAXException
-    {
+            throws SAXException {
         SAXParseException se = new SAXParseException(e.getMessage(), (Locator) this, e);
         if (se.getCause() == null) {
             se.initCause(e);
@@ -784,8 +753,7 @@ public class BenchmarkAaltoXMLReader
     }
 
     private void throwSaxException(String msg)
-        throws SAXException
-    {
+            throws SAXException {
         SAXParseException se = new SAXParseException(msg, (Locator) this);
         if (_errorHandler != null) {
             _errorHandler.fatalError(se);
@@ -800,14 +768,12 @@ public class BenchmarkAaltoXMLReader
      */
 
     final static class DocHandlerWrapper
-        implements ContentHandler
-    {
+            implements ContentHandler {
         final DocumentHandler mDocHandler;
 
         final AttributesWrapper mAttrWrapper = new AttributesWrapper();
 
-        DocHandlerWrapper(DocumentHandler h)
-        {
+        DocHandlerWrapper(DocumentHandler h) {
             mDocHandler = h;
         }
 
@@ -822,8 +788,7 @@ public class BenchmarkAaltoXMLReader
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException
-        {
+        public void endElement(String uri, String localName, String qName) throws SAXException {
             if (qName == null) {
                 qName = localName;
             }
@@ -836,14 +801,13 @@ public class BenchmarkAaltoXMLReader
         }
 
         @Override
-        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
-        {
+        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
             mDocHandler.ignorableWhitespace(ch, start, length);
         }
 
         @Override
         public void processingInstruction(String target, String data)
-            throws SAXException {
+                throws SAXException {
             mDocHandler.processingInstruction(target, data);
         }
 
@@ -858,16 +822,14 @@ public class BenchmarkAaltoXMLReader
         }
 
         @Override
-        public void startDocument() throws SAXException
-        {
+        public void startDocument() throws SAXException {
             mDocHandler.startDocument();
         }
 
         @Override
         public void startElement(String uri, String localName, String qName,
-                Attributes attrs)
-            throws SAXException
-        {
+                                 Attributes attrs)
+                throws SAXException {
             if (qName == null) {
                 qName = localName;
             }
@@ -883,11 +845,11 @@ public class BenchmarkAaltoXMLReader
     }
 
     final static class AttributesWrapper
-        implements AttributeList
-    {
+            implements AttributeList {
         Attributes mAttrs;
 
-        public AttributesWrapper() { }
+        public AttributesWrapper() {
+        }
 
         public void setAttributes(Attributes a) {
             mAttrs = a;

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <nameValuePairs xmlns="http://www.milyn.org/xsd/test-xsd-01.xsd" xmlns:a="http://www.milyn.org/xsd/test-xsd-02.xsd">
-    <nameValuePair name="a" value="1" />
-    <a:myNVP />
+    <nameValuePair name="a" value="1"/>
+    <a:myNVP/>
 </nameValuePairs>

@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -57,6 +57,7 @@ import java.util.List;
 
 /**
  * {@link ResourceConfig} list.
+ *
  * @author tfennelly
  */
 public class DefaultResourceConfigSeq implements ResourceConfigSeq {
@@ -84,10 +85,11 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Public constructor.
+     *
      * @param name The name of this instance.
      */
     public DefaultResourceConfigSeq(String name) {
-        if(name == null || (name = name.trim()).equals("")) {
+        if (name == null || (name = name.trim()).equals("")) {
             throw new IllegalArgumentException("null or empty 'name' arg in constructor call.");
         }
         this.name = name;
@@ -96,6 +98,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Add a {@link ResourceConfig} instance to this list.
+     *
      * @param resourceConfig {@link ResourceConfig} instance to add.
      */
     @Override
@@ -116,6 +119,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
     /**
      * Add all the {@link ResourceConfig} instances in the specified
      * {@link ResourceConfigSeq} to this list.
+     *
      * @param resourceConfigSeq {@link ResourceConfigSeq} instance to add.
      */
     @Override
@@ -125,6 +129,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Add a {@link ProfileSet} instance to this list.
+     *
      * @param profileSet {@link ProfileSet} instance to add.
      */
     @Override
@@ -136,6 +141,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Get the name of this list instance.
+     *
      * @return List name.
      */
     @Override
@@ -145,6 +151,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Is this configuration list instance one of the system installed config lists.
+     *
      * @return True if this configuration list instance one of the system installed config lists, otherwise false.
      */
     @Override
@@ -154,6 +161,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Set whether or not this configuration list instance is one of the system installed config lists.
+     *
      * @param isSystem True if this configuration list instance one of the system installed config lists, otherwise false.
      */
     @Override
@@ -163,6 +171,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Is this list instance empty.
+     *
      * @return True if this list instance is empty, otherwise false.
      */
     @Override
@@ -172,6 +181,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Get the size of this list.
+     *
      * @return The size of te list i.e. number of entries.
      */
     @Override
@@ -181,6 +191,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
 
     /**
      * Get the {@link ResourceConfig} instance at the specified index.
+     *
      * @param index Resource index.
      * @return The {@link ResourceConfig} instance at the specified index.
      * @throws ArrayIndexOutOfBoundsException The specified index is out of bounds.
@@ -196,7 +207,8 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
     }
 
     /**
-     * Get all ResourceConfig entries targeted at the specified profile set. 
+     * Get all ResourceConfig entries targeted at the specified profile set.
+     *
      * @param profileSet The profile set to searh against.
      * @return All ResourceConfig entries targeted at the specified profile set.
      */
@@ -205,7 +217,7 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
         List<ResourceConfig> matchingResourceConfigsColl = new ArrayList<>();
 
         // Iterate over the ResourceConfigs defined on this list.
-        for(int i = 0; i < size(); i++) {
+        for (int i = 0; i < size(); i++) {
             ResourceConfig resourceConfig = get(i);
             ProfileTargetingExpression[] profileTargetingExpressions = resourceConfig.getProfileTargetingExpressions();
 
@@ -218,12 +230,13 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
                 }
             }
         }
-        
+
         return matchingResourceConfigsColl;
     }
 
     /**
      * Get the list of profiles configured on this resource configuration list.
+     *
      * @return List of profiles.
      */
     @Override
@@ -244,8 +257,8 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
     public List<ResourceConfig> lookupResource(ConfigSearch searchCriteria) {
         List<ResourceConfig> results = new ArrayList<>();
 
-        for(ResourceConfig resourceConfig : resourceConfigs) {
-            if(searchCriteria.matches(resourceConfig)) {
+        for (ResourceConfig resourceConfig : resourceConfigs) {
+            if (searchCriteria.matches(resourceConfig)) {
                 results.add(resourceConfig);
             }
         }

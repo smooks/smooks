@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -190,7 +190,7 @@ public interface ResourceConfig {
      *
      * @param resource an identifier for the resource. This could be anything like a path, a name, etc... The meaning
      *                 of this value is driven by the resource type.
-     * @see            #setResourceType(String)
+     * @see #setResourceType(String)
      */
     void setResource(String resource);
 
@@ -200,7 +200,7 @@ public interface ResourceConfig {
      * Note that this method also returns false if the resource is undefined (null).
      *
      * @return <code>true</code> if the resource is defined inline, otherwise <code>false</code>
-     * @see    #setResource(String)
+     * @see #setResource(String)
      */
     boolean isInline();
 
@@ -208,7 +208,7 @@ public interface ResourceConfig {
      * Gets the target profile/s of this <code>ResourceConfig</code>.
      *
      * @return target profile/s
-     * @see    #setProfile(String)
+     * @see #setProfile(String)
      */
     String getProfile();
 
@@ -216,7 +216,7 @@ public interface ResourceConfig {
      * Sets the target profile of this <code>ResourceConfig</code>.
      *
      * @param profile comma-separated list of {@link ProfileTargetingExpression ProfileTargetingExpressions}
-     * @see                 #getProfile()
+     * @see #getProfile()
      */
     void setProfile(String profile);
 
@@ -224,8 +224,8 @@ public interface ResourceConfig {
      * Sets the resource type (e.g., "class", "xsl", "groovy", etc...)
      *
      * @param resourceType resource type
-     * @see                #getResourceType()
-     * @see                #setResource(String)
+     * @see #getResourceType()
+     * @see #setResource(String)
      */
     void setResourceType(String resourceType);
 
@@ -233,8 +233,8 @@ public interface ResourceConfig {
      * Sets the selector in its parsed form.
      *
      * @param selectorPath selector steps
-     * @see                #setSelector(String, Properties)
-     * @see                #getSelectorPath()
+     * @see #setSelector(String, Properties)
+     * @see #getSelectorPath()
      */
     void setSelectorPath(SelectorPath selectorPath);
 
@@ -242,8 +242,8 @@ public interface ResourceConfig {
      * Gets the selector in its parsed form.
      *
      * @return selector steps
-     * @see    #setSelector(String, Properties)
-     * @see    #getSelectorPath()
+     * @see #setSelector(String, Properties)
+     * @see #getSelectorPath()
      */
     SelectorPath getSelectorPath();
 
@@ -258,7 +258,7 @@ public interface ResourceConfig {
      * Get the resource for this <code>ResourceConfig</code>.
      *
      * @return resource
-     * @see    #setResource(String)
+     * @see #setResource(String)
      */
     String getResource();
 
@@ -269,7 +269,7 @@ public interface ResourceConfig {
      * default when no other resource is targeting the element.
      *
      * @return <code>true</code> if this is a default applied resource, otherwise false
-     * @see    #setSystem(boolean)
+     * @see #setSystem(boolean)
      */
     boolean isSystem();
 
@@ -295,7 +295,7 @@ public interface ResourceConfig {
      * </ol>
      *
      * @return resource type
-     * @see    #getResourceType()
+     * @see #getResourceType()
      */
     String getResourceType();
 
@@ -304,7 +304,7 @@ public interface ResourceConfig {
      *
      * @param name  parameter name
      * @param value parameter value
-     * @return      new parameter added to this <code>ResourceConfig</code>
+     * @return new parameter added to this <code>ResourceConfig</code>
      */
     <T> Parameter<T> setParameter(String name, T value);
 
@@ -315,7 +315,7 @@ public interface ResourceConfig {
      * @param name  parameter name
      * @param type  parameter type
      * @param value parameter value
-     * @return      new parameter added to this <code>ResourceConfig</code>
+     * @return new parameter added to this <code>ResourceConfig</code>
      */
     <T> Parameter<T> setParameter(String name, String type, T value);
 
@@ -331,7 +331,7 @@ public interface ResourceConfig {
      * the name, the first parameter is returned.
      *
      * @param name name of parameter to get
-     * @return     parameter reference, or null if not parameter does not exist
+     * @return parameter reference, or null if not parameter does not exist
      */
     <T> Parameter<T> getParameter(String name, Class<T> valueClass);
 
@@ -339,8 +339,8 @@ public interface ResourceConfig {
      * Gets the parameters associated with this <code>ResourceConfig</code> as a {@link java.util.Map}.
      *
      * @return parameters represented as a {@link java.util.Map} where the key is the parameter name and the value is
-     *         either a {@link Parameter parameter} or a {@link List list} of {@link Parameter parameters}. The value is
-     *         a list when more than one parameter has the same name
+     * either a {@link Parameter parameter} or a {@link List list} of {@link Parameter parameters}. The value is
+     * a list when more than one parameter has the same name
      */
     Map<String, Object> getParameters();
 
@@ -355,7 +355,7 @@ public interface ResourceConfig {
      * Gets all the parameters of this <code>ResourceConfig</code> by name.
      *
      * @param name name of parameter/s to get
-     * @return     {@link List list} of all the {@link Parameter parameters} that match the given name, or null if not set
+     * @return {@link List list} of all the {@link Parameter parameters} that match the given name, or null if not set
      */
     List<Parameter<?>> getParameters(String name);
 
@@ -366,7 +366,7 @@ public interface ResourceConfig {
      *
      * @param name       name of parameter to get from this <code>ResourceConfig</code>
      * @param valueClass expected value type of the parameter to get
-     * @return           parameter value, or <code>null</code> if not set
+     * @return parameter value, or <code>null</code> if not set
      */
     <T> T getParameterValue(String name, Class<T> valueClass);
 
@@ -377,7 +377,7 @@ public interface ResourceConfig {
      * @param valueClass   expected value type of the parameter to get
      * @param defaultValue default value to be returned if there are no
      *                     parameters in this <code>ResourceConfig</code> or if the parameter is not defined
-     * @return             parameter value, or <code>defaultValue</code> if not defined
+     * @return parameter value, or <code>defaultValue</code> if not defined
      */
     <T> T getParameterValue(String name, Class<T> valueClass, T defaultValue);
 

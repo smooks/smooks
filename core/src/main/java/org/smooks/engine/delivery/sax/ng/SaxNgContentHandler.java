@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -82,7 +82,7 @@ import java.io.Writer;
 import java.util.List;
 
 public class SaxNgContentHandler extends SmooksContentHandler {
-    
+
     private final StringBuilder cdataNodeBuilder = new StringBuilder();
     private final ExecutionContext executionContext;
     private final Writer writer;
@@ -172,7 +172,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
                     element.setAttributeNS(startEvent.attributes.getURI(i), startEvent.attributes.getQName(i), startEvent.attributes.getValue(i));
                 }
             }
-            
+
             if (isRoot) {
                 if (document.getFirstChild() != null) {
                     document.removeChild(document.getFirstChild());
@@ -210,7 +210,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
             if (afterVisitorBindings == null && globalVisitorBindings != null) {
                 afterVisitorBindings = globalVisitorBindings.getAfterVisitors();
             }
-            
+
             if (afterVisitorBindings != null) {
                 if (reverseVisitOrderOnVisitAfter) {
                     // We work through the mappings in reverse order on the end element event...    
@@ -239,7 +239,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
         }
 
         executionContext.getMementoCaretaker().forget(currentNodeFragment);
-        
+
         final ContentHandlerState previousContentHandlerState = currentContentHandlerState.getPreviousContentHandlerState();
         final Node parentNode = currentNode.getParentNode();
         if (isMaxNodeDepth) {
@@ -248,7 +248,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
         this.currentNodeFragment = new NodeFragment(parentNode);
         currentContentHandlerState = previousContentHandlerState;
     }
-    
+
     protected int findMaxNodeDepth(final ContentHandlerState contentHandlerState) {
         ContentHandlerState previousNodeState = contentHandlerState;
         int maxNodeDepth = 0;
@@ -256,7 +256,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
             maxNodeDepth = Math.max(previousNodeState.getMaxDepth(), maxNodeDepth);
             previousNodeState = previousNodeState.getPreviousContentHandlerState();
         }
-        
+
         return maxNodeDepth;
     }
 
@@ -302,7 +302,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
             if (childVisitorBindings == null && globalVisitorBindings != null) {
                 childVisitorBindings = globalVisitorBindings.getChildVisitors();
             }
-            
+
             if (childVisitorBindings != null) {
                 for (final ContentHandlerBinding<ChildrenVisitor> contentHandlerBinding : childVisitorBindings) {
                     if (currentNodeFragment.isMatch(contentHandlerBinding.getResourceConfig().getSelectorPath(), executionContext)) {
@@ -318,7 +318,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
             afterVisitorBinding.getContentHandler().visitAfter((Element) currentNodeFragment.unwrap(), executionContext);
         }
     }
-    
+
     @Override
     public void characters(final char[] ch, final int start, final int length) {
         if (currentContentHandlerState.getTextType() != TextType.CDATA) {
@@ -361,7 +361,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
 
             final Node currentNode = currentNodeFragment.unwrap();
             currentNode.appendChild(characterData);
-            
+
             if (!currentContentHandlerState.isNullProcessor() && currentContentHandlerState.getVisitorBindings() != null) {
                 final List<ContentHandlerBinding<ChildrenVisitor>> childVisitorBindings = currentContentHandlerState.getVisitorBindings().getChildVisitors();
 
@@ -373,7 +373,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
                     }
                 }
             }
-            
+
             if (!contentDeliveryRuntime.getExecutionEventListeners().isEmpty()) {
                 final CharDataFragmentExecutionEvent charFragmentEvent = new CharDataFragmentExecutionEvent(new NodeFragment(characterData));
                 for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
@@ -386,7 +386,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
             }
         }
     }
-    
+
     @Override
     public void ignorableWhitespace(final char[] ch, final int start, final int length) {
         characters(ch, start, length);

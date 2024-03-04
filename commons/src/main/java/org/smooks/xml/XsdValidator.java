@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -86,6 +86,7 @@ public class XsdValidator {
 
     /**
      * Set the XSD/Schema Sources.
+     *
      * @param xsdSources The schema sources.
      */
     public void setXSDSources(Collection<Source> xsdSources) throws SAXException {
@@ -100,6 +101,7 @@ public class XsdValidator {
 
     /**
      * Set the validation error handler.
+     *
      * @param errorHandler The validation error handler.
      */
     public void setErrorHandler(ErrorHandler errorHandler) {
@@ -108,8 +110,9 @@ public class XsdValidator {
 
     /**
      * Validate the supplied source against the namespaces referenced in it.
+     *
      * @throws org.xml.sax.SAXException Validation error.
-     * @throws java.io.IOException Error reading the XSD Sources.
+     * @throws java.io.IOException      Error reading the XSD Sources.
      */
     public void validate(Source source) throws SAXException, IOException {
         AssertArgument.isNotNull(source, "source");
@@ -121,10 +124,10 @@ public class XsdValidator {
         // Create the merged Schema instance and from that, create the Validator instance...
         Validator validator = schema.newValidator();
 
-        if(schemaSourceResolver != null) {
+        if (schemaSourceResolver != null) {
             validator.setResourceResolver(schemaSourceResolver);
         }
-        if(errorHandler != null) {
+        if (errorHandler != null) {
             validator.setErrorHandler(errorHandler);
         }
 

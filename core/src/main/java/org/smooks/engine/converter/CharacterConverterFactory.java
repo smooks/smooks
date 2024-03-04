@@ -52,7 +52,7 @@ import org.smooks.api.converter.TypeConverterFactory;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class CharacterConverterFactory implements TypeConverterFactory<String, Character> {
-    
+
     @Override
     public TypeConverter<String, Character> createTypeConverter() {
         return value -> {

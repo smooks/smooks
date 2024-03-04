@@ -5,7 +5,7 @@
            targetNamespace="http://www.milyn.org/xsd/test-xsd-02.xsd"
            elementFormDefault="qualified">
 
-    <xs:import namespace="http://www.milyn.org/xsd/test-xsd-01.xsd" />
+    <xs:import namespace="http://www.milyn.org/xsd/test-xsd-01.xsd"/>
 
     <xs:element name="myNVP" substitutionGroup="yyy:abstractNVP">
         <xs:complexType>

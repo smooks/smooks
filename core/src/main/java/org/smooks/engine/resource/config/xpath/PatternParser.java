@@ -127,78 +127,65 @@ import org.jaxen.saxpath.XPathReader;
 import org.jaxen.saxpath.helpers.XPathReaderFactory;
 
 
-/** <code>PatternParser</code> is a helper class for parsing
-  * XSLT patterns
-  *
-  * @author <a href="mailto:jstrachan@apache.org">James Strachan</a>
-  * @deprecated will be removed in Jaxen 2.0
-  */
-public class PatternParser
-{
+/**
+ * <code>PatternParser</code> is a helper class for parsing
+ * XSLT patterns
+ *
+ * @author <a href="mailto:jstrachan@apache.org">James Strachan</a>
+ * @deprecated will be removed in Jaxen 2.0
+ */
+public class PatternParser {
     private static final boolean TRACE = false;
     private static final boolean USE_HANDLER = false;
-    public static Pattern parse(String text) throws JaxenException, org.jaxen.saxpath.SAXPathException
-    {
-        if ( USE_HANDLER )
-        {
+
+    public static Pattern parse(String text) throws JaxenException, org.jaxen.saxpath.SAXPathException {
+        if (USE_HANDLER) {
             XPathReader reader = XPathReaderFactory.createReader();
             PatternHandler handler = new PatternHandler();
 
-            handler.setXPathFactory( new DefaultXPathFactory() );
-            reader.setXPathHandler( handler );
-            reader.parse( text );
+            handler.setXPathFactory(new DefaultXPathFactory());
+            reader.setXPathHandler(handler);
+            reader.parse(text);
 
             return handler.getPattern();
-        }
-        else
-        {
+        } else {
             XPathReader reader = XPathReaderFactory.createReader();
             JaxenHandler handler = new JaxenHandler();
 
-            handler.setXPathFactory( new DefaultXPathFactory() );
-            reader.setXPathHandler( handler );
-            reader.parse( text );
+            handler.setXPathFactory(new DefaultXPathFactory());
+            reader.setXPathHandler(handler);
+            reader.parse(text);
 
-            Pattern pattern = convertExpr( handler.getXPathExpr().getRootExpr() );
+            Pattern pattern = convertExpr(handler.getXPathExpr().getRootExpr());
             return pattern.simplify();
         }
     }
 
-    protected static Pattern convertExpr(Expr expr) throws JaxenException
-    {
-        if ( TRACE )
-        {
-            System.out.println( "Converting: " + expr + " into a pattern." );
+    protected static Pattern convertExpr(Expr expr) throws JaxenException {
+        if (TRACE) {
+            System.out.println("Converting: " + expr + " into a pattern.");
         }
 
-        if ( expr instanceof LocationPath )
-        {
-            return convertExpr( (LocationPath) expr );
-        }
-        else if ( expr instanceof FilterExpr )
-        {
+        if (expr instanceof LocationPath) {
+            return convertExpr((LocationPath) expr);
+        } else if (expr instanceof FilterExpr) {
             LocationPathPattern answer = new LocationPathPattern();
-            answer.addFilter( (FilterExpr) expr );
+            answer.addFilter((FilterExpr) expr);
             return answer;
-        }
-        else if ( expr instanceof UnionExpr )
-        {
+        } else if (expr instanceof UnionExpr) {
             UnionExpr unionExpr = (UnionExpr) expr;
-            Pattern lhs = convertExpr( unionExpr.getLHS() );
-            Pattern rhs = convertExpr( unionExpr.getRHS() );
-            return new UnionPattern( lhs, rhs );
-        }
-        else
-        {
+            Pattern lhs = convertExpr(unionExpr.getLHS());
+            Pattern rhs = convertExpr(unionExpr.getRHS());
+            return new UnionPattern(lhs, rhs);
+        } else {
             LocationPathPattern answer = new LocationPathPattern();
-            answer.addFilter( new DefaultFilterExpr( expr,
-                                new PredicateSet()) );
+            answer.addFilter(new DefaultFilterExpr(expr,
+                    new PredicateSet()));
             return answer;
         }
     }
 
-    protected static LocationPathPattern convertExpr(LocationPath locationPath) throws JaxenException
-    {
+    protected static LocationPathPattern convertExpr(LocationPath locationPath) throws JaxenException {
         LocationPathPattern answer = new LocationPathPattern();
         //answer.setAbsolute( locationPath.isAbsolute() );
         List steps = locationPath.getSteps();
@@ -206,215 +193,148 @@ public class PatternParser
         // go through steps backwards
         LocationPathPattern path = answer;
         boolean first = true;
-        for ( ListIterator iter = steps.listIterator( steps.size() ); iter.hasPrevious(); )
-        {
+        for (ListIterator iter = steps.listIterator(steps.size()); iter.hasPrevious(); ) {
             Step step = (Step) iter.previous();
-            if ( first )
-            {
+            if (first) {
                 first = false;
-                path = convertStep( path, step );
-            }
-            else
-            {
-                if ( navigationStep( step ) )
-                {
+                path = convertStep(path, step);
+            } else {
+                if (navigationStep(step)) {
                     LocationPathPattern parent = new LocationPathPattern();
                     int axis = step.getAxis();
-                    if ( axis == Axis.DESCENDANT || axis == Axis.DESCENDANT_OR_SELF )
-                    {
-                        path.setAncestorPattern( parent );
-                    }
-                    else
-                    {
-                        path.setParentPattern( parent );
+                    if (axis == Axis.DESCENDANT || axis == Axis.DESCENDANT_OR_SELF) {
+                        path.setAncestorPattern(parent);
+                    } else {
+                        path.setParentPattern(parent);
                     }
                     path = parent;
                 }
-                path = convertStep( path, step );
+                path = convertStep(path, step);
             }
         }
-        if ( locationPath.isAbsolute() )
-        {
-            LocationPathPattern parent = new LocationPathPattern( NodeTypeTest.DOCUMENT_TEST );
-            path.setParentPattern( parent );
+        if (locationPath.isAbsolute()) {
+            LocationPathPattern parent = new LocationPathPattern(NodeTypeTest.DOCUMENT_TEST);
+            path.setParentPattern(parent);
         }
         return answer;
     }
 
-    protected static LocationPathPattern convertStep(LocationPathPattern path, Step step) throws JaxenException
-    {
-        if ( step instanceof DefaultAllNodeStep )
-        {
+    protected static LocationPathPattern convertStep(LocationPathPattern path, Step step) throws JaxenException {
+        if (step instanceof DefaultAllNodeStep) {
             int axis = step.getAxis();
-            if ( axis == Axis.ATTRIBUTE )
-            {
-                path.setNodeTest( NodeTypeTest.ATTRIBUTE_TEST );
+            if (axis == Axis.ATTRIBUTE) {
+                path.setNodeTest(NodeTypeTest.ATTRIBUTE_TEST);
+            } else {
+                path.setNodeTest(NodeTypeTest.ELEMENT_TEST);
             }
-            else
-            {
-                path.setNodeTest( NodeTypeTest.ELEMENT_TEST );
-            }
-        }
-        else if ( step instanceof DefaultCommentNodeStep )
-        {
-            path.setNodeTest( NodeTypeTest.COMMENT_TEST );
-        }
-        else if ( step instanceof DefaultProcessingInstructionNodeStep )
-        {
-            path.setNodeTest( NodeTypeTest.PROCESSING_INSTRUCTION_TEST );
-        }
-        else if ( step instanceof DefaultTextNodeStep )
-        {
-            path.setNodeTest( TextNodeTest.SINGLETON );
-        }
-        else if ( step instanceof DefaultCommentNodeStep )
-        {
-            path.setNodeTest( NodeTypeTest.COMMENT_TEST );
-        }
-        else if ( step instanceof DefaultNameStep )
-        {
+        } else if (step instanceof DefaultCommentNodeStep) {
+            path.setNodeTest(NodeTypeTest.COMMENT_TEST);
+        } else if (step instanceof DefaultProcessingInstructionNodeStep) {
+            path.setNodeTest(NodeTypeTest.PROCESSING_INSTRUCTION_TEST);
+        } else if (step instanceof DefaultTextNodeStep) {
+            path.setNodeTest(TextNodeTest.SINGLETON);
+        } else if (step instanceof DefaultCommentNodeStep) {
+            path.setNodeTest(NodeTypeTest.COMMENT_TEST);
+        } else if (step instanceof DefaultNameStep) {
             DefaultNameStep nameStep = (DefaultNameStep) step;
             String localName = nameStep.getLocalName();
             String prefix = nameStep.getPrefix();
             int axis = nameStep.getAxis();
             short nodeType = Pattern.ELEMENT_NODE;
-            if ( axis == Axis.ATTRIBUTE )
-            {
+            if (axis == Axis.ATTRIBUTE) {
                 nodeType = Pattern.ATTRIBUTE_NODE;
             }
-            if ( nameStep.isMatchesAnyName() )
-            {
-                if ( prefix.length() == 0 || prefix.equals( "*" ) )
-                {
-                    if ( axis == Axis.ATTRIBUTE )
-                    {
-                        path.setNodeTest( NodeTypeTest.ATTRIBUTE_TEST );
+            if (nameStep.isMatchesAnyName()) {
+                if (prefix.length() == 0 || prefix.equals("*")) {
+                    if (axis == Axis.ATTRIBUTE) {
+                        path.setNodeTest(NodeTypeTest.ATTRIBUTE_TEST);
+                    } else {
+                        path.setNodeTest(NodeTypeTest.ELEMENT_TEST);
                     }
-                    else
-                    {
-                        path.setNodeTest( NodeTypeTest.ELEMENT_TEST );
-                    }
+                } else {
+                    path.setNodeTest(new PrefixNamespaceTest(prefix, nodeType));
                 }
-                else
-                {
-                    path.setNodeTest( new PrefixNamespaceTest( prefix, nodeType ) );
-                }
-            }
-            else
-            {
-                NameTest nameTest = new NameTest( localName, nodeType );
+            } else {
+                NameTest nameTest = new NameTest(localName, nodeType);
                 NodeTest nodeTest;
-                if (prefix.length() > 0)
-                {
-                    NamespaceTest namespaceTest = new PrefixNamespaceTest( prefix, nodeType );
+                if (prefix.length() > 0) {
+                    NamespaceTest namespaceTest = new PrefixNamespaceTest(prefix, nodeType);
                     nodeTest = new NameNamespaceCompositeTest(nameTest, namespaceTest);
-                }
-                else
-                {
+                } else {
                     nodeTest = nameTest;
                 }
-                path.setNodeTest( nodeTest );
+                path.setNodeTest(nodeTest);
             }
             return convertDefaultStep(path, nameStep);
-        }
-        else if ( step instanceof DefaultStep )
-        {
+        } else if (step instanceof DefaultStep) {
             return convertDefaultStep(path, (DefaultStep) step);
-        }
-        else
-        {
-            throw new JaxenException( "Cannot convert: " + step + " to a Pattern" );
+        } else {
+            throw new JaxenException("Cannot convert: " + step + " to a Pattern");
         }
         return path;
     }
 
-    protected static LocationPathPattern convertDefaultStep(LocationPathPattern path, DefaultStep step) throws JaxenException
-    {
+    protected static LocationPathPattern convertDefaultStep(LocationPathPattern path, DefaultStep step) throws JaxenException {
         List predicates = step.getPredicates();
-        if ( ! predicates.isEmpty() )
-        {
+        if (!predicates.isEmpty()) {
             FilterExpr filter = new DefaultFilterExpr(new PredicateSet());
-            for ( Iterator iter = predicates.iterator(); iter.hasNext(); )
-            {
+            for (Iterator iter = predicates.iterator(); iter.hasNext(); ) {
                 Predicate predicate = (Predicate) iter.next();
-                if ( !(predicate.getExpr() instanceof NumberExpr) && !containsTextNode(predicate.getExpr()) )
-                {
+                if (!(predicate.getExpr() instanceof NumberExpr) && !containsTextNode(predicate.getExpr())) {
                     filter.addPredicate(predicate);
                 }
             }
-            if ( !filter.getPredicates().isEmpty() )
-            {
+            if (!filter.getPredicates().isEmpty()) {
                 path.addFilter(filter);
             }
         }
         return path;
     }
 
-    public static boolean containsTextNode(Expr expr)
-    {
-        if ( expr instanceof LocationPath )
-        {
-            for ( Object step : ((LocationPath) expr).getSteps() )
-            {
-                if ( step instanceof TextNodeStep) {
+    public static boolean containsTextNode(Expr expr) {
+        if (expr instanceof LocationPath) {
+            for (Object step : ((LocationPath) expr).getSteps()) {
+                if (step instanceof TextNodeStep) {
                     return true;
-                }
-                else
-                {
-                    for ( Object predicate : ((Step) step).getPredicates() )
-                    {
-                        if ( containsTextNode(((Predicate) predicate).getExpr()) )
-                        {
+                } else {
+                    for (Object predicate : ((Step) step).getPredicates()) {
+                        if (containsTextNode(((Predicate) predicate).getExpr())) {
                             return true;
                         }
                     }
                 }
             }
-        }
-        else
-        if (expr instanceof BinaryExpr)
-        {
+        } else if (expr instanceof BinaryExpr) {
             return containsTextNode(((BinaryExpr) expr).getLHS()) || containsTextNode(((BinaryExpr) expr).getRHS());
         }
 
         return false;
     }
 
-    protected static boolean navigationStep( Step step )
-    {
-        if ( step instanceof DefaultNameStep )
-        {
+    protected static boolean navigationStep(Step step) {
+        if (step instanceof DefaultNameStep) {
             return true;
-        }
-        else
-        if ( step.getClass().equals( DefaultStep.class ) )
-        {
-            return ! step.getPredicates().isEmpty();
-        }
-        else
-        {
+        } else if (step.getClass().equals(DefaultStep.class)) {
+            return !step.getPredicates().isEmpty();
+        } else {
             return true;
         }
     }
 
-    protected static class NameNamespaceCompositeTest extends NodeTest
-    {
+    protected static class NameNamespaceCompositeTest extends NodeTest {
         private final NameTest nameTest;
         private final NamespaceTest namespaceTest;
 
-        public NameNamespaceCompositeTest(NameTest nameTest, NamespaceTest namespaceTest)
-        {
+        public NameNamespaceCompositeTest(NameTest nameTest, NamespaceTest namespaceTest) {
             this.nameTest = nameTest;
             this.namespaceTest = namespaceTest;
         }
 
-        public boolean matches(Object node, Context context) throws JaxenException
-        {
+        public boolean matches(Object node, Context context) throws JaxenException {
             return nameTest.matches(node, context) && namespaceTest.matches(node, context);
         }
 
-        public String getText()
-        {
+        public String getText() {
             return namespaceTest.getText() + nameTest.getText();
         }
     }

@@ -1,107 +1,107 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<!--
-  ========================LICENSE_START=================================
-  Commons
-  %%
-  Copyright (C) 2020 Smooks
-  %%
-  Licensed under the terms of the Apache License Version 2.0, or
-  the GNU Lesser General Public License version 3.0 or later.
-  
-  SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
-  
-  ======================================================================
-  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-      http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  
-  ======================================================================
-  
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 3 of the License, or (at your option) any later version.
-  
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public License
-  along with this program; if not, write to the Free Software Foundation,
-  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-  =========================LICENSE_END==================================
-  -->
+        <!--
+          ========================LICENSE_START=================================
+          Commons
+          %%
+          Copyright (C) 2020 Smooks
+          %%
+          Licensed under the terms of the Apache License Version 2.0, or
+          the GNU Lesser General Public License version 3.0 or later.
+
+          SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
+
+          ======================================================================
+
+          Licensed under the Apache License, Version 2.0 (the "License");
+          you may not use this file except in compliance with the License.
+          You may obtain a copy of the License at
+
+              http://www.apache.org/licenses/LICENSE-2.0
+
+          Unless required by applicable law or agreed to in writing, software
+          distributed under the License is distributed on an "AS IS" BASIS,
+          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+          See the License for the specific language governing permissions and
+          limitations under the License.
+
+          ======================================================================
+
+          This program is free software; you can redistribute it and/or
+          modify it under the terms of the GNU Lesser General Public
+          License as published by the Free Software Foundation; either
+          version 3 of the License, or (at your option) any later version.
+
+          This program is distributed in the hope that it will be useful,
+          but WITHOUT ANY WARRANTY; without even the implied warranty of
+          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+          Lesser General Public License for more details.
+
+          You should have received a copy of the GNU Lesser General Public License
+          along with this program; if not, write to the Free Software Foundation,
+          Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+          =========================LICENSE_END==================================
+          -->
 
 
-<!-- root element -->
-<!ELEMENT device-ident (device+) >
+        <!-- root element -->
+        <!ELEMENT device-ident (device+) >
 
-<!--
-	device element is a container element for device identification units.
+        <!--
+            device element is a container element for device identification units.
 
-	Matching is based on a number of criteria and is defined through the match attribute
-	on the device identification definition.  <code>match</code> defines combinations
-	of identification units that result in a positive match for the device.  "all",
-	"*" and "any" are predefined and  reserved where "all" is the default and "any"
-	and "*" are equivalent.  <code>match</code> may also contain a list of identification
-	unit "id" attribute value combinations.  Match "id" combinations are separated by the pipe
-	character "|".  A combination can be built from one or more id attribute values
-	from the contained identification units (separated by commas).  If an identification unit
-	doesn't have an "id" attribute value set a pseudo id value will be assigned based on it's
-	index in the identification set (base 1 index).
+            Matching is based on a number of criteria and is defined through the match attribute
+            on the device identification definition.  <code>match</code> defines combinations
+            of identification units that result in a positive match for the device.  "all",
+            "*" and "any" are predefined and  reserved where "all" is the default and "any"
+            and "*" are equivalent.  <code>match</code> may also contain a list of identification
+            unit "id" attribute value combinations.  Match "id" combinations are separated by the pipe
+            character "|".  A combination can be built from one or more id attribute values
+            from the contained identification units (separated by commas).  If an identification unit
+            doesn't have an "id" attribute value set a pseudo id value will be assigned based on it's
+            index in the identification set (base 1 index).
 
-	    Examples:
-	    1.  Same as match="all".  Only a positive match on all the
-		identification units result in a positive match on the device.
-		This is the default.
-	    <device name="xxx">
-		<http-req-header name="AAA" value="aaa" />
-		<http-req-param name="BBB" value="bbb" />
-	    </device>
+                Examples:
+                1.  Same as match="all".  Only a positive match on all the
+                identification units result in a positive match on the device.
+                This is the default.
+                <device name="xxx">
+                <http-req-header name="AAA" value="aaa" />
+                <http-req-param name="BBB" value="bbb" />
+                </device>
 
-	    2.  A positive match on any of the identification units result in a positive
-		match on the device.  match="*" is equivalent to match="any".
-	    <device name="xxx" match="any">
-		<http-req-header name="AAA" value="aaa" />
-		<http-req-param name="BBB" value="bbb" />
-	    </device>
+                2.  A positive match on any of the identification units result in a positive
+                match on the device.  match="*" is equivalent to match="any".
+                <device name="xxx" match="any">
+                <http-req-header name="AAA" value="aaa" />
+                <http-req-param name="BBB" value="bbb" />
+                </device>
 
-	    3.  A positive match on identification units (1) or (2 and 3) or (3 and 4)
-		result in a poitive match on the device.
-	    <device name="xxx" match="1|2,3|3,4">
-		<http-req-header id="1" name="AAA" value="aaa" />
-		<http-req-header id="2" name="BBB" value="bbb" />
-		<http-req-header id="3" name="CCC" value="ccc" />
-		<http-req-param id="4" name="DDD" value="ddd" />
-	    </device>
--->
-<!ELEMENT device ((http-req-header+) | (http-req-param+) | (http-req-header+, http-req-param+) | (http-req-param+, http-req-header+)) >
-<!ATTLIST device
-	name 	CDATA 		#REQUIRED
-	match 	CDATA 		#IMPLIED
->
+                3.  A positive match on identification units (1) or (2 and 3) or (3 and 4)
+                result in a poitive match on the device.
+                <device name="xxx" match="1|2,3|3,4">
+                <http-req-header id="1" name="AAA" value="aaa" />
+                <http-req-header id="2" name="BBB" value="bbb" />
+                <http-req-header id="3" name="CCC" value="ccc" />
+                <http-req-param id="4" name="DDD" value="ddd" />
+                </device>
+        -->
+        <!ELEMENT device ((http-req-header+) | (http-req-param+) | (http-req-header+, http-req-param+) | (http-req-param+, http-req-header+)) >
+        <!ATTLIST device
+                name    CDATA        #REQUIRED
+                match    CDATA        #IMPLIED
+                >
 
-<!-- identification unit base attributes -->
-<!ENTITY % identunit
-	"id 	CDATA 		#IMPLIED
+        <!-- identification unit base attributes -->
+        <!ENTITY % identunit
+                "id 	CDATA 		#IMPLIED
      name 	CDATA 		#REQUIRED
 	 value 	CDATA 		#REQUIRED"
->
+                >
 
-<!-- HTTP request header identification unit. -->
-<!ELEMENT http-req-header EMPTY >
-<!ATTLIST http-req-header %identunit; >
+        <!-- HTTP request header identification unit. -->
+        <!ELEMENT http-req-header EMPTY >
+        <!ATTLIST http-req-header %identunit; >
 
-<!-- HTTP request parameter identification unit. -->
-<!ELEMENT http-req-param EMPTY >
-<!ATTLIST http-req-param %identunit; >
+        <!-- HTTP request parameter identification unit. -->
+        <!ELEMENT http-req-param EMPTY >
+        <!ATTLIST http-req-param %identunit; >

@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -86,46 +86,48 @@ import java.util.Optional;
  * This class uses the {@link ContentDeliveryConfig} and the
  * {@link SerializerVisitor} instances defined there on
  * to perform the serialization.
+ *
  * @author tfennelly
  */
 public class Serializer {
 
-	/**
-	 * Logger.
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(Serializer.class);
-	/**
-	 * Node to be serialized.
-	 */
-	private final Node node;
-	/**
-	 * Target device context.
-	 */
-	private final ExecutionContext executionContext;
-  /**
-	 * Target content delivery context SerializationUnit definitions.
-	 */
-	private final ContentHandlerBindingIndex<SerializerVisitor> serializerVisitorIndex;
+    /**
+     * Logger.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(Serializer.class);
+    /**
+     * Node to be serialized.
+     */
+    private final Node node;
+    /**
+     * Target device context.
+     */
+    private final ExecutionContext executionContext;
+    /**
+     * Target content delivery context SerializationUnit definitions.
+     */
+    private final ContentHandlerBindingIndex<SerializerVisitor> serializerVisitorIndex;
     private final ContentDeliveryRuntime contentDeliveryRuntime;
     /**
      * Default serialization unit.
      */
-	private DefaultDOMSerializerVisitor defaultSerializationUnit;
+    private DefaultDOMSerializerVisitor defaultSerializationUnit;
     /**
-	 * Global SerializationUnits.
-	 */
-	private final List globalSUs;
+     * Global SerializationUnits.
+     */
+    private final List globalSUs;
     /**
      * Event Listener.
      */
     private final boolean terminateOnVisitorException;
 
     /**
-	 * Public constructor.
-	 * @param node Node to be serialized.
-	 * @param executionContext Target device context.
-	 */
-	public Serializer(Node node, ExecutionContext executionContext) {
+     * Public constructor.
+     *
+     * @param node             Node to be serialized.
+     * @param executionContext Target device context.
+     */
+    public Serializer(Node node, ExecutionContext executionContext) {
         if (node == null) {
             throw new IllegalArgumentException("null 'node' arg passed in method call.");
         } else if (executionContext == null) {
@@ -158,18 +160,19 @@ public class Serializer {
         terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", deliveryConfig));
     }
 
-	/**
-	 * Serialise the document to the supplied output writer instance.
-	 * <p/>
-	 * Adds the DOCTYPE decl if one defined in the Content Delivery Configuration.
-	 * <p/>
-	 * If the node is a Document (or DocumentFragment) node the whole node is serialised.
-	 * Otherwise, only the node child elements are serialised i.e. the node itself is skipped.
-	 * @param writer Output writer.
-	 * @throws ResourceConfigurationNotFoundException DOM Serialiser exception.
-	 * @throws IOException Unable to write to output writer.
-	 */
-	public void serialize(Writer writer) throws ResourceConfigurationNotFoundException, IOException {
+    /**
+     * Serialise the document to the supplied output writer instance.
+     * <p/>
+     * Adds the DOCTYPE decl if one defined in the Content Delivery Configuration.
+     * <p/>
+     * If the node is a Document (or DocumentFragment) node the whole node is serialised.
+     * Otherwise, only the node child elements are serialised i.e. the node itself is skipped.
+     *
+     * @param writer Output writer.
+     * @throws ResourceConfigurationNotFoundException DOM Serialiser exception.
+     * @throws IOException                            Unable to write to output writer.
+     */
+    public void serialize(Writer writer) throws ResourceConfigurationNotFoundException, IOException {
         if (writer == null) {
             throw new IllegalArgumentException("null 'writer' arg passed in method call.");
         }
@@ -211,29 +214,30 @@ public class Serializer {
         }
     }
 
-  /**
-	 * Recursively write the DOM tree to the supplied writer.
-	 * @param element Element to write.
-	 * @param writer Writer to use.
-     * @param isRoot Is the supplied element the document root element.
-	 */
-	private void recursiveDOMWrite(Element element, Writer writer, boolean isRoot) {
-		SerializerVisitor elementSU;
-		NodeList children = element.getChildNodes();
+    /**
+     * Recursively write the DOM tree to the supplied writer.
+     *
+     * @param element Element to write.
+     * @param writer  Writer to use.
+     * @param isRoot  Is the supplied element the document root element.
+     */
+    private void recursiveDOMWrite(Element element, Writer writer, boolean isRoot) {
+        SerializerVisitor elementSU;
+        NodeList children = element.getChildNodes();
 
-		elementSU = getSerializationUnit(element, isRoot);
-		try {
-            if(elementSU != null) {
+        elementSU = getSerializationUnit(element, isRoot);
+        try {
+            if (elementSU != null) {
                 elementSU.writeStartElement(element, writer, executionContext);
             }
-            
-            if(children != null && children.getLength() > 0) {
-				int childCount = children.getLength();
 
-				for(int i = 0; i < childCount; i++) {
-					Node childNode = children.item(i);
+            if (children != null && children.getLength() > 0) {
+                int childCount = children.getLength();
 
-                    if(elementSU != null) {
+                for (int i = 0; i < childCount; i++) {
+                    Node childNode = children.item(i);
+
+                    if (elementSU != null) {
                         if (childNode.getNodeType() == Node.ELEMENT_NODE) {
                             if (elementSU.writeChildElements()) {
                                 recursiveDOMWrite((Element) childNode, writer, false);
@@ -245,15 +249,15 @@ public class Serializer {
                         recursiveDOMWrite((Element) childNode, writer, false);
                     }
                 }
-			}
-            if(elementSU != null) {
-    			elementSU.writeEndElement(element, writer, executionContext);
             }
-        } catch(Throwable thrown) {
+            if (elementSU != null) {
+                elementSU.writeEndElement(element, writer, executionContext);
+            }
+        } catch (Throwable thrown) {
             String error = "Failed to apply serialization unit [" + elementSU.getClass().getName() + "] to [" + executionContext.getDocumentSource() + ":" + DomUtils.getXPath(element) + "].";
 
-            if(terminateOnVisitorException) {
-                if(thrown instanceof SmooksException) {
+            if (terminateOnVisitorException) {
+                if (thrown instanceof SmooksException) {
                     throw (SmooksException) thrown;
                 } else {
                     throw new SmooksException(error, thrown);
@@ -261,15 +265,16 @@ public class Serializer {
             } else {
                 LOGGER.debug(error, thrown);
             }
-		}
-	}
+        }
+    }
 
-	/**
-	 * Get the first matching serialisation unit for the supplied element.
-	 * @param element Element to be serialized.
-     * @param isRoot Is the supplied element the document root element.
+    /**
+     * Get the first matching serialisation unit for the supplied element.
+     *
+     * @param element Element to be serialized.
+     * @param isRoot  Is the supplied element the document root element.
      * @return SerializationUnit.
-	 */
+     */
     @SuppressWarnings("unchecked")
     private SerializerVisitor getSerializationUnit(Element element, boolean isRoot) {
         String elementName = DomUtils.getName(element);
@@ -327,31 +332,32 @@ public class Serializer {
 
     /**
      * Recursively write the DOM tree to the supplied writer.
+     *
      * @param element Element to write.
-     * @param writer Writer to use.
+     * @param writer  Writer to use.
      */
-    @SuppressWarnings({ "unused", "WeakerAccess" })
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public static void recursiveDOMWrite(Element element, Writer writer) {
         NodeList children = element.getChildNodes();
 
         try {
             defaultSerializer.writeStartElement(element, writer, null);
 
-            if(children != null && children.getLength() > 0) {
+            if (children != null && children.getLength() > 0) {
                 int childCount = children.getLength();
 
-                for(int i = 0; i < childCount; i++) {
+                for (int i = 0; i < childCount; i++) {
                     Node childNode = children.item(i);
                     if (childNode.getNodeType() == Node.ELEMENT_NODE) {
-                        recursiveDOMWrite((Element)childNode, writer);
+                        recursiveDOMWrite((Element) childNode, writer);
                     } else {
                         defaultSerializer.writeCharacterData(childNode, writer, null);
                     }
                 }
             }
             defaultSerializer.writeEndElement(element, writer, null);
-        } catch(Throwable thrown) {
-            if(thrown instanceof SmooksException) {
+        } catch (Throwable thrown) {
+            if (thrown instanceof SmooksException) {
                 throw (SmooksException) thrown;
             } else {
                 throw new SmooksException("Serailization Error.", thrown);
