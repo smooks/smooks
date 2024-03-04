@@ -2292,7 +2292,7 @@ public class MyManagedClass {
 
 Line 15 from the snippet above uses `InstrumentationAgent` to register the `@ManagedResource` annotated object with the MBean server so that it can be queried and invoked by JMX clients. `InstrumentationAgent` is obtained from an instance of `org.smooks.api.management.InstrumentationResource`. The singleton `InstrumentationResource` can be looked up from the Smooks registry as shown in line 12.
 
-IMPORTANT: link:#activating_instrumentation[Instrumentation needs to be activated] in order to obtain a non-null `InstrumentationResource` from the lookup.
+IMPORTANT: link:#activation[Instrumentation needs to be activated] in order to obtain a non-null `InstrumentationResource` from the lookup.
 
 ==== @ManagedAttribute
 
