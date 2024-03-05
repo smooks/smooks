@@ -40,29 +40,50 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config;
+package org.smooks.engine.resource.config.loader.xml.extension;
+
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.w3c.dom.Element;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
- * Thrown when an request is made to load an unknown CDRArchiveEntry.
+ * Create a new {@link ResourceConfig} by cloning the current resource.
  * <p/>
- * An unknown CDRArchiveEntry is defined as an entry which was not loaded from
- * any of the loaded cdrar files.
+ * The cloned {@link ResourceConfig} is added to the {@link ExtensionContext}.
  *
- * @author tfennelly
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ResourceConfigurationNotFoundException extends RuntimeException {
+public class CloneResourceConfig implements DOMElementVisitor {
 
-    /**
-     * Serail UID.
-     */
-    private static final long serialVersionUID = 1L;
+    @Inject
+    private Optional<String> resource;
 
-    /**
-     * Public constructor.
-     *
-     * @param message The exception message.
-     */
-    public ResourceConfigurationNotFoundException(String message) {
-        super(message);
+    @Inject
+    private Optional<String[]> unset;
+
+    @Override
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
+        ResourceConfig config = extensionContext.getResourceStack().peek().copy();
+
+        if (unset.isPresent()) {
+            for (String property : unset.get()) {
+                ResourceConfigUtils.unsetProperty(config, property);
+            }
+        }
+
+        resource.ifPresent(config::setResource);
+
+        extensionContext.addResourceConfig(config);
+    }
+
+    @Override
+    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+        executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().pop();
     }
 }

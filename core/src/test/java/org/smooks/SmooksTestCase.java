@@ -82,7 +82,7 @@ public class SmooksTestCase {
     public void test_setClassPath() throws IOException, SAXException {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         TestClassLoader classLoader = new TestClassLoader(contextClassLoader);
-        Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setClassLoader(classLoader).build());
+        Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withClassLoader(classLoader).build());
         smooks.addResourceConfigs(getClass().getResourceAsStream("test_setClassLoader_01.xml"));
                 
         StringResult result = new StringResult();

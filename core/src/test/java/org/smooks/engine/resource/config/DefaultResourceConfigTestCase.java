@@ -42,6 +42,9 @@
  */
 package org.smooks.engine.resource.config;
 
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.DOMWriter;
 import org.junit.jupiter.api.Test;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.resource.config.Parameter;
@@ -50,8 +53,7 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
-import org.smooks.support.DomUtil;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -104,9 +106,9 @@ public class DefaultResourceConfigTestCase {
 	}
 
 	@Test
-    public void test_isTargetedAtElement_DOM() {
-        Document doc = DomUtil.parse("<a><b><c><d><e/></d></c></b></a>");
-        Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
+    public void test_isTargetedAtElement_DOM() throws DocumentException {
+        Document doc = new DOMWriter().write(DocumentHelper.parseText("<a><b><c><d><e/></d></c></b></a>"));
+        Element e = (Element) XmlUtils.getNode(doc, "a/b/c/d/e");
 
         ResourceConfig rc1 = new DefaultResourceConfig("e", new Properties(), "blah");
         ResourceConfig rc2 = new DefaultResourceConfig("d/e", new Properties(), "blah");
@@ -126,9 +128,9 @@ public class DefaultResourceConfigTestCase {
     }
 
 	@Test
-    public void test_isTargetedAtElement_DOM_with_Attribute() {
-        Document doc = DomUtil.parse("<a><b><c><d><e attrib1=\"\"/></d></c></b></a>");
-        Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
+    public void test_isTargetedAtElement_DOM_with_Attribute() throws DocumentException {
+        Document doc = new DOMWriter().write(DocumentHelper.parseText("<a><b><c><d><e attrib1=\"\"/></d></c></b></a>"));
+        Element e = (Element) XmlUtils.getNode(doc, "a/b/c/d/e");
 
         // Check with an attribute on the selector....
         ResourceConfig rc8 = new DefaultResourceConfig("e[@attrib1]", new Properties(), "blah");
@@ -152,9 +154,9 @@ public class DefaultResourceConfigTestCase {
     }
 
 	@Test
-    public void test_isTargetedAtElement_DOM_wildcards() {
-        Document doc = DomUtil.parse("<a><b><c><d><e/></d></c></b></a>");
-        Element e = (Element) XmlUtil.getNode(doc, "a/b/c/d/e");
+    public void test_isTargetedAtElement_DOM_wildcards() throws DocumentException {
+        Document doc = new DOMWriter().write(DocumentHelper.parseText("<a><b><c><d><e/></d></c></b></a>"));
+        Element e = (Element) XmlUtils.getNode(doc, "a/b/c/d/e");
 
         ResourceConfig rc1 = new DefaultResourceConfig("e", new Properties(), "blah");
         ResourceConfig rc2 = new DefaultResourceConfig("d/e", new Properties(), "blah");
@@ -209,9 +211,9 @@ public class DefaultResourceConfigTestCase {
     }
 
 	@Test
-    public void test_isTargetedAtElement_DOM_rooted() {
-        Document doc = DomUtil.parse("<a><b><c><a><d><e/></d></a></c></b></a>");
-        Element e = (Element) XmlUtil.getNode(doc, "a/b/c/a/d/e");
+    public void test_isTargetedAtElement_DOM_rooted() throws DocumentException {
+        Document doc = new DOMWriter().write(DocumentHelper.parseText("<a><b><c><a><d><e/></d></a></c></b></a>"));
+        Element e = (Element) XmlUtils.getNode(doc, "a/b/c/a/d/e");
 
         ResourceConfig rc1 = new DefaultResourceConfig("/a/b/c/a/d/e", new Properties(), "blah");
         ResourceConfig rc2 = new DefaultResourceConfig("/a/d/e", new Properties(), "blah");

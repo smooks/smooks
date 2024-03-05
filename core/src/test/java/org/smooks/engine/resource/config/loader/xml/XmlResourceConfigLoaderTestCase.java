@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config;
+package org.smooks.engine.resource.config.loader.xml;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
@@ -48,6 +48,7 @@ import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
+import org.smooks.engine.resource.config.loader.xml.XmlResourceConfigLoader;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -61,17 +62,18 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for the ArciveDef class.
  * @author tfennelly
  */
-public class XMLConfigDigesterTestCase {
+public class XmlResourceConfigLoaderTestCase {
     
 	@Test
-    public void test_digestConfig_v20() throws SAXException, IOException, URISyntaxException {
+    public void test_digestConfig_v20() {
         // Valid doc
-        ResourceConfigSeq resList = XMLConfigDigester.digestConfig(getClass().getResourceAsStream("testconfig2.cdrl"), "test");
+        XmlResourceConfigLoader xmlResourceConfigLoader = new XmlResourceConfigLoader();
+        ResourceConfigSeq resourceConfigSeq = xmlResourceConfigLoader.load(getClass().getResourceAsStream("/org/smooks/engine/resource/config/testconfig2.cdrl"), "test", this.getClass().getClassLoader());
 
-        assertResourceConfigOK(resList);
+        assertResourceConfigOK(resourceConfigSeq);
 
         // Check the profiles...
-        List<ProfileSet> profiles = resList.getProfiles();
+        List<ProfileSet> profiles = resourceConfigSeq.getProfiles();
         assertEquals(2, profiles.size());
         assertEquals("profileA", profiles.get(0).getBaseProfile());
         assertTrue(profiles.get(0).isMember("profileA"));
@@ -88,7 +90,7 @@ public class XMLConfigDigesterTestCase {
     public void test_profile_expansion() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.addResourceConfigs("testconfig2.cdrl", getClass().getResourceAsStream("testconfig2.cdrl"));
+        smooks.addResourceConfigs("testconfig2.cdrl", getClass().getResourceAsStream("/org/smooks/engine/resource/config/testconfig2.cdrl"));
         assertProfilesOK(smooks);
     }
 
@@ -106,7 +108,7 @@ public class XMLConfigDigesterTestCase {
     }
 
 	@Test
-    public void test_import_classpath() throws IOException, SAXException, URISyntaxException {
+    public void test_import_classpath() throws IOException, SAXException {
         Smooks smooks = new Smooks("/org/smooks/engine/resource/config/testconfig3.cdrl");
         Iterator<ResourceConfigSeq> listIt = smooks.getApplicationContext().getRegistry().lookup(new ResourceConfigSeqsLookup()).iterator();
         ResourceConfigSeq list = null;

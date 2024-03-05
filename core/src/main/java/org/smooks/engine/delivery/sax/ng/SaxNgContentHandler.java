@@ -67,7 +67,7 @@ import org.smooks.engine.memento.TextAccumulatorMemento;
 import org.smooks.engine.xml.DocType;
 import org.smooks.io.Stream;
 import org.smooks.support.DomUtils;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -140,7 +140,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
     @Override
     public void startElement(final StartElementEvent startEvent) {
         final boolean isRoot = (currentContentHandlerState.getPreviousContentHandlerState() == null);
-        final QName elementQName = XmlUtil.toQName(startEvent.uri, startEvent.localName, startEvent.qName);
+        final QName elementQName = XmlUtils.toQName(startEvent.uri, startEvent.localName, startEvent.qName);
         final String elementName = elementQName != null ? elementQName.getLocalPart() : null;
 
         SaxNgVisitorBindings visitorBindings;

@@ -80,7 +80,6 @@ import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.report.AbstractReportGenerator;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.engine.resource.config.ResourceConfigurationNotFoundException;
 import org.smooks.io.Stream;
 import org.smooks.io.payload.FilterResult;
 import org.smooks.io.payload.FilterSource;
@@ -681,9 +680,8 @@ public class SmooksDOMFilter extends AbstractFilter {
      *
      * @param node   Document to be serialised.
      * @param writer Output writer.
-     * @throws ResourceConfigurationNotFoundException DOM Serialiser exception.
-     * @throws IOException                            Unable to write to output writer.
-     * @throws SmooksException                        Unable to serialise due to bad Smooks environment.  Check cause.
+     * @throws IOException     Unable to write to output writer.
+     * @throws SmooksException Unable to serialise due to bad Smooks environment.  Check cause.
      */
     public void serialize(Node node, Writer writer) throws IOException, SmooksException {
         Serializer serializer;
@@ -700,8 +698,8 @@ public class SmooksDOMFilter extends AbstractFilter {
         serializer = new Serializer(node, executionContext);
         try {
             serializer.serialize(writer);
-        } catch (ResourceConfigurationNotFoundException e) {
-            throw new SmooksException("Unable to serialize document.", e);
+        } catch (Exception e) {
+            throw new SmooksException("Unable to serialize document", e);
         }
     }
 

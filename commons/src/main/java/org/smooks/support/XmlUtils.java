@@ -77,7 +77,7 @@ import java.util.Set;
  * @author Tom Fennelly
  */
 
-public final class XmlUtil {
+public final class XmlUtils {
 
     /**
      * Document validation types.
@@ -97,19 +97,6 @@ public final class XmlUtil {
         XSD,
     }
 
-    private static final Set<String> XML_RESERVED_NAMESPACES = new HashSet<>();
-
-    static {
-        XML_RESERVED_NAMESPACES.add(XMLConstants.NULL_NS_URI);
-        XML_RESERVED_NAMESPACES.add(XMLConstants.RELAXNG_NS_URI);
-        XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-        XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        XML_RESERVED_NAMESPACES.add(XMLConstants.W3C_XPATH_DATATYPE_NS_URI);
-        XML_RESERVED_NAMESPACES.add(XMLConstants.XML_DTD_NS_URI);
-        XML_RESERVED_NAMESPACES.add(XMLConstants.XML_NS_URI);
-        XML_RESERVED_NAMESPACES.add(XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
-    }
-
     public static final char[] LT = new char[]{'&', 'l', 't', ';'};
     public static final char[] GT = new char[]{'&', 'g', 't', ';'};
     public static final char[] AMP = new char[]{'&', 'a', 'm', 'p', ';'};
@@ -121,12 +108,8 @@ public final class XmlUtil {
     private static final String CDATA_START = "<![CDATA[";
     private static final String CDATA_END = "]]>";
 
-    private XmlUtil() {
+    private XmlUtils() {
 
-    }
-
-    public static boolean isXMLReservedNamespace(String namespace) {
-        return XML_RESERVED_NAMESPACES.contains(namespace);
     }
 
     /**
@@ -230,7 +213,7 @@ public final class XmlUtil {
             StringReader reader = new StringReader(string);
             StringWriter writer = new StringWriter();
 
-            XmlUtil.removeEntities(reader, writer);
+            XmlUtils.removeEntities(reader, writer);
 
             return writer.toString();
         } catch (Exception excep) {
@@ -640,7 +623,7 @@ public final class XmlUtil {
             for (int i = 0; i < listLength; i++) {
                 Node node = nodeList.item(i);
 
-                if (XmlUtil.isTextNode(node)) {
+                if (XmlUtils.isTextNode(node)) {
                     writer.write(node.getNodeValue());
                 } else if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
                     writer.write(((Attr) node).getValue());
@@ -844,19 +827,19 @@ public final class XmlUtil {
         if (namespaceURI != null) {
             int colonIndex;
 
-            if (namespaceURI.length() != 0 && qName != null && (colonIndex = qName.indexOf(':')) != -1) {
+            if (!namespaceURI.isEmpty() && qName != null && (colonIndex = qName.indexOf(':')) != -1) {
                 String prefix = qName.substring(0, colonIndex);
                 String qNameLocalName = qName.substring(colonIndex + 1);
 
                 return new QName(namespaceURI.intern(), qNameLocalName, prefix);
-            } else if (localName != null && localName.length() != 0) {
+            } else if (localName != null && !localName.isEmpty()) {
                 return new QName(namespaceURI, localName);
-            } else if (qName != null && qName.length() != 0) {
+            } else if (qName != null && !qName.isEmpty()) {
                 return new QName(namespaceURI, qName);
             } else {
                 throwInvalidNameException(namespaceURI, localName, qName);
             }
-        } else if (localName != null && localName.length() != 0) {
+        } else if (localName != null && !localName.isEmpty()) {
             return new QName(localName);
         } else {
             throwInvalidNameException(null, localName, qName);
@@ -865,7 +848,7 @@ public final class XmlUtil {
         return null;
     }
 
-    protected static void throwInvalidNameException(String namespaceURI, String localName, String qName) {
+    private static void throwInvalidNameException(String namespaceURI, String localName, String qName) {
         throw new IllegalArgumentException("Invalid QName: namespaceURI='" + namespaceURI + "', localName='" + localName + "', qName='" + qName + "'.");
     }
 }

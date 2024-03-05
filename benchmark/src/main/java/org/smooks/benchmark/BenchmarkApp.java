@@ -149,7 +149,7 @@ public class BenchmarkApp {
             fileOutputStream.write(buf, 0, length);
         }
 
-        final Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(true).build());
+        final Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(true).build());
         smooks.addResourceConfigs(BenchmarkApp.class.getResourceAsStream("/smooks-config.xml"));
         IntStream.range(0, Math.min(2, Runtime.getRuntime().availableProcessors())).parallel().forEach(value -> {
             try {

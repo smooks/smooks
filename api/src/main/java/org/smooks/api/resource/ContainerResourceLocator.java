@@ -59,13 +59,13 @@ public interface ContainerResourceLocator extends ExternalResourceLocator {
      *
      * @param configName The container configuration entry name whose value specifies
      *                   the location of the resource.
-     * @param defaultUri The default location for the resource.
+     * @param defaultURI The default location for the resource.
      * @return The InputStream associated with resource.
      * @throws IllegalArgumentException Illegal argument. Check the cause exception for more
      *                                  information.
      * @throws IOException              Unable to get the resource stream.
      */
-    InputStream getResource(String configName, String defaultUri) throws IllegalArgumentException, IOException;
+    InputStream getResource(String configName, String defaultURI) throws IllegalArgumentException, IOException;
 
     /**
      * Get the base URI for the locator instance.

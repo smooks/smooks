@@ -59,18 +59,18 @@ public class MockContainerResourceLocator implements ContainerResourceLocator {
 	private final Hashtable streams = new Hashtable();
 
 	@SuppressWarnings("unchecked")
-	public void setResource(String nameOrUri, InputStream stream) {
+	public void setResource(String nameOrURI, InputStream stream) {
 		try {
 			byte[] streamData = StreamUtils.readStream(stream);
-			streams.put(nameOrUri, streamData);
+			streams.put(nameOrURI, streamData);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
 	}
 
-	public InputStream getResource(String configName, String defaultUri) throws IllegalArgumentException, IOException {
-		return getResource(defaultUri);
+	public InputStream getResource(String configName, String defaultURI) throws IllegalArgumentException, IOException {
+		return getResource(defaultURI);
 	}
 
 	public InputStream getResource(String uri) throws IllegalArgumentException, IOException {

@@ -51,7 +51,7 @@ import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.smooks.tck.MockExecutionContext;
 import org.smooks.tck.delivery.dom.MockContentDeliveryConfig;
 import org.w3c.dom.Document;
@@ -108,7 +108,7 @@ public class SerializerTestCase {
 
 		((MockContentDeliveryConfig) executionContext.deliveryConfig).getSerializerVisitorIndex().put("zzz", resourceConfig, otherEmptyElTestSerializationUnit);
 
-		Document doc = XmlUtil.parseStream(getClass().getResourceAsStream("testmarkup.xxml"), XmlUtil.VALIDATION_TYPE.NONE, true);
+		Document doc = XmlUtils.parseStream(getClass().getResourceAsStream("testmarkup.xxml"), XmlUtils.VALIDATION_TYPE.NONE, true);
 		Serializer serializer = new Serializer(doc, executionContext);
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		OutputStreamWriter writer = new OutputStreamWriter(output);

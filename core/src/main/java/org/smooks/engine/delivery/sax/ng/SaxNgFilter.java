@@ -53,7 +53,7 @@ import org.smooks.io.payload.FilterResult;
 import org.smooks.io.payload.FilterSource;
 import org.smooks.io.payload.JavaSource;
 import org.smooks.support.DomUtils;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Result;
@@ -110,7 +110,7 @@ public class SaxNgFilter extends AbstractFilter {
             parser.parse(source, executionContext);
 
             if (result instanceof DOMResult) {
-                ((DOMResult) result).setNode(XmlUtil.parseStream(new StringReader(writer.toString())));
+                ((DOMResult) result).setNode(XmlUtils.parseStream(new StringReader(writer.toString())));
             } else {
                 writer.flush();
             }

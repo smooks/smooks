@@ -53,7 +53,6 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
 import org.smooks.api.lifecycle.DOMFilterLifecycle;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -67,7 +66,6 @@ import org.smooks.engine.lifecycle.SerializationStartedDOMFilterLifecyclePhase;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.engine.resource.config.ResourceConfigurationNotFoundException;
 import org.smooks.engine.xml.DocType;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Document;
@@ -169,12 +167,11 @@ public class Serializer {
      * Otherwise, only the node child elements are serialised i.e. the node itself is skipped.
      *
      * @param writer Output writer.
-     * @throws ResourceConfigurationNotFoundException DOM Serialiser exception.
-     * @throws IOException                            Unable to write to output writer.
+     * @throws IOException Unable to write to output writer.
      */
-    public void serialize(Writer writer) throws ResourceConfigurationNotFoundException, IOException {
+    public void serialize(Writer writer) throws IOException {
         if (writer == null) {
-            throw new IllegalArgumentException("null 'writer' arg passed in method call.");
+            throw new SmooksException("null 'writer' arg passed in method call.");
         }
 
         // Register the DOM phase events...

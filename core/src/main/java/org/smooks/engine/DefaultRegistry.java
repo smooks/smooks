@@ -43,42 +43,40 @@
 package org.smooks.engine;
 
 import com.fasterxml.classmate.TypeResolver;
+import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.Registry;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
+import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.ProfileStore;
+import org.smooks.api.resource.ContainerResourceLocator;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.Registry;
+import org.smooks.api.resource.config.ResourceConfigSeq;
+import org.smooks.api.resource.config.loader.ResourceConfigLoader;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.engine.converter.TypeConverterFactoryLoader;
-import org.smooks.api.converter.TypeConverterFactory;
-import org.smooks.api.resource.config.ResourceConfigSeq;
-import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
-import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.DefaultLifecycleManager;
-import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lifecycle.PreDestroyLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
-import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
 import org.smooks.engine.lookup.ResourceConfigSeqLookup;
+import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
 import org.smooks.engine.lookup.converter.TypeConverterFactoryLookup;
-import org.smooks.api.resource.ContainerResourceLocator;
-import org.xml.sax.SAXException;
+import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
+import org.smooks.engine.resource.config.loader.xml.XmlResourceConfigLoader;
 
-import jakarta.annotation.Resource;
-
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -88,31 +86,32 @@ public class DefaultRegistry implements Registry {
     private static final Logger LOGGER = LoggerFactory.getLogger(Registry.class);
 
     private final Map<Object, Object> registry = new ConcurrentHashMap<>();
-    private final ContainerResourceLocator containerResourceLocator;
     private final ClassLoader classLoader;
+    private final ResourceConfigLoader resourceConfigLoader;
 
-    public DefaultRegistry(ClassLoader classLoader, ContainerResourceLocator containerResourceLocator, ProfileStore profileStore) {
+    public DefaultRegistry(ClassLoader classLoader, ResourceConfigLoader resourceConfigLoader, ProfileStore profileStore) {
         AssertArgument.isNotNull(classLoader, "classLoader");
-        AssertArgument.isNotNull(containerResourceLocator, "containerResourceLocator");
+        AssertArgument.isNotNull(resourceConfigLoader, "resourceConfigLoader");
         AssertArgument.isNotNull(profileStore, "profileStore");
 
-        this.containerResourceLocator = containerResourceLocator;
         this.classLoader = classLoader;
         registerObject(ProfileStore.class, profileStore);
 
-        final Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load(classLoader);
+        Set<TypeConverterFactory<?, ?>> typeConverterFactories = new TypeConverterFactoryLoader().load(classLoader);
         registerObject(TypeConverterFactoryLookup.TYPE_CONVERTER_FACTORY_REGISTRY_KEY, typeConverterFactories);
         registerObject(LifecycleManager.class, new DefaultLifecycleManager());
 
         // add the default list to the list.
-        final ResourceConfigSeq systemResourceConfigSeq = new DefaultResourceConfigSeq("default");
+        ResourceConfigSeq systemResourceConfigSeq = new DefaultResourceConfigSeq("default");
         systemResourceConfigSeq.setSystem(true);
 
         registerObject(ResourceConfigSeq.class, systemResourceConfigSeq);
 
-        final List<ResourceConfigSeq> resourceConfigSeqs = new ArrayList<>();
+        List<ResourceConfigSeq> resourceConfigSeqs = new ArrayList<>();
         resourceConfigSeqs.add(systemResourceConfigSeq);
         registerObject(new TypeResolver().resolve(List.class, ResourceConfigSeq.class), resourceConfigSeqs);
+
+        this.resourceConfigLoader = resourceConfigLoader;
     }
 
     @Override
@@ -167,19 +166,17 @@ public class DefaultRegistry implements Registry {
      * Register the set of resources specified in the supplied XML configuration
      * stream.
      *
-     * @param baseURI              The base URI to be associated with the configuration stream.
-     * @param resourceConfigStream XML resource configuration stream.
+     * @param baseURI     The base URI to be associated with the configuration stream.
+     * @param inputStream XML resource configuration stream.
      * @return The ResourceConfigList created from the added resource configuration.
-     * @throws SAXException Error parsing the resource stream.
-     * @throws IOException  Error reading resource stream.
      * @see ResourceConfig
      */
     @Override
-    public ResourceConfigSeq registerResources(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException, URISyntaxException {
+    public ResourceConfigSeq registerResources(String baseURI, InputStream inputStream) {
         AssertArgument.isNotEmpty(baseURI, "baseURI");
-        AssertArgument.isNotNull(resourceConfigStream, "resourceConfigStream");
+        AssertArgument.isNotNull(inputStream, "inputStream");
 
-        ResourceConfigSeq resourceConfigSeq = XMLConfigDigester.digestConfig(resourceConfigStream, baseURI, classLoader);
+        ResourceConfigSeq resourceConfigSeq = resourceConfigLoader.load(inputStream, baseURI, classLoader);
         registerResourceConfigSeq(resourceConfigSeq);
 
         return resourceConfigSeq;

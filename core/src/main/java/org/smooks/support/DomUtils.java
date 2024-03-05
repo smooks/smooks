@@ -970,7 +970,7 @@ public final class DomUtils {
                 case Node.TEXT_NODE:
                     String data = ((Text) child).getData();
                     if (removeEntities) {
-                        text.append(XmlUtil.removeEntities(data));
+                        text.append(XmlUtils.removeEntities(data));
                     } else {
                         text.append(data);
                     }

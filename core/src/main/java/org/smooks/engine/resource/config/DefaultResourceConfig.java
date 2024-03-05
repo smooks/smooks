@@ -55,7 +55,7 @@ import org.smooks.engine.resource.config.xpath.SelectorPathFactory;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.ClassUtils;
 import org.smooks.support.StreamUtils;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.Element;
 
 import java.io.File;
@@ -628,7 +628,7 @@ public class DefaultResourceConfig implements ResourceConfig {
                     Object value;
 
                     if (element != null) {
-                        value = XmlUtil.serialize(element.getChildNodes(), true);
+                        value = XmlUtils.serialize(element.getChildNodes(), true);
                     } else {
                         value = ((Parameter) param).getValue();
                     }

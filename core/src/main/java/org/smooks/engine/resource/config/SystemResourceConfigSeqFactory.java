@@ -46,6 +46,8 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.resource.ContainerResourceLocator;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.resource.config.ResourceConfigSeqFactory;
+import org.smooks.api.resource.config.loader.ResourceConfigLoader;
+import org.smooks.engine.resource.config.loader.xml.XmlResourceConfigLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,11 +57,13 @@ public class SystemResourceConfigSeqFactory implements ResourceConfigSeqFactory 
     private final ClassLoader classLoader;
     private final String resourceFile;
     private final ContainerResourceLocator resourceLocator;
+    private final ResourceConfigLoader resourceConfigLoader;
 
-    public SystemResourceConfigSeqFactory(String resourceFile, ClassLoader classLoader, ContainerResourceLocator resourceLocator) {
+    public SystemResourceConfigSeqFactory(String resourceFile, ClassLoader classLoader, ContainerResourceLocator resourceLocator, ResourceConfigLoader resourceConfigLoader) {
         this.classLoader = classLoader;
         this.resourceFile = resourceFile;
         this.resourceLocator = resourceLocator;
+        this.resourceConfigLoader = resourceConfigLoader;
     }
 
     @Override
@@ -75,7 +79,7 @@ public class SystemResourceConfigSeqFactory implements ResourceConfigSeqFactory 
             throw new IllegalStateException("Failed to load " + resourceFile);
         }
         try {
-            ResourceConfigSeq resourceConfigSeq = XMLConfigDigester.digestConfig(resource, resourceFile, classLoader);
+            ResourceConfigSeq resourceConfigSeq = resourceConfigLoader.load(resource, resourceFile, classLoader);
             for (int i = 0; i < resourceConfigSeq.size(); i++) {
                 resourceConfigSeq.get(i).setSystem(true);
             }

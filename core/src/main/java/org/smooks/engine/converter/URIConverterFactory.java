@@ -55,7 +55,7 @@ import java.net.URISyntaxException;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class UriConverterFactory implements TypeConverterFactory<String, URI> {
+public class URIConverterFactory implements TypeConverterFactory<String, URI> {
 
     @Override
     public TypeConverter<String, URI> createTypeConverter() {

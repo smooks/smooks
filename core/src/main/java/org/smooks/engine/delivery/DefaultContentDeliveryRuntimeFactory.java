@@ -62,7 +62,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 
 public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRuntimeFactory {
     private final Map<ContentDeliveryConfigBuilder, ReaderPool> readerPools = new HashMap<>();
@@ -70,13 +69,9 @@ public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRunt
     private final Registry registry;
     private final ReaderPoolFactory readerPoolFactory;
 
-    public DefaultContentDeliveryRuntimeFactory(Registry registry) {
+    public DefaultContentDeliveryRuntimeFactory(Registry registry, ReaderPoolFactory readerPoolFactory) {
         this.registry = registry;
-        Iterator<ReaderPoolFactory> readerPoolFactoryIterator = ServiceLoader.load(ReaderPoolFactory.class, registry.getClassLoader()).iterator();
-        if (!readerPoolFactoryIterator.hasNext()) {
-            throw new SmooksConfigException(String.format("%s service not found. Hint: ensure the Smooks application context has the correct class loader set", ReaderPoolFactory.class.getName()));
-        }
-        readerPoolFactory = readerPoolFactoryIterator.next();
+        this.readerPoolFactory = readerPoolFactory;
     }
 
     @Override

@@ -47,6 +47,7 @@ import org.smooks.api.Registry;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.engine.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.engine.profile.DefaultProfileStore;
+import org.smooks.engine.resource.config.loader.xml.XmlResourceConfigLoader;
 import org.smooks.tck.resource.MockContainerResourceLocator;
 
 import java.io.IOException;
@@ -76,13 +77,13 @@ public class DefaultRegistryTestCase {
                     }
                 };
             }
-        }, new MockContainerResourceLocator(), new DefaultProfileStore());
+        }, new XmlResourceConfigLoader(), new DefaultProfileStore());
         assertNull(registry.lookup(new SourceTargetTypeConverterFactoryLookup<>(BigDecimal.class, String.class)));
     }
 
     @Test
     public void testLookupWithClassClassLoader() {
-        Registry registry = new DefaultRegistry(getClass().getClassLoader(), new MockContainerResourceLocator(), new DefaultProfileStore());
+        Registry registry = new DefaultRegistry(getClass().getClassLoader(), new XmlResourceConfigLoader(), new DefaultProfileStore());
         assertNotNull(registry.lookup(new SourceTargetTypeConverterFactoryLookup<>(BigDecimal.class, String.class)));
     }
 }

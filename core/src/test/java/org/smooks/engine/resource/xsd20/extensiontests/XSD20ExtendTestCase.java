@@ -50,7 +50,7 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.io.payload.StringResult;
 import org.smooks.io.payload.StringSource;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.smooks.xml.XsdDOMValidator;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -68,7 +68,7 @@ public class XSD20ExtendTestCase {
 
 	@Test
     public void test_validation() throws IOException, SAXException, ParserConfigurationException {
-        Document configDoc = XmlUtil.parseStream(getClass().getResourceAsStream("config_01.xml"));
+        Document configDoc = XmlUtils.parseStream(getClass().getResourceAsStream("config_01.xml"));
         XsdDOMValidator validator = new XsdDOMValidator(configDoc);
 
         assertEquals("https://www.smooks.org/xsd/smooks-2.0.xsd", validator.getDefaultNamespace().toString());

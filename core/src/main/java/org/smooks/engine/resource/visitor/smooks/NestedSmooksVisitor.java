@@ -62,24 +62,19 @@ import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
-import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
-import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
-import org.smooks.engine.delivery.sax.ng.bridge.BridgeInterceptor;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
-import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
 import org.smooks.engine.xml.Namespace;
 import org.smooks.io.DomSerializer;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.ResourceWriter;
 import org.smooks.io.Stream;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -101,7 +96,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -160,22 +154,22 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
         if (nestedSmooks == null) {
             if (!resourceConfig.getParameters("smooksResourceList").isEmpty()) {
-                final ByteArrayInputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
-                resourceConfigSeq = XMLConfigDigester.digestConfig(smooksResourceList, "./", new HashMap<>(), applicationContext.getClassLoader());
+                ByteArrayInputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
+                resourceConfigSeq = applicationContext.getResourceConfigLoader().load(smooksResourceList, "./", applicationContext.getClassLoader());
             } else {
-                final ResourceConfig resourceConfig = new DefaultResourceConfig("*", new Properties());
+                ResourceConfig resourceConfig = new DefaultResourceConfig("*", new Properties());
                 resourceConfig.setResource("org.smooks.engine.delivery.sax.ng.SimpleSerializerVisitor");
                 resourceConfigSeq = new DefaultResourceConfigSeq("./");
                 resourceConfigSeq.add(resourceConfig);
             }
-            nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).setResourceLocator(applicationContext.getResourceLocator()).build());
+            nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).withClassLoader(applicationContext.getClassLoader()).withResourceLocator(applicationContext.getResourceLocator()).build());
             for (ResourceConfig resourceConfig : resourceConfigSeq) {
                 nestedSmooks.addResourceConfig(resourceConfig);
             }
         }
 
         nestedSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
-                nestedSmooks.getApplicationContext().getClassLoader(), nestedSmooks.getApplicationContext().getResourceLocator()).create());
+                nestedSmooks.getApplicationContext().getClassLoader(), nestedSmooks.getApplicationContext().getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
         nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
 
         action = actionOptional.orElse(null);
@@ -350,7 +344,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
                 domSerializer.writeStartElement(rootElement, fragmentWriterMemento.getState());
             }
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn()) {
-                fragmentWriterMemento.getState().write(XmlUtil.serialize(rootElement.getChildNodes(), Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()))));
+                fragmentWriterMemento.getState().write(XmlUtils.serialize(rootElement.getChildNodes(), Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_EMPTY_ELEMENTS, String.class, "false", executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()))));
                 domSerializer.writeEndElement(rootElement, fragmentWriterMemento.getState());
             }
         } catch (IOException e) {

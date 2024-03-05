@@ -47,8 +47,10 @@ import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
 import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.Registry;
+import org.smooks.api.delivery.ReaderPoolFactory;
 import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.resource.ContainerResourceLocator;
+import org.smooks.api.resource.config.loader.ResourceConfigLoader;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.tck.resource.MockContainerResourceLocator;
 
@@ -110,5 +112,15 @@ public class MockApplicationContext implements ApplicationContext {
 	@Override
 	public ContentDeliveryRuntimeFactory getContentDeliveryRuntimeFactory() {
 		return applicationContext.getContentDeliveryRuntimeFactory();
+	}
+
+	@Override
+	public ResourceConfigLoader getResourceConfigLoader() {
+		return applicationContext.getResourceConfigLoader();
+	}
+
+	@Override
+	public ReaderPoolFactory getReaderPoolFactory() {
+		return applicationContext.getReaderPoolFactory();
 	}
 }

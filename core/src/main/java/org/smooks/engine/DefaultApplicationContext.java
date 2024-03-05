@@ -47,8 +47,10 @@ import org.smooks.api.Registry;
 import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
+import org.smooks.api.delivery.ReaderPoolFactory;
 import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.resource.ContainerResourceLocator;
+import org.smooks.api.resource.config.loader.ResourceConfigLoader;
 import org.smooks.engine.bean.context.DefaultBeanIdStore;
 import org.smooks.engine.profile.DefaultProfileStore;
 import org.smooks.resource.URIResourceLocator;
@@ -76,6 +78,9 @@ public class DefaultApplicationContext implements ApplicationContext {
     private final List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<>();
     private ClassLoader classLoader;
     private ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory;
+    private ResourceConfigLoader resourceConfigLoader;
+    private ReaderPoolFactory readerPoolFactory;
+
 
     /**
      * Private constructor.
@@ -102,6 +107,10 @@ public class DefaultApplicationContext implements ApplicationContext {
     @Override
     public Registry getRegistry() {
         return registry;
+    }
+
+    void setRegistry(Registry registry) {
+        this.registry = registry;
     }
 
     /**
@@ -147,7 +156,21 @@ public class DefaultApplicationContext implements ApplicationContext {
         return contentDeliveryRuntimeFactory;
     }
 
-    void setRegistry(Registry registry) {
-        this.registry = registry;
+    @Override
+    public ResourceConfigLoader getResourceConfigLoader() {
+        return resourceConfigLoader;
+    }
+
+    public void setResourceConfigLoader(ResourceConfigLoader resourceConfigLoader) {
+        this.resourceConfigLoader = resourceConfigLoader;
+    }
+
+    @Override
+    public ReaderPoolFactory getReaderPoolFactory() {
+        return readerPoolFactory;
+    }
+
+    public void setReaderPoolFactory(ReaderPoolFactory readerPoolFactory) {
+        this.readerPoolFactory = readerPoolFactory;
     }
 }
