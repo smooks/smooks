@@ -55,7 +55,6 @@ import org.smooks.api.resource.reader.SmooksXMLReader;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.delivery.sax.ng.bridge.Bridge;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
-import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.io.DocumentInputSource;
 import org.smooks.io.SAXWriter;
 import org.w3c.dom.Document;
@@ -79,9 +78,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 
 public class DelegateReader implements SmooksXMLReader {
     private final TypedKey<Writer> contentHandlerTypedKey = TypedKey.of();
@@ -111,16 +108,12 @@ public class DelegateReader implements SmooksXMLReader {
             throw new SmooksException(e);
         }
         final String smooksResourceList = "<smooks-resource-list xmlns=\"https://www.smooks.org/xsd/smooks-2.0.xsd\">" + resourceConfig.getParameter("resourceConfigs", String.class).getValue() + "</smooks-resource-list>";
-        final ResourceConfigSeq resourceConfigSeq;
-        try {
-            resourceConfigSeq = XMLConfigDigester.digestConfig(new ByteArrayInputStream(smooksResourceList.getBytes(StandardCharsets.UTF_8)), "./", new HashMap<>(), applicationContext.getClassLoader());
-        } catch (URISyntaxException | SAXException | IOException e) {
-            throw new SmooksException(e);
-        }
-        readerSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).setClassLoader(applicationContext.getClassLoader()).build());
+        ResourceConfigSeq resourceConfigSeq = applicationContext.getResourceConfigLoader().load(new ByteArrayInputStream(smooksResourceList.getBytes(StandardCharsets.UTF_8)), "./", applicationContext.getClassLoader());
+
+        readerSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).withClassLoader(applicationContext.getClassLoader()).build());
         readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1));
         readerSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
-                readerSmooks.getApplicationContext().getClassLoader(), applicationContext.getResourceLocator()).create());
+                readerSmooks.getApplicationContext().getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
 
         for (ResourceConfig resourceConfig : resourceConfigSeq) {
             readerSmooks.addResourceConfig(resourceConfig);

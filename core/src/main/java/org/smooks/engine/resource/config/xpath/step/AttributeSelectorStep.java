@@ -45,8 +45,8 @@ package org.smooks.engine.resource.config.xpath.step;
 import javax.xml.namespace.QName;
 
 public class AttributeSelectorStep extends NamedSelectorStep {
-    public AttributeSelectorStep(final String namespaceUri, final String localName, final String prefix) {
-        super(new QName(namespaceUri, localName, prefix));
+    public AttributeSelectorStep(final String namespaceURI, final String localName, final String prefix) {
+        super(new QName(namespaceURI, localName, prefix));
     }
 
     public QName getQName() {

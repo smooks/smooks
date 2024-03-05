@@ -42,7 +42,7 @@
  */
 package org.smooks.io;
 
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.*;
 
 import java.io.IOException;
@@ -104,7 +104,7 @@ public class DomSerializer {
 
             if (rewriteEntities) {
                 writer.write('\"');
-                XmlUtil.encodeAttributeValue(attribValue.toCharArray(), 0, attribValue.length(), writer);
+                XmlUtils.encodeAttributeValue(attribValue.toCharArray(), 0, attribValue.length(), writer);
                 writer.write('\"');
             } else {
                 if (attribValue.indexOf('"') != -1) {
@@ -147,7 +147,7 @@ public class DomSerializer {
             case Node.TEXT_NODE: {
                 if (rewriteEntities) {
                     String textString = ((Text) node).getData();
-                    XmlUtil.encodeTextValue(textString.toCharArray(), 0, textString.length(), writer);
+                    XmlUtils.encodeTextValue(textString.toCharArray(), 0, textString.length(), writer);
                 } else {
                     writer.write(((Text) node).getData());
                 }

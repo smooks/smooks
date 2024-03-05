@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.extension;
+package org.smooks.engine.resource.config.loader.xml.extension;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -90,7 +90,7 @@ public class NewResourceConfig implements DOMElementVisitor {
         if (isTemplate) {
             extensionContext.addResourceTemplate(resourceConfig);
         } else {
-            extensionContext.addResource(resourceConfig);
+            extensionContext.addResourceConfig(resourceConfig);
         }
     }
 

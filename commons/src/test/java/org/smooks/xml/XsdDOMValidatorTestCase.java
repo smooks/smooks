@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -61,7 +61,7 @@ public class XsdDOMValidatorTestCase {
 
     @Test
     public void test_namespace_gathering() throws IOException, SAXException, ParserConfigurationException {
-        Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
+        Document document = XmlUtils.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
         XsdDOMValidator validator = new XsdDOMValidator(document);
 
         assertEquals("http://www.milyn.org/xsd/test-xsd-01.xsd", validator.getDefaultNamespace().toString());
@@ -70,7 +70,7 @@ public class XsdDOMValidatorTestCase {
 
     @Test
     public void test_validation_validdoc() throws IOException, SAXException, ParserConfigurationException {
-        Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
+        Document document = XmlUtils.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
         XsdDOMValidator validator = new XsdDOMValidator(document);
 
         validator.validate();
@@ -78,7 +78,7 @@ public class XsdDOMValidatorTestCase {
 
     @Test
     public void test_validation_invaliddoc() throws IOException, SAXException, ParserConfigurationException {
-        Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-02.xml"));
+        Document document = XmlUtils.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-02.xml"));
         XsdDOMValidator validator = new XsdDOMValidator(document);
 
         try {

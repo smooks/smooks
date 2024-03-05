@@ -44,6 +44,7 @@ package org.smooks.resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.SmooksException;
 import org.smooks.api.resource.ContainerResourceLocator;
 import org.smooks.support.ClassUtils;
 
@@ -98,19 +99,18 @@ public class URIResourceLocator implements ContainerResourceLocator {
     private URI baseURI = getSystemBaseURI();
 
     @Override
-    public InputStream getResource(String configName, String defaultUri)
-            throws IllegalArgumentException, IOException {
-        return getResource(defaultUri);
+    public InputStream getResource(String configName, String defaultURI) throws SmooksException, IOException {
+        return getResource(defaultURI);
     }
 
     @Override
-    public InputStream getResource(String uri) throws IllegalArgumentException, IOException {
+    public InputStream getResource(String uri) throws SmooksException, IOException {
         ResolvedURI resolvedURI = new ResolvedURI(uri, resolveURI(uri));
 
         return getResource(resolvedURI);
     }
 
-    private InputStream getResource(ResolvedURI uri) throws IllegalArgumentException, IOException {
+    private InputStream getResource(ResolvedURI uri) throws SmooksException, IOException {
         URL url;
         String scheme = uri.resolvedURI.getScheme();
         InputStream stream;
@@ -148,8 +148,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
             String path = uri.resolvedURI.getPath();
 
             if (path == null || path.trim().equals("")) {
-                throw new IllegalArgumentException("Unable to locate resource [" + uri +
-                        "].  Resource path not specified in URI.");
+                throw new SmooksException("Unable to locate resource [" + uri + "].  Resource path not specified in URI.");
             }
             if (path.charAt(0) != '/') {
                 path = "/" + path;
@@ -202,7 +201,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
         URI uriObj;
 
         if (uri == null || uri.trim().equals("")) {
-            throw new IllegalArgumentException(
+            throw new SmooksException(
                     "null or empty 'uri' paramater in method call.");
         }
 
@@ -227,8 +226,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
      */
     public void setBaseURI(URI baseURI) {
         if (baseURI == null) {
-            throw new IllegalArgumentException(
-                    "null 'baseURI' arg in method call.");
+            throw new SmooksException("null 'baseURI' arg in method call.");
         }
         String baseURIString = baseURI.toString();
         char lastChar = baseURIString.charAt(baseURIString.length() - 1);

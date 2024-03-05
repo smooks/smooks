@@ -40,15 +40,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.extension;
+package org.smooks.engine.resource.config.loader.xml.extension;
 
 import org.smooks.api.resource.config.ConfigSearch;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigChangeListener;
-import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.TypedKey;
 import org.smooks.api.expression.ExpressionEvaluator;
-import org.smooks.engine.resource.config.XMLConfigDigester;
+import org.smooks.engine.resource.config.loader.xml.XmlResourceConfigLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,7 @@ public class ExtensionContext {
 
     public static final TypedKey<ExtensionContext> EXTENSION_CONTEXT_TYPED_KEY = TypedKey.of();
 
-    private final XMLConfigDigester xmlConfigDigester;
+    private final XmlResourceConfigLoader xmlResourceConfigLoader;
     private final String defaultProfile;
     private final ExpressionEvaluator defaultConditionEvaluator;
 
@@ -98,12 +97,12 @@ public class ExtensionContext {
     /**
      * Public constructor.
      *
-     * @param xmlConfigDigester         The base XMLConfigDigester.
+     * @param xmlResourceConfigLoader   The base XMLConfigDigester.
      * @param defaultProfile            The default profile.
      * @param defaultConditionEvaluator The default condition evaluator.
      */
-    public ExtensionContext(XMLConfigDigester xmlConfigDigester, String defaultProfile, ExpressionEvaluator defaultConditionEvaluator) {
-        this.xmlConfigDigester = xmlConfigDigester;
+    public ExtensionContext(XmlResourceConfigLoader xmlResourceConfigLoader, String defaultProfile, ExpressionEvaluator defaultConditionEvaluator) {
+        this.xmlResourceConfigLoader = xmlResourceConfigLoader;
         this.defaultProfile = defaultProfile;
         this.defaultConditionEvaluator = defaultConditionEvaluator;
     }
@@ -114,11 +113,11 @@ public class ExtensionContext {
      * The resource gets added to the {@link #getResourceStack() resourceStack} and the
      * basic list of {@link #getResources() resources}.
      *
-     * @param resource The resource to be added.
+     * @param resourceConfig The resource to be added.
      */
-    public void addResource(ResourceConfig resource) {
-        resourceStack.push(resource);
-        resources.add(resource);
+    public void addResourceConfig(ResourceConfig resourceConfig) {
+        resourceStack.push(resourceConfig);
+        resources.add(resourceConfig);
     }
 
     /**
@@ -137,7 +136,7 @@ public class ExtensionContext {
      * Get the resource stack.
      *
      * @return The resource stack.
-     * @see #addResource(ResourceConfig)
+     * @see #addResourceConfig(ResourceConfig)
      */
     public Stack<ResourceConfig> getResourceStack() {
         return resourceStack;
@@ -147,34 +146,14 @@ public class ExtensionContext {
      * Get the resource list.
      *
      * @return The resource list.
-     * @see #addResource(ResourceConfig)
+     * @see #addResourceConfig(ResourceConfig)
      */
     public List<ResourceConfig> getResources() {
         return resources;
     }
 
-    /**
-     * Get the active resource configuration list.
-     * <p/>
-     * This is the global config list i.e. not just the config list for the config
-     * being processed.
-     *
-     * @return The active resource configuration list.
-     */
-    public ResourceConfigSeq getResourceList() {
-        return xmlConfigDigester.getResourceConfigSeq();
-    }
-
-    public ResourceConfig getCurrentConfig() {
-        if (resourceStack.isEmpty()) {
-            return null;
-        } else {
-            return resourceStack.peek();
-        }
-    }
-
-    public XMLConfigDigester getXmlConfigDigester() {
-        return xmlConfigDigester;
+    public XmlResourceConfigLoader getXmlResourceConfigLoader() {
+        return xmlResourceConfigLoader;
     }
 
     public String getDefaultProfile() {
@@ -185,7 +164,7 @@ public class ExtensionContext {
         return defaultConditionEvaluator;
     }
 
-    public ResourceConfig getResourceByName(String name) {
+    public ResourceConfig getResourceConfigsByName(String name) {
         for (int i = resourceStack.size() - 1; i >= 0; i--) {
             ResourceConfig resourceConfig = resourceStack.get(i);
             String resourceName = resourceConfig.getResource();
@@ -206,7 +185,7 @@ public class ExtensionContext {
      * @param searchCriteria The resource lookup criteria.
      * @return List of matches resources, or an empty List if no matches are found.
      */
-    public List<ResourceConfig> lookupResource(ConfigSearch searchCriteria) {
-        return xmlConfigDigester.getResourceConfigSeq().lookupResource(searchCriteria);
+    public List<ResourceConfig> lookupResourceConfigs(ConfigSearch searchCriteria) {
+        return xmlResourceConfigLoader.getResourceConfigSeq().lookupResource(searchCriteria);
     }
 }

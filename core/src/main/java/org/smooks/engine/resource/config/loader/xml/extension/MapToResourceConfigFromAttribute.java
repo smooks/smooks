@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.extension;
+package org.smooks.engine.resource.config.loader.xml.extension;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ import java.util.Optional;
  * element attribute value.
  * <p/>
  * The value is set on the {@link ResourceConfig} returned from the top
- * of the {@link org.smooks.engine.resource.extension.ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
+ * of the {@link ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
@@ -117,6 +117,6 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
             }
         }
 
-        ResourceConfigUtil.setProperty(resourceConfig, actualMapTo, value, executionContext);
+        ResourceConfigUtils.setProperty(resourceConfig, actualMapTo, value, executionContext);
     }
 }

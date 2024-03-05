@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.extension;
+package org.smooks.engine.resource.config.loader.xml.extension;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -55,9 +55,9 @@ import java.util.Properties;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public final class ResourceConfigUtil {
+public final class ResourceConfigUtils {
 
-    private ResourceConfigUtil() {
+    private ResourceConfigUtils() {
 
     }
 
@@ -74,7 +74,7 @@ public final class ResourceConfigUtil {
             resourceConfig.setProfile((String) value);
         } else if (setOn.equals("conditionRef")) {
             ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
-            resourceConfig.getSelectorPath().setConditionEvaluator(extensionContext.getXmlConfigDigester().getConditionEvaluator((String) value));
+            resourceConfig.getSelectorPath().setConditionEvaluator(extensionContext.getXmlResourceConfigLoader().getConditionEvaluator((String) value));
         } else {
             Parameter<?> param = resourceConfig.setParameter(setOn, value);
             if (xml != null) {

@@ -48,8 +48,8 @@ public class ElementSelectorStep extends NamedSelectorStep {
 
     protected boolean accessesText = false;
 
-    public ElementSelectorStep(final String namespaceUri, final String localName, final String prefix) {
-        super(new QName(namespaceUri, localName, prefix));
+    public ElementSelectorStep(final String namespaceURI, final String localName, final String prefix) {
+        super(new QName(namespaceURI, localName, prefix));
     }
 
     public void setAccessesText(boolean accessesText) {

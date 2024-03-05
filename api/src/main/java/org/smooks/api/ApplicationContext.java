@@ -46,8 +46,10 @@ import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.api.delivery.ReaderPoolFactory;
 import org.smooks.api.profile.ProfileStore;
 import org.smooks.api.resource.ContainerResourceLocator;
+import org.smooks.api.resource.config.loader.ResourceConfigLoader;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.Collection;
@@ -121,4 +123,8 @@ public interface ApplicationContext {
     ClassLoader getClassLoader();
 
     ContentDeliveryRuntimeFactory getContentDeliveryRuntimeFactory();
+
+    ResourceConfigLoader getResourceConfigLoader();
+
+    ReaderPoolFactory getReaderPoolFactory();
 }

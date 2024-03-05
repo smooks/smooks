@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.Registry;
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedMap;
 import org.smooks.api.bean.context.BeanContext;
@@ -197,7 +198,7 @@ public class Smooks implements Closeable {
     public Smooks(String resourceURI) throws IOException, SAXException {
         URIResourceLocator resourceLocator = new URIResourceLocator();
         resourceLocator.setBaseURI(URIResourceLocator.extractBaseURI(resourceURI));
-        applicationContext = new DefaultApplicationContextBuilder().setResourceLocator(resourceLocator).build();
+        applicationContext = new DefaultApplicationContextBuilder().withResourceLocator(resourceLocator).build();
         registry = applicationContext.getRegistry();
         lifecycleManager = registry.lookup(new LifecycleManagerLookup());
         visitorBindings = new ArrayList<>();
@@ -212,14 +213,14 @@ public class Smooks implements Closeable {
      * Additional resource configurations can be added through calls to
      * <code>addConfigurations</code> method set.
      *
-     * @param resourceConfigStream XML resource configuration stream.
+     * @param inputStream XML resource configuration stream.
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
      * @see ResourceConfig
      */
-    public Smooks(InputStream resourceConfigStream) throws IOException, SAXException {
+    public Smooks(InputStream inputStream) throws IOException, SAXException {
         this();
-        addResourceConfigs(resourceConfigStream);
+        addResourceConfigs(inputStream);
     }
 
     /**
@@ -346,8 +347,8 @@ public class Smooks implements Closeable {
 
         resourceConfigStream = resourceLocator.getResource(resourceURI);
         try {
-            URI resourceConfigsUri = new URI(resourceURI);
-            addResourceConfigs(URIUtil.getParent(resourceConfigsUri).toString(), resourceConfigStream);
+            URI resourceConfigsURI = new URI(resourceURI);
+            addResourceConfigs(URIUtil.getParent(resourceConfigsURI).toString(), resourceConfigStream);
         } catch (URISyntaxException e) {
             LOGGER.error("Failed to load Smooks resource configuration '" + resourceURI + "'.", e);
         } finally {
@@ -364,20 +365,20 @@ public class Smooks implements Closeable {
      * The base URI is required for resolving resource imports.  Just specify
      * the location of the resource file.
      *
-     * @param baseURI              The base URI string for the resource configuration list. See
-     *                             {@link org.smooks.resource.URIResourceLocator}.
-     * @param resourceConfigStream The resource configuration stream.
+     * @param baseURI     The base URI string for the resource configuration list. See
+     *                    {@link org.smooks.resource.URIResourceLocator}.
+     * @param inputStream The resource configuration stream.
      * @throws IOException  Error reading resource stream.
      * @throws SAXException Error parsing the resource stream.
      */
-    public void addResourceConfigs(String baseURI, InputStream resourceConfigStream) throws SAXException, IOException {
+    public void addResourceConfigs(String baseURI, InputStream inputStream) throws SAXException, IOException {
         assertIsConfigurable();
         AssertArgument.isNotNullAndNotEmpty(baseURI, "baseURI");
-        AssertArgument.isNotNull(resourceConfigStream, "resourceConfigStream");
+        AssertArgument.isNotNull(inputStream, "inputStream");
         try {
-            applicationContext.getRegistry().registerResources(baseURI, resourceConfigStream);
+            applicationContext.getRegistry().registerResources(baseURI, inputStream);
         } catch (URISyntaxException e) {
-            throw new IOException("Failed to read resource configuration. Invalid 'baseURI'.");
+            throw new SmooksConfigException("Failed to read resource configuration. Invalid 'baseURI'.");
         }
     }
 

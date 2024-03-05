@@ -50,8 +50,8 @@ public class AttributePredicate implements Predicate {
 
     private final QName qName;
 
-    public AttributePredicate(String namespaceUri, String localName) {
-        qName = new QName(namespaceUri, localName);
+    public AttributePredicate(String namespaceURI, String localName) {
+        qName = new QName(namespaceURI, localName);
     }
 
     public QName getQName() {

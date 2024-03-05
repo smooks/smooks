@@ -46,30 +46,30 @@
                       xmlns:management="https://www.smooks.org/xsd/smooks/management-1.0.xsd">
 
     <resource-config selector="management:instrumentationResource">
-        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.management.DefaultInstrumentationResource</param>
     </resource-config>
 
     <resource-config selector="management:instrumentationResource">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">usePlatformMBeanServer</param>
         <param name="defaultValue">true</param>
     </resource-config>
 
     <resource-config selector="management:instrumentationResource">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">mBeanServerDefaultDomain</param>
         <param name="defaultValue">org.smooks</param>
     </resource-config>
 
     <resource-config selector="management:instrumentationResource">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">mBeanObjectDomainName</param>
         <param name="defaultValue">org.smooks</param>
     </resource-config>
 
     <resource-config selector="management:instrumentationResource">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">includeHostName</param>
         <param name="defaultValue">false</param>
     </resource-config>

@@ -40,49 +40,36 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.extension;
+package org.smooks.engine.converter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.smooks.api.SmooksException;
-import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.w3c.dom.Element;
+import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.converter.TypeConverterDescriptor;
+import org.smooks.api.converter.TypeConverterException;
+import org.smooks.api.converter.TypeConverterFactory;
 
-import javax.inject.Inject;
-import java.util.EmptyStackException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
- * Set a static value on the current {@link ResourceConfig}.
- * <p/>
- * The value is set on the {@link ResourceConfig} returned from the top
- * of the {@link org.smooks.engine.resource.extension.ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
+ * {@link URL} Decoder.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class SetOnResourceConfig implements DOMVisitBefore {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SetOnResourceConfig.class);
-
-    @Inject
-    private String setOn;
-
-    @Inject
-    private String value;
+public class URLConverterFactory implements TypeConverterFactory<String, URL> {
 
     @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ResourceConfig config;
+    public TypeConverter<String, URL> createTypeConverter() {
+        return value -> {
+            try {
+                return new URL(value.trim());
+            } catch (MalformedURLException e) {
+                throw new TypeConverterException("Failed to decode URL value '" + value + "'.", e);
+            }
+        };
+    }
 
-        try {
-            config = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
-        } catch (EmptyStackException e) {
-            throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + setOn + "' with static value.");
-        }
-
-        LOGGER.debug("Setting property '" + setOn + "' on resource configuration to a value of '" + value + "'.");
-
-        ResourceConfigUtil.setProperty(config, setOn, value, executionContext);
+    @Override
+    public TypeConverterDescriptor<Class<String>, Class<URL>> getTypeConverterDescriptor() {
+        return new DefaultTypeConverterDescriptor<>(String.class, URL.class);
     }
 }

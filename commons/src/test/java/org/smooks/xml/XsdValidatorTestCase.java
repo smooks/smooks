@@ -44,7 +44,7 @@ package org.smooks.xml;
 
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
 import org.junit.jupiter.api.Test;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -68,7 +68,7 @@ public class XsdValidatorTestCase {
 
     @Test
     public void test_validation_via_sources() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
-        Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
+        Document document = XmlUtils.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
         XsdValidator validator = new XsdValidator();
         List<Source> sources = new ArrayList<Source>();
 
@@ -81,7 +81,7 @@ public class XsdValidatorTestCase {
 
     @Test
     public void test_dom_validation_via_resolver() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
-        Document document = XmlUtil.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
+        Document document = XmlUtils.parseStream(getClass().getResourceAsStream("xsdDomValidator-test-01.xml"));
         XsdValidator validator = new XsdValidator();
 
         validator.setSchemaFactory(new XMLSchemaFactory());

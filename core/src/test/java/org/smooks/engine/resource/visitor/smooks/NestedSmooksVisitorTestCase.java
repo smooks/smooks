@@ -95,7 +95,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testPostConstructRegistersInterceptorVisitorDefinitions() throws IOException, URISyntaxException, ClassNotFoundException, SAXException, ParserConfigurationException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
 
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
@@ -150,7 +150,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitGivenMemento() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
@@ -195,7 +195,7 @@ public class NestedSmooksVisitorTestCase {
     public void testVisitBeforeGivenSelectorHasAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             assertEquals("b", element.getParentNode().getNodeName());
             assertEquals(element.getOwnerDocument(), element.getParentNode().getParentNode());
@@ -223,7 +223,7 @@ public class NestedSmooksVisitorTestCase {
     public void testVisitAfterGivenSelectorHasAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             assertEquals("b", element.getParentNode().getNodeName());
             assertEquals(element.getOwnerDocument(), element.getParentNode().getParentNode());
@@ -251,7 +251,7 @@ public class NestedSmooksVisitorTestCase {
     public void testVisitChildTextGivenSelectorAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
@@ -297,7 +297,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitChildTextGivenPrependBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
@@ -340,7 +340,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitChildTextGivenPrependAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
@@ -384,7 +384,7 @@ public class NestedSmooksVisitorTestCase {
     @Disabled("TODO: undefined behaviour")
     public void testVisitChildElementGivenPrependBefore() throws SAXException, IOException, URISyntaxException, DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
@@ -428,7 +428,7 @@ public class NestedSmooksVisitorTestCase {
     @Disabled("TODO: undefined behaviour")
     public void testVisitChildElementGivenPrependAfter() throws SAXException, IOException, URISyntaxException, DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
@@ -471,7 +471,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitBeforeGivenPrependBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
@@ -498,7 +498,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitBeforeGivenPrependAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
@@ -525,7 +525,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitAfterGivenPrependBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
@@ -552,7 +552,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitAfterGivenPrependAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
@@ -579,7 +579,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitBeforeGivenAppendBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
@@ -606,7 +606,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitBeforeGivenAppendAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
@@ -633,7 +633,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitAfterGivenAppendBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
@@ -660,7 +660,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitAfterGivenAppendAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().setRegisterSystemResources(false).build());
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");

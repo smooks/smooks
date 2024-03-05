@@ -40,50 +40,68 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.extension;
+package org.smooks.engine.resource.config.loader.xml.extension;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.support.DomUtils;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.inject.Inject;
+import java.util.EmptyStackException;
 import java.util.Optional;
 
 /**
- * Create a new {@link ResourceConfig} by cloning the current resource.
+ * Map a property value onto the current {@link ResourceConfig} based on an
+ * elements text content.
  * <p/>
- * The cloned {@link ResourceConfig} is added to the {@link org.smooks.engine.resource.extension.ExtensionContext}.
+ * The value is set on the {@link ResourceConfig} returned from the top
+ * of the {@link ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class CloneResourceConfig implements DOMElementVisitor {
+public class MapToResourceConfigFromXml implements DOMVisitBefore {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapToResourceConfigFromXml.class);
 
     @Inject
-    private Optional<String> resource;
+    private Optional<String> mapTo;
 
     @Inject
-    private Optional<String[]> unset;
+    private Optional<String> mapToSpecifier;
+
+    @Inject
+    private Optional<String> defaultValue;
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
-        ResourceConfig config = extensionContext.getResourceStack().peek().copy();
+        ResourceConfig config;
+        String value = XmlUtils.serialize((NodeList) element, true);
+        String mapToPropertyName = mapTo.orElse(null);
 
-        if (unset.isPresent()) {
-            for (String property : unset.get()) {
-                ResourceConfigUtil.unsetProperty(config, property);
+        if (mapToPropertyName == null) {
+            if (!mapToSpecifier.isPresent()) {
+                throw new SmooksException("One of attributes 'mapTo' or 'mapToSpecifier' must be specified.");
             }
+            mapToPropertyName = DomUtils.getAttributeValue(element, mapToSpecifier.get());
         }
 
-        resource.ifPresent(config::setResource);
+        try {
+            config = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
+        } catch (EmptyStackException e) {
+            throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + mapToPropertyName + "' with element text value.");
+        }
 
-        extensionContext.addResource(config);
-    }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Setting property '" + mapToPropertyName + "' on resource configuration to a value of '" + value + "'.");
+        }
 
-    @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().pop();
+        ResourceConfigUtils.setProperty(config, mapToPropertyName, value, element, executionContext);
     }
 }

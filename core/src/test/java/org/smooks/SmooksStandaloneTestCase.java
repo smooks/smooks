@@ -42,6 +42,9 @@
  */
 package org.smooks;
 
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.DOMWriter;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +53,8 @@ import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.PreconfiguredSmooks;
 import org.smooks.engine.profile.DefaultProfileSet;
-import org.smooks.support.DomUtil;
 import org.smooks.support.SmooksUtil;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -70,15 +72,15 @@ public class SmooksStandaloneTestCase {
     private static final Logger LOGGER = LoggerFactory.getLogger(SmooksStandaloneTestCase.class);
 	
 	@Test
-    public void testProcess() throws IOException, SAXException {
+    public void testProcess() throws IOException, SAXException, DocumentException {
         Smooks smooks = new PreconfiguredSmooks();
         ExecutionContext context = smooks.createExecutionContext("msie6");
         String response = SmooksUtil.filterAndSerialize(context, getClass().getResourceAsStream("html_2.html"), smooks);
         LOGGER.debug(response);
-        Document doc = DomUtil.parse(response);
+        Document doc = new DOMWriter().write(DocumentHelper.parseText(response));
 
-        assertNull(XmlUtil.getNode(doc, "html/body/xxx"));
-        assertNotNull(XmlUtil.getNode(doc, "html/body/yyy"));
+        assertNull(XmlUtils.getNode(doc, "html/body/xxx"));
+        assertNotNull(XmlUtils.getNode(doc, "html/body/yyy"));
     }
 
 	@Test

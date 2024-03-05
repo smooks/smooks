@@ -42,8 +42,11 @@
  */
 package org.smooks.engine;
 
+import org.smooks.api.delivery.ReaderPoolFactory;
 import org.smooks.api.profile.Profile;
 import org.smooks.api.resource.ContainerResourceLocator;
+import org.smooks.api.resource.config.loader.ResourceConfigLoader;
+import org.smooks.engine.delivery.DefaultReaderPoolFactory;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
@@ -52,6 +55,7 @@ import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.engine.delivery.DefaultContentDeliveryRuntimeFactory;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
+import org.smooks.engine.resource.config.loader.xml.XmlResourceConfigLoader;
 import org.smooks.io.payload.Exports;
 import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.api.Registry;
@@ -62,34 +66,47 @@ import java.util.ServiceLoader;
 
 public class DefaultApplicationContextBuilder implements ApplicationContextBuilder {
 
-    private boolean registerSystemResources = true;
+    private boolean systemResources = true;
     private ClassLoader classLoader = getClass().getClassLoader();
     private Registry registry;
     private ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory;
-    private ContainerResourceLocator resourceLocator;
+    private ContainerResourceLocator resourceLocator = new URIResourceLocator();
+    private ResourceConfigLoader resourceConfigLoader = new XmlResourceConfigLoader();
 
-    public DefaultApplicationContextBuilder setClassLoader(final ClassLoader classLoader) {
+    private ReaderPoolFactory readerPoolFactory = new DefaultReaderPoolFactory();
+
+    public DefaultApplicationContextBuilder withClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
         return this;
     }
 
-    public DefaultApplicationContextBuilder setRegisterSystemResources(final boolean registerSystemResources) {
-        this.registerSystemResources = registerSystemResources;
+    public DefaultApplicationContextBuilder withSystemResources(final boolean systemResources) {
+        this.systemResources = systemResources;
         return this;
     }
 
-    public DefaultApplicationContextBuilder setRegistry(final Registry registry) {
+    public DefaultApplicationContextBuilder withRegistry(final Registry registry) {
         this.registry = registry;
         return this;
     }
 
-    public DefaultApplicationContextBuilder setContentDeliveryRuntimeFactory(ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory) {
+    public DefaultApplicationContextBuilder withContentDeliveryRuntimeFactory(ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory) {
         this.contentDeliveryRuntimeFactory = contentDeliveryRuntimeFactory;
         return this;
     }
 
-    public DefaultApplicationContextBuilder setResourceLocator(ContainerResourceLocator resourceLocator) {
+    public DefaultApplicationContextBuilder withResourceLocator(ContainerResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
+        return this;
+    }
+
+    public DefaultApplicationContextBuilder withResourceConfigLoader(ResourceConfigLoader resourceConfigLoader) {
+        this.resourceConfigLoader = resourceConfigLoader;
+        return this;
+    }
+
+    public DefaultApplicationContextBuilder withReaderPoolFactory(ReaderPoolFactory readerPoolFactory) {
+        this.readerPoolFactory = readerPoolFactory;
         return this;
     }
 
@@ -97,50 +114,48 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     public ApplicationContext build() {
         final DefaultApplicationContext applicationContext = new DefaultApplicationContext();
         applicationContext.setClassLoader(classLoader);
+        applicationContext.setResourceConfigLoader(resourceConfigLoader);
+        applicationContext.setReaderPoolFactory(readerPoolFactory);
+        applicationContext.setResourceLocator(resourceLocator);
 
-        final Registry appContextRegistry;
         if (registry == null) {
-            appContextRegistry = new DefaultRegistry(applicationContext.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getProfileStore());
-        } else {
-            appContextRegistry = registry;
+            registry = new DefaultRegistry(applicationContext.getClassLoader(), applicationContext.getResourceConfigLoader(), applicationContext.getProfileStore());
         }
-
-        appContextRegistry.registerObject(ApplicationContext.class, applicationContext);
-        appContextRegistry.registerObject(Exports.class, new Exports());
-        registerSystemContentHandlerFactories(appContextRegistry);
-        if (registerSystemResources) {
-            registerSystemResources(appContextRegistry, applicationContext);
-        }
-        applicationContext.setRegistry(appContextRegistry);
+        initRegistry(applicationContext, registry);
+        applicationContext.setRegistry(registry);
 
         if (contentDeliveryRuntimeFactory == null) {
-            applicationContext.setContentDeliveryRuntimeFactory(new DefaultContentDeliveryRuntimeFactory(applicationContext.getRegistry()));
+            applicationContext.setContentDeliveryRuntimeFactory(new DefaultContentDeliveryRuntimeFactory(applicationContext.getRegistry(), applicationContext.getReaderPoolFactory()));
         } else {
             applicationContext.setContentDeliveryRuntimeFactory(contentDeliveryRuntimeFactory);
         }
 
-        if (resourceLocator == null) {
-            applicationContext.setResourceLocator(new URIResourceLocator());
-        } else {
-            applicationContext.setResourceLocator(resourceLocator);
-        }
         applicationContext.getProfileStore().addProfileSet(new DefaultProfileSet(Profile.DEFAULT_PROFILE));
 
         return applicationContext;
     }
 
-    private void registerSystemContentHandlerFactories(final Registry registry) {
+    protected void initRegistry(ApplicationContext applicationContext, Registry registry) {
+        registry.registerObject(ApplicationContext.class, applicationContext);
+        registry.registerObject(Exports.class, new Exports());
+        registerSystemContentHandlerFactories(registry);
+        if (systemResources) {
+            registerSystemResources(registry, applicationContext);
+        }
+    }
+
+    protected void registerSystemContentHandlerFactories(final Registry registry) {
         for (ContentHandlerFactory<?> contentHandlerFactory : ServiceLoader.load(ContentHandlerFactory.class, classLoader)) {
             registry.lookup(new LifecycleManagerLookup()).applyPhase(contentHandlerFactory, new PostConstructLifecyclePhase(new Scope(registry)));
             registry.registerObject(contentHandlerFactory);
         }
     }
 
-    private void registerSystemResources(final Registry registry, final ApplicationContext applicationContext) {
-        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/null-dom.xml", registry.getClassLoader(), applicationContext.getResourceLocator()).create());
-        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/null-sax.xml", registry.getClassLoader(), applicationContext.getResourceLocator()).create());
-        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-param-decoders.xml", registry.getClassLoader(), applicationContext.getResourceLocator()).create());
-        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-serializers.xml", registry.getClassLoader(), applicationContext.getResourceLocator()).create());
-        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-interceptors.xml", registry.getClassLoader(), applicationContext.getResourceLocator()).create());
+    protected void registerSystemResources(final Registry registry, final ApplicationContext applicationContext) {
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/null-dom.xml", registry.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/null-sax.xml", registry.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-param-decoders.xml", registry.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-serializers.xml", registry.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-interceptors.xml", registry.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
     }
 }

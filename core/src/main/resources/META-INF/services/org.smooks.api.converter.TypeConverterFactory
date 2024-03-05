@@ -30,8 +30,8 @@ org.smooks.engine.converter.StringToXmlGregorianCalendarConverterFactory
 org.smooks.engine.converter.SqlDateConverterFactory
 org.smooks.engine.converter.SqlTimeConverterFactory
 org.smooks.engine.converter.SqlTimestampConverterFactory
-org.smooks.engine.converter.UriConverterFactory
-org.smooks.engine.converter.UrlConverterFactory
+org.smooks.engine.converter.URIConverterFactory
+org.smooks.engine.converter.URLConverterFactory
 org.smooks.engine.converter.XmlGregorianCalendarToStringConverterFactory
 org.smooks.engine.converter.FreeMarkerConverterFactory
 org.smooks.engine.converter.MvelExpressionEvaluatorConverterFactory
