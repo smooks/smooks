@@ -45,6 +45,7 @@ package org.smooks.engine.resource.config.loader.xml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
+import org.smooks.api.ApplicationContextBuilder;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.Registry;
 import org.smooks.api.SmooksConfigException;
@@ -90,6 +91,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.Stack;
 
 public class XmlResourceConfigLoader implements ResourceConfigLoader {
@@ -135,7 +137,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         xmlResourceConfigLoader.classLoader = classLoader;
         xmlResourceConfigLoader.extendedResourceConfigLoaders = extendedResourceConfigLoaders;
         try {
-            xmlResourceConfigLoader.digestConfigRecursively(new InputStreamReader(inputStream), baseURI);
+            xmlResourceConfigLoader.loadConfigRecursively(new InputStreamReader(inputStream), baseURI);
         } catch (IOException | URISyntaxException | SAXException e) {
             throw new SmooksConfigException(e);
         }
@@ -148,7 +150,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         return resourceConfigSeq;
     }
 
-    protected void digestConfigRecursively(Reader reader, String baseURI) throws IOException, SAXException, URISyntaxException, SmooksConfigException {
+    protected void loadConfigRecursively(Reader reader, String baseURI) throws IOException, SAXException, URISyntaxException, SmooksConfigException {
         Document document;
         String streamData = StreamUtils.readStream(reader);
 
@@ -164,7 +166,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         validator.validate();
 
         if (XSD_V20.equals(defaultNS)) {
-            digestV20XSDValidatedConfig(baseURI, document);
+            loadV20XSDValidatedConfig(baseURI, document);
         } else {
             throw new SmooksConfigException("Cannot parse Smooks configuration.  Unsupported default Namespace '" + defaultNS + "'.");
         }
@@ -174,7 +176,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         }
     }
 
-    protected void digestV20XSDValidatedConfig(String baseURI, Document configDoc) throws SAXException, URISyntaxException, SmooksConfigException {
+    protected void loadV20XSDValidatedConfig(String baseURI, Document configDoc) throws SAXException, URISyntaxException, SmooksConfigException {
         Element currentElement = configDoc.getDocumentElement();
 
         String defaultProfile = DomUtils.getAttributeValue(currentElement, "default-target-profile");
@@ -201,13 +203,13 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
                     } else if (elementName.equals("import")) {
                         digestImport(configElement, new URI(baseURI));
                     } else if (elementName.equals("reader")) {
-                        digestReaderConfig(configElement, defaultProfile);
+                        loadReaderResourceConfig(configElement, defaultProfile);
                     } else if (elementName.equals("resource-config")) {
-                        digestResourceConfig(configElement, defaultProfile, defaultConditionRef);
+                        loadResourceConfig(configElement, defaultProfile, defaultConditionRef);
                     }
                 } else {
                     // It's an extended resource configuration element
-                    digestExtendedResourceConfig(configElement, defaultProfile, defaultConditionRef);
+                    loadExtendedResourceConfig(configElement, defaultProfile, defaultConditionRef);
                 }
             }
         }
@@ -270,9 +272,9 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
                             importConfig = importConfig.replaceAll("@" + paramName + "@", paramValue);
                         }
 
-                        digestConfigRecursively(new StringReader(importConfig), URIUtil.getParent(fileURI).toString()); // the file's parent URI becomes the new base URI.
+                        loadConfigRecursively(new StringReader(importConfig), URIUtil.getParent(fileURI).toString()); // the file's parent URI becomes the new base URI.
                     } else {
-                        digestConfigRecursively(new InputStreamReader(resourceStream), URIUtil.getParent(fileURI).toString()); // the file's parent URI becomes the new base URI.
+                        loadConfigRecursively(new InputStreamReader(resourceStream), URIUtil.getParent(fileURI).toString()); // the file's parent URI becomes the new base URI.
                     }
                 } finally {
                     resourceStream.close();
@@ -285,7 +287,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         }
     }
 
-    protected void digestReaderConfig(Element configElement, String defaultProfile) {
+    protected void loadReaderResourceConfig(Element configElement, String defaultProfile) {
         String profiles = DomUtils.getAttributeValue(configElement, "targetProfile");
 
         String readerClass = DomUtils.getAttributeValue(configElement, "class");
@@ -353,7 +355,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         }
     }
 
-    protected void digestResourceConfig(Element configElement, String defaultProfile, String defaultConditionRef) {
+    protected void loadResourceConfig(Element configElement, String defaultProfile, String defaultConditionRef) {
         final String factory = DomUtils.getAttributeValue(configElement, "factory");
 
         final ResourceConfig resourceConfig;
@@ -394,9 +396,9 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
     }
 
     @SuppressWarnings("ConfusingArgumentToVarargsMethod")
-    protected void digestExtendedResourceConfig(Element configElement, String defaultProfile, String defaultConditionRef) {
+    protected void loadExtendedResourceConfig(Element configElement, String defaultProfile, String defaultConditionRef) {
         String configNamespace = configElement.getNamespaceURI();
-        Smooks configDigester = getExtendedConfigDigester(configNamespace);
+        Smooks configDigester = getExtendedResourceConfigLoader(configNamespace);
         ExecutionContext executionContext = configDigester.createExecutionContext();
         ExtensionContext extentionContext;
         Element conditionElement = DomUtils.getElement(configElement, "condition", 1);
@@ -421,7 +423,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         }
     }
 
-    protected Smooks getExtendedConfigDigester(String configNamespace) {
+    protected Smooks getExtendedResourceConfigLoader(String configNamespace) {
         Smooks smooks = extendedResourceConfigLoaders.get(configNamespace);
 
         if (smooks == null) {
@@ -433,7 +435,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
                 throw new SmooksConfigException("Unable to parse extended config namespace URI '" + configNamespace + "'.", e);
             }
 
-            String resourcePath = "/META-INF" + namespaceURI.getPath() + "-smooks.xml";
+            String resourcePath = String.format("/META-INF%s-smooks.xml", namespaceURI.getPath());
             File resourceFile = new File(resourcePath);
             String baseURI = resourceFile.getParent().replace('\\', '/');
 
@@ -441,7 +443,11 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
             assertExtendedConfigOK(configNamespace, resourcePath);
 
             // Construct the Smooks instance for processing this config namespace...
-            smooks = new Smooks(new DefaultApplicationContextBuilder().withClassLoader(classLoader).withSystemResources(false).build());
+            ApplicationContextBuilder applicationContextBuilder = ServiceLoader.load(ApplicationContextBuilder.class).iterator().next();
+            if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
+                applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
+            }
+            smooks = new Smooks(applicationContextBuilder.withClassLoader(classLoader).build());
             setExtensionDigestOn();
             try {
                 Registry registry = smooks.getApplicationContext().getRegistry();
@@ -450,7 +456,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
                 XmlResourceConfigLoader xmlResourceConfigLoader = new XmlResourceConfigLoader(extensionResourceConfigSeq);
 
                 xmlResourceConfigLoader.extendedResourceConfigLoaders = extendedResourceConfigLoaders;
-                xmlResourceConfigLoader.digestConfigRecursively(new InputStreamReader(ClassUtils.getResourceAsStream(resourcePath, classLoader)), baseURI);
+                xmlResourceConfigLoader.loadConfigRecursively(new InputStreamReader(ClassUtils.getResourceAsStream(resourcePath, classLoader)), baseURI);
                 registry.registerResourceConfigSeq(extensionResourceConfigSeq);
             } catch (Exception e) {
                 throw new SmooksConfigException("Failed to construct Smooks instance for processing extended configuration resource '" + resourcePath + "'.", e);

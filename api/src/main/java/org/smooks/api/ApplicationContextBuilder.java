@@ -42,10 +42,68 @@
  */
 package org.smooks.api;
 
+import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
+import org.smooks.api.delivery.ReaderPoolFactory;
+import org.smooks.api.resource.ContainerResourceLocator;
+import org.smooks.api.resource.config.loader.ResourceConfigLoader;
+
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * Constructs an {@link ApplicationContext}.
  */
+@ThreadSafe
 public interface ApplicationContextBuilder {
+
+    /**
+     * Sets the class loader for the application context.
+     *
+     * @param classLoader class loader to use for the application context
+     * @return a shallow copy of <code>this</code> with <code>classLoader</code> set to the given value
+     */
+    ApplicationContextBuilder withClassLoader(ClassLoader classLoader);
+
+    /**
+     * Sets the registry for the application context.
+     *
+     * @param registry registry to use for the application context
+     * @return a shallow copy of <code>this</code> with <code>registry</code> set to the given value
+     */
+    ApplicationContextBuilder withRegistry(Registry registry);
+
+    /**
+     * Sets the content delivery runtime factory for the application context.
+     *
+     * @param contentDeliveryRuntimeFactory content delivery runtime factory to use for the application context
+     * @return a shallow copy of <code>this</code> with <code>contentDeliveryRuntimeFactory</code> set to the given value
+     */
+    ApplicationContextBuilder withContentDeliveryRuntimeFactory(ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory);
+
+    /**
+     * Sets the resource locator for the application context.
+     *
+     * @param resourceLocator resource locator to use for the application context
+     * @return a shallow copy of <code>this</code> with <code>resourceLocator</code> set to the given value
+     */
+    ApplicationContextBuilder withResourceLocator(ContainerResourceLocator resourceLocator);
+
+
+    /**
+     * Sets the resource config loader for the application context.
+     *
+     * @param resourceConfigLoader resource config loader to use for the application context
+     * @return a shallow copy of <code>this</code> with <code>resourceConfigLoader</code> set to the given value
+     */
+    ApplicationContextBuilder withResourceConfigLoader(ResourceConfigLoader resourceConfigLoader);
+
+    /**
+     * Sets reader pool factory for the application context.
+     *
+     * @param readerPoolFactory reader pool factory to use for the application context
+     * @return a shallow copy of <code>this</code> with <code>readerPoolFactory</code> set to the given value
+     */
+    ApplicationContextBuilder withReaderPoolFactory(ReaderPoolFactory readerPoolFactory);
+
 
     /**
      * @return a new application context

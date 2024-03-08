@@ -46,6 +46,7 @@ import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.StreamFilterType;
 import org.smooks.api.ApplicationContext;
+import org.smooks.api.ApplicationContextBuilder;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
@@ -79,6 +80,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.ServiceLoader;
 
 public class DelegateReader implements SmooksXMLReader {
     private final TypedKey<Writer> contentHandlerTypedKey = TypedKey.of();
@@ -110,7 +112,11 @@ public class DelegateReader implements SmooksXMLReader {
         final String smooksResourceList = "<smooks-resource-list xmlns=\"https://www.smooks.org/xsd/smooks-2.0.xsd\">" + resourceConfig.getParameter("resourceConfigs", String.class).getValue() + "</smooks-resource-list>";
         ResourceConfigSeq resourceConfigSeq = applicationContext.getResourceConfigLoader().load(new ByteArrayInputStream(smooksResourceList.getBytes(StandardCharsets.UTF_8)), "./", applicationContext.getClassLoader());
 
-        readerSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).withClassLoader(applicationContext.getClassLoader()).build());
+        ApplicationContextBuilder applicationContextBuilder = ServiceLoader.load(ApplicationContextBuilder.class).iterator().next();
+        if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
+            applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
+        }
+        readerSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).build());
         readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1));
         readerSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
                 readerSmooks.getApplicationContext().getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());

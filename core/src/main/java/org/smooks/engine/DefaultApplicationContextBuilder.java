@@ -75,39 +75,52 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
 
     private ReaderPoolFactory readerPoolFactory = new DefaultReaderPoolFactory();
 
-    public DefaultApplicationContextBuilder withClassLoader(final ClassLoader classLoader) {
-        this.classLoader = classLoader;
-        return this;
+    public DefaultApplicationContextBuilder() {
+
     }
 
-    public DefaultApplicationContextBuilder withSystemResources(final boolean systemResources) {
+    protected DefaultApplicationContextBuilder(boolean systemResources, ClassLoader classLoader, Registry registry, ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory, ContainerResourceLocator resourceLocator, ResourceConfigLoader resourceConfigLoader, ReaderPoolFactory readerPoolFactory) {
         this.systemResources = systemResources;
-        return this;
-    }
-
-    public DefaultApplicationContextBuilder withRegistry(final Registry registry) {
+        this.classLoader = classLoader;
         this.registry = registry;
-        return this;
-    }
-
-    public DefaultApplicationContextBuilder withContentDeliveryRuntimeFactory(ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory) {
         this.contentDeliveryRuntimeFactory = contentDeliveryRuntimeFactory;
-        return this;
-    }
-
-    public DefaultApplicationContextBuilder withResourceLocator(ContainerResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
-        return this;
-    }
-
-    public DefaultApplicationContextBuilder withResourceConfigLoader(ResourceConfigLoader resourceConfigLoader) {
         this.resourceConfigLoader = resourceConfigLoader;
-        return this;
+        this.readerPoolFactory = readerPoolFactory;
     }
 
+    @Override
+    public DefaultApplicationContextBuilder withClassLoader(ClassLoader classLoader) {
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+    }
+
+    public DefaultApplicationContextBuilder withSystemResources(boolean systemResources) {
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+    }
+
+    @Override
+    public DefaultApplicationContextBuilder withRegistry(Registry registry) {
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+    }
+
+    @Override
+    public DefaultApplicationContextBuilder withContentDeliveryRuntimeFactory(ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory) {
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+    }
+
+    @Override
+    public DefaultApplicationContextBuilder withResourceLocator(ContainerResourceLocator resourceLocator) {
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+    }
+
+    @Override
+    public DefaultApplicationContextBuilder withResourceConfigLoader(ResourceConfigLoader resourceConfigLoader) {
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+    }
+
+    @Override
     public DefaultApplicationContextBuilder withReaderPoolFactory(ReaderPoolFactory readerPoolFactory) {
-        this.readerPoolFactory = readerPoolFactory;
-        return this;
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
     }
 
     @Override
@@ -118,11 +131,14 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
         applicationContext.setReaderPoolFactory(readerPoolFactory);
         applicationContext.setResourceLocator(resourceLocator);
 
+        Registry applicationContextRegistry;
         if (registry == null) {
-            registry = new DefaultRegistry(applicationContext.getClassLoader(), applicationContext.getResourceConfigLoader(), applicationContext.getProfileStore());
+            applicationContextRegistry = new DefaultRegistry(applicationContext.getClassLoader(), applicationContext.getResourceConfigLoader(), applicationContext.getProfileStore());
+        } else {
+            applicationContextRegistry = registry;
         }
-        initRegistry(applicationContext, registry);
-        applicationContext.setRegistry(registry);
+        initRegistry(applicationContext, applicationContextRegistry);
+        applicationContext.setRegistry(applicationContextRegistry);
 
         if (contentDeliveryRuntimeFactory == null) {
             applicationContext.setContentDeliveryRuntimeFactory(new DefaultContentDeliveryRuntimeFactory(applicationContext.getRegistry(), applicationContext.getReaderPoolFactory()));
