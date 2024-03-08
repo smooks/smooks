@@ -43,6 +43,7 @@
 package org.smooks.engine;
 
 import org.smooks.api.ApplicationContext;
+import org.smooks.api.ApplicationContextBuilder;
 import org.smooks.api.Registry;
 import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
@@ -80,6 +81,7 @@ public class DefaultApplicationContext implements ApplicationContext {
     private ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory;
     private ResourceConfigLoader resourceConfigLoader;
     private ReaderPoolFactory readerPoolFactory;
+    private ApplicationContextBuilder applicationContextBuilder;
 
 
     /**

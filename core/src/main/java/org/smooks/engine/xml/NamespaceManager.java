@@ -94,7 +94,7 @@ public class NamespaceManager {
             }
         }
 
-        LOGGER.debug("Adding namespace prefix-to-uri mappings: " + newNamespaces);
+        LOGGER.debug("Adding namespace prefix-to-uri mappings: {}", newNamespaces);
         final Optional<Properties> currentNamespaces = applicationContext.getRegistry().lookup(new NamespaceManagerLookup());
         if (currentNamespaces.isPresent()) {
             currentNamespaces.get().putAll(newNamespaces);

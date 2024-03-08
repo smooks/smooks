@@ -46,6 +46,7 @@ import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.StreamFilterType;
 import org.smooks.api.ApplicationContext;
+import org.smooks.api.ApplicationContextBuilder;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
@@ -98,6 +99,7 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -162,7 +164,11 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
                 resourceConfigSeq = new DefaultResourceConfigSeq("./");
                 resourceConfigSeq.add(resourceConfig);
             }
-            nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).withClassLoader(applicationContext.getClassLoader()).withResourceLocator(applicationContext.getResourceLocator()).build());
+            ApplicationContextBuilder applicationContextBuilder = ServiceLoader.load(ApplicationContextBuilder.class).iterator().next();
+            if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
+                applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
+            }
+            nestedSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).withResourceLocator(applicationContext.getResourceLocator()).build());
             for (ResourceConfig resourceConfig : resourceConfigSeq) {
                 nestedSmooks.addResourceConfig(resourceConfig);
             }
