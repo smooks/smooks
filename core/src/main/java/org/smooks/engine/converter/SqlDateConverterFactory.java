@@ -42,11 +42,14 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.resource.config.Configurable;
 
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * {@link java.sql.Date} data decoder.
@@ -57,16 +60,30 @@ import java.util.Date;
  *
  * @author <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a>
  */
-public class SqlDateConverterFactory implements TypeConverterFactory<String, java.sql.Date> {
+public class SqlDateConverterFactory implements TypeConverterFactory<String, java.sql.Date>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<String, java.sql.Date> createTypeConverter() {
-        return new SqlDateTypeConverter();
+        SqlDateTypeConverter sqlDateTypeConverter = new SqlDateTypeConverter();
+        sqlDateTypeConverter.setConfiguration(properties);
+        return sqlDateTypeConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<java.sql.Date>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, java.sql.Date.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 
     public static class SqlDateTypeConverter extends StringToDateLocaleAwareConverter<java.sql.Date> {

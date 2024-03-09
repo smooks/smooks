@@ -42,16 +42,19 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 
 import jakarta.annotation.Resource;
+import org.smooks.api.resource.config.Configurable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.util.Properties;
 
 /**
  * {@link BigDecimal} Decoder.
@@ -59,11 +62,13 @@ import java.text.ParseException;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @Resource(name = "BigDecimal")
-public class StringToBigDecimalConverterFactory implements TypeConverterFactory<String, BigDecimal> {
+public class StringToBigDecimalConverterFactory implements TypeConverterFactory<String, BigDecimal>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<String, BigDecimal> createTypeConverter() {
-        return new NumberTypeConverter<String, BigDecimal>() {
+        NumberTypeConverter<String, BigDecimal> numberTypeConverter = new NumberTypeConverter<String, BigDecimal>() {
             @Override
             protected BigDecimal doConvert(String value) {
                 if (numberFormat != null) {
@@ -89,10 +94,22 @@ public class StringToBigDecimalConverterFactory implements TypeConverterFactory<
                 }
             }
         };
+        numberTypeConverter.setConfiguration(properties);
+        return numberTypeConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<BigDecimal>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, BigDecimal.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 }

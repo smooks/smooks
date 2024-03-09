@@ -60,7 +60,7 @@ public class ByteConverterFactoryTestCase {
 
 	@Test
     public void test_empty_ok_value() {
-        assertEquals(new Byte((byte) 1), byteConverterFactory.createTypeConverter().convert("1"));
+        assertEquals(Byte.valueOf((byte) 1), byteConverterFactory.createTypeConverter().convert("1"));
     }
 
 	@Test

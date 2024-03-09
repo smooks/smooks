@@ -42,25 +42,30 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.resource.config.Configurable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.util.Properties;
 
 /**
  * {@link BigInteger} Decoder.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class StringToBigIntegerConverterFactory implements TypeConverterFactory<String, BigInteger> {
+public class StringToBigIntegerConverterFactory implements TypeConverterFactory<String, BigInteger>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<String, BigInteger> createTypeConverter() {
-        return new NumberTypeConverter<String, BigInteger>() {
+        NumberTypeConverter<String, BigInteger> numberTypeConverter = new NumberTypeConverter<String, BigInteger>() {
             @Override
             protected BigInteger doConvert(String value) {
                 if (numberFormat != null) {
@@ -86,10 +91,22 @@ public class StringToBigIntegerConverterFactory implements TypeConverterFactory<
                 }
             }
         };
+        numberTypeConverter.setConfiguration(properties);
+        return numberTypeConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<BigInteger>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, BigInteger.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 }

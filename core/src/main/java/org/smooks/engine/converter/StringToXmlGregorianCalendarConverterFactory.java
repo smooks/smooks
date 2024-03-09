@@ -42,18 +42,21 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 
 import jakarta.annotation.Resource;
+import org.smooks.api.resource.config.Configurable;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Properties;
 
 /**
  * {@link XMLGregorianCalendar} data decoder.
@@ -70,16 +73,30 @@ import java.util.GregorianCalendar;
  * @author <a href="mailto:stefano.maestri@javalinux.it">stefano.maestri@javalinux.it</a>
  */
 @Resource(name = "XMLGregorianCalendar")
-public class StringToXmlGregorianCalendarConverterFactory implements TypeConverterFactory<String, XMLGregorianCalendar> {
+public class StringToXmlGregorianCalendarConverterFactory implements TypeConverterFactory<String, XMLGregorianCalendar>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<String, XMLGregorianCalendar> createTypeConverter() {
-        return new StringToXmlGregorianCalendarConverter();
+        StringToXmlGregorianCalendarConverter stringToXmlGregorianCalendarConverter = new StringToXmlGregorianCalendarConverter();
+        stringToXmlGregorianCalendarConverter.setConfiguration(properties);
+        return stringToXmlGregorianCalendarConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<XMLGregorianCalendar>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, XMLGregorianCalendar.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 
     public static class StringToXmlGregorianCalendarConverter extends StringToDateLocaleAwareConverter<XMLGregorianCalendar> {

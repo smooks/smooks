@@ -42,14 +42,17 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 
 import jakarta.annotation.Resource;
+import org.smooks.api.resource.config.Configurable;
 
 import java.text.ParseException;
+import java.util.Properties;
 
 /**
  * Integer Decoder.
@@ -57,11 +60,13 @@ import java.text.ParseException;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @Resource(name = "Integer")
-public class StringToIntegerConverterFactory implements TypeConverterFactory<String, Integer> {
+public class StringToIntegerConverterFactory implements TypeConverterFactory<String, Integer>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<String, Integer> createTypeConverter() {
-        return new NumberTypeConverter<String, Integer>() {
+        NumberTypeConverter<String, Integer> numberTypeConverter = new NumberTypeConverter<String, Integer>() {
             @Override
             protected Integer doConvert(String value) {
                 if (numberFormat != null) {
@@ -84,10 +89,22 @@ public class StringToIntegerConverterFactory implements TypeConverterFactory<Str
                 }
             }
         };
+        numberTypeConverter.setConfiguration(properties);
+        return numberTypeConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<Integer>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, Integer.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 }
