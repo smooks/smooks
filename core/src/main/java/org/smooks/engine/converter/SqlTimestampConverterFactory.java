@@ -42,12 +42,15 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.resource.config.Configurable;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * {@link java.sql.Timestamp} data decoder.
@@ -58,20 +61,35 @@ import java.util.Date;
  *
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class SqlTimestampConverterFactory implements TypeConverterFactory<String, Timestamp> {
+public class SqlTimestampConverterFactory implements TypeConverterFactory<String, Timestamp>, Configurable {
+    private Properties properties = new Properties();
+
     @Override
     public TypeConverter<String, Timestamp> createTypeConverter() {
-        return new StringToDateLocaleAwareConverter<Timestamp>() {
+        StringToDateLocaleAwareConverter<Timestamp> stringToDateLocaleAwareConverter = new StringToDateLocaleAwareConverter<Timestamp>() {
             @Override
             protected Timestamp doConvert(Date date) {
                 return new Timestamp(date.getTime());
             }
         };
+        stringToDateLocaleAwareConverter.setConfiguration(properties);
+
+        return stringToDateLocaleAwareConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<Timestamp>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, Timestamp.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 }
 

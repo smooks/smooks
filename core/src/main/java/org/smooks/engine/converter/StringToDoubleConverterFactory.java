@@ -42,14 +42,17 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 
 import jakarta.annotation.Resource;
+import org.smooks.api.resource.config.Configurable;
 
 import java.text.ParseException;
+import java.util.Properties;
 
 /**
  * Double decoder.
@@ -57,16 +60,30 @@ import java.text.ParseException;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @Resource(name = "Double")
-public class StringToDoubleConverterFactory implements TypeConverterFactory<String, Double> {
+public class StringToDoubleConverterFactory implements TypeConverterFactory<String, Double>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<String, Double> createTypeConverter() {
-        return new StringToDoubleTypeConverter();
+        StringToDoubleTypeConverter stringToDoubleTypeConverter = new StringToDoubleTypeConverter();
+        stringToDoubleTypeConverter.setConfiguration(properties);
+        return stringToDoubleTypeConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<Double>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, Double.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 
     public static class StringToDoubleTypeConverter extends NumberTypeConverter<String, Double> {

@@ -42,14 +42,17 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 
 import jakarta.annotation.Resource;
+import org.smooks.api.resource.config.Configurable;
 
 import java.text.ParseException;
+import java.util.Properties;
 
 /**
  * Long decoder.
@@ -57,11 +60,13 @@ import java.text.ParseException;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @Resource(name = "Long")
-public class StringToLongConverterFactory implements TypeConverterFactory<String, Long> {
+public class StringToLongConverterFactory implements TypeConverterFactory<String, Long>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<String, Long> createTypeConverter() {
-        return new NumberTypeConverter<String, Long>() {
+        NumberTypeConverter<String, Long> numberTypeConverter = new NumberTypeConverter<String, Long>() {
             @Override
             protected Long doConvert(String value) {
                 if (numberFormat != null) {
@@ -86,10 +91,22 @@ public class StringToLongConverterFactory implements TypeConverterFactory<String
             }
 
         };
+        numberTypeConverter.setConfiguration(properties);
+        return numberTypeConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<Long>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, Long.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 }

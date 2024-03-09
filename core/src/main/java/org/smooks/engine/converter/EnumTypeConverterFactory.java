@@ -55,16 +55,30 @@ import jakarta.annotation.Resource;
 import java.util.Properties;
 
 @Resource(name = "Enum")
-public class EnumTypeConverterFactory implements TypeConverterFactory<String, Enum> {
+public class EnumTypeConverterFactory implements TypeConverterFactory<String, Enum>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<String, Enum> createTypeConverter() {
-        return new EnumTypeConverter();
+        EnumTypeConverter enumTypeConverter = new EnumTypeConverter();
+        enumTypeConverter.setConfiguration(properties);
+        return enumTypeConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<Enum>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor(String.class, Enum.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 
     public static class EnumTypeConverter implements TypeConverter<String, Enum>, Configurable {

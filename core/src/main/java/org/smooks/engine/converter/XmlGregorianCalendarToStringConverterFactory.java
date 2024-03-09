@@ -49,6 +49,7 @@ import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -65,11 +66,15 @@ import java.util.Properties;
  *
  * @author <a href="mailto:stefano.maestri@javalinux.it">stefano.maestri@javalinux.it</a>
  */
-public class XmlGregorianCalendarToStringConverterFactory implements TypeConverterFactory<XMLGregorianCalendar, String> {
+public class XmlGregorianCalendarToStringConverterFactory implements TypeConverterFactory<XMLGregorianCalendar, String>, Configurable {
+
+    private Properties properties;
 
     @Override
     public TypeConverter<XMLGregorianCalendar, String> createTypeConverter() {
-        return new XmlGregorianCalendarToStringTypeConverter();
+        XmlGregorianCalendarToStringTypeConverter xmlGregorianCalendarToStringTypeConverter = new XmlGregorianCalendarToStringTypeConverter();
+        xmlGregorianCalendarToStringTypeConverter.setConfiguration(properties);
+        return xmlGregorianCalendarToStringTypeConverter;
     }
 
     @Override
@@ -77,9 +82,19 @@ public class XmlGregorianCalendarToStringConverterFactory implements TypeConvert
         return new DefaultTypeConverterDescriptor<>(XMLGregorianCalendar.class, String.class);
     }
 
-    private class XmlGregorianCalendarToStringTypeConverter implements TypeConverter<XMLGregorianCalendar, String>, Configurable {
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
 
-        private final DateToStringLocaleAwareConverter dateToStringLocaleAwareConverter = new DateToStringLocaleAwareConverter() {
+    @Override
+    public Properties getConfiguration() {
+        return properties;
+    }
+
+    private static class XmlGregorianCalendarToStringTypeConverter implements TypeConverter<XMLGregorianCalendar, String>, Configurable {
+
+        private final DateToStringLocaleAwareConverter<Date> dateToStringLocaleAwareConverter = new DateToStringLocaleAwareConverter<Date>() {
             @Override
             protected String doConvert(String value) {
                 return value;

@@ -42,23 +42,42 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.resource.config.Configurable;
+
+import java.util.Properties;
 
 /**
  * Short Decoder
  *
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class ShortToStringConverterFactory implements TypeConverterFactory<Short, String> {
+public class ShortToStringConverterFactory implements TypeConverterFactory<Short, String>, Configurable {
+    private Properties properties = new Properties();
+
     @Override
     public TypeConverter<Short, String> createTypeConverter() {
-        return new NumberToStringConverter<>();
+        NumberToStringConverter<Short> numberNumberToStringConverter = new NumberToStringConverter<>();
+        numberNumberToStringConverter.setConfiguration(properties);
+
+        return numberNumberToStringConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<Short>, Class<String>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(Short.class, String.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 }

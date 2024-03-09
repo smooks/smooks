@@ -53,6 +53,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -64,24 +65,23 @@ public class TypeConverterFactoryLoaderTestCase {
 
     @Test
     public void testLoad() {
-
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, String.class)) instanceof StringConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, Integer.class)) instanceof StringToIntegerConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(Integer.class, String.class)) instanceof IntegerToStringConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, Float.class)) instanceof StringToFloatConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(Float.class, String.class)) instanceof FloatToStringConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, Double.class)) instanceof StringToDoubleConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(Double.class, String.class)) instanceof DoubleToStringConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, Character.class)) instanceof CharacterConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, BigDecimal.class)) instanceof StringToBigDecimalConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(BigDecimal.class, String.class)) instanceof BigDecimalToStringConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, Date.class)) instanceof StringToDateConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(Date.class, String.class)) instanceof DateToStringConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, Calendar.class)) instanceof CalendarConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, String[].class)) instanceof CsvConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, Charset.class)) instanceof CharsetConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, File.class)) instanceof FileConverterFactory);
-        assertTrue(get(new DefaultTypeConverterDescriptor<>(String.class, Class.class)) instanceof ClassConverterFactory);
+        assertInstanceOf(StringConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, String.class)));
+        assertInstanceOf(StringToIntegerConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, Integer.class)));
+        assertInstanceOf(IntegerToStringConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(Integer.class, String.class)));
+        assertInstanceOf(StringToFloatConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, Float.class)));
+        assertInstanceOf(FloatToStringConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(Float.class, String.class)));
+        assertInstanceOf(StringToDoubleConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, Double.class)));
+        assertInstanceOf(DoubleToStringConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(Double.class, String.class)));
+        assertInstanceOf(CharacterConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, Character.class)));
+        assertInstanceOf(StringToBigDecimalConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, BigDecimal.class)));
+        assertInstanceOf(BigDecimalToStringConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(BigDecimal.class, String.class)));
+        assertInstanceOf(StringToDateConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, Date.class)));
+        assertInstanceOf(DateToStringConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(Date.class, String.class)));
+        assertInstanceOf(CalendarConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, Calendar.class)));
+        assertInstanceOf(CsvConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, String[].class)));
+        assertInstanceOf(CharsetConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, Charset.class)));
+        assertInstanceOf(FileConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, File.class)));
+        assertInstanceOf(ClassConverterFactory.class, get(new DefaultTypeConverterDescriptor<>(String.class, Class.class)));
     }
     
     private TypeConverterFactory<?, ?> get(TypeConverterDescriptor<?, ?> typeConverterDescriptor) {

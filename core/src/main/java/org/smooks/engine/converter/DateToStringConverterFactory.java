@@ -42,12 +42,15 @@
  */
 package org.smooks.engine.converter;
 
+import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.resource.config.Configurable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * {@link Date} data decoder.
@@ -64,20 +67,34 @@ import java.util.Date;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  * @see LocaleAwareDateDecoder
  */
-public class DateToStringConverterFactory implements TypeConverterFactory<Date, String> {
+public class DateToStringConverterFactory implements TypeConverterFactory<Date, String>, Configurable {
+
+    private Properties properties = new Properties();
 
     @Override
     public TypeConverter<Date, String> createTypeConverter() {
-        return new DateToStringLocaleAwareConverter() {
+        DateToStringLocaleAwareConverter<Date> dateToStringLocaleAwareConverter = new DateToStringLocaleAwareConverter<Date>() {
             @Override
             protected String doConvert(String value) {
                 return value;
             }
         };
+        dateToStringLocaleAwareConverter.setConfiguration(properties);
+        return dateToStringLocaleAwareConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<Date>, Class<String>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(Date.class, String.class);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 }

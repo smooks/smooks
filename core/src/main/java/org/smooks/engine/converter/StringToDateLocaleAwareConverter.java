@@ -53,7 +53,7 @@ import java.util.Date;
 public abstract class StringToDateLocaleAwareConverter<T> extends DateLocaleAwareTypeConverter<String, T> {
 
     @Override
-    public T convert(final String value) {
+    public T convert(String value) {
         final TemporalAccessor temporalAccessor = dateTimeFormatter.parse(value.trim());
         final Date date;
         if (temporalAccessor.query(TemporalQueries.localDate()) != null && temporalAccessor.query(TemporalQueries.localTime()) != null && temporalAccessor.query(TemporalQueries.zoneId()) != null) {

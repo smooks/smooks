@@ -62,7 +62,7 @@ public class MappingTypeConverterFactory implements TypeConverterFactory<String,
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<String>> getTypeConverterDescriptor() {
-        return new DefaultTypeConverterDescriptor(String.class, String.class, (short) 0);
+        return new DefaultTypeConverterDescriptor<>(String.class, String.class, (short) 0);
     }
 
     public static class MappingTypeConverter implements TypeConverter<String, String>, Configurable {
