@@ -54,15 +54,29 @@ import jakarta.annotation.Resource;
 import java.util.Properties;
 
 @Resource(name = "Mapping")
-public class MappingTypeConverterFactory implements TypeConverterFactory<String, String> {
+public class MappingTypeConverterFactory implements TypeConverterFactory<String, String>, Configurable {
+    private Properties properties = new Properties();
+
     @Override
     public MappingTypeConverter createTypeConverter() {
-        return new MappingTypeConverter();
+        MappingTypeConverter mappingTypeConverter = new MappingTypeConverter();
+        mappingTypeConverter.setConfiguration(properties);
+        return mappingTypeConverter;
     }
 
     @Override
     public TypeConverterDescriptor<Class<String>, Class<String>> getTypeConverterDescriptor() {
         return new DefaultTypeConverterDescriptor<>(String.class, String.class, (short) 0);
+    }
+
+    @Override
+    public void setConfiguration(Properties properties) throws SmooksConfigException {
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getConfiguration() {
+        return properties;
     }
 
     public static class MappingTypeConverter implements TypeConverter<String, String>, Configurable {
