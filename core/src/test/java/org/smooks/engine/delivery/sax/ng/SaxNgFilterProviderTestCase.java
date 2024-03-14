@@ -55,7 +55,7 @@ import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.tck.MockApplicationContext;
+import org.smooks.testkit.MockApplicationContext;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

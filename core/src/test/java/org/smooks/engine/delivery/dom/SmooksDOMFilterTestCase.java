@@ -55,7 +55,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
-import org.smooks.tck.MockExecutionContext;
+import org.smooks.testkit.MockExecutionContext;
 import org.smooks.support.StreamUtils;
 
 /**

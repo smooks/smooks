@@ -49,7 +49,7 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.report.FlatReportGenerator;
 import org.smooks.support.StreamUtils;
-import org.smooks.tck.TextUtils;
+import org.smooks.testkit.TextUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.smooks.tck.Assertions.compareCharStreams;
+import static org.smooks.testkit.Assertions.compareCharStreams;
 
 public class SaxNgFilterTestCase {
 

@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.tck;
+package org.smooks.testkit;
 
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
@@ -55,7 +55,7 @@ import org.smooks.engine.DefaultExecutionContext;
 import org.smooks.engine.delivery.DefaultContentDeliveryRuntime;
 import org.smooks.engine.delivery.DefaultReaderPool;
 import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.tck.delivery.dom.MockContentDeliveryConfig;
+import org.smooks.testkit.delivery.dom.MockContentDeliveryConfig;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.engine.profile.DefaultProfileSet;
 

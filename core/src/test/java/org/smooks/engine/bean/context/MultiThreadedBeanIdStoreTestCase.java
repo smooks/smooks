@@ -44,8 +44,8 @@ package org.smooks.engine.bean.context;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.api.bean.context.BeanContext;
-import org.smooks.tck.MockApplicationContext;
-import org.smooks.tck.MockExecutionContext;
+import org.smooks.testkit.MockApplicationContext;
+import org.smooks.testkit.MockExecutionContext;
 import org.smooks.api.bean.repository.BeanId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

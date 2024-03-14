@@ -40,49 +40,61 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.tck.delivery.dom;
+package org.smooks.testkit.resource;
 
-import org.smooks.engine.delivery.ContentHandlerBindingIndex;
-import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
+import org.smooks.support.StreamUtils;
+import org.smooks.api.resource.ContainerResourceLocator;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Hashtable;
 
-/**
- * Mock ContentDeliveryConfig for DOM.
- *
- * @author tfennelly
- */
-@SuppressWarnings({ "unchecked", "unused" })
-public class MockContentDeliveryConfig extends DOMContentDeliveryConfig {
-  private final Map objectsHash = new LinkedHashMap();
 
-  public MockContentDeliveryConfig() {
-    setResourceConfigs(new LinkedHashMap<>());
-    setAssemblyVisitBeforeIndex(new ContentHandlerBindingIndex());
-    setAssemblyVisitAfterIndex(new ContentHandlerBindingIndex());
-    setProcessingVisitBeforeIndex(new ContentHandlerBindingIndex());
-    setProcessingVisitAfterIndex(new ContentHandlerBindingIndex());
-    setSerializerVisitorIndex(new ContentHandlerBindingIndex());
-    setPostFragmentLifecycleIndex(new ContentHandlerBindingIndex());
-  }
+@SuppressWarnings("WeakerAccess")
+public class MockContainerResourceLocator implements ContainerResourceLocator {
 
-  /* (non-Javadoc)
-   * @see org.smooks.engine.delivery.ContentDeliveryConfig#getObjects(java.lang.String)
-   */
-  public List getObjects(String selector) {
-    return (List) objectsHash.get(selector);
-  }
+	public static final File TEST_STANDALONE_CTX_BASE = new File("src/test/standalone-ctx");
+	private final Hashtable streams = new Hashtable();
 
-  public void addObject(String selector, Object object) {
-    List objects = (List) objectsHash.get(selector);
+	@SuppressWarnings("unchecked")
+	public void setResource(String nameOrURI, InputStream stream) {
+		try {
+			byte[] streamData = StreamUtils.readStream(stream);
+			streams.put(nameOrURI, streamData);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 
-    if (objects == null) {
-      objects = new ArrayList<>();
-      objectsHash.put(selector, objects);
-    }
-    objects.add(object);
-  }
+	public InputStream getResource(String configName, String defaultURI) throws IllegalArgumentException, IOException {
+		return getResource(defaultURI);
+	}
+
+	public InputStream getResource(String uri) throws IllegalArgumentException, IOException {
+		String relUri = uri;
+
+		if (uri.charAt(0) == '\\' || uri.charAt(0) == '/') {
+			relUri = uri.substring(1);
+		}
+		// Try loading the resource from the standalone test context
+		File resFile = new File(TEST_STANDALONE_CTX_BASE, relUri);
+		if (resFile.exists() && !resFile.isDirectory()) {
+			return Files.newInputStream(Paths.get(resFile.toURI()));
+		}
+
+		// Check has it been set in this mock instance.
+		byte[] resBytes = (byte[]) streams.get(uri);
+		if (resBytes == null) {
+			throw new IllegalStateException("Resource [" + uri + "] not set in MockContainerResourceLocator OR loadable from the test standalone context.  Use MockContainerResourceLocator.setResource()");
+		}
+
+		return new ByteArrayInputStream(resBytes);
+	}
+
+	public URI getBaseURI() {
+		return URI.create("./");
+	}
 }
