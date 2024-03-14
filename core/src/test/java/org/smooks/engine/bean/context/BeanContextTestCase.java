@@ -47,7 +47,7 @@ import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.bean.context.BeanIdStore;
-import org.smooks.tck.MockExecutionContext;
+import org.smooks.testkit.MockExecutionContext;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.bean.repository.BeanId;

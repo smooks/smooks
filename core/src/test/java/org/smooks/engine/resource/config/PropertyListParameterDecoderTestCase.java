@@ -44,7 +44,7 @@ package org.smooks.engine.resource.config;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.tck.MockApplicationContext;
+import org.smooks.testkit.MockApplicationContext;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;

@@ -52,8 +52,8 @@ import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.support.XmlUtils;
-import org.smooks.tck.MockExecutionContext;
-import org.smooks.tck.delivery.dom.MockContentDeliveryConfig;
+import org.smooks.testkit.MockExecutionContext;
+import org.smooks.testkit.delivery.dom.MockContentDeliveryConfig;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -64,7 +64,7 @@ import java.io.OutputStreamWriter;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.smooks.tck.Assertions.compareCharStreams;
+import static org.smooks.testkit.Assertions.compareCharStreams;
 
 /**
  *

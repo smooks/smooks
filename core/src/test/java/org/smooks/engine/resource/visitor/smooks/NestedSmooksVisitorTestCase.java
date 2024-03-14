@@ -66,7 +66,7 @@ import org.smooks.engine.resource.visitor.dom.DOMModel;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.Stream;
 import org.smooks.io.payload.StringResult;
-import org.smooks.tck.MockExecutionContext;
+import org.smooks.testkit.MockExecutionContext;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;

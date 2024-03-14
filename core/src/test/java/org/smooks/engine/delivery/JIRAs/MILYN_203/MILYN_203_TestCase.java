@@ -45,7 +45,7 @@ package org.smooks.engine.delivery.JIRAs.MILYN_203;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.smooks.tck.Assertions.compareCharStreams;
+import static org.smooks.testkit.Assertions.compareCharStreams;
 
 import org.smooks.Smooks;
 import org.smooks.io.payload.StringResult;

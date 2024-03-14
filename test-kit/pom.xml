@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Test Kit</name>
-    <artifactId>smooks-tck</artifactId>
+    <artifactId>smooks-test-kit</artifactId>
 
     <properties>
         <hsqldb.version>2.5.2</hsqldb.version>

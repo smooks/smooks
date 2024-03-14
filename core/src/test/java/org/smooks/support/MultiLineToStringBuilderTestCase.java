@@ -44,7 +44,7 @@ package org.smooks.support;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
-import org.smooks.tck.MockExecutionContext;
+import org.smooks.testkit.MockExecutionContext;
 import org.smooks.api.TypedKey;
 import org.smooks.io.payload.FilterResult;
 import org.smooks.io.payload.JavaResult;

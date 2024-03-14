@@ -50,7 +50,7 @@ import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.ApplicationContext;
-import org.smooks.tck.MockApplicationContext;
+import org.smooks.testkit.MockApplicationContext;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.resource.config.MyContentDeliveryUnit5;

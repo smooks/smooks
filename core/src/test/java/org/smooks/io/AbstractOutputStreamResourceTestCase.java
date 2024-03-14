@@ -45,10 +45,9 @@ package org.smooks.io;
 import org.junit.jupiter.api.Test;
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.tck.MockExecutionContext;
+import org.smooks.testkit.MockExecutionContext;
 import org.smooks.api.TypedKey;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

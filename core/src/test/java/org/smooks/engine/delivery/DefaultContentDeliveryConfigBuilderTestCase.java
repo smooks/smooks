@@ -53,7 +53,7 @@ import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.engine.delivery.sax.ng.SaxNgContentDeliveryConfig;
 import org.smooks.engine.delivery.sax.ng.Visitor01;
-import org.smooks.tck.TextUtils;
+import org.smooks.testkit.TextUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
