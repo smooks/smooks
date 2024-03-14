@@ -88,7 +88,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
     private final ContentHandlerBindingIndex<ChildrenVisitor> childVisitorIndex = new ContentHandlerBindingIndex<>();
     private final ContentHandlerBindingIndex<BeforeVisitor> beforeVisitorIndex = new ContentHandlerBindingIndex<>();
     private final ContentHandlerBindingIndex<AfterVisitor> afterVisitorIndex = new ContentHandlerBindingIndex<>();
-    private Map<String, SaxNgVisitorBindings> reducedIndex;
+    private volatile Map<String, SaxNgVisitorBindings> reducedIndex;
     private Integer maxNodeDepth;
     private Boolean rewriteEntities;
     private Boolean maintainElementStack;
