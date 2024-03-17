@@ -49,6 +49,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -118,9 +119,86 @@ public class SAXWriterTestCase {
             public void skippedEntity(String name) throws SAXException {
 
             }
-        });
+        }, StandardCharsets.UTF_8);
 
         saxWriter.write("<a xmlns:b='c'/>");
+        assertEquals(1, countDownLatch.getCount());
+    }
+
+    @Test
+    public void testWriteGivenMultiByteCharInAttribute() throws IOException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        SAXWriter saxWriter = new SAXWriter(new ContentHandler() {
+            @Override
+            public void setDocumentLocator(Locator locator) {
+
+            }
+
+            @Override
+            public void startDocument() throws SAXException {
+
+            }
+
+            @Override
+            public void endDocument() throws SAXException {
+
+            }
+
+            @Override
+            public void startPrefixMapping(String prefix, String uri) throws SAXException {
+
+            }
+
+            @Override
+            public void endPrefixMapping(String prefix) throws SAXException {
+
+            }
+
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+                countDownLatch.countDown();
+                assertEquals(1, atts.getLength());
+                assertEquals("México", atts.getValue(0));
+                assertEquals("xmlns:b", atts.getQName(0));
+                assertEquals("b", atts.getLocalName(0));
+                assertEquals("CDATA", atts.getType(0));
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+
+            }
+
+            @Override
+            public void characters(char[] ch, int start, int length) throws SAXException {
+
+            }
+
+            @Override
+            public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+
+            }
+
+            @Override
+            public void processingInstruction(String target, String data) throws SAXException {
+
+            }
+
+            @Override
+            public void skippedEntity(String name) throws SAXException {
+
+            }
+        }, StandardCharsets.UTF_8);
+
+        saxWriter.write("<a xmlns:b='");
+        saxWriter.write("M");
+        saxWriter.write("é");
+        saxWriter.write("x");
+        saxWriter.write("i");
+        saxWriter.write("c");
+        saxWriter.write("o");
+        saxWriter.write("'/>");
+
         assertEquals(1, countDownLatch.getCount());
     }
 }

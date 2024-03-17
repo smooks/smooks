@@ -79,6 +79,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ServiceLoader;
 
@@ -212,7 +213,7 @@ public class DelegateReader implements SmooksXMLReader {
         }
 
         if (executionContext.get(contentHandlerTypedKey) == null) {
-            executionContext.put(contentHandlerTypedKey, new SAXWriter(contentHandler));
+            executionContext.put(contentHandlerTypedKey, new SAXWriter(contentHandler, Charset.forName(executionContext.getContentEncoding())));
         }
         StreamResult streamResult = new StreamResult();
         streamResult.setWriter(executionContext.get(contentHandlerTypedKey));
