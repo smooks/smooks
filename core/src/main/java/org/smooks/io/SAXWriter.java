@@ -56,6 +56,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 public class SAXWriter extends Writer {
     protected static final InputFactoryImpl ASYNC_XML_INPUT_FACTORY;
@@ -69,8 +70,11 @@ public class SAXWriter extends Writer {
         ASYNC_XML_INPUT_FACTORY.configureForLowMemUsage();
     }
 
-    public SAXWriter(final ContentHandler contentHandler) {
+    protected final Charset charset;
+
+    public SAXWriter(ContentHandler contentHandler, Charset charset) {
         this.contentHandler = contentHandler;
+        this.charset = charset;
         lexicalHandler = contentHandler instanceof LexicalHandler ? (LexicalHandler) contentHandler : null;
         asyncXMLStreamReader = ASYNC_XML_INPUT_FACTORY.createAsyncForByteArray();
     }
@@ -78,7 +82,8 @@ public class SAXWriter extends Writer {
     @Override
     public void write(final char[] cbuf, final int off, final int len) throws IOException {
         try {
-            asyncXMLStreamReader.getInputFeeder().feedInput(new String(cbuf).getBytes(), off, len);
+            byte[] inputBytes = new String(cbuf, off, len).getBytes(charset);
+            asyncXMLStreamReader.getInputFeeder().feedInput(inputBytes, 0, inputBytes.length);
             while (true) {
                 int event = asyncXMLStreamReader.next();
                 if (AsyncXMLStreamReader.EVENT_INCOMPLETE == event) {
