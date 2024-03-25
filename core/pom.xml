@@ -14,7 +14,7 @@
     <artifactId>smooks-core</artifactId>
 
     <properties>
-        <cucumber.version>7.15.0</cucumber.version>
+        <cucumber.version>7.16.1</cucumber.version>
     </properties>
 
     <build>
