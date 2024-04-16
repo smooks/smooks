@@ -50,9 +50,4 @@ public class DocumentSelectorStep extends ElementSelectorStep {
     public DocumentSelectorStep() {
         super(XMLConstants.NULL_NS_URI, "#document", XMLConstants.DEFAULT_NS_PREFIX);
     }
-
-    @Override
-    public QName getQName() {
-        return qName;
-    }
 }

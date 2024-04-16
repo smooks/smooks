@@ -234,6 +234,18 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     }
 
     @Test
+    @DisplayName("items/item[2]")
+    public void testAddVisitorSelectorsGivenIndexInLastStep() {
+        Smooks smooks = new Smooks();
+        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
+        smooks.addVisitor(new XPathVisitor(), "items/item[2]");
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+        assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
+        assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
+    }
+
+    @Test
     @DisplayName("items/item[3]/units")
     public void testSelectorGivenWrongIndex() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-08.xml"));

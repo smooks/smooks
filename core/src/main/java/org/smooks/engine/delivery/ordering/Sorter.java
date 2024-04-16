@@ -42,6 +42,7 @@
  */
 package org.smooks.engine.delivery.ordering;
 
+import jakarta.annotation.Priority;
 import org.smooks.api.delivery.ordering.Consumer;
 import org.smooks.api.delivery.ordering.Producer;
 import org.smooks.assertion.AssertArgument;
@@ -75,7 +76,7 @@ public class Sorter {
 
     @SuppressWarnings("unchecked")
     private static <T extends ContentHandler> List<DependencySpec> buildDependencyMap(List<ContentHandlerBinding<T>> visitors) {
-        List<DependencySpec> dependancySpecs = new ArrayList<DependencySpec>();
+        List<DependencySpec> dependancySpecs = new ArrayList<>();
 
         for (ContentHandlerBinding<T> visitor : visitors) {
             dependancySpecs.add(new DependencySpec(visitor));
@@ -136,7 +137,7 @@ public class Sorter {
             }
 
             private int score(DependencySpec spec) {
-                int score = 0;
+                int score = getPriority(spec.visitor.getContentHandler());
                 if (spec.visitor.getContentHandler() instanceof Producer) {
                     score += 2;
                 }
@@ -155,6 +156,15 @@ public class Sorter {
             for (DependencySpec spec : array) {
                 dependancySpecs.add(0, spec);
             }
+        }
+    }
+
+    private static int getPriority(ContentHandler contentHandler) {
+        Priority annotation = contentHandler.getClass().getAnnotation(Priority.class);
+        if (annotation != null) {
+            return annotation.value();
+        } else {
+            return 0;
         }
     }
 
@@ -190,8 +200,8 @@ public class Sorter {
     private static <T extends ContentHandler> void remapList(List<DependencySpec> dependancySpecs, List<ContentHandlerBinding<T>> visitors) {
         visitors.clear();
 
-        for (DependencySpec dependancySpec : dependancySpecs) {
-            visitors.add(dependancySpec.visitor);
+        for (DependencySpec dependencySpec : dependancySpecs) {
+            visitors.add(dependencySpec.visitor);
         }
     }
 
@@ -207,15 +217,15 @@ public class Sorter {
 
     @SuppressWarnings("unchecked")
     private static void assertNo2WayDependencies(DependencySpec spec, List<DependencySpec> dependancySpecs, Stack<DependencySpec> dependencyStack) {
-        for (DependencySpec dependancy : dependancySpecs) {
-            dependencyStack.push(dependancy);
-            if (dependancy.isDependant(spec)) {
+        for (DependencySpec<?> dependency : dependancySpecs) {
+            dependencyStack.push(dependency);
+            if (dependency.isDependant(spec)) {
                 dependencyStack.push(spec);
                 throw new SmooksConfigException("Invalid 2-Way/Circular Visitor Producer/Consumer dependency detected in configuration.\n" + getDependencyStackTrace(dependencyStack));
             }
 
             // Recurse down ...
-            assertNo2WayDependencies(spec, dependancy.dependants, dependencyStack);
+            assertNo2WayDependencies(spec, dependency.dependants, dependencyStack);
             dependencyStack.pop();
         }
     }
@@ -224,7 +234,7 @@ public class Sorter {
 
         private final ContentHandlerBinding<T> visitor;
 
-        private final List<DependencySpec> dependants = new ArrayList<DependencySpec>();
+        private final List<DependencySpec> dependants = new ArrayList<>();
 
         private DependencySpec(ContentHandlerBinding<T> visitor) {
             AssertArgument.isNotNull(visitor, "visitor");

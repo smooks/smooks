@@ -57,7 +57,7 @@ class SaxNgVisitorBindings {
     private List<ContentHandlerBinding<BeforeVisitor>> beforeVisitors;
     private List<ContentHandlerBinding<ChildrenVisitor>> childVisitors;
     private List<ContentHandlerBinding<AfterVisitor>> afterVisitors;
-    public List<ContentHandlerBinding<? extends Visitor>> visitors;
+    public volatile List<ContentHandlerBinding<? extends Visitor>> visitors;
 
     public List<ContentHandlerBinding<BeforeVisitor>> getBeforeVisitors() {
         return beforeVisitors;
