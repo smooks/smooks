@@ -42,6 +42,7 @@
  */
 package org.smooks.engine.resource.config.xpath;
 
+import jakarta.annotation.Priority;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
@@ -59,18 +60,10 @@ import org.w3c.dom.Node;
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
+@Priority(Integer.MAX_VALUE)
 public class ElementPositionCounter implements BeforeVisitor {
 
-    private final SelectorStep selectorStep;
     private final TypedKey<String> positionMementoTypedKey = TypedKey.of();
-
-    public ElementPositionCounter(SelectorStep selectorStep) {
-        this.selectorStep = selectorStep;
-    }
-
-    public SelectorStep getSelectorStep() {
-        return selectorStep;
-    }
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {

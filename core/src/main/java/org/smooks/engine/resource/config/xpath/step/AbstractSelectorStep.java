@@ -61,7 +61,6 @@ public abstract class AbstractSelectorStep implements SelectorStep {
         return namespaces;
     }
 
-
     @Override
     public boolean evaluate(final Fragment<?> fragment, final ExecutionContext executionContext) {
         for (Predicate predicate : predicates) {

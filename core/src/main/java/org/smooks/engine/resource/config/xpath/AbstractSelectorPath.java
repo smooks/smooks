@@ -58,9 +58,10 @@ import java.util.ListIterator;
 import java.util.Properties;
 
 public abstract class AbstractSelectorPath implements SelectorPath {
-    protected ExpressionEvaluator expressionEvaluator;
+
     protected final Properties namespaces = new Properties();
     protected final List<SelectorStep> selectorSteps = new ArrayList<>();
+    protected ExpressionEvaluator expressionEvaluator;
     protected String selector;
 
     @Override
@@ -216,7 +217,7 @@ public abstract class AbstractSelectorPath implements SelectorPath {
     @Override
     public void setConditionEvaluator(ExpressionEvaluator expressionEvaluator) {
         if (expressionEvaluator != null && !(expressionEvaluator instanceof ExecutionContextExpressionEvaluator)) {
-            throw new UnsupportedOperationException("Unsupported ExpressionEvaluator type '" + expressionEvaluator.getClass().getName() + "'.  Currently only support '" + ExecutionContextExpressionEvaluator.class.getName() + "' implementations.");
+            throw new SmooksException("Unsupported ExpressionEvaluator type '" + expressionEvaluator.getClass().getName() + "'.  Currently only support '" + ExecutionContextExpressionEvaluator.class.getName() + "' implementations.");
         }
         this.expressionEvaluator = expressionEvaluator;
     }

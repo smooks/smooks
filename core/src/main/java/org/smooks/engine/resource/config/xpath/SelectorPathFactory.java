@@ -114,7 +114,7 @@ public final class SelectorPathFactory {
         }
 
         SelectorPathJaxenHandler xpathHandler = new SelectorPathJaxenHandler(xpathExpression, namespaces);
-        if (xpathExpression.trim().length() > 0) {
+        if (!xpathExpression.trim().isEmpty()) {
             reader.setXPathHandler(xpathHandler);
             try {
                 reader.parse(xpathExpression);

@@ -47,19 +47,28 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.xpath.Predicate;
+import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.engine.delivery.AbstractFilterProvider;
+import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.delivery.event.DefaultContentDeliveryConfigExecutionEvent;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.engine.resource.config.xpath.ElementPositionCounter;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
+import org.smooks.engine.resource.config.xpath.predicate.PositionPredicateEvaluator;
+import org.smooks.engine.resource.config.xpath.step.DocumentSelectorStep;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
+import org.smooks.engine.resource.config.xpath.step.NamedSelectorStep;
 
+import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -106,6 +115,7 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
                     }
                 }
 
+                addPositionCounter(interceptorChain, saxNgContentDeliveryConfig);
                 contentDeliveryConfigExecutionEvents.add(new DefaultContentDeliveryConfigExecutionEvent(interceptorChain.getResourceConfig(), "Added as a SAX NG visitor."));
             }
         }
@@ -118,6 +128,53 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
         return saxNgContentDeliveryConfig;
     }
 
+    protected <T extends Visitor> void addPositionCounter(final ContentHandlerBinding<T> contentHandlerBinding, SaxNgContentDeliveryConfig saxNgContentDeliveryConfig) {
+        SelectorPath selectorPath = contentHandlerBinding.getResourceConfig().getSelectorPath();
+
+        for (int i = 0; i < selectorPath.size(); i++) {
+            List<SelectorStep> selectorSteps = selectorPath.subList(0, i + 1);
+            SelectorStep lastSelectorStep = selectorSteps.get(selectorSteps.size() - 1);
+            if (lastSelectorStep instanceof ElementSelectorStep) {
+                for (Predicate predicate : lastSelectorStep.getPredicates()) {
+                    if (predicate instanceof PositionPredicateEvaluator) {
+                        final ElementPositionCounter elementPositionCounter = new ElementPositionCounter();
+
+                        ((PositionPredicateEvaluator) predicate).setCounter(elementPositionCounter);
+                        addPositionCounter(elementPositionCounter, saxNgContentDeliveryConfig, selectorSteps);
+                    }
+                }
+            }
+        }
+    }
+
+    protected void addPositionCounter(ElementPositionCounter positionCounter, SaxNgContentDeliveryConfig saxNgContentDeliveryConfig, List<SelectorStep> selectorSteps) {
+        ElementSelectorStep lastSelectorStep = (ElementSelectorStep) selectorSteps.get(selectorSteps.size() - 1);
+
+        StringBuilder positionCounterSelector = new StringBuilder();
+        Properties namespaces = new Properties();
+        boolean prepend = false;
+        for (SelectorStep selectorStep : selectorSteps) {
+            namespaces.putAll(selectorStep.getNamespaces());
+            if (selectorStep instanceof DocumentSelectorStep) {
+                positionCounterSelector.append("/");
+            } else {
+                if (prepend) {
+                    positionCounterSelector.append("/");
+                }
+                QName qName = ((NamedSelectorStep) selectorStep).getQName();
+                if (!qName.getPrefix().isEmpty()) {
+                    positionCounterSelector.append(qName.getPrefix()).append(":");
+                }
+                positionCounterSelector.append(qName.getLocalPart());
+                prepend = true;
+            }
+        }
+
+        ResourceConfig positionCounterResourceConfig = new DefaultResourceConfig(positionCounterSelector.toString(), namespaces);
+        String lastStepNodeName = lastSelectorStep.getQName().getLocalPart();
+        saxNgContentDeliveryConfig.getBeforeVisitorIndex().put(lastStepNodeName, new DefaultContentHandlerBinding<>(positionCounter, positionCounterResourceConfig));
+    }
+
     protected void assertSelectorsNotAccessingText(ResourceConfig resourceConfig) {
         if (resourceConfig.getSelectorPath() instanceof IndexedSelectorPath &&
                 ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep() instanceof ElementSelectorStep &&
@@ -128,7 +185,8 @@ public class SaxNgFilterProvider extends AbstractFilterProvider {
 
     @Override
     public Boolean isProvider(List<ContentHandlerBinding<Visitor>> contentHandlerBindings) {
-        return contentHandlerBindings.stream().filter(c -> c.getContentHandler() instanceof BeforeVisitor || c.getContentHandler() instanceof AfterVisitor).count() == contentHandlerBindings.size();
+        return contentHandlerBindings.stream().filter(c -> c.getContentHandler() instanceof BeforeVisitor
+                || c.getContentHandler() instanceof AfterVisitor).count() == contentHandlerBindings.size();
     }
 
     @Override

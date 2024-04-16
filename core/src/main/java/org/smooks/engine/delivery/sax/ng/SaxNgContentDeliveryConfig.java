@@ -49,35 +49,23 @@ import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
-import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.resource.config.xpath.Predicate;
-import org.smooks.api.resource.config.xpath.SelectorStep;
-import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.engine.delivery.AbstractContentDeliveryConfig;
 import org.smooks.engine.delivery.ContentHandlerBindingIndex;
-import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.delivery.ordering.Sorter;
-import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.engine.resource.config.xpath.ElementPositionCounter;
-import org.smooks.engine.resource.config.xpath.predicate.PositionPredicateEvaluator;
-import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -219,62 +207,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
             sort();
         }
 
-        addPositionCounters(reducedIndex);
-
         return reducedIndex;
-    }
-
-    protected void addPositionCounters(Map<String, SaxNgVisitorBindings> reducedIndex) {
-        final Map<String, SaxNgVisitorBindings> reducedIndexCopy = new LinkedHashMap<>(reducedIndex);
-        Collection<SaxNgVisitorBindings> elementVisitorMaps = reducedIndexCopy.values();
-
-        for (SaxNgVisitorBindings elementVisitorMap : elementVisitorMaps) {
-            addPositionCounters(elementVisitorMap.getBeforeVisitors(), reducedIndex);
-            addPositionCounters(elementVisitorMap.getChildVisitors(), reducedIndex);
-            addPositionCounters(elementVisitorMap.getAfterVisitors(), reducedIndex);
-        }
-    }
-
-    private <T extends Visitor> void addPositionCounters(final List<ContentHandlerBinding<T>> contentHandlerBindings, Map<String, SaxNgVisitorBindings> reducedIndex) {
-        if (contentHandlerBindings == null) {
-            return;
-        }
-
-        for (ContentHandlerBinding<? extends Visitor> contentHandlerBinding : contentHandlerBindings) {
-            for (SelectorStep selectorStep : contentHandlerBinding.getResourceConfig().getSelectorPath()) {
-                if (selectorStep instanceof ElementSelectorStep) {
-                    for (Predicate predicate : selectorStep.getPredicates()) {
-                        if (predicate instanceof PositionPredicateEvaluator) {
-                            final ElementPositionCounter elementPositionCounter = new ElementPositionCounter(selectorStep);
-
-                            ((PositionPredicateEvaluator) predicate).setCounter(elementPositionCounter);
-                            addPositionCounter(elementPositionCounter, reducedIndex, (ElementSelectorStep) selectorStep);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void addPositionCounter(ElementPositionCounter positionCounter, Map<String, SaxNgVisitorBindings> reducedIndex, ElementSelectorStep elementSelectorStep) {
-        String targetElementName = elementSelectorStep.getQName().getLocalPart();
-        SaxNgVisitorBindings visitorBindings = reducedIndex.get(targetElementName);
-
-        if (visitorBindings == null) {
-            visitorBindings = new SaxNgVisitorBindings();
-            reducedIndex.put(targetElementName, visitorBindings);
-        }
-
-        List<ContentHandlerBinding<BeforeVisitor>> vbs = visitorBindings.getBeforeVisitors();
-
-        if (vbs == null) {
-            vbs = new ArrayList<>();
-            visitorBindings.setBeforeVisitors(vbs);
-        }
-
-        ResourceConfig resourceConfig = new DefaultResourceConfig(targetElementName, new Properties());
-
-        vbs.add(0, new DefaultContentHandlerBinding<>(positionCounter, resourceConfig));
     }
 
     public SaxNgVisitorBindings get(String... selectors) {
