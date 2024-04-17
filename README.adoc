@@ -204,7 +204,7 @@ image:docs/images/Event-model.gif[Image:event-model.gif]
 
 === Hello World App
 
-One or more of https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/resource/visitor/sax/ng/SaxNgVisitor.html[SaxNgVisitor] interfaces need to be implemented in order to consume the SAX event stream produced from the source, depending on which events are of interest.
+One or more of https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/SaxNgVisitor.html[SaxNgVisitor] interfaces need to be implemented in order to consume the SAX event stream produced from the source, depending on which events are of interest.
 
 The following is a hello world app demonstrating how to implement a visitor that is fired on the `+visitBefore+` and `+visitAfter+` events of a targeted node in the event stream. In this case, Smooks configures the visitor to target element `+foo+`:
 
@@ -220,7 +220,7 @@ Smooks smooks = new Smooks("/smooks/echo-example.xml");
 smooks.filterSource(new StreamSource(inputStream));
 ----
 
-Observe that in this case the program does not produce a result. The program does not even interact with the filtering process in any way because it does not provide an https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/ExecutionContext.html[`+ExecutionContext+`] to https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/Smooks.html[`+smooks.filterSource(...)+`].
+Observe that in this case the program does not produce a result. The program does not even interact with the filtering process in any way because it does not provide an https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/ExecutionContext.html[`+ExecutionContext+`] to https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/Smooks.html[`+smooks.filterSource(...)+`].
 
 This example illustrated the lower level mechanics of the Smooks's programming model. In reality, most users are not going to want to solve their problems at this level of detail. Smooks ships with substantial pre-built functionality, that is, pre-built visitors. Visitors are bundled based on functionality: these bundles are called _Cartridges_.
 
@@ -404,9 +404,9 @@ public void filterSource(Source source, Result... results) throws SmooksExceptio
 
 Smooks can work with the standard JDK https://docs.oracle.com/javase/8/docs/api/javax/xml/transform/stream/StreamResult.html[`+StreamResult+`] and https://docs.oracle.com/javase/8/docs/api/javax/xml/transform/dom/DOMResult.html[`+DOMResult+`] result types, as well as the Smooks specific ones:
 
-* https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/io/payload/JavaResult.html[`+JavaResult+`]: result type for capturing the contents of the Smooks JavaBean context.
+* https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/io/payload/JavaResult.html[`+JavaResult+`]: result type for capturing the contents of the Smooks JavaBean context.
 
-* https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/io/payload/StringResult.html[`+StringResult+`]: `+StreamResult+` extension wrapping a `+StringWriter+`, useful for testing.
+* https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/io/payload/StringResult.html[`+StringResult+`]: `+StreamResult+` extension wrapping a `+StringWriter+`, useful for testing.
 
 IMPORTANT: As yet, Smooks does not support capturing output to multiple `+Result+` instances of the same type. For example, you can specify multiple `+StreamResult+` instances in `+Smooks.filterSource(...)+` but Smooks will only output to the first `+StreamResult+` instance.
 
@@ -724,7 +724,7 @@ smooks.filterSource(executionContext, new StreamSource(inputStream), new StreamR
 
 An example `+HtmlReportGenerator+` report can be seen http://www.milyn.org/docs/smooks-report/report.html[online here].
 
-Of course you can also write and use your own https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/delivery/event/ExecutionEventListener.html[ExecutionEventListener] implementations.
+Of course you can also write and use your own https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/delivery/event/ExecutionEventListener.html[ExecutionEventListener] implementations.
 
 CAUTION: Only use the HTMLReportGenerator in development. When enabled, the HTMLReportGenerator incurs a significant performance overhead and with large message, can even result in OutOfMemory exceptions.
 
@@ -788,9 +788,9 @@ NOTE: `+BeanId+` and `+BeanIdStore+` are thread-safe.
 
 A number of pre-installed beans are available in the bean context at runtime:
 
-* https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/engine/bean/context/preinstalled/UniqueID.html[`+PUUID+`]: This `+UniqueId+` instance provides unique identifiers for the filtering `+ExecutionContext+`.
+* https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/bean/context/preinstalled/UniqueID.html[`+PUUID+`]: This `+UniqueId+` instance provides unique identifiers for the filtering `+ExecutionContext+`.
 
-* https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/engine/bean/context/preinstalled/Time.html[`+PTIME+`]: This `+Time+` instance provides time-based data for the filtering ExecutionContext.
+* https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/bean/context/preinstalled/Time.html[`+PTIME+`]: This `+Time+` instance provides time-based data for the filtering ExecutionContext.
 
 The following are examples of how each of these would be used in a FreeMarker template.
 
@@ -840,7 +840,7 @@ Global configuration settings are, as the name implies, configuration options th
 
 Smooks supports two types of globals, default properties and global parameters:
 
-* Global Configuration Parameters: Every in a Smooks configuration can specify elements for configuration parameters. These parameter values are available at runtime through the https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/resource/config/ResourceConfig.html[`+ResourceConfig+`], or are reflectively injected through the `+@Inject+` annotation. Global Configuration Parameters are parameters that are defined centrally (see below) and are accessible to all runtime components via the `+ExecutionContext+` (vs `+ResourceConfig+`). More on this in the following sections.
+* Global Configuration Parameters: Every in a Smooks configuration can specify elements for configuration parameters. These parameter values are available at runtime through the https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/config/ResourceConfig.html[`+ResourceConfig+`], or are reflectively injected through the `+@Inject+` annotation. Global Configuration Parameters are parameters that are defined centrally (see below) and are accessible to all runtime components via the `+ExecutionContext+` (vs `+ResourceConfig+`). More on this in the following sections.
 
 * Default Properties: Specify default values for attributes. These defaults are automatically applied to `+ResourceConfig+` s  when their corresponding does not specify the attribute. More on this in the following section.
 
@@ -1371,13 +1371,13 @@ The basic process involves:
 . Writing an configuration XSD for your component that extends the base https://www.smooks.org/xsd/smooks-2.0.xsd[https://www.smooks.org/xsd/smooks-2.0.xsd] configuration namespace. This XSD must be supplied on the classpath with your component. It must be located in the _/META-INF_ folder and have the same path as the namespace URI. For example, if your extended namespace URI is  http://www.acme.com/schemas/smooks/acme-core-1.0.xsd, then the physical XSD file must be supplied on the classpath in "/META-INF/schemas/smooks/acme-core-1.0.xsd".
 . Writing a Smooks configuration namespace mapping configuration file that maps the custom namespace configuration into a `+ResourceConfig+` instance. This file must be named (by convention) based on the name of the namespace it is mapping and must be physically located on the classpath in the same folder as the XSD. Extending the above example, the Smooks mapping file would be "/META-INF/schemas/smooks/acme-core-1.0.xsd-smooks.xml". Note the "-smooks.xml" postfix.
 
-The easiest way to get familiar with this mechanism is by looking at existing extended namespace configurations within the Smooks code itself. All Smooks components (including e.g. the Java Binding functionality) use this mechanism for defining their configurations. Smooks Core itself defines a number of extended configuration namesaces, https://github.com/smooks/smooks/tree/v2.0.0-RC3/core/src/main/resources/META-INF/xsd[as can be seen in the source].
+The easiest way to get familiar with this mechanism is by looking at existing extended namespace configurations within the Smooks code itself. All Smooks components (including e.g. the Java Binding functionality) use this mechanism for defining their configurations. Smooks Core itself defines a number of extended configuration namesaces, https://github.com/smooks/smooks/tree/v2.0.0-RC4/core/src/main/resources/META-INF/xsd[as can be seen in the source].
 
 === Implementing a Source Reader
 
 Implementing and configuring a new Source Reader for Smooks is straightforward. The Smooks specific parts of the process are easy and are not really the issue. The level of effort involved is a function of the complexity of the Source data format for which you are implementing the reader.
 
-Implementing a Reader for your custom data format immediately opens all Smooks capabilities to that data format e.g. Java Binding, Templating, Persistence, Validation, Splitting & Routing, etc... So a relatively small investment can yield a quite significant return. The only requirement, from a Smooks perspective, is that the Reader implements the standard `+org.xml.sax.XMLReader+` interface from the Java JDK. However, if you want to be able to configure the Reader implementation, it needs to implement the https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/resource/reader/SmooksXMLReader.html[`+org.smooks.api.resource.reader.SmooksXMLReader+`] interface (which is just an extension of `+org.xml.sax.XMLReader+`). So, you can easily use (or extend) an existing `+org.xml.sax.XMLReader+` implementation, or implement a new Reader from scratch.
+Implementing a Reader for your custom data format immediately opens all Smooks capabilities to that data format e.g. Java Binding, Templating, Persistence, Validation, Splitting & Routing, etc... So a relatively small investment can yield a quite significant return. The only requirement, from a Smooks perspective, is that the Reader implements the standard `+org.xml.sax.XMLReader+` interface from the Java JDK. However, if you want to be able to configure the Reader implementation, it needs to implement the https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/reader/SmooksXMLReader.html[`+org.smooks.api.resource.reader.SmooksXMLReader+`] interface (which is just an extension of `+org.xml.sax.XMLReader+`). So, you can easily use (or extend) an existing `+org.xml.sax.XMLReader+` implementation, or implement a new Reader from scratch.
 
 Let's now look at a simple example of implementing a Reader for use with Smooks. In this example, we will implement a Reader that can read a stream of Comma Separated Value (CSV) records, converting the CSV stream into a stream of SAX events that can be processed by Smooks, allowing you to do all the things Smooks allows (Java Binding, etc...).
 
@@ -1758,7 +1758,7 @@ IMPORTANT: Smooks treats all visitors as stateless objects. A visitor instance m
 The SAX NG visitor API is made up of a number of interfaces. These interfaces are based on the
 https://docs.oracle.com/javase/8/docs/api/org/xml/sax/ContentHandler.html[SAX events] that a SaxNgVisitor implementation can capture and processes. Depending on the use case being solved with the SaxNgVisitor implementation, you may need to implement one or all of these interfaces.
 
-https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/resource/visitor/sax/ng/BeforeVisitor.html[`+BeforeVisitor+`]: Captures the _startElement_ SAX event for the targeted fragment element:
+https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/BeforeVisitor.html[`+BeforeVisitor+`]: Captures the _startElement_ SAX event for the targeted fragment element:
 
 [source,java]
 ----
@@ -1768,7 +1768,7 @@ public interface BeforeVisitor extends Visitor {
 }
 ----
 
-https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/resource/visitor/sax/ng/ChildrenVisitor.html[`+ChildrenVisitor+`]: Captures the _character_ based SAX events for the targeted fragment element, as well as Smooks generated (pseudo) events corresponding to the _startElement_ events of child fragment elements:
+https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/ChildrenVisitor.html[`+ChildrenVisitor+`]: Captures the _character_ based SAX events for the targeted fragment element, as well as Smooks generated (pseudo) events corresponding to the _startElement_ events of child fragment elements:
 
 [source,java]
 ----
@@ -1780,7 +1780,7 @@ public interface ChildrenVisitor extends Visitor {
 }
 ----
 
-https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/resource/visitor/sax/ng/AfterVisitor.html[`+AfterVisitor+`]: Captures the _endElement_ SAX event for the targeted fragment element:
+https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/AfterVisitor.html[`+AfterVisitor+`]: Captures the _endElement_ SAX event for the targeted fragment element:
 
 [source,java]
 ----
@@ -1790,7 +1790,7 @@ public interface AfterVisitor extends Visitor {
 }
 ----
 
-As a convenience for those implementations that need to capture all the SAX events, the above three interfaces are pulled together into a single interface in the https://www.smooks.org/javadoc/v2.0.0-RC3/smooks/org/smooks/api/resource/visitor/sax/ng/ElementVisitor.html[`+ElementVisitor+`] interface.
+As a convenience for those implementations that need to capture all the SAX events, the above three interfaces are pulled together into a single interface in the https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/ElementVisitor.html[`+ElementVisitor+`] interface.
 
 Illustrating these events using a piece of XML:
 
