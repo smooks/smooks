@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.smooks</groupId>
         <artifactId>smooks</artifactId>
-        <version>2.0.0-RC4</version>
+        <version>2.0.0-RC5-SNAPSHOT</version>
     </parent>
 
     <name>Core</name>
