@@ -2195,7 +2195,7 @@ To activate instrumentation in Smooks, you need to:
 <dependency>
     <groupId>org.smooks</groupId>
     <artifactId>smooks-management</artifactId>
-    <version>TBA</version>
+    <version>2.0.0-RC4</version>
 </dependency>
 ----
 
