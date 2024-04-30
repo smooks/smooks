@@ -54,7 +54,7 @@
         <log4j2.version>2.23.1</log4j2.version>
         <mockito.version>4.11.0</mockito.version>
         <mvel.version>2.5.2.Final</mvel.version>
-        <slf4j-api.version>2.0.9</slf4j-api.version>
+        <slf4j-api.version>2.0.13</slf4j-api.version>
         <xmlunit.version>2.10.0</xmlunit.version>
         <xstream.version>1.4.20</xstream.version>
     </properties>
