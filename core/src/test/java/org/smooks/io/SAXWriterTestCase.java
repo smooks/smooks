@@ -59,32 +59,7 @@ public class SAXWriterTestCase {
     @Test
     public void testWriteGivenXmlNsAttribute() throws IOException {
         CountDownLatch countDownLatch = new CountDownLatch(2);
-        SAXWriter saxWriter = new SAXWriter(new ContentHandler() {
-            @Override
-            public void setDocumentLocator(Locator locator) {
-
-            }
-
-            @Override
-            public void startDocument() throws SAXException {
-
-            }
-
-            @Override
-            public void endDocument() throws SAXException {
-
-            }
-
-            @Override
-            public void startPrefixMapping(String prefix, String uri) throws SAXException {
-
-            }
-
-            @Override
-            public void endPrefixMapping(String prefix) throws SAXException {
-
-            }
-
+        SAXWriter saxWriter = new SAXWriter(new MockContentHandler() {
             @Override
             public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
                 countDownLatch.countDown();
@@ -94,31 +69,6 @@ public class SAXWriterTestCase {
                 assertEquals("b", atts.getLocalName(0));
                 assertEquals("CDATA", atts.getType(0));
             }
-
-            @Override
-            public void endElement(String uri, String localName, String qName) throws SAXException {
-
-            }
-
-            @Override
-            public void characters(char[] ch, int start, int length) throws SAXException {
-
-            }
-
-            @Override
-            public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-
-            }
-
-            @Override
-            public void processingInstruction(String target, String data) throws SAXException {
-
-            }
-
-            @Override
-            public void skippedEntity(String name) throws SAXException {
-
-            }
         }, StandardCharsets.UTF_8);
 
         saxWriter.write("<a xmlns:b='c'/>");
@@ -126,34 +76,25 @@ public class SAXWriterTestCase {
     }
 
     @Test
+    public void testWriteGivenNullUriInXmlNsAttribute() throws IOException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        SAXWriter saxWriter = new SAXWriter(new MockContentHandler() {
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes atts) {
+                countDownLatch.countDown();
+                assertEquals(1, atts.getLength());
+                assertEquals("xmlns", atts.getQName(0));
+            }
+        }, StandardCharsets.UTF_8);
+
+        saxWriter.write("<a xmlns=''/>");
+        assertEquals(1, countDownLatch.getCount());
+    }
+
+    @Test
     public void testWriteGivenMultiByteCharInAttribute() throws IOException {
         CountDownLatch countDownLatch = new CountDownLatch(2);
-        SAXWriter saxWriter = new SAXWriter(new ContentHandler() {
-            @Override
-            public void setDocumentLocator(Locator locator) {
-
-            }
-
-            @Override
-            public void startDocument() throws SAXException {
-
-            }
-
-            @Override
-            public void endDocument() throws SAXException {
-
-            }
-
-            @Override
-            public void startPrefixMapping(String prefix, String uri) throws SAXException {
-
-            }
-
-            @Override
-            public void endPrefixMapping(String prefix) throws SAXException {
-
-            }
-
+        SAXWriter saxWriter = new SAXWriter(new MockContentHandler() {
             @Override
             public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
                 countDownLatch.countDown();
@@ -162,31 +103,6 @@ public class SAXWriterTestCase {
                 assertEquals("xmlns:b", atts.getQName(0));
                 assertEquals("b", atts.getLocalName(0));
                 assertEquals("CDATA", atts.getType(0));
-            }
-
-            @Override
-            public void endElement(String uri, String localName, String qName) throws SAXException {
-
-            }
-
-            @Override
-            public void characters(char[] ch, int start, int length) throws SAXException {
-
-            }
-
-            @Override
-            public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-
-            }
-
-            @Override
-            public void processingInstruction(String target, String data) throws SAXException {
-
-            }
-
-            @Override
-            public void skippedEntity(String name) throws SAXException {
-
             }
         }, StandardCharsets.UTF_8);
 
@@ -200,5 +116,63 @@ public class SAXWriterTestCase {
         saxWriter.write("'/>");
 
         assertEquals(1, countDownLatch.getCount());
+    }
+
+    private static class MockContentHandler implements ContentHandler {
+
+        @Override
+        public void setDocumentLocator(Locator locator) {
+
+        }
+
+        @Override
+        public void startDocument() {
+
+        }
+
+        @Override
+        public void endDocument() {
+
+        }
+
+        @Override
+        public void startPrefixMapping(String prefix, String uri) {
+
+        }
+
+        @Override
+        public void endPrefixMapping(String prefix) {
+
+        }
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName) {
+
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) {
+
+        }
+
+        @Override
+        public void ignorableWhitespace(char[] ch, int start, int length) {
+
+        }
+
+        @Override
+        public void processingInstruction(String target, String data) {
+
+        }
+
+        @Override
+        public void skippedEntity(String name) {
+
+        }
     }
 }
