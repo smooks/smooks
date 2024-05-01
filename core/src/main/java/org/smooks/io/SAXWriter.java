@@ -58,6 +58,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
+import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
+
 public class SAXWriter extends Writer {
     protected static final InputFactoryImpl ASYNC_XML_INPUT_FACTORY;
 
@@ -102,7 +104,12 @@ public class SAXWriter extends Writer {
                             saxAttributes.addAttribute(asyncXMLStreamReader.getAttributeName(i).getNamespaceURI(), asyncXMLStreamReader.getAttributeName(i).getLocalPart(), asyncXMLStreamReader.getAttributeName(i).getPrefix() + ":" + asyncXMLStreamReader.getAttributeName(i).getLocalPart(), asyncXMLStreamReader.getAttributeType(i), asyncXMLStreamReader.getAttributeValue(i));
                         }
                         for (int i = 0, n = asyncXMLStreamReader.getNamespaceCount(); i < n; ++i) {
-                            saxAttributes.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, asyncXMLStreamReader.getNamespacePrefix(i), XMLConstants.XMLNS_ATTRIBUTE + ":" + asyncXMLStreamReader.getNamespacePrefix(i), "CDATA", asyncXMLStreamReader.getNamespaceURI(i));
+                            String namespacePrefix = asyncXMLStreamReader.getNamespacePrefix(i);
+                            if (namespacePrefix.equals(DEFAULT_NS_PREFIX)) {
+                                saxAttributes.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, namespacePrefix, XMLConstants.XMLNS_ATTRIBUTE, "CDATA", asyncXMLStreamReader.getNamespaceURI(i));
+                            } else {
+                                saxAttributes.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, namespacePrefix, XMLConstants.XMLNS_ATTRIBUTE + ":" + namespacePrefix, "CDATA", asyncXMLStreamReader.getNamespaceURI(i));
+                            }
                         }
                         if (asyncXMLStreamReader.getName().getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {
                             contentHandler.startElement(asyncXMLStreamReader.getName().getNamespaceURI(), asyncXMLStreamReader.getName().getLocalPart(), asyncXMLStreamReader.getName().getLocalPart(), saxAttributes);
