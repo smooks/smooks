@@ -7,7 +7,7 @@ updates:
   open-pull-requests-limit: 10
   reviewers:
   - tfennelly
-  - claudemamo
+  - cjmamo
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
