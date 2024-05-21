@@ -2290,7 +2290,7 @@ public class MyManagedClass {
 }
 ----
 
-Line 15 from the snippet above uses `InstrumentationAgent` to register the `@ManagedResource` annotated object with the MBean server so that it can be queried and invoked by JMX clients. `InstrumentationAgent` is obtained from an instance of `org.smooks.api.management.InstrumentationResource`. The singleton `InstrumentationResource` can be looked up from the Smooks registry as shown in line 12.
+Line 17 from the snippet above uses `InstrumentationAgent` to register the `@ManagedResource` annotated object with the MBean server so that it can be queried and invoked by JMX clients. `InstrumentationAgent` is obtained from an instance of `org.smooks.api.management.InstrumentationResource`. The singleton `InstrumentationResource` can be looked up from the Smooks registry as shown in line 14.
 
 IMPORTANT: link:#activation[Instrumentation needs to be activated] in order to obtain a non-null `InstrumentationResource` from the lookup.
 
@@ -2390,7 +2390,7 @@ public class MyManagedClass {
 }
 ----
 
-As illustrated above in lines 28-29, to register a `@ManagedNotification` instance, the MBean descriptor should be assembled dynamically with `org.smooks.management.ModelMBeanAssembler`. The assembled `javax.management.modelmbean.ModelMBeanInfo` is then registered using `InstrumentationAgent` as shown in line 30. `InstrumentationAgent.register(Object, ObjectName, ModelMBeanInfo, boolean)` returns a `RequiredModelMBean` object that can be referenced to broadcast notifications, seen in lines 34-35.
+As illustrated above in lines 29-30, to register a `@ManagedNotification` instance, the MBean descriptor should be assembled dynamically with `org.smooks.management.ModelMBeanAssembler`. The assembled `javax.management.modelmbean.ModelMBeanInfo` is then registered using `InstrumentationAgent` as shown in line 31. `InstrumentationAgent.register(Object, ObjectName, ModelMBeanInfo, boolean)` returns a `RequiredModelMBean` object that can be referenced to broadcast notifications, seen in lines 35-36.
 
 ==== @ManagedNotifications
 
