@@ -135,6 +135,32 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <groupId>org.simplify4u.plugins</groupId>
+                <artifactId>pgpverify-maven-plugin</artifactId>
+                <version>1.17.0</version>
+                <configuration>
+                    <scope>compile</scope>
+                    <keysMapLocations>
+                        <keysMapLocation>${maven.multiModuleProjectDirectory}/keysmap.list</keysMapLocation>
+                        <keysMapLocation>/pgp-keys-map.list</keysMapLocation>
+                    </keysMapLocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.simplify4u</groupId>
+                        <artifactId>pgp-keys-map</artifactId>
+                        <version>2024.04.04</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.4.1</version>
