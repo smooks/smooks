@@ -80,7 +80,7 @@ Smooks 2 introduces the https://github.com/smooks/smooks-dfdl-cartridge[DFDL car
 * Added compatibility with Java 9 and later versions; retained compatibility for Java 8
 * link:#pipeline[Pipeline support]
     ** Compose any series of transformations on an event outside the main execution context before directing the pipeline output to the execution result stream or to other destinations
-* Complete overhaul of the EDI cartridge
+* Complete overhaul of the EDI cartridge and strengthening of EDI functionality
     ** Rewritten to extend the DFDL cartridge and provide much better support for reading EDI documents
     ** Added functionality to serialize EDI documents
     ** As in previous Smooks versions, incorporated special support for EDIFACT
