@@ -61,9 +61,9 @@ import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DelegateReaderFunctionalTestCase {
+public class RewriteReaderFunctionalTestCase {
 
-    public static class DelegateReaderResource implements ElementVisitor {
+    public static class RewriteResource implements ElementVisitor {
         private final TypedKey<FragmentWriter> fragmentWriterTypedKey = TypedKey.of();
 
         @Override
@@ -103,7 +103,7 @@ public class DelegateReaderFunctionalTestCase {
     
     @Test
     public void test() throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-delegate-reader.xml"));
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-rewrite.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         StringWriter result = new StringWriter();
 

@@ -45,10 +45,10 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
 
-    <core:delegate-reader>
+    <core:rewrite>
         <resource-config selector="#document">
-            <resource>org.smooks.engine.resource.reader.DelegateReaderFunctionalTestCase$DelegateReaderResource</resource>
+            <resource>org.smooks.engine.resource.reader.RewriteReaderFunctionalTestCase$RewriteResource</resource>
         </resource-config>
-    </core:delegate-reader>
+    </core:rewrite>
 
 </smooks-resource-list>

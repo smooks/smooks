@@ -69,11 +69,11 @@
                  maxNodeDepth="0">
         <core:config>
             <smooks-resource-list>
-                <core:delegate-reader>
+                <core:rewrite>
                     <resource-config selector="#document">
                         <resource>org.smooks.benchmark.BibliographyVisitor</resource>
                     </resource-config>
-                </core:delegate-reader>
+                </core:rewrite>
                 <resource-config selector="author">
                     <resource>org.smooks.benchmark.BenchmarkVisitor</resource>
                 </resource-config>
