@@ -83,7 +83,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ServiceLoader;
 
-public class DelegateReader implements SmooksXMLReader {
+public class RewriteReader implements SmooksXMLReader {
     private final TypedKey<Writer> contentHandlerTypedKey = TypedKey.of();
     private final TypedKey<ExecutionContext> executionContextTypedKey = TypedKey.of();
 

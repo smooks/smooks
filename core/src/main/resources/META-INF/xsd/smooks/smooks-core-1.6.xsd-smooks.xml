@@ -220,16 +220,16 @@
         <param name="mapTo">outputStreamResource</param>
     </resource-config>
 
-    <resource-config selector="/smooks:smooks-resource-list/smooks-core:delegate-reader">
+    <resource-config selector="/smooks:smooks-resource-list/smooks-core:rewrite">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.engine.resource.reader.DelegateReader</param>
+        <param name="resource">org.smooks.engine.resource.reader.RewriteReader</param>
     </resource-config>
-    <resource-config selector="/smooks:smooks-resource-list/smooks-core:delegate-reader">
+    <resource-config selector="/smooks:smooks-resource-list/smooks-core:rewrite">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.SetOnResourceConfig</resource>
         <param name="setOn">selector</param>
         <param name="value">org.xml.sax.driver</param>
     </resource-config>
-    <resource-config selector="/smooks:smooks-resource-list/smooks-core:delegate-reader">
+    <resource-config selector="/smooks:smooks-resource-list/smooks-core:rewrite">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromXml</resource>
         <param name="mapTo">resourceConfigs</param>
     </resource-config>
