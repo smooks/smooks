@@ -367,12 +367,6 @@
                 <artifactId>jaxen</artifactId>
                 <version>${jaxen.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>commons-net</groupId>
-                <artifactId>commons-net</artifactId>
-                <version>3.11.0</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
