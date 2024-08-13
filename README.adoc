@@ -531,7 +531,7 @@ Binds the output to the execution context’s bean store:
 ----
 ...
 <core:action>
-    <core:bind-to id="..."/>
+    <core:bindTo id="..."/>
 </core:action>
 ...
 ----
@@ -544,10 +544,108 @@ Directs the output to a different stream other than the result stream:
 ----
 ...
 <core:action>
-    <core:output-to outputStreamResource="..."/>
+    <core:outputTo outputStreamResource="..."/>
 </core:action>
 ...
 ----
+
+=== Delegate Reader
+
+NOTE: `core:delegate-reader` was introduced in Smooks 2.0.0-M3 and will be renamed to `core:rewrite` in the next release of Smooks.
+
+The `core:delegate-reader` construct is a reader designed to offer a convenient mechanism for substituting the event stream entering a link:#pipeline[pipeline] with one that the pipeline resources can process.
+
+`core:delegate-reader` enables one or more of its enclosed visitors to substitute targeted events with new events. In the example that follows, the pipeline feeds the event stream to `core:delegate-reader`, and `core:delegate-reader` in turn, feeds targeted events to the nested FreeMarker visitors:
+
+[source,xml]
+----
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
+                      xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
+                      xmlns:ftl="https://www.smooks.org/xsd/smooks/freemarker-2.0.xsd"
+                      xmlns:edifact="https://www.smooks.org/xsd/smooks/edifact-2.0.xsd">
+
+    ...
+    ...
+
+    <core:smooks filterSourceOn="#document">
+        <core:action>
+            <core:inline>
+                <core:replace/>
+            </core:inline>
+        </core:action>
+        <core:config>
+            <smooks-resource-list>
+                <core:delegate-reader>
+                    <ftl:freemarker applyOnElement="#document" applyBefore="true">
+                        <ftl:template>header.xml.ftl</ftl:template>
+                    </ftl:freemarker>
+                    <core:smooks filterSourceOn="record" maxNodeDepth="0">
+                        <core:config>
+                            <smooks-resource-list>
+                                <ftl:freemarker applyOnElement="#document">
+                                    <ftl:template>body.xml.ftl</ftl:template>
+                                </ftl:freemarker>
+                            </smooks-resource-list>
+                        </core:config>
+                    </core:smooks>
+                    <ftl:freemarker applyOnElement="#document">
+                        <ftl:template>footer.xml.ftl</ftl:template>
+                    </ftl:freemarker>
+                </core:delegate-reader>
+
+                <edifact:unparser schemaUri="/d96a/EDIFACT-Messages.dfdl.xsd" unparseOnNode="*">
+                    <edifact:messageTypes>
+                        <edifact:messageType>ORDERS</edifact:messageType>
+                    </edifact:messageTypes>
+                </edifact:unparser>
+            </smooks-resource-list>
+        </core:config>
+    </core:smooks>
+
+    ...
+    ...
+</smooks-resource-list>
+----
+
+A visitor within `core:delegate-reader` writes XML fragments to the result stream, replacing the targeted events. For example, in the config above, the FreeMarker visitors are replacing the `#document` and `record` events with materialised XML templates. More precisely, `core:delegate-reader` converts the materialised XML into a new event stream which is then processed by the downstream pipeline resources, in this case, `edifact:unparser`.
+
+TIP: The full example is https://github.com/smooks/smooks-examples/tree/v2/pipelines[available in the smooks-examples repository].
+
+When implementing your own visitor for `core:delegate-reader`, call `org.smooks.io.Stream#out(org.smooks.api.ExecutionContext).write(java.lang.String)` within one of the overridden visit methods to replace the event stream as shown below:
+
+[source,java]
+----
+package org.smooks.benchmark;
+
+...
+...
+
+public class BibliographyVisitor implements AfterVisitor {
+    private final static String TEMPLATE = "<entry><author>%s</author><title>%s</title></entry>";
+    private DOMXPath domXPath;
+    private DOMXPath titleXPath;
+
+    @PostConstruct
+    public void postConstruct() throws JaxenException {
+        this.domXPath = new DOMXPath("//author");
+        this.titleXPath = new DOMXPath("//title");
+    }
+
+    @Override
+    public void visitAfter(Element element, ExecutionContext executionContext) {
+        try {
+            List<Element> authors = ((List<Element>) domXPath.evaluate(element));
+            List<Element> titles = ((List<Element>) titleXPath.evaluate(element));
+            Stream.out(executionContext).write(String.format(TEMPLATE, authors.isEmpty() ? "N/A" : authors.get(0).getTextContent(), "<![CDATA[" + (titles.isEmpty() ? "N/A" : titles.get(0).getTextContent())) + "]]>");
+        } catch (IOException | JaxenException e) {
+            throw new SmooksException(e);
+        }
+    }
+}
+----
+
+`BibliographyVisitor` is a custom visitor which visits end events. The `visitAfter` method evaluates the author elements together with the title elements and writes XML to the result stream replacing the selected events.
 
 === Cartridge
 
@@ -1861,7 +1959,7 @@ Note that the complete fragment text will not be available until the `+AfterVisi
 
 The `+Smooks.filterSource(Source, Result)+` method can take one or more of a number of different `+Result+` type implementations, one of which is the `+StreamResult+` class (see link:#multiple-outputsresults[Multiple Outputs/Results]). By default, Smooks will always serialize the full Source event stream as XML to any `+StreamResult+` instance provided to the `+Smooks.filterSource(Source, Result)+` method.
 
-So, if the Source provided to the `+Smooks.filterSource(Source, Result)+` method is an XML stream and a  http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/transform/stream/StreamResult.html[`+StreamResult+`] instance is provided as one of the `+Result+` instances, the Source XML will be written out to the
+So, if the Source provided to the `+Smooks.filterSource(Source, Result)+` method is an XML stream and a  https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/javax/xml/transform/stream/StreamResult.html[`+StreamResult+`] instance is provided as one of the `+Result+` instances, the Source XML will be written out to the
 `+StreamResult+` unmodified, unless the Smooks instance is configured with one or more `+SaxNgVisitor+` implementations that modify one or more fragments. In other words, Smooks streams the Source in and back out again through the `+StreamResult+` instance. Default serialization can be turned on/off by link:#user-content-settings[configuring the filter settings].
 
 If you want to modify the serialized form of one of the message fragments (i.e. "transform"), you need to implement a `+SaxNgVisitor+` to do so and target it at the message fragment using an XPath-like expression.
