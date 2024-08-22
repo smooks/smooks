@@ -45,13 +45,14 @@ package org.smooks.engine.delivery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
-
-import javax.xml.transform.stream.StreamSource;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -100,13 +101,13 @@ public class VisitorExceptionTestCase {
 
         if(expectException) {
             try {
-                smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<doc/>")));
+                smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<doc/>")));
                 fail("Expected SmooksException");
             } catch(SmooksException e) {
                 assertEquals("Terminate Exception", e.getCause().getMessage());
             }
         } else {
-            smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<doc/>")));
+            smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<doc/>")));
         }
     }
 }

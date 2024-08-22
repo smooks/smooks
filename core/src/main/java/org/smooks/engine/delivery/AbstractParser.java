@@ -49,6 +49,7 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 import org.smooks.api.delivery.ContentDeliveryConfig;
+import org.smooks.api.io.Source;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -63,22 +64,30 @@ import org.smooks.engine.resource.reader.XStreamXMLReader;
 import org.smooks.engine.xml.NamespaceManager;
 import org.smooks.io.DocumentInputSource;
 import org.smooks.io.NullReader;
-import org.smooks.io.payload.FilterSource;
-import org.smooks.io.payload.JavaSource;
+import org.smooks.io.source.DOMSource;
+import org.smooks.io.source.FilterSource;
+import org.smooks.io.source.JavaSource;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.namespace.NamespaceDeclarationStackAware;
 import org.smooks.support.ClassUtils;
 import org.w3c.dom.Document;
-import org.xml.sax.*;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Stack;
@@ -191,27 +200,6 @@ public class AbstractParser {
         return saxDriverConfig;
     }
 
-    private static Reader systemIdToReader(String systemId, String contentEncoding) {
-        return streamToReader(systemIdToStream(systemId), contentEncoding);
-    }
-
-    private static InputStream systemIdToStream(String systemId) {
-        try {
-            return systemIdToURL(systemId).openStream();
-        } catch (IOException e) {
-            throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Unable to open stream to resource.", e);
-        }
-    }
-
-    private static URL systemIdToURL(final String systemId) {
-        try {
-            return new URL(systemId);
-        } catch (MalformedURLException e) {
-            throw new SmooksException("Invalid System ID on StreamSource: '" + systemId + "'.  Must be a valid URL.", e);
-        }
-
-    }
-
     private static Reader streamToReader(InputStream inputStream, String contentEncoding) {
         try {
             if (contentEncoding != null) {
@@ -228,44 +216,30 @@ public class AbstractParser {
         // Also attach the underlying stream to the InputSource...
         if (source instanceof StreamSource) {
             StreamSource streamSource = (StreamSource) source;
-            InputStream inputStream;
-            Reader reader;
-
-            inputStream = getInputStream(streamSource);
-            reader = streamSource.getReader();
-            if (reader == null) {
-                if (inputStream == null) {
-                    throw new SmooksException("Invalid StreamSource. Unable to extract an InputStream (even by systemId) or Reader instance.");
-                }
-                reader = streamToReader(inputStream, contentEncoding);
+            InputStream inputStream = streamSource.getInputStream();
+            if (inputStream == null) {
+                throw new SmooksException("Invalid StreamSource. Unable to extract an InputStream.");
             }
+            Reader reader = streamToReader(inputStream, contentEncoding);
 
             InputSource inputSource = new InputSource();
             inputSource.setByteStream(inputStream);
             inputSource.setCharacterStream(reader);
 
             return inputSource;
+        } else if (source instanceof ReaderSource) {
+            ReaderSource readerSource = (ReaderSource) source;
+            Reader reader = readerSource.getReader();
+
+            InputSource inputSource = new InputSource();
+            inputSource.setCharacterStream(reader);
+
+            return inputSource;
         } else if (source instanceof DOMSource) {
             return new DocumentInputSource((Document) ((DOMSource) source).getNode());
-        } else if (source.getSystemId() != null) {
-            return new InputSource(systemIdToReader(source.getSystemId(), contentEncoding));
         } else {
             return new InputSource(new NullReader());
         }
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected InputStream getInputStream(StreamSource streamSource) {
-        InputStream inputStream = streamSource.getInputStream();
-        String systemId = streamSource.getSystemId();
-
-        if (inputStream != null) {
-            return inputStream;
-        } else if (systemId != null) {
-            return systemIdToStream(systemId);
-        }
-
-        return null;
     }
 
     protected XMLReader createXMLReader() throws SAXException {

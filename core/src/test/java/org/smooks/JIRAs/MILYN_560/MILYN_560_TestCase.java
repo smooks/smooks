@@ -49,8 +49,8 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.sax.TextConsumer;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 import org.w3c.dom.Element;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,7 +69,7 @@ public class MILYN_560_TestCase {
             assertEquals("&tomfennelly", element.getTextContent());
         }, "element");
 
-        StringResult serializedRes = new StringResult();
+        StringSink serializedRes = new StringSink();
         smooks.filterSource(new StringSource("<element attrib=\"&amp;tomfennelly\">&amp;tomfennelly</element>"), serializedRes);
 
         assertEquals("<element attrib=\"&amp;tomfennelly\">&amp;tomfennelly</element>", serializedRes.getResult());
@@ -81,7 +81,7 @@ public class MILYN_560_TestCase {
 
         smooks.addVisitor(new MockSAX(), "element");
 
-        StringResult serializedRes = new StringResult();
+        StringSink serializedRes = new StringSink();
         smooks.filterSource(new StringSource("<element attrib=\"&amp;tomfennelly\">&amp;tomfennelly</element>"), serializedRes);
 
         assertEquals("<element attrib=\"&amp;tomfennelly\">&amp;tomfennelly</element>", serializedRes.getResult());

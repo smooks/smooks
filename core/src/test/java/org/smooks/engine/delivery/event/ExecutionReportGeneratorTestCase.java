@@ -49,11 +49,11 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.report.FlatReportGenerator;
 import org.smooks.engine.report.ReportConfiguration;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -65,7 +65,7 @@ public class ExecutionReportGeneratorTestCase {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionReportGeneratorTestCase.class);
 
 	@Test
-    public void test_basic_dom() throws IOException, SAXException {
+    public void test_basic_dom() throws IOException {
         Smooks smooks = new Smooks(); // Nothing targeted
         ExecutionContext execContext;
         String expected = new String(StreamUtils.readStream(getClass().getResourceAsStream("expected_dom.txt")));
@@ -92,7 +92,7 @@ public class ExecutionReportGeneratorTestCase {
         StringWriter reportWriter = new StringWriter();
 
         execContext.getContentDeliveryRuntime().addExecutionEventListener(new FlatReportGenerator(new ReportConfiguration(reportWriter), smooks.getApplicationContext()));
-        smooks.filterSource(execContext, new StreamSource(getClass().getResourceAsStream("test-data-01.xml")), new StreamResult(new StringWriter()));
+        smooks.filterSource(execContext, new StreamSource(getClass().getResourceAsStream("test-data-01.xml")), new WriterSink(new StringWriter()));
         LOGGER.debug(reportWriter.toString());
         return reportWriter.toString();
     }

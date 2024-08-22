@@ -53,10 +53,9 @@ import static org.smooks.testkit.Assertions.compareCharStreams;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.XmlUtils;
 import org.xml.sax.SAXException;
-
-import javax.xml.transform.stream.StreamSource;
 
 import java.io.IOException;
 

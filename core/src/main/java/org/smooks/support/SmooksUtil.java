@@ -53,9 +53,9 @@ import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.visitor.SerializerVisitor;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.StreamSource;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,7 +98,7 @@ public final class SmooksUtil {
      * Utility method to filter the content in the specified {@link InputStream} for the specified {@link ExecutionContext}.
      * <p/>
      * Useful for testing purposes.  In a real scenario, use
-     * {@link Smooks#filter(ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result)}.
+     * {@link Smooks#filter(ExecutionContext, org.smooks.api.io.Source, org.smooks.api.io.Sink)}.
      * <p/>
      * The content of the returned String is totally dependent on the configured
      * {@link DOMElementVisitor} and {@link SerializerVisitor}
@@ -114,7 +114,7 @@ public final class SmooksUtil {
     public static String filterAndSerialize(ExecutionContext executionContext, InputStream stream, Smooks smooks) throws SmooksException {
         String responseBuf;
         try (CharArrayWriter writer = new CharArrayWriter()) {
-            smooks.filterSource(executionContext, new StreamSource(stream), new StreamResult(writer));
+            smooks.filterSource(executionContext, new StreamSource(stream), new WriterSink(writer));
             responseBuf = writer.toString();
         } finally {
             if (stream != null) {

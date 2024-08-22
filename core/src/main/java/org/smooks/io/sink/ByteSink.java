@@ -40,21 +40,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io.payload;
+package org.smooks.io.sink;
 
-
-import javax.xml.transform.Result;
+import java.io.ByteArrayOutputStream;
 
 /**
- * An extractor of results produces by Smooks.
- * <p>
- * Implementors of ResultExtractor are able to extract specific a object from the
- * result of a Smooks filtering process.
- * </p>
+ * Utility class for creating a Byte based {@link StreamSink}.
  *
- * @author Daniel Bevenius
- * @since 1.4
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface ResultExtractor<T extends Result> {
-    Object extractFromResult(T result, Export export);
+public class ByteSink extends StreamSink<ByteArrayOutputStream> {
+
+    public ByteSink() {
+        super(new ByteArrayOutputStream());
+    }
+
+    public byte[] getResult() {
+        return outputStream.toByteArray();
+    }
+
+    @Override
+    public String toString() {
+        return outputStream.toString();
+    }
 }

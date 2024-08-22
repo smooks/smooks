@@ -44,9 +44,11 @@ package org.smooks.io.payload;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
+import org.smooks.api.io.Sink;
 import org.smooks.engine.lookup.ExportsLookup;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.sink.StringSink;
 
-import javax.xml.transform.Result;
 import java.util.Collection;
 import java.util.Set;
 
@@ -69,9 +71,9 @@ public class ExportsFunctionalTestCase
         
         Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportsLookup());
 
-        Set<Class<?>> resultTypes = exports.getResultTypes();
-        assertTrue(resultTypes.contains(StringResult.class));
-        assertTrue(resultTypes.contains(JavaResult.class));
+        Set<Class<?>> sinkTypes = exports.getSinkTypes();
+        assertTrue(sinkTypes.contains(StringSink.class));
+        assertTrue(sinkTypes.contains(JavaSink.class));
     }
     
     @Test
@@ -90,24 +92,24 @@ public class ExportsFunctionalTestCase
     {
         Smooks smooks = new Smooks();
         smooks.createExecutionContext();
-        smooks.setExports(new Exports(StringResult.class));
+        smooks.setExports(new Exports(StringSink.class));
 
         Exports exports = smooks.getApplicationContext().getRegistry().lookup(new ExportsLookup());
 
-        assertTrue(exports.getResultTypes().contains(StringResult.class));
-        assertEquals(1, exports.getResultTypes().size());
+        assertTrue(exports.getSinkTypes().contains(StringSink.class));
+        assertEquals(1, exports.getSinkTypes().size());
     }
 
     @Test
-    public void getResultsFromApplicationContext()
+    public void getSinksFromApplicationContext()
     {
         Smooks smooks = new Smooks();
         smooks.createExecutionContext();
-        Exports exports =  new Exports(StringResult.class);
+        Exports exports =  new Exports(StringSink.class);
         smooks.setExports(exports);
-        Result[] results = exports.createResults();
-        assertEquals(1, results.length);
-        assertEquals(StringResult.class, results[0].getClass());
+        Sink[] sinks = exports.createSinks();
+        assertEquals(1, sinks.length);
+        assertEquals(StringSink.class, sinks[0].getClass());
     }
 
 }

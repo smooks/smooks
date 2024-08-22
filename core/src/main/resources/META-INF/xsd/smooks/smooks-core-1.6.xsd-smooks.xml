@@ -77,8 +77,8 @@
     </resource-config>
     <resource-config selector="smooks-core:filterSettings">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">closeResult</param>
-        <param name="mapTo">close.result</param>
+        <param name="attribute">closeSink</param>
+        <param name="mapTo">close.sink</param>
     </resource-config>
     <resource-config selector="smooks-core:filterSettings">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>

@@ -60,28 +60,28 @@ public class FilterSettingsTestCase {
 	@Test
 	public void test_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("filterSettings-01.xml"));		
-		ExecutionContext execContext = smooks.createExecutionContext();
+		ExecutionContext executionContext = smooks.createExecutionContext();
 		
-		assertEquals("DOM", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, Boolean.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, Integer.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-        assertNull(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("DOM", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_SINK, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, Boolean.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, Integer.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        assertNull(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
 	}
 
 	@Test
 	public void test_02() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("filterSettings-02.xml"));		
-		ExecutionContext execContext = smooks.createExecutionContext();
+		ExecutionContext executionContext = smooks.createExecutionContext();
 		
-		assertEquals("SAX NG", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-		assertEquals("3", ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
-		assertEquals("true", ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("SAX NG", ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_SINK, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("3", ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+		assertEquals("true", ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
 	}
 }

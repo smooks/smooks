@@ -47,8 +47,8 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.FilterSettings;
 import org.smooks.StreamFilterType;
-import org.smooks.io.payload.StringSource;
-import org.smooks.io.payload.StringResult;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -63,9 +63,9 @@ public class MILYN_247_TestCase {
 
         smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.DOM).setRewriteEntities(true));
 
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringResult);
-        assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringResult.getResult());
+        StringSink stringSink = new StringSink();
+        smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringSink);
+        assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringSink.getResult());
     }
 
 	@Test
@@ -74,9 +74,9 @@ public class MILYN_247_TestCase {
 
         smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.DOM).setRewriteEntities(true));
 
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringResult);
-        assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringResult.getResult());
+        StringSink stringSink = new StringSink();
+        smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringSink);
+        assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringSink.getResult());
     }
 
 	@Test
@@ -85,9 +85,9 @@ public class MILYN_247_TestCase {
 
         smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.SAX_NG).setRewriteEntities(true));
 
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringResult);
-        assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringResult.getResult());
+        StringSink stringSink = new StringSink();
+        smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringSink);
+        assertEquals("<a attrib=\"an &amp; &apos;attribute\">Bigger &gt; is better!</a>", stringSink.getResult());
     }
 
 	@Test
@@ -96,8 +96,8 @@ public class MILYN_247_TestCase {
 
         smooks.setFilterSettings(new FilterSettings().setFilterType(StreamFilterType.SAX_NG).setRewriteEntities(false));
 
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringResult);
-        assertEquals("<a attrib=\"an & 'attribute\">Bigger > is better!</a>", stringResult.getResult());
+        StringSink stringSink = new StringSink();
+        smooks.filterSource(new StringSource("<a attrib=\"an &amp; 'attribute\">Bigger &gt; is better!</a>"), stringSink);
+        assertEquals("<a attrib=\"an & 'attribute\">Bigger > is better!</a>", stringSink.getResult());
     }
 }

@@ -42,6 +42,7 @@
  */
 package org.smooks.engine.delivery.dom;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -49,12 +50,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
+import org.smooks.io.sink.StreamSink;
+import org.smooks.io.source.StreamSource;
 import org.smooks.testkit.MockExecutionContext;
 import org.smooks.support.StreamUtils;
 
@@ -71,14 +71,14 @@ public class SmooksDOMFilterTestCase {
     @Test
     public void doFilter_verify_that_flush_is_called() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StreamResult result = new StreamResult(baos);
+        StreamSink<ByteArrayOutputStream> sink = new StreamSink<>(baos);
 
-        domFilter.doFilter(new StreamSource(new ByteArrayInputStream(input)), result);
+        domFilter.doFilter(new StreamSource<>(new ByteArrayInputStream(input)), sink);
 
-        OutputStream outputStream = result.getOutputStream();
-        assertTrue(outputStream instanceof ByteArrayOutputStream);
+        ByteArrayOutputStream outputStream = sink.getOutputStream();
+        assertNotNull(outputStream);
 
-        byte[] byteArray = ((ByteArrayOutputStream) outputStream).toByteArray();
+        byte[] byteArray = outputStream.toByteArray();
         assertTrue(byteArray.length > 0);
     }
 

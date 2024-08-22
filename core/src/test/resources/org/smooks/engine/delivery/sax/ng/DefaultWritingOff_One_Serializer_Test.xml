@@ -49,7 +49,7 @@
     </resource-config>
 
     <!--
-    The following visitors don't write/serialize anything to the result.
+    The following visitors don't write/serialize anything to the sink.
     -->
 
     <resource-config selector="a">
@@ -62,7 +62,7 @@
     </resource-config>
 
     <!--
-    The following visitor writes something to the result on visiting the "c" element.
+    The following visitor writes something to the sink on visiting the "c" element.
     -->
 
     <resource-config selector="c">

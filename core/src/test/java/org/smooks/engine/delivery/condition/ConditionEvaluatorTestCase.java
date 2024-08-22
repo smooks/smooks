@@ -49,9 +49,10 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.SAXAndDOMVisitor;
 import org.smooks.engine.expression.ExpressionEvaluatorFactory;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -82,14 +83,14 @@ public class ConditionEvaluatorTestCase {
         SAXAndDOMVisitor.visited = false;
         smooks = new Smooks(getClass().getResourceAsStream("test-config-DOM-01.xml"));
         execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")));
+        smooks.filterSource(execContext, new ReaderSource(new StringReader("<a/>")));
         assertEquals(execContext, TestExecutionContextExpressionEvaluator.context);
         assertTrue(SAXAndDOMVisitor.visited);
 
         SAXAndDOMVisitor.visited = false;
         smooks = new Smooks(getClass().getResourceAsStream("test-config-DOM-02.xml"));
         execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")));
+        smooks.filterSource(execContext, new ReaderSource(new StringReader("<a/>")));
         assertEquals(execContext, TestExecutionContextExpressionEvaluator.context);
         assertFalse(SAXAndDOMVisitor.visited);
     }
@@ -102,14 +103,14 @@ public class ConditionEvaluatorTestCase {
         SAXAndDOMVisitor.visited = false;
         smooks = new Smooks(getClass().getResourceAsStream("test-config-SAX-01.xml"));
         execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")));
+        smooks.filterSource(execContext, new ReaderSource(new StringReader("<a/>")));
         assertEquals(execContext, TestExecutionContextExpressionEvaluator.context);
         assertTrue(SAXAndDOMVisitor.visited);
 
         SAXAndDOMVisitor.visited = false;
         smooks = new Smooks(getClass().getResourceAsStream("test-config-SAX-02.xml"));
         execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")));
+        smooks.filterSource(execContext, new ReaderSource(new StringReader("<a/>")));
         assertEquals(execContext, TestExecutionContextExpressionEvaluator.context);
         assertFalse(SAXAndDOMVisitor.visited);
     }

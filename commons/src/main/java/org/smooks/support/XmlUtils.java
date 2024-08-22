@@ -68,8 +68,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * XMl utility methods.

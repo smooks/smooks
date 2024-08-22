@@ -42,11 +42,10 @@
  */
 package org.smooks.api.delivery;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 import org.smooks.api.resource.visitor.Visitor;
 
 /**
@@ -68,9 +67,9 @@ public interface FilterBypass extends Visitor {
      *
      * @param executionContext Smooks execution context.
      * @param source           Filter Source.
-     * @param result           Filter Result.
+     * @param sink           Filter Sink.
      * @return True of the bypass was applied, otherwise false.
      * @throws SmooksException An error occurred while apply the bypass transform.
      */
-    boolean bypass(ExecutionContext executionContext, Source source, Result result) throws SmooksException;
+    boolean bypass(ExecutionContext executionContext, Source source, Sink sink) throws SmooksException;
 }

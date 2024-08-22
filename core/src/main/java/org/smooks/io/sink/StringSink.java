@@ -40,43 +40,40 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io.payload;
+package org.smooks.io.sink;
 
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.TypedKey;
+import org.smooks.api.io.Sink;
+import org.smooks.io.payload.Export;
+import org.smooks.io.payload.SinkExtractor;
 
-import javax.xml.transform.Source;
+import java.io.StringWriter;
 
 /**
- * Filtration/Transformation {@link javax.xml.transform.Source}.
+ * Utility class for creating a String based {@link javax.xml.transform.stream.StreamResult}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public abstract class FilterSource implements Source {
+public class StringSink extends WriterSink<StringWriter> implements Sink, SinkExtractor<StringSink> {
 
-    public static final TypedKey<Source> SOURCE_TYPED_KEY = TypedKey.of();
-
-    private String systemId;
-
-    public static Source getSource(ExecutionContext executionContext) {
-        return executionContext.get(SOURCE_TYPED_KEY);
+    public StringSink() {
+        super(new StringWriter());
     }
 
-    public static void setSource(ExecutionContext executionContext, Source source) {
-        if (source != null) {
-            executionContext.put(SOURCE_TYPED_KEY, source);
-        } else {
-            executionContext.remove(SOURCE_TYPED_KEY);
-        }
+    public String getResult() {
+        return writer.toString();
     }
 
     @Override
-    public void setSystemId(String systemId) {
-        this.systemId = systemId;
+    public String toString() {
+        return getResult();
     }
 
     @Override
-    public String getSystemId() {
-        return systemId;
+    public Object extractFromSink(StringSink sink, Export export) {
+        return getResult();
+    }
+
+    public StringWriter getStringWriter() {
+        return writer;
     }
 }

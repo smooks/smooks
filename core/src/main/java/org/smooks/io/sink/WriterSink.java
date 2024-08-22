@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,54 +40,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io.payload;
+package org.smooks.io.sink;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.smooks.api.io.Sink;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Writer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+public class WriterSink<T extends Writer> implements Sink {
+    protected final T writer;
 
-/**
- * Unit test for {@link JavaResult}.
- * </p>
- *
- * @author Daniel Bevenius
- */
-@SuppressWarnings("unchecked")
-public class JavaResultTestCase
-{
-    private HashMap<String, Object> beans;
-
-    @BeforeEach
-    public void createBeanMap()
-    {
-        beans = new HashMap<String, Object>();
-        beans.put("first", "bean1");
-        beans.put("second", "bean2");
-        beans.put("third", "bean3");
+    public WriterSink(T writer) {
+        this.writer = writer;
     }
 
-    @Test
-    public void extractSpecificBean()
-    {
-        JavaResult javaResult = new JavaResult(beans);
-        Object result = javaResult.extractFromResult(javaResult, new Export(JavaResult.class, null, "second"));
-        assertEquals("bean2", result);
-    }
-
-    @Test
-    public void extractSpecificBeans()
-    {
-        JavaResult javaResult = new JavaResult(beans);
-        Map<String, Object> result = (Map<String, Object>) javaResult.extractFromResult(javaResult, new Export(JavaResult.class, null, "second,first"));
-        assertTrue(result.containsKey("first"));
-        assertTrue(result.containsKey("second"));
-        assertFalse(result.containsKey("third"));
+    public T getWriter() {
+        return writer;
     }
 }

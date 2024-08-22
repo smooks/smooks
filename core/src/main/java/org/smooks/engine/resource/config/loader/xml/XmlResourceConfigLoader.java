@@ -64,6 +64,7 @@ import org.smooks.engine.resource.config.DefaultResourceConfigFactory;
 import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
+import org.smooks.io.source.DOMSource;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.ClassUtils;
 import org.smooks.support.DomUtils;
@@ -78,7 +79,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

@@ -52,13 +52,13 @@ import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.engine.delivery.sax.ng.ConsumeSerializerVisitor;
-import org.smooks.io.payload.StringResult;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.StreamUtils;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,85 +73,85 @@ public class MILYN_367_TestCase {
 	@Test
 	public void test_SAX_01() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
+		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "#document");
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "//*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
-		assertOK("expected_01.xml", result);        
+		assertOK("expected_01.xml", sink);        
 	}
 
 	@Test
 	public void test_SAX_02() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
+		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "customer");
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "descendant-or-self::customer/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
-		assertOK("expected_02.xml", result);        
+		assertOK("expected_02.xml", sink);        
 	}
 
 	@Test
 	public void test_SAX_03() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
+		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "items");
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "descendant-or-self::items/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
 		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
-		assertOK("expected_03.xml", result);        
+		assertOK("expected_03.xml", sink);        
 	}
 
 	@Test
 	public void test_DOM_01() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
+		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "#document");
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "//*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
-		assertOK("expected_01.xml", result);        
+		assertOK("expected_01.xml", sink);        
 	}
 
 	@Test
 	public void test_DOM_02() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
+		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "customer");
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "descendant-or-self::customer/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 
-		assertOK("expected_02.xml", result);
+		assertOK("expected_02.xml", sink);
 	}
 
 	@Test
 	public void test_DOM_03() throws SAXException, IOException {
 		Smooks smooks = new Smooks();
-		StringResult result = new StringResult();
+		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "items");
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "descendant-or-self::items/*");
 		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
 		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")), result);
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
-		assertOK("expected_03.xml", result);        
+		assertOK("expected_03.xml", sink);
 	}
 
 	@Test
@@ -164,7 +164,7 @@ public class MILYN_367_TestCase {
 		smooks.addVisitor(customerVisitor, "descendant-or-self::customer/*");
 		smooks.addVisitor(itemsVisitor, "items");
 		smooks.addVisitor(itemsVisitor, "descendant-or-self::items/*");
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
 		
 		assertEquals("customer-user-fname-x-lname-", customerVisitor.stringBuilder.toString());
 		assertEquals("items-item-units-name-price-item-units-name-price-", itemsVisitor.stringBuilder.toString());
@@ -180,14 +180,14 @@ public class MILYN_367_TestCase {
 		smooks.addVisitor(customerVisitor, "descendant-or-self::customer/*");
 		smooks.addVisitor(itemsVisitor, "items");
 		smooks.addVisitor(itemsVisitor, "descendant-or-self::items/*");
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
 		
 		assertEquals("user-x-fname-lname-customer-", customerVisitor.stringBuilder.toString());
 		assertEquals("units-name-price-item-units-name-price-item-items-", itemsVisitor.stringBuilder.toString());
 	}
 
-	private void assertOK(String resName, StringResult result) throws IOException {
-		assertFalse(DiffBuilder.compare(result.getResult()).withTest(getRes(resName)).
+	private void assertOK(String resName, StringSink sink) throws IOException {
+		assertFalse(DiffBuilder.compare(sink.getResult()).withTest(getRes(resName)).
 				ignoreComments().
 				ignoreWhitespace().
 				build().

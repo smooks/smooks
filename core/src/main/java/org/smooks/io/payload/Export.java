@@ -47,6 +47,7 @@ import org.smooks.api.delivery.ContentHandler;
 import org.smooks.engine.lookup.ExportsLookup;
 
 import jakarta.annotation.PostConstruct;
+import org.smooks.io.sink.JavaSink;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -68,7 +69,7 @@ import java.util.Set;
  * An Export may also optionally have an 'extract' attribute which can be used when only a sub-part
  * of the data is to be considered for exporting.
  * For example, this could be used to specify that  the calling process is only interested in a specific object instance
- * in a {@link JavaResult}
+ * in a {@link JavaSink}
  * </p>
  *
  * @author Daniel Bevenius

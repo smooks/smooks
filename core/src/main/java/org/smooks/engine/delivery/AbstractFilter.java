@@ -48,16 +48,18 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.Filter;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.io.NullReader;
 import org.smooks.io.NullWriter;
 import org.smooks.io.Stream;
+import org.smooks.io.sink.DOMSink;
+import org.smooks.io.sink.StreamSink;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -88,11 +90,16 @@ public abstract class AbstractFilter implements Filter {
     }
 
     protected Reader getReader(Source source, ExecutionContext executionContext) {
-        if (source instanceof StreamSource) {
-            StreamSource streamSource = (StreamSource) source;
-            if (streamSource.getReader() != null) {
-                return streamSource.getReader();
-            } else if (streamSource.getInputStream() != null) {
+        if (source instanceof ReaderSource) {
+            ReaderSource<?> readerSource = (ReaderSource<?>) source;
+            if (readerSource.getReader() != null) {
+                return readerSource.getReader();
+            } else {
+                throw new SmooksException("Invalid " + ReaderSource.class.getName() + ".  No Reader instance.");
+            }
+        } else if (source instanceof StreamSource) {
+            StreamSource<?> streamSource = (StreamSource<?>) source;
+            if (streamSource.getInputStream() != null) {
                 try {
                     if (executionContext != null) {
                         return new InputStreamReader(streamSource.getInputStream(), executionContext.getContentEncoding());
@@ -103,32 +110,39 @@ public abstract class AbstractFilter implements Filter {
                     throw new SmooksException("Unable to decode input stream.", e);
                 }
             } else {
-                throw new SmooksException("Invalid " + StreamSource.class.getName() + ".  No InputStream or Reader instance.");
+                throw new SmooksException("Invalid " + StreamSource.class.getName() + ".  No Reader instance.");
             }
+        } else {
+            return new NullReader();
         }
-
-        return new NullReader();
     }
 
-    protected Writer getWriter(final Result result, final ExecutionContext executionContext) {
-        if (result instanceof StreamResult) {
-            StreamResult streamResult = (StreamResult) result;
-            if (streamResult.getWriter() != null) {
-                return streamResult.getWriter();
-            } else if (streamResult.getOutputStream() != null) {
+    protected Writer getWriter(final Sink sink, final ExecutionContext executionContext) {
+        if (sink instanceof WriterSink) {
+            WriterSink<?> writerSink = (WriterSink<?>) sink;
+            Writer writer = writerSink.getWriter();
+            if (writer != null) {
+                return writerSink.getWriter();
+            } else {
+                throw new SmooksException(String.format("Invalid [%s]. No Writer instance.", sink.getClass().getName()));
+            }
+        } else if (sink instanceof StreamSink) {
+            StreamSink<?> streamSink = (StreamSink<?>) sink;
+            OutputStream outputStream = streamSink.getOutputStream();
+            if (outputStream != null) {
                 try {
                     if (executionContext != null) {
-                        return new OutputStreamWriter(streamResult.getOutputStream(), executionContext.getContentEncoding());
+                        return new OutputStreamWriter(streamSink.getOutputStream(), executionContext.getContentEncoding());
                     } else {
-                        return new OutputStreamWriter(streamResult.getOutputStream(), StandardCharsets.UTF_8);
+                        return new OutputStreamWriter(streamSink.getOutputStream(), StandardCharsets.UTF_8);
                     }
                 } catch (UnsupportedEncodingException e) {
                     throw new SmooksException("Unable to encode output stream.", e);
                 }
             } else {
-                throw new SmooksException("Invalid " + StreamResult.class.getName() + ".  No OutputStream or Writer instance.");
+                throw new SmooksException(String.format("Invalid [%s]. No OutputStream instance.", sink.getClass().getName()));
             }
-        } else if (result instanceof DOMResult) {
+        } else if (sink instanceof DOMSink) {
             return new StringWriter();
         } else {
             final Writer writer = Stream.out(executionContext);
@@ -141,49 +155,53 @@ public abstract class AbstractFilter implements Filter {
     }
 
     protected void close(Source source) {
-        if (source instanceof StreamSource) {
-            StreamSource streamSource = (StreamSource) source;
-            try {
-                if (streamSource.getReader() != null) {
-                    streamSource.getReader().close();
-                } else if (streamSource.getInputStream() != null) {
-                    InputStream inputStream = streamSource.getInputStream();
-                    if (inputStream != System.in) {
-                        inputStream.close();
+        try {
+            if (source instanceof StreamSource) {
+                StreamSource<?> streamSource = (StreamSource<?>) source;
+                try {
+                    if (streamSource.getInputStream() != null) {
+                        InputStream inputStream = streamSource.getInputStream();
+                        if (inputStream != System.in) {
+                            inputStream.close();
+                        }
                     }
+                } catch (Throwable throwable) {
+                    LOGGER.debug("Failed to close input stream/reader.", throwable);
                 }
-            } catch (Throwable throwable) {
-                LOGGER.debug("Failed to close input stream/reader.", throwable);
+            } else if (source instanceof ReaderSource) {
+                ReaderSource<?> readerSource = (ReaderSource<?>) source;
+                if (readerSource.getReader() != null) {
+                    readerSource.getReader().close();
+                }
             }
+        } catch (Throwable throwable) {
+            LOGGER.debug("Failed to close input stream/reader.", throwable);
         }
     }
 
-    protected void close(Result result) {
-        if (result instanceof StreamResult) {
-            StreamResult streamResult = ((StreamResult) result);
-
-            try {
-                if (streamResult.getWriter() != null) {
-                    Writer writer = streamResult.getWriter();
+    protected void close(Sink sink) {
+        try {
+            if (sink instanceof StreamSink) {
+                StreamSink<?> streamSink = ((StreamSink<?>) sink);
+                if (streamSink.getOutputStream() != null) {
+                    OutputStream outputStream = streamSink.getOutputStream();
                     try {
-                        writer.flush();
-                    } finally {
-                        writer.close();
-                    }
-                } else if (streamResult.getOutputStream() != null) {
-                    OutputStream stream = streamResult.getOutputStream();
-                    try {
-                        stream.flush();
+                        outputStream.flush();
                     } finally {
                         // Close the stream as long as it's not sysout or syserr...
-                        if (stream != System.out && stream != System.err) {
-                            stream.close();
+                        if (outputStream != System.out && outputStream != System.err) {
+                            outputStream.close();
                         }
                     }
                 }
-            } catch (Throwable throwable) {
-                LOGGER.debug("Failed to close output stream/writer.  May already be closed.", throwable);
+            } else if (sink instanceof WriterSink) {
+                WriterSink<?> writerSink = ((WriterSink<?>) sink);
+                try (Writer writer = writerSink.getWriter()) {
+                    writer.flush();
+                }
             }
+        } catch (Throwable throwable) {
+            LOGGER.debug("Failed to close output stream/writer.  May already be closed.", throwable);
         }
     }
 }

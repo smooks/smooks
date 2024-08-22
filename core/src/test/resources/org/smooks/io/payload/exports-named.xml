@@ -48,8 +48,8 @@
 	
 
     <core:exports>
-        <core:result type="org.smooks.io.payload.StringResult" name="myStringResult"/>
-        <core:result type="org.smooks.io.payload.JavaResult" name="myJavaResult"/>
+        <core:result type="org.smooks.io.sink.StringSink" name="myStringSink"/>
+        <core:result type="org.smooks.io.sink.JavaSink" name="myJavaSink"/>
     </core:exports>
     
     <resource-config selector="bajja"/>

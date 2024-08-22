@@ -48,8 +48,7 @@ import org.smooks.api.Registry;
 import org.smooks.api.management.InstrumentationAgent;
 import org.smooks.api.management.InstrumentationResource;
 import org.smooks.api.resource.visitor.Visitor;
-import org.smooks.engine.lookup.InstanceLookup;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.source.StringSource;
 import org.xml.sax.SAXException;
 
 import javax.management.AttributeNotFoundException;

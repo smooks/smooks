@@ -40,42 +40,30 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io.payload;
+package org.smooks.io.source;
 
-import java.util.List;
-
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.TypedKey;
+import org.smooks.api.io.Source;
 
 /**
- * JavaSourceWithEventStream is a wrapper around a {@link JavaSource}
- * which has disabled eventStreaming ({@link JavaSource#isEventStreamRequired()})
- * by default.
- * <p/>
- * Note that even though event streaming is disabled by default when an instance
- * of this class is created, it might later get changed as this class simply
- * extends JavaSource.
+ * Filtration/Transformation {@link org.smooks.api.io.Source}.
  *
- * @author Daniel Bevenius
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JavaSourceWithoutEventStream extends JavaSource {
-    JavaSource delegate;
+public abstract class FilterSource implements Source {
 
-    public JavaSourceWithoutEventStream(List<Object> sourceObjects) {
-        super(sourceObjects);
-        disableEventStream();
+    public static final TypedKey<Source> SOURCE_TYPED_KEY = TypedKey.of();
+
+    public static Source getSource(ExecutionContext executionContext) {
+        return executionContext.get(SOURCE_TYPED_KEY);
     }
 
-    public JavaSourceWithoutEventStream(Object sourceObject) {
-        super(sourceObject);
-        disableEventStream();
+    public static void setSource(ExecutionContext executionContext, Source source) {
+        if (source != null) {
+            executionContext.put(SOURCE_TYPED_KEY, source);
+        } else {
+            executionContext.remove(SOURCE_TYPED_KEY);
+        }
     }
-
-    public JavaSourceWithoutEventStream(String objectName, Object sourceObject) {
-        super(objectName, sourceObject);
-        disableEventStream();
-    }
-
-    private void disableEventStream() {
-        setEventStreamRequired(false);
-    }
-
 }

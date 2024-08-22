@@ -75,6 +75,8 @@ import org.smooks.io.DomSerializer;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.ResourceWriter;
 import org.smooks.io.Stream;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.DOMSource;
 import org.smooks.support.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -89,8 +91,6 @@ import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -176,7 +176,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
 
         nestedSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
                 nestedSmooks.getApplicationContext().getClassLoader(), nestedSmooks.getApplicationContext().getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
-        nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
+        nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseSink(false).setReaderPoolSize(-1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
 
         action = actionOptional.orElse(null);
         if (action != null) {
@@ -402,7 +402,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         if (writer == null) {
             nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document));
         } else {
-            nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document), new StreamResult(writer));
+            nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document), new WriterSink(writer));
         }
     }
 

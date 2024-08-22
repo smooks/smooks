@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * Core
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,37 +40,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.xsd20.importtests;
+package org.smooks.io.sink;
 
-import org.junit.jupiter.api.Test;
-import org.smooks.Smooks;
-import org.smooks.engine.delivery.dom.serialize.SimpleDOMVisitor;
-import org.smooks.io.source.StringSource;
-import org.xml.sax.SAXException;
+import org.smooks.api.io.Sink;
 
-import java.io.IOException;
+import java.io.OutputStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+public class StreamSink<T extends OutputStream> implements Sink {
 
-/**
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public class ImportTestCase {
+    protected final T outputStream;
 
-    @Test
-    public void testImport() throws IOException, SAXException {
-        testConfig("20_import_12.xml");
+    public StreamSink(T outputStream) {
+        this.outputStream = outputStream;
     }
 
-    @Test
-    public void testParamaterizedImport() throws IOException, SAXException {
-        SimpleDOMVisitor.visited = false;
-        testConfig("paramaterized_import_main.xml");
-        assertTrue(SimpleDOMVisitor.visited, "Parameters not properly injected into import.");
-    }
-
-    private void testConfig(String config) throws IOException, SAXException {
-        Smooks smooks = new Smooks("/org/smooks/engine/resource/xsd20/importtests/" + config);
-        smooks.filterSource(new StringSource("<a/>"));
+    public T getOutputStream() {
+        return outputStream;
     }
 }

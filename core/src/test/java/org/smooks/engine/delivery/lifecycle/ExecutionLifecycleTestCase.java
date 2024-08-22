@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.Smooks;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.source.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

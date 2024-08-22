@@ -40,26 +40,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io.payload;
+package org.smooks.io.source;
 
-import javax.xml.transform.stream.StreamSource;
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 
 /**
- * Utility class for creating a String based {@link javax.xml.transform.stream.StreamSource}.
+ * Utility class for creating a Byte based {@link javax.xml.transform.stream.StreamSource}.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class StringSource extends StreamSource {
+public class ByteSource extends StreamSource<ByteArrayInputStream> {
 
-    private final String source;
-
-    public StringSource(String source) {
-        super(new StringReader(source));
-        this.source = source;
-    }
-
-    public String getSource() {
-        return source;
+    public ByteSource(byte[] source) {
+        super(new ByteArrayInputStream(source));
     }
 }

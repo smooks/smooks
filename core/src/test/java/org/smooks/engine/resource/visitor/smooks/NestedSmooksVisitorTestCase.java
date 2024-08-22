@@ -50,6 +50,8 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
@@ -65,7 +67,8 @@ import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.Stream;
-import org.smooks.io.payload.StringResult;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.DOMSource;
 import org.smooks.testkit.MockExecutionContext;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
@@ -73,9 +76,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -117,7 +117,7 @@ public class NestedSmooksVisitorTestCase {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         nestedSmooksVisitor.setNestedSmooks(new Smooks() {
             @Override
-            public void filterSource(ExecutionContext executionContext, Source source, Result... results) throws SmooksException {
+            public void filterSource(ExecutionContext executionContext, Source source, Sink... sinks) throws SmooksException {
                 assertEquals("ISO-8859-1", executionContext.getContentEncoding());
             }
         });
@@ -135,7 +135,7 @@ public class NestedSmooksVisitorTestCase {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         nestedSmooksVisitor.setNestedSmooks(new Smooks() {
             @Override
-            public void filterSource(ExecutionContext executionContext, Source source, Result... results) throws SmooksException {
+            public void filterSource(ExecutionContext executionContext, Source source, Sink... sinks) throws SmooksException {
                 assertEquals(domModel, executionContext.get(DOMModel.DOM_MODEL_TYPED_KEY));
             }
         });
@@ -185,7 +185,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addText("bar").
                 getDocument())), stringResult);
@@ -211,7 +211,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "b");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").
                 getDocument())), stringResult);
@@ -239,7 +239,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "b");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").
                 getDocument())), stringResult);
@@ -286,7 +286,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "b");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").addText("Hello World!").
                 getDocument())), stringResult);
@@ -328,7 +328,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -371,7 +371,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -414,7 +414,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -458,7 +458,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -486,7 +486,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -513,7 +513,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -540,7 +540,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -567,7 +567,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -594,7 +594,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -621,7 +621,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -648,7 +648,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
@@ -675,7 +675,7 @@ public class NestedSmooksVisitorTestCase {
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringResult stringResult = new StringResult();
+        StringSink stringResult = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").

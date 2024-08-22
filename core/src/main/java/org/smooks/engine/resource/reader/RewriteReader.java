@@ -58,6 +58,8 @@ import org.smooks.engine.delivery.sax.ng.bridge.Bridge;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.io.DocumentInputSource;
 import org.smooks.io.SAXWriter;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.DOMSource;
 import org.w3c.dom.Document;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -74,8 +76,6 @@ import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Writer;
@@ -118,7 +118,7 @@ public class RewriteReader implements SmooksXMLReader {
             applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
         }
         readerSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).build());
-        readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseResult(false).setReaderPoolSize(-1));
+        readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseSink(false).setReaderPoolSize(-1));
         readerSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
                 readerSmooks.getApplicationContext().getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
 
@@ -216,9 +216,8 @@ public class RewriteReader implements SmooksXMLReader {
         if (executionContext.get(contentHandlerTypedKey) == null) {
             executionContext.put(contentHandlerTypedKey, new SAXWriter(contentHandler, Charset.forName(executionContext.getContentEncoding())));
         }
-        StreamResult streamResult = new StreamResult();
-        streamResult.setWriter(executionContext.get(contentHandlerTypedKey));
-        readerSmooks.filterSource(readerExecutionContext, new DOMSource(document), streamResult);
+        WriterSink<Writer> writerSink = new WriterSink<>(executionContext.get(contentHandlerTypedKey));
+        readerSmooks.filterSource(readerExecutionContext, new DOMSource(document), writerSink);
     }
 
     @Override

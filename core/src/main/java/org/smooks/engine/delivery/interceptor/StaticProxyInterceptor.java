@@ -48,6 +48,8 @@ import org.smooks.api.delivery.FilterBypass;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Consumer;
 import org.smooks.api.delivery.ordering.Producer;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 import org.smooks.api.lifecycle.PostExecutionLifecycle;
 import org.smooks.api.lifecycle.PreExecutionLifecycle;
 import org.smooks.api.lifecycle.PostFragmentLifecycle;
@@ -58,8 +60,6 @@ import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import java.util.Collections;
 import java.util.Set;
 
@@ -204,11 +204,11 @@ public class StaticProxyInterceptor extends AbstractInterceptorVisitor implement
     }
 
     @Override
-    public boolean bypass(ExecutionContext executionContext, Source source, Result result) throws SmooksException {
+    public boolean bypass(ExecutionContext executionContext, Source source, Sink sink) throws SmooksException {
         final Object interceptResult = intercept(new Invocation<FilterBypass>() {
             @Override
             public Object invoke(FilterBypass visitor, Object... args) {
-                return visitor.bypass(executionContext, source, result);
+                return visitor.bypass(executionContext, source, sink);
             }
 
             @Override

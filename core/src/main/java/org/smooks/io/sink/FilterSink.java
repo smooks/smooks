@@ -40,49 +40,47 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.plugin;
+package org.smooks.io.sink;
 
-import org.smooks.io.payload.ByteResult;
-import org.smooks.io.payload.JavaResult;
-import org.smooks.io.payload.StringResult;
-
-import javax.xml.transform.Result;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.TypedKey;
+import org.smooks.api.io.Sink;
 
 /**
- * Factory for javax.xml.transform.Result objects.
+ * Filtration/Transformation {@link Sink}.
  *
- * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ResultFactory {
-    private static final ResultFactory factory = new ResultFactory();
+public abstract class FilterSink implements Sink {
 
-    private ResultFactory() {
+    public static final TypedKey<Sink[]> SINKS_TYPED_KEY = TypedKey.of();
+
+    private String systemId;
+
+    public static void setSinks(ExecutionContext executionContext, Sink... sinks) {
+        if (sinks != null) {
+            executionContext.put(SINKS_TYPED_KEY, sinks);
+        } else {
+            executionContext.remove(SINKS_TYPED_KEY);
+        }
     }
 
-    public static ResultFactory getInstance() {
-        return factory;
+    public static Sink[] getSinks(ExecutionContext executionContext) {
+        return executionContext.get(SINKS_TYPED_KEY);
     }
 
-    public Result createResult(final ResultType type) {
-        Result result = null;
-        switch (type) {
-            case STRING:
-                result = new StringResult();
-                break;
-            case BYTES:
-                result = new ByteResult();
-                break;
-            case JAVA:
-                result = new JavaResult(true);
-                break;
-            case NORESULT:
-                break;
+    public static Sink getSink(ExecutionContext executionContext, Class<? extends Sink> sinkType) {
+        Sink[] sinks = getSinks(executionContext);
 
-            default:
-                result = null;
-                break;
+        if (sinks != null) {
+            for (Sink sink : sinks) {
+                // Needs to be an exact type match...
+                if (sink != null && sinkType.isAssignableFrom(sink.getClass())) {
+                    return sink;
+                }
+            }
         }
 
-        return result;
+        return null;
     }
 }

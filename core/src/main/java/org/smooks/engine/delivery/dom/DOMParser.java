@@ -44,6 +44,7 @@ package org.smooks.engine.delivery.dom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.io.Source;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.AbstractParser;
@@ -58,7 +59,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import javax.xml.transform.Source;
 import java.io.IOException;
 import java.nio.charset.Charset;
 

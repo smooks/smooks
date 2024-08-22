@@ -47,10 +47,11 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.engine.bean.context.preinstalled.Time;
 import org.smooks.engine.bean.context.preinstalled.UniqueID;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -82,26 +83,26 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process() throws IOException, SAXException {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.STRING);
         assertThrows(IllegalArgumentException.class, () -> processor.process(null, smooks.createExecutionContext()));
     }
 
     @Test
-    public void process_SourceResult() throws IOException, SAXException {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
-        StreamSource source = new StreamSource(new StringReader("<text/>"));
+    public void process_SourceSink() throws IOException, SAXException {
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.STRING);
+        ReaderSource source = new ReaderSource(new StringReader("<text/>"));
         StringWriter writer = new StringWriter();
-        StreamResult result = new StreamResult(writer);
-        SourceResult sourceResult = new SourceResult(source, result);
-        Object object = processor.process(sourceResult, smooks.createExecutionContext());
+        WriterSink sink = new WriterSink(writer);
+        SourceSink sourceSink = new SourceSink(source, sink);
+        Object object = processor.process(sourceSink, smooks.createExecutionContext());
 
-        assertEquals(result, object);
+        assertEquals(sink, object);
         assertEquals("<text/>", writer.toString());
     }
 
     @Test
     public void process_String2String() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.STRING);
         Object object = processor.process("<testing/>", smooks.createExecutionContext());
 
         assertEquals("<testing/>", object);
@@ -109,7 +110,7 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process_bytes2String() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.STRING);
         Object payload = "<testing/>".getBytes();
         Object object = processor.process(payload, smooks.createExecutionContext());
 
@@ -118,7 +119,7 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process_bytes2bytes() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.BYTES);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.BYTES);
         Object payload = "<testing/>".getBytes();
         Object object = processor.process(payload, smooks.createExecutionContext());
 
@@ -129,7 +130,7 @@ public class PayloadProcessorTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void process_String2Java_01() {
-        final PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.JAVA);
+        final PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.JAVA);
         Map<String, Object> map = (Map<String, Object>) processor.process("<testing/>", smooks.createExecutionContext());
 
         assertThat(map, hasEntry("theBean", "Hi there!"));
@@ -144,7 +145,7 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process_String2Java_02() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.JAVA);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.JAVA);
 
         processor.setJavaResultBeanId("theBean");
         Object object = processor.process("<testing/>", smooks.createExecutionContext());
@@ -154,7 +155,7 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process_Java2String() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.STRING);
         Object object = processor.process(123, smooks.createExecutionContext());
 
         assertEquals("<int>123</int>", object.toString());
@@ -162,7 +163,7 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process_Reader2String() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.STRING);
         Object object = processor.process(new StringReader("<test/>"), smooks.createExecutionContext());
 
         assertEquals("<test/>", object.toString());
@@ -170,7 +171,7 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process_Stream2String() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.STRING);
         Object object = processor.process(new ByteArrayInputStream("<test/>".getBytes()), smooks.createExecutionContext());
 
         assertEquals("<test/>", object.toString());
@@ -178,7 +179,7 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process_Source2String() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.STRING);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.STRING);
         Object object = processor.process(new StreamSource(new ByteArrayInputStream("<test/>".getBytes())), smooks.createExecutionContext());
 
         assertEquals("<test/>", object.toString());
@@ -186,7 +187,7 @@ public class PayloadProcessorTestCase {
 
     @Test
     public void process_NoResult() {
-        PayloadProcessor processor = new PayloadProcessor(smooks, ResultType.NORESULT);
+        PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.NO_SINK);
         Object object = processor.process(123, smooks.createExecutionContext());
 
         assertNull(object);

@@ -65,7 +65,7 @@ import java.io.Writer;
 import java.util.Optional;
 
 /**
- * Serializes a node to the execution result stream.
+ * Serializes a node to the execution sink stream.
  */
 public class SimpleSerializerVisitor implements SerializerVisitor, ElementVisitor {
 

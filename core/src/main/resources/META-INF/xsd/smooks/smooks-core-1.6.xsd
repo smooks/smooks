@@ -66,7 +66,7 @@
                         <xs:documentation>Close Filter Source (Stream Sources only)</xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-		        <xs:attribute name="closeResult" type="xs:boolean">
+		        <xs:attribute name="closeSink" type="xs:boolean">
                     <xs:annotation>
                         <xs:documentation>Close Filter Result (Stream Results only)</xs:documentation>
                     </xs:annotation>

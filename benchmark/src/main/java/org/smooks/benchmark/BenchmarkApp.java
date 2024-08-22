@@ -46,10 +46,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -156,7 +159,7 @@ public class BenchmarkApp {
                 final CountingInputStream inputStream = new CountingInputStream(new GZIPInputStream(Files.newInputStream(Paths.get(testDatasetFile.toURI()))));
                 LOGGER.info("Filtering...");
                 final long startTime = System.currentTimeMillis();
-                smooks.filterSource(new StreamSource(inputStream));
+                smooks.filterSource(new StreamSource<>(inputStream));
                 final long duration = System.currentTimeMillis() - startTime;
                 LOGGER.info("Filtered {} MBs in {} minutes", (inputStream.getByteCount() / 1024) / 1024, TimeUnit.MILLISECONDS.toMinutes(duration));
             } catch (IOException e) {

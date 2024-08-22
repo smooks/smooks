@@ -46,13 +46,13 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.api.bean.repository.BeanId;
-import org.smooks.io.payload.FilterResult;
-import org.smooks.io.payload.FilterSource;
-import org.smooks.io.payload.JavaResult;
-import org.smooks.io.payload.JavaSource;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
+import org.smooks.io.sink.FilterSink;
+import org.smooks.io.source.FilterSource;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.JavaSource;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,10 +83,10 @@ public class StandaloneBeanContextFactory {
 
     /**
      * Returns the BeanMap which must be used by the {@link BeanContext}. If
-     * a JavaResult or a JavaSource is used with the {@link ExecutionContext} then
+     * a JavaSink or a JavaSource is used with the {@link ExecutionContext} then
      * those are used in the creation of the Bean map.
      * <p>
-     * Bean's that are already in the JavaResult or JavaSource map are given
+     * Bean's that are already in the JavaSink or JavaSource map are given
      * a {@link BeanId} in the {@link BeanIdStore}.
      *
      * @param executionContext
@@ -94,13 +94,13 @@ public class StandaloneBeanContextFactory {
      * @return
      */
     private static Map<String, Object> createBeanMap(ExecutionContext executionContext, BeanIdStore beanIdStore) {
-        Result result = FilterResult.getResult(executionContext, JavaResult.class);
+        Sink sink = FilterSink.getSink(executionContext, JavaSink.class);
         Source source = FilterSource.getSource(executionContext);
         Map<String, Object> beanMap = null;
 
-        if (result != null) {
-            JavaResult javaResult = (JavaResult) result;
-            beanMap = javaResult.getResultMap();
+        if (sink != null) {
+            JavaSink javaSink = (JavaSink) sink;
+            beanMap = javaSink.getResultMap();
         }
 
         if (source instanceof JavaSource) {

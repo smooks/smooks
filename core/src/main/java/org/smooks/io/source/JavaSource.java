@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io.payload;
+package org.smooks.io.source;
 
 import org.smooks.assertion.AssertArgument;
 
@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Java Filtration/Transformation {@link javax.xml.transform.Source}.
+ * Java Filtration/Transformation {@link org.smooks.api.io.Source}.
  *
  * <h3 id="eventcontrol">Controlling Event Stream Generation</h3>
  * The Java Objects used to create this source can be used to generate a stream of SAX

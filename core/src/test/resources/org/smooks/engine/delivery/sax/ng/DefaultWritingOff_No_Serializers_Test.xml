@@ -49,7 +49,7 @@
     </resource-config>
 
     <!--
-    The following visitors don't write/serialize anything to the result.
+    The following visitors don't write/serialize anything to the sink.
     -->
 
     <resource-config selector="a">

@@ -51,8 +51,8 @@ import org.smooks.api.delivery.sax.StreamResultWriter;
 import org.smooks.api.delivery.sax.TextConsumer;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.io.FragmentWriter;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class StreamResultWriterAndTextConsumerTestCase {
 	@Test
 	public void testSingleCharacterChunk() {
 		Smooks smooks = new Smooks();
-		StringResult stringResult = new StringResult();
+		StringSink stringResult = new StringSink();
 		
 		smooks.addVisitor(new MyAnnotatedVisitor(), "b");
 		smooks.filterSource(new StringSource("<a><b>sometext</b></a>"), stringResult);
@@ -75,7 +75,7 @@ public class StreamResultWriterAndTextConsumerTestCase {
 	@Test
 	public void testMultipleCharacterChunks() {
 		Smooks smooks = new Smooks();
-		StringResult stringResult = new StringResult();
+		StringSink stringResult = new StringSink();
 
 		smooks.addVisitor(new MyAnnotatedVisitor(), "b");
 		smooks.filterSource(new StringSource("<a><b>sometext &amp; moretext</b></a>"), stringResult);

@@ -50,12 +50,13 @@ import org.smooks.api.TypedKey;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.io.FragmentWriter;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.StringSource;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -105,9 +106,9 @@ public class RewriteReaderFunctionalTestCase {
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-rewrite.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
-        StringWriter result = new StringWriter();
+        StringWriter stringWriter = new StringWriter();
 
-        smooks.filterSource(execContext, new StringSource("<helloWorld>bar</helloWorld>"), new StreamResult(result));
-        assertEquals("<bar>helloWorld</bar>", result.toString());
+        smooks.filterSource(execContext, new StringSource("<helloWorld>bar</helloWorld>"), new WriterSink(stringWriter));
+        assertEquals("<bar>helloWorld</bar>", stringWriter.toString());
     }
 }
