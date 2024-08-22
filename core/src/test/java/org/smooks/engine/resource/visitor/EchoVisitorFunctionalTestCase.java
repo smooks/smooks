@@ -44,8 +44,8 @@ package org.smooks.engine.resource.visitor;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -57,9 +57,9 @@ public class EchoVisitorFunctionalTestCase {
     @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-echo.xml"));
-        StringResult stringResult = new StringResult();
-        smooks.filterSource(new StringSource("<helloWorld>bar</helloWorld>"), stringResult);
-        assertEquals("<helloWorld><helloWorld>barbar</helloWorld></helloWorld>", stringResult.getResult());
+        StringSink stringSink = new StringSink();
+        smooks.filterSource(new StringSource("<helloWorld>bar</helloWorld>"), stringSink);
+        assertEquals("<helloWorld><helloWorld>barbar</helloWorld></helloWorld>", stringSink.getResult());
     }
 
 }

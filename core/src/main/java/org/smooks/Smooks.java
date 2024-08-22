@@ -58,6 +58,8 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.FilterBypass;
 import org.smooks.api.delivery.VisitorAppender;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 import org.smooks.api.lifecycle.FilterLifecycle;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.profile.Profile;
@@ -82,19 +84,15 @@ import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.xml.NamespaceManager;
 import org.smooks.io.payload.Exports;
-import org.smooks.io.payload.FilterResult;
-import org.smooks.io.payload.FilterSource;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.FilterSink;
+import org.smooks.io.source.FilterSource;
+import org.smooks.io.sink.JavaSink;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.SmooksUtil;
 import org.smooks.support.URIUtil;
 import org.xml.sax.SAXException;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -124,7 +122,7 @@ import java.util.Properties;
  * {@link ExecutionContext} execContext;
  *
  * execContext = smooks.{@link #createExecutionContext createExecutionContext}();
- * smooks.{@link #filterSource filter}(new {@link StreamSource}(...), new {@link StreamResult}(...), execContext);
+ * smooks.{@link #filterSource filter}(new {@link org.smooks.io.source.StreamSource}(...), new {@link org.smooks.io.sink.StreamSink}(...), execContext);
  * </pre>
  * </li>
  * </ol>
@@ -403,7 +401,7 @@ public class Smooks implements Closeable {
      * The created context is profile agnostic and should be used where profile based targeting is not in use.
      * <p/>
      * The context returned from this method is used in subsequent calls to
-     * {@link #filterSource(ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}
+     * {@link #filterSource(ExecutionContext, org.smooks.api.io.Source, org.smooks.api.io.Sink...)}
      * It allows access to the execution context instance
      * before and after calls on this method.  This means the caller has an opportunity to set and get data
      * {@link TypedMap bound} to the execution context (before and after the calls), providing the
@@ -422,7 +420,7 @@ public class Smooks implements Closeable {
      * the transfromation/analysis resources must be configured with profile targeting information.
      * <p/>
      * The context returned from this method is used in subsequent calls to
-     * {@link #filterSource(ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)}.
+     * {@link #filterSource(ExecutionContext, org.smooks.api.io.Source, org.smooks.api.io.Sink...)}.
      * It allows access to the execution context instance
      * before and after calls on this method.  This means the caller has an opportunity to set and get data
      * {@link TypedMap bound} to the execution context (before and after the calls), providing the
@@ -468,7 +466,7 @@ public class Smooks implements Closeable {
     /**
      * Filter the content in the supplied {@link Source} instance.
      * <p/>
-     * Not producing a {@link Result}.
+     * Not producing a {@link Sink}.
      *
      * @param source The content Source.
      * @throws SmooksException Failed to filter.
@@ -479,27 +477,27 @@ public class Smooks implements Closeable {
 
     /**
      * Filter the content in the supplied {@link Source} instance, outputing data
-     * to the supplied {@link Result} instances.
+     * to the supplied {@link Sink} instances.
      *
      * @param source  The filter Source.
-     * @param results The filter Results.
+     * @param sinks The filter Sinks.
      * @throws SmooksException Failed to filter.
      */
-    public void filterSource(Source source, Result... results) throws SmooksException {
-        filterSource(createExecutionContext(), source, results);
+    public void filterSource(Source source, Sink... sinks) throws SmooksException {
+        filterSource(createExecutionContext(), source, sinks);
     }
 
     /**
      * Filter the content in the supplied {@link Source} instance, outputing data
-     * to the supplied {@link Result} instances.
+     * to the supplied {@link Sink} instances.
      *
      * @param executionContext The {@link ExecutionContext} for this filter operation. See
      *                         {@link #createExecutionContext(String)}.
      * @param source           The filter Source.
-     * @param results          The filter Results.
+     * @param sinks          The filter Sinks.
      * @throws SmooksException Failed to filter.
      */
-    public void filterSource(ExecutionContext executionContext, Source source, Result... results) throws SmooksException {
+    public void filterSource(ExecutionContext executionContext, Source source, Sink... sinks) throws SmooksException {
         AssertArgument.isNotNull(source, "source");
         AssertArgument.isNotNull(executionContext, "executionContext");
 
@@ -507,23 +505,23 @@ public class Smooks implements Closeable {
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(applicationContext.getClassLoader());
             try {
-                _filter(executionContext, source, results);
+                _filter(executionContext, source, sinks);
             } finally {
                 Thread.currentThread().setContextClassLoader(contextClassLoader);
             }
         } else {
-            _filter(executionContext, source, results);
+            _filter(executionContext, source, sinks);
         }
     }
 
-    private void _filter(ExecutionContext executionContext, Source source, Result... results) {
+    private void _filter(ExecutionContext executionContext, org.smooks.api.io.Source source, Sink... sinks) {
         ContentDeliveryConfig contentDeliveryConfig = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();
         try {
             lifecycleManager.applyPhase(registry.lookup(new InstanceLookup<>(FilterLifecycle.class)).values(), new PreFilterLifecyclePhase(executionContext));
 
-            if (results != null && results.length == 1 && results[0] != null) {
+            if (sinks != null && sinks.length == 1 && sinks[0] != null) {
                 FilterBypass filterBypass = contentDeliveryConfig.getFilterBypass();
-                if (filterBypass != null && filterBypass.bypass(executionContext, source, results[0])) {
+                if (filterBypass != null && filterBypass.bypass(executionContext, source, sinks[0])) {
                     // We're done... a filter bypass was applied...
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("FilterBypass {} applied", filterBypass.getClass().getName());
@@ -536,7 +534,7 @@ public class Smooks implements Closeable {
             try {
                 // Attach the source and results to the context...
                 FilterSource.setSource(executionContext, source);
-                FilterResult.setResults(executionContext, results);
+                FilterSink.setSinks(executionContext, sinks);
 
                 // Add pre installed beans + global BeanContext lifecycle observers...
                 BeanContext beanContext = executionContext.getBeanContext();
@@ -553,9 +551,9 @@ public class Smooks implements Closeable {
                     try {
                         // We want to make sure that all the beans from the BeanContext are available in the
                         // JavaResult, if one is supplied by the user...
-                        JavaResult javaResult = (JavaResult) FilterResult.getResult(executionContext, JavaResult.class);
-                        if (javaResult != null) {
-                            javaResult.getResultMap().putAll(executionContext.getBeanContext().getBeanMap());
+                        JavaSink javaSink = (JavaSink) FilterSink.getSink(executionContext, JavaSink.class);
+                        if (javaSink != null) {
+                            javaSink.getResultMap().putAll(executionContext.getBeanContext().getBeanMap());
                         }
 
                         // Remove the pre-installed beans...

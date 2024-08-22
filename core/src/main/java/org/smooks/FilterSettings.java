@@ -61,7 +61,7 @@ public class FilterSettings {
     private boolean terminateOnException = true;
     private boolean maintainElementStack = true;
     private boolean closeSource = true;
-    private boolean closeResult = true;
+    private boolean closeSink = true;
     private int readerPoolSize;
     private int maxNodeDepth = 1;
 
@@ -117,9 +117,9 @@ public class FilterSettings {
         return this;
     }
 
-    public FilterSettings setCloseResult(boolean closeResult) {
+    public FilterSettings setCloseSink(boolean closeSink) {
         assertNonStaticDecl();
-        this.closeResult = closeResult;
+        this.closeSink = closeSink;
         return this;
     }
 
@@ -143,7 +143,7 @@ public class FilterSettings {
         ParameterAccessor.removeParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, smooks);
         ParameterAccessor.removeParameter(Filter.MAINTAIN_ELEMENT_STACK, smooks);
         ParameterAccessor.removeParameter(Filter.CLOSE_SOURCE, smooks);
-        ParameterAccessor.removeParameter(Filter.CLOSE_RESULT, smooks);
+        ParameterAccessor.removeParameter(Filter.CLOSE_SINK, smooks);
         ParameterAccessor.removeParameter(Filter.READER_POOL_SIZE, smooks);
         ParameterAccessor.removeParameter(Filter.MAX_NODE_DEPTH, smooks);
 
@@ -154,7 +154,7 @@ public class FilterSettings {
         ParameterAccessor.setParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.toString(terminateOnException), smooks);
         ParameterAccessor.setParameter(Filter.MAINTAIN_ELEMENT_STACK, Boolean.toString(maintainElementStack), smooks);
         ParameterAccessor.setParameter(Filter.CLOSE_SOURCE, Boolean.toString(closeSource), smooks);
-        ParameterAccessor.setParameter(Filter.CLOSE_RESULT, Boolean.toString(closeResult), smooks);
+        ParameterAccessor.setParameter(Filter.CLOSE_SINK, Boolean.toString(closeSink), smooks);
         ParameterAccessor.setParameter(Filter.READER_POOL_SIZE, Integer.toString(readerPoolSize), smooks);
         ParameterAccessor.setParameter(Filter.MAX_NODE_DEPTH, Integer.toString(maxNodeDepth), smooks);
     }

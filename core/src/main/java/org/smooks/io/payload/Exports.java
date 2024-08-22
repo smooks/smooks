@@ -43,20 +43,27 @@
 package org.smooks.io.payload;
 
 import org.smooks.api.SmooksException;
+import org.smooks.api.io.Sink;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.support.ClassUtils;
 
 import javax.inject.Inject;
-import javax.xml.transform.Result;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An Exports instance holds a Map of {@link Export}s that Smooks
  * produces/exports.
  * </p>
- * The map uses the type of of result as its key and the {@link Export}
+ * The map uses the type of sink as its key and the {@link Export}
  * as its value.
  *
  * @author Daniel Bevenius
@@ -82,14 +89,14 @@ public class Exports implements ContentHandler {
         }
     }
 
-    public Exports(final Class<?> resultType) {
-        AssertArgument.isNotNull(resultType, "resultType");
-        addExport(new Export(resultType));
+    public Exports(final Class<?> sinkType) {
+        AssertArgument.isNotNull(sinkType, "sinkType");
+        addExport(new Export(sinkType));
     }
 
-    public Exports(final String resultType) {
-        AssertArgument.isNotNull(resultType, "resultType");
-        addExport(new Export(getClassForType(resultType)));
+    public Exports(final String sinkType) {
+        AssertArgument.isNotNull(sinkType, "sinkType");
+        addExport(new Export(getClassForType(sinkType)));
     }
 
     private Class<?> getClassForType(final String type) {
@@ -108,7 +115,7 @@ public class Exports implements ContentHandler {
         return Collections.unmodifiableCollection(exportsMap.values());
     }
 
-    public Set<Class<?>> getResultTypes() {
+    public Set<Class<?>> getSinkTypes() {
         return Collections.unmodifiableSet(exportsMap.keySet());
     }
 
@@ -120,12 +127,12 @@ public class Exports implements ContentHandler {
         return exportsMap.get(type);
     }
 
-    public Result[] createResults() {
-        Set<Result> results = new HashSet<Result>();
-        for (Class<?> resultTypeClass : exportsMap.keySet()) {
-            results.add(createResultInstance(resultTypeClass));
+    public Sink[] createSinks() {
+        Set<Sink> sinks = new HashSet<>();
+        for (Class<?> sinkTypeClass : exportsMap.keySet()) {
+            sinks.add(createSinkInstance(sinkTypeClass));
         }
-        return results.toArray(new Result[]{});
+        return sinks.toArray(new Sink[]{});
     }
 
     public Collection<Export> getProducts() {
@@ -133,39 +140,39 @@ public class Exports implements ContentHandler {
     }
 
     /**
-     * Will return the Objects contained in the results array. If the corresponding
-     * {@link Export} for that result type was configured with an extract property
-     * only that portion of the result will be returned.
+     * Will return the Objects contained in the sinks array. If the corresponding
+     * {@link Export} for that sink type was configured with an extract property
+     * only that portion of the sink will be returned.
      *
-     * @param results The results produced by a Smooks filtering operation.
+     * @param sinks   The sinks produced by a Smooks filtering operation.
      * @param exports The exports.
-     * @return List<Object> Either the results unchanged if no 'extract' was configured
+     * @return List<Object> Either the sinks unchanged if no 'extract' was configured
      * or if an 'extract' was configured in the corresponding Export then only the
      * object identified will be returned in the list of objects.
      */
-    public static List<Object> extractResults(final Result[] results, final Exports exports) {
-        final List<Object> objects = new ArrayList<Object>();
-        for (Result result : results) {
-            if (result instanceof ResultExtractor) {
-                @SuppressWarnings("unchecked") final ResultExtractor<Result> e = (ResultExtractor<Result>) result;
-                objects.add(e.extractFromResult(result, exports.getExport(result.getClass())));
+    public static List<Object> extractSinks(final Sink[] sinks, final Exports exports) {
+        final List<Object> objects = new ArrayList<>();
+        for (Sink sink : sinks) {
+            if (sink instanceof SinkExtractor) {
+                @SuppressWarnings("unchecked") final SinkExtractor<Sink> e = (SinkExtractor<Sink>) sink;
+                objects.add(e.extractFromSink(sink, exports.getExport(sink.getClass())));
             } else {
-                objects.add(result);
+                objects.add(sink);
             }
         }
 
         return objects;
     }
 
-    private static Result createResultInstance(final Class<?> resultTypeClass) {
+    private static Sink createSinkInstance(final Class<?> sinkTypeClass) {
         try {
-            return (Result) resultTypeClass.newInstance();
+            return (Sink) sinkTypeClass.newInstance();
         } catch (InstantiationException e) {
-            throw new SmooksException("Could not instantiate instance for result type ["
-                    + resultTypeClass.getName() + "]", e);
+            throw new SmooksException("Could not instantiate instance for sink type ["
+                    + sinkTypeClass.getName() + "]", e);
         } catch (IllegalAccessException e) {
-            throw new SmooksException("Could not create instance for result type ["
-                    + resultTypeClass.getName() + "]", e);
+            throw new SmooksException("Could not create instance for sink type ["
+                    + sinkTypeClass.getName() + "]", e);
         }
     }
 

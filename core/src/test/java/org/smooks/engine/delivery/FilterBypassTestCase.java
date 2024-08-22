@@ -49,16 +49,15 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.FilterBypass;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 import org.w3c.dom.Element;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -124,7 +123,7 @@ public class FilterBypassTestCase {
 			smooks.addVisitor(simpleVisitor, "zz");
 		}
 
-		smooks.filterSource(new StringSource("<x/>"), new StringResult());
+		smooks.filterSource(new StringSource("<x/>"), new StringSink());
 
 		assertEquals(expectBypass, bypassVisitor.bypassCalled);
 	}
@@ -139,7 +138,7 @@ public class FilterBypassTestCase {
 		}
 
 		@Override
-		public boolean bypass(ExecutionContext executionContext, Source source, Result result) {
+		public boolean bypass(ExecutionContext executionContext, Source source, Sink sink) {
 			bypassCalled = true;
 			return true;
 		}

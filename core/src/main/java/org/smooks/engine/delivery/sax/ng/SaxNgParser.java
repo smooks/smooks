@@ -43,6 +43,7 @@
 package org.smooks.engine.delivery.sax.ng;
 
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.io.Source;
 import org.smooks.engine.delivery.AbstractParser;
 import org.smooks.api.delivery.ReaderPool;
 import org.smooks.engine.delivery.XMLReaderHierarchyChangeListener;
@@ -53,7 +54,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.Source;
 import java.io.Closeable;
 import java.io.IOException;
 

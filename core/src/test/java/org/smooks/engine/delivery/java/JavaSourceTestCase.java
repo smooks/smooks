@@ -46,8 +46,9 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
-import org.smooks.io.payload.JavaSource;
-import org.smooks.io.payload.StringResult;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.JavaSource;
+import org.smooks.io.sink.StringSink;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamResult;
@@ -108,29 +109,29 @@ public class JavaSourceTestCase {
 	@Test
     public void test_streamingOff_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-eventstream-off.xml"));
-        StringResult result = new StringResult();
+        StringSink sink = new StringSink();
 
-        smooks.filterSource(new JavaSource(new MyBean1()), result);
-        assertEquals("<nullsource-document/>", result.getResult());
+        smooks.filterSource(new JavaSource(new MyBean1()), sink);
+        assertEquals("<nullsource-document/>", sink.getResult());
     }
 
     @Test
     public void test_streamingOff_02() {
         Smooks smooks = new Smooks();
         JavaSource javaSource = new JavaSource(new MyBean1());
-        StringResult result = new StringResult();
+        StringSink sink = new StringSink();
 
         // Turn streaming off via the JavaSource...
         javaSource.setEventStreamRequired(false);
 
-        smooks.filterSource(javaSource, result);
-        assertEquals("<nullsource-document/>", result.getResult());
+        smooks.filterSource(javaSource, sink);
+        assertEquals("<nullsource-document/>", sink.getResult());
     }
 
 	@Test
     public void test_streamingOn_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-eventstream-on.xml"));
-        StringResult result = new StringResult();
+        StringSink result = new StringSink();
 
         smooks.filterSource(new JavaSource(new MyBean1()));
         assertNotSame("<nullsource-document></nullsource-document>", result.getResult());
@@ -156,10 +157,10 @@ public class JavaSourceTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
         ExecutionContext execContext = smooks.createExecutionContext();
         JavaSource source = new JavaSource(sourceObjects);
-        StringWriter result = new StringWriter();
+        StringWriter stringWriter = new StringWriter();
 
-        smooks.filterSource(execContext, source, new StreamResult(result));
-        assertEquals(expected, result.toString());
+        smooks.filterSource(execContext, source, new WriterSink(stringWriter));
+        assertEquals(expected, stringWriter.toString());
     }
 
     private static final List<Object> SOURCE_1;

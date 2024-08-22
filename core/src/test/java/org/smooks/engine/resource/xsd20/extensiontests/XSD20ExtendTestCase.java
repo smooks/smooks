@@ -48,8 +48,8 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentDeliveryConfig;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 import org.smooks.support.XmlUtils;
 import org.smooks.xml.XsdDOMValidator;
 import org.w3c.dom.Document;
@@ -80,19 +80,19 @@ public class XSD20ExtendTestCase {
 	@Test
     public void test_digest_01_simple() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_01.xml"));
-        StringResult result = new StringResult();
+        StringSink sink = new StringSink();
 
-        smooks.filterSource(new StringSource("<a><b/><c/><d/></a>"), result);
-        assertEquals("<a><c></c><c></c><d></d></a>", result.getResult());
+        smooks.filterSource(new StringSource("<a><b/><c/><d/></a>"), sink);
+        assertEquals("<a><c></c><c></c><d></d></a>", sink.getResult());
     }
 
 	@Test
     public void test_digest_02_simple_import() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_02.xml"));
-        StringResult result = new StringResult();
+        StringSink sink = new StringSink();
 
-        smooks.filterSource(new StringSource("<a><b/><c/></a>"), result);
-        assertEquals("<a><c></c><b></b></a>", result.getResult());
+        smooks.filterSource(new StringSource("<a><b/><c/></a>"), sink);
+        assertEquals("<a><c></c><b></b></a>", sink.getResult());
     }
 
 	@Test

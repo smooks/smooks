@@ -42,19 +42,21 @@
  */
 package org.smooks.engine.plugin;
 
-import org.smooks.io.payload.JavaSource;
+import org.smooks.api.io.Source;
+import org.smooks.io.source.DOMSource;
+import org.smooks.io.source.JavaSource;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
+import org.smooks.io.source.StringSource;
 import org.w3c.dom.Node;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
 /**
- * Factory for creating javax.xml.transform.Source objects.
+ * Factory for creating org.smooks.api.io.Source objects.
  *
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
@@ -71,11 +73,11 @@ public class SourceFactory {
     public Source createSource(final Object from) {
         Source source;
         if (from instanceof String) {
-            source = new StreamSource(new StringReader((String) from));
+            source = new StringSource((String) from);
         } else if (from instanceof InputStream) {
             source = new StreamSource((InputStream) from);
         } else if (from instanceof Reader) {
-            source = new StreamSource((Reader) from);
+            source = new ReaderSource((Reader) from);
         } else if (from instanceof Node) {
             source = new DOMSource((Node) from);
         } else if (from instanceof Source) {

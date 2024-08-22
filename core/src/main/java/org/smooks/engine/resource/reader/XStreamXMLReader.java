@@ -46,7 +46,7 @@ import com.thoughtworks.xstream.io.xml.SaxWriter;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.reader.JavaXMLReader;
-import org.smooks.io.payload.JavaSource;
+import org.smooks.io.source.JavaSource;
 import org.xml.sax.*;
 
 import jakarta.annotation.PostConstruct;

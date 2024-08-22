@@ -47,8 +47,8 @@
         xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
     
     <core:exports>
-        <core:result type="org.smooks.io.payload.StringResult"/>
-        <core:result type="org.smooks.io.payload.JavaResult"/>
+        <core:result type="org.smooks.io.sink.StringSink"/>
+        <core:result type="org.smooks.io.sink.JavaSink"/>
     </core:exports>
     
     <resource-config selector="bajja"/>

@@ -46,22 +46,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 import org.smooks.engine.delivery.AbstractFilter;
 import org.smooks.engine.delivery.sax.ng.terminate.TerminateException;
 import org.smooks.io.Stream;
-import org.smooks.io.payload.FilterResult;
-import org.smooks.io.payload.FilterSource;
-import org.smooks.io.payload.JavaSource;
+import org.smooks.io.sink.DOMSink;
+import org.smooks.io.sink.FilterSink;
+import org.smooks.io.sink.StreamSink;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.DOMSource;
+import org.smooks.io.source.FilterSource;
+import org.smooks.io.source.JavaSource;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.DomUtils;
 import org.smooks.support.XmlUtils;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
 import java.io.Writer;
 
@@ -71,46 +73,47 @@ public class SaxNgFilter extends AbstractFilter {
 
     protected final ExecutionContext executionContext;
     protected final boolean closeSource;
-    protected final boolean closeResult;
+    protected final boolean closeSink;
     protected final SaxNgParser parser;
 
-    public SaxNgFilter(final ExecutionContext executionContext, final DocumentBuilder documentBuilder, boolean closeSource, boolean closeResult) {
+    public SaxNgFilter(ExecutionContext executionContext, DocumentBuilder documentBuilder, boolean closeSource, boolean closeSink) {
         this.executionContext = executionContext;
         this.closeSource = closeSource;
-        this.closeResult = closeResult;
+        this.closeSink = closeSink;
         parser = new SaxNgParser(executionContext, documentBuilder);
     }
 
     @Override
     public void doFilter() throws SmooksException {
         Source source = FilterSource.getSource(executionContext);
-        Result result;
-
-        result = FilterResult.getResult(executionContext, StreamResult.class);
-        if (result == null) {
-            result = FilterResult.getResult(executionContext, DOMResult.class);
+        Sink sink = FilterSink.getSink(executionContext, StreamSink.class);
+        if (sink == null) {
+            sink = FilterSink.getSink(executionContext, WriterSink.class);
+            if (sink == null) {
+                sink = FilterSink.getSink(executionContext, DOMSink.class);
+            }
         }
 
-        doFilter(source, result);
+        doFilter(source, sink);
     }
 
-    protected void doFilter(final Source source, final Result result) {
-        if (!(source instanceof StreamSource || source instanceof JavaSource || source instanceof DOMSource)) {
+    protected void doFilter(Source source, Sink sink) {
+        if (!(source instanceof StreamSource || source instanceof ReaderSource || source instanceof JavaSource || source instanceof DOMSource)) {
             throw new SmooksException(String.format("Unsupported [%s] source type: SAX NG filter supports StreamSource, JavaSource, and DOMSource", source.getClass().getName()));
         }
-        if (!(result instanceof FilterResult)) {
-            if (result != null && !(result instanceof StreamResult) && !(result instanceof DOMResult)) {
-                throw new SmooksException(String.format("Unsupported [%s] result type: SAX NG filter supports StreamResult and DOMResult", result.getClass().getName()));
+        if (!(sink instanceof FilterSink)) {
+            if (sink != null && !(sink instanceof StreamSink) && !(sink instanceof WriterSink) && !(sink instanceof DOMSink)) {
+                throw new SmooksException(String.format("Unsupported [%s] sink type: SAX NG filter supports StreamSink and DOMSink", sink.getClass().getName()));
             }
         }
 
         try {
-            final Writer writer = getWriter(result, executionContext);
+            final Writer writer = getWriter(sink, executionContext);
             executionContext.put(Stream.STREAM_WRITER_TYPED_KEY, writer);
             parser.parse(source, executionContext);
 
-            if (result instanceof DOMResult) {
-                ((DOMResult) result).setNode(XmlUtils.parseStream(new StringReader(writer.toString())));
+            if (sink instanceof DOMSink) {
+                ((DOMSink) sink).setNode(XmlUtils.parseStream(new StringReader(writer.toString())));
             } else {
                 writer.flush();
             }
@@ -124,8 +127,8 @@ public class SaxNgFilter extends AbstractFilter {
             if (closeSource) {
                 close(source);
             }
-            if (closeResult) {
-                close(result);
+            if (closeSink) {
+                close(sink);
             }
         }
     }

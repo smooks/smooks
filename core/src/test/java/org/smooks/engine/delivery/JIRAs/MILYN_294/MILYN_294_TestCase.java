@@ -48,7 +48,7 @@ import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.engine.delivery.dom.ProcessorVisitor1;
 import org.smooks.engine.delivery.sax.ng.Visitor01;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.source.StringSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;

@@ -50,6 +50,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.sink.StringSink;
 
 /**
  * Unit test for {@link Exports}.
@@ -62,18 +64,18 @@ public class ExportsTestCase
     @Test
     public void createSingleExports()
     {
-        Exports exports = new Exports(StringResult.class);
+        Exports exports = new Exports(StringSink.class);
         Collection<Export> exportTypes = exports.getExports();
         assertFalse(exportTypes.isEmpty());
-        assertEquals(exportTypes.iterator().next().getType(), StringResult.class);
+        assertEquals(exportTypes.iterator().next().getType(), StringSink.class);
     }
 
     @Test
     public void createMultipleExports()
     {
         Set<Export> results = new HashSet<Export>();
-        results.add(new Export(StringResult.class));
-        results.add(new Export(JavaResult.class));
+        results.add(new Export(StringSink.class));
+        results.add(new Export(JavaSink.class));
         Exports exports = new Exports(results);
 
         Collection<Export> exportTypes = exports.getExports();

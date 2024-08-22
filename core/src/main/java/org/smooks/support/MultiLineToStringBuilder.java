@@ -43,8 +43,8 @@
 package org.smooks.support;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.payload.FilterResult;
-import org.smooks.io.payload.FilterSource;
+import org.smooks.io.sink.FilterSink;
+import org.smooks.io.source.FilterSource;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -82,7 +82,7 @@ public class MultiLineToStringBuilder {
 
     static {
         //These keys are exluded for the execution context string
-        EXECUTION_CONTEXT_FILTER_LIST.add(FilterResult.RESULTS_TYPED_KEY.toString());
+        EXECUTION_CONTEXT_FILTER_LIST.add(FilterSink.SINKS_TYPED_KEY.toString());
         EXECUTION_CONTEXT_FILTER_LIST.add(FilterSource.SOURCE_TYPED_KEY.toString());
     }
 

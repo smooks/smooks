@@ -48,7 +48,7 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.source.StringSource;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 

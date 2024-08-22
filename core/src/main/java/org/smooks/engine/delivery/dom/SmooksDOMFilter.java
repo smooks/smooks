@@ -54,7 +54,8 @@ import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.event.ExecutionEventListener;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 import org.smooks.api.lifecycle.DOMFilterLifecycle;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.lifecycle.PostFragmentLifecycle;
@@ -81,21 +82,21 @@ import org.smooks.engine.report.AbstractReportGenerator;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.io.Stream;
-import org.smooks.io.payload.FilterResult;
-import org.smooks.io.payload.FilterSource;
-import org.smooks.io.payload.JavaSource;
+import org.smooks.io.sink.DOMSink;
+import org.smooks.io.sink.FilterSink;
+import org.smooks.io.sink.StreamSink;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.DOMSource;
+import org.smooks.io.source.FilterSource;
+import org.smooks.io.source.JavaSource;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -205,7 +206,7 @@ public class SmooksDOMFilter extends AbstractFilter {
     private static final TypedKey<Node> DELIVERY_NODE_REQUEST_KEY = TypedKey.of();
 
     private final Boolean closeSource;
-    private final Boolean closeResult;
+    private final Boolean closeSink;
     private final Boolean reverseVisitOrderOnVisitAfter;
     private final ContentDeliveryRuntime contentDeliveryRuntime;
     private final LifecycleManager lifecycleManager;
@@ -246,7 +247,7 @@ public class SmooksDOMFilter extends AbstractFilter {
         lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
 
         closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", deliveryConfig));
-        closeResult = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, "true", deliveryConfig));
+        closeSink = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SINK, String.class, "true", deliveryConfig));
         reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, String.class, "true", deliveryConfig));
 
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
@@ -263,24 +264,25 @@ public class SmooksDOMFilter extends AbstractFilter {
     @Override
     public void doFilter() throws SmooksException {
         Source source = FilterSource.getSource(executionContext);
-        Result result;
-
-        result = FilterResult.getResult(executionContext, StreamResult.class);
-        if (result == null) {
-            // Maybe there's a DOMResult...
-            result = FilterResult.getResult(executionContext, DOMResult.class);
+        Sink sink = FilterSink.getSink(executionContext, StreamSink.class);
+        if (sink == null) {
+            sink = FilterSink.getSink(executionContext, WriterSink.class);
+            if (sink == null) {
+                // Maybe there's a DOMSink...
+                sink = FilterSink.getSink(executionContext, DOMSink.class);
+            }
         }
 
-        doFilter(source, result);
+        doFilter(source, sink);
     }
 
-    protected void doFilter(Source source, Result result) {
-        if (!(source instanceof StreamSource) && !(source instanceof DOMSource) && !(source instanceof JavaSource)) {
+    protected void doFilter(Source source, Sink sink) {
+        if (!(source instanceof StreamSource) && !(source instanceof ReaderSource)  && !(source instanceof DOMSource) && !(source instanceof JavaSource)) {
             throw new IllegalArgumentException(source.getClass().getName() + " Source types not yet supported by the DOM Filter.");
         }
-        if (!(result instanceof FilterResult)) {
-            if (result != null && !(result instanceof StreamResult) && !(result instanceof DOMResult)) {
-                throw new IllegalArgumentException(result.getClass().getName() + " Result types not yet supported by the DOM Filter.");
+        if (!(sink instanceof FilterSink)) {
+            if (sink != null && !(sink instanceof StreamSink) && !(sink instanceof WriterSink) && !(sink instanceof DOMSink)) {
+                throw new IllegalArgumentException(sink.getClass().getName() + " Sinks types not yet supported by the DOM Filter.");
             }
         }
 
@@ -301,10 +303,9 @@ public class SmooksDOMFilter extends AbstractFilter {
                 resultNode = filter(source);
             }
 
-            // Populate the Result
-            if (result instanceof StreamResult) {
-                StreamResult streamResult = ((StreamResult) result);
-                Writer writer = getWriter(streamResult, executionContext);
+            // Populate the Sink
+            if (sink instanceof WriterSink || sink instanceof StreamSink) {
+                Writer writer = getWriter(sink, executionContext);
 
                 try {
                     serialize(resultNode, writer);
@@ -312,15 +313,15 @@ public class SmooksDOMFilter extends AbstractFilter {
                 } catch (IOException e) {
                     LOGGER.debug("Error writing result to output stream.", e);
                 }
-            } else if (result instanceof DOMResult) {
-                ((DOMResult) result).setNode(resultNode);
+            } else if (sink instanceof DOMSink) {
+                ((DOMSink) sink).setNode(resultNode);
             }
         } finally {
             if (closeSource) {
                 close(source);
             }
-            if (closeResult) {
-                close(result);
+            if (closeSink) {
+                close(sink);
             }
         }
     }

@@ -52,8 +52,8 @@ import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.profile.DefaultProfileSet;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.SmooksUtil;
 import org.w3c.dom.Element;
@@ -85,14 +85,14 @@ public class SmooksTestCase {
         Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withClassLoader(classLoader).build());
         smooks.addResourceConfigs(getClass().getResourceAsStream("test_setClassLoader_01.xml"));
                 
-        StringResult result = new StringResult();
+        StringSink sink = new StringSink();
         
         ExecutionContext execCtx = smooks.createExecutionContext();
         assertSame(contextClassLoader, Thread.currentThread().getContextClassLoader());
 
         classLoader.requests.clear();
-        smooks.filterSource(execCtx, new StringSource("<a/>"), result);
-        assertEquals("<b></b>", result.getResult());
+        smooks.filterSource(execCtx, new StringSource("<a/>"), sink);
+        assertEquals("<b></b>", sink.getResult());
         //assertTrue(classLoader.requests.contains(XIncludeParserConfiguration.class.getName()));
         assertSame(contextClassLoader, Thread.currentThread().getContextClassLoader());
     }

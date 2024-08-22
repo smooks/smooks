@@ -66,7 +66,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * Consumes a node and serializes it to the execution result stream.
+ * Consumes a node and serializes it to the execution sink stream.
  * <p>
  * Once this <code>ConsumeSerializerVisitor</code> consumes a node, no other <code>ConsumeSerializerVisitor</code>
  * instance, including this <code>ConsumeSerializerVisitor</code>, can re-serialize the node.

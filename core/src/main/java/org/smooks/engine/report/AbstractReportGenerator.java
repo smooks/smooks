@@ -48,6 +48,7 @@ import org.smooks.api.delivery.*;
 import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.api.delivery.event.ResourceAwareEvent;
+import org.smooks.api.io.Sink;
 import org.smooks.api.lifecycle.DOMFilterLifecycle;
 import org.smooks.api.lifecycle.FilterLifecycle;
 import org.smooks.assertion.AssertArgument;
@@ -56,13 +57,12 @@ import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
 import org.smooks.engine.delivery.event.*;
 import org.smooks.engine.report.model.*;
-import org.smooks.io.payload.FilterResult;
-import org.smooks.io.payload.JavaResult;
-import org.smooks.io.payload.StringResult;
+import org.smooks.io.sink.FilterSink;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.sink.StringSink;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 
-import javax.xml.transform.Result;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -213,22 +213,22 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         }
 
         List<ResultNode> resultNodes = new ArrayList<>();
-        Result[] results = FilterResult.getResults(executionContext);
+        Sink[] sinks = FilterSink.getSinks(executionContext);
         report.setResults(resultNodes);
-        if (results != null) {
-            for (Result result : results) {
-                if (result != null) {
+        if (sinks != null) {
+            for (Sink sink : sinks) {
+                if (sink != null) {
                     ResultNode resultNode = new ResultNode();
                     resultNodes.add(resultNode);
-                    if (result instanceof JavaResult) {
-                        resultNode.setSummary("This Smooks Filtering operation produced a JavaResult.  The following is an XML serialization of the JavaResult bean Map entries.");
-                    } else if (result instanceof StringResult) {
-                        resultNode.setSummary("This Smooks Filtering operation produced the following StreamResult.");
+                    if (sink instanceof JavaSink) {
+                        resultNode.setSummary("This Smooks Filtering operation produced a JavaSink.  The following is an XML serialization of the JavaResult bean Map entries.");
+                    } else if (sink instanceof StringSink) {
+                        resultNode.setSummary("This Smooks Filtering operation produced the following StreamSink.");
                     } else {
-                        resultNode.setSummary("Cannot show Smooks Filtering Result.  Modify the code and use a '" + StringResult.class.getName() + "' Result in the call to the Smooks.filter() method.");
+                        resultNode.setSummary("Cannot show Smooks Filtering Sink. Modify the code and use a '" + StringSink.class.getName() + "' Result in the call to the Smooks.filter() method.");
                     }
 
-                    resultNode.setDetail(result.toString());
+                    resultNode.setDetail(sink.toString());
                 }
             }
         }

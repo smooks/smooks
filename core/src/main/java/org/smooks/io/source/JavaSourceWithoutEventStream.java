@@ -6,66 +6,76 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io.payload;
+package org.smooks.io.source;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
-import java.io.StringWriter;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Unit test for StringResult
- * 
- * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>			
+ * JavaSourceWithEventStream is a wrapper around a {@link JavaSource}
+ * which has disabled eventStreaming ({@link JavaSource#isEventStreamRequired()})
+ * by default.
+ * <p/>
+ * Note that even though event streaming is disabled by default when an instance
+ * of this class is created, it might later get changed as this class simply
+ * extends JavaSource.
  *
+ * @author Daniel Bevenius
  */
-public class StringResultTestCase {
+public class JavaSourceWithoutEventStream extends JavaSource {
+    JavaSource delegate;
 
-	@Test
-	public void tostring() {
-		final String expectedString = "testing";
-		StringResult stringResult = new StringResult();
-		StringWriter writer = new StringWriter();
-		writer.write(expectedString);
+    public JavaSourceWithoutEventStream(List<Object> sourceObjects) {
+        super(sourceObjects);
+        disableEventStream();
+    }
 
-		stringResult.setWriter(writer);
-		assertEquals(expectedString, stringResult.getWriter().toString());
-		assertEquals(expectedString, stringResult.toString());
-	}
+    public JavaSourceWithoutEventStream(Object sourceObject) {
+        super(sourceObject);
+        disableEventStream();
+    }
+
+    public JavaSourceWithoutEventStream(String objectName, Object sourceObject) {
+        super(objectName, sourceObject);
+        disableEventStream();
+    }
+
+    private void disableEventStream() {
+        setEventStreamRequired(false);
+    }
 
 }

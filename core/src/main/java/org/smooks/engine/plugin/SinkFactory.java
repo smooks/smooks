@@ -42,15 +42,44 @@
  */
 package org.smooks.engine.plugin;
 
+import org.smooks.api.io.Sink;
+import org.smooks.io.sink.ByteSink;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.sink.StringSink;
+
 /**
- * Enum that represents the types of results that can be returned from
- * a container managed transform.
+ * Factory for org.smooks.api.io.Sink objects.
  *
  * @author <a href="mailto:daniel.bevenius@gmail.com">Daniel Bevenius</a>
  */
-public enum ResultType {
-    STRING,
-    BYTES,
-    JAVA,
-    NORESULT
+public class SinkFactory {
+    private static final SinkFactory factory = new SinkFactory();
+
+    private SinkFactory() {
+    }
+
+    public static SinkFactory getInstance() {
+        return factory;
+    }
+
+    public Sink createSink(final SinkType type) {
+        Sink sink = null;
+        switch (type) {
+            case STRING:
+                sink = new StringSink();
+                break;
+            case BYTES:
+                sink = new ByteSink();
+                break;
+            case JAVA:
+                sink = new JavaSink(true);
+                break;
+            case NO_SINK:
+                break;
+            default:
+                break;
+        }
+
+        return sink;
+    }
 }

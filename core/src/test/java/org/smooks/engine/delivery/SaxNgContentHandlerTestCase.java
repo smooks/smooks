@@ -51,14 +51,14 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.io.Sink;
 import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.engine.delivery.sax.ng.SaxNgContentHandler;
+import org.smooks.io.source.StreamSource;
 import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -108,7 +108,7 @@ public class SaxNgContentHandlerTestCase {
         smooks.addVisitor(secondMock, "simple:simple/second:sample");
 
         // when
-        smooks.filterSource(smooks.createExecutionContext(), createSource(), mock(Result.class));
+        smooks.filterSource(smooks.createExecutionContext(), createSource(), mock(Sink.class));
 
         // then
         verify(firstMock).visitBefore(

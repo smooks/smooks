@@ -116,7 +116,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
             }
         }
 
-        return new SaxNgFilter(executionContext, documentBuilder, getCloseSource(), getCloseResult());
+        return new SaxNgFilter(executionContext, documentBuilder, getCloseSource(), getCloseSink());
     }
 
     @Override

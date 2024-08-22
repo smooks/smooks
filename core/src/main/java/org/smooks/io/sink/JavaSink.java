@@ -40,46 +40,51 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.io.payload;
+package org.smooks.io.sink;
 
 import com.thoughtworks.xstream.XStream;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.engine.bean.context.StandaloneBeanContext;
+import org.smooks.io.payload.Export;
+import org.smooks.io.payload.SinkExtractor;
 
-import javax.xml.transform.Result;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Java filtration/transformation result.
  * <p/>
- * Used to extract a Java "{@link Result result}" Map from the transformation.
- * Simply set an instance of this class as the {@link Result} arg in the call
- * to {@link org.smooks.Smooks#filterSource(ExecutionContext, javax.xml.transform.Source, javax.xml.transform.Result...)} .
+ * Used to extract a Java "{@link org.smooks.api.io.Sink sink}" Map from the transformation.
+ * Simply set an instance of this class as the {@link org.smooks.api.io.Sink} arg in the call
+ * to {@link org.smooks.Smooks#filterSource(ExecutionContext, org.smooks.api.io.Source, org.smooks.api.io.Sink...)} .
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JavaResult extends FilterResult implements ResultExtractor<JavaResult> {
+public class JavaSink extends FilterSink implements SinkExtractor<JavaSink> {
 
     private Map<String, Object> resultMap;
 
     /**
      * Public default constructor.
      */
-    public JavaResult() {
+    public JavaSink() {
         this(true);
     }
 
     /**
      * Public default constructor.
      */
-    public JavaResult(boolean preserveOrder) {
+    public JavaSink(boolean preserveOrder) {
         if (preserveOrder) {
-            resultMap = new LinkedHashMap<String, Object>();
+            resultMap = new LinkedHashMap<>();
         } else {
-            resultMap = new HashMap<String, Object>();
+            resultMap = new HashMap<>();
         }
     }
 
@@ -90,7 +95,7 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
      *
      * @param resultMap Result Map. This is the map onto which Java "result" objects will be set.
      */
-    public JavaResult(Map<String, Object> resultMap) {
+    public JavaSink(Map<String, Object> resultMap) {
         AssertArgument.isNotNull(resultMap, "resultMap");
         this.resultMap = resultMap;
     }
@@ -108,7 +113,7 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
 
     /**
      * Get the first instance of the specified bean type
-     * from this JavaResult instance.
+     * from this JavaSink instance.
      *
      * @param beanType The bean runtime class type.
      * @return The bean instance, otherwise null.
@@ -161,21 +166,21 @@ public class JavaResult extends FilterResult implements ResultExtractor<JavaResu
     }
 
     @Override
-    public Object extractFromResult(JavaResult result, Export export) {
+    public Object extractFromSink(JavaSink sink, Export export) {
         Set<String> extractSet = export.getExtractSet();
 
         if (extractSet == null) {
-            return extractBeans(result, result.getResultMap().keySet());
+            return extractBeans(sink, sink.getResultMap().keySet());
         }
 
         if (extractSet.size() == 1) {
-            return result.getBean(extractSet.iterator().next());
+            return sink.getBean(extractSet.iterator().next());
         } else {
-            return extractBeans(result, extractSet);
+            return extractBeans(sink, extractSet);
         }
     }
 
-    private Object extractBeans(JavaResult result, Collection<String> extractSet) {
+    private Object extractBeans(JavaSink result, Collection<String> extractSet) {
         Map<String, Object> extractedObjects = new ResultMap<String, Object>();
 
         for (String extract : extractSet) {

@@ -45,11 +45,17 @@ package org.smooks.engine.delivery;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
+import org.smooks.io.sink.StreamSink;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -76,7 +82,7 @@ public class FilterCloseTestCase {
         TestInputStream inStream = new TestInputStream("<x/>".getBytes(), expectedCloseCallCount + 1);
         TestOutputStream outStream = new TestOutputStream(expectedCloseCallCount);
         execContext = smooks.createExecutionContext(profile);
-        smooks.filterSource(execContext, new StreamSource(inStream), new StreamResult(outStream));
+        smooks.filterSource(execContext, new StreamSource(inStream), new StreamSink(outStream));
 
         // Test io reader/writer close...
         // We need to +1 this because Xerces always closes input streams/readers and there's no 
@@ -84,7 +90,7 @@ public class FilterCloseTestCase {
         TestReader reader = new TestReader("<x/>", expectedCloseCallCount + 1);
         TestWriter writer = new TestWriter(expectedCloseCallCount);
         execContext = smooks.createExecutionContext(profile);
-        smooks.filterSource(execContext, new StreamSource(reader), new StreamResult(writer));
+        smooks.filterSource(execContext, new ReaderSource(reader), new WriterSink(writer));
     }
 
     private static class TestInputStream extends ByteArrayInputStream {

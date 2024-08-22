@@ -48,10 +48,10 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.event.BasicExecutionEventListener;
 import org.smooks.engine.delivery.event.ResourceTargetingExecutionEvent;
 import org.smooks.io.NullWriter;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,7 +93,7 @@ public class ExecutionEventListenerTestCase {
         StreamSource source = new StreamSource(getClass().getResourceAsStream("test-data-01.xml"));
 
         execContext.getContentDeliveryRuntime().addExecutionEventListener(eventListener);
-        smooks.filterSource(execContext, source, new StreamResult(new NullWriter()));
+        smooks.filterSource(execContext, source, new WriterSink(new NullWriter()));
     }
 
 

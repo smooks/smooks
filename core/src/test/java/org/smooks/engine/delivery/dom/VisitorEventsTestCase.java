@@ -45,15 +45,18 @@ package org.smooks.engine.delivery.dom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.Smooks;
+import org.smooks.io.source.ReaderSource;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
-
-import javax.xml.transform.stream.StreamSource;
 
 import java.io.IOException;
 import java.io.StringReader;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -69,15 +72,15 @@ public class VisitorEventsTestCase {
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config3.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<x/>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<x/>")));
         assertFalse(VisitBeforeDOMVisitor.visited);
         assertFalse(VisitAfterDOMVisitor.visited);
         reset();
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<a/>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<a/>")));
         assertTrue(VisitBeforeDOMVisitor.visited);
         assertFalse(VisitAfterDOMVisitor.visited);
         reset();
-        smooks.filterSource(smooks.createExecutionContext(), new StreamSource(new StringReader("<a><b/></a>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<a><b/></a>")));
         assertTrue(VisitBeforeDOMVisitor.visited);
         assertTrue(VisitAfterDOMVisitor.visited);
         assertEquals("Hi There!", VisitAfterDOMVisitor.staticInjectedParam);

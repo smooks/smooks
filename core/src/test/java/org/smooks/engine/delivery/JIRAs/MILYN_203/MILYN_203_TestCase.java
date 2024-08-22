@@ -48,10 +48,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.smooks.testkit.Assertions.compareCharStreams;
 
 import org.smooks.Smooks;
-import org.smooks.io.payload.StringResult;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -73,10 +73,10 @@ public class MILYN_203_TestCase {
 
     public void test_CDATA(String config) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
-        StringResult result = new StringResult();
+        StringSink sink = new StringSink();
 
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("in-message.xml")), result);
-        assertTrue(compareCharStreams(new InputStreamReader(getClass().getResourceAsStream("in-message.xml")), new StringReader(result.getResult())));
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("in-message.xml")), sink);
+        assertTrue(compareCharStreams(new InputStreamReader(getClass().getResourceAsStream("in-message.xml")), new StringReader(sink.getResult())));
     }
 
 }

@@ -43,14 +43,16 @@
 package org.smooks.engine.delivery.dom.serialize;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
+import org.smooks.io.sink.StringSink;
 import org.xml.sax.SAXException;
 import org.smooks.Smooks;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.source.StringSource;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -63,14 +65,14 @@ public class DefaultSerializationTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_No_Serializers_Test.xml"));
 
         StringSource stringSource = new StringSource("<a>aa<b>bbb<c />bbb</b>aaa</a>");
-        StringResult stringResult = new StringResult();
+        StringSink stringSink = new StringSink();
 
-        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);
+        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringSink);
 
         // The "default.serialization.on" global param is set to "false" in the config, so
-        // nothing should get writen to the result because there are no configured
+        // nothing should get writen to the sink because there are no configured
         // serialization Visitors.
-        assertEquals("", stringResult.getResult());
+        assertEquals("", stringSink.getResult());
 
         assertTrue(SimpleDOMVisitor.visited);
     }
@@ -80,13 +82,13 @@ public class DefaultSerializationTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_One_Serializer_Test.xml"));
 
         StringSource stringSource = new StringSource("<a>aa<b>bbb<c />bbb</b>aaa</a>");
-        StringResult stringResult = new StringResult();
+        StringSink stringSink = new StringSink();
 
-        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);
+        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringSink);
 
         // The "default.serialization.on" global param is set to "false" in the config.
-        // There's just a single result writing visitor configured on the "b" element...
-        assertEquals("<b>bbbbbb</b>", stringResult.getResult());
+        // There's just a single sink writing visitor configured on the "b" element...
+        assertEquals("<b>bbbbbb</b>", stringSink.getResult());
 
         assertTrue(SimpleDOMVisitor.visited);
     }

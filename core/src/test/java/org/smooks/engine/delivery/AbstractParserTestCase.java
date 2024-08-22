@@ -48,7 +48,7 @@ import org.smooks.engine.delivery.sax.ng.org.apache.xerces.parsers.SAXParser;
 import org.smooks.engine.resource.config.GenericReaderConfigurator;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.source.StringSource;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;

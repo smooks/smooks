@@ -45,8 +45,8 @@ package org.smooks.engine.resource.visitor.smooks;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 import org.smooks.api.Registry;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.xml.sax.SAXException;
@@ -61,8 +61,8 @@ public class NestedSmooksVisitorFunctionalTestCase {
 	@Test
 	public void test() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("nested-smooks-visitor-config.xml"));
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b><c></c></b></a>"), stringResult);
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(new StringSource("<a><b><c></c></b></a>"), stringSink);
 		NestedSmooksVisitor smooksVisitor = smooks.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(NestedSmooksVisitor.class)).values().stream().findFirst().get();
 		Registry registry = smooksVisitor.getNestedSmooks().getApplicationContext().getRegistry();
 		assertEquals(0, registry.lookup(new InstanceLookup<>(BarBeforeVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());
@@ -74,50 +74,50 @@ public class NestedSmooksVisitorFunctionalTestCase {
 	@Test
 	public void testReplaceAction() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("replace-nested-smooks-visitor-config.xml"));
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringResult);
-		assertEquals("<a>Hello World!</a>", stringResult.getResult());
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringSink);
+		assertEquals("<a>Hello World!</a>", stringSink.getResult());
 	}
 	
 	@Test
 	public void testPrependAfterAction() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("prependAfter-nested-smooks-visitor-config.xml"));
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
-		assertEquals("<a><b>Hello World!c<d></d></b></a>", stringResult.getResult());
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringSink);
+		assertEquals("<a><b>Hello World!c<d></d></b></a>", stringSink.getResult());
 	}
 
 	@Test
 	public void testAppendAfterAction() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("appendAfter-nested-smooks-visitor-config.xml"));
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
-		assertEquals("<a><b>c<d/></b>Hello World!</a>", stringResult.getResult());
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringSink);
+		assertEquals("<a><b>c<d/></b>Hello World!</a>", stringSink.getResult());
 	}
 
 	@Test
 	public void testAppendBeforeAction() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("appendBefore-nested-smooks-visitor-config.xml"));
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
-		assertEquals("<a><b>c<d/>Hello World!</b></a>", stringResult.getResult());
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringSink);
+		assertEquals("<a><b>c<d/>Hello World!</b></a>", stringSink.getResult());
 	}
 	
 	@Test
 	public void testPrependBeforeAction() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("prependBefore-nested-smooks-visitor-config.xml"));
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringResult);
-		assertEquals("<a>Hello World!<b>c<d></d></b></a>", stringResult.getResult());
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(new StringSource("<a><b>c<d/></b></a>"), stringSink);
+		assertEquals("<a>Hello World!<b>c<d></d></b></a>", stringSink.getResult());
 	}
 	
 	@Test
 	public void testBindToAction() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("bindTo-nested-smooks-visitor-config.xml"));
 		ExecutionContext executionContext = smooks.createExecutionContext();
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(executionContext, new StringSource("<a><b><c/></b></a>"), stringResult);
-		assertEquals("<a><b><c/></b></a>", stringResult.getResult());
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(executionContext, new StringSource("<a><b><c/></b></a>"), stringSink);
+		assertEquals("<a><b><c/></b></a>", stringSink.getResult());
 		assertEquals("Hello World!", executionContext.getBeanContext().getBean("output"));
 	}
 	
@@ -126,17 +126,17 @@ public class NestedSmooksVisitorFunctionalTestCase {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("outputTo-nested-smooks-visitor-config.xml"));
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		smooks.getApplicationContext().getRegistry().registerObject("Output Stream", outputStream);
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringResult);
-		assertEquals("<a><b><c/></b></a>", stringResult.getResult());
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringSink);
+		assertEquals("<a><b><c/></b></a>", stringSink.getResult());
 		assertEquals("Hello World!", outputStream.toString());
 	}
 
 	@Test
 	public void testNoOp() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("no-op-nested-smooks-visitor-config.xml"));
-		StringResult stringResult = new StringResult();
-		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringResult);
-		assertEquals("<a><a><b><b><c></c><c/></b></b></a></a>", stringResult.getResult());
+		StringSink stringSink = new StringSink();
+		smooks.filterSource(new StringSource("<a><b><c/></b></a>"), stringSink);
+		assertEquals("<a><a><b><b><c></c><c/></b></b></a></a>", stringSink.getResult());
 	}
 }

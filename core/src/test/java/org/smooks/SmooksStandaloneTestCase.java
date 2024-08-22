@@ -53,13 +53,13 @@ import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.PreconfiguredSmooks;
 import org.smooks.engine.profile.DefaultProfileSet;
+import org.smooks.io.sink.WriterSink;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.SmooksUtil;
 import org.smooks.support.XmlUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayWriter;
 import java.io.IOException;
@@ -133,7 +133,7 @@ public class SmooksStandaloneTestCase {
 
         ExecutionContext context = smooks.createExecutionContext("message-target1");
         CharArrayWriter writer = new CharArrayWriter();
-        smooks.filterSource(context, new StreamSource(new ByteArrayInputStream(message.getBytes())), new StreamResult(writer));
+        smooks.filterSource(context, new StreamSource(new ByteArrayInputStream(message.getBytes())), new WriterSink(writer));
 
         assertEquals("<zzz><bbb>888</bbb><xxx>999</xxx></zzz>", writer.toString(), "Unexpected transformation result");
     }

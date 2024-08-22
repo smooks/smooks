@@ -45,8 +45,8 @@ package org.smooks.engine.delivery.sax.ng;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
-import org.smooks.io.payload.StringResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -71,12 +71,13 @@ public class ElementWritingTestCase {
     public void test_default_writing() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingTest.xml"));
 
-        StringSource stringSource = new StringSource("<a>aa<b>bbb<c/>bbb</b>aaa</a>");
-        StringResult stringResult = new StringResult();
+        String source = "<a>aa<b>bbb<c/>bbb</b>aaa</a>";
+        StringSource stringSource = new StringSource(source);
+        StringSink stringSink = new StringSink();
 
-        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);
+        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringSink);
         
-        assertEquals(stringSource.getSource(), stringResult.getResult());
+        assertEquals(source, stringSink.getResult());
         assertTrue(VisitBeforeVisitor.visited);
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildElement);
@@ -89,14 +90,14 @@ public class ElementWritingTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_No_Serializers_Test.xml"));
 
         StringSource stringSource = new StringSource("<a>aa<b>bbb<c />bbb</b>aaa</a>");
-        StringResult stringResult = new StringResult();
+        StringSink stringSink = new StringSink();
 
-        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);
+        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringSink);
 
         // The "default.serialization.on" global param is set to "false" in the config, so
-        // nothing should get writen to the result because there are no configured
+        // nothing should get written to the sink because there are no configured
         // serialization Visitors.
-        assertEquals("", stringResult.getResult());
+        assertEquals("", stringSink.getResult());
         
         assertTrue(VisitBeforeVisitor.visited);
         assertTrue(VisitAfterVisitor.visited);
@@ -107,13 +108,13 @@ public class ElementWritingTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("DefaultWritingOff_One_Serializer_Test.xml"));
 
         StringSource stringSource = new StringSource("<a>aa<b>bbb<c />bbb</b>aaa</a>");
-        StringResult stringResult = new StringResult();
+        StringSink stringSink = new StringSink();
 
-        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringResult);
+        smooks.filterSource(smooks.createExecutionContext(), stringSource, stringSink);
 
         // The "default.serialization.on" global param is set to "false" in the config.
-        // There's just a single result writing visitor configured on the "c" element...
-        assertEquals("Smooks SAX Transforms!!", stringResult.getResult());
+        // There's just a single sink writing visitor configured on the "c" element...
+        assertEquals("Smooks SAX Transforms!!", stringSink.getResult());
 
         assertTrue(VisitBeforeVisitor.visited);
         assertTrue(VisitAfterVisitor.visited);

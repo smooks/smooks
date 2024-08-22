@@ -44,8 +44,6 @@ package org.smooks.api.delivery;
 
 import org.smooks.api.SmooksException;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import java.io.Closeable;
 
 public interface Filter extends Closeable {
@@ -56,7 +54,7 @@ public interface Filter extends Closeable {
 
     String CLOSE_SOURCE = "close.source";
 
-    String CLOSE_RESULT = "close.result";
+    String CLOSE_SINK = "close.sink";
 
     String ENTITIES_REWRITE = "entities.rewrite";
 
@@ -75,11 +73,11 @@ public interface Filter extends Closeable {
     String READER_POOL_SIZE = "reader.pool.size";
 
     /**
-     * Filter the content in the supplied {@link javax.xml.transform.Source} instance, outputing the result
-     * to the supplied {@link javax.xml.transform.Result} instance.
+     * Filter the content in the supplied {@link org.smooks.api.io.Source} instance, outputting the result
+     * to the supplied {@link org.smooks.api.io.Sink} instance.
      * <p/>
-     * Implementations use static methods on the {@link FilterSource} and {@link FilterResult} classes
-     * to access the {@link Source} and {@link Result Results} objects.
+     * Implementations use static methods on the {@link FilterSource} and {@link FilterSink} classes
+     * to access the {@link org.smooks.api.io.Source} and {@link org.smooks.api.io.Sink Sinks} objects.
      *
      * @throws SmooksException Failed to filter.
      */

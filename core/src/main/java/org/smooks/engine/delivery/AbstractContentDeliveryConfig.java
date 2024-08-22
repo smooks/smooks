@@ -99,7 +99,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     private Boolean isDefaultSerializationOn;
     private Boolean closeSource;
-    private Boolean closeResult;
+    private Boolean closeSink;
 
     public void setRegistry(Registry registry) {
         this.registry = registry;
@@ -297,11 +297,11 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
         return closeSource;
     }
 
-    protected boolean getCloseResult() {
-        if (closeResult == null) {
-            closeResult = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_RESULT, String.class, "true", this));
+    protected boolean getCloseSink() {
+        if (closeSink == null) {
+            closeSink = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SINK, String.class, "true", this));
         }
 
-        return closeResult;
+        return closeSink;
     }
 }

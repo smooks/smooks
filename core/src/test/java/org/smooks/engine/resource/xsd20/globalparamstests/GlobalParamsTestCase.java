@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.source.StringSource;
 import org.xml.sax.SAXException;
 
 /**
