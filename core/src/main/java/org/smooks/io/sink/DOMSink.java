@@ -49,6 +49,14 @@ public class DOMSink implements Sink {
 
     private Node node;
 
+    public DOMSink() {
+
+    }
+
+    public DOMSink(Node node) {
+        this.node = node;
+    }
+
     public void setNode(Node node) {
         this.node = node;
     }
