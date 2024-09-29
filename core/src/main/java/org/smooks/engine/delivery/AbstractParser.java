@@ -69,6 +69,7 @@ import org.smooks.io.source.FilterSource;
 import org.smooks.io.source.JavaSource;
 import org.smooks.io.source.ReaderSource;
 import org.smooks.io.source.StreamSource;
+import org.smooks.io.source.URLSource;
 import org.smooks.namespace.NamespaceDeclarationStack;
 import org.smooks.namespace.NamespaceDeclarationStackAware;
 import org.smooks.support.ClassUtils;
@@ -84,10 +85,12 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Stack;
@@ -200,6 +203,18 @@ public class AbstractParser {
         return saxDriverConfig;
     }
 
+    private static Reader urlToReader(URL url, String contentEncoding) {
+        return streamToReader(urlToStream(url), contentEncoding);
+    }
+
+    private static InputStream urlToStream(URL url) {
+        try {
+            return url.openStream();
+        } catch (IOException e) {
+            throw new SmooksException("Invalid URL on StreamSource: '" + url + "'.  Unable to open stream to resource.", e);
+        }
+    }
+
     private static Reader streamToReader(InputStream inputStream, String contentEncoding) {
         try {
             if (contentEncoding != null) {
@@ -237,6 +252,8 @@ public class AbstractParser {
             return inputSource;
         } else if (source instanceof DOMSource) {
             return new DocumentInputSource((Document) ((DOMSource) source).getNode());
+        } else if (source instanceof URLSource) {
+            return new InputSource(urlToReader(((URLSource) source).getURL(), contentEncoding));
         } else {
             return new InputSource(new NullReader());
         }
