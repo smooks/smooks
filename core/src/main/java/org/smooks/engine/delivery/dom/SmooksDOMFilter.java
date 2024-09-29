@@ -91,6 +91,7 @@ import org.smooks.io.source.FilterSource;
 import org.smooks.io.source.JavaSource;
 import org.smooks.io.source.ReaderSource;
 import org.smooks.io.source.StreamSource;
+import org.smooks.io.source.URLSource;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -277,7 +278,7 @@ public class SmooksDOMFilter extends AbstractFilter {
     }
 
     protected void doFilter(Source source, Sink sink) {
-        if (!(source instanceof StreamSource) && !(source instanceof ReaderSource)  && !(source instanceof DOMSource) && !(source instanceof JavaSource)) {
+        if (!(source instanceof StreamSource) && !(source instanceof ReaderSource)  && !(source instanceof DOMSource) && !(source instanceof JavaSource) && !(source instanceof URLSource)) {
             throw new IllegalArgumentException(source.getClass().getName() + " Source types not yet supported by the DOM Filter.");
         }
         if (!(sink instanceof FilterSink)) {

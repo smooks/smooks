@@ -60,6 +60,7 @@ import org.smooks.io.source.FilterSource;
 import org.smooks.io.source.JavaSource;
 import org.smooks.io.source.ReaderSource;
 import org.smooks.io.source.StreamSource;
+import org.smooks.io.source.URLSource;
 import org.smooks.support.DomUtils;
 import org.smooks.support.XmlUtils;
 
@@ -98,8 +99,8 @@ public class SaxNgFilter extends AbstractFilter {
     }
 
     protected void doFilter(Source source, Sink sink) {
-        if (!(source instanceof StreamSource || source instanceof ReaderSource || source instanceof JavaSource || source instanceof DOMSource)) {
-            throw new SmooksException(String.format("Unsupported [%s] source type: SAX NG filter supports StreamSource, JavaSource, and DOMSource", source.getClass().getName()));
+        if (!(source instanceof StreamSource || source instanceof ReaderSource || source instanceof JavaSource || source instanceof DOMSource || source instanceof URLSource)) {
+            throw new SmooksException(String.format("Unsupported [%s] source type: SAX NG filter supports StreamSource, JavaSource, DOMSource, and URLSource", source.getClass().getName()));
         }
         if (!(sink instanceof FilterSink)) {
             if (sink != null && !(sink instanceof StreamSink) && !(sink instanceof WriterSink) && !(sink instanceof DOMSink)) {
