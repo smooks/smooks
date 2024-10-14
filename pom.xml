@@ -52,7 +52,7 @@
         <jaxen.version>2.0.0</jaxen.version>
         <junit.version>5.10.3</junit.version>
         <log4j2.version>2.24.1</log4j2.version>
-        <mockito.version>4.11.0</mockito.version>
+        <mockito.version>5.14.1</mockito.version>
         <mvel.version>2.5.2.Final</mvel.version>
         <slf4j-api.version>2.0.9</slf4j-api.version>
         <xmlunit.version>2.10.0</xmlunit.version>
