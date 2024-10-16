@@ -97,7 +97,7 @@ Smooks 2 introduces the https://github.com/smooks/smooks-dfdl-cartridge[DFDL car
     ** Uniform XML namespace declarations: dropped `+default-selector-namespace+` and `+selector-namespace+` XML attributes in favour of declaring namespaces within the standard `+xmlns+` attribute from the `+smooks-resource-config+` element.
     ** Removed `+default-selector+` attribute from `+smooks-resource-config+` element: selectors need to be set explicitly
 * Dropped Smooks-specific annotations in favour of JSR annotations
-    ** Farewell `+@ConfigParam+`, `+@Config+`, `+@AppContext+`, and `+@StreamResultWriter+`. Welcome `+@Inject+`.
+    ** Farewell `+@ConfigParam+`, `+@Config+`, `+@AppContext+`, and `+@StreamSinkWriter+`. Welcome `+@Inject+`.
     ** Farewell `+@Initialize+` and `+@Uninitialize+`. Welcome `+@PostConstruct+` and `+@PreDestroy+`.
 * Separate top-level Java namespaces for API and implementation to provide a cleaner and more intuitive package structure: API interfaces and internal classes were relocated to `+org.smooks.api+` and `+org.smooks.engine+` respectively
 * Improved XPath support for resource selectors
@@ -112,6 +112,22 @@ Smooks 2 introduces the https://github.com/smooks/smooks-dfdl-cartridge[DFDL car
 Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code examples] for Smooks 1 with https://github.com/smooks/smooks-examples/tree/v2[those for Smooks 2] can be a useful guide in migrating to Smooks 2. While not exhaustive, we have compiled a list of notes to assist your migration:
 
 . Smooks 2 no longer supports Java 7. Your application needs to be compiled to at least Java 8 to run Smooks 2.
+. Replace `javax.xml.transform.Source` parameter in `Smooks#filterSource(...)` method calls with:
+    * `org.smooks.io.source.JavaSource` instead of `org.milyn.payload.JavaSource`
+    * `org.smooks.io.source.StringSource` instead of `org.milyn.payload.StringSource`
+    * `org.smooks.io.source.ByteSource` instead of `org.milyn.payload.ByteSource`
+    * `org.smooks.io.source.DOMSource` instead of `org.milyn.payload.DOMSource`
+    * `org.smooks.io.source.JavaSourceWithoutEventStream` instead of `org.milyn.payload.JavaSourceWithoutEventStream`
+    * `org.smooks.io.source.ReaderSource` instead of `javax.xml.transform.stream.StreamSource` when the latter is constructed from `java.io.Reader`
+    * `org.smooks.io.source.StreamSource` instead of `javax.xml.transform.stream.StreamSource` when the latter is constructed from `java.io.InputStream`
+    * `org.smooks.io.source.URLSource` instead of `javax.xml.transform.stream.StreamSource` when the latter is constructed from a system ID
+. Replace `javax.xml.transform.Result` parameter in `Smooks#filterSource(...)` method calls with:
+    * `org.smooks.io.sink.StringSink` instead of `org.milyn.payload.StringResult`
+    * `org.smooks.io.sink.JavaSink` instead of `org.milyn.payload.JavaResult`
+    * `org.smooks.io.sink.ByteSink` instead of `org.milyn.payload.ByteResult`
+    * `org.smooks.io.sink.DOMSink` instead of `javax.xml.transform.dom.DOMResult`
+    * `org.smooks.io.sink.StreamSink` instead of `javax.xml.transform.stream.StreamResult` when the latter is constructed from `java.io.OutputStream`
+    * `org.smooks.io.sink.WriterSink` instead of `javax.xml.transform.stream.StreamResult` when the latter is constructed from `java.io.Writer`
 . Replace class interfaces:
     * `org.milyn.delivery.ExecutionLifecycleInitializable` with `org.smooks.api.lifecycle.PreExecutionLifecycle`
     * `org.milyn.delivery.ExecutionLifecycleCleanable` with `org.smooks.api.lifecycle.PostExecutionLifecycle`
@@ -204,7 +220,7 @@ image:docs/images/Event-model.gif[Image:event-model.gif]
 
 === Hello World App
 
-One or more of https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/SaxNgVisitor.html[SaxNgVisitor] interfaces need to be implemented in order to consume the SAX event stream produced from the source, depending on which events are of interest.
+One or more of https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/resource/visitor/sax/ng/SaxNgVisitor.html[SaxNgVisitor] interfaces need to be implemented in order to consume the SAX event stream produced from the source, depending on which events are of interest.
 
 The following is a hello world app demonstrating how to implement a visitor that is fired on the `+visitBefore+` and `+visitAfter+` events of a targeted node in the event stream. In this case, Smooks configures the visitor to target element `+foo+`:
 
@@ -220,7 +236,7 @@ Smooks smooks = new Smooks("/smooks/echo-example.xml");
 smooks.filterSource(new StreamSource(inputStream));
 ----
 
-Observe that in this case the program does not produce a result. The program does not even interact with the filtering process in any way because it does not provide an https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/ExecutionContext.html[`+ExecutionContext+`] to https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/Smooks.html[`+smooks.filterSource(...)+`].
+Observe that in this case the program does not produce a result. The program does not even interact with the filtering process in any way because it does not provide an https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/ExecutionContext.html[`+ExecutionContext+`] to https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/Smooks.html[`+smooks.filterSource(...)+`].
 
 This example illustrated the lower level mechanics of the Smooks's programming model. In reality, most users are not going to want to solve their problems at this level of detail. Smooks ships with substantial pre-built functionality, that is, pre-built visitors. Visitors are bundled based on functionality: these bundles are called _Cartridges_.
 
@@ -385,7 +401,7 @@ Packaged Smooks modules, known as link:#Cartridge[cartridges], provide support f
 
 Smooks can present output to the outside world in two ways:
 
-. As instances of https://docs.oracle.com/javase/8/docs/api/javax/xml/transform/Result.html[`+Result+`]: client code extracts output from the `+Result+` instance after passing an empty one to `+Smooks#filterSource(...)+`.
+. As instances of https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/io/Sink.html[`+Sink+`]: client code extracts output from the `+Sink+` instance after passing an empty one to `+Smooks#filterSource(...)+`.
 
 . As side effects: during filtering, resource output is sent to web services, local storage, queues, data stores, and other locations. Events trigger the routing of fragments to external endpoints such as what happens when https://github.com/smooks/smooks-routing-cartridge/blob/master/README.adoc[splitting and routing].
 
@@ -393,26 +409,26 @@ Unless configured otherwise, a Smooks execution does not accumulate the input da
 
 IMPORTANT: Smooks can generate output in either, or both, of the above ways, all in a single filtering pass of the source. It does not need to filter the source multiple times in order to generate multiple outputs, critical for performance.
 
-==== Result
+==== Sink
 
-A look at the Smooks API reveals that Smooks can be supplied with multiple `+Result+` instances:
+A look at the Smooks API reveals that Smooks can be supplied with multiple `+Sink+` instances:
 
 [source,java]
 ----
-public void filterSource(Source source, Result... results) throws SmooksException
+public void filterSource(Source source, Sink... sinks) throws SmooksException
 ----
 
-Smooks can work with the standard JDK https://docs.oracle.com/javase/8/docs/api/javax/xml/transform/stream/StreamResult.html[`+StreamResult+`] and https://docs.oracle.com/javase/8/docs/api/javax/xml/transform/dom/DOMResult.html[`+DOMResult+`] result types, as well as the Smooks specific ones:
+Smooks can work with implementation of https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/io/sink/StreamSink.html[`+StreamSink+`] and https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/io/sink/DOMSink.html[`+DOMSink+`] sink types, as well as:
 
-* https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/io/payload/JavaResult.html[`+JavaResult+`]: result type for capturing the contents of the Smooks JavaBean context.
+* https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/io/sink/JavaSink.html[`+JavaSink+`]: sink type for capturing the contents of the Smooks JavaBean context.
 
-* https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/io/payload/StringResult.html[`+StringResult+`]: `+StreamResult+` extension wrapping a `+StringWriter+`, useful for testing.
+* https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/io/sink/StringSink.html[`+StringSink+`]: `+StringSink+` extension wrapping a `+StringWriter+`, useful for testing.
 
-IMPORTANT: As yet, Smooks does not support capturing output to multiple `+Result+` instances of the same type. For example, you can specify multiple `+StreamResult+` instances in `+Smooks.filterSource(...)+` but Smooks will only output to the first `+StreamResult+` instance.
+IMPORTANT: As yet, Smooks does not support capturing output to multiple `+Sink+` instances of the same type. For example, you can specify multiple `+StreamSink+` instances in `+Smooks.filterSource(...)+` but Smooks will only output to the first `+StreamSink+` instance.
 
-===== Stream Results
+===== Stream Sinks
 
-The `+StreamResult+` and `+DOMResult+` types receive special attention from Smooks. When the link:#user-content-settings[`+default.serialization.on+`] global parameter is turned on, which by default it is, Smooks serializes the stream of events to XML while filtering the source. The XML is fed to the `+Result+` instance if a `+StreamResult+` or `+DOMResult+` is passed to `+Smooks#filterSource+`.
+The `+StreamSink+` and `+DOMSink+` types receive special attention from Smooks. When the link:#user-content-settings[`+default.serialization.on+`] global parameter is turned on, which by default it is, Smooks serializes the stream of events to XML while filtering the source. The XML is fed to the `+Sink+` instance if a `+StreamSink+` or `+DOMSink+` is passed to `+Smooks#filterSource+`.
 
 NOTE: This is the mechanism used to perform a standard 1-input/1-xml-output character-based transformation.
 
@@ -422,7 +438,7 @@ Smooks is also able to generate different types of output during filtering, that
 
 === Pipeline
 
-A pipeline is a flexible, yet simple, Smooks construct that isolates the processing of a targeted event from its main processing as well as from the processing of other pipelines. In practice, this means being able to compose any series of transformations on an event outside the main execution context before directing the pipeline output to the execution result stream or to other destinations. With pipelines, you can enrich data, rename/remove nodes, and much more.
+A pipeline is a flexible, yet simple, Smooks construct that isolates the processing of a targeted event from its main processing as well as from the processing of other pipelines. In practice, this means being able to compose any series of transformations on an event outside the main execution context before directing the pipeline output to the execution sink stream or to other destinations. With pipelines, you can enrich data, rename/remove nodes, and much more.
 
 Under the hood, a pipeline is just another instance of Smooks, made self-evident from the Smooks config element declaring a pipeline:
 
@@ -451,7 +467,7 @@ The optional `+core:action+` element tells the nested Smooks instance what to do
 
 ==== Inline
 
-Merges the pipeline's output with the result stream:
+Merges the pipeline's output with the sink stream:
 
 [source,xml]
 ----
@@ -538,7 +554,7 @@ Binds the output to the execution context’s bean store:
 
 ==== Output To
 
-Directs the output to a different stream other than the result stream:
+Directs the output to a different stream other than the sink stream:
 
 [source,xml]
 ----
@@ -549,13 +565,11 @@ Directs the output to a different stream other than the result stream:
 ...
 ----
 
-=== Delegate Reader
+=== Rewrite
 
-NOTE: `core:delegate-reader` was introduced in Smooks 2.0.0-M3 and will be renamed to `core:rewrite` in the next release of Smooks.
+The `core:rewrite` construct is a reader designed to offer a convenient mechanism for substituting the event stream entering a link:#pipeline[pipeline] with one that the pipeline resources can process.
 
-The `core:delegate-reader` construct is a reader designed to offer a convenient mechanism for substituting the event stream entering a link:#pipeline[pipeline] with one that the pipeline resources can process.
-
-`core:delegate-reader` enables one or more of its enclosed visitors to substitute targeted events with new events. In the example that follows, the pipeline feeds the event stream to `core:delegate-reader`, and `core:delegate-reader` in turn, feeds targeted events to the nested FreeMarker visitors:
+`core:rewrite` enables one or more of its enclosed visitors to substitute targeted events with new events. In the example that follows, the pipeline feeds the event stream to `core:rewrite`, and `core:rewrite` in turn, feeds targeted events to the nested FreeMarker visitors:
 
 [source,xml]
 ----
@@ -576,7 +590,7 @@ The `core:delegate-reader` construct is a reader designed to offer a convenient 
         </core:action>
         <core:config>
             <smooks-resource-list>
-                <core:delegate-reader>
+                <core:rewrite>
                     <ftl:freemarker applyOnElement="#document" applyBefore="true">
                         <ftl:template>header.xml.ftl</ftl:template>
                     </ftl:freemarker>
@@ -592,7 +606,7 @@ The `core:delegate-reader` construct is a reader designed to offer a convenient 
                     <ftl:freemarker applyOnElement="#document">
                         <ftl:template>footer.xml.ftl</ftl:template>
                     </ftl:freemarker>
-                </core:delegate-reader>
+                </core:rewrite>
 
                 <edifact:unparser schemaUri="/d96a/EDIFACT-Messages.dfdl.xsd" unparseOnNode="*">
                     <edifact:messageTypes>
@@ -608,11 +622,11 @@ The `core:delegate-reader` construct is a reader designed to offer a convenient 
 </smooks-resource-list>
 ----
 
-A visitor within `core:delegate-reader` writes XML fragments to the result stream, replacing the targeted events. For example, in the config above, the FreeMarker visitors are replacing the `#document` and `record` events with materialised XML templates. More precisely, `core:delegate-reader` converts the materialised XML into a new event stream which is then processed by the downstream pipeline resources, in this case, `edifact:unparser`.
+A visitor within `core:rewrite` writes XML fragments to the sink stream, replacing the targeted events. For example, in the config above, the FreeMarker visitors are replacing the `#document` and `record` events with materialised XML templates. More precisely, `core:rewrite` converts the materialised XML into a new event stream which is then processed by the downstream pipeline resources, in this case, `edifact:unparser`.
 
 TIP: The full example is https://github.com/smooks/smooks-examples/tree/v2/pipelines[available in the smooks-examples repository].
 
-When implementing your own visitor for `core:delegate-reader`, call `org.smooks.io.Stream#out(org.smooks.api.ExecutionContext).write(java.lang.String)` within one of the overridden visit methods to replace the event stream as shown below:
+When implementing your own visitor for `core:rewrite`, call `org.smooks.io.Stream#out(org.smooks.api.ExecutionContext).write(java.lang.String)` within one of the overridden visit methods to replace the event stream as shown below:
 
 [source,java]
 ----
@@ -645,7 +659,7 @@ public class BibliographyVisitor implements AfterVisitor {
 }
 ----
 
-`BibliographyVisitor` is a custom visitor which visits end events. The `visitAfter` method evaluates the author elements together with the title elements and writes XML to the result stream replacing the selected events.
+`BibliographyVisitor` is a custom visitor which visits end events. The `visitAfter` method evaluates the author elements together with the title elements and writes XML to the sink stream replacing the selected events.
 
 === Cartridge
 
@@ -783,7 +797,7 @@ Filter-specific knobs are set through the _smooks-core_ configuration namespace 
                          defaultSerialization="true" <2>
                          terminateOnException="true" <3>
                          closeSource="true" <4>
-                         closeResult="true" <5>
+                         closeSink="true" <5>
                          rewriteEntities="true" <6>
                          readerPoolSize="3"/> <7>
 
@@ -793,13 +807,13 @@ Filter-specific knobs are set through the _smooks-core_ configuration namespace 
 ----
 <1> `+type+` (default: `+SAX NG+`): the type of processing model that will be used. `+SAX NG+` is the recommended type. The `+DOM+` type is deprecated.
 
-<2> `+defaultSerialization+` (default: `+true+`): if default serialization should be switched on. Default serialization being turned on simply tells Smooks to locate a `+StreamResult+` (or `+DOMResult+`) in the Result objects provided to the `+Smooks.filterSource+` method and to serialize all events to that `+Result+` instance. This behavior can be turned off using this global configuration parameter and can be overridden on a per-fragment basis by targeting a visitor at that fragment that takes ownership of the `+org.smooks.io.FragmentWriter+` object.
+<2> `+defaultSerialization+` (default: `+true+`): if default serialization should be switched on. Default serialization being turned on simply tells Smooks to locate a `+StreamSink+` (or `+DOMSink+`) in the Sink objects provided to the `+Smooks.filterSource+` method and to serialize all events to that `+Sink+` instance. This behavior can be turned off using this global configuration parameter and can be overridden on a per-fragment basis by targeting a visitor at that fragment that takes ownership of the `+org.smooks.io.FragmentWriter+` object.
 
 <3> `+terminateOnException+` (default: `+true+`): whether an exception should terminate execution.
 
 <4> `+closeSource+` (default: `+true+`): close `+Inp+` instance streams passed to the `+Smooks.filterSource+` method. The exception here is `+System.in+`, which will never be closed.
 
-<5> `+closeResult+`: close Result streams passed to the `+[Smooks.filterSource+` method (default "true"). The exception here is `+System.out+` and `+System.err+`, which will never be closed.
+<5> `+closeSink+`: close Sink streams passed to the `+[Smooks.filterSource+` method (default "true"). The exception here is `+System.out+` and `+System.err+`, which will never be closed.
 
 <6> `+rewriteEntities+`: rewrite XML entities when reading and writing (default serialization) XML.
 
@@ -815,14 +829,14 @@ Smooks smooks = new Smooks("/smooks/smooks-transform-x.xml");
 ExecutionContext executionContext = smooks.createExecutionContext();
 
 executionContext.getContentDeliveryRuntime().addExecutionEventListener(new HtmlReportGenerator("/tmp/smooks-report.html"));
-smooks.filterSource(executionContext, new StreamSource(inputStream), new StreamResult(outputStream));
+smooks.filterSource(executionContext, new StreamSource(inputStream), new StreamSink(outputStream));
 ----
 
 `+HtmlReportGenerator+` is a useful tool in the developer's arsenal for diagnosing issues, or for comprehending a transformation.
 
 An example `+HtmlReportGenerator+` report can be seen http://www.milyn.org/docs/smooks-report/report.html[online here].
 
-Of course you can also write and use your own https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/delivery/event/ExecutionEventListener.html[ExecutionEventListener] implementations.
+Of course you can also write and use your own https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/delivery/event/ExecutionEventListener.html[ExecutionEventListener] implementations.
 
 CAUTION: Only use the HTMLReportGenerator in development. When enabled, the HTMLReportGenerator incurs a significant performance overhead and with large message, can even result in OutOfMemory exceptions.
 
@@ -858,7 +872,7 @@ The default behavior is to terminate at the end of the targeted fragment, on the
 
 === Bean Context
 
-The _Bean Context_ is a container for objects which can be accessed within during a Smooks execution. One bean context is created per execution context, that is, per `+Smooks#filterSource(...)+` operation. Provide an `+org.smooks.io.payload.JavaResult+` object to `+Smooks#filterSource(...)+` if you want the contents of the bean context to be returned at the end of the filtering process:
+The _Bean Context_ is a container for objects which can be accessed within during a Smooks execution. One bean context is created per execution context, that is, per `+Smooks#filterSource(...)+` operation. Provide an `+org.smooks.io.sink.JavaSink+` object to `+Smooks#filterSource(...)+` if you want the contents of the bean context to be returned at the end of the filtering process:
 
 [source,java]
 ----
@@ -868,14 +882,14 @@ StreamSource source = new StreamSource(getClass().getResourceAsStream("data.xml"
 //Create a Smooks instance (cachable)
 Smooks smooks = new Smooks("smooks-config.xml");
 
-//Create the JavaResult, which will contain the filter result after filtering
-JavaResult result = new JavaResult();
+//Create the JavaSink, which will contain the filter result after filtering
+JavaSink sink = new JavaSink();
 
-//Filter the data from the source, putting the result into the JavaResult
-smooks.filterSource(source, result);
+//Filter the data from the source, putting the result into the JavaSink
+smooks.filterSource(source, sink);
 
 //Getting the Order bean which was created by the JavaBean cartridge
-Order order = (Order)result.getBean("order");
+Order order = (Order)sink.getBean("order");
 ----
 
 Resources like visitors access the bean context's beans at runtime from the `+BeanContext+`. The `+BeanContext+` is retrieved from `+ExecutionContext#getBeanContext()+`. You should first retrieve a `+BeanId+` from the `+BeanIdStore+` when adding or retrieving objects from the `+BeanContext+`. A `+BeanId+` is a special key that ensures higher performance then `+String+` keys, however `+String+` keys are also supported. The `+BeanIdStore+` must be retrieved from `+ApplicationContext#getBeanIdStore()+`. A `+BeanId+` object can be created by calling `+BeanIdStore#register(String)+`. If you know that the `+BeanId+` is already registered, then you can retrieve it by calling `+BeanIdStore#getBeanId(String)+`. `+BeanId+` is scoped at the application context. You normally register it in the `+@PostConstruct+` annotated method of your visitor implementation and then reference it as member variable from the `+visitBefore+` and `+visitAfter+` methods.
@@ -886,9 +900,9 @@ NOTE: `+BeanId+` and `+BeanIdStore+` are thread-safe.
 
 A number of pre-installed beans are available in the bean context at runtime:
 
-* https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/bean/context/preinstalled/UniqueID.html[`+PUUID+`]: This `+UniqueId+` instance provides unique identifiers for the filtering `+ExecutionContext+`.
+* https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/bean/context/preinstalled/UniqueID.html[`+PUUID+`]: This `+UniqueId+` instance provides unique identifiers for the filtering `+ExecutionContext+`.
 
-* https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/bean/context/preinstalled/Time.html[`+PTIME+`]: This `+Time+` instance provides time-based data for the filtering ExecutionContext.
+* https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/bean/context/preinstalled/Time.html[`+PTIME+`]: This `+Time+` instance provides time-based data for the filtering ExecutionContext.
 
 The following are examples of how each of these would be used in a FreeMarker template.
 
@@ -938,7 +952,7 @@ Global configuration settings are, as the name implies, configuration options th
 
 Smooks supports two types of globals, default properties and global parameters:
 
-* Global Configuration Parameters: Every in a Smooks configuration can specify elements for configuration parameters. These parameter values are available at runtime through the https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/config/ResourceConfig.html[`+ResourceConfig+`], or are reflectively injected through the `+@Inject+` annotation. Global Configuration Parameters are parameters that are defined centrally (see below) and are accessible to all runtime components via the `+ExecutionContext+` (vs `+ResourceConfig+`). More on this in the following sections.
+* Global Configuration Parameters: Every in a Smooks configuration can specify elements for configuration parameters. These parameter values are available at runtime through the https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/resource/config/ResourceConfig.html[`+ResourceConfig+`], or are reflectively injected through the `+@Inject+` annotation. Global Configuration Parameters are parameters that are defined centrally (see below) and are accessible to all runtime components via the `+ExecutionContext+` (vs `+ResourceConfig+`). More on this in the following sections.
 
 * Default Properties: Specify default values for attributes. These defaults are automatically applied to `+ResourceConfig+` s  when their corresponding does not specify the attribute. More on this in the following section.
 
@@ -1040,15 +1054,15 @@ Note how the replacement token injection points are specified using `+@tokenname
 // tag::exporting-results[]
 == Exporting Results
 
-When using Smooks standalone you are in full control of the type of output that Smooks produces since you specify it by passing a certain Result to the filter method. But when integrating Smooks with other frameworks (JBossESB, Mule, Camel, and others) this needs to be specified inside the framework's configuration. Starting with version 1.4 of Smooks you can now declare the data types that Smooks produces and you can use the Smooks api to retrieve the Result(s) that Smooks exports.
+When using Smooks standalone you are in full control of the type of output that Smooks produces since you specify it by passing a certain Sink to the filter method. But when integrating Smooks with other frameworks (JBossESB, Mule, Camel, and others) this needs to be specified inside the framework's configuration. Starting with version 1.4 of Smooks you can now declare the data types that Smooks produces and you can use the Smooks api to retrieve the Sink(s) that Smooks exports.
 
-To declare the type of result that Smooks produces you use the 'exports' element as shown below:
+To declare the type of sink that Smooks produces you use the 'exports' element as shown below:
 
 [source,xml]
 ----
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
    <core:exports>
-      <core:result type="org.smooks.io.payload.JavaResult"/>
+      <core:result type="org.smooks.io.sink.JavaSink"/>
    </core:exports>
 </smooks-resource-list>
 ----
@@ -1061,11 +1075,11 @@ The newly added exports element declares the results that are produced by this S
 Exports exports = Exports.getExports(smooks.getApplicationContext());
 if (exports.hasExports())
 {
-    // Create the instances of the Result types.
+    // Create the instances of the Sink types.
     // (Only the types, i.e the Class type are declared in the 'type' attribute.
-    Result[] results = exports.createResults();
-    smooks.filterSource(executionContext, getSource(exchange), results);
-    // The Results(s) will now be populate by Smooks filtering process and
+    Sink[] sinks = exports.createSinks();
+    smooks.filterSource(executionContext, getSource(exchange), sinks);
+    // The Sink(s) will now be populate by Smooks filtering process and
     // available to the framework in question.
 }
 ----
@@ -1077,12 +1091,12 @@ There might also be cases where you only want a portion of the result extracted 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
    <core:exports>
-      <core:result type="org.smooks.io.payload.JavaResult" extract="orderBean"/>
+      <core:result type="org.smooks.io.sink.JavaSink" extract="orderBean"/>
    </core:exports>
 </smooks-resource-list>
 ----
 
-The extract attribute is intended to be used when you are only interested in a sub-section of a produced result. In the example above we are saying that we only want the object named orderBean to be exported. The other contents of the JavaResult will be ignored. Another example where you might want to use this kind of extracting could be when you only want a ValidationResult of a certain type, for example to only return validation errors.
+The extract attribute is intended to be used when you are only interested in a sub-section of a produced result. In the example above we are saying that we only want the object named orderBean to be exported. The other contents of the JavaSink will be ignored. Another example where you might want to use this kind of extracting could be when you only want a ValidationSink of a certain type, for example to only return validation errors.
 
 Below is an example of using the extracts option from an embedded framework:
 
@@ -1092,11 +1106,11 @@ Below is an example of using the extracts option from an embedded framework:
 Exports exports = Exports.getExports(smooks.getApplicationContext());
 if (exports.hasExports())
 {
-    // Create the instances of the Result types.
+    // Create the instances of the Sink types.
     // (Only the types, i.e the Class type are declared in the 'type' attribute.
-    Result[] results = exports.createResults();
-    smooks.filterSource(executionContext, getSource(exchange), results);
-    List<object> objects = Exports.extractResults(results, exports);
+    Sink[] sinks = exports.createSinks();
+    smooks.filterSource(executionContext, getSource(exchange), sinks);
+    List<object> objects = Exports.extractSinks(sinks, exports);
     // Now make the object available to the framework that this code is running:
     // Camel, JBossESB, Mule, etc...
 }
@@ -1145,13 +1159,13 @@ public class MyMessageTransformTest {
 
         try {
             Source source = new StreamSource(getClass().getResourceAsStream("input-message.xml" ) );
-            StringResult result = new StringResult();
+            StringSink sink = new StringSink();
 
-            smooks.filterSource(source, result);
+            smooks.filterSource(source, sink);
 
             // compare the expected xml with the transformation result.
             XMLUnit.setIgnoreWhitespace(true);
-            XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("expected.xml")), new StringReader(result.getResult()));
+            XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("expected.xml")), new StringReader(sink.getResult()));
         } finally {
             smooks.close();
         }
@@ -1190,7 +1204,7 @@ NOTE: Be sure to read the section on https://github.com/smooks/smooks-javabean-c
 
 ==== One-to-One Transformation
 
-If the requirement is to process a huge message by transforming it into a single message of another format, the easiest mechanism with Smooks is to apply multiple FreeMarker templates to the Source message Event Stream, outputting to a Smooks.filterSource Result stream.
+If the requirement is to process a huge message by transforming it into a single message of another format, the easiest mechanism with Smooks is to apply multiple FreeMarker templates to the Source message Event Stream, outputting to a `Smooks.filterSource` sink stream.
 
 This can be done in one of 2 ways with FreeMarker templating, depending on the type of model that's appropriate:
 
@@ -1469,13 +1483,13 @@ The basic process involves:
 . Writing an configuration XSD for your component that extends the base https://www.smooks.org/xsd/smooks-2.0.xsd[https://www.smooks.org/xsd/smooks-2.0.xsd] configuration namespace. This XSD must be supplied on the classpath with your component. It must be located in the _/META-INF_ folder and have the same path as the namespace URI. For example, if your extended namespace URI is  http://www.acme.com/schemas/smooks/acme-core-1.0.xsd, then the physical XSD file must be supplied on the classpath in "/META-INF/schemas/smooks/acme-core-1.0.xsd".
 . Writing a Smooks configuration namespace mapping configuration file that maps the custom namespace configuration into a `+ResourceConfig+` instance. This file must be named (by convention) based on the name of the namespace it is mapping and must be physically located on the classpath in the same folder as the XSD. Extending the above example, the Smooks mapping file would be "/META-INF/schemas/smooks/acme-core-1.0.xsd-smooks.xml". Note the "-smooks.xml" postfix.
 
-The easiest way to get familiar with this mechanism is by looking at existing extended namespace configurations within the Smooks code itself. All Smooks components (including e.g. the Java Binding functionality) use this mechanism for defining their configurations. Smooks Core itself defines a number of extended configuration namesaces, https://github.com/smooks/smooks/tree/v2.0.0-RC4/core/src/main/resources/META-INF/xsd[as can be seen in the source].
+The easiest way to get familiar with this mechanism is by looking at existing extended namespace configurations within the Smooks code itself. All Smooks components (including e.g. the Java Binding functionality) use this mechanism for defining their configurations. Smooks Core itself defines a number of extended configuration namesaces, https://github.com/smooks/smooks/tree/v2.0.0/core/src/main/resources/META-INF/xsd[as can be seen in the source].
 
 === Implementing a Source Reader
 
 Implementing and configuring a new Source Reader for Smooks is straightforward. The Smooks specific parts of the process are easy and are not really the issue. The level of effort involved is a function of the complexity of the Source data format for which you are implementing the reader.
 
-Implementing a Reader for your custom data format immediately opens all Smooks capabilities to that data format e.g. Java Binding, Templating, Persistence, Validation, Splitting & Routing, etc... So a relatively small investment can yield a quite significant return. The only requirement, from a Smooks perspective, is that the Reader implements the standard `+org.xml.sax.XMLReader+` interface from the Java JDK. However, if you want to be able to configure the Reader implementation, it needs to implement the https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/reader/SmooksXMLReader.html[`+org.smooks.api.resource.reader.SmooksXMLReader+`] interface (which is just an extension of `+org.xml.sax.XMLReader+`). So, you can easily use (or extend) an existing `+org.xml.sax.XMLReader+` implementation, or implement a new Reader from scratch.
+Implementing a Reader for your custom data format immediately opens all Smooks capabilities to that data format e.g. Java Binding, Templating, Persistence, Validation, Splitting & Routing, etc... So a relatively small investment can yield a quite significant return. The only requirement, from a Smooks perspective, is that the Reader implements the standard `+org.xml.sax.XMLReader+` interface from the Java JDK. However, if you want to be able to configure the Reader implementation, it needs to implement the https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/resource/reader/SmooksXMLReader.html[`+org.smooks.api.resource.reader.SmooksXMLReader+`] interface (which is just an extension of `+org.xml.sax.XMLReader+`). So, you can easily use (or extend) an existing `+org.xml.sax.XMLReader+` implementation, or implement a new Reader from scratch.
 
 Let's now look at a simple example of implementing a Reader for use with Smooks. In this example, we will implement a Reader that can read a stream of Comma Separated Value (CSV) records, converting the CSV stream into a stream of SAX events that can be processed by Smooks, allowing you to do all the things Smooks allows (Java Binding, etc...).
 
@@ -1555,7 +1569,7 @@ public class MyCSVReaderTest extends TestCase {
 
     public void test() {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("mycsvread-config.xml"));
-        StringResult serializedCSVEvents = new StringResult();
+        StringSink serializedCSVEvents = new StringSink();
 
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("names.csv")), serializedCSVEvents);
 
@@ -1671,11 +1685,11 @@ public class MyCSVReaderTest extends TestCase {
 
     public void test_java_binding() {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("java-binding-config.xml"));
-        JavaResult javaResult = new JavaResult();
+        JavaSink javaSink = new JavaSink();
 
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("names.csv")), javaResult);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("names.csv")), javaSink);
 
-        List<PersonName> peopleNames = (List<PersonName>) javaResult.getBean("peopleNames");
+        List<PersonName> peopleNames = (List<PersonName>) javaSink.getBean("peopleNames");
 
         // TODO: add assertions etc
     }
@@ -1795,11 +1809,11 @@ To execute this configuration:
 [source,java]
 ----
 Smooks smooks = new Smooks(configStream);
-JavaResult result = new JavaResult();
+JavaSink sink = new JavaSink();
 
-smooks.filterSource(new StreamSource(messageReader), result);
+smooks.filterSource(new StreamSource(messageReader), sink);
 
-List<Person> people = (List<Person>) result.getBean("people");
+List<Person> people = (List<Person>) sink.getBean("people");
 ----
 
 Smooks also supports creation of Maps from the record set:
@@ -1821,11 +1835,11 @@ The above configuration would produce a Map of Person instances, keyed by the "f
 [source,java]
 ----
 Smooks smooks = new Smooks(configStream);
-JavaResult result = new JavaResult();
+JavaSink sink = new JavaSink();
 
-smooks.filterSource(new StreamSource(messageReader), result);
+smooks.filterSource(new StreamSource(messageReader), sink);
 
-Map<String, Person> people = (Map<String, Person>) result.getBean("people");
+Map<String, Person> people = (Map<String, Person>) sink.getBean("people");
 
 Person tom = people.get("Tom");
 Person mike = people.get("Mike");
@@ -1856,7 +1870,7 @@ IMPORTANT: Smooks treats all visitors as stateless objects. A visitor instance m
 The SAX NG visitor API is made up of a number of interfaces. These interfaces are based on the
 https://docs.oracle.com/javase/8/docs/api/org/xml/sax/ContentHandler.html[SAX events] that a SaxNgVisitor implementation can capture and processes. Depending on the use case being solved with the SaxNgVisitor implementation, you may need to implement one or all of these interfaces.
 
-https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/BeforeVisitor.html[`+BeforeVisitor+`]: Captures the _startElement_ SAX event for the targeted fragment element:
+https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/resource/visitor/sax/ng/BeforeVisitor.html[`+BeforeVisitor+`]: Captures the _startElement_ SAX event for the targeted fragment element:
 
 [source,java]
 ----
@@ -1866,7 +1880,7 @@ public interface BeforeVisitor extends Visitor {
 }
 ----
 
-https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/ChildrenVisitor.html[`+ChildrenVisitor+`]: Captures the _character_ based SAX events for the targeted fragment element, as well as Smooks generated (pseudo) events corresponding to the _startElement_ events of child fragment elements:
+https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/resource/visitor/sax/ng/ChildrenVisitor.html[`+ChildrenVisitor+`]: Captures the _character_ based SAX events for the targeted fragment element, as well as Smooks generated (pseudo) events corresponding to the _startElement_ events of child fragment elements:
 
 [source,java]
 ----
@@ -1878,7 +1892,7 @@ public interface ChildrenVisitor extends Visitor {
 }
 ----
 
-https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/AfterVisitor.html[`+AfterVisitor+`]: Captures the _endElement_ SAX event for the targeted fragment element:
+https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/resource/visitor/sax/ng/AfterVisitor.html[`+AfterVisitor+`]: Captures the _endElement_ SAX event for the targeted fragment element:
 
 [source,java]
 ----
@@ -1888,7 +1902,7 @@ public interface AfterVisitor extends Visitor {
 }
 ----
 
-As a convenience for those implementations that need to capture all the SAX events, the above three interfaces are pulled together into a single interface in the https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/resource/visitor/sax/ng/ElementVisitor.html[`+ElementVisitor+`] interface.
+As a convenience for those implementations that need to capture all the SAX events, the above three interfaces are pulled together into a single interface in the https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/resource/visitor/sax/ng/ElementVisitor.html[`+ElementVisitor+`] interface.
 
 Illustrating these events using a piece of XML:
 
@@ -1905,7 +1919,7 @@ Illustrating these events using a piece of XML:
 
 NOTE: Of course, the above is just an illustration of a Source message event stream and it looks like XML, but could be EDI, CSV, JSON, etc... Think of this as just an XML serialization of a Source message event stream, serialized as XML for easy reading.
 
-https://docs.oracle.com/javase/8/docs/api/org/w3c/dom/Element.html[Element]: As can be seen from the above SAX NG interfaces, `+Element+` type is passed in all method calls. This object contains details about the targeted fragment element, including attributes and their values. We'll discuss text accumulation and `+StreamResult+` writing in the coming sections.
+https://docs.oracle.com/javase/8/docs/api/org/w3c/dom/Element.html[Element]: As can be seen from the above SAX NG interfaces, `+Element+` type is passed in all method calls. This object contains details about the targeted fragment element, including attributes and their values. We'll discuss text accumulation and `+StreamSink+` writing in the coming sections.
 
 ==== Text Accumulation
 
@@ -1955,20 +1969,20 @@ public class MyVisitor implements AfterVisitor {
 
 Note that the complete fragment text will not be available until the `+AfterVisitor.visitAfter+` event.
 
-==== StreamResult Writing/Serialization
+==== StreamSink Writing/Serialization
 
-The `+Smooks.filterSource(Source, Result)+` method can take one or more of a number of different `+Result+` type implementations, one of which is the `+StreamResult+` class (see link:#multiple-outputsresults[Multiple Outputs/Results]). By default, Smooks will always serialize the full Source event stream as XML to any `+StreamResult+` instance provided to the `+Smooks.filterSource(Source, Result)+` method.
+The `+Smooks.filterSource(Source, Sink)+` method can take one or more of a number of different `+Sink+` type implementations, one of which is the `+StreamSink+` class (see link:#multiple-resultssinks[Multiple results/sinks]). By default, Smooks will always serialize the full Source event stream as XML to any `+StreamSink+` instance provided to the `+Smooks.filterSource(Source, Sink)+` method.
 
-So, if the Source provided to the `+Smooks.filterSource(Source, Result)+` method is an XML stream and a  https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/javax/xml/transform/stream/StreamResult.html[`+StreamResult+`] instance is provided as one of the `+Result+` instances, the Source XML will be written out to the
-`+StreamResult+` unmodified, unless the Smooks instance is configured with one or more `+SaxNgVisitor+` implementations that modify one or more fragments. In other words, Smooks streams the Source in and back out again through the `+StreamResult+` instance. Default serialization can be turned on/off by link:#user-content-settings[configuring the filter settings].
+So, if the Source provided to the `+Smooks.filterSource(Source, Sink)+` method is an XML stream and a  https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/io/StreamSink.html[`+StreamSink+`] instance is provided as one of the `+Sink+` instances, the Source XML will be written out to the
+`+StreamSink+` unmodified, unless the Smooks instance is configured with one or more `+SaxNgVisitor+` implementations that modify one or more fragments. In other words, Smooks streams the Source in and back out again through the `+StreamSink+` instance. Default serialization can be turned on/off by link:#user-content-settings[configuring the filter settings].
 
 If you want to modify the serialized form of one of the message fragments (i.e. "transform"), you need to implement a `+SaxNgVisitor+` to do so and target it at the message fragment using an XPath-like expression.
 
 NOTE: Of course, you can also modify the serialized form of a message fragment using one of the out-of-the-box link:#templating[Templating] components. These components are also `+SaxNgVisitor+` implementations.
 
-The key to implementing a `+SaxNgVisitor+` geared towards transforming the serialized form of a fragment is telling Smooks that the `+SaxNgVisitor+` implementation in question will be writing to the `+StreamResult+`. You need to tell Smooks this because Smooks supports targeting of multiple `+SaxNgVisitor+` implementations at a single fragment, but only one `+SaxNgVisitor+` is allowed to write to the `+StreamResult+`, per fragment. If a second `+SaxNgVisitor+` attempts to write to the `+StreamResult+`, a `+SAXWriterAccessException+` will result and you will need to modify your Smooks configuration.
+The key to implementing a `+SaxNgVisitor+` geared towards transforming the serialized form of a fragment is telling Smooks that the `+SaxNgVisitor+` implementation in question will be writing to the `+StreamSink+`. You need to tell Smooks this because Smooks supports targeting of multiple `+SaxNgVisitor+` implementations at a single fragment, but only one `+SaxNgVisitor+` is allowed to write to the `+StreamSink+`, per fragment. If a second `+SaxNgVisitor+` attempts to write to the `+StreamSink+`, a `+SAXWriterAccessException+` will result and you will need to modify your Smooks configuration.
 
-In order to be "the one" that writes to the _StreamResult_, the _SaxNgVisitor_ needs to *acquire ownership* of the _Writer_ to the _StreamResult_. It does this by simply making a call to the _ExecutionContext.getWriter().write(...)_ method from inside the _BeforeVisitor.visitBefore_ methods implementation:
+In order to be "the one" that writes to the _StreamSink_, the _SaxNgVisitor_ needs to *acquire ownership* of the _Writer_ to the _StreamSink_. It does this by simply making a call to the _ExecutionContext.getWriter().write(...)_ method from inside the _BeforeVisitor.visitBefore_ methods implementation:
 
 [source,java]
 ----
@@ -2003,12 +2017,12 @@ public class MyVisitor implements ElementVisitor {
 
 NOTE: If you need to control serialization of sub-fragments you need to reset the `+Writer+` instance so as to divert serialization of the sub-fragments. You do this by calling `+ExecutionContext.setWriter+`.
 
-Sometimes you know that the target fragment you are serializing/transforming will never have sub-fragments. In this situation, it's a bit ugly to have to implement the `+BeforeVisitor.visitBefore+` method just to make a call to the `+ExecutionContext.getWriter().write(...)+` method to acquire ownership of the `+Writer+`. For this reason, we have the `+@StreamResultWriter+` annotation. Used in combination with the `+@TextConsumer+` annotation, we can remove the need to implement all but the `+AfterVisitor.visitAfter+` method:
+Sometimes you know that the target fragment you are serializing/transforming will never have sub-fragments. In this situation, it's a bit ugly to have to implement the `+BeforeVisitor.visitBefore+` method just to make a call to the `+ExecutionContext.getWriter().write(...)+` method to acquire ownership of the `+Writer+`. For this reason, we have the `+@StreamSinkWriter+` annotation. Used in combination with the `+@TextConsumer+` annotation, we can remove the need to implement all but the `+AfterVisitor.visitAfter+` method:
 
 [source,java]
 ----
 @TextConsumer
-@StreamResultWriter
+@StreamSinkWriter
 public class MyVisitor implements AfterVisitor {
 
     public void visitAfter(Element element, ExecutionContext executionContext) {
@@ -2025,7 +2039,7 @@ Smooks provides the `+DomSerializer+` class to make serializing of element data,
 
 [source,java]
 ----
-@StreamResultWriter
+@StreamSinkWriter
 public class MyVisitor implements ElementVisitor {
 
     private DomSerializer domSerializer = new DomSerializer(true, true);
@@ -2158,7 +2172,7 @@ Smooks smooks = new Smooks();
 
 smooks.addVisitor(new ChangeItemState().setNewState("COMPLETED"), "order-items/order-item[@status = 'OK']");
 
-smooks.filterSource(new StreamSource(inReader), new StreamResult(outWriter));
+smooks.filterSource(new StreamSource(inReader), new StreamSink(outWriter));
 ----
 
 ==== Visitor Instance Lifecycle
