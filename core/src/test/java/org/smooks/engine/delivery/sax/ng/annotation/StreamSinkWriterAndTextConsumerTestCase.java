@@ -47,7 +47,7 @@ import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.api.delivery.sax.StreamResultWriter;
+import org.smooks.api.delivery.sax.StreamSinkWriter;
 import org.smooks.api.delivery.sax.TextConsumer;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.io.FragmentWriter;
@@ -59,7 +59,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StreamResultWriterAndTextConsumerTestCase {
+public class StreamSinkWriterAndTextConsumerTestCase {
 
 	@Test
 	public void testSingleCharacterChunk() {
@@ -84,7 +84,7 @@ public class StreamResultWriterAndTextConsumerTestCase {
 	}
 
 	@TextConsumer
-	@StreamResultWriter	
+	@StreamSinkWriter
 	private static class MyAnnotatedVisitor implements AfterVisitor {
 
 		@Override

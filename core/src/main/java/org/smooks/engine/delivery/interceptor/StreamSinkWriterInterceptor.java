@@ -44,10 +44,9 @@ package org.smooks.engine.delivery.interceptor;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.sax.StreamResultWriter;
+import org.smooks.api.delivery.sax.StreamSinkWriter;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
-import org.smooks.api.resource.visitor.interceptor.InterceptorVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.SimpleVisitorMemento;
@@ -62,19 +61,19 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor {
+public class StreamSinkWriterInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor {
 
     protected boolean isStreamResultWriter;
 
     @PostConstruct
     public void postConstruct() {
-        isStreamResultWriter = getTarget().getContentHandler().getClass().isAnnotationPresent(StreamResultWriter.class);
+        isStreamResultWriter = getTarget().getContentHandler().getClass().isAnnotationPresent(StreamSinkWriter.class);
     }
 
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) {
         if (isStreamResultWriter) {
-            intercept(visitAfterInvocation, new StreamResultWriterDelegateElement(element), executionContext);
+            intercept(visitAfterInvocation, new StreamSinkWriterDelegateElement(element), executionContext);
         } else {
             intercept(visitAfterInvocation, element, executionContext);
         }
@@ -83,7 +82,7 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
         if (isStreamResultWriter) {
-            intercept(visitBeforeInvocation, new StreamResultWriterDelegateElement(element), executionContext);
+            intercept(visitBeforeInvocation, new StreamSinkWriterDelegateElement(element), executionContext);
         } else {
             intercept(visitBeforeInvocation, element, executionContext);
         }
@@ -92,7 +91,7 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
     @Override
     public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) {
         if (isStreamResultWriter) {
-            intercept(visitChildTextInvocation, new StreamResultWriterDelegateCharacterData(characterData), executionContext);
+            intercept(visitChildTextInvocation, new StreamSinkWriterDelegateCharacterData(characterData), executionContext);
         } else {
             intercept(visitChildTextInvocation, characterData, executionContext);
         }
@@ -101,13 +100,13 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
     @Override
     public void visitChildElement(final Element childElement, final ExecutionContext executionContext) {
         if (isStreamResultWriter) {
-            intercept(visitChildElementInvocation, new StreamResultWriterDelegateElement(childElement), executionContext);
+            intercept(visitChildElementInvocation, new StreamSinkWriterDelegateElement(childElement), executionContext);
         } else {
             intercept(visitChildElementInvocation, childElement, executionContext);
         }
     }
 
-    protected <T extends Visitor> void intercept(final Invocation<T> invocation, final StreamResultWriterDelegateNode streamResultWriterDelegateNode, final ExecutionContext executionContext) {
+    protected <T extends Visitor> void intercept(final Invocation<T> invocation, final StreamSinkWriterDelegateNode streamResultWriterDelegateNode, final ExecutionContext executionContext) {
         final NodeFragment nodeFragment = new NodeFragment(streamResultWriterDelegateNode.getDelegateNode());
         executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(nodeFragment, this, new FragmentWriter(executionContext, nodeFragment, false)), writerMemento -> {
             try {
@@ -123,10 +122,10 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
         });
     }
 
-    abstract static class StreamResultWriterDelegateNode implements Node {
+    abstract static class StreamSinkWriterDelegateNode implements Node {
         private final Node node;
 
-        StreamResultWriterDelegateNode(Node node) {
+        StreamSinkWriterDelegateNode(Node node) {
             this.node = node;
         }
 
@@ -327,10 +326,10 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
         }
     }
 
-    static class StreamResultWriterDelegateCharacterData extends StreamResultWriterDelegateNode implements CharacterData {
+    static class StreamSinkWriterDelegateCharacterData extends StreamSinkWriterDelegateNode implements CharacterData {
         private final CharacterData characterData;
 
-        StreamResultWriterDelegateCharacterData(CharacterData characterData) {
+        StreamSinkWriterDelegateCharacterData(CharacterData characterData) {
             super(characterData);
             this.characterData = characterData;
         }
@@ -376,10 +375,10 @@ public class StreamResultWriterInterceptor extends AbstractInterceptorVisitor im
         }
     }
 
-    static class StreamResultWriterDelegateElement extends StreamResultWriterDelegateNode implements Element {
+    static class StreamSinkWriterDelegateElement extends StreamSinkWriterDelegateNode implements Element {
         private final Element element;
 
-        StreamResultWriterDelegateElement(Element element) {
+        StreamSinkWriterDelegateElement(Element element) {
             super(element);
             this.element = element;
         }

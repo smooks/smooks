@@ -46,10 +46,10 @@ import javax.xml.transform.stream.StreamResult;
 import java.lang.annotation.*;
 
 /**
- * Fragment {@link StreamResult} Writer SAX Visitor Annotation.
+ * Fragment {@link StreamSink} Writer SAX Visitor Annotation.
  * <p/>
  * Used to flag a {@link org.smooks.api.resource.visitor.sax.ng.SaxNgVisitor} implementation as being a writer
- * to any defined {@link StreamResult}.  This annotation results in the
+ * to any defined {@link StreamSink}.  This annotation results in the
  * Stream Writer (for the StreamResult) being acquired on behalf of the
  * SAXVistor implementation declaring the annotation.  See {@link org.smooks.api.delivery.fragment.Fragment}.
  *
@@ -59,5 +59,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD})
 @Inherited
-public @interface StreamResultWriter {
+public @interface StreamSinkWriter {
 }
