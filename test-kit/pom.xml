@@ -13,7 +13,7 @@
     <artifactId>smooks-test-kit</artifactId>
 
     <properties>
-        <hsqldb.version>2.5.2</hsqldb.version>
+        <hsqldb.version>2.7.3</hsqldb.version>
     </properties>
 
     <dependencies>
