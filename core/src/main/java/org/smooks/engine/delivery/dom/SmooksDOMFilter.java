@@ -83,11 +83,10 @@ import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.io.Stream;
 import org.smooks.io.sink.DOMSink;
-import org.smooks.io.sink.FilterSink;
+import org.smooks.io.sink.JavaSink;
 import org.smooks.io.sink.StreamSink;
 import org.smooks.io.sink.WriterSink;
 import org.smooks.io.source.DOMSource;
-import org.smooks.io.source.FilterSource;
 import org.smooks.io.source.JavaSource;
 import org.smooks.io.source.ReaderSource;
 import org.smooks.io.source.StreamSource;
@@ -264,13 +263,13 @@ public class SmooksDOMFilter extends AbstractFilter {
 
     @Override
     public void doFilter() throws SmooksException {
-        Source source = FilterSource.getSource(executionContext);
-        Sink sink = FilterSink.getSink(executionContext, StreamSink.class);
+        Source source = executionContext.get(Source.SOURCE_TYPED_KEY);
+        Sink sink = getSink(executionContext, StreamSink.class);
         if (sink == null) {
-            sink = FilterSink.getSink(executionContext, WriterSink.class);
+            sink = getSink(executionContext, WriterSink.class);
             if (sink == null) {
                 // Maybe there's a DOMSink...
-                sink = FilterSink.getSink(executionContext, DOMSink.class);
+                sink = getSink(executionContext, DOMSink.class);
             }
         }
 
@@ -281,10 +280,8 @@ public class SmooksDOMFilter extends AbstractFilter {
         if (!(source instanceof StreamSource) && !(source instanceof ReaderSource)  && !(source instanceof DOMSource) && !(source instanceof JavaSource) && !(source instanceof URLSource)) {
             throw new IllegalArgumentException(source.getClass().getName() + " Source types not yet supported by the DOM Filter.");
         }
-        if (!(sink instanceof FilterSink)) {
-            if (sink != null && !(sink instanceof StreamSink) && !(sink instanceof WriterSink) && !(sink instanceof DOMSink)) {
-                throw new IllegalArgumentException(sink.getClass().getName() + " Sinks types not yet supported by the DOM Filter.");
-            }
+        if (sink != null && !(sink instanceof StreamSink) && !(sink instanceof WriterSink) && !(sink instanceof DOMSink) && !(sink instanceof JavaSink)) {
+            throw new IllegalArgumentException(sink.getClass().getName() + " Sinks types not yet supported by the DOM Filter.");
         }
 
         try {

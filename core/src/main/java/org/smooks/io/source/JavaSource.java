@@ -42,6 +42,7 @@
  */
 package org.smooks.io.source;
 
+import org.smooks.api.io.Source;
 import org.smooks.assertion.AssertArgument;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JavaSource extends FilterSource {
+public class JavaSource implements Source {
 
     /**
      *

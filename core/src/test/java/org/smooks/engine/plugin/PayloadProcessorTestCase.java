@@ -47,6 +47,7 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.engine.bean.context.preinstalled.Time;
 import org.smooks.engine.bean.context.preinstalled.UniqueID;
+import org.smooks.io.sink.NullSink;
 import org.smooks.io.sink.WriterSink;
 import org.smooks.io.source.ReaderSource;
 import org.smooks.io.source.StreamSource;
@@ -64,6 +65,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -190,6 +192,6 @@ public class PayloadProcessorTestCase {
         PayloadProcessor processor = new PayloadProcessor(smooks, SinkType.NO_SINK);
         Object object = processor.process(123, smooks.createExecutionContext());
 
-        assertNull(object);
+        assertInstanceOf(NullSink.class, object);
     }
 }

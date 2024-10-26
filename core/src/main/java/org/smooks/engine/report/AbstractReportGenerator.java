@@ -44,7 +44,8 @@ package org.smooks.engine.report;
 
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.SmooksException;
-import org.smooks.api.delivery.*;
+import org.smooks.api.delivery.ContentDeliveryConfig;
+import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.delivery.event.ContentDeliveryConfigExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.api.delivery.event.ResourceAwareEvent;
@@ -53,11 +54,17 @@ import org.smooks.api.lifecycle.DOMFilterLifecycle;
 import org.smooks.api.lifecycle.FilterLifecycle;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ExecutionContext;
+import org.smooks.engine.delivery.event.BasicExecutionEventListener;
+import org.smooks.engine.delivery.event.FragmentExecutionEvent;
+import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
+import org.smooks.engine.delivery.event.VisitExecutionEvent;
 import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
-import org.smooks.engine.delivery.event.*;
-import org.smooks.engine.report.model.*;
-import org.smooks.io.sink.FilterSink;
+import org.smooks.engine.report.model.DOMReport;
+import org.smooks.engine.report.model.MessageNode;
+import org.smooks.engine.report.model.Report;
+import org.smooks.engine.report.model.ReportInfoNode;
+import org.smooks.engine.report.model.ResultNode;
 import org.smooks.io.sink.JavaSink;
 import org.smooks.io.sink.StringSink;
 import org.smooks.support.DomUtils;
@@ -117,7 +124,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         }
 
         if (executionEvent instanceof StartFragmentExecutionEvent) {
-            ReportNode node = new ReportNode((StartFragmentExecutionEvent) executionEvent);
+            ReportNode node = new ReportNode((StartFragmentExecutionEvent<?>) executionEvent);
             allNodes.add(node);
             processNewElementEvent(node);
         } else {
@@ -127,7 +134,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
             } else if (executionEvent instanceof FragmentExecutionEvent) {
                 // We have started processing the message/phase, so attach the event to the ReportNode
                 // associated with the event element...
-                ReportNode reportNode = getReportNode(((FragmentExecutionEvent) executionEvent).getFragment().unwrap());
+                ReportNode reportNode = getReportNode(((FragmentExecutionEvent<?>) executionEvent).getFragment().unwrap());
 
                 if (reportNode != null) {
                     reportNode.elementProcessingEvents.add(executionEvent);
@@ -213,7 +220,7 @@ public abstract class AbstractReportGenerator extends BasicExecutionEventListene
         }
 
         List<ResultNode> resultNodes = new ArrayList<>();
-        Sink[] sinks = FilterSink.getSinks(executionContext);
+        List<Sink> sinks = executionContext.get(Sink.SINKS_TYPED_KEY);
         report.setResults(resultNodes);
         if (sinks != null) {
             for (Sink sink : sinks) {

@@ -49,6 +49,7 @@ import org.junit.jupiter.api.Test;
 import org.smooks.api.io.Sink;
 import org.smooks.io.sink.ByteSink;
 import org.smooks.io.sink.JavaSink;
+import org.smooks.io.sink.NullSink;
 import org.smooks.io.sink.StringSink;
 
 /**
@@ -80,7 +81,7 @@ public class ResultFactoryTestCase {
     public void createSinkNoMap() {
         SinkFactory instance = SinkFactory.getInstance();
         Sink sink = instance.createSink(SinkType.NO_SINK);
-        assertNull(sink);
+        assertInstanceOf(NullSink.class, sink);
     }
 
 }

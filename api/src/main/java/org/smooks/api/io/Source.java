@@ -42,5 +42,8 @@
  */
 package org.smooks.api.io;
 
+import org.smooks.api.TypedKey;
+
 public interface Source {
+    TypedKey<Source> SOURCE_TYPED_KEY = TypedKey.of();
 }

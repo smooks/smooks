@@ -43,13 +43,13 @@ Smooks is an extensible Java framework for building XML and non-XML data (CSV, E
 
 * *Templating*: extensible template-driven transformations, with support for https://www.w3.org/TR/xslt/[XSLT], https://freemarker.apache.org/[FreeMarker], and https://www.stringtemplate.org/[StringTemplate].
 
-* *Huge Message Processing*: process huge messages (gigabytes!). Split, transform and route fragments to JMS, filesystem, database, and other destinations.
+* *Scalable Processing*: process huge payloads while keeping a small memory footprint. Split, transform and route fragments to JMS, filesystem, database, and other destinations.
 
-* *Fragment Enrichment*: enrich fragments with data from a database or other data sources.
+* *Enrichment*: enrich fragments with data from a database or other data sources.
 
 * *Complex Fragment Validation*: rule-based fragment validation.
 
-* *Fragment Persistence*: read fragments from, and save fragments to, a database with either JDBC, persistence frameworks (like MyBatis, Hibernate, or any JPA compatible framework), or DAOs.
+* *Persistence*: read fragments from, and save fragments to, a database with either JDBC, persistence frameworks (like MyBatis, Hibernate, or any JPA compatible framework), or DAOs.
 
 * *Combine*: leverage Smooks's transformation, routing and persistence functionality for _Extract Transform Load_ (ETL) operations.
 

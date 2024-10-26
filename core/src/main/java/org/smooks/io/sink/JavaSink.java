@@ -45,6 +45,7 @@ package org.smooks.io.sink;
 import com.thoughtworks.xstream.XStream;
 
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.io.Sink;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.engine.bean.context.StandaloneBeanContext;
 import org.smooks.io.payload.Export;
@@ -66,7 +67,7 @@ import java.util.Set;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class JavaSink extends FilterSink implements SinkExtractor<JavaSink> {
+public class JavaSink implements Sink, SinkExtractor<JavaSink> {
 
     private Map<String, Object> resultMap;
 

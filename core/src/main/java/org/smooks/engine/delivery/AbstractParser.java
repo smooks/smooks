@@ -65,7 +65,6 @@ import org.smooks.engine.xml.NamespaceManager;
 import org.smooks.io.DocumentInputSource;
 import org.smooks.io.NullReader;
 import org.smooks.io.source.DOMSource;
-import org.smooks.io.source.FilterSource;
 import org.smooks.io.source.JavaSource;
 import org.smooks.io.source.ReaderSource;
 import org.smooks.io.source.StreamSource;
@@ -261,7 +260,7 @@ public class AbstractParser {
 
     protected XMLReader createXMLReader() throws SAXException {
         XMLReader xmlReader;
-        Source source = FilterSource.getSource(executionContext);
+        Source source = executionContext.get(Source.SOURCE_TYPED_KEY);
 
         if (saxDriverConfig != null && saxDriverConfig.getResource() != null) {
             xmlReader = XMLReaderFactory.createXMLReader(saxDriverConfig.getResource());

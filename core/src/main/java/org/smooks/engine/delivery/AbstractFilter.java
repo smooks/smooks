@@ -69,6 +69,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Content filter.
@@ -203,5 +204,20 @@ public abstract class AbstractFilter implements Filter {
         } catch (Throwable throwable) {
             LOGGER.debug("Failed to close output stream/writer.  May already be closed.", throwable);
         }
+    }
+
+    protected Sink getSink(ExecutionContext executionContext, Class<? extends Sink> sinkType) {
+        List<Sink> sinks = executionContext.get(Sink.SINKS_TYPED_KEY);
+
+        if (sinks != null) {
+            for (Sink sink : sinks) {
+                // Needs to be an exact type match...
+                if (sink != null && sinkType.isAssignableFrom(sink.getClass())) {
+                    return sink;
+                }
+            }
+        }
+
+        return null;
     }
 }

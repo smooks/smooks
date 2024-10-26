@@ -45,6 +45,7 @@ package org.smooks.engine.plugin;
 import org.smooks.api.io.Sink;
 import org.smooks.io.sink.ByteSink;
 import org.smooks.io.sink.JavaSink;
+import org.smooks.io.sink.NullSink;
 import org.smooks.io.sink.StringSink;
 
 /**
@@ -75,6 +76,7 @@ public class SinkFactory {
                 sink = new JavaSink(true);
                 break;
             case NO_SINK:
+                sink = new NullSink();
                 break;
             default:
                 break;

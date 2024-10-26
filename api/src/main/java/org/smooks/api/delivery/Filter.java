@@ -76,7 +76,7 @@ public interface Filter extends Closeable {
      * Filter the content in the supplied {@link org.smooks.api.io.Source} instance, outputting the result
      * to the supplied {@link org.smooks.api.io.Sink} instance.
      * <p/>
-     * Implementations use static methods on the {@link FilterSource} and {@link FilterSink} classes
+     * Implementations use typed keys defined on {@link org.smooks.api.io.Source} and {@link org.smooks.api.io.Sink} interfaces
      * to access the {@link org.smooks.api.io.Source} and {@link org.smooks.api.io.Sink Sinks} objects.
      *
      * @throws SmooksException Failed to filter.

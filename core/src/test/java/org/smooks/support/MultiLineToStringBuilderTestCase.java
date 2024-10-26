@@ -44,12 +44,16 @@ package org.smooks.support;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.io.Sink;
 import org.smooks.io.sink.JavaSink;
 import org.smooks.testkit.MockExecutionContext;
 import org.smooks.api.TypedKey;
-import org.smooks.io.sink.FilterSink;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -59,12 +63,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 	@Test
 	public void test() {
-
 		ExecutionContext context = new MockExecutionContext();
-
 		JavaSink dummySink = new JavaSink(true);
-
-		FilterSink.setSinks(context, dummySink);
+		context.put(Sink.SINKS_TYPED_KEY, Collections.singletonList(dummySink));
 
 		context.getBeanContext().addBean("string", "blaat", null);
 		context.getBeanContext().addBean("emptyMap", Collections.emptyMap(), null);

@@ -42,5 +42,12 @@
  */
 package org.smooks.api.io;
 
+import org.smooks.api.TypedKey;
+
+import java.util.List;
+
 public interface Sink {
+
+    TypedKey<List<Sink>> SINKS_TYPED_KEY = TypedKey.of();
+
 }

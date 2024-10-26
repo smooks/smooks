@@ -43,11 +43,16 @@
 package org.smooks.support;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.sink.FilterSink;
-import org.smooks.io.source.FilterSource;
+import org.smooks.api.io.Sink;
+import org.smooks.api.io.Source;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,15 +80,15 @@ public class MultiLineToStringBuilder {
     private static final String COMMA = ",";
     private static final String CURLY_BRACKET_CLOSE = "}";
     private static final String CURLY_BRACKET_OPEN = "{";
-    private static final String NL = System.getProperty("line.separator");
+    private static final String NL = System.lineSeparator();
     private static final Pattern NL_PATTERN = Pattern.compile("\r\n|\n|\r");
 
     private static final List<String> EXECUTION_CONTEXT_FILTER_LIST = new ArrayList<>();
 
     static {
-        //These keys are exluded for the execution context string
-        EXECUTION_CONTEXT_FILTER_LIST.add(FilterSink.SINKS_TYPED_KEY.toString());
-        EXECUTION_CONTEXT_FILTER_LIST.add(FilterSource.SOURCE_TYPED_KEY.toString());
+        //These keys are excluded for the execution context string
+        EXECUTION_CONTEXT_FILTER_LIST.add(Sink.SINKS_TYPED_KEY.toString());
+        EXECUTION_CONTEXT_FILTER_LIST.add(Source.SOURCE_TYPED_KEY.toString());
     }
 
     private MultiLineToStringBuilder() {
@@ -176,7 +181,7 @@ public class MultiLineToStringBuilder {
      * @return The String representation of the Map
      */
     public static String toString(Object[] array, List<?> filterKeyList) {
-        Stack<Object> stack = new Stack<Object>();
+        Stack<Object> stack = new Stack<>();
         stack.add(new Object()); // A little hack to make sure that the first level is renderd ok
 
         return toString(array, stack, filterKeyList);

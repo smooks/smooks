@@ -84,8 +84,6 @@ import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.xml.NamespaceManager;
 import org.smooks.io.payload.Exports;
-import org.smooks.io.sink.FilterSink;
-import org.smooks.io.source.FilterSource;
 import org.smooks.io.sink.JavaSink;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.SmooksUtil;
@@ -99,7 +97,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -514,6 +515,23 @@ public class Smooks implements Closeable {
         }
     }
 
+    protected void setSource(ExecutionContext executionContext, Source source) {
+        if (source != null) {
+            executionContext.put(Source.SOURCE_TYPED_KEY, source);
+        } else {
+            executionContext.remove(Source.SOURCE_TYPED_KEY);
+        }
+    }
+
+    protected void setSinks(ExecutionContext executionContext, Sink... sinks) {
+        if (sinks != null) {
+            executionContext.put(Sink.SINKS_TYPED_KEY, Arrays.asList(sinks));
+        } else {
+            executionContext.remove(Sink.SINKS_TYPED_KEY);
+        }
+    }
+
+
     private void _filter(ExecutionContext executionContext, org.smooks.api.io.Source source, Sink... sinks) {
         ContentDeliveryConfig contentDeliveryConfig = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();
         try {
@@ -533,10 +551,10 @@ public class Smooks implements Closeable {
             Filter filter = contentDeliveryConfig.newFilter(executionContext);
             try {
                 // Attach the source and results to the context...
-                FilterSource.setSource(executionContext, source);
-                FilterSink.setSinks(executionContext, sinks);
+                setSource(executionContext, source);
+                setSinks(executionContext, sinks);
 
-                // Add pre installed beans + global BeanContext lifecycle observers...
+                // Add pre-installed beans + global BeanContext lifecycle observers...
                 BeanContext beanContext = executionContext.getBeanContext();
                 beanContext.addBean(Time.BEAN_ID, new Time());
                 beanContext.addBean(UniqueID.BEAN_ID, new UniqueID());
@@ -551,10 +569,9 @@ public class Smooks implements Closeable {
                     try {
                         // We want to make sure that all the beans from the BeanContext are available in the
                         // JavaResult, if one is supplied by the user...
-                        JavaSink javaSink = (JavaSink) FilterSink.getSink(executionContext, JavaSink.class);
-                        if (javaSink != null) {
-                            javaSink.getResultMap().putAll(executionContext.getBeanContext().getBeanMap());
-                        }
+
+                        Optional<Sink> javaSink = executionContext.getOrDefault(Sink.SINKS_TYPED_KEY, Collections.emptyList()).stream().filter(s -> JavaSink.class.isAssignableFrom(s.getClass())).findFirst();
+                        javaSink.ifPresent(sink -> ((JavaSink) sink).getResultMap().putAll(executionContext.getBeanContext().getBeanMap()));
 
                         // Remove the pre-installed beans...
                         beanContext.removeBean(Time.BEAN_ID, null);

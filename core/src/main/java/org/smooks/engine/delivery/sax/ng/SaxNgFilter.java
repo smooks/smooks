@@ -52,11 +52,10 @@ import org.smooks.engine.delivery.AbstractFilter;
 import org.smooks.engine.delivery.sax.ng.terminate.TerminateException;
 import org.smooks.io.Stream;
 import org.smooks.io.sink.DOMSink;
-import org.smooks.io.sink.FilterSink;
+import org.smooks.io.sink.JavaSink;
 import org.smooks.io.sink.StreamSink;
 import org.smooks.io.sink.WriterSink;
 import org.smooks.io.source.DOMSource;
-import org.smooks.io.source.FilterSource;
 import org.smooks.io.source.JavaSource;
 import org.smooks.io.source.ReaderSource;
 import org.smooks.io.source.StreamSource;
@@ -86,12 +85,12 @@ public class SaxNgFilter extends AbstractFilter {
 
     @Override
     public void doFilter() throws SmooksException {
-        Source source = FilterSource.getSource(executionContext);
-        Sink sink = FilterSink.getSink(executionContext, StreamSink.class);
+        Source source = executionContext.get(Source.SOURCE_TYPED_KEY);
+        Sink sink = getSink(executionContext, StreamSink.class);
         if (sink == null) {
-            sink = FilterSink.getSink(executionContext, WriterSink.class);
+            sink = getSink(executionContext, WriterSink.class);
             if (sink == null) {
-                sink = FilterSink.getSink(executionContext, DOMSink.class);
+                sink = getSink(executionContext, DOMSink.class);
             }
         }
 
@@ -102,10 +101,8 @@ public class SaxNgFilter extends AbstractFilter {
         if (!(source instanceof StreamSource || source instanceof ReaderSource || source instanceof JavaSource || source instanceof DOMSource || source instanceof URLSource)) {
             throw new SmooksException(String.format("Unsupported [%s] source type: SAX NG filter supports StreamSource, JavaSource, DOMSource, and URLSource", source.getClass().getName()));
         }
-        if (!(sink instanceof FilterSink)) {
-            if (sink != null && !(sink instanceof StreamSink) && !(sink instanceof WriterSink) && !(sink instanceof DOMSink)) {
-                throw new SmooksException(String.format("Unsupported [%s] sink type: SAX NG filter supports StreamSink and DOMSink", sink.getClass().getName()));
-            }
+        if (sink != null && !(sink instanceof StreamSink) && !(sink instanceof WriterSink) && !(sink instanceof DOMSink) && !(sink instanceof JavaSink)) {
+            throw new SmooksException(String.format("Unsupported [%s] sink type: SAX NG filter supports either StreamSink, DOMSink, or JavaSink", sink.getClass().getName()));
         }
 
         try {

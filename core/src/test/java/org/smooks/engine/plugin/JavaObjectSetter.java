@@ -46,12 +46,13 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.io.Sink;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.io.sink.FilterSink;
 import org.smooks.io.sink.JavaSink;
 import org.w3c.dom.Element;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -60,11 +61,11 @@ public class JavaObjectSetter implements BeforeVisitor {
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        Sink sink = FilterSink.getSink(executionContext, JavaSink.class);
-        if (sink != null) {
+        Optional<Sink> javaSink = executionContext.getOrDefault(Sink.SINKS_TYPED_KEY, Collections.emptyList()).stream().filter(s -> JavaSink.class.isAssignableFrom(s.getClass())).findFirst();
+        if (javaSink.isPresent()) {
             Map<String, Object> beans = new HashMap<String, Object>();
 
-            ((JavaSink) sink).setResultMap(beans);
+            ((JavaSink) javaSink.get()).setResultMap(beans);
             beans.put("theBean", "Hi there!");
         }
     }

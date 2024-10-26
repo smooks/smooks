@@ -48,13 +48,14 @@ import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.api.bean.repository.BeanId;
 import org.smooks.api.io.Sink;
 import org.smooks.api.io.Source;
-import org.smooks.io.sink.FilterSink;
-import org.smooks.io.source.FilterSource;
 import org.smooks.io.sink.JavaSink;
 import org.smooks.io.source.JavaSource;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The Bean Context Manager
@@ -94,12 +95,12 @@ public class StandaloneBeanContextFactory {
      * @return
      */
     private static Map<String, Object> createBeanMap(ExecutionContext executionContext, BeanIdStore beanIdStore) {
-        Sink sink = FilterSink.getSink(executionContext, JavaSink.class);
-        Source source = FilterSource.getSource(executionContext);
+        Optional<Sink> sink = executionContext.getOrDefault(Sink.SINKS_TYPED_KEY, Collections.emptyList()).stream().filter(s -> JavaSink.class.isAssignableFrom(s.getClass())).findFirst();
+        Source source = executionContext.get(Source.SOURCE_TYPED_KEY);
         Map<String, Object> beanMap = null;
 
-        if (sink != null) {
-            JavaSink javaSink = (JavaSink) sink;
+        if (sink.isPresent()) {
+            JavaSink javaSink = (JavaSink) sink.get();
             beanMap = javaSink.getResultMap();
         }
 
@@ -117,7 +118,7 @@ public class StandaloneBeanContextFactory {
         }
 
         if (beanMap == null) {
-            beanMap = new HashMap<String, Object>();
+            beanMap = new HashMap<>();
         } else {
 
             for (String beanId : beanMap.keySet()) {
