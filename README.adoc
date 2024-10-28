@@ -128,7 +128,7 @@ Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code 
     * `org.smooks.io.sink.DOMSink` instead of `javax.xml.transform.dom.DOMResult`
     * `org.smooks.io.sink.StreamSink` instead of `javax.xml.transform.stream.StreamResult` when the latter is constructed from `java.io.OutputStream`
     * `org.smooks.io.sink.WriterSink` instead of `javax.xml.transform.stream.StreamResult` when the latter is constructed from `java.io.Writer`
-* Replace `closeSource` attribute in the XML config element `core:filterSettings` with `closeSink`.
+. Replace `closeSource` attribute in the XML config element `core:filterSettings` with `closeSink`.
 . Replace class interfaces:
     * `org.milyn.delivery.ExecutionLifecycleInitializable` with `org.smooks.api.lifecycle.PreExecutionLifecycle`
     * `org.milyn.delivery.ExecutionLifecycleCleanable` with `org.smooks.api.lifecycle.PostExecutionLifecycle`
