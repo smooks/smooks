@@ -75,10 +75,10 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
     @PostConstruct
     public void postConstruct() {
         terminateOnVisitorException = Boolean.parseBoolean(applicationContext.getRegistry().lookup(new GlobalParamsLookup(applicationContext.getRegistry())).getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true"));
-        visitBeforeExceptionMessage = String.format("Error in %s while processing visitBefore SAX NG event", visitorBinding.getContentHandler().getClass().getName());
-        visitAfterExceptionMessage = String.format("Error in %s while processing visitAfter SAX NG event", visitorBinding.getContentHandler().getClass().getName());
-        visitChildTextExceptionMessage = String.format("Error in %s while processing visitChildText SAX NG event", visitorBinding.getContentHandler().getClass().getName());
-        visitChildElementExceptionMessage = String.format("Error in %s while processing visitChildElement SAX NG event", visitorBinding.getContentHandler().getClass().getName());
+        visitBeforeExceptionMessage = String.format("Error in [%s] while processing start event", visitorBinding.getContentHandler().getClass().getName());
+        visitAfterExceptionMessage = String.format("Error in [%s] while processing end event", visitorBinding.getContentHandler().getClass().getName());
+        visitChildTextExceptionMessage = String.format("Error in [%s] while processing text event", visitorBinding.getContentHandler().getClass().getName());
+        visitChildElementExceptionMessage = String.format("Error in [%s] while processing child event", visitorBinding.getContentHandler().getClass().getName());
     }
 
     @Override
