@@ -44,7 +44,9 @@ package org.smooks.engine.delivery.sax.ng.terminate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.smooks.Smooks;
+import org.smooks.api.SmooksException;
 import org.smooks.engine.delivery.sax.ng.VisitBeforeVisitor;
 import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
@@ -53,6 +55,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TerminateVisitorTestCase {
@@ -68,8 +71,13 @@ public class TerminateVisitorTestCase {
 		
 		smooks.addVisitor(new TerminateVisitor(), "customer");
 		smooks.addVisitor(new VisitBeforeVisitor().setInjectedParam("blah"), "user");
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+		assertThrows(SmooksException.class, new Executable() {
+			@Override
+			public void execute() {
+				smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
+			}
+		});
 		assertTrue(VisitBeforeVisitor.visited);
 	}
 
@@ -79,24 +87,39 @@ public class TerminateVisitorTestCase {
 		
 		smooks.addVisitor(new TerminateVisitor().setTerminateBefore(Optional.of(true)), "customer");
 		smooks.addVisitor(new VisitBeforeVisitor().setInjectedParam("blah"), "user");
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+		assertThrows(SmooksException.class, new Executable() {
+			@Override
+			public void execute() {
+				smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
+			}
+		});
 		assertFalse(VisitBeforeVisitor.visited);
 	}
 
 	@Test
 	public void test_terminate_xml_after() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+		assertThrows(SmooksException.class, new Executable() {
+			@Override
+			public void execute() {
+				smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
+			}
+		});
 		assertTrue(VisitBeforeVisitor.visited);
 	}
 
 	@Test
 	public void test_terminate_xml_before() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("config-02.xml"));
-		
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+
+		assertThrows(SmooksException.class, new Executable() {
+			@Override
+			public void execute() {
+				smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
+			}
+		});
 		assertFalse(VisitBeforeVisitor.visited);
 	}
 }
