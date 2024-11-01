@@ -72,11 +72,11 @@ import java.util.List;
  */
 public class DefaultApplicationContext implements ApplicationContext {
 
+    private final ProfileStore profileStore = new DefaultProfileStore();
+    private final List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<>();
     private ContainerResourceLocator resourceLocator;
     private Registry registry;
-    private final ProfileStore profileStore = new DefaultProfileStore();
-    private final BeanIdStore beanIdStore = new DefaultBeanIdStore();
-    private final List<BeanContextLifecycleObserver> beanContextObservers = new ArrayList<>();
+    private BeanIdStore beanIdStore;
     private ClassLoader classLoader;
     private ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory;
     private ResourceConfigLoader resourceConfigLoader;
@@ -128,6 +128,10 @@ public class DefaultApplicationContext implements ApplicationContext {
     @Override
     public BeanIdStore getBeanIdStore() {
         return beanIdStore;
+    }
+
+    public void setBeanIdStore(BeanIdStore beanIdStore) {
+        this.beanIdStore = beanIdStore;
     }
 
     @Override

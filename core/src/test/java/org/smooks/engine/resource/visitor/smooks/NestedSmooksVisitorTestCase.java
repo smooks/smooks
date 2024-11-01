@@ -48,6 +48,7 @@ import org.dom4j.io.DOMWriter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
+import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.io.Sink;
@@ -57,6 +58,7 @@ import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.delivery.interceptor.ExceptionInterceptor;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
 import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
@@ -93,6 +95,24 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
+    public void testPostConstructInheritsRegistry() throws IOException, URISyntaxException, ClassNotFoundException, SAXException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+
+        nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+
+        ApplicationContext applicationContext = new DefaultApplicationContextBuilder().build();
+        applicationContext.getRegistry().registerObject("Bar", "Foo");
+        nestedSmooksVisitor.setApplicationContext(applicationContext);
+
+        nestedSmooksVisitor.postConstruct();
+        assertEquals("Foo", nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup("Bar"));
+    }
+
+    @Test
     public void testPostConstructRegistersInterceptorVisitorDefinitions() throws IOException, URISyntaxException, ClassNotFoundException, SAXException, ParserConfigurationException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
@@ -109,7 +129,8 @@ public class NestedSmooksVisitorTestCase {
         InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup(new InterceptorVisitorChainFactoryLookup());
         List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = interceptorVisitorChainFactory.getInterceptorVisitorDefinitions();
         assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), BridgeInterceptor.class);
-        assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), StaticProxyInterceptor.class);
+        assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), ExceptionInterceptor.class);
+        assertEquals(interceptorVisitorDefinitions.get(2).getInterceptorVisitorClass(), StaticProxyInterceptor.class);
     }
 
     @Test

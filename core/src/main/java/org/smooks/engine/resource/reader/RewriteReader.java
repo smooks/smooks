@@ -204,7 +204,7 @@ public class RewriteReader implements SmooksXMLReader {
         ExecutionContext readerExecutionContext = executionContext.get(executionContextTypedKey);
         if (readerExecutionContext == null) {
             readerExecutionContext = readerSmooks.createExecutionContext();
-            readerExecutionContext.setBeanContext(executionContext.getBeanContext().newSubContext(readerExecutionContext));
+            readerExecutionContext.setBeanContext(executionContext.getBeanContext());
             executionContext.put(executionContextTypedKey, readerExecutionContext);
         }
 

@@ -48,9 +48,11 @@ import org.smooks.StreamFilterType;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.Registry;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 import org.smooks.api.bean.repository.BeanId;
+import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Producer;
@@ -97,6 +99,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -168,14 +172,13 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
                 applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
             }
-            nestedSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).withResourceLocator(applicationContext.getResourceLocator()).build());
+            nestedSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).withResourceLocator(applicationContext.getResourceLocator()).withBeanIdStore(applicationContext.getBeanIdStore()).build());
             for (ResourceConfig resourceConfig : resourceConfigSeq) {
                 nestedSmooks.addResourceConfig(resourceConfig);
             }
         }
 
-        nestedSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
-                nestedSmooks.getApplicationContext().getClassLoader(), nestedSmooks.getApplicationContext().getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
+        initRegistry();
         nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseSink(false).setReaderPoolSize(-1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
 
         action = actionOptional.orElse(null);
@@ -189,6 +192,25 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         }
 
         domSerializer = new DomSerializer(false, rewriteEntities);
+    }
+
+    protected void initRegistry() {
+        Registry registry = nestedSmooks.getApplicationContext().getRegistry();
+        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
+                nestedSmooks.getApplicationContext().getClassLoader(), nestedSmooks.getApplicationContext().getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
+
+        Map<Object, Object> nestedEntries = applicationContext.getRegistry().lookup(entries -> {
+            Map<Object, Object> copiedEntries = new HashMap<>();
+            for (Map.Entry<Object, Object> entry : entries.entrySet()) {
+                if (registry.lookup(entry.getKey()) == null && !(entry.getValue() instanceof ContentHandlerFactory)) {
+                    copiedEntries.put(entry.getKey(), entry.getValue());
+                }
+            }
+            return copiedEntries;
+        });
+        for (Map.Entry<Object, Object> nestedEntry : nestedEntries.entrySet()) {
+            registry.registerObject(nestedEntry.getKey(), nestedEntry.getValue());
+        }
     }
 
     @Override
@@ -385,7 +407,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         } else {
             final ExecutionContext nestedExecutionContext = nestedSmooks.createExecutionContext();
             nestedExecutionContext.setContentEncoding(executionContext.getContentEncoding());
-            nestedExecutionContext.setBeanContext(executionContext.getBeanContext().newSubContext(nestedExecutionContext));
+            nestedExecutionContext.setBeanContext(executionContext.getBeanContext());
             nestedExecutionContext.put(DOMModel.DOM_MODEL_TYPED_KEY, DOMModel.getModel(executionContext));
             nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY, nestedExecutionContext);
             mementoCaretaker.capture(nestedExecutionContextMemento);
@@ -398,11 +420,15 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         smooksBridgeElement.setAttribute("source", SOURCE_BRIDGE_TYPED_KEY.getName());
         document.appendChild(smooksBridgeElement);
 
-        nestedExecutionContextMemento.getState().put(SOURCE_BRIDGE_TYPED_KEY, rootNodeFragment.unwrap());
+        ExecutionContext nestedExecutionContext = nestedExecutionContextMemento.getState();
+        nestedExecutionContext.put(SOURCE_BRIDGE_TYPED_KEY, rootNodeFragment.unwrap());
         if (writer == null) {
-            nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document));
+            nestedSmooks.filterSource(nestedExecutionContext, new DOMSource(document));
         } else {
-            nestedSmooks.filterSource(nestedExecutionContextMemento.getState(), new DOMSource(document), new WriterSink(writer));
+            nestedSmooks.filterSource(nestedExecutionContext, new DOMSource(document), new WriterSink<>(writer));
+        }
+        if (executionContext.getTerminationError() == null && nestedExecutionContext.getTerminationError() != null) {
+            executionContext.setTerminationError(nestedExecutionContext.getTerminationError());
         }
     }
 

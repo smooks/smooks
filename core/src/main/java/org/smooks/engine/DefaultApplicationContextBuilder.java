@@ -42,10 +42,12 @@
  */
 package org.smooks.engine;
 
+import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.api.delivery.ReaderPoolFactory;
 import org.smooks.api.profile.Profile;
 import org.smooks.api.resource.ContainerResourceLocator;
 import org.smooks.api.resource.config.loader.ResourceConfigLoader;
+import org.smooks.engine.bean.context.DefaultBeanIdStore;
 import org.smooks.engine.delivery.DefaultReaderPoolFactory;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.api.ApplicationContext;
@@ -67,6 +69,7 @@ import java.util.ServiceLoader;
 public class DefaultApplicationContextBuilder implements ApplicationContextBuilder {
 
     private boolean systemResources = true;
+    private BeanIdStore beanIdStore = new DefaultBeanIdStore();
     private ClassLoader classLoader = getClass().getClassLoader();
     private Registry registry;
     private ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory;
@@ -79,7 +82,7 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
 
     }
 
-    protected DefaultApplicationContextBuilder(boolean systemResources, ClassLoader classLoader, Registry registry, ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory, ContainerResourceLocator resourceLocator, ResourceConfigLoader resourceConfigLoader, ReaderPoolFactory readerPoolFactory) {
+    protected DefaultApplicationContextBuilder(boolean systemResources, ClassLoader classLoader, Registry registry, ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory, ContainerResourceLocator resourceLocator, ResourceConfigLoader resourceConfigLoader, ReaderPoolFactory readerPoolFactory, BeanIdStore beanIdStore) {
         this.systemResources = systemResources;
         this.classLoader = classLoader;
         this.registry = registry;
@@ -87,40 +90,46 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
         this.resourceLocator = resourceLocator;
         this.resourceConfigLoader = resourceConfigLoader;
         this.readerPoolFactory = readerPoolFactory;
+        this.beanIdStore = beanIdStore;
     }
 
     @Override
     public DefaultApplicationContextBuilder withClassLoader(ClassLoader classLoader) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
     }
 
     public DefaultApplicationContextBuilder withSystemResources(boolean systemResources) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
     }
 
     @Override
     public DefaultApplicationContextBuilder withRegistry(Registry registry) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
     }
 
     @Override
     public DefaultApplicationContextBuilder withContentDeliveryRuntimeFactory(ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
     }
 
     @Override
     public DefaultApplicationContextBuilder withResourceLocator(ContainerResourceLocator resourceLocator) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
     }
 
     @Override
     public DefaultApplicationContextBuilder withResourceConfigLoader(ResourceConfigLoader resourceConfigLoader) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
     }
 
     @Override
     public DefaultApplicationContextBuilder withReaderPoolFactory(ReaderPoolFactory readerPoolFactory) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+    }
+
+    @Override
+    public DefaultApplicationContextBuilder withBeanIdStore(BeanIdStore beanIdStore) {
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
     }
 
     @Override
@@ -130,6 +139,7 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
         applicationContext.setResourceConfigLoader(resourceConfigLoader);
         applicationContext.setReaderPoolFactory(readerPoolFactory);
         applicationContext.setResourceLocator(resourceLocator);
+        applicationContext.setBeanIdStore(beanIdStore);
 
         Registry applicationContextRegistry;
         if (registry == null) {

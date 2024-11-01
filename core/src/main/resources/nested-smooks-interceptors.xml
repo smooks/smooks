@@ -48,6 +48,7 @@
 
     <core:interceptors>
         <core:interceptor class="org.smooks.engine.delivery.sax.ng.bridge.BridgeInterceptor" selector="*"/>
+        <core:interceptor class="org.smooks.engine.delivery.interceptor.ExceptionInterceptor" selector="*"/>
         <core:interceptor class="org.smooks.engine.delivery.interceptor.StaticProxyInterceptor" selector="*"/>
     </core:interceptors>
 

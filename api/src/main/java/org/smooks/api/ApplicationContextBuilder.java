@@ -42,6 +42,7 @@
  */
 package org.smooks.api;
 
+import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.api.delivery.ContentDeliveryRuntimeFactory;
 import org.smooks.api.delivery.ReaderPoolFactory;
 import org.smooks.api.resource.ContainerResourceLocator;
@@ -103,6 +104,15 @@ public interface ApplicationContextBuilder {
      * @return a shallow copy of <code>this</code> with <code>readerPoolFactory</code> set to the given value
      */
     ApplicationContextBuilder withReaderPoolFactory(ReaderPoolFactory readerPoolFactory);
+
+
+    /**
+     * Sets bean ID store for the application context.
+     *
+     * @param beanIdStore bean ID store to use for the application context
+     * @return a shallow copy of <code>this</code> with <code>beanIdStore</code> set to the given value
+     */
+    ApplicationContextBuilder withBeanIdStore(BeanIdStore beanIdStore);
 
 
     /**
