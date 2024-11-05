@@ -61,8 +61,7 @@ public class NestedSmooksVisitorFunctionalTestCase {
 	@Test
 	public void test() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("nested-smooks-visitor-config.xml"));
-		StringSink stringSink = new StringSink();
-		smooks.filterSource(new StringSource("<a><b><c></c></b></a>"), stringSink);
+		smooks.filterSource(new StringSource("<a><b><c></c></b></a>"));
 		NestedSmooksVisitor smooksVisitor = smooks.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(NestedSmooksVisitor.class)).values().stream().findFirst().get();
 		Registry registry = smooksVisitor.getNestedSmooks().getApplicationContext().getRegistry();
 		assertEquals(0, registry.lookup(new InstanceLookup<>(BarBeforeVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());

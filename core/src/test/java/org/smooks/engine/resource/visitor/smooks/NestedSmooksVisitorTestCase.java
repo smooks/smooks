@@ -95,7 +95,7 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
-    public void testPostConstructInheritsRegistry() throws IOException, URISyntaxException, ClassNotFoundException, SAXException {
+    public void testPostConstructCopiesNonAppContextScopedEntriesFromParentAppContextRegistry() throws IOException, URISyntaxException, ClassNotFoundException, SAXException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
 
@@ -105,11 +105,11 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
 
         ApplicationContext applicationContext = new DefaultApplicationContextBuilder().build();
-        applicationContext.getRegistry().registerObject("Bar", "Foo");
+        applicationContext.getRegistry().registerObject("MyClass", new MyClass());
         nestedSmooksVisitor.setApplicationContext(applicationContext);
 
         nestedSmooksVisitor.postConstruct();
-        assertEquals("Foo", nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup("Bar"));
+        assertEquals("org.smooks.engine.resource.visitor.smooks.MyClass", nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup("MyClass").getClass().getName());
     }
 
     @Test

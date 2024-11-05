@@ -45,14 +45,15 @@ package org.smooks.engine.resource.visitor.smooks;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.StreamFilterType;
+import org.smooks.annotation.AnnotationManager;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
+import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.Registry;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 import org.smooks.api.bean.repository.BeanId;
-import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Producer;
@@ -200,13 +201,13 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
                 nestedSmooks.getApplicationContext().getClassLoader(), nestedSmooks.getApplicationContext().getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
 
         Map<Object, Object> nestedEntries = applicationContext.getRegistry().lookup(entries -> {
-            Map<Object, Object> copiedEntries = new HashMap<>();
+            Map<Object, Object> notAppContextScopedEntries = new HashMap<>();
             for (Map.Entry<Object, Object> entry : entries.entrySet()) {
-                if (registry.lookup(entry.getKey()) == null && !(entry.getValue() instanceof ContentHandlerFactory)) {
-                    copiedEntries.put(entry.getKey(), entry.getValue());
+                if (AnnotationManager.getAnnotatedClass(entry.getValue().getClass()).getAnnotation(NotAppContextScoped.class) != null && (registry.lookup(entry.getKey()) == null)) {
+                    notAppContextScopedEntries.put(entry.getKey(), entry.getValue());
                 }
             }
-            return copiedEntries;
+            return notAppContextScopedEntries;
         });
         for (Map.Entry<Object, Object> nestedEntry : nestedEntries.entrySet()) {
             registry.registerObject(nestedEntry.getKey(), nestedEntry.getValue());
