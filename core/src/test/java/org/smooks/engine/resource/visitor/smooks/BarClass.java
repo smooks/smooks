@@ -45,5 +45,5 @@ package org.smooks.engine.resource.visitor.smooks;
 import org.smooks.api.NotAppContextScoped;
 
 @NotAppContextScoped
-public class MyClass {
+public class BarClass {
 }

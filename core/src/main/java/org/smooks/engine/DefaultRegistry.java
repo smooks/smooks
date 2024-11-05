@@ -46,6 +46,7 @@ import com.fasterxml.classmate.TypeResolver;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.Registry;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
@@ -154,7 +155,12 @@ public class DefaultRegistry implements Registry {
 
     @Override
     public <T> T lookup(Object key) {
-        return (T) registry.get(key);
+        T entry = (T) registry.get(key);
+        if (entry instanceof NotAppContextScoped.Ref) {
+            return (T) ((NotAppContextScoped.Ref) entry).get();
+        } else {
+            return entry;
+        }
     }
 
     @Override

@@ -43,6 +43,7 @@
 package org.smooks.engine;
 
 import org.junit.jupiter.api.Test;
+import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.Registry;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.engine.profile.DefaultProfileStore;
@@ -53,6 +54,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Enumeration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -83,5 +85,12 @@ public class DefaultRegistryTestCase {
     public void testLookupWithClassClassLoader() {
         Registry registry = new DefaultRegistry(getClass().getClassLoader(), new XmlResourceConfigLoader(), new DefaultProfileStore());
         assertNotNull(registry.lookup(new SourceTargetTypeConverterFactoryLookup<>(BigDecimal.class, String.class)));
+    }
+
+    @Test
+    public void testLookupUnwrapsValueWhenValueIsNotAppContextScopedRef() {
+        Registry registry = new DefaultRegistry(getClass().getClassLoader(), new XmlResourceConfigLoader(), new DefaultProfileStore());
+        registry.registerObject("foo", (NotAppContextScoped.Ref<Object>) () -> "bar");
+        assertEquals("bar", registry.lookup("foo"));
     }
 }

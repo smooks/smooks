@@ -1,6 +1,6 @@
 /*-
  * ========================LICENSE_START=================================
- * API
+ * Core
  * %%
  * Copyright (C) 2020 - 2024 Smooks
  * %%
@@ -40,27 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.api;
+package org.smooks.engine.resource.visitor.smooks;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-/**
- * Indicates that the class annotated with this annotation can have its instances safely referenced from different application
- * contexts. A class should have this annotation when you want to allow the pipeline to inherit instances of the class
- * from the registry of the parent application context.
- */
-@Target({TYPE})
-@Retention(RUNTIME)
-@Inherited
-@Documented
-public @interface NotAppContextScoped {
-    interface Ref<T> {
-        T get();
-    }
+public class FooClass {
 }

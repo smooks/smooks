@@ -29,11 +29,7 @@ public class AnnotationManager {
      * @return the annotated class wrapping the specified one.
      */
     public static AnnotatedClass getAnnotatedClass(Class<?> theClass) {
-        AnnotatedClass annotatedClass = classToAnnotatedMap.get(theClass);
-        if (annotatedClass == null) {
-            annotatedClass = new AnnotatedClassImpl(theClass);
-            classToAnnotatedMap.put(theClass, annotatedClass);
-        }
+        AnnotatedClass annotatedClass = classToAnnotatedMap.computeIfAbsent(theClass, k -> new AnnotatedClassImpl(theClass));
         return annotatedClass;
     }
 }

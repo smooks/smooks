@@ -203,7 +203,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         Map<Object, Object> nestedEntries = applicationContext.getRegistry().lookup(entries -> {
             Map<Object, Object> notAppContextScopedEntries = new HashMap<>();
             for (Map.Entry<Object, Object> entry : entries.entrySet()) {
-                if (AnnotationManager.getAnnotatedClass(entry.getValue().getClass()).getAnnotation(NotAppContextScoped.class) != null && (registry.lookup(entry.getKey()) == null)) {
+                if ((entry.getValue() instanceof NotAppContextScoped.Ref || AnnotationManager.getAnnotatedClass(entry.getValue().getClass()).getAnnotation(NotAppContextScoped.class) != null) && (registry.lookup(entry.getKey()) == null)) {
                     notAppContextScopedEntries.put(entry.getKey(), entry.getValue());
                 }
             }

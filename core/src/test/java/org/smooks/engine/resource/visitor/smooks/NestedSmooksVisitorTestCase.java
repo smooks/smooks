@@ -50,6 +50,7 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.SmooksException;
 import org.smooks.api.io.Sink;
 import org.smooks.api.io.Source;
@@ -105,15 +106,21 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
 
         ApplicationContext applicationContext = new DefaultApplicationContextBuilder().build();
-        applicationContext.getRegistry().registerObject("MyClass", new MyClass());
+
+        FooClass foo = new FooClass();
+        BarClass bar = new BarClass();
+
+        applicationContext.getRegistry().registerObject("foo", (NotAppContextScoped.Ref<FooClass>) () -> foo);
+        applicationContext.getRegistry().registerObject("bar", bar);
         nestedSmooksVisitor.setApplicationContext(applicationContext);
 
         nestedSmooksVisitor.postConstruct();
-        assertEquals("org.smooks.engine.resource.visitor.smooks.MyClass", nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup("MyClass").getClass().getName());
+        assertEquals(foo, nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup("foo"));
+        assertEquals(bar, nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup("bar"));
     }
 
     @Test
-    public void testPostConstructRegistersInterceptorVisitorDefinitions() throws IOException, URISyntaxException, ClassNotFoundException, SAXException, ParserConfigurationException {
+    public void testPostConstructRegistersInterceptorVisitorDefinitions() throws IOException, URISyntaxException, ClassNotFoundException, SAXException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
 
@@ -134,7 +141,7 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
-    public void testFilterSourceGivenExecutionContextContentEncoding() throws URISyntaxException, ClassNotFoundException, SAXException, DocumentException, ParserConfigurationException {
+    public void testFilterSourceGivenExecutionContextContentEncoding() throws ParserConfigurationException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         nestedSmooksVisitor.setNestedSmooks(new Smooks() {
             @Override
