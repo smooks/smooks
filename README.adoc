@@ -10,7 +10,7 @@ image:https://github.com/smooks/smooks/workflows/CI/badge.svg[Build Status]
 This is the Git source code repository for the http://www.smooks.org[Smooks] project.
 
 toc::[]
-
+test
 == Building
 
 === Prerequisites
