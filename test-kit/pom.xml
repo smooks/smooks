@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Test Kit</name>
+    <name>Smooks Test Kit</name>
     <artifactId>smooks-test-kit</artifactId>
 
     <properties>

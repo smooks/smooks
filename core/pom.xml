@@ -10,7 +10,7 @@
         <version>2.1.0-SNAPSHOT</version>
     </parent>
 
-    <name>Core</name>
+    <name>Smooks Core</name>
     <artifactId>smooks-core</artifactId>
 
     <properties>
