@@ -3,9 +3,15 @@ name: CI
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.adoc'
   pull_request:
     branches: [ master ]
     types: [ opened, synchronize, reopened, ready_for_review ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.adoc'
   schedule:
     - cron:  '0 0 * * *'
 
