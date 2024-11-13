@@ -107,7 +107,7 @@ Smooks 2 introduces the https://github.com/smooks/smooks-dfdl-cartridge[DFDL car
 * Replaced default SAX parser implementation from Apache Xerces to https://github.com/FasterXML/woodstox[FasterXML's Woodstox]: benchmarks consistently showed Woodstox outperforming Xerces
 * link:#instrumentation[Monitoring and management support] with JMX
 
-=== Migrating from Smooks 1.7 to 2.0
+=== Migrating from Smooks 1.7 to 2
 
 Comparing the https://github.com/smooks/smooks/tree/v1.7.1/smooks-examples[code examples] for Smooks 1 with https://github.com/smooks/smooks-examples/tree/v3[those for Smooks 2] can be a useful guide in migrating to Smooks 2. While not exhaustive, we have compiled a list of notes to assist your migration:
 
