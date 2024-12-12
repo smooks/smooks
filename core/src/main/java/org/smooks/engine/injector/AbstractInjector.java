@@ -42,6 +42,7 @@
  */
 package org.smooks.engine.injector;
 
+import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.injector.Injector;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
@@ -66,7 +67,11 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
 
     protected void setMember(final M member, final Object instance, final Object value, final String name) {
         try {
-            doSetMember(member, instance, value, name);
+            if (value instanceof NotAppContextScoped.Ref) {
+                doSetMember(member, instance, ((NotAppContextScoped.Ref<?>) value).get(), name);
+            } else {
+                doSetMember(member, instance, value, name);
+            }
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new SmooksConfigException("Failed to set parameter configuration value on '" + ClassUtils.getLongMemberName(member) + "'.", e);
         }
