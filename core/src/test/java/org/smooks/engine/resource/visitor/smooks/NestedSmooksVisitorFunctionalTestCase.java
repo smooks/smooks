@@ -63,7 +63,7 @@ public class NestedSmooksVisitorFunctionalTestCase {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("nested-smooks-visitor-config.xml"));
 		smooks.filterSource(new StringSource("<a><b><c></c></b></a>"));
 		NestedSmooksVisitor smooksVisitor = smooks.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(NestedSmooksVisitor.class)).values().stream().findFirst().get();
-		Registry registry = smooksVisitor.getNestedSmooks().getApplicationContext().getRegistry();
+		Registry registry = smooksVisitor.getPipeline().getApplicationContext().getRegistry();
 		assertEquals(0, registry.lookup(new InstanceLookup<>(BarBeforeVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());
 		assertEquals(0, registry.lookup(new InstanceLookup<>(FooVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());
 		assertEquals(0, registry.lookup(new InstanceLookup<>(QuxVisitor.class)).values().stream().findFirst().get().getCountDownLatch().getCount());

@@ -42,21 +42,23 @@
  */
 package org.smooks.engine.resource.visitor.smooks;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.StreamFilterType;
 import org.smooks.annotation.AnnotationManager;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
-import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.Registry;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 import org.smooks.api.bean.repository.BeanId;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.delivery.ordering.Producer;
+import org.smooks.api.delivery.ordering.Consumer;
 import org.smooks.api.lifecycle.PreExecutionLifecycle;
 import org.smooks.api.memento.MementoCaretaker;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -86,9 +88,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
@@ -99,16 +98,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Producer, PreExecutionLifecycle {
+public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consumer, PreExecutionLifecycle {
 
     public enum Action {
         REPLACE,
@@ -154,12 +150,12 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     protected Boolean rewriteEntities = true;
 
     protected ResourceConfigSeq resourceConfigSeq;
-    protected Smooks nestedSmooks;
+    protected Smooks pipeline;
     protected DomSerializer domSerializer;
 
     @PostConstruct
     public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
-        if (nestedSmooks == null) {
+        if (pipeline == null) {
             if (!resourceConfig.getParameters("smooksResourceList").isEmpty()) {
                 ByteArrayInputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
                 resourceConfigSeq = applicationContext.getResourceConfigLoader().load(smooksResourceList, "./", applicationContext.getClassLoader());
@@ -173,14 +169,14 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
                 applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
             }
-            nestedSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).withResourceLocator(applicationContext.getResourceLocator()).withBeanIdStore(applicationContext.getBeanIdStore()).build());
+            pipeline = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).withResourceLocator(applicationContext.getResourceLocator()).withBeanIdStore(applicationContext.getBeanIdStore()).build());
             for (ResourceConfig resourceConfig : resourceConfigSeq) {
-                nestedSmooks.addResourceConfig(resourceConfig);
+                pipeline.addResourceConfig(resourceConfig);
             }
         }
 
         initRegistry();
-        nestedSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseSink(false).setReaderPoolSize(-1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
+        pipeline.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseSink(false).setReaderPoolSize(-1).setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth));
 
         action = actionOptional.orElse(null);
         if (action != null) {
@@ -196,9 +192,9 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     }
 
     protected void initRegistry() {
-        Registry registry = nestedSmooks.getApplicationContext().getRegistry();
+        Registry registry = pipeline.getApplicationContext().getRegistry();
         registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
-                nestedSmooks.getApplicationContext().getClassLoader(), nestedSmooks.getApplicationContext().getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
+                pipeline.getApplicationContext().getClassLoader(), pipeline.getApplicationContext().getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
 
         Map<Object, Object> nestedEntries = applicationContext.getRegistry().lookup(entries -> {
             Map<Object, Object> notAppContextScopedEntries = new HashMap<>();
@@ -406,7 +402,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
             nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY);
             mementoCaretaker.restore(nestedExecutionContextMemento);
         } else {
-            final ExecutionContext nestedExecutionContext = nestedSmooks.createExecutionContext();
+            final ExecutionContext nestedExecutionContext = pipeline.createExecutionContext();
             nestedExecutionContext.setContentEncoding(executionContext.getContentEncoding());
             nestedExecutionContext.setBeanContext(executionContext.getBeanContext());
             nestedExecutionContext.put(DOMModel.DOM_MODEL_TYPED_KEY, DOMModel.getModel(executionContext));
@@ -424,9 +420,9 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
         ExecutionContext nestedExecutionContext = nestedExecutionContextMemento.getState();
         nestedExecutionContext.put(SOURCE_BRIDGE_TYPED_KEY, rootNodeFragment.unwrap());
         if (writer == null) {
-            nestedSmooks.filterSource(nestedExecutionContext, new DOMSource(document));
+            pipeline.filterSource(nestedExecutionContext, new DOMSource(document));
         } else {
-            nestedSmooks.filterSource(nestedExecutionContext, new DOMSource(document), new WriterSink<>(writer));
+            pipeline.filterSource(nestedExecutionContext, new DOMSource(document), new WriterSink<>(writer));
         }
         if (executionContext.getTerminationError() == null && nestedExecutionContext.getTerminationError() != null) {
             executionContext.setTerminationError(nestedExecutionContext.getTerminationError());
@@ -442,20 +438,20 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
     }
 
     @Override
-    public Set<String> getProducts() {
-        return outputStreamResourceOptional.map(os -> java.util.stream.Stream.of(os).collect(Collectors.toSet())).orElse(Collections.EMPTY_SET);
+    public boolean consumes(Object object) {
+        return outputStreamResourceOptional.map(os -> os.equals(object)).orElse(false);
     }
 
     public void setMaxNodeDepth(Integer maxNodeDepth) {
         this.maxNodeDepth = maxNodeDepth;
     }
 
-    public Smooks getNestedSmooks() {
-        return nestedSmooks;
+    public Smooks getPipeline() {
+        return pipeline;
     }
 
-    public void setNestedSmooks(Smooks nestedSmooks) {
-        this.nestedSmooks = nestedSmooks;
+    public void setPipeline(Smooks pipeline) {
+        this.pipeline = pipeline;
     }
 
     public void setResourceConfig(ResourceConfig resourceConfig) {
@@ -488,8 +484,8 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Produce
 
     @PreDestroy
     public void preDestroy() {
-        if (nestedSmooks != null) {
-            nestedSmooks.close();
+        if (pipeline != null) {
+            pipeline.close();
         }
     }
 }

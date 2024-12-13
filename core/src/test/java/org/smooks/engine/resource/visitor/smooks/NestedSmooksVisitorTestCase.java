@@ -54,6 +54,7 @@ import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.SmooksException;
 import org.smooks.api.io.Sink;
 import org.smooks.api.io.Source;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
@@ -63,11 +64,15 @@ import org.smooks.engine.delivery.interceptor.ExceptionInterceptor;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
 import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
+import org.smooks.engine.delivery.sax.ng.SimpleSerializerVisitor;
 import org.smooks.engine.delivery.sax.ng.bridge.BridgeInterceptor;
+import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
+import org.smooks.io.AbstractOutputStreamResource;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.Stream;
 import org.smooks.io.sink.StringSink;
@@ -79,10 +84,13 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -98,12 +106,12 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testPostConstructCopiesNonAppContextScopedEntriesFromParentAppContextRegistry() throws IOException, URISyntaxException, ClassNotFoundException, SAXException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
 
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         ApplicationContext applicationContext = new DefaultApplicationContextBuilder().build();
 
@@ -115,25 +123,25 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setApplicationContext(applicationContext);
 
         nestedSmooksVisitor.postConstruct();
-        assertEquals(foo, nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup("foo"));
-        assertEquals(bar, nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup("bar"));
+        assertEquals(foo, nestedSmooksVisitor.getPipeline().getApplicationContext().getRegistry().lookup("foo"));
+        assertEquals(bar, nestedSmooksVisitor.getPipeline().getApplicationContext().getRegistry().lookup("bar"));
     }
 
     @Test
     public void testPostConstructRegistersInterceptorVisitorDefinitions() throws IOException, URISyntaxException, ClassNotFoundException, SAXException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
 
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
         nestedSmooksVisitor.setApplicationContext(new DefaultApplicationContextBuilder().build());
 
         nestedSmooksVisitor.postConstruct();
-        nestedSmooksVisitor.getNestedSmooks().createExecutionContext();
+        nestedSmooksVisitor.getPipeline().createExecutionContext();
 
-        InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getNestedSmooks().getApplicationContext().getRegistry().lookup(new InterceptorVisitorChainFactoryLookup());
+        InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getPipeline().getApplicationContext().getRegistry().lookup(new InterceptorVisitorChainFactoryLookup());
         List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = interceptorVisitorChainFactory.getInterceptorVisitorDefinitions();
         assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), BridgeInterceptor.class);
         assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), ExceptionInterceptor.class);
@@ -143,7 +151,7 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testFilterSourceGivenExecutionContextContentEncoding() throws ParserConfigurationException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        nestedSmooksVisitor.setNestedSmooks(new Smooks() {
+        nestedSmooksVisitor.setPipeline(new Smooks() {
             @Override
             public void filterSource(ExecutionContext executionContext, Source source, Sink... sinks) throws SmooksException {
                 assertEquals("ISO-8859-1", executionContext.getContentEncoding());
@@ -161,7 +169,7 @@ public class NestedSmooksVisitorTestCase {
     public void testFilterSourceGivenExecutionContextDomModel() throws ParserConfigurationException {
         DOMModel domModel = new DOMModel();
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        nestedSmooksVisitor.setNestedSmooks(new Smooks() {
+        nestedSmooksVisitor.setPipeline(new Smooks() {
             @Override
             public void filterSource(ExecutionContext executionContext, Source source, Sink... sinks) throws SmooksException {
                 assertEquals(domModel, executionContext.get(DOMModel.DOM_MODEL_TYPED_KEY));
@@ -178,8 +186,8 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitGivenMemento() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
                 executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(new NodeFragment(element), this, "Hello World!"));
@@ -208,23 +216,23 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addText("bar").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
     }
 
     @Test
     public void testVisitBeforeGivenSelectorHasAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((BeforeVisitor) (element, executionContext) -> {
             assertEquals("b", element.getParentNode().getNodeName());
             assertEquals(element.getOwnerDocument(), element.getParentNode().getParentNode());
             assertNull(element.getParentNode().getParentNode().getParentNode());
@@ -234,15 +242,15 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "b");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
         assertEquals(0, countDownLatch.getCount());
     }
@@ -251,8 +259,8 @@ public class NestedSmooksVisitorTestCase {
     public void testVisitAfterGivenSelectorHasAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((AfterVisitor) (element, executionContext) -> {
             assertEquals("b", element.getParentNode().getNodeName());
             assertEquals(element.getOwnerDocument(), element.getParentNode().getParentNode());
             assertNull(element.getParentNode().getParentNode().getParentNode());
@@ -262,15 +270,15 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "b");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
         assertEquals(0, countDownLatch.getCount());
     }
@@ -279,8 +287,8 @@ public class NestedSmooksVisitorTestCase {
     public void testVisitChildTextGivenSelectorAncestors() throws DocumentException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
 
@@ -309,15 +317,15 @@ public class NestedSmooksVisitorTestCase {
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "b");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").addElement("b").addElement("c").addText("Hello World!").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
         assertEquals(0, countDownLatch.getCount());
     }
@@ -325,8 +333,8 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testVisitChildTextGivenPrependBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
             }
@@ -351,25 +359,25 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
         
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_BEFORE));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
         
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
         
-        assertEquals("bar<a>foo</a>", stringResult.toString());
+        assertEquals("bar<a>foo</a>", strinkSink.toString());
     }
 
     @Test
     public void testVisitChildTextGivenPrependAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
             }
@@ -394,26 +402,26 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_AFTER));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>barfoo</a>", stringResult.toString());
+        assertEquals("<a>barfoo</a>", strinkSink.toString());
     }
 
     @Test
     @Disabled("TODO: undefined behaviour")
     public void testVisitChildElementGivenPrependBefore() throws SAXException, IOException, URISyntaxException, DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
             }
@@ -437,27 +445,27 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_BEFORE));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
                 addElement("b").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>foobar</a>", stringResult.toString());
+        assertEquals("<a>foobar</a>", strinkSink.toString());
     }
 
     @Test
     @Disabled("TODO: undefined behaviour")
     public void testVisitChildElementGivenPrependAfter() throws SAXException, IOException, URISyntaxException, DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor(new ElementVisitor() {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor(new ElementVisitor() {
             @Override
             public void visitBefore(Element element, ExecutionContext executionContext) {
             }
@@ -481,26 +489,26 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_AFTER));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
                 addElement("b").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>foobar</a>", stringResult.toString());
+        assertEquals("<a>foobar</a>", strinkSink.toString());
     }
     
     @Test
     public void testVisitBeforeGivenPrependBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
             } catch (IOException e) {
@@ -509,25 +517,25 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_BEFORE));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("bar<a>foo</a>", stringResult.toString());
+        assertEquals("bar<a>foo</a>", strinkSink.toString());
     }
     
     @Test
     public void testVisitBeforeGivenPrependAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
             } catch (IOException e) {
@@ -536,25 +544,25 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_AFTER));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>barfoo</a>", stringResult.toString());
+        assertEquals("<a>barfoo</a>", strinkSink.toString());
     }
 
     @Test
     public void testVisitAfterGivenPrependBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
             } catch (IOException e) {
@@ -563,25 +571,25 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_BEFORE));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("bar<a>foo</a>", stringResult.toString());
+        assertEquals("bar<a>foo</a>", strinkSink.toString());
     }
 
     @Test
     public void testVisitAfterGivenPrependAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
             } catch (IOException e) {
@@ -590,25 +598,25 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.PREPEND_AFTER));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>barfoo</a>", stringResult.toString());
+        assertEquals("<a>barfoo</a>", strinkSink.toString());
     }
     
     @Test
     public void testVisitBeforeGivenAppendBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
             } catch (IOException e) {
@@ -617,25 +625,25 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.APPEND_BEFORE));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>barfoo</a>", stringResult.toString());
+        assertEquals("<a>barfoo</a>", strinkSink.toString());
     }
 
     @Test
     public void testVisitBeforeGivenAppendAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((BeforeVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((BeforeVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
             } catch (IOException e) {
@@ -644,25 +652,25 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.APPEND_AFTER));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>barfoo</a>", stringResult.toString());
+        assertEquals("<a>barfoo</a>", strinkSink.toString());
     }
 
     @Test
     public void testVisitAfterGivenAppendBefore() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
             } catch (IOException e) {
@@ -671,25 +679,25 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.APPEND_BEFORE));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>foobar</a>", stringResult.toString());
+        assertEquals("<a>foobar</a>", strinkSink.toString());
     }
 
     @Test
     public void testVisitAfterGivenAppendAfter() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks nestedSmooks = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
-        nestedSmooks.addVisitor((AfterVisitor) (element, executionContext) -> {
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor((AfterVisitor) (element, executionContext) -> {
             try {
                 Stream.out(executionContext).write("bar");
             } catch (IOException e) {
@@ -698,17 +706,59 @@ public class NestedSmooksVisitorTestCase {
         }, "a");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.APPEND_AFTER));
-        nestedSmooksVisitor.setNestedSmooks(nestedSmooks);
+        nestedSmooksVisitor.setPipeline(pipeline);
 
         Smooks smooks = new Smooks();
         smooks.addVisitor(nestedSmooksVisitor, "a");
 
-        StringSink stringResult = new StringSink();
+        StringSink strinkSink = new StringSink();
         smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
                 addElement("a").
                 addText("foo").
-                getDocument())), stringResult);
+                getDocument())), strinkSink);
 
-        assertEquals("<a>foo</a>bar", stringResult.toString());
+        assertEquals("<a>foo</a>bar", strinkSink.toString());
+    }
+
+    public static class OutputStreamResourceUnderTest extends AbstractOutputStreamResource {
+
+        private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        @Override
+        public OutputStream getOutputStream(ExecutionContext executionContext) {
+            return byteArrayOutputStream;
+        }
+
+        public ByteArrayOutputStream getByteArrayOutputStream() {
+            return byteArrayOutputStream;
+        }
+
+    }
+
+    @Test
+    public void testOutputToGivenGivenDocumentSelector() throws DocumentException {
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        pipeline.addVisitor(new SimpleSerializerVisitor(), "*");
+
+        nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.OUTPUT_TO));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("outputStreamResourceUnderTest"));
+        nestedSmooksVisitor.setPipeline(pipeline);
+
+        ResourceConfig resourceConfig = new DefaultResourceConfig("#document", new Properties());
+        resourceConfig.setResource("org.smooks.engine.resource.visitor.smooks.NestedSmooksVisitorTestCase$OutputStreamResourceUnderTest");
+        resourceConfig.setParameter("resourceName", "outputStreamResourceUnderTest");
+
+        Smooks smooks = new Smooks();
+        smooks.addResourceConfig(resourceConfig);
+        smooks.addVisitor(nestedSmooksVisitor, "#document");
+
+        smooks.filterSource(new DOMSource(new DOMWriter().write(DocumentHelper.createDocument().
+                addElement("a").
+                addText("foo").
+                getDocument())));
+
+        OutputStreamResourceUnderTest outputStreamResourceUnderTest = smooks.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(OutputStreamResourceUnderTest.class)).values().iterator().next();
+        assertEquals("<a>foo</a>", outputStreamResourceUnderTest.getByteArrayOutputStream().toString());
     }
 }
