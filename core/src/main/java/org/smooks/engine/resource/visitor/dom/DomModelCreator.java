@@ -55,7 +55,7 @@ import org.smooks.engine.delivery.event.EndFragmentExecutionEvent;
 import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.sax.ng.CharDataFragmentExecutionEvent;
-import org.smooks.engine.delivery.sax.ng.bridge.BridgeAwareExecutionEventListener;
+import org.smooks.engine.delivery.sax.ng.pointer.EventPointerAwareExecutionEventListener;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.support.DomUtils;
@@ -218,7 +218,7 @@ public class DomModelCreator implements BeforeVisitor, AfterVisitor, Producer {
         popCreator(executionContext);
     }
 
-    private class DOMCreator extends BridgeAwareExecutionEventListener {
+    private class DOMCreator extends EventPointerAwareExecutionEventListener {
 
         private final Document document;
         private final ExecutionContext executionContext;

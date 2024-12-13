@@ -44,20 +44,21 @@ package org.smooks.engine.resource.visitor.smooks;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.delivery.sax.ng.CharDataFragmentExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
 import org.smooks.engine.delivery.event.FragmentExecutionEvent;
-import org.smooks.engine.delivery.sax.ng.bridge.BridgeAwareExecutionEventListener;
+import org.smooks.engine.delivery.sax.ng.pointer.EventPointerAwareExecutionEventListener;
 import org.smooks.engine.delivery.event.EndFragmentExecutionEvent;
 import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.w3c.dom.Node;
 
 import java.io.Writer;
 
-class ChildEventListener extends BridgeAwareExecutionEventListener {
+class ChildEventListener extends EventPointerAwareExecutionEventListener {
     private final NestedSmooksVisitor nestedSmooksVisitor;
     private final NodeFragment visitedFragment;
     private final Writer selectorWriter;
@@ -93,21 +94,21 @@ class ChildEventListener extends BridgeAwareExecutionEventListener {
 
     protected void visitBefore(final VisitorMemento<Node> sourceTreeMemento, final Fragment<Node> childFragment) {
         final Node childNode = sourceTreeMemento.getState().getOwnerDocument().importNode(childFragment.unwrap(), true);
-        nestedSmooksVisitor.filterSource(visitedFragment, new NodeFragment(sourceTreeMemento.getState().appendChild(childNode)), selectorWriter, executionContext, "visitBefore");
+        nestedSmooksVisitor.filterSource(visitedFragment, new NodeFragment(sourceTreeMemento.getState().appendChild(childNode)), selectorWriter, executionContext, VisitSequence.BEFORE);
         currentNodeDepth++;
         executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(visitedFragment, nestedSmooksVisitor, childNode));
     }
 
     protected void visitChildText(final VisitorMemento<Node> sourceTreeMemento, final Fragment<Node> childFragment) {
         final Node childNode = sourceTreeMemento.getState().getOwnerDocument().importNode(childFragment.unwrap(), true);
-        nestedSmooksVisitor.filterSource(visitedFragment, new NodeFragment(sourceTreeMemento.getState().appendChild(childNode)), selectorWriter, executionContext, "visitChildText");
+        nestedSmooksVisitor.filterSource(visitedFragment, new NodeFragment(sourceTreeMemento.getState().appendChild(childNode)), selectorWriter, executionContext, VisitSequence.CHILD_TEXT);
         if ((currentNodeDepth + 1) >= nestedSmooksVisitor.getMaxNodeDepth()) {
             sourceTreeMemento.getState().removeChild(childNode);
         }
     }
 
     protected void visitAfter(final VisitorMemento<Node> sourceTreeMemento) {
-        nestedSmooksVisitor.filterSource(visitedFragment, new NodeFragment(sourceTreeMemento.getState()), selectorWriter, executionContext, "visitAfter");
+        nestedSmooksVisitor.filterSource(visitedFragment, new NodeFragment(sourceTreeMemento.getState()), selectorWriter, executionContext, VisitSequence.AFTER);
         final Node parentNode = sourceTreeMemento.getState().getParentNode();
         if (currentNodeDepth >= nestedSmooksVisitor.getMaxNodeDepth()) {
             parentNode.removeChild(sourceTreeMemento.getState());

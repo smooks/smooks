@@ -40,9 +40,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng.bridge;
+package org.smooks.engine.delivery.sax.ng.pointer;
 
 import org.smooks.api.ExecutionContext;
+import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.sax.ng.CharDataFragmentExecutionEvent;
 import org.smooks.api.delivery.event.ExecutionEvent;
@@ -52,11 +53,11 @@ import org.smooks.engine.delivery.event.EndFragmentExecutionEvent;
 import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.w3c.dom.Node;
 
-public abstract class BridgeAwareExecutionEventListener implements ExecutionEventListener {
+public abstract class EventPointerAwareExecutionEventListener implements ExecutionEventListener {
 
     protected final ExecutionContext executionContext;
 
-    public BridgeAwareExecutionEventListener(ExecutionContext executionContext) {
+    public EventPointerAwareExecutionEventListener(ExecutionContext executionContext) {
         this.executionContext = executionContext;
     }
 
@@ -64,15 +65,16 @@ public abstract class BridgeAwareExecutionEventListener implements ExecutionEven
     public void onEvent(final ExecutionEvent executionEvent) {
         if (executionEvent instanceof FragmentExecutionEvent<?> && ((FragmentExecutionEvent<?>) executionEvent).getFragment() instanceof NodeFragment) {
             final Node node = (Node) ((FragmentExecutionEvent<?>) executionEvent).getFragment().unwrap();
-            if (Bridge.isBridge(node)) {
+            if (EventPointer.isPointer(node)) {
                 if (executionEvent instanceof StartFragmentExecutionEvent<?>) {
-                    Bridge bridge = new Bridge(node);
-                    if (bridge.getVisit().equals("visitBefore")) {
-                        doOnEvent(new StartFragmentExecutionEvent<>(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
-                    } else if (bridge.getVisit().equals("visitChildText")) {
-                        doOnEvent(new CharDataFragmentExecutionEvent(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
-                    } else if (bridge.getVisit().equals("visitAfter")) {
-                        doOnEvent(new EndFragmentExecutionEvent(new NodeFragment(executionContext.get(bridge.getSourceKey()))));
+                    final EventPointer eventPointer = new EventPointer(node);
+                    final NodeFragment dereferencedNodeFragment = new NodeFragment(eventPointer.dereference(executionContext));
+                    if (eventPointer.getVisit().equals(VisitSequence.BEFORE)) {
+                        doOnEvent(new StartFragmentExecutionEvent<>(dereferencedNodeFragment));
+                    } else if (eventPointer.getVisit().equals(VisitSequence.CHILD_TEXT)) {
+                        doOnEvent(new CharDataFragmentExecutionEvent(dereferencedNodeFragment));
+                    } else if (eventPointer.getVisit().equals(VisitSequence.AFTER)) {
+                        doOnEvent(new EndFragmentExecutionEvent<>(dereferencedNodeFragment));
                     }
                 }
                 return;

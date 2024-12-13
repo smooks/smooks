@@ -49,6 +49,7 @@ package org.smooks.engine.delivery.event;
  */
 public enum VisitSequence {
     BEFORE,
+    CHILD_TEXT,
     AFTER,
     CLEAN
 }

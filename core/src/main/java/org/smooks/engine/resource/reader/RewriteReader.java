@@ -54,7 +54,7 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.resource.reader.SmooksXMLReader;
 import org.smooks.engine.DefaultApplicationContextBuilder;
-import org.smooks.engine.delivery.sax.ng.bridge.Bridge;
+import org.smooks.engine.delivery.sax.ng.pointer.EventPointer;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.io.DocumentInputSource;
 import org.smooks.io.SAXWriter;
@@ -208,9 +208,9 @@ public class RewriteReader implements SmooksXMLReader {
             executionContext.put(executionContextTypedKey, readerExecutionContext);
         }
 
-        if (Bridge.isBridge(document.getFirstChild())) {
-            final Bridge bridge = new Bridge(document.getFirstChild());
-            readerExecutionContext.put(bridge.getSourceKey(), bridge.getSourceValue(executionContext));
+        if (EventPointer.isPointer(document.getFirstChild())) {
+            final EventPointer nodePointer = new EventPointer(document.getFirstChild());
+            readerExecutionContext.put(nodePointer.getReference(), nodePointer.dereference(executionContext));
         }
 
         if (executionContext.get(contentHandlerTypedKey) == null) {

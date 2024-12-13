@@ -52,20 +52,22 @@ import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.NotAppContextScoped;
 import org.smooks.api.SmooksException;
+import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.io.Sink;
 import org.smooks.api.io.Source;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.interceptor.ExceptionInterceptor;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
-import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
 import org.smooks.engine.delivery.sax.ng.SimpleSerializerVisitor;
-import org.smooks.engine.delivery.sax.ng.bridge.BridgeInterceptor;
+import org.smooks.engine.delivery.sax.ng.pointer.EventPointerStaticProxyInterceptor;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;
 import org.smooks.engine.memento.SimpleVisitorMemento;
@@ -80,6 +82,7 @@ import org.smooks.io.source.DOMSource;
 import org.smooks.testkit.MockExecutionContext;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -91,6 +94,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -143,9 +147,8 @@ public class NestedSmooksVisitorTestCase {
 
         InterceptorVisitorChainFactory interceptorVisitorChainFactory = nestedSmooksVisitor.getPipeline().getApplicationContext().getRegistry().lookup(new InterceptorVisitorChainFactoryLookup());
         List<InterceptorVisitorDefinition> interceptorVisitorDefinitions = interceptorVisitorChainFactory.getInterceptorVisitorDefinitions();
-        assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), BridgeInterceptor.class);
-        assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), ExceptionInterceptor.class);
-        assertEquals(interceptorVisitorDefinitions.get(2).getInterceptorVisitorClass(), StaticProxyInterceptor.class);
+        assertEquals(interceptorVisitorDefinitions.get(0).getInterceptorVisitorClass(), ExceptionInterceptor.class);
+        assertEquals(interceptorVisitorDefinitions.get(1).getInterceptorVisitorClass(), EventPointerStaticProxyInterceptor.class);
     }
 
     @Test
@@ -162,7 +165,7 @@ public class NestedSmooksVisitorTestCase {
         executionContext.setContentEncoding("ISO-8859-1");
 
         nestedSmooksVisitor.onPreExecution(executionContext);
-        nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, null);
+        nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, VisitSequence.values()[new Random().nextInt(VisitSequence.values().length)]);
     }
 
     @Test
@@ -180,7 +183,7 @@ public class NestedSmooksVisitorTestCase {
         executionContext.put(DOMModel.DOM_MODEL_TYPED_KEY, domModel);
 
         nestedSmooksVisitor.onPreExecution(executionContext);
-        nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, null);
+        nestedSmooksVisitor.filterSource(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), null, executionContext, VisitSequence.values()[new Random().nextInt(VisitSequence.values().length)]);
     }
 
     @Test
@@ -736,7 +739,7 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
-    public void testOutputToGivenGivenDocumentSelector() throws DocumentException {
+    public void testOutputToGivenDocumentSelector() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         pipeline.addVisitor(new SimpleSerializerVisitor(), "*");
@@ -760,5 +763,65 @@ public class NestedSmooksVisitorTestCase {
 
         OutputStreamResourceUnderTest outputStreamResourceUnderTest = smooks.getApplicationContext().getRegistry().lookup(new InstanceLookup<>(OutputStreamResourceUnderTest.class)).values().iterator().next();
         assertEquals("<a>foo</a>", outputStreamResourceUnderTest.getByteArrayOutputStream().toString());
+    }
+
+    @Test
+    public void testVisitWhenPipelineHasPostFragmentLifecycleVisitor() throws DocumentException {
+        class PostFragmentVisitorUnderTest implements ElementVisitor, PostFragmentLifecycle {
+            private final CountDownLatch countDownLatch = new CountDownLatch(2);
+
+            @Override
+            public void onPostFragment(Fragment<?> fragment, ExecutionContext executionContext) {
+                countDownLatch.countDown();
+                assertEquals("a", ((Node) fragment.unwrap()).getNodeName());
+            }
+
+            @Override
+            public void visitAfter(Element element, ExecutionContext executionContext) {
+
+            }
+
+            @Override
+            public void visitBefore(Element element, ExecutionContext executionContext) {
+
+            }
+
+            @Override
+            public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+
+            }
+
+            @Override
+            public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+
+            }
+
+            public CountDownLatch getCountDownLatch() {
+                return countDownLatch;
+            }
+        }
+
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        PostFragmentVisitorUnderTest postFragmentVisitorUnderTest = new PostFragmentVisitorUnderTest();
+        pipeline.addVisitor(postFragmentVisitorUnderTest, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setPipeline(pipeline);
+
+        Smooks smooks = new Smooks();
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+
+        org.dom4j.Element elementUnderTest = DocumentHelper.createDocument().
+                addElement("a");
+        elementUnderTest.addText("bar");
+        elementUnderTest.addElement("b");
+
+        smooks.filterSource(new DOMSource(new DOMWriter().write(elementUnderTest.
+                getDocument())));
+
+        assertEquals(1, postFragmentVisitorUnderTest.getCountDownLatch().getCount());
     }
 }

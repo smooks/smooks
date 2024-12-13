@@ -40,21 +40,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng.bridge;
+package org.smooks.engine.delivery.sax.ng.pointer;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.TypedKey;
-import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.interceptor.AbstractInterceptorVisitor;
+import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class BridgeInterceptor extends AbstractInterceptorVisitor implements ElementVisitor {
-    protected boolean doVisit(final Node node, final String currentVisit, final ExecutionContext executionContext) {
-        if (((Element) node).getAttribute("visit").equals(currentVisit)) {
-            Node sourceNode = executionContext.get(TypedKey.of(((Element) node).getAttribute("source")));
+public class EventPointerStaticProxyInterceptor extends StaticProxyInterceptor {
+    protected boolean doVisit(final EventPointer eventPointer, final VisitSequence currentVisit, final ExecutionContext executionContext) {
+        if (eventPointer.getVisit().equals(currentVisit)) {
+            final Node sourceNode = eventPointer.dereference(executionContext);
             if (sourceNode instanceof CharacterData) {
                 return new NodeFragment(sourceNode.getParentNode()).isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext);
             } else {
@@ -66,14 +66,14 @@ public class BridgeInterceptor extends AbstractInterceptorVisitor implements Ele
 
     @Override
     public void visitBefore(final Element element, final ExecutionContext executionContext) {
-        if (Bridge.isBridge(element)) {
-            if (doVisit(element, "visitBefore", executionContext)) {
-                Object source = executionContext.get(TypedKey.of(element.getAttribute("source")));
-                intercept(visitBeforeInvocation, source, executionContext);
+        if (EventPointer.isPointer(element)) {
+            EventPointer eventPointer = new EventPointer(element);
+            if (doVisit(eventPointer, VisitSequence.BEFORE, executionContext)) {
+                super.visitBefore((Element) eventPointer.dereference(executionContext), executionContext);
             }
         } else {
             if (new NodeFragment(element).isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext)) {
-                intercept(visitBeforeInvocation, element, executionContext);
+                super.visitBefore(element, executionContext);
             }
         }
     }
@@ -81,30 +81,51 @@ public class BridgeInterceptor extends AbstractInterceptorVisitor implements Ele
     @Override
     public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) {
         if (new NodeFragment(characterData.getParentNode()).isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext)) {
-            intercept(visitChildTextInvocation, characterData, executionContext);
+            super.visitChildText(characterData, executionContext);
         }
     }
 
     @Override
-    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-        intercept(visitChildElementInvocation, childElement, executionContext);
+    public void visitChildElement(final Element childElement, final ExecutionContext executionContext) {
+        super.visitChildElement(childElement, executionContext);
     }
+
 
     @Override
     public void visitAfter(final Element element, final ExecutionContext executionContext) {
-        if (Bridge.isBridge(element)) {
-            if (doVisit(element, "visitChildText", executionContext) || doVisit(element, "visitAfter", executionContext)) {
-                Object source = executionContext.get(TypedKey.of(element.getAttribute("source")));
-                if (element.getAttribute("visit").equals("visitChildText")) {
-                    visitChildText((CharacterData) source, executionContext);
+        if (EventPointer.isPointer(element)) {
+            final EventPointer eventPointer = new EventPointer(element);
+            if (doVisit(eventPointer, VisitSequence.CHILD_TEXT, executionContext) || doVisit(eventPointer, VisitSequence.AFTER, executionContext)) {
+                Object source = eventPointer.dereference(executionContext);
+                if (eventPointer.getVisit().equals(VisitSequence.CHILD_TEXT)) {
+                    super.visitChildText((CharacterData) source, executionContext);
                 } else {
-                    intercept(visitAfterInvocation, source, executionContext);
+                    super.visitAfter((Element) source, executionContext);
                 }
             }
         } else {
             if (new NodeFragment(element).isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext)) {
-                intercept(visitAfterInvocation, element, executionContext);
+                super.visitAfter(element, executionContext);
             }
+        }
+    }
+
+    @Override
+    public void onPostFragment(final Fragment<?> fragment, final ExecutionContext executionContext) {
+        final Fragment<?> fragmentUnderTest;
+        final Node node = (Node) fragment.unwrap();
+        if (EventPointer.isPointer(node)) {
+            final EventPointer eventPointer = new EventPointer(node);
+            if (eventPointer.getVisit().equals(VisitSequence.AFTER)) {
+                fragmentUnderTest = new NodeFragment(eventPointer.dereference(executionContext));
+            } else {
+                return;
+            }
+        } else {
+            fragmentUnderTest = fragment;
+        }
+        if (fragmentUnderTest.isMatch(getTarget().getResourceConfig().getSelectorPath(), executionContext)) {
+            super.onPostFragment(fragmentUnderTest, executionContext);
         }
     }
 }

@@ -67,7 +67,9 @@ import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.delivery.sax.ng.pointer.EventPointer;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
@@ -75,7 +77,6 @@ import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.engine.resource.visitor.dom.DOMModel;
-import org.smooks.engine.xml.Namespace;
 import org.smooks.io.DomSerializer;
 import org.smooks.io.FragmentWriter;
 import org.smooks.io.ResourceWriter;
@@ -116,7 +117,6 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         OUTPUT_TO
     }
 
-    protected static final TypedKey<Node> SOURCE_BRIDGE_TYPED_KEY = TypedKey.of();
     protected static final TypedKey<DocumentBuilder> CACHED_DOCUMENT_BUILDER_TYPED_KEY = TypedKey.of();
     protected static final TypedKey<ExecutionContext> NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = TypedKey.of();
 
@@ -239,17 +239,17 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         final NodeFragment rootNodeFragment = new NodeFragment(rootNode);
         final Writer nodeWriter;
         if (action == null) {
-            filterSource(visitedFragment, rootNodeFragment, Stream.out(executionContext), executionContext, "visitBefore");
+            filterSource(visitedFragment, rootNodeFragment, Stream.out(executionContext), executionContext, VisitSequence.BEFORE);
             nodeWriter = Stream.out(executionContext);
         } else {
             if (action == Action.OUTPUT_TO) {
                 final ResourceWriter resourceWriter = new ResourceWriter(executionContext, outputStreamResourceOptional.get());
                 if (resourceWriter.getDelegateWriter() == null) {
-                    filterSource(visitedFragment, rootNodeFragment, null, executionContext, "visitBefore");
+                    filterSource(visitedFragment, rootNodeFragment, null, executionContext, VisitSequence.BEFORE);
                     nodeWriter = null;
                 } else {
                     executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(rootNodeFragment, this, resourceWriter));
-                    filterSource(visitedFragment, rootNodeFragment, resourceWriter, executionContext, "visitBefore");
+                    filterSource(visitedFragment, rootNodeFragment, resourceWriter, executionContext, VisitSequence.BEFORE);
                     nodeWriter = resourceWriter.getDelegateWriter();
                 }
             } else {
@@ -265,14 +265,14 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
                         }
                     }
                     executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(rootNodeFragment, this, fragmentWriter));
-                    filterSource(visitedFragment, rootNodeFragment, fragmentWriter, executionContext, "visitBefore");
+                    filterSource(visitedFragment, rootNodeFragment, fragmentWriter, executionContext, VisitSequence.BEFORE);
                     nodeWriter = fragmentWriter;
                 } else if (action == Action.REPLACE) {
                     nodeWriter = replaceBefore(visitedFragment, rootNodeFragment.unwrap(), executionContext);
                 } else if (action == Action.BIND_TO) {
                     nodeWriter = new StringWriter();
                     executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(rootNodeFragment, this, nodeWriter));
-                    filterSource(visitedFragment, rootNodeFragment, nodeWriter, executionContext, "visitBefore");
+                    filterSource(visitedFragment, rootNodeFragment, nodeWriter, executionContext, VisitSequence.BEFORE);
                 } else {
                     throw new UnsupportedOperationException();
                 }
@@ -292,11 +292,11 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         final NodeFragment rootNodeFragment = new NodeFragment(rootNodeMemento.getState());
 
         if (action == null) {
-            filterSource(visitedFragment, rootNodeFragment, Stream.out(executionContext), executionContext, "visitAfter");
+            filterSource(visitedFragment, rootNodeFragment, Stream.out(executionContext), executionContext, VisitSequence.AFTER);
         } else {
             if (action == Action.OUTPUT_TO) {
                 final ResourceWriter resourceWriter = executionContext.getMementoCaretaker().stash(new SimpleVisitorMemento<>(rootNodeFragment, this, new ResourceWriter(executionContext, outputStreamResourceOptional.get())), resourceWriterMemento -> resourceWriterMemento).getState();
-                filterSource(visitedFragment, rootNodeFragment, resourceWriter, executionContext, "visitAfter");
+                filterSource(visitedFragment, rootNodeFragment, resourceWriter, executionContext, VisitSequence.AFTER);
             } else {
                 if (action == Action.APPEND_BEFORE || action == Action.APPEND_AFTER) {
                     append(visitedFragment, (Element) rootNodeFragment.unwrap(), action, executionContext);
@@ -307,7 +307,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
                 } else if (action == Action.BIND_TO) {
                     final VisitorMemento<StringWriter> memento = new SimpleVisitorMemento<>(rootNodeFragment, this, new StringWriter());
                     executionContext.getMementoCaretaker().restore(memento);
-                    filterSource(visitedFragment, rootNodeFragment, memento.getState(), executionContext, "visitAfter");
+                    filterSource(visitedFragment, rootNodeFragment, memento.getState(), executionContext, VisitSequence.AFTER);
                     executionContext.getBeanContext().addBean(bindBeanId, memento.getState().toString(), rootNodeFragment);
                 } else {
                     throw new UnsupportedOperationException();
@@ -329,7 +329,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
             throw new SmooksException(e);
         }
         executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(rootNodeFragment, this, fragmentWriter));
-        filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriter, executionContext, "visitBefore");
+        filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriter, executionContext, VisitSequence.BEFORE);
 
         return fragmentWriter;
     }
@@ -339,7 +339,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         final VisitorMemento<FragmentWriter> fragmentWriterVisitorMemento = new SimpleVisitorMemento<>(rootNodeFragment, this, new FragmentWriter(executionContext, new NodeFragment(rootNode)));
         executionContext.getMementoCaretaker().restore(fragmentWriterVisitorMemento);
 
-        filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterVisitorMemento.getState(), executionContext, "visitAfter");
+        filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterVisitorMemento.getState(), executionContext, VisitSequence.AFTER);
     }
 
     protected Writer prependBefore(final Fragment<Node> visitedNodeFragment, final Action action, final Element rootElement, final ExecutionContext executionContext) {
@@ -351,7 +351,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
                 domSerializer.writeStartElement(rootElement, fragmentWriter);
             }
             executionContext.getMementoCaretaker().capture(new SimpleVisitorMemento<>(rootNodeFragment, this, fragmentWriter));
-            filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriter, executionContext, "visitBefore");
+            filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriter, executionContext, VisitSequence.BEFORE);
         } catch (IOException e) {
             throw new SmooksException(e);
         }
@@ -363,7 +363,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         final NodeFragment rootNodeFragment = new NodeFragment(rootElement);
         final VisitorMemento<FragmentWriter> fragmentWriterMemento = new SimpleVisitorMemento<>(rootNodeFragment, this, new FragmentWriter(executionContext, rootNodeFragment));
         executionContext.getMementoCaretaker().restore(fragmentWriterMemento);
-        filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterMemento.getState(), executionContext, "visitAfter");
+        filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterMemento.getState(), executionContext, VisitSequence.AFTER);
         try {
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.PREPEND_BEFORE) {
                 domSerializer.writeStartElement(rootElement, fragmentWriterMemento.getState());
@@ -386,7 +386,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.APPEND_AFTER) {
                 domSerializer.writeEndElement(rootElement, fragmentWriterMemento.getState());
             }
-            filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterMemento.getState(), executionContext, "visitAfter");
+            filterSource(visitedNodeFragment, rootNodeFragment, fragmentWriterMemento.getState(), executionContext, VisitSequence.AFTER);
             if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn() && action == Action.APPEND_BEFORE) {
                 domSerializer.writeEndElement(rootElement, fragmentWriterMemento.getState());
             }
@@ -395,7 +395,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         }
     }
 
-    protected void filterSource(final Fragment<Node> visitedNodeFragment, final Fragment<Node> rootNodeFragment, final Writer writer, final ExecutionContext executionContext, final String visit) {
+    protected void filterSource(final Fragment<Node> visitedNodeFragment, final Fragment<Node> rootNodeFragment, final Writer writer, final ExecutionContext executionContext, final VisitSequence visitSequence) {
         final VisitorMemento<ExecutionContext> nestedExecutionContextMemento;
         final MementoCaretaker mementoCaretaker = executionContext.getMementoCaretaker();
         if (mementoCaretaker.exists(new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY))) {
@@ -412,13 +412,11 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
 
         final Document document = executionContext.get(CACHED_DOCUMENT_BUILDER_TYPED_KEY).newDocument();
         document.setStrictErrorChecking(false);
-        final Element smooksBridgeElement = document.createElementNS(Namespace.SMOOKS_URI, "bridge");
-        smooksBridgeElement.setAttribute("visit", visit);
-        smooksBridgeElement.setAttribute("source", SOURCE_BRIDGE_TYPED_KEY.getName());
-        document.appendChild(smooksBridgeElement);
+        EventPointer eventPointer = new EventPointer(document, visitSequence);
+        document.appendChild(eventPointer.getPointerNode());
 
         ExecutionContext nestedExecutionContext = nestedExecutionContextMemento.getState();
-        nestedExecutionContext.put(SOURCE_BRIDGE_TYPED_KEY, rootNodeFragment.unwrap());
+        nestedExecutionContext.put(eventPointer.getReference(), rootNodeFragment.unwrap());
         if (writer == null) {
             pipeline.filterSource(nestedExecutionContext, new DOMSource(document));
         } else {

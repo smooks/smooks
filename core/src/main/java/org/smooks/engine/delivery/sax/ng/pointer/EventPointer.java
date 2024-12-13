@@ -40,50 +40,64 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng.bridge;
+package org.smooks.engine.delivery.sax.ng.pointer;
 
 import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.TypedKey;
+import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.xml.Namespace;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Represents a <i>bridge</i> node and provides convenience methods to retrieve attribute values from the node.
+ * Represents a <i>pointer</i> to an event and provides convenience methods to retrieve attribute values from the event.
  * <br/><br/>
- * A <i>bridge</i> node holds the state of an execution. Formally, a <i>bridge</i> is a pair of attributes:
+ * A <i>pointer</i> captures the state of an execution in a point of time. Formally, a <i>pointer</i> is a pair of attributes:
  * <li>
- * <il>source: key to an execution context value holding the event</il>
+ * <il>reference: key to an execution context value holding the event</il>
  * <il>visit: name of the visit method that the event is targeting</il>
  * </li>
  * <p>
- * Bridge nodes are meant for nested Smooks executions (i.e., a Smooks execution within another Smooks execution).
+ * Pointer nodes are meant for nested Smooks executions (i.e., a Smooks execution within another Smooks execution).
  * It allows the outer execution to carry over its visit state to the nested execution with the help of
- * {@link BridgeInterceptor}. Without a <i>bridge</i>, the nested Smooks instance
+ * {@link EventPointerStaticProxyInterceptor}. Without a <i>pointer</i>, the nested Smooks instance
  * cannot join the inner execution to the outer one.
  */
-public class Bridge {
+public class EventPointer {
 
-    private final Node node;
+    private final Node pointerNode;
 
-    public Bridge(Node node) {
-        if (!isBridge(node)) {
-            throw new SmooksException("Node is not a bridge element");
+    public EventPointer(Node node) {
+        if (!isPointer(node)) {
+            throw new SmooksException("Node is not a pointer element");
         }
-        this.node = node;
+        this.pointerNode = node;
+    }
+
+    public EventPointer(Document factory, VisitSequence visitSequence) {
+        final Element pointerElement = factory.createElementNS(Namespace.SMOOKS_URI, "pointer");
+        pointerElement.setAttribute("visit", visitSequence.toString());
+        pointerElement.setAttribute("reference", TypedKey.of().getName());
+
+        this.pointerNode = pointerElement;
+    }
+
+    public Node getPointerNode() {
+        return pointerNode;
     }
 
     /**
-     * Checks whether a node is a <i>bridge</i> element.
+     * Checks whether a node is a <i>pointer</i> element.
      *
      * @param node the node to be tested
-     * @return <code>true</code> if the node is a bridge otherwise <code>false</code>
+     * @return <code>true</code> if the node is a pointer otherwise <code>false</code>
      */
-    public static boolean isBridge(Node node) {
+    public static boolean isPointer(Node node) {
         return node instanceof Element && node.getNamespaceURI() != null &&
                 node.getNamespaceURI().equals(Namespace.SMOOKS_URI) &&
-                node.getLocalName().equals("bridge");
+                node.getLocalName().equals("pointer");
     }
 
     /**
@@ -91,17 +105,17 @@ public class Bridge {
      *
      * @return the key of the execution context entry that holds the event node
      */
-    public TypedKey<Node> getSourceKey() {
-        return TypedKey.of(node.getAttributes().getNamedItem("source").getNodeValue());
+    public TypedKey<Node> getReference() {
+        return TypedKey.of(pointerNode.getAttributes().getNamedItem("reference").getNodeValue());
     }
 
     /**
-     * Gets the name of the visit this <code>Bridge</code> is targeting.
+     * Gets the name of the visit this <code>EventPointer</code> is targeting.
      *
      * @return the name of the visit
      */
-    public String getVisit() {
-        return node.getAttributes().getNamedItem("visit").getNodeValue();
+    public VisitSequence getVisit() {
+        return VisitSequence.valueOf(pointerNode.getAttributes().getNamedItem("visit").getNodeValue());
     }
 
     /**
@@ -110,7 +124,8 @@ public class Bridge {
      * @param executionContext the execution context holding the source
      * @return the source node or <code>null</code> if not found
      */
-    public Node getSourceValue(ExecutionContext executionContext) {
-        return executionContext.get(getSourceKey());
+    public Node dereference(ExecutionContext executionContext) {
+        return executionContext.get(getReference());
     }
+
 }
