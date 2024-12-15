@@ -119,7 +119,7 @@ public class RewriteReader implements SmooksXMLReader {
         }
         readerSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).build());
         readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseSink(false).setReaderPoolSize(-1));
-        readerSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
+        readerSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/pipeline-interceptors.xml",
                 readerSmooks.getApplicationContext().getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
 
         for (ResourceConfig resourceConfig : resourceConfigSeq) {

@@ -42,8 +42,6 @@
  */
 package org.smooks.engine.bean.context;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.bean.context.BeanIdStore;
 import org.smooks.assertion.AssertArgument;
@@ -60,8 +58,6 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class StandaloneBeanContext implements BeanContext {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneBeanContext.class);
 
     private final ExecutionContext executionContext;
 
@@ -95,7 +91,7 @@ public class StandaloneBeanContext implements BeanContext {
         this.beanIdStore = beanIdStore;
         this.beanMap = beanMap;
 
-        entries = new ArrayList<ContextEntry>(beanIdStore.size());
+        entries = new ArrayList<>(beanIdStore.size());
 
         updateBeanMap();
     }
@@ -318,7 +314,6 @@ public class StandaloneBeanContext implements BeanContext {
      */
     @Override
     public void clear() {
-
         for (ContextEntry entry : entries) {
             entry.setValue(null);
         }
@@ -338,13 +333,10 @@ public class StandaloneBeanContext implements BeanContext {
      * Checks if the repository is still in sync with then {@link BeanIdStore}.
      */
     private void checkUpdatedBeanIdList() {
-
         // We only check if the size is difference because it
         // is not possible to remove BeanIds from the BeanIdList
         if (entries.size() != beanIdStore.size()) {
-
             updateBeanMap();
-
         }
     }
 
@@ -467,9 +459,6 @@ public class StandaloneBeanContext implements BeanContext {
         }
 
         public void setValue(Object value) {
-            if (value == null) {
-                value = null;
-            }
             entry.setValue(value);
         }
 
@@ -487,7 +476,7 @@ public class StandaloneBeanContext implements BeanContext {
 
             setCleaning(true);
             try {
-                if (lifecycleAssociation.size() > 0) {
+                if (!lifecycleAssociation.isEmpty()) {
                     for (Integer associationId : lifecycleAssociation) {
                         ContextEntry association = entries.get(associationId);
 

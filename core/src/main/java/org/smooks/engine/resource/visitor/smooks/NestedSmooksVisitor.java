@@ -118,7 +118,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
     }
 
     protected static final TypedKey<DocumentBuilder> CACHED_DOCUMENT_BUILDER_TYPED_KEY = TypedKey.of();
-    protected static final TypedKey<ExecutionContext> NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = TypedKey.of();
+    protected static final TypedKey<ExecutionContext> PIPELINE_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = TypedKey.of();
 
     protected BeanId bindBeanId;
 
@@ -192,21 +192,21 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
     }
 
     protected void initRegistry() {
-        Registry registry = pipeline.getApplicationContext().getRegistry();
-        registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/nested-smooks-interceptors.xml",
+        Registry pipelineRegistry = pipeline.getApplicationContext().getRegistry();
+        pipelineRegistry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/pipeline-interceptors.xml",
                 pipeline.getApplicationContext().getClassLoader(), pipeline.getApplicationContext().getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
 
-        Map<Object, Object> nestedEntries = applicationContext.getRegistry().lookup(entries -> {
+        Map<Object, Object> pipelineRegistryEntries = applicationContext.getRegistry().lookup(entries -> {
             Map<Object, Object> notAppContextScopedEntries = new HashMap<>();
             for (Map.Entry<Object, Object> entry : entries.entrySet()) {
-                if ((entry.getValue() instanceof NotAppContextScoped.Ref || AnnotationManager.getAnnotatedClass(entry.getValue().getClass()).getAnnotation(NotAppContextScoped.class) != null) && (registry.lookup(entry.getKey()) == null)) {
+                if ((entry.getValue() instanceof NotAppContextScoped.Ref || AnnotationManager.getAnnotatedClass(entry.getValue().getClass()).getAnnotation(NotAppContextScoped.class) != null) && (pipelineRegistry.lookup(entry.getKey()) == null)) {
                     notAppContextScopedEntries.put(entry.getKey(), entry.getValue());
                 }
             }
             return notAppContextScopedEntries;
         });
-        for (Map.Entry<Object, Object> nestedEntry : nestedEntries.entrySet()) {
-            registry.registerObject(nestedEntry.getKey(), nestedEntry.getValue());
+        for (Map.Entry<Object, Object> pipelineRegistryEntry : pipelineRegistryEntries.entrySet()) {
+            pipelineRegistry.registerObject(pipelineRegistryEntry.getKey(), pipelineRegistryEntry.getValue());
         }
     }
 
@@ -396,18 +396,18 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
     }
 
     protected void filterSource(final Fragment<Node> visitedNodeFragment, final Fragment<Node> rootNodeFragment, final Writer writer, final ExecutionContext executionContext, final VisitSequence visitSequence) {
-        final VisitorMemento<ExecutionContext> nestedExecutionContextMemento;
+        final VisitorMemento<ExecutionContext> pipelineExecutionContextMemento;
         final MementoCaretaker mementoCaretaker = executionContext.getMementoCaretaker();
-        if (mementoCaretaker.exists(new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY))) {
-            nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY);
-            mementoCaretaker.restore(nestedExecutionContextMemento);
+        if (mementoCaretaker.exists(new VisitorMemento<>(visitedNodeFragment, this, PIPELINE_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY))) {
+            pipelineExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, PIPELINE_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY);
+            mementoCaretaker.restore(pipelineExecutionContextMemento);
         } else {
-            final ExecutionContext nestedExecutionContext = pipeline.createExecutionContext();
-            nestedExecutionContext.setContentEncoding(executionContext.getContentEncoding());
-            nestedExecutionContext.setBeanContext(executionContext.getBeanContext());
-            nestedExecutionContext.put(DOMModel.DOM_MODEL_TYPED_KEY, DOMModel.getModel(executionContext));
-            nestedExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, NESTED_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY, nestedExecutionContext);
-            mementoCaretaker.capture(nestedExecutionContextMemento);
+            final ExecutionContext pipelineExecutionContext = pipeline.createExecutionContext();
+            pipelineExecutionContext.setContentEncoding(executionContext.getContentEncoding());
+            pipelineExecutionContext.setBeanContext(executionContext.getBeanContext());
+            pipelineExecutionContext.put(DOMModel.DOM_MODEL_TYPED_KEY, DOMModel.getModel(executionContext));
+            pipelineExecutionContextMemento = new VisitorMemento<>(visitedNodeFragment, this, PIPELINE_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY, pipelineExecutionContext);
+            mementoCaretaker.capture(pipelineExecutionContextMemento);
         }
 
         final Document document = executionContext.get(CACHED_DOCUMENT_BUILDER_TYPED_KEY).newDocument();
@@ -415,15 +415,15 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         EventPointer eventPointer = new EventPointer(document, visitSequence);
         document.appendChild(eventPointer.getPointerNode());
 
-        ExecutionContext nestedExecutionContext = nestedExecutionContextMemento.getState();
-        nestedExecutionContext.put(eventPointer.getReference(), rootNodeFragment.unwrap());
+        ExecutionContext pipelineExecutionContext = pipelineExecutionContextMemento.getState();
+        pipelineExecutionContext.put(eventPointer.getReference(), rootNodeFragment.unwrap());
         if (writer == null) {
-            pipeline.filterSource(nestedExecutionContext, new DOMSource(document));
+            pipeline.filterSource(pipelineExecutionContext, new DOMSource(document));
         } else {
-            pipeline.filterSource(nestedExecutionContext, new DOMSource(document), new WriterSink<>(writer));
+            pipeline.filterSource(pipelineExecutionContext, new DOMSource(document), new WriterSink<>(writer));
         }
-        if (executionContext.getTerminationError() == null && nestedExecutionContext.getTerminationError() != null) {
-            executionContext.setTerminationError(nestedExecutionContext.getTerminationError());
+        if (executionContext.getTerminationError() == null && pipelineExecutionContext.getTerminationError() != null) {
+            executionContext.setTerminationError(pipelineExecutionContext.getTerminationError());
         }
     }
 

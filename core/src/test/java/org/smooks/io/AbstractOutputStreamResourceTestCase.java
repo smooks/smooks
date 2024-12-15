@@ -82,7 +82,7 @@ public class AbstractOutputStreamResourceTestCase {
             new ResourceWriter(executionContext, resource.getResourceName());
             fail("Expected SmooksException");
         } catch (SmooksException e) {
-            assertEquals("An OutputStream to the 'Mock' resource is already open.  Cannot open a Writer to this resource now!", e.getMessage());
+            assertEquals("An output stream to the [Mock] resource is already open. Cannot open a Writer to this resource now", e.getMessage());
         }
 
         resource.onPostFragment(new NodeFragment(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), executionContext);

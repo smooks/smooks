@@ -161,19 +161,19 @@ public class BeanContextTestCase {
 
 		BeanId beanId1 = getBeanIdStore().register("bean1");
 
-		BeanContext BeanContext = getBeanContext();
-		Map<String, Object> beanMap = BeanContext.getBeanMap();
+		BeanContext beanContext = getBeanContext();
+		Map<String, Object> beanMap = beanContext.getBeanMap();
 
-		BeanContext.addBean(beanId1, bean1, null);
+		beanContext.addBean(beanId1, bean1, null);
 
 		assertEquals(1, beanMap.size());
 		assertEquals(bean1, beanMap.get(beanId1.getName()));
 
 		beanMap.put("bean2", bean2);
 
-		BeanId beanId2 = BeanContext.getBeanId("bean2");
+		BeanId beanId2 = beanContext.getBeanId("bean2");
 
-		assertEquals(bean2, BeanContext.getBean(beanId2));
+		assertEquals(bean2, beanContext.getBean(beanId2));
 		assertEquals(bean2, beanMap.get(beanId2.getName()));
 
 		assertTrue(beanMap.containsKey("bean2"));
@@ -185,12 +185,12 @@ public class BeanContextTestCase {
 		assertFalse(beanMap.isEmpty());
 
 		// Mark bean as being "out of context" so we can remove it...
-		BeanContext.setBeanInContext(beanId1, false);
+		beanContext.setBeanInContext(beanId1, false);
 
 		beanMap.remove("bean1");
 
 		assertNull(beanMap.get("bean1"));
-		assertNull(BeanContext.getBean("bean1"));
+		assertNull(beanContext.getBean("bean1"));
 
 		assertEquals(2, beanMap.entrySet().size());
 		assertEquals(2, beanMap.keySet().size());
@@ -203,15 +203,15 @@ public class BeanContextTestCase {
 		beanMap.putAll(toPut);
 
 		assertEquals(4, beanMap.size());
-		assertEquals(bean3, BeanContext.getBean("bean3"));
-		assertEquals(bean4, BeanContext.getBean("bean4"));
+		assertEquals(bean3, beanContext.getBean("bean3"));
+		assertEquals(bean4, beanContext.getBean("bean4"));
 
 		beanMap.clear();
 
-		assertNull(BeanContext.getBean("bean1"));
-		assertNull(BeanContext.getBean("bean2"));
-		assertNull(BeanContext.getBean("bean3"));
-		assertNull(BeanContext.getBean("bean4"));
+		assertNull(beanContext.getBean("bean1"));
+		assertNull(beanContext.getBean("bean2"));
+		assertNull(beanContext.getBean("bean3"));
+		assertNull(beanContext.getBean("bean4"));
 	}
 
 	@BeforeEach

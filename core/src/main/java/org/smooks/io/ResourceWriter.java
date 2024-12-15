@@ -42,8 +42,8 @@
  */
 package org.smooks.io;
 
-import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ import static org.smooks.io.AbstractOutputStreamResource.RESOURCE_CONTEXT_KEY_PR
 public class ResourceWriter extends Writer {
 
     private final String resourceName;
-    private Writer delegateWriter;
+    private final Writer delegateWriter;
 
     public ResourceWriter(final ExecutionContext executionContext, final String resourceName) {
         this.resourceName = resourceName;
@@ -66,7 +66,7 @@ public class ResourceWriter extends Writer {
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         if (delegateWriter == null) {
-            throw new SmooksException("OutputResource '" + resourceName + "' not bound to context.  Configure an '" + AbstractOutputStreamResource.class.getName() + "' implementation, or change resource ordering.");
+            throw new SmooksException(String.format("Output resource [%s] not bound to context. Hint: configure an [%s] implementation or re-order resources", resourceName, AbstractOutputStreamResource.class.getName()));
         }
         delegateWriter.write(cbuf, off, len);
     }
@@ -98,9 +98,9 @@ public class ResourceWriter extends Writer {
      */
     protected Writer getOutputWriter(final String resourceName, final ExecutionContext executionContext) throws SmooksException {
         final TypedKey<Object> resourceKey = TypedKey.of(OUTPUTSTREAM_CONTEXT_KEY_PREFIX + resourceName);
-        final Object resourceIOObj = executionContext.get(resourceKey);
+        final Object outputResource = executionContext.get(resourceKey);
 
-        if (resourceIOObj == null) {
+        if (outputResource == null) {
             final AbstractOutputStreamResource resource = executionContext.get(TypedKey.of(RESOURCE_CONTEXT_KEY_PREFIX + resourceName));
             final OutputStream outputStream = openOutputStream(resource, executionContext);
             if (outputStream != null) {
@@ -111,12 +111,12 @@ public class ResourceWriter extends Writer {
                 return null;
             }
         } else {
-            if (resourceIOObj instanceof Writer) {
-                return (Writer) resourceIOObj;
-            } else if (resourceIOObj instanceof OutputStream) {
-                throw new SmooksException("An OutputStream to the '" + resourceName + "' resource is already open.  Cannot open a Writer to this resource now!");
+            if (outputResource instanceof Writer) {
+                return (Writer) outputResource;
+            } else if (outputResource instanceof OutputStream) {
+                throw new SmooksException(String.format("An output stream to the [%s] resource is already open. Cannot open a Writer to this resource now", resourceName));
             } else {
-                throw new RuntimeException("Invalid runtime ExecutionContext state. Value stored under context key '" + resourceKey + "' must be either and OutputStream or Writer.  Is '" + resourceIOObj.getClass().getName() + "'.");
+                throw new SmooksException(String.format("Invalid execution context state. Value stored under context key [%s] must be [java.io.OutputStream] or [java.io.Writer] and not [%s]", resourceKey, outputResource.getClass().getName()));
             }
         }
     }
@@ -126,7 +126,7 @@ public class ResourceWriter extends Writer {
             try {
                 return resource.getOutputStream(executionContext);
             } catch (IOException e) {
-                throw new SmooksException("Unable to set outputstream for '" + resource.getResourceName() + "'.", e);
+                throw new SmooksException(String.format("Unable to set output stream for [%s]", resource.getResourceName()), e);
             }
         } else {
             return null;

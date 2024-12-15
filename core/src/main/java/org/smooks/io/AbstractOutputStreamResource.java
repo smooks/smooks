@@ -93,10 +93,10 @@ public abstract class AbstractOutputStreamResource implements DOMVisitBefore, Co
     static final String OUTPUTSTREAM_CONTEXT_KEY_PREFIX = AbstractOutputStreamResource.class.getName() + "#outputstream:";
 
     @Inject
-    private String resourceName;
+    protected String resourceName;
 
     @Inject
-    private Charset writerEncoding = StandardCharsets.UTF_8;
+    protected Charset writerEncoding = StandardCharsets.UTF_8;
 
     /**
      * Retrieve/create an output stream that is appropriate for the concreate implementation
@@ -180,11 +180,11 @@ public abstract class AbstractOutputStreamResource implements DOMVisitBefore, Co
         }
     }
 
-    private void bind(final ExecutionContext executionContext) {
+    protected void bind(final ExecutionContext executionContext) {
         executionContext.put(TypedKey.of(RESOURCE_CONTEXT_KEY_PREFIX + getResourceName()), this);
     }
 
-    private void close(final Closeable closeable) {
+    protected void close(final Closeable closeable) {
         if (closeable == null) {
             return;
         }
@@ -193,14 +193,14 @@ public abstract class AbstractOutputStreamResource implements DOMVisitBefore, Co
             try {
                 ((Flushable) closeable).flush();
             } catch (IOException e) {
-                LOGGER.warn("IOException while trying to flush output resource '" + resourceName + "': ", e);
+                LOGGER.warn(String.format("IOException while trying to flush output resource [%s]: ", resourceName), e);
             }
         }
 
         try {
             closeable.close();
         } catch (IOException e) {
-            LOGGER.warn("IOException while trying to close output resource '" + resourceName + "': ", e);
+            LOGGER.warn(String.format("IOException while trying to close output resource [%s]: ", resourceName), e);
         }
     }
 }
