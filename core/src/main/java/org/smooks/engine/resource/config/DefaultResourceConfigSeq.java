@@ -89,11 +89,11 @@ public class DefaultResourceConfigSeq implements ResourceConfigSeq {
      * @param name The name of this instance.
      */
     public DefaultResourceConfigSeq(String name) {
-        if (name == null || (name = name.trim()).equals("")) {
+        if (name == null || (name = name.trim()).isEmpty()) {
             throw new IllegalArgumentException("null or empty 'name' arg in constructor call.");
         }
         this.name = name;
-        LOGGER.debug("Smooks ResourceConfiguration List [" + name + "] created.");
+        LOGGER.debug("Smooks ResourceConfiguration List [{}] created", name);
     }
 
     /**

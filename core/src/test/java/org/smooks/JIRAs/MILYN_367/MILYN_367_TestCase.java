@@ -50,6 +50,10 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.engine.DefaultApplicationContext;
+import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.DefaultFilterSettings;
+import org.smooks.engine.delivery.dom.DOMFilterType;
 import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.engine.delivery.sax.ng.ConsumeSerializerVisitor;
 import org.smooks.io.sink.StringSink;
@@ -72,13 +76,12 @@ public class MILYN_367_TestCase {
 
 	@Test
 	public void test_SAX_01() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
+		Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setDefaultSerializationOn(false)).build());
 		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "#document");
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "//*");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
-		
+
 		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
 		assertOK("expected_01.xml", sink);        
@@ -86,27 +89,25 @@ public class MILYN_367_TestCase {
 
 	@Test
 	public void test_SAX_02() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
+		Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setDefaultSerializationOn(false)).build());
 		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "customer");
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "descendant-or-self::customer/*");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
-		
+
 		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
 		assertOK("expected_02.xml", sink);        
 	}
 
 	@Test
-	public void test_SAX_03() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
+	public void test_SAX_03() throws IOException {
+		Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setDefaultSerializationOn(false)).build());
 		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "items");
 		smooks.addVisitor(new ConsumeSerializerVisitor(), "descendant-or-self::items/*");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.SAX_NG));
-		
+
 		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
 		assertOK("expected_03.xml", sink);        
@@ -114,13 +115,12 @@ public class MILYN_367_TestCase {
 
 	@Test
 	public void test_DOM_01() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
+		Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setDefaultSerializationOn(false).setFilterType(new DOMFilterType())).build());
 		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "#document");
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "//*");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
-		
+
 		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
 		assertOK("expected_01.xml", sink);        
@@ -128,13 +128,12 @@ public class MILYN_367_TestCase {
 
 	@Test
 	public void test_DOM_02() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
+		Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setDefaultSerializationOn(false).setFilterType(new DOMFilterType())).build());
 		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "customer");
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "descendant-or-self::customer/*");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
-		
+
 		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 
 		assertOK("expected_02.xml", sink);
@@ -142,21 +141,20 @@ public class MILYN_367_TestCase {
 
 	@Test
 	public void test_DOM_03() throws SAXException, IOException {
-		Smooks smooks = new Smooks();
+		Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setDefaultSerializationOn(false).setFilterType(new DOMFilterType())).build());
 		StringSink sink = new StringSink();
 		
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "items");
 		smooks.addVisitor(new DefaultDOMSerializerVisitor(), "descendant-or-self::items/*");
-		smooks.setFilterSettings(new FilterSettings().setDefaultSerializationOn(false).setFilterType(StreamFilterType.DOM));
-		
+
 		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")), sink);
 		
 		assertOK("expected_03.xml", sink);
 	}
 
 	@Test
-	public void test_DOM_04() throws SAXException, IOException {
-		Smooks smooks = new Smooks();		
+	public void test_DOM_04() {
+		Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setFilterType(new DOMFilterType())).build());
 		DOMVBefore customerVisitor = new DOMVBefore();
 		DOMVBefore itemsVisitor = new DOMVBefore();
 		
@@ -172,7 +170,7 @@ public class MILYN_367_TestCase {
 
 	@Test
 	public void test_DOM_05() throws SAXException, IOException {
-		Smooks smooks = new Smooks();		
+		Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setFilterType(new DOMFilterType())).build());
 		DOMVAfter customerVisitor = new DOMVAfter();
 		DOMVAfter itemsVisitor = new DOMVAfter();
 		

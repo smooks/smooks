@@ -226,10 +226,13 @@ public class Smooks implements Closeable {
      * Set the filter settings for this Smooks instance.
      *
      * @param filterSettings The filter settings to be used.
+     *
+     * @deprecated set filter settings from {@link DefaultApplicationContextBuilder instead}.
      */
+    @Deprecated
     public void setFilterSettings(FilterSettings filterSettings) {
         AssertArgument.isNotNull(filterSettings, "filterSettings");
-        filterSettings.applySettings(this);
+        filterSettings.applySettings(registry);
     }
 
     /**
@@ -349,7 +352,7 @@ public class Smooks implements Closeable {
             URI resourceConfigsURI = new URI(resourceURI);
             addResourceConfigs(URIUtil.getParent(resourceConfigsURI).toString(), resourceConfigStream);
         } catch (URISyntaxException e) {
-            LOGGER.error("Failed to load Smooks resource configuration '" + resourceURI + "'.", e);
+            LOGGER.error(String.format("Failed to load Smooks resource configuration [%s]", resourceURI), e);
         } finally {
             resourceConfigStream.close();
         }
@@ -532,7 +535,7 @@ public class Smooks implements Closeable {
     }
 
 
-    private void _filter(ExecutionContext executionContext, org.smooks.api.io.Source source, Sink... sinks) {
+    private void _filter(ExecutionContext executionContext, Source source, Sink... sinks) {
         ContentDeliveryConfig contentDeliveryConfig = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig();
         try {
             lifecycleManager.applyPhase(registry.lookup(new InstanceLookup<>(FilterLifecycle.class)).values(), new PreFilterLifecyclePhase(executionContext));

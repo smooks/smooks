@@ -42,28 +42,33 @@
  */
 package org.smooks;
 
+import org.smooks.api.Registry;
 import org.smooks.api.delivery.Filter;
-import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.ResourceConfigSeq;
+import org.smooks.engine.DefaultFilterSettings;
+import org.smooks.engine.delivery.dom.DOMFilterType;
+import org.smooks.engine.delivery.sax.ng.SaxNgFilterType;
+import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
+
+import java.util.Properties;
+
+import static org.smooks.api.resource.config.ResourceConfig.GLOBAL_PARAMETERS;
 
 /**
  * Smooks filter settings for programmatic configuration of the {@link Smooks} instance.
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * @deprecated Use {@link org.smooks.engine.DefaultFilterSettings} instead.
  */
+@Deprecated
 public class FilterSettings {
 
     public static final FilterSettings DEFAULT_DOM = new FilterSettings(StreamFilterType.DOM);
     public static final FilterSettings DEFAULT_SAX_NG = new FilterSettings(StreamFilterType.SAX_NG);
 
-    private StreamFilterType filterType = StreamFilterType.DOM;
-    private boolean rewriteEntities = true;
-    private boolean defaultSerializationOn = true;
-    private boolean terminateOnException = true;
-    private boolean maintainElementStack = true;
-    private boolean closeSource = true;
-    private boolean closeSink = true;
-    private int readerPoolSize;
-    private int maxNodeDepth = 1;
+    private final org.smooks.api.FilterSettings v2FilterSettings = new DefaultFilterSettings();
 
     public FilterSettings() {
     }
@@ -78,85 +83,134 @@ public class FilterSettings {
 
     public FilterSettings(StreamFilterType filterType) {
         assertNonStaticDecl();
-        this.filterType = filterType;
+        if (filterType.equals(StreamFilterType.DOM)) {
+            v2FilterSettings.setFilterType(new DOMFilterType());
+        } else {
+            v2FilterSettings.setFilterType(new SaxNgFilterType());
+        }
     }
 
     public FilterSettings setFilterType(StreamFilterType filterType) {
         assertNonStaticDecl();
-        this.filterType = filterType;
+        if (filterType.equals(StreamFilterType.DOM)) {
+            v2FilterSettings.setFilterType(new DOMFilterType());
+        } else {
+            v2FilterSettings.setFilterType(new SaxNgFilterType());
+        }
         return this;
     }
 
     public FilterSettings setRewriteEntities(boolean rewriteEntities) {
         assertNonStaticDecl();
-        this.rewriteEntities = rewriteEntities;
+        v2FilterSettings.setRewriteEntities(rewriteEntities);
         return this;
     }
 
     public FilterSettings setDefaultSerializationOn(boolean defaultSerializationOn) {
         assertNonStaticDecl();
-        this.defaultSerializationOn = defaultSerializationOn;
+        v2FilterSettings.setDefaultSerializationOn(defaultSerializationOn);
         return this;
     }
 
     public FilterSettings setTerminateOnException(boolean terminateOnException) {
         assertNonStaticDecl();
-        this.terminateOnException = terminateOnException;
+        v2FilterSettings.setTerminateOnException(terminateOnException);
         return this;
     }
 
     public FilterSettings setMaintainElementStack(boolean maintainElementStack) {
         assertNonStaticDecl();
-        this.maintainElementStack = maintainElementStack;
+        v2FilterSettings.setMaintainElementStack(maintainElementStack);
         return this;
     }
 
     public FilterSettings setCloseSource(boolean closeSource) {
         assertNonStaticDecl();
-        this.closeSource = closeSource;
+        v2FilterSettings.setCloseSource(closeSource);
         return this;
     }
 
     public FilterSettings setCloseSink(boolean closeSink) {
         assertNonStaticDecl();
-        this.closeSink = closeSink;
+        v2FilterSettings.setCloseSink(closeSink);
         return this;
     }
 
     public FilterSettings setReaderPoolSize(int readerPoolSize) {
         assertNonStaticDecl();
-        this.readerPoolSize = readerPoolSize;
+        v2FilterSettings.setReaderPoolSize(readerPoolSize);
         return this;
     }
 
     public FilterSettings setMaxNodeDepth(final int maxNodeDepth) {
         assertNonStaticDecl();
-        this.maxNodeDepth = maxNodeDepth;
+        v2FilterSettings.setMaxNodeDepth(maxNodeDepth);
         return this;
     }
 
-    protected void applySettings(Smooks smooks) {
+    public StreamFilterType getFilterType() {
+        org.smooks.api.delivery.StreamFilterType streamFilterType = v2FilterSettings.getFilterType();
+        if (streamFilterType instanceof DOMFilterType) {
+            return StreamFilterType.DOM;
+        } else {
+            return StreamFilterType.SAX_NG;
+        }
+    }
+
+    public Boolean isRewriteEntities() {
+        return v2FilterSettings.isRewriteEntities();
+    }
+
+    public Boolean isDefaultSerializationOn() {
+        return v2FilterSettings.isDefaultSerializationOn();
+    }
+
+    public Boolean isTerminateOnException() {
+        return v2FilterSettings.isTerminateOnException();
+    }
+
+    public Boolean isMaintainElementStack() {
+        return v2FilterSettings.isMaintainElementStack();
+    }
+
+    public Boolean isCloseSource() {
+        return v2FilterSettings.isCloseSource();
+    }
+
+    public Boolean isCloseSink() {
+        return v2FilterSettings.isCloseSink();
+    }
+
+    public Integer getReaderPoolSize() {
+        return v2FilterSettings.getReaderPoolSize();
+    }
+
+    public Integer getMaxNodeDepth() {
+        return v2FilterSettings.getMaxNodeDepth();
+    }
+
+    protected void applySettings(Registry registry) {
         // Remove the old params...
-        ParameterAccessor.removeParameter(Filter.STREAM_FILTER_TYPE, smooks);
-        ParameterAccessor.removeParameter(Filter.ENTITIES_REWRITE, smooks);
-        ParameterAccessor.removeParameter(Filter.DEFAULT_SERIALIZATION_ON, smooks);
-        ParameterAccessor.removeParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, smooks);
-        ParameterAccessor.removeParameter(Filter.MAINTAIN_ELEMENT_STACK, smooks);
-        ParameterAccessor.removeParameter(Filter.CLOSE_SOURCE, smooks);
-        ParameterAccessor.removeParameter(Filter.CLOSE_SINK, smooks);
-        ParameterAccessor.removeParameter(Filter.READER_POOL_SIZE, smooks);
-        ParameterAccessor.removeParameter(Filter.MAX_NODE_DEPTH, smooks);
+        removeParameter(Filter.STREAM_FILTER_TYPE, registry);
+        removeParameter(Filter.ENTITIES_REWRITE, registry);
+        removeParameter(Filter.DEFAULT_SERIALIZATION_ON, registry);
+        removeParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, registry);
+        removeParameter(Filter.MAINTAIN_ELEMENT_STACK, registry);
+        removeParameter(Filter.CLOSE_SOURCE, registry);
+        removeParameter(Filter.CLOSE_SINK, registry);
+        removeParameter(Filter.READER_POOL_SIZE, registry);
+        removeParameter(Filter.MAX_NODE_DEPTH, registry);
 
         // Set the params...
-        ParameterAccessor.setParameter(Filter.STREAM_FILTER_TYPE, filterType.toString(), smooks);
-        ParameterAccessor.setParameter(Filter.ENTITIES_REWRITE, Boolean.toString(rewriteEntities), smooks);
-        ParameterAccessor.setParameter(Filter.DEFAULT_SERIALIZATION_ON, Boolean.toString(defaultSerializationOn), smooks);
-        ParameterAccessor.setParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.toString(terminateOnException), smooks);
-        ParameterAccessor.setParameter(Filter.MAINTAIN_ELEMENT_STACK, Boolean.toString(maintainElementStack), smooks);
-        ParameterAccessor.setParameter(Filter.CLOSE_SOURCE, Boolean.toString(closeSource), smooks);
-        ParameterAccessor.setParameter(Filter.CLOSE_SINK, Boolean.toString(closeSink), smooks);
-        ParameterAccessor.setParameter(Filter.READER_POOL_SIZE, Integer.toString(readerPoolSize), smooks);
-        ParameterAccessor.setParameter(Filter.MAX_NODE_DEPTH, Integer.toString(maxNodeDepth), smooks);
+        setParameter(Filter.STREAM_FILTER_TYPE, v2FilterSettings.getFilterType().getName(), registry);
+        setParameter(Filter.ENTITIES_REWRITE, Boolean.toString(v2FilterSettings.isRewriteEntities()), registry);
+        setParameter(Filter.DEFAULT_SERIALIZATION_ON, Boolean.toString(v2FilterSettings.isDefaultSerializationOn()), registry);
+        setParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.toString(v2FilterSettings.isTerminateOnException()), registry);
+        setParameter(Filter.MAINTAIN_ELEMENT_STACK, Boolean.toString(v2FilterSettings.isMaintainElementStack()), registry);
+        setParameter(Filter.CLOSE_SOURCE, Boolean.toString(v2FilterSettings.isCloseSource()), registry);
+        setParameter(Filter.CLOSE_SINK, Boolean.toString(v2FilterSettings.isCloseSink()), registry);
+        setParameter(Filter.READER_POOL_SIZE, Integer.toString(v2FilterSettings.getReaderPoolSize()), registry);
+        setParameter(Filter.MAX_NODE_DEPTH, Integer.toString(v2FilterSettings.getMaxNodeDepth()), registry);
     }
 
     private void assertNonStaticDecl() {
@@ -164,5 +218,21 @@ public class FilterSettings {
             throw new UnsupportedOperationException("Invalid attempt to modify static filter type declaration.");
         }
     }
-}
 
+    private void setParameter(String name, Object value, Registry registry) {
+        ResourceConfig resourceConfig = new DefaultResourceConfig(GLOBAL_PARAMETERS, new Properties());
+        resourceConfig.setParameter(name, value);
+        registry.registerResourceConfig(resourceConfig);
+    }
+
+    private void removeParameter(String name, Registry registry) {
+        for (ResourceConfigSeq resourceConfigSeq : registry.lookup(new ResourceConfigSeqsLookup())) {
+            for (int i = 0; i < resourceConfigSeq.size(); i++) {
+                ResourceConfig nextResourceConfig = resourceConfigSeq.get(i);
+                if (GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
+                    nextResourceConfig.removeParameter(name);
+                }
+            }
+        }
+    }
+}

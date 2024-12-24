@@ -46,12 +46,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.Filter;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.delivery.SmooksContentHandler;
 import org.smooks.engine.delivery.replay.EndElementEvent;
 import org.smooks.engine.delivery.replay.StartElementEvent;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.engine.xml.DocType;
-import org.w3c.dom.*;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Comment;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -74,7 +80,7 @@ public class DOMBuilderContentHandler extends SmooksContentHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(DOMBuilderContentHandler.class);
     private static final DocumentBuilder documentBuilder;
 
-    private final ExecutionContext execContext;
+    private final ExecutionContext executionContext;
     private Document ownerDocument;
     private final Stack nodeStack = new Stack();
     private boolean inEntity;
@@ -90,15 +96,15 @@ public class DOMBuilderContentHandler extends SmooksContentHandler {
         }
     }
 
-    public DOMBuilderContentHandler(ExecutionContext execContext) {
-        this(execContext, null);
+    public DOMBuilderContentHandler(ExecutionContext executionContext) {
+        this(executionContext, null);
     }
 
-    public DOMBuilderContentHandler(ExecutionContext execContext, SmooksContentHandler parentContentHandler) {
-        super(execContext, parentContentHandler);
+    public DOMBuilderContentHandler(ExecutionContext executionContext, SmooksContentHandler parentContentHandler) {
+        super(executionContext, parentContentHandler);
 
-        this.execContext = execContext;
-        rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", execContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
+        this.executionContext = executionContext;
+        rewriteEntities = Boolean.parseBoolean(executionContext.getApplicationContext().getRegistry().lookup(new GlobalParamsLookup()).getParameterValue(Filter.ENTITIES_REWRITE));
     }
 
     @Override
@@ -207,7 +213,7 @@ public class DOMBuilderContentHandler extends SmooksContentHandler {
             if (index != -1) {
                 nodeStack.setSize(index);
             } else {
-                LOGGER.debug("Ignoring unexpected end [" + endEvent.localName + "] element event. Request: [" + execContext.getDocumentSource() + "] - document location: [" + getCurPath() + "]");
+                LOGGER.debug("Ignoring unexpected end [" + endEvent.localName + "] element event. Request: [" + executionContext.getDocumentSource() + "] - document location: [" + getCurPath() + "]");
             }
         }
     }
@@ -330,6 +336,6 @@ public class DOMBuilderContentHandler extends SmooksContentHandler {
 
         ownerDocument.appendChild(docType);
 
-        DocType.setDocType(name, publicId, systemId, null, execContext);
+        DocType.setDocType(name, publicId, systemId, null, executionContext);
     }
 }

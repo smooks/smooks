@@ -76,7 +76,7 @@ public class SystemResourceConfigSeqFactory implements ResourceConfigSeqFactory 
         }
 
         if (resource == null) {
-            throw new IllegalStateException("Failed to load " + resourceFile);
+            throw new IllegalStateException(String.format("Failed to load [%s]", resourceFile));
         }
         try {
             ResourceConfigSeq resourceConfigSeq = resourceConfigLoader.load(resource, resourceFile, classLoader);

@@ -44,13 +44,11 @@ package org.smooks.engine.delivery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.io.Sink;
 import org.smooks.api.io.Source;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.io.NullReader;
 import org.smooks.io.NullWriter;
 import org.smooks.io.Stream;
@@ -80,23 +78,13 @@ public abstract class AbstractFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFilter.class);
 
-    /**
-     * Set the default stream filter type on the supplied Smooks instance.
-     *
-     * @param smooks     The Smooks instance.
-     * @param filterType The filter type.
-     */
-    public static void setFilterType(Smooks smooks, org.smooks.StreamFilterType filterType) {
-        ParameterAccessor.setParameter(STREAM_FILTER_TYPE, filterType.toString(), smooks);
-    }
-
     protected Reader getReader(Source source, ExecutionContext executionContext) {
         if (source instanceof ReaderSource) {
             ReaderSource<?> readerSource = (ReaderSource<?>) source;
             if (readerSource.getReader() != null) {
                 return readerSource.getReader();
             } else {
-                throw new SmooksException("Invalid " + ReaderSource.class.getName() + ".  No Reader instance.");
+                throw new SmooksException(String.format("Invalid [%s]. No reader instance", ReaderSource.class.getName()));
             }
         } else if (source instanceof StreamSource) {
             StreamSource<?> streamSource = (StreamSource<?>) source;
@@ -111,7 +99,7 @@ public abstract class AbstractFilter implements Filter {
                     throw new SmooksException("Unable to decode input stream.", e);
                 }
             } else {
-                throw new SmooksException("Invalid " + StreamSource.class.getName() + ".  No Reader instance.");
+                throw new SmooksException(String.format("Invalid [%s]. No reader instance", StreamSource.class.getName()));
             }
         } else {
             return new NullReader();

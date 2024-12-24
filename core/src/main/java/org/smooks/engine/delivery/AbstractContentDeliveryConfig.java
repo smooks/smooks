@@ -57,7 +57,7 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSortComparator;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
-import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.DocumentSelectorStep;
 
@@ -77,29 +77,29 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     /**
      * Container context.
      */
-    private Registry registry;
+    protected Registry registry;
     /**
      * Table of ResourceConfig instances keyed by selector value. Each table entry
      * contains a List of ResourceConfig instances.
      */
-    private Map<String, List<ResourceConfig>> resourceConfigTable = new LinkedHashMap<>();
+    protected Map<String, List<ResourceConfig>> resourceConfigTable = new LinkedHashMap<>();
     /**
      * Table of Object instance lists keyed by selector. Each table entry
      * contains a List of Objects.
      */
-    private final Map objectsTable = new LinkedHashMap();
+    protected final Map objectsTable = new LinkedHashMap();
 
     /**
      * Config builder events list.
      */
-    private final List<ContentDeliveryConfigExecutionEvent> configBuilderEvents = new ArrayList<>();
+    protected final List<ContentDeliveryConfigExecutionEvent> configBuilderEvents = new ArrayList<>();
 
-    private final Set<PreExecutionLifecycle> preExecutionLifecycles = new LinkedHashSet<>();
-    private final Set<PostExecutionLifecycle> postExecutionLifecycles = new LinkedHashSet<>();
+    protected final Set<PreExecutionLifecycle> preExecutionLifecycles = new LinkedHashSet<>();
+    protected final Set<PostExecutionLifecycle> postExecutionLifecycles = new LinkedHashSet<>();
 
-    private Boolean isDefaultSerializationOn;
-    private Boolean closeSource;
-    private Boolean closeSink;
+    protected Boolean isDefaultSerializationOn;
+    protected Boolean closeSource;
+    protected Boolean closeSink;
 
     public void setRegistry(Registry registry) {
         this.registry = registry;
@@ -180,7 +180,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
     @Override
     public boolean isDefaultSerializationOn() {
         if (isDefaultSerializationOn == null) {
-            isDefaultSerializationOn = Boolean.valueOf(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", this));
+            isDefaultSerializationOn = Boolean.valueOf(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.DEFAULT_SERIALIZATION_ON));
         }
 
         return isDefaultSerializationOn;
@@ -291,7 +291,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     protected boolean getCloseSource() {
         if (closeSource == null) {
-            closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", this));
+            closeSource = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.CLOSE_SOURCE));
         }
 
         return closeSource;
@@ -299,7 +299,7 @@ public abstract class AbstractContentDeliveryConfig implements ContentDeliveryCo
 
     protected boolean getCloseSink() {
         if (closeSink == null) {
-            closeSink = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SINK, String.class, "true", this));
+            closeSink = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.CLOSE_SINK));
         }
 
         return closeSink;

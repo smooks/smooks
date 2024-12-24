@@ -77,7 +77,7 @@ public class Scope implements Map<Object, Object> {
         scope.put(Registry.class, registry);
         scope.putAll(registry.lookup(registryEntries -> registryEntries));
 
-        final ResourceConfig globalParams = registry.lookup(new GlobalParamsLookup(registry));
+        final GlobalParamsLookup.ParameterAccessor globalParams = registry.lookup(new GlobalParamsLookup());
         for (String parameterName : globalParams.getParameters().keySet()) {
             scope.put(parameterName, globalParams.getParameterValue(parameterName));
         }

@@ -63,9 +63,9 @@ import org.smooks.engine.delivery.event.ResourceTargetingExecutionEvent;
 import org.smooks.engine.delivery.event.StartFragmentExecutionEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.lifecycle.SerializationStartedDOMFilterLifecyclePhase;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.xml.DocType;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Document;
@@ -145,17 +145,19 @@ public class Serializer {
         globalSUs = serializerVisitorIndex.get("*", "//");
 
         // Set the default SerializationUnit
-    /*
-      Turn default serialization on/off.  Default is "true".
-     */
-        boolean defaultSerializationOn = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.DEFAULT_SERIALIZATION_ON, String.class, "true", deliveryConfig));
+        /*
+          Turn default serialization on/off.  Default is "true".
+         */
+
+        Registry registry = executionContext.getApplicationContext().getRegistry();
+        boolean defaultSerializationOn = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.DEFAULT_SERIALIZATION_ON));
         if (defaultSerializationOn) {
             defaultSerializationUnit = new DefaultDOMSerializerVisitor();
-            boolean rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", deliveryConfig));
+            boolean rewriteEntities = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.ENTITIES_REWRITE));
             defaultSerializationUnit.setRewriteEntities(Optional.of(rewriteEntities));
             defaultSerializationUnit.postConstruct();
         }
-        terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", deliveryConfig));
+        terminateOnVisitorException = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION));
     }
 
     /**

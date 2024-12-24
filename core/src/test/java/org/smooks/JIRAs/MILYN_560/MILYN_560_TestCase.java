@@ -49,6 +49,9 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.sax.TextConsumer;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.DefaultFilterSettings;
+import org.smooks.engine.delivery.dom.DOMFilterType;
 import org.smooks.io.sink.StringSink;
 import org.smooks.io.source.StringSource;
 import org.w3c.dom.Element;
@@ -62,7 +65,7 @@ public class MILYN_560_TestCase {
 
 	@Test
     public void test_DOM() {
-        Smooks smooks = new Smooks();
+        Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setFilterType(new DOMFilterType())).build());
 
         smooks.addVisitor((DOMVisitAfter) (element, executionContext) -> {
             assertEquals("&tomfennelly", element.getAttribute("attrib"));

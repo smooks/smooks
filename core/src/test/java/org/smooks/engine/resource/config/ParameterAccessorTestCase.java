@@ -46,6 +46,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.delivery.ContentDeliveryConfig;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -63,11 +64,10 @@ public class ParameterAccessorTestCase {
 	@Test
     public void test_system_property() {
         Smooks smooks = new Smooks();
-        ContentDeliveryConfig deliveryConfig = smooks.createExecutionContext().getContentDeliveryRuntime().getContentDeliveryConfig();
-
-        assertNull(ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
+        assertNull(smooks.getApplicationContext().getRegistry().lookup(new GlobalParamsLookup()).getParameterValue("test.parameter"));
 
         System.setProperty("test.parameter", "xxxxxxx");
-        assertEquals("xxxxxxx", ParameterAccessor.getParameterValue("test.parameter", String.class, deliveryConfig));
+
+        assertEquals("xxxxxxx", smooks.getApplicationContext().getRegistry().lookup(new GlobalParamsLookup()).getParameterValue("test.parameter"));
     }
 }

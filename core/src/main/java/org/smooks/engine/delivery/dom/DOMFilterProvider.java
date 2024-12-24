@@ -59,8 +59,8 @@ import org.smooks.api.resource.visitor.dom.VisitPhase;
 import org.smooks.engine.delivery.AbstractFilterProvider;
 import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
 import org.smooks.engine.delivery.event.DefaultContentDeliveryConfigExecutionEvent;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
 import java.util.List;
@@ -133,7 +133,8 @@ public class DOMFilterProvider extends AbstractFilterProvider {
         domConfig.setResourceConfigs(resourceConfigTable);
         domConfig.getContentDeliveryConfigExecutionEvents().addAll(contentDeliveryConfigExecutionEvents);
 
-        if (ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, resourceConfigTable)) {
+        final Boolean smooksVisitorsSort = registry.lookup(new GlobalParamsLookup()).getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT);
+        if (smooksVisitorsSort == null || smooksVisitorsSort) {
             domConfig.sort();
         }
 

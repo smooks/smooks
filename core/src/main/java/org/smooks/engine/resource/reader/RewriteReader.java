@@ -42,9 +42,8 @@
  */
 package org.smooks.engine.resource.reader;
 
-import org.smooks.FilterSettings;
+import org.smooks.engine.DefaultFilterSettings;
 import org.smooks.Smooks;
-import org.smooks.StreamFilterType;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
 import org.smooks.api.ExecutionContext;
@@ -117,8 +116,7 @@ public class RewriteReader implements SmooksXMLReader {
         if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
             applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
         }
-        readerSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).build());
-        readerSmooks.setFilterSettings(new FilterSettings(StreamFilterType.SAX_NG).setCloseSink(false).setReaderPoolSize(-1));
+        readerSmooks = new Smooks(applicationContextBuilder.withClassLoader(applicationContext.getClassLoader()).withFilterSettings(new DefaultFilterSettings().setCloseSink(false).setReaderPoolSize(-1)).build());
         readerSmooks.getApplicationContext().getRegistry().registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/pipeline-interceptors.xml",
                 readerSmooks.getApplicationContext().getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
 

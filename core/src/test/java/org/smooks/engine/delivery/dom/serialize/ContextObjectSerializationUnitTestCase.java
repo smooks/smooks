@@ -44,9 +44,10 @@ package org.smooks.engine.delivery.dom.serialize;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
+import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.DefaultFilterSettings;
+import org.smooks.engine.delivery.dom.DOMFilterType;
 import org.smooks.support.SmooksUtil;
-import org.smooks.api.delivery.Filter;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.TypedKey;
 import org.smooks.engine.xml.Namespace;
@@ -62,15 +63,13 @@ public class ContextObjectSerializationUnitTestCase {
 
 	@Test
     public void test() {
-        Smooks smooks = new Smooks();
-        ExecutionContext context;
+        Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withFilterSettings(new DefaultFilterSettings().setFilterType(new DOMFilterType())).build());
+        ExecutionContext executionContext;
 
-        ParameterAccessor.setParameter(Filter.STREAM_FILTER_TYPE, "DOM", smooks);
+        executionContext = smooks.createExecutionContext();
+        executionContext.put(TypedKey.of("object-x"), "Hi there!");
 
-        context = smooks.createExecutionContext();
-        context.put(TypedKey.of("object-x"), "Hi there!");
-
-        String result = SmooksUtil.filterAndSerialize(context, new ByteArrayInputStream(("<context-object key='object-x' xmlns=\"" + Namespace.SMOOKS_URI + "\" />").getBytes()), smooks);
+        String result = SmooksUtil.filterAndSerialize(executionContext, new ByteArrayInputStream(("<context-object key='object-x' xmlns=\"" + Namespace.SMOOKS_URI + "\" />").getBytes()), smooks);
         assertEquals("Hi there!", result);
     }
 }

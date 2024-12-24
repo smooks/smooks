@@ -56,13 +56,14 @@ import org.smooks.api.resource.config.ResourceConfigFactory;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.resource.config.loader.ResourceConfigLoader;
 import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.DefaultFilterSettings;
 import org.smooks.engine.delivery.AbstractParser;
+import org.smooks.engine.delivery.dom.DOMFilterType;
 import org.smooks.engine.expression.ExpressionEvaluatorFactory;
 import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.DefaultResourceConfigFactory;
 import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
 import org.smooks.io.source.DOMSource;
 import org.smooks.resource.URIResourceLocator;
@@ -219,7 +220,7 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         NodeList paramNodes = paramsElement.getElementsByTagName("param");
 
         if (paramNodes.getLength() > 0) {
-            ResourceConfig globalParamsConfig = new DefaultResourceConfig(ParameterAccessor.GLOBAL_PARAMETERS, new Properties());
+            ResourceConfig globalParamsConfig = new DefaultResourceConfig(ResourceConfig.GLOBAL_PARAMETERS, new Properties());
 
             digestParameters(paramsElement, globalParamsConfig);
             resourceConfigSeq.add(globalParamsConfig);
@@ -447,7 +448,8 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
             if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
                 applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
             }
-            smooks = new Smooks(applicationContextBuilder.withClassLoader(classLoader).build());
+            smooks = new Smooks(applicationContextBuilder.withFilterSettings(new DefaultFilterSettings().
+                    setFilterType(new DOMFilterType())).withClassLoader(classLoader).build());
             setExtensionDigestOn();
             try {
                 Registry registry = smooks.getApplicationContext().getRegistry();

@@ -76,11 +76,11 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.lifecycle.AssemblyStartedDOMFilterLifecyclePhase;
 import org.smooks.engine.lifecycle.PostFragmentPhase;
 import org.smooks.engine.lifecycle.ProcessingStartedDOMFilterLifecyclePhase;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.report.AbstractReportGenerator;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.io.Stream;
 import org.smooks.io.sink.DOMSink;
 import org.smooks.io.sink.JavaSink;
@@ -244,20 +244,22 @@ public class SmooksDOMFilter extends AbstractFilter {
         this.executionContext = executionContext;
         this.contentDeliveryRuntime = executionContext.getContentDeliveryRuntime();
         deliveryConfig = (DOMContentDeliveryConfig) contentDeliveryRuntime.getContentDeliveryConfig();
-        lifecycleManager = executionContext.getApplicationContext().getRegistry().lookup(new LifecycleManagerLookup());
+        Registry registry = executionContext.getApplicationContext().getRegistry();
+        lifecycleManager = registry.lookup(new LifecycleManagerLookup());
 
-        closeSource = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SOURCE, String.class, "true", deliveryConfig));
-        closeSink = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.CLOSE_SINK, String.class, "true", deliveryConfig));
-        reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, String.class, "true", deliveryConfig));
+        closeSource = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.CLOSE_SOURCE));
+        closeSink = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.CLOSE_SINK));
+        reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER));
 
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
             if (executionEventListener instanceof AbstractReportGenerator) {
                 terminateOnVisitorException = false;
+                break;
             }
         }
 
         if (terminateOnVisitorException == null) {
-            terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", deliveryConfig));
+            terminateOnVisitorException = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION));
         }
     }
 

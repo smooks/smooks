@@ -74,7 +74,7 @@ public class MILYN_294_TestCase {
             smooks.filterSource(new StringSource("<a/>"));
             fail("Expected SmooksException.");
         } catch (SmooksException e) {
-            assertEquals("The configured Filter ('SAX NG') cannot be used: [DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
+            assertEquals("The configured filter [SAX NG] cannot be used: [DOM] filters can be used for the given set of visitors. Turn on debug logging for more information", e.getMessage());
         }
     }
 
@@ -92,7 +92,7 @@ public class MILYN_294_TestCase {
             smooks.filterSource(new StringSource("<a/>"));
             fail("Expected SmooksException.");
         } catch (SmooksException e) {
-            assertEquals("The configured Filter ('DOM') cannot be used: [SAX NG] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
+            assertEquals("The configured filter [DOM] cannot be used: [SAX NG] filters can be used for the given set of visitors. Turn on debug logging for more information", e.getMessage());
         }
     }
 }

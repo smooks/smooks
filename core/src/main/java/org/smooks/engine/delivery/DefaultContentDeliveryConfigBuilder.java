@@ -60,7 +60,6 @@ import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.lifecycle.LifecyclePhase;
 import org.smooks.api.profile.ProfileSet;
-import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSortComparator;
 import org.smooks.api.resource.config.xpath.SelectorStep;
@@ -71,11 +70,11 @@ import org.smooks.engine.lifecycle.ContentDeliveryBuilderCreatedLifecyclePhase;
 import org.smooks.engine.lifecycle.ContentDeliveryConfigCreatedLifecyclePhase;
 import org.smooks.engine.lifecycle.ContentHandlersCreatedLifecyclePhase;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.lookup.ResourceConfigsProfileSetLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfigSortComparator;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 
 import java.util.ArrayList;
@@ -180,9 +179,9 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         }
         FilterProvider filterProvider = getFilterProvider();
 
-        LOGGER.debug("Activating {} filter", filterProvider.getName());
+        LOGGER.debug("Activating [{}] filter", filterProvider.getName());
         configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
-        configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent(String.format("Activating %s filter", filterProvider.getName())));
+        configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent(String.format("Activating [%s] filter", filterProvider.getName())));
 
         ContentDeliveryConfig contentDeliveryConfig = filterProvider.createContentDeliveryConfig(visitorBindings, registry, resourceConfigTable, configBuilderEvents);
         fireEvent(Event.CONTENT_DELIVERY_CONFIG_CREATED);
@@ -192,17 +191,19 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 
     protected FilterProvider getFilterProvider() {
         final List<FilterProvider> candidateFilterProviders = filterProviders.stream().filter(s -> s.isProvider(visitorBindings)).collect(Collectors.toList());
-        final String filterTypeParam = ParameterAccessor.getParameterValue(Filter.STREAM_FILTER_TYPE, String.class, resourceConfigTable);
-        if (filterTypeParam == null && candidateFilterProviders.isEmpty()) {
+        final String filterTypeParam = registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.STREAM_FILTER_TYPE);
+
+        AnyFilterType anyFilterType = new AnyFilterType();
+        if (filterTypeParam.equals(anyFilterType.getName()) && candidateFilterProviders.isEmpty()) {
             throw new SmooksConfigException("Ambiguous Resource Config set. All content handlers must support processing on the SAX and/or DOM Filter:\n" + getResourceFilterCharacteristics());
-        } else if (filterTypeParam == null) {
+        } else if (filterTypeParam.equals(anyFilterType.getName())) {
             return candidateFilterProviders.get(0);
         } else {
             final Optional<FilterProvider> filterProviderOptional = candidateFilterProviders.stream().filter(c -> c.getName().equalsIgnoreCase(filterTypeParam)).findFirst();
             if (filterProviderOptional.isPresent()) {
                 return filterProviderOptional.get();
             } else {
-                throw new SmooksConfigException("The configured Filter ('" + filterTypeParam + "') cannot be used: " + Arrays.toString(candidateFilterProviders.stream().map(FilterProvider::getName).collect(Collectors.toList()).toArray()) + " filters can be used for the given set of visitors. Turn on debug logging for more information.");
+                throw new SmooksConfigException(String.format("The configured filter [%s] cannot be used: %s filters can be used for the given set of visitors. Turn on debug logging for more information", filterTypeParam, Arrays.toString(candidateFilterProviders.stream().map(FilterProvider::getName).collect(Collectors.toList()).toArray())));
             }
         }
     }
@@ -360,8 +361,8 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
      */
     @SuppressWarnings("unchecked")
     protected void sortResourceConfigs(Map<String, List<ResourceConfig>> table, ProfileSet profileSet) {
-        Parameter<String> sortParam = ParameterAccessor.getParameter("sort.resources", String.class, table);
-        if (sortParam != null && sortParam.getValue().trim().equalsIgnoreCase("true")) {
+        String sortParam = registry.lookup(new GlobalParamsLookup()).getParameterValue("sort.resources");
+        if (sortParam != null && sortParam.trim().equalsIgnoreCase("true")) {
             for (Entry<String, List<ResourceConfig>> entry : table.entrySet()) {
                 List<ResourceConfig> markupElResourceConfigs = entry.getValue();
                 ResourceConfig[] resourceConfigs = markupElResourceConfigs.toArray(new ResourceConfig[0]);

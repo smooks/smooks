@@ -47,8 +47,8 @@ import org.smooks.api.memento.MementoCaretaker;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.UnknownProfileMemberException;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.engine.memento.DefaultMementoCaretaker;
-import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.TypedKey;
@@ -196,7 +196,12 @@ public class DefaultExecutionContext implements ExecutionContext {
 
     @Override
     public String getConfigParameter(String name, String defaultVal) {
-        return ParameterAccessor.getParameterValue(name, String.class, defaultVal, contentDeliveryRuntime.getContentDeliveryConfig());
+        String parameterValue = applicationContext.getRegistry().lookup(new GlobalParamsLookup()).getParameterValue(name);
+        if (parameterValue != null) {
+            return parameterValue;
+        } else {
+            return defaultVal;
+        }
     }
 
     @Override

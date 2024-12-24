@@ -202,11 +202,11 @@ public class AbstractParser {
         return saxDriverConfig;
     }
 
-    private static Reader urlToReader(URL url, String contentEncoding) {
+    protected Reader urlToReader(URL url, String contentEncoding) {
         return streamToReader(urlToStream(url), contentEncoding);
     }
 
-    private static InputStream urlToStream(URL url) {
+    protected InputStream urlToStream(URL url) {
         try {
             return url.openStream();
         } catch (IOException e) {
@@ -214,7 +214,7 @@ public class AbstractParser {
         }
     }
 
-    private static Reader streamToReader(InputStream inputStream, String contentEncoding) {
+    protected Reader streamToReader(InputStream inputStream, String contentEncoding) {
         try {
             if (contentEncoding != null) {
                 return new InputStreamReader(inputStream, contentEncoding);
@@ -242,7 +242,7 @@ public class AbstractParser {
 
             return inputSource;
         } else if (source instanceof ReaderSource) {
-            ReaderSource readerSource = (ReaderSource) source;
+            ReaderSource<?> readerSource = (ReaderSource<?>) source;
             Reader reader = readerSource.getReader();
 
             InputSource inputSource = new InputSource();

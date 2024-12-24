@@ -54,7 +54,7 @@ import org.smooks.api.profile.ProfileSet;
 import org.smooks.engine.DefaultExecutionContext;
 import org.smooks.engine.delivery.DefaultContentDeliveryRuntime;
 import org.smooks.engine.delivery.DefaultReaderPool;
-import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.testkit.delivery.dom.MockContentDeliveryConfig;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.engine.profile.DefaultProfileSet;
@@ -106,7 +106,7 @@ public class MockExecutionContext implements ExecutionContext {
 	 */
 	@Override
 	public ContentDeliveryRuntime getContentDeliveryRuntime() {
-		return new DefaultContentDeliveryRuntime(new DefaultReaderPool(Integer.parseInt(ParameterAccessor.getParameterValue(Filter.READER_POOL_SIZE, String.class, "0", deliveryConfig))), deliveryConfig);
+		return new DefaultContentDeliveryRuntime(new DefaultReaderPool(Integer.parseInt(applicationContext.getRegistry().lookup(new GlobalParamsLookup()).getParameterValue(Filter.READER_POOL_SIZE))), deliveryConfig);
 	}
 
     public void setContentEncoding(String contentEncoding) throws IllegalArgumentException {

@@ -54,7 +54,6 @@ import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.api.lifecycle.LifecycleManager;
 import org.smooks.api.profile.ProfileSet;
 import org.smooks.api.profile.ProfileStore;
-import org.smooks.api.resource.ContainerResourceLocator;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.resource.config.loader.ResourceConfigLoader;
@@ -65,19 +64,16 @@ import org.smooks.engine.lifecycle.DefaultLifecycleManager;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lifecycle.PreDestroyLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
-import org.smooks.engine.lookup.ResourceConfigSeqLookup;
+import org.smooks.engine.lookup.GlobalResourceConfigSeqLookup;
 import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
 import org.smooks.engine.lookup.converter.TypeConverterFactoryLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
-import org.smooks.engine.resource.config.loader.xml.XmlResourceConfigLoader;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,13 +99,13 @@ public class DefaultRegistry implements Registry {
         registerObject(LifecycleManager.class, new DefaultLifecycleManager());
 
         // add the default list to the list.
-        ResourceConfigSeq systemResourceConfigSeq = new DefaultResourceConfigSeq("default");
-        systemResourceConfigSeq.setSystem(true);
+        ResourceConfigSeq globalResourceConfigSeq = new DefaultResourceConfigSeq("global");
+        globalResourceConfigSeq.setSystem(true);
 
-        registerObject(ResourceConfigSeq.class, systemResourceConfigSeq);
+        registerObject(ResourceConfigSeq.class, globalResourceConfigSeq);
 
         List<ResourceConfigSeq> resourceConfigSeqs = new ArrayList<>();
-        resourceConfigSeqs.add(systemResourceConfigSeq);
+        resourceConfigSeqs.add(globalResourceConfigSeq);
         registerObject(new TypeResolver().resolve(List.class, ResourceConfigSeq.class), resourceConfigSeqs);
 
         this.resourceConfigLoader = resourceConfigLoader;
@@ -144,17 +140,17 @@ public class DefaultRegistry implements Registry {
     }
 
     @Override
-    public void deRegisterObject(Object key) {
+    public void deRegisterObject(final Object key) {
         registry.remove(key);
     }
 
     @Override
-    public <R> R lookup(Function<Map<Object, Object>, R> function) {
+    public <R> R lookup(final Function<Map<Object, Object>, R> function) {
         return function.apply(Collections.unmodifiableMap(registry));
     }
 
     @Override
-    public <T> T lookup(Object key) {
+    public <T> T lookup(final Object key) {
         T entry = (T) registry.get(key);
         if (entry instanceof NotAppContextScoped.Ref) {
             return (T) ((NotAppContextScoped.Ref) entry).get();
@@ -164,7 +160,7 @@ public class DefaultRegistry implements Registry {
     }
 
     @Override
-    public <T> T lookup(TypedKey<T> key) {
+    public <T> T lookup(final TypedKey<T> key) {
         return lookup((Object) key);
     }
 
@@ -178,7 +174,7 @@ public class DefaultRegistry implements Registry {
      * @see ResourceConfig
      */
     @Override
-    public ResourceConfigSeq registerResources(String baseURI, InputStream inputStream) {
+    public ResourceConfigSeq registerResources(final String baseURI, final InputStream inputStream) {
         AssertArgument.isNotEmpty(baseURI, "baseURI");
         AssertArgument.isNotNull(inputStream, "inputStream");
 
@@ -188,7 +184,7 @@ public class DefaultRegistry implements Registry {
         return resourceConfigSeq;
     }
 
-    protected void addProfileSets(List<ProfileSet> profileSets) {
+    protected void addProfileSets(final List<ProfileSet> profileSets) {
         final ProfileStore profileStore = lookup(ProfileStore.class);
         if (profileSets == null) {
             return;
@@ -208,11 +204,11 @@ public class DefaultRegistry implements Registry {
      * @param resourceConfig The Content Delivery Resource definition to be registered.
      */
     @Override
-    public void registerResourceConfig(ResourceConfig resourceConfig) {
+    public void registerResourceConfig(final ResourceConfig resourceConfig) {
         AssertArgument.isNotNull(resourceConfig, "resourceConfig");
 
         lookup(new LifecycleManagerLookup()).applyPhase(resourceConfig, new PostConstructLifecyclePhase(new Scope(this)));
-        lookup(new ResourceConfigSeqLookup()).add(resourceConfig);
+        lookup(new GlobalResourceConfigSeqLookup()).add(resourceConfig);
     }
 
     /**
@@ -221,7 +217,7 @@ public class DefaultRegistry implements Registry {
      * @param resourceConfigSeq All the ResourceConfigList instances added on this registry.
      */
     @Override
-    public void registerResourceConfigSeq(ResourceConfigSeq resourceConfigSeq) {
+    public void registerResourceConfigSeq(final ResourceConfigSeq resourceConfigSeq) {
         lookup(new ResourceConfigSeqsLookup()).add(resourceConfigSeq);
         lookup(new LifecycleManagerLookup()).applyPhase(resourceConfigSeq, new PostConstructLifecyclePhase(new Scope(this)));
 
@@ -234,7 +230,7 @@ public class DefaultRegistry implements Registry {
     public void close() {
         LOGGER.debug("Un-initializing all ContentHandler instances allocated through this registry");
         for (Object registeredObject : registry.values()) {
-            LOGGER.debug("Un-initializing ContentHandler instance: " + registeredObject.getClass().getName());
+            LOGGER.debug("Un-initializing ContentHandler instance: {}", registeredObject.getClass().getName());
             try {
                 lookup(new LifecycleManagerLookup()).applyPhase(registeredObject, new PreDestroyLifecyclePhase());
             } catch (Throwable throwable) {

@@ -151,16 +151,23 @@ import java.util.Properties;
  */
 public interface ResourceConfig {
     /**
-     * A special selector for resource that targets the document as a whole (i.e., the root element). This selector
+     * A reserved selector for resources that target the first event in the source (i.e., the root node). This selector
      * is especially useful when the name of the first event is not known ahead of time.
      */
     String DOCUMENT_FRAGMENT_SELECTOR = "#document";
 
     /**
-     * A special selector for a resource that does not target any event. Such a selector is useful when the resource is not
+     * A reserved selector for resources that does not target any event. Such a selector is useful when the resource is not
      * actively participating in the event processing (e.g., a resource shared between other resources for looking up values).
      */
     String SELECTOR_NONE = "none";
+
+
+    /**
+     * A reserved selector for resources that hold config parameters.
+     */
+    String GLOBAL_PARAMETERS = "global-parameters";
+
 
     /**
      * Performs a shallow clone of this <code>ResourceConfig</code>.

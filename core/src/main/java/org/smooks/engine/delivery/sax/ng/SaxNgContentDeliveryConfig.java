@@ -55,7 +55,7 @@ import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.engine.delivery.AbstractContentDeliveryConfig;
 import org.smooks.engine.delivery.ContentHandlerBindingIndex;
 import org.smooks.engine.delivery.ordering.Sorter;
-import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.lookup.GlobalParamsLookup;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -203,7 +203,8 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
             reducedIndex.put(selector, visitorBindings);
         }
 
-        if (ParameterAccessor.getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, Boolean.class, true, this)) {
+        final Boolean smooksVisitorsSort = registry.lookup(new GlobalParamsLookup()).getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT);
+        if (smooksVisitorsSort == null || smooksVisitorsSort) {
             sort();
         }
 
@@ -279,35 +280,35 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
     public boolean isRewriteEntities() {
         if (rewriteEntities == null) {
-            rewriteEntities = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true", this));
+            rewriteEntities = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.ENTITIES_REWRITE));
         }
         return rewriteEntities;
     }
 
     public boolean isMaintainElementStack() {
         if (maintainElementStack == null) {
-            maintainElementStack = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.MAINTAIN_ELEMENT_STACK, String.class, "true", this));
+            maintainElementStack = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.MAINTAIN_ELEMENT_STACK));
         }
         return maintainElementStack;
     }
 
     public boolean isReverseVisitOrderOnVisitAfter() {
         if (reverseVisitOrderOnVisitAfter == null) {
-            reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, String.class, "true", this));
+            reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER));
         }
         return reverseVisitOrderOnVisitAfter;
     }
 
     public boolean isTerminateOnVisitorException() {
         if (terminateOnVisitorException == null) {
-            terminateOnVisitorException = Boolean.parseBoolean(ParameterAccessor.getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION, String.class, "true", this));
+            terminateOnVisitorException = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION));
         }
         return terminateOnVisitorException;
     }
 
     public int getMaxNodeDepth() {
         if (maxNodeDepth == null) {
-            maxNodeDepth = Integer.parseInt(ParameterAccessor.getParameterValue(Filter.MAX_NODE_DEPTH, String.class, "1", this));
+            maxNodeDepth = Integer.parseInt(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.MAX_NODE_DEPTH));
         }
         return maxNodeDepth;
     }

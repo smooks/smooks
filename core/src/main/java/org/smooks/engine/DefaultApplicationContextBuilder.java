@@ -42,13 +42,17 @@
  */
 package org.smooks.engine;
 
+import org.smooks.api.FilterSettings;
 import org.smooks.api.bean.context.BeanIdStore;
+import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.ReaderPoolFactory;
 import org.smooks.api.profile.Profile;
 import org.smooks.api.resource.ContainerResourceLocator;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.loader.ResourceConfigLoader;
 import org.smooks.engine.bean.context.DefaultBeanIdStore;
 import org.smooks.engine.delivery.DefaultReaderPoolFactory;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
@@ -64,25 +68,34 @@ import org.smooks.api.Registry;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.resource.URIResourceLocator;
 
+import java.util.Properties;
 import java.util.ServiceLoader;
+
+import static org.smooks.api.resource.config.ResourceConfig.GLOBAL_PARAMETERS;
 
 public class DefaultApplicationContextBuilder implements ApplicationContextBuilder {
 
-    private boolean systemResources = true;
-    private BeanIdStore beanIdStore = new DefaultBeanIdStore();
-    private ClassLoader classLoader = getClass().getClassLoader();
-    private Registry registry;
-    private ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory;
-    private ContainerResourceLocator resourceLocator = new URIResourceLocator();
-    private ResourceConfigLoader resourceConfigLoader = new XmlResourceConfigLoader();
-
-    private ReaderPoolFactory readerPoolFactory = new DefaultReaderPoolFactory();
+    protected boolean systemResources = true;
+    protected BeanIdStore beanIdStore = new DefaultBeanIdStore();
+    protected ClassLoader classLoader = getClass().getClassLoader();
+    protected Registry registry;
+    protected ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory;
+    protected ContainerResourceLocator resourceLocator = new URIResourceLocator();
+    protected ResourceConfigLoader resourceConfigLoader = new XmlResourceConfigLoader();
+    protected ReaderPoolFactory readerPoolFactory = new DefaultReaderPoolFactory();
+    protected FilterSettings filterSettings = new DefaultFilterSettings();
 
     public DefaultApplicationContextBuilder() {
 
     }
 
-    protected DefaultApplicationContextBuilder(boolean systemResources, ClassLoader classLoader, Registry registry, ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory, ContainerResourceLocator resourceLocator, ResourceConfigLoader resourceConfigLoader, ReaderPoolFactory readerPoolFactory, BeanIdStore beanIdStore) {
+    protected DefaultApplicationContextBuilder(boolean systemResources, ClassLoader classLoader, Registry registry,
+                                               ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory,
+                                               ContainerResourceLocator resourceLocator,
+                                               ResourceConfigLoader resourceConfigLoader,
+                                               ReaderPoolFactory readerPoolFactory, BeanIdStore beanIdStore,
+                                               FilterSettings filterSettings) {
+
         this.systemResources = systemResources;
         this.classLoader = classLoader;
         this.registry = registry;
@@ -91,45 +104,51 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
         this.resourceConfigLoader = resourceConfigLoader;
         this.readerPoolFactory = readerPoolFactory;
         this.beanIdStore = beanIdStore;
+        this.filterSettings = filterSettings;
     }
 
     @Override
     public DefaultApplicationContextBuilder withClassLoader(ClassLoader classLoader) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
     }
 
     public DefaultApplicationContextBuilder withSystemResources(boolean systemResources) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
     }
 
     @Override
     public DefaultApplicationContextBuilder withRegistry(Registry registry) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
     }
 
     @Override
     public DefaultApplicationContextBuilder withContentDeliveryRuntimeFactory(ContentDeliveryRuntimeFactory contentDeliveryRuntimeFactory) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
     }
 
     @Override
     public DefaultApplicationContextBuilder withResourceLocator(ContainerResourceLocator resourceLocator) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
     }
 
     @Override
     public DefaultApplicationContextBuilder withResourceConfigLoader(ResourceConfigLoader resourceConfigLoader) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
     }
 
     @Override
     public DefaultApplicationContextBuilder withReaderPoolFactory(ReaderPoolFactory readerPoolFactory) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
     }
 
     @Override
     public DefaultApplicationContextBuilder withBeanIdStore(BeanIdStore beanIdStore) {
-        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore);
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
+    }
+
+    @Override
+    public ApplicationContextBuilder withFilterSettings(FilterSettings filterSettings) {
+        return new DefaultApplicationContextBuilder(systemResources, classLoader, registry, contentDeliveryRuntimeFactory, resourceLocator, resourceConfigLoader, readerPoolFactory, beanIdStore, filterSettings);
     }
 
     @Override
@@ -157,8 +176,20 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
         }
 
         applicationContext.getProfileStore().addProfileSet(new DefaultProfileSet(Profile.DEFAULT_PROFILE));
+        applySettings(filterSettings, applicationContextRegistry);
 
         return applicationContext;
+    }
+
+    protected void applySettings(FilterSettings filterSettings, Registry registry) {
+        setParameter(Filter.STREAM_FILTER_TYPE, filterSettings.getFilterType().getName(), registry);
+        setParameter(Filter.ENTITIES_REWRITE, Boolean.toString(filterSettings.isRewriteEntities()), registry);
+        setParameter(Filter.DEFAULT_SERIALIZATION_ON, Boolean.toString(filterSettings.isDefaultSerializationOn()), registry);
+        setParameter(Filter.TERMINATE_ON_VISITOR_EXCEPTION, Boolean.toString(filterSettings.isTerminateOnException()), registry);
+        setParameter(Filter.CLOSE_SOURCE, Boolean.toString(filterSettings.isCloseSource()), registry);
+        setParameter(Filter.CLOSE_SINK, Boolean.toString(filterSettings.isCloseSink()), registry);
+        setParameter(Filter.READER_POOL_SIZE, Integer.toString(filterSettings.getReaderPoolSize()), registry);
+        setParameter(Filter.MAX_NODE_DEPTH, Integer.toString(filterSettings.getMaxNodeDepth()), registry);
     }
 
     protected void initRegistry(ApplicationContext applicationContext, Registry registry) {
@@ -183,5 +214,11 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
         registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-param-decoders.xml", registry.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
         registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-serializers.xml", registry.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
         registry.registerResourceConfigSeq(new SystemResourceConfigSeqFactory("/system-interceptors.xml", registry.getClassLoader(), applicationContext.getResourceLocator(), applicationContext.getResourceConfigLoader()).create());
+    }
+
+    protected void setParameter(String name, Object value, Registry registry) {
+        ResourceConfig resourceConfig = new DefaultResourceConfig(GLOBAL_PARAMETERS, new Properties());
+        resourceConfig.setParameter(name, value);
+        registry.registerResourceConfig(resourceConfig);
     }
 }

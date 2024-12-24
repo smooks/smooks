@@ -67,26 +67,26 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class DefaultContentDeliveryConfigBuilderTestCase {
 
-	@Test
+    @Test
     public void testSax() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-sax.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig);
+        assertInstanceOf(SaxNgContentDeliveryConfig.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig());
         SaxNgContentDeliveryConfig config = (SaxNgContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
         assertEquals(8, config.getBeforeVisitorIndex().size());
-        assertTrue(((InterceptorVisitor)config.getBeforeVisitorIndex().get("b").get(0).getContentHandler()).getTarget().getContentHandler() instanceof Visitor01);
+        assertInstanceOf(Visitor01.class, ((InterceptorVisitor) config.getBeforeVisitorIndex().get("b").get(0).getContentHandler()).getTarget().getContentHandler());
         assertEquals(8, config.getAfterVisitorIndex().size());
-        assertTrue(((InterceptorVisitor)config.getAfterVisitorIndex().get("b").get(0).getContentHandler()).getTarget().getContentHandler() instanceof Visitor01);
+        assertInstanceOf(Visitor01.class, ((InterceptorVisitor) config.getAfterVisitorIndex().get("b").get(0).getContentHandler()).getTarget().getContentHandler());
     }
 
-	@Test
+    @Test
     public void testDom() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof DOMContentDeliveryConfig);
+        assertInstanceOf(DOMContentDeliveryConfig.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig());
         DOMContentDeliveryConfig config = (DOMContentDeliveryConfig) execContext.getContentDeliveryRuntime().getContentDeliveryConfig();
 
         assertEquals(1, config.getAssemblyVisitBeforeIndex().values().stream().mapToLong(Collection::size).sum());
@@ -96,38 +96,38 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
         assertEquals(4, config.getSerializerVisitorIndex().values().stream().mapToLong(Collection::size).sum());
     }
 
-	@Test
+    @Test
     public void testDomSax1() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-1.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
         // Should default to SAX
-        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig);
+        assertInstanceOf(SaxNgContentDeliveryConfig.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig());
     }
 
-	@Test
+    @Test
     public void testDomSax2() throws IOException, SAXException {
         Smooks smooks;
         ExecutionContext execContext;
 
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-2.1.xml"));
         execContext = smooks.createExecutionContext();
-        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof SaxNgContentDeliveryConfig);
+        assertInstanceOf(SaxNgContentDeliveryConfig.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig());
 
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-2.2.xml"));
         execContext = smooks.createExecutionContext();
-        assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof DOMContentDeliveryConfig);
+        assertInstanceOf(DOMContentDeliveryConfig.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig());
 
         smooks = new Smooks(getClass().getResourceAsStream("smooks-config-dom-sax-2.3.xml"));
         try {
             smooks.createExecutionContext();
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
-            assertEquals("The configured Filter ('xxxx') cannot be used: [SAX NG, DOM] filters can be used for the given set of visitors. Turn on debug logging for more information.", e.getMessage());
+        } catch (SmooksException e) {
+            assertEquals("The configured filter [xxxx] cannot be used: [SAX NG, DOM] filters can be used for the given set of visitors. Turn on debug logging for more information", e.getMessage());
         }
     }
 
-	@Test
+    @Test
     public void testDomSax3() throws IOException, SAXException {
         String origDefault = System.setProperty(Filter.STREAM_FILTER_TYPE, StreamFilterType.DOM.toString());
 
@@ -136,9 +136,9 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
             ExecutionContext execContext = smooks.createExecutionContext();
 
             // Should default to DOM
-            assertTrue(execContext.getContentDeliveryRuntime().getContentDeliveryConfig() instanceof DOMContentDeliveryConfig);
+            assertInstanceOf(DOMContentDeliveryConfig.class, execContext.getContentDeliveryRuntime().getContentDeliveryConfig());
         } finally {
-            if(origDefault != null) {
+            if (origDefault != null) {
                 System.setProperty(Filter.STREAM_FILTER_TYPE, origDefault);
             } else {
                 System.getProperties().remove(Filter.STREAM_FILTER_TYPE);
@@ -146,14 +146,14 @@ public class DefaultContentDeliveryConfigBuilderTestCase {
         }
     }
 
-	@Test
+    @Test
     public void testUnsupportedVisitor() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-invalid.xml"));
 
         try {
             smooks.createExecutionContext();
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             String expected = TextUtils.trimLines(getClass().getResourceAsStream("smooks-config-invalid-error.txt")).toString();
             String actual = TextUtils.trimLines(new StringReader(e.getMessage())).toString();
 

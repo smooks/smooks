@@ -81,7 +81,7 @@ public class DefaultContentDeliveryRuntimeFactory implements ContentDeliveryRunt
             synchronized (this) {
                 if (contentDeliveryConfigBuilders.get(profileSet.getBaseProfile()) == null) {
                     contentDeliveryConfigBuilder = new DefaultContentDeliveryConfigBuilder(profileSet, registry, Arrays.asList(new SaxNgFilterProvider(), new DOMFilterProvider()));
-                    final int readerPoolSize = Integer.parseInt(registry.lookup(new GlobalParamsLookup(registry)).getParameterValue(Filter.READER_POOL_SIZE, String.class, "0"));
+                    final int readerPoolSize = Integer.parseInt(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.READER_POOL_SIZE));
                     readerPools.put(contentDeliveryConfigBuilder, readerPoolFactory.create(readerPoolSize));
                     contentDeliveryConfigBuilders.put(profileSet.getBaseProfile(), contentDeliveryConfigBuilder);
                 } else {

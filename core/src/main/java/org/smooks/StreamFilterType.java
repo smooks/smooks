@@ -46,7 +46,9 @@ package org.smooks;
  * Smooks filter type.
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * @deprecated Use an implementation of {@link org.smooks.api.delivery.StreamFilterType} instead.
  */
+@Deprecated
 public enum StreamFilterType {
     SAX_NG("SAX NG"),
     DOM("DOM");

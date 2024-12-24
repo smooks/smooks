@@ -99,7 +99,7 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
         try {
             resourceConfig = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
         } catch (EmptyStackException e) {
-            throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + actualMapTo + "' with attribute '" + attribute + "' value '" + value + "'.");
+            throw new SmooksException(String.format("No resource config available in ExtensionContext stack. Unable to set ResourceConfig property [%s] with attribute [%s] value [%s]", actualMapTo, attribute, value));
         }
 
         if (value == null) {
@@ -108,12 +108,12 @@ public class MapToResourceConfigFromAttribute implements DOMVisitBefore {
 
         if (value == null) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Not setting property '" + actualMapTo + "' on resource configuration.  Attribute '" + attribute + "' value on element '" + DomUtils.getName(element) + "' is null.  You may need to set a default value in the binding configuration.");
+                LOGGER.debug("Not setting property [{}] on resource configuration. Attribute [{}] value on element [{}] is null. You may need to set a default value in the binding configuration.", actualMapTo, attribute, DomUtils.getName(element));
             }
             return;
         } else {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Setting property '" + actualMapTo + "' on resource configuration to a value of '" + value + "'.");
+                LOGGER.debug("Setting property [{}] on resource configuration to a value of [{}].", actualMapTo, value);
             }
         }
 

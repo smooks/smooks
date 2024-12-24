@@ -40,49 +40,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.resource.config.loader.xml.extension;
+package org.smooks.engine.lookup;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.smooks.api.SmooksException;
-import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.api.ExecutionContext;
-import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.w3c.dom.Element;
+import org.smooks.api.resource.config.ResourceConfigSeq;
 
-import javax.inject.Inject;
-import java.util.EmptyStackException;
+import java.util.Map;
+import java.util.function.Function;
 
-/**
- * Set a static value on the current {@link ResourceConfig}.
- * <p/>
- * The value is set on the {@link ResourceConfig} returned from the top
- * of the {@link ExtensionContext#getResourceStack() ExtensionContext resourece stack}.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
- */
-public class SetOnResourceConfig implements DOMVisitBefore {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SetOnResourceConfig.class);
-
-    @Inject
-    private String setOn;
-
-    @Inject
-    private String value;
-
+public class GlobalResourceConfigSeqLookup implements Function<Map<Object, Object>, ResourceConfigSeq> {
     @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ResourceConfig resourceConfig;
-
-        try {
-            resourceConfig = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
-        } catch (EmptyStackException e) {
-            throw new SmooksException(String.format("No resource config available in ExtensionContext stack. Unable to set resource config property [%s] with static value", setOn));
-        }
-
-        LOGGER.debug("Setting property [{}] on resource config to a value of [{}}", setOn, value);
-
-        ResourceConfigUtils.setProperty(resourceConfig, setOn, value, executionContext);
+    public ResourceConfigSeq apply(final Map<Object, Object> registryEntries) {
+        return (ResourceConfigSeq) registryEntries.get(ResourceConfigSeq.class);
     }
 }

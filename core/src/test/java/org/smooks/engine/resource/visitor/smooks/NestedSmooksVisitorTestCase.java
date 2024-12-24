@@ -47,7 +47,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.io.DOMWriter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.smooks.FilterSettings;
 import org.smooks.Smooks;
+import org.smooks.StreamFilterType;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.NotAppContextScoped;
@@ -61,6 +63,7 @@ import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
 import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.DefaultFilterSettings;
 import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.interceptor.ExceptionInterceptor;
@@ -99,6 +102,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class NestedSmooksVisitorTestCase {
@@ -187,7 +191,7 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
-    public void testVisitGivenMemento() throws DocumentException {
+    public void testPipelineVisitorGivenMemento() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         pipeline.addVisitor(new ElementVisitor() {
@@ -741,7 +745,11 @@ public class NestedSmooksVisitorTestCase {
     @Test
     public void testOutputToGivenDocumentSelector() throws DocumentException {
         NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
-        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).
+                withFilterSettings(new DefaultFilterSettings()
+                        .setCloseSink(false))
+                .build());
+
         pipeline.addVisitor(new SimpleSerializerVisitor(), "*");
 
         nestedSmooksVisitor.setAction(Optional.of(NestedSmooksVisitor.Action.OUTPUT_TO));
@@ -766,7 +774,7 @@ public class NestedSmooksVisitorTestCase {
     }
 
     @Test
-    public void testVisitWhenPipelineHasPostFragmentLifecycleVisitor() throws DocumentException {
+    public void testPostFragmentLifecyclePipelineVisitor() throws DocumentException {
         class PostFragmentVisitorUnderTest implements ElementVisitor, PostFragmentLifecycle {
             private final CountDownLatch countDownLatch = new CountDownLatch(2);
 
@@ -801,11 +809,11 @@ public class NestedSmooksVisitorTestCase {
             }
         }
 
-        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
         PostFragmentVisitorUnderTest postFragmentVisitorUnderTest = new PostFragmentVisitorUnderTest();
         pipeline.addVisitor(postFragmentVisitorUnderTest, "a");
 
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
         nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
         nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
         nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
@@ -823,5 +831,49 @@ public class NestedSmooksVisitorTestCase {
                 getDocument())));
 
         assertEquals(1, postFragmentVisitorUnderTest.getCountDownLatch().getCount());
+    }
+
+    @Test
+    public void testPipelineTerminationErrorBubblesUpWhenExceptionIsThrownFromPipelinesVisitorAndTerminateOnExceptionFilterSettingIsTrue() throws DocumentException {
+        class VisitorUnderTest implements AfterVisitor {
+            private final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+            @Override
+            public void visitAfter(Element element, ExecutionContext executionContext) {
+                countDownLatch.countDown();
+                throw new RuntimeException("Unhappy path");
+            }
+
+            public CountDownLatch getCountDownLatch() {
+                return countDownLatch;
+            }
+        }
+
+        NestedSmooksVisitor nestedSmooksVisitor = new NestedSmooksVisitor();
+        Smooks pipeline = new Smooks(new DefaultApplicationContextBuilder().withSystemResources(false).build());
+        VisitorUnderTest visitorUnderTest = new VisitorUnderTest();
+        pipeline.addVisitor(visitorUnderTest, "a");
+
+        nestedSmooksVisitor.setAction(Optional.of(getRandomActions()));
+        nestedSmooksVisitor.setOutputStreamResourceOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setBindIdOptional(Optional.of("foo"));
+        nestedSmooksVisitor.setPipeline(pipeline);
+
+        org.dom4j.Element elementUnderTest = DocumentHelper.createDocument().
+                addElement("a");
+        elementUnderTest.addText("bar");
+        elementUnderTest.addElement("b");
+
+        Smooks smooks = new Smooks();
+        smooks.setFilterSettings(new FilterSettings().setTerminateOnException(false).setFilterType(StreamFilterType.SAX_NG));
+        smooks.addVisitor(nestedSmooksVisitor, "a");
+        ExecutionContext executionContext = smooks.createExecutionContext();
+        smooks.filterSource(executionContext, new DOMSource(new DOMWriter().write(elementUnderTest.
+                getDocument())));
+
+        assertEquals(0, visitorUnderTest.getCountDownLatch().getCount());
+        Throwable terminationError = executionContext.getTerminationError();
+        assertNotNull(terminationError);
+        assertEquals("Unhappy path", terminationError.getCause().getCause().getMessage());
     }
 }

@@ -82,8 +82,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testSelector1() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertEquals("8655", XPathVisitor.domVisitedBeforeElementStatic.getAttribute("c:code"));
         assertEquals("8655", XPathVisitor.domVisitedAfterElementStatic.getAttribute("c:code"));
     }
@@ -94,8 +93,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-02.xml"));
 
         try {
-            smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-            smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+            smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
             assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Resource: [org.smooks.engine.resource.config.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.smooks.api.resource.visitor.sax.ng.AfterVisitor interface only.  Class 'org.smooks.engine.resource.config.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
@@ -107,8 +105,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testSelector3() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-03.xml"));
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
@@ -118,9 +115,8 @@ public class SelectorSaxNgFilterFunctionalTestCase {
         Smooks smooks = new Smooks();
 
         smooks.setNamespaces(namespaces);
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.addVisitor(new XPathVisitor(), "item[@c:code = 8655]");
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertEquals("8655", XPathVisitor.domVisitedBeforeElementStatic.getAttribute("c:code"));
         assertEquals("8655", XPathVisitor.domVisitedAfterElementStatic.getAttribute("c:code"));
     }
@@ -130,10 +126,9 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testAddVisitorSelector2() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.addVisitor(new XPathVisitor(), "item[@code = '8655']/units[text() = 1]");
         try {
-            smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+            smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
             assertEquals("Unsupported selector 'item[@code = '8655']/units[text() = 1]' on resource 'Target Profile: [[org.smooks.api.profile.Profile#default_profile]], Selector: [item[@code = '8655']/units[text() = 1]], Resource: [org.smooks.engine.resource.config.xpath.XPathVisitor], Num Params: [0]'.  The 'text()' XPath token is only supported on SAX Visitor implementations that implement the org.smooks.api.resource.visitor.sax.ng.AfterVisitor interface only.  Class 'org.smooks.engine.resource.config.xpath.XPathVisitor' implements other SAX Visitor interfaces.", e.getMessage());
@@ -142,13 +137,12 @@ public class SelectorSaxNgFilterFunctionalTestCase {
 
     @Test
     @DisplayName("item[@c:code = '8655']/units[text() = 1]")
-    public void testAddVisitorSelector3() throws IOException, SAXException {
+    public void testAddVisitorSelector3() {
         Smooks smooks = new Smooks();
 
         smooks.setNamespaces(namespaces);
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.addVisitor(new XPathAfterVisitor(), "item[@c:code = '8655']/units[text() = 1]");
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
@@ -157,8 +151,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testSelector4() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-04.xml"));
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
@@ -167,8 +160,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testSelector5() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-05.xml"));
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertNull(XPathAfterVisitor.domVisitedAfterElement);
     }
 
@@ -177,8 +169,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testSelector6() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-06.xml"));
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
@@ -187,11 +178,10 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testAddVisitorSelector4() throws IOException, SAXException {
         Smooks smooks = new Smooks();
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.setNamespaces(namespaces);
 
         smooks.addVisitor(new XPathAfterVisitor(), "/a:ord[@num = 3122 and @state = 'finished']/a:items/c:item[@c:code = '8655']/d:units[text() = 1]");
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertEquals("1", XPathAfterVisitor.domVisitedAfterElement.getTextContent());
     }
 
@@ -201,9 +191,8 @@ public class SelectorSaxNgFilterFunctionalTestCase {
         Smooks smooks = new Smooks();
 
         smooks.setNamespaces(namespaces);
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.addVisitor(new XPathVisitor(), "not(ancestor::a:ord)");
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
         assertEquals("ord", XPathVisitor.domVisitedBeforeElementStatic.getNodeName());
         assertEquals("ord", XPathVisitor.domVisitedAfterElementStatic.getNodeName());
     }
@@ -213,8 +202,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testSelectorGivenIndex() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-07.xml"));
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order_02.xml")));
 
         assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
         assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
@@ -225,9 +213,8 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testAddVisitorSelectorGivenIndex() {
         Smooks smooks = new Smooks();
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.addVisitor(new XPathVisitor(), "items/item[2]/units");
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
 
         assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
         assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
@@ -237,9 +224,8 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     @DisplayName("items/item[2]")
     public void testAddVisitorSelectorsGivenIndexInLastStep() {
         Smooks smooks = new Smooks();
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.addVisitor(new XPathVisitor(), "items/item[2]");
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
 
         assertNotNull(XPathVisitor.domVisitedBeforeElementStatic);
         assertNotNull(XPathVisitor.domVisitedAfterElementStatic);
@@ -250,8 +236,7 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testSelectorGivenWrongIndex() throws Exception {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config-08.xml"));
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
 
         assertNull(XPathVisitor.domVisitedBeforeElementStatic);
         assertNull(XPathVisitor.domVisitedAfterElementStatic);
@@ -262,9 +247,8 @@ public class SelectorSaxNgFilterFunctionalTestCase {
     public void testAddVisitorSelectorGivenWrongIndex() {
         Smooks smooks = new Smooks();
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.addVisitor(new XPathVisitor(), "items/item[3]/units");
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order.xml")));
 
         assertNull(XPathVisitor.domVisitedBeforeElementStatic);
         assertNull(XPathVisitor.domVisitedAfterElementStatic);
@@ -277,12 +261,10 @@ public class SelectorSaxNgFilterFunctionalTestCase {
         XPathVisitor visitor1 = new XPathVisitor();
         XPathVisitor visitor2 = new XPathVisitor();
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
-
         smooks.addVisitor(visitor1, "items[1]/item[2]/units");
         smooks.addVisitor(visitor2, "items[2]/item[1]/units");
 
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order_02.xml")));
 
         assertEquals("2", visitor1.getDomVisitedAfterElement().getAttribute("index"));
         assertEquals("1", visitor2.getDomVisitedAfterElement().getAttribute("index"));
@@ -295,13 +277,12 @@ public class SelectorSaxNgFilterFunctionalTestCase {
         XPathVisitor visitor1 = new XPathVisitor();
         XPathVisitor visitor2 = new XPathVisitor();
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.setNamespaces(namespaces);
 
         smooks.addVisitor(visitor1, "items[1]/c:item[2]/units");
         smooks.addVisitor(visitor2, "items[2]/c:item[1]/units");
 
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order_02.xml")));
 
         assertEquals("2", visitor1.getDomVisitedAfterElement().getAttribute("index"));
         assertEquals("1", visitor2.getDomVisitedAfterElement().getAttribute("index"));
@@ -314,13 +295,12 @@ public class SelectorSaxNgFilterFunctionalTestCase {
         XPathVisitor visitor1 = new XPathVisitor();
         XPathVisitor visitor2 = new XPathVisitor();
 
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX_NG);
         smooks.setNamespaces(namespaces);
 
         smooks.addVisitor(visitor1, "items[1]/d:item[2]/units");
         smooks.addVisitor(visitor2, "items[2]/d:item[1]/units");
 
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order_02.xml")));
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order_02.xml")));
 
         assertNull(visitor1.getDomVisitedAfterElement());
         assertNull(visitor2.getDomVisitedAfterElement());

@@ -114,6 +114,13 @@ public interface ApplicationContextBuilder {
      */
     ApplicationContextBuilder withBeanIdStore(BeanIdStore beanIdStore);
 
+    /**
+     * Sets filter settings for the application context.
+     *
+     * @param filterSettings filter setting to use for the application context
+     * @return a shallow copy of <code>this</code> with <code>filterSettings</code> set to the given value
+     */
+    ApplicationContextBuilder withFilterSettings(FilterSettings filterSettings);
 
     /**
      * @return a new application context

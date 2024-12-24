@@ -42,35 +42,86 @@
  */
 package org.smooks.engine.lookup;
 
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
-import org.smooks.api.Registry;
+import org.smooks.engine.resource.config.ParameterDecoder;
+import org.smooks.engine.resource.config.TokenizedStringParameterDecoder;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class GlobalParamsLookup implements Function<Map<Object, Object>, ResourceConfig> {
-    private final Registry registry;
-
-    public GlobalParamsLookup(final Registry registry) {
-        this.registry = registry;
-    }
+/**
+ * Accessor class for looking up global parameters.
+ * <p id="decode"/>
+ * Profile specific parameters are stored under the "global-parameters" selector
+ * (see {@link ResourceConfig}).  The parameter values are
+ * stored in the &lt;param&gt; elements within this Content Delivery Resource definition.
+ * This class iterates over the list of {@link ResourceConfig}
+ * elements targeted at the {@link ExecutionContext} profile.  It looks for a definition of the named
+ * parameter.  If the &lt;param&gt; has a type attribute the
+ * {@link ParameterDecoder} for that type can be applied to the attribute
+ * value through the {@link #getParameterObject(String, ContentDeliveryConfig)} method,
+ * returning whatever Java type defined by the {@link ParameterDecoder}
+ * implementation.  As an example, see {@link TokenizedStringParameterDecoder}.
+ *
+ * @author tfennelly
+ */
+public class GlobalParamsLookup implements Function<Map<Object, Object>, GlobalParamsLookup.ParameterAccessor> {
 
     @Override
-    public ResourceConfig apply(final Map<Object, Object> registryEntries) {
-        final ResourceConfig resourceConfig = new DefaultResourceConfig();
+    public ParameterAccessor apply(final Map<Object, Object> registryEntries) {
+        final Map<String, Object> globalParams = new ConcurrentHashMap<>();
+        final List<ResourceConfigSeq> resourceConfigSeqs = new ResourceConfigSeqsLookup().apply(Collections.unmodifiableMap(registryEntries));
 
-        for (final ResourceConfigSeq resourceConfigSeq : this.registry.lookup(new ResourceConfigSeqsLookup())) {
+        for (final ResourceConfigSeq resourceConfigSeq : resourceConfigSeqs) {
             for (int i = 0; i < resourceConfigSeq.size(); i++) {
                 final ResourceConfig nextResourceConfig = resourceConfigSeq.get(i);
-                if (ParameterAccessor.GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
-                    resourceConfig.addParameters(nextResourceConfig);
+                if (ResourceConfig.GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
+                    for (Map.Entry<String, Object> globalParameter : nextResourceConfig.getParameters().entrySet()) {
+                        if (globalParams.get(globalParameter.getKey()) == null) {
+                            String systemProperty = System.getProperty(globalParameter.getKey());
+                            if (systemProperty == null) {
+                                globalParams.put(globalParameter.getKey(), nextResourceConfig.getParameterValue(globalParameter.getKey()));
+                            } else {
+                                globalParams.put(globalParameter.getKey(), systemProperty);
+                            }
+                        } else {
+                            if (!nextResourceConfig.isSystem()) {
+                                globalParams.put(globalParameter.getKey(), nextResourceConfig.getParameterValue(globalParameter.getKey()));
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        return resourceConfig;
+
+        return new ParameterAccessor(globalParams);
+    }
+
+    public static class ParameterAccessor {
+        private final Map<String, Object> globalParams;
+
+        private ParameterAccessor(Map<String, Object> globalParams) {
+            this.globalParams = new ConcurrentHashMap<>(globalParams);
+        }
+
+        public <T> T getParameterValue(String name) {
+            T globalParam = (T) globalParams.get(name);
+            if (globalParam == null) {
+                globalParam = (T) System.getProperty(name);
+            }
+            return globalParam;
+        }
+
+        public Map<String, Object> getParameters() {
+            return new HashMap<>(globalParams);
+        }
     }
 }
