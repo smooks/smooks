@@ -162,13 +162,6 @@ public interface ResourceConfig {
      */
     String SELECTOR_NONE = "none";
 
-
-    /**
-     * A reserved selector for resources that hold config parameters.
-     */
-    String GLOBAL_PARAMETERS = "global-parameters";
-
-
     /**
      * Performs a shallow clone of this <code>ResourceConfig</code>.
      *

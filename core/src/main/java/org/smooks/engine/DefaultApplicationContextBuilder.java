@@ -53,6 +53,7 @@ import org.smooks.api.resource.config.loader.ResourceConfigLoader;
 import org.smooks.engine.bean.context.DefaultBeanIdStore;
 import org.smooks.engine.delivery.DefaultReaderPoolFactory;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.engine.resource.config.GlobalParamsResourceConfig;
 import org.smooks.engine.resource.config.SystemResourceConfigSeqFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.ApplicationContextBuilder;
@@ -70,8 +71,6 @@ import org.smooks.resource.URIResourceLocator;
 
 import java.util.Properties;
 import java.util.ServiceLoader;
-
-import static org.smooks.api.resource.config.ResourceConfig.GLOBAL_PARAMETERS;
 
 public class DefaultApplicationContextBuilder implements ApplicationContextBuilder {
 
@@ -217,8 +216,8 @@ public class DefaultApplicationContextBuilder implements ApplicationContextBuild
     }
 
     protected void setParameter(String name, Object value, Registry registry) {
-        ResourceConfig resourceConfig = new DefaultResourceConfig(GLOBAL_PARAMETERS, new Properties());
-        resourceConfig.setParameter(name, value);
-        registry.registerResourceConfig(resourceConfig);
+        ResourceConfig globalParamsResourceConfig = new GlobalParamsResourceConfig();
+        globalParamsResourceConfig.setParameter(name, value);
+        registry.registerResourceConfig(globalParamsResourceConfig);
     }
 }

@@ -46,6 +46,7 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.ContentDeliveryConfig;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
+import org.smooks.engine.resource.config.GlobalParamsResourceConfig;
 import org.smooks.engine.resource.config.ParameterDecoder;
 import org.smooks.engine.resource.config.TokenizedStringParameterDecoder;
 
@@ -82,7 +83,7 @@ public class GlobalParamsLookup implements Function<Map<Object, Object>, GlobalP
         for (final ResourceConfigSeq resourceConfigSeq : resourceConfigSeqs) {
             for (int i = 0; i < resourceConfigSeq.size(); i++) {
                 final ResourceConfig nextResourceConfig = resourceConfigSeq.get(i);
-                if (ResourceConfig.GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
+                if (GlobalParamsResourceConfig.GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
                     for (Map.Entry<String, Object> globalParameter : nextResourceConfig.getParameters().entrySet()) {
                         if (globalParams.get(globalParameter.getKey()) == null) {
                             String systemProperty = System.getProperty(globalParameter.getKey());

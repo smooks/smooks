@@ -50,11 +50,7 @@ import org.smooks.engine.DefaultFilterSettings;
 import org.smooks.engine.delivery.dom.DOMFilterType;
 import org.smooks.engine.delivery.sax.ng.SaxNgFilterType;
 import org.smooks.engine.lookup.ResourceConfigSeqsLookup;
-import org.smooks.engine.resource.config.DefaultResourceConfig;
-
-import java.util.Properties;
-
-import static org.smooks.api.resource.config.ResourceConfig.GLOBAL_PARAMETERS;
+import org.smooks.engine.resource.config.GlobalParamsResourceConfig;
 
 /**
  * Smooks filter settings for programmatic configuration of the {@link Smooks} instance.
@@ -220,16 +216,16 @@ public class FilterSettings {
     }
 
     private void setParameter(String name, Object value, Registry registry) {
-        ResourceConfig resourceConfig = new DefaultResourceConfig(GLOBAL_PARAMETERS, new Properties());
-        resourceConfig.setParameter(name, value);
-        registry.registerResourceConfig(resourceConfig);
+        ResourceConfig globalParamsResourceConfig = new GlobalParamsResourceConfig();
+        globalParamsResourceConfig.setParameter(name, value);
+        registry.registerResourceConfig(globalParamsResourceConfig);
     }
 
     private void removeParameter(String name, Registry registry) {
         for (ResourceConfigSeq resourceConfigSeq : registry.lookup(new ResourceConfigSeqsLookup())) {
             for (int i = 0; i < resourceConfigSeq.size(); i++) {
                 ResourceConfig nextResourceConfig = resourceConfigSeq.get(i);
-                if (GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
+                if (GlobalParamsResourceConfig.GLOBAL_PARAMETERS.equals(nextResourceConfig.getSelectorPath().getSelector())) {
                     nextResourceConfig.removeParameter(name);
                 }
             }

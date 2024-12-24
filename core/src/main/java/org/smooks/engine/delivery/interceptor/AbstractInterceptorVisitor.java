@@ -184,4 +184,12 @@ public abstract class AbstractInterceptorVisitor implements InterceptorVisitor {
             return BeforeVisitor.class;
         }
     }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 }

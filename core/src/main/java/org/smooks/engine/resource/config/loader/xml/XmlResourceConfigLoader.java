@@ -64,6 +64,7 @@ import org.smooks.engine.profile.DefaultProfileSet;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.engine.resource.config.DefaultResourceConfigFactory;
 import org.smooks.engine.resource.config.DefaultResourceConfigSeq;
+import org.smooks.engine.resource.config.GlobalParamsResourceConfig;
 import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
 import org.smooks.io.source.DOMSource;
 import org.smooks.resource.URIResourceLocator;
@@ -220,10 +221,10 @@ public class XmlResourceConfigLoader implements ResourceConfigLoader {
         NodeList paramNodes = paramsElement.getElementsByTagName("param");
 
         if (paramNodes.getLength() > 0) {
-            ResourceConfig globalParamsConfig = new DefaultResourceConfig(ResourceConfig.GLOBAL_PARAMETERS, new Properties());
+            ResourceConfig globalParamsResourceConfig = new GlobalParamsResourceConfig();
 
-            digestParameters(paramsElement, globalParamsConfig);
-            resourceConfigSeq.add(globalParamsConfig);
+            digestParameters(paramsElement, globalParamsResourceConfig);
+            resourceConfigSeq.add(globalParamsResourceConfig);
         }
     }
 
