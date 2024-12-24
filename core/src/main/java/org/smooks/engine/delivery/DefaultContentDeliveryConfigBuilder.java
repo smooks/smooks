@@ -95,6 +95,8 @@ import java.util.stream.Collectors;
  */
 public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfigBuilder {
 
+    protected static final String LINE_SEPARATOR = System.lineSeparator();
+
     /**
      * Logger.
      */
@@ -180,7 +182,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         FilterProvider filterProvider = getFilterProvider();
 
         LOGGER.debug("Activating [{}] filter", filterProvider.getName());
-        configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent("SAX/DOM support characteristics of the Resource Configuration map:\n" + getResourceFilterCharacteristics()));
+        configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent("SAX/DOM support characteristics of the Resource Configuration map:" + LINE_SEPARATOR + getResourceFilterCharacteristics()));
         configBuilderEvents.add(new DefaultContentDeliveryConfigExecutionEvent(String.format("Activating [%s] filter", filterProvider.getName())));
 
         ContentDeliveryConfig contentDeliveryConfig = filterProvider.createContentDeliveryConfig(visitorBindings, registry, resourceConfigTable, configBuilderEvents);
@@ -195,7 +197,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
 
         AnyFilterType anyFilterType = new AnyFilterType();
         if (filterTypeParam.equals(anyFilterType.getName()) && candidateFilterProviders.isEmpty()) {
-            throw new SmooksConfigException("Ambiguous Resource Config set. All content handlers must support processing on the SAX and/or DOM Filter:\n" + getResourceFilterCharacteristics());
+            throw new SmooksConfigException("Ambiguous Resource Config set. All content handlers must support processing on the SAX and/or DOM Filter:" + LINE_SEPARATOR + getResourceFilterCharacteristics());
         } else if (filterTypeParam.equals(anyFilterType.getName())) {
             return candidateFilterProviders.get(0);
         } else {
@@ -217,14 +219,14 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         StringBuffer stringBuf = new StringBuffer();
         List<ContentHandler> printedHandlers = new ArrayList<>();
 
-        stringBuf.append("\t\tDOM   SAX    Resource  ('x' equals supported)\n");
-        stringBuf.append("\t\t---------------------------------------------------------------------\n");
+        stringBuf.append("\t\tDOM   SAX    Resource  ('x' equals supported)" + LINE_SEPARATOR);
+        stringBuf.append("\t\t---------------------------------------------------------------------" + LINE_SEPARATOR);
 
         for (ContentHandlerBinding<Visitor> contentHandlerBinding : visitorBindings) {
             printHandlerCharacteristics(contentHandlerBinding, stringBuf, printedHandlers);
         }
 
-        stringBuf.append("\n\n");
+        stringBuf.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         return stringBuf.toString();
     }
@@ -245,7 +247,7 @@ public class DefaultContentDeliveryConfigBuilder implements ContentDeliveryConfi
         }
 
         stringBuf.append(contentHandlerBinding.getResourceConfig())
-                .append("\n");
+                .append(LINE_SEPARATOR);
     }
 
     private Map<String, Boolean> getOrderedSupportedFilterProviders(ContentHandlerBinding<Visitor> contentHandlerBinding) {

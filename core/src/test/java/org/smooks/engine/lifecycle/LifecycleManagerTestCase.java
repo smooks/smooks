@@ -109,7 +109,7 @@ public class LifecycleManagerTestCase {
             lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), resourceConfig, cdu)));
             fail(" Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
-            assertTrue(e.getMessage().startsWith("<param> 'paramC' not specified on resource configuration"));
+            assertTrue(e.getMessage().startsWith("Parameter [paramC] not specified on resource configuration"));
         }
     }
 
@@ -213,7 +213,7 @@ public class LifecycleManagerTestCase {
             lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), resourceConfig, cdu)));
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
-            assertEquals("Value 'X' for parameter 'paramA' is invalid.  Valid choices for this parameter are: [A, B, C]", e.getMessage());
+            assertEquals("Value [X] for parameter [paramA] is invalid. Valid choices for this parameter are: [A, B, C]", e.getMessage());
         }
     }
 
@@ -229,7 +229,7 @@ public class LifecycleManagerTestCase {
             lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), resourceConfig, cdu)));
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigException e) {
-            assertEquals("Failed to set parameter configuration value on 'org.smooks.engine.lifecycle.LifecycleManagerTestCase$MyContentDeliveryUnit7#encoding'.", e.getMessage());
+            assertEquals("Failed to set parameter configuration value on [org.smooks.engine.lifecycle.LifecycleManagerTestCase$MyContentDeliveryUnit7#encoding]", e.getMessage());
             assertEquals("Unsupported character set 'XXXX'.", e.getCause().getMessage());
         }
     }

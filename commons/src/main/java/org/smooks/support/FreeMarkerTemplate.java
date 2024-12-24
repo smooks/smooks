@@ -58,6 +58,7 @@ import java.io.*;
 public class FreeMarkerTemplate {
 
     public static final String DEFAULT_MACHINE_READABLE_NUMBER_FORMAT = "#.##########";
+    protected static final String LINE_SEPARATOR = System.lineSeparator();
 
     private final String templateText;
     private final Template template;
@@ -78,7 +79,7 @@ public class FreeMarkerTemplate {
                 templateReader.close();
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Exception creating FreeMarker Template instance for template:\n\n[" + templateText + "]\n\n", e);
+            throw new IllegalStateException("Exception creating FreeMarker Template instance for template:" + LINE_SEPARATOR + LINE_SEPARATOR + "[" + templateText + "]" + LINE_SEPARATOR + LINE_SEPARATOR, e);
         }
     }
 

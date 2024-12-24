@@ -79,10 +79,8 @@ import java.nio.file.Paths;
  */
 public class URIResourceLocator implements ContainerResourceLocator {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(URIResourceLocator.class);
+    protected static final String LINE_SEPARATOR = System.lineSeparator();
+    protected static final Logger LOGGER = LoggerFactory.getLogger(URIResourceLocator.class);
 
     /**
      * Scheme name for classpath based resources.
@@ -122,10 +120,10 @@ public class URIResourceLocator implements ContainerResourceLocator {
         File fileResolved = null;
         StringBuilder errorBuilder = new StringBuilder();
 
-        errorBuilder.append("\tFile System: ").append(fileUnresolved.getAbsolutePath()).append("\n");
+        errorBuilder.append("\tFile System: ").append(fileUnresolved.getAbsolutePath()).append(LINE_SEPARATOR);
         if (scheme == null) {
             fileResolved = new File(uri.resolvedURI.getPath());
-            errorBuilder.append("\tFile System: ").append(fileResolved.getAbsolutePath()).append("\n");
+            errorBuilder.append("\tFile System: ").append(fileResolved.getAbsolutePath()).append(LINE_SEPARATOR);
         }
 
         boolean unresolvedExists = false;
@@ -153,13 +151,13 @@ public class URIResourceLocator implements ContainerResourceLocator {
             if (path.charAt(0) != '/') {
                 path = "/" + path;
             }
-            errorBuilder.append("\tClasspath: ").append(path).append("\n");
+            errorBuilder.append("\tClasspath: ").append(path).append(LINE_SEPARATOR);
             stream = ClassUtils.getResourceAsStream(path, getClass());
         } else {
             boolean isHttp = ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme));
             url = uri.resolvedURI.toURL();
             URLConnection connection = url.openConnection();
-            errorBuilder.append("\tURL: ").append(url).append("\n");
+            errorBuilder.append("\tURL: ").append(url).append(LINE_SEPARATOR);
 
             if (isHttp) {
                 ((HttpURLConnection) connection).setInstanceFollowRedirects(false);
@@ -183,7 +181,7 @@ public class URIResourceLocator implements ContainerResourceLocator {
         }
 
         if (stream == null) {
-            throw new IOException("Failed to access data stream for resource [" + uri.inputURI + "]. Tried (in order):\n" + errorBuilder);
+            throw new IOException("Failed to access data stream for resource [" + uri.inputURI + "]. Tried (in order):" + LINE_SEPARATOR + errorBuilder);
         }
 
         return stream;

@@ -73,7 +73,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
                 doSetMember(member, instance, value, name);
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new SmooksConfigException("Failed to set parameter configuration value on '" + ClassUtils.getLongMemberName(member) + "'.", e);
+            throw new SmooksConfigException(String.format("Failed to set parameter configuration value on [%s]", ClassUtils.getLongMemberName(member)), e);
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
                         convertedValueInject = Enum.valueOf((Class) realType, convertedValueInject.toString());
                     } catch (IllegalArgumentException e) {
                         final Object[] enumConstants = ((Class<?>) realType).getEnumConstants();
-                        throw new SmooksConfigException("Value '" + convertedValueInject.toString() + "' for parameter '" + name + "' is invalid.  Valid choices for this parameter are: " + Arrays.stream(enumConstants).map(c -> ((Enum) c).name()).collect(Collectors.toList()));
+                        throw new SmooksConfigException(String.format("Value [%s] for parameter [%s] is invalid. Valid choices for this parameter are: %s", convertedValueInject, name, Arrays.stream(enumConstants).map(c -> ((Enum) c).name()).collect(Collectors.toList())));
                     }
                 }
 
@@ -135,14 +135,14 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
                     setMember(member, instance, convertedValueInject, name);
                 }
             } catch (TypeConverterException e) {
-                throw new SmooksConfigException("Failed to set parameter configuration value on '" + ClassUtils.getLongMemberName(member) + "'.", e);
+                throw new SmooksConfigException(String.format("Failed to set parameter configuration value on [%s]", ClassUtils.getLongMemberName(member)), e);
             }
         } else {
             if (getDefaultParamValue(instance, member) == null) {
                 if (getType(member).equals(Optional.class)) {
                     setMember(member, instance, Optional.empty(), name);
                 } else {
-                    throw new SmooksConfigException("<param> '" + name + "' not specified on resource configuration:\n" + scope);
+                    throw new SmooksConfigException(String.format("Parameter [%s] not specified on resource configuration:%s", name, System.lineSeparator() + scope));
                 }
             }
         }

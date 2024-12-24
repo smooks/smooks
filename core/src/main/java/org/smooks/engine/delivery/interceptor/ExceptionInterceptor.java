@@ -59,26 +59,41 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.sax.ng.terminate.TerminateException;
 import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.w3c.dom.CharacterData;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import jakarta.annotation.PostConstruct;
+import org.w3c.dom.Node;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class ExceptionInterceptor extends AbstractInterceptorVisitor implements ElementVisitor, DOMElementVisitor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionInterceptor.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(ExceptionInterceptor.class);
+    protected static final char PATH_SEPARATOR = '/';
+    protected static final String LINE_SEPARATOR = System.lineSeparator();
+    protected static final String DIVIDER = LINE_SEPARATOR + "---------------------------------------------------------------------------------------------------------------------------------------" + LINE_SEPARATOR;
 
     protected boolean terminateOnVisitorException;
     protected String visitBeforeExceptionMessage;
     protected String visitAfterExceptionMessage;
     protected String visitChildTextExceptionMessage;
-    private String visitChildElementExceptionMessage;
+    protected String visitChildElementExceptionMessage;
 
     @PostConstruct
     public void postConstruct() {
         terminateOnVisitorException = Boolean.parseBoolean(applicationContext.getRegistry().lookup(new GlobalParamsLookup()).getParameterValue(Filter.TERMINATE_ON_VISITOR_EXCEPTION));
-        visitBeforeExceptionMessage = String.format("Error in [%s] while processing start event", getTarget().getContentHandler().getClass().getName());
-        visitAfterExceptionMessage = String.format("Error in [%s] while processing end event", getTarget().getContentHandler().getClass().getName());
-        visitChildTextExceptionMessage = String.format("Error in [%s] while processing text event", getTarget().getContentHandler().getClass().getName());
-        visitChildElementExceptionMessage = String.format("Error in [%s] while processing child event", getTarget().getContentHandler().getClass().getName());
+
+        String errorContext = LINE_SEPARATOR + LINE_SEPARATOR + "Error Context" + DIVIDER;
+        errorContext +=
+                "Event => %s" + LINE_SEPARATOR +
+                "Selector => " + getTarget().getResourceConfig().getSelectorPath().getSelector() + LINE_SEPARATOR +
+                "Content handler => " + getTarget().getContentHandler().getClass().getName();
+
+        visitBeforeExceptionMessage = "Error while processing start event" + errorContext;
+        visitAfterExceptionMessage = "Error while processing end event" + errorContext;
+        visitChildTextExceptionMessage = "Error while processing text event" + errorContext;
+        visitChildElementExceptionMessage = "Error while processing child event" + errorContext;
     }
 
     @Override
@@ -98,10 +113,14 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
 
     @Override
     public void visitChildElement(Element childElement, ExecutionContext executionContext) {
-        intercept(visitChildElementInvocation, executionContext, visitChildElementExceptionMessage, new NodeFragment(childElement.getParentNode()), VisitSequence.AFTER, childElement, executionContext);
+        try {
+            intercept(visitChildElementInvocation, childElement, executionContext);
+        } catch (Throwable t) {
+            processVisitorException(t, visitChildElementExceptionMessage, executionContext, new NodeFragment(childElement), VisitSequence.AFTER, visitorBinding);
+        }
     }
 
-    private <T extends Visitor> void intercept(final Invocation<T> invocation, final ExecutionContext executionContext, final String exceptionMessage, final Fragment<?> fragment, final VisitSequence visitSequence, final Object... invocationArgs) {
+    protected <T extends Visitor> void intercept(final Invocation<T> invocation, final ExecutionContext executionContext, final String exceptionMessage, final Fragment<?> fragment, final VisitSequence visitSequence, final Object... invocationArgs) {
         try {
             intercept(invocation, invocationArgs);
         } catch (Throwable t) {
@@ -109,7 +128,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
         }
     }
 
-    private void processVisitorException(final Throwable t, final String exceptionMessage, final ExecutionContext executionContext, final Fragment<?> fragment, final VisitSequence visitSequence, final ContentHandlerBinding<Visitor> visitorBinding) {
+    protected void processVisitorException(final Throwable t, final String exceptionMessage, final ExecutionContext executionContext, final Fragment<?> fragment, final VisitSequence visitSequence, final ContentHandlerBinding<Visitor> visitorBinding) {
         for (ExecutionEventListener executionEventListener : executionContext.getContentDeliveryRuntime().getExecutionEventListeners()) {
             executionEventListener.onEvent(new VisitExecutionEvent<>(fragment, visitorBinding, visitSequence, executionContext, t));
         }
@@ -119,15 +138,33 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
         }
 
         executionContext.setTerminationError(t);
-
+        String completeExceptionMessage = String.format(exceptionMessage, toPath((Node) fragment.unwrap()));
         if (terminateOnVisitorException) {
             if (t instanceof SmooksException) {
                 throw (SmooksException) t;
             } else {
-                throw new SmooksException(exceptionMessage, t);
+                throw new SmooksException(completeExceptionMessage + DIVIDER, t);
             }
         } else {
-            LOGGER.error(exceptionMessage, t);
+            LOGGER.error(completeExceptionMessage + LINE_SEPARATOR + LINE_SEPARATOR + "Stack Trace" + DIVIDER + stackTraceToString(t));
         }
+    }
+
+    protected String toPath(Node node) {
+        StringBuilder path = new StringBuilder().append(PATH_SEPARATOR).append(node.getNodeName());
+        node = node.getParentNode();
+        while (node != null && !(node instanceof Document)) {
+            path.insert(0, PATH_SEPARATOR + node.getNodeName());
+            node = node.getParentNode();
+        }
+
+        return path.toString();
+    }
+
+    protected String stackTraceToString(Throwable e) {
+        final StringWriter writer = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(writer, true);
+        e.printStackTrace(printWriter);
+        return writer.toString();
     }
 }

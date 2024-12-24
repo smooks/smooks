@@ -69,6 +69,8 @@ import java.util.Set;
  */
 public class JavaSink implements Sink, SinkExtractor<JavaSink> {
 
+    protected static final String LINE_SEPARATOR = System.lineSeparator();
+
     private Map<String, Object> resultMap;
 
     /**
@@ -158,8 +160,8 @@ public class JavaSink implements Sink, SinkExtractor<JavaSink> {
             Set<Map.Entry<String, Object>> entries = resultMap.entrySet();
 
             for (Map.Entry<String, Object> entry : entries) {
-                stringBuilder.write(entry.getKey() + ":\n");
-                stringBuilder.write(xstream.toXML(entry.getValue()) + "\n\n");
+                stringBuilder.write(entry.getKey() + ":" + LINE_SEPARATOR);
+                stringBuilder.write(xstream.toXML(entry.getValue()) + LINE_SEPARATOR + LINE_SEPARATOR);
             }
         }
 
