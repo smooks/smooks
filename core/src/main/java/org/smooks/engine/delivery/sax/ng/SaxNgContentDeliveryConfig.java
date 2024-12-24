@@ -203,8 +203,8 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
             reducedIndex.put(selector, visitorBindings);
         }
 
-        final Boolean smooksVisitorsSort = registry.lookup(new GlobalParamsLookup()).getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT);
-        if (smooksVisitorsSort == null || smooksVisitorsSort) {
+        final Boolean smooksVisitorsSort = registry.lookup(new GlobalParamsLookup()).getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, true);
+        if (smooksVisitorsSort) {
             sort();
         }
 
@@ -294,7 +294,7 @@ public class SaxNgContentDeliveryConfig extends AbstractContentDeliveryConfig {
 
     public boolean isReverseVisitOrderOnVisitAfter() {
         if (reverseVisitOrderOnVisitAfter == null) {
-            reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER));
+            reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, "true"));
         }
         return reverseVisitOrderOnVisitAfter;
     }

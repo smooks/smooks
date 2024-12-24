@@ -249,7 +249,7 @@ public class SmooksDOMFilter extends AbstractFilter {
 
         closeSource = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.CLOSE_SOURCE));
         closeSink = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.CLOSE_SINK));
-        reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER));
+        reverseVisitOrderOnVisitAfter = Boolean.parseBoolean(registry.lookup(new GlobalParamsLookup()).getParameterValue(Filter.REVERSE_VISIT_ORDER_ON_VISIT_AFTER, "true"));
 
         for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
             if (executionEventListener instanceof AbstractReportGenerator) {

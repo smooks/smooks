@@ -113,11 +113,15 @@ public class GlobalParamsLookup implements Function<Map<Object, Object>, GlobalP
         }
 
         public <T> T getParameterValue(String name) {
+            return getParameterValue(name, null);
+        }
+
+        public <T> T getParameterValue(String name, T defaultValue) {
             T globalParam = (T) globalParams.get(name);
             if (globalParam == null) {
                 globalParam = (T) System.getProperty(name);
             }
-            return globalParam;
+            return globalParam != null ? globalParam : defaultValue;
         }
 
         public Map<String, Object> getParameters() {

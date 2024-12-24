@@ -133,8 +133,8 @@ public class DOMFilterProvider extends AbstractFilterProvider {
         domConfig.setResourceConfigs(resourceConfigTable);
         domConfig.getContentDeliveryConfigExecutionEvents().addAll(contentDeliveryConfigExecutionEvents);
 
-        final Boolean smooksVisitorsSort = registry.lookup(new GlobalParamsLookup()).getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT);
-        if (smooksVisitorsSort == null || smooksVisitorsSort) {
+        final Boolean smooksVisitorsSort = registry.lookup(new GlobalParamsLookup()).getParameterValue(ContentDeliveryConfig.SMOOKS_VISITORS_SORT, true);
+        if (smooksVisitorsSort) {
             domConfig.sort();
         }
 
