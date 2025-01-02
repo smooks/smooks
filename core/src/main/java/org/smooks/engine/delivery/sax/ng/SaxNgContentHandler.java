@@ -191,7 +191,7 @@ public class SaxNgContentHandler extends SmooksContentHandler {
     @Override
     public void endElement(final EndElementEvent endEvent) throws SAXException {
         if (!contentDeliveryRuntime.getExecutionEventListeners().isEmpty()) {
-            final EndFragmentExecutionEvent endFragmentEvent = new EndFragmentExecutionEvent(currentNodeFragment);
+            final EndFragmentExecutionEvent<Node> endFragmentEvent = new EndFragmentExecutionEvent<>(currentNodeFragment);
             for (ExecutionEventListener executionEventListener : contentDeliveryRuntime.getExecutionEventListeners()) {
                 executionEventListener.onEvent(endFragmentEvent);
             }

@@ -40,13 +40,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng.pointer;
+package org.smooks.engine.delivery.interceptor;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.engine.delivery.event.VisitSequence;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.interceptor.StaticProxyInterceptor;
+import org.smooks.engine.delivery.sax.ng.pointer.EventPointer;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

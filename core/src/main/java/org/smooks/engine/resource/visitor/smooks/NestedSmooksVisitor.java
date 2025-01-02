@@ -57,6 +57,7 @@ import org.smooks.api.bean.repository.BeanId;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Consumer;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.lifecycle.PreExecutionLifecycle;
 import org.smooks.api.memento.MementoCaretaker;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -95,6 +96,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
@@ -104,7 +106,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
-public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consumer, PreExecutionLifecycle {
+public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consumer, PreExecutionLifecycle, PostFragmentLifecycle {
 
     public enum Action {
         REPLACE,
@@ -116,8 +118,8 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         OUTPUT_TO
     }
 
+    static final TypedKey<ExecutionContext> PIPELINE_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = TypedKey.of();
     protected static final TypedKey<DocumentBuilder> CACHED_DOCUMENT_BUILDER_TYPED_KEY = TypedKey.of();
-    protected static final TypedKey<ExecutionContext> PIPELINE_EXECUTION_CONTEXT_MEMENTO_TYPED_KEY = TypedKey.of();
 
     protected BeanId bindBeanId;
 
@@ -156,7 +158,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
     public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
         if (pipeline == null) {
             if (!resourceConfig.getParameters("smooksResourceList").isEmpty()) {
-                ByteArrayInputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
+                InputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());
                 resourceConfigSeq = applicationContext.getResourceConfigLoader().load(smooksResourceList, "./", applicationContext.getClassLoader());
             } else {
                 ResourceConfig resourceConfig = new DefaultResourceConfig("*", new Properties());
@@ -164,17 +166,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
                 resourceConfigSeq = new DefaultResourceConfigSeq("./");
                 resourceConfigSeq.add(resourceConfig);
             }
-            ApplicationContextBuilder applicationContextBuilder = ServiceLoader.load(ApplicationContextBuilder.class).iterator().next();
-            if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
-                applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
-            }
-            pipeline = new Smooks(applicationContextBuilder.withFilterSettings(new DefaultFilterSettings().
-                        setCloseSink(false).
-                        setReaderPoolSize(-1).
-                        setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth)).
-                    withClassLoader(applicationContext.getClassLoader()).
-                    withResourceLocator(applicationContext.getResourceLocator()).
-                    withBeanIdStore(applicationContext.getBeanIdStore()).build());
+            pipeline = new Smooks(newPipelineApplicationContext(applicationContext));
 
             for (ResourceConfig resourceConfig : resourceConfigSeq) {
                 pipeline.addResourceConfig(resourceConfig);
@@ -319,10 +311,6 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
                 }
             }
         }
-
-        final VisitorMemento<ChildEventListener> childEventListenerMemento = new SimpleVisitorMemento<>(visitedFragment, this, new ChildEventListener(this, null, null, null));
-        executionContext.getMementoCaretaker().restore(childEventListenerMemento);
-        executionContext.getContentDeliveryRuntime().removeExecutionEventListener(childEventListenerMemento.getState());
     }
 
     protected Writer replaceBefore(final Fragment<Node> visitedNodeFragment, final Node rootNode, final ExecutionContext executionContext) {
@@ -420,15 +408,12 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         EventPointer eventPointer = new EventPointer(eventPointerDocument, visitSequence);
         eventPointerDocument.appendChild(eventPointer.getPointerNode());
 
-        ExecutionContext pipelineExecutionContext = pipelineExecutionContextMemento.getState();
+        final ExecutionContext pipelineExecutionContext = pipelineExecutionContextMemento.getState();
         pipelineExecutionContext.put(eventPointer.getReference(), deAttachedVisitedNodeFragment.unwrap());
         if (writer == null) {
             pipeline.filterSource(pipelineExecutionContext, new DOMSource(eventPointerDocument));
         } else {
             pipeline.filterSource(pipelineExecutionContext, new DOMSource(eventPointerDocument), new WriterSink<>(writer));
-        }
-        if (executionContext.getTerminationError() == null && pipelineExecutionContext.getTerminationError() != null) {
-            executionContext.setTerminationError(pipelineExecutionContext.getTerminationError());
         }
     }
 
@@ -443,6 +428,13 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
     @Override
     public boolean consumes(Object object) {
         return outputStreamResourceOptional.map(os -> os.equals(object)).orElse(false);
+    }
+
+    @Override
+    public void onPostFragment(Fragment<?> fragment, ExecutionContext executionContext) {
+        final VisitorMemento<ChildEventListener> childEventListenerMemento = new SimpleVisitorMemento<>(fragment, this, new ChildEventListener(this, null, null, null));
+        executionContext.getMementoCaretaker().restore(childEventListenerMemento);
+        executionContext.getContentDeliveryRuntime().removeExecutionEventListener(childEventListenerMemento.getState());
     }
 
     public void setMaxNodeDepth(Integer maxNodeDepth) {
@@ -490,5 +482,20 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
         if (pipeline != null) {
             pipeline.close();
         }
+    }
+
+    protected ApplicationContext newPipelineApplicationContext(final ApplicationContext parentApplicationContext) {
+        ApplicationContextBuilder applicationContextBuilder = ServiceLoader.load(ApplicationContextBuilder.class).iterator().next();
+        if (applicationContextBuilder instanceof DefaultApplicationContextBuilder) {
+            applicationContextBuilder = ((DefaultApplicationContextBuilder) applicationContextBuilder).withSystemResources(false);
+        }
+        return applicationContextBuilder.withFilterSettings(new DefaultFilterSettings().
+                        setCloseSink(false).
+                        setReaderPoolSize(-1).
+                        setMaxNodeDepth(maxNodeDepth == 0 ? Integer.MAX_VALUE : maxNodeDepth)).
+                withClassLoader(parentApplicationContext.getClassLoader()).
+                withResourceLocator(parentApplicationContext.getResourceLocator()).
+                withBeanIdStore(parentApplicationContext.getBeanIdStore()).build();
+
     }
 }

@@ -97,22 +97,22 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
     }
 
     @Override
-    public void visitBefore(Element element, ExecutionContext executionContext) {
+    public void visitBefore(final Element element, final ExecutionContext executionContext) {
         intercept(visitBeforeInvocation, executionContext, visitBeforeExceptionMessage, new NodeFragment(element), VisitSequence.BEFORE, element, executionContext);
     }
 
     @Override
-    public void visitAfter(Element element, ExecutionContext executionContext) {
+    public void visitAfter(final Element element, final ExecutionContext executionContext) {
         intercept(visitAfterInvocation, executionContext, visitAfterExceptionMessage, new NodeFragment(element), VisitSequence.AFTER, element, executionContext);
     }
 
     @Override
-    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+    public void visitChildText(final CharacterData characterData, final ExecutionContext executionContext) {
         intercept(visitChildTextInvocation, executionContext, visitChildTextExceptionMessage, new NodeFragment(characterData), VisitSequence.AFTER, characterData, executionContext);
     }
 
     @Override
-    public void visitChildElement(Element childElement, ExecutionContext executionContext) {
+    public void visitChildElement(final Element childElement, final ExecutionContext executionContext) {
         try {
             intercept(visitChildElementInvocation, childElement, executionContext);
         } catch (Throwable t) {
@@ -137,7 +137,9 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
             throw (TerminateException) t;
         }
 
-        executionContext.setTerminationError(t);
+        if (executionContext.getTerminationError() == null) {
+            executionContext.setTerminationError(t);
+        }
         String completeExceptionMessage = String.format(exceptionMessage, toPath((Node) fragment.unwrap()));
         if (terminateOnVisitorException) {
             if (t instanceof SmooksException) {
@@ -161,7 +163,7 @@ public class ExceptionInterceptor extends AbstractInterceptorVisitor implements 
         return path.toString();
     }
 
-    protected String stackTraceToString(Throwable e) {
+    protected String stackTraceToString(final Throwable e) {
         final StringWriter writer = new StringWriter();
         final PrintWriter printWriter = new PrintWriter(writer, true);
         e.printStackTrace(printWriter);

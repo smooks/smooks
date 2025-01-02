@@ -48,7 +48,7 @@
 
     <core:interceptors>
         <core:interceptor class="org.smooks.engine.delivery.interceptor.ExceptionInterceptor" selector="*"/>
-        <core:interceptor class="org.smooks.engine.delivery.sax.ng.pointer.EventPointerStaticProxyInterceptor" selector="*"/>
+        <core:interceptor class="org.smooks.engine.delivery.interceptor.EventPointerStaticProxyInterceptor" selector="*"/>
     </core:interceptors>
 
 </smooks-resource-list>

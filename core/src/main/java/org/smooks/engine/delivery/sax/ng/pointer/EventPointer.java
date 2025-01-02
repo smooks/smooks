@@ -46,6 +46,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.TypedKey;
 import org.smooks.engine.delivery.event.VisitSequence;
+import org.smooks.engine.delivery.interceptor.EventPointerStaticProxyInterceptor;
 import org.smooks.engine.xml.Namespace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
