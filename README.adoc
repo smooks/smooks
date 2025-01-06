@@ -6,6 +6,9 @@
 image:https://img.shields.io/maven-central/v/org.smooks/smooks[Maven Central]
 image:https://img.shields.io/nexus/s/org.smooks/smooks?server=https%3A%2F%2Foss.sonatype.org[Sonatype Nexus (Snapshots)]
 image:https://github.com/smooks/smooks/workflows/CI/badge.svg[Build Status]
+image:https://img.shields.io/badge/group-user-red?logo=Gmail[email group,link=https://groups.google.com/g/smooks-user]
+image:https://img.shields.io/badge/group-dev-red?logo=Gmail[email group,link=https://groups.google.com/g/smooks-user]
+image:https://img.shields.io/badge/chat-on%20gitter-46bc99.svg[Gitter chat,link=https://gitter.im/smooks/smooks]
 
 This is the Git source code repository for the http://www.smooks.org[Smooks] project.
 
