@@ -141,7 +141,7 @@ public class AbstractParser {
 
         NamespaceDeclarationStack namespaceDeclarationStack = execContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY);
         if (namespaceDeclarationStack == null) {
-            throw new IllegalStateException("No NamespaceDeclarationStack attached to the ExecutionContext.");
+            throw new IllegalStateException("No NamespaceDeclarationStack attached to the ExecutionContext");
         }
         namespaceDeclarationStack.pushReader(xmlReader);
     }
@@ -189,7 +189,7 @@ public class AbstractParser {
      */
     public static ResourceConfig getSAXParserConfiguration(ContentDeliveryConfig deliveryConfig) {
         if (deliveryConfig == null) {
-            throw new IllegalArgumentException("null 'deliveryConfig' arg in method call.");
+            throw new IllegalArgumentException("null 'deliveryConfig' arg in method call");
         }
 
         ResourceConfig saxDriverConfig = null;
@@ -210,7 +210,7 @@ public class AbstractParser {
         try {
             return url.openStream();
         } catch (IOException e) {
-            throw new SmooksException("Invalid URL on StreamSource: '" + url + "'.  Unable to open stream to resource.", e);
+            throw new SmooksException("Invalid URL on StreamSource: '" + url + "'.  Unable to open stream to resource", e);
         }
     }
 
@@ -222,7 +222,7 @@ public class AbstractParser {
                 return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             }
         } catch (UnsupportedEncodingException e) {
-            throw new SmooksException("Unable to decode input stream.", e);
+            throw new SmooksException("Unable to decode input stream", e);
         }
     }
 
@@ -232,7 +232,7 @@ public class AbstractParser {
             StreamSource streamSource = (StreamSource) source;
             InputStream inputStream = streamSource.getInputStream();
             if (inputStream == null) {
-                throw new SmooksException("Invalid StreamSource. Unable to extract an InputStream.");
+                throw new SmooksException("Invalid StreamSource. Unable to extract an InputStream");
             }
             Reader reader = streamToReader(inputStream, contentEncoding);
 
@@ -268,7 +268,7 @@ public class AbstractParser {
             JavaSource javaSource = (JavaSource) source;
 
             if (isFeatureOn(JavaSource.FEATURE_GENERATE_EVENT_STREAM, saxDriverConfig) && !javaSource.isEventStreamRequired()) {
-                throw new SmooksConfigException(String.format("Invalid Smooks configuration. Feature [%s] is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired).", JavaSource.FEATURE_GENERATE_EVENT_STREAM));
+                throw new SmooksConfigException(String.format("Invalid Smooks configuration. Feature [%s] is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired)", JavaSource.FEATURE_GENERATE_EVENT_STREAM));
             }
 
             // Event streaming must be explicitly turned off.  If is on as long as it is (a) not configured "off" in
@@ -308,7 +308,7 @@ public class AbstractParser {
             NamespaceDeclarationStack nsDeclarationStack = execContext.get(NamespaceManager.NAMESPACE_DECLARATION_STACK_TYPED_KEY);
 
             if (nsDeclarationStack == null) {
-                throw new IllegalStateException("NamespaceDeclarationStack not configured on ExecutionContext.");
+                throw new IllegalStateException("NamespaceDeclarationStack not configured on ExecutionContext");
             }
 
             ((NamespaceDeclarationStackAware) reader).setNamespaceDeclarationStack(nsDeclarationStack);
@@ -322,7 +322,7 @@ public class AbstractParser {
 
         if (xmlReader instanceof JavaXMLReader) {
             if (!(source instanceof JavaSource)) {
-                throw new SmooksException("A " + JavaSource.class.getName() + " source must be supplied for " + JavaXMLReader.class.getName() + " implementations.");
+                throw new SmooksException("A " + JavaSource.class.getName() + " source must be supplied for " + JavaXMLReader.class.getName() + " implementations");
             }
             ((JavaXMLReader) xmlReader).setSourceObjects(((JavaSource) source).getSourceObjects());
         }
@@ -332,7 +332,7 @@ public class AbstractParser {
         try {
             xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", contentHandler);
         } catch (SAXNotRecognizedException e) {
-            LOGGER.warn("XMLReader property 'http://xml.org/sax/properties/lexical-handler' not recognized by XMLReader '" + xmlReader.getClass().getName() + "'.");
+            LOGGER.warn("XMLReader property 'http://xml.org/sax/properties/lexical-handler' not recognized by XMLReader [{}]", xmlReader.getClass().getName());
         }
     }
 
@@ -363,7 +363,7 @@ public class AbstractParser {
         try {
             return ClassUtils.forName(handlerName, getClass()).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new SmooksException("Failed to create SAX Handler '" + handlerName + "'.", e);
+            throw new SmooksException("Failed to create SAX Handler '" + handlerName + "'", e);
         }
     }
 

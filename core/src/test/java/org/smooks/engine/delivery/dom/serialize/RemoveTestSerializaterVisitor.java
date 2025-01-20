@@ -43,6 +43,7 @@
 package org.smooks.engine.delivery.dom.serialize;
 
 import org.smooks.api.ExecutionContext;
+import org.smooks.engine.resource.visitor.dom.DefaultDOMSerializerVisitor;
 import org.w3c.dom.Element;
 
 import java.io.IOException;

@@ -236,7 +236,7 @@
 
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:echo">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.engine.delivery.sax.ng.SimpleSerializerVisitor</param>
+        <param name="resource">org.smooks.engine.resource.visitor.SimpleSerializerVisitor</param>
     </resource-config>
     <resource-config selector="/smooks:smooks-resource-list/smooks-core:echo">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.SetOnResourceConfig</resource>

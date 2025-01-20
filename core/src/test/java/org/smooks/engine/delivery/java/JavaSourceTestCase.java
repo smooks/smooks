@@ -149,7 +149,7 @@ public class JavaSourceTestCase {
         try {
             smooks.filterSource(javaSource);
         } catch(SmooksException e) {
-            assertEquals("Invalid Smooks configuration. Feature [" + JavaSource.FEATURE_GENERATE_EVENT_STREAM + "] is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired).", e.getCause().getMessage());
+            assertEquals("Invalid Smooks configuration. Feature [" + JavaSource.FEATURE_GENERATE_EVENT_STREAM + "] is explicitly configured 'on' in the Smooks configuration, while the supplied JavaSource has explicitly configured event streaming to be off (through a call to JavaSource.setEventStreamRequired)", e.getCause().getMessage());
         }
     }
 

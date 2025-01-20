@@ -69,8 +69,8 @@ import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
 import org.smooks.engine.delivery.AbstractFilter;
 import org.smooks.engine.delivery.ContentHandlerBindingIndex;
-import org.smooks.engine.delivery.dom.serialize.Serializer;
-import org.smooks.engine.delivery.dom.serialize.TextSerializerVisitor;
+import org.smooks.engine.resource.visitor.dom.Serializer;
+import org.smooks.engine.resource.visitor.dom.TextSerializerVisitor;
 import org.smooks.engine.delivery.event.*;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.lifecycle.AssemblyStartedDOMFilterLifecyclePhase;
@@ -163,7 +163,7 @@ import java.util.List;
  * </li>
  * <li>
  * <b><u>Serialisation</u></b>: This phase is executed by the {@link #serialize(Node, Writer)} method (which uses the
- * {@link org.smooks.engine.delivery.dom.serialize.Serializer} class).  The serialisation phase takes the processed DOM and
+ * {@link Serializer} class).  The serialisation phase takes the processed DOM and
  * iterates over it to apply all {@link SerializerVisitor SerializationUnits},
  * which write the document to the target output stream.
  * <p/>

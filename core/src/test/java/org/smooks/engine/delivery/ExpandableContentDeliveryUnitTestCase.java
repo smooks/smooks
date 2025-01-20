@@ -49,8 +49,8 @@ import org.smooks.api.resource.visitor.SerializerVisitor;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.engine.delivery.dom.DOMContentDeliveryConfig;
-import org.smooks.engine.delivery.dom.serialize.ContextObjectSerializerVisitor;
-import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
+import org.smooks.engine.resource.visitor.dom.ContextObjectSerializerVisitor;
+import org.smooks.engine.resource.visitor.dom.DefaultDOMSerializerVisitor;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

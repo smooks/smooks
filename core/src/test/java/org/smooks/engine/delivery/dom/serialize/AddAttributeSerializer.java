@@ -42,6 +42,7 @@
  */
 package org.smooks.engine.delivery.dom.serialize;
 
+import org.smooks.engine.resource.visitor.dom.DefaultDOMSerializerVisitor;
 import org.smooks.io.DomSerializer;
 import org.w3c.dom.NamedNodeMap;
 

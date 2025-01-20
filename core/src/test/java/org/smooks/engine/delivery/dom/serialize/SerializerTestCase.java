@@ -51,6 +51,7 @@ import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.engine.resource.visitor.dom.Serializer;
 import org.smooks.support.XmlUtils;
 import org.smooks.testkit.MockExecutionContext;
 import org.smooks.testkit.delivery.dom.MockContentDeliveryConfig;

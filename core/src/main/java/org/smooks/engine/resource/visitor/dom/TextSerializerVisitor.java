@@ -40,25 +40,53 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng;
+package org.smooks.engine.resource.visitor.dom;
 
 import org.smooks.api.ExecutionContext;
-import org.w3c.dom.Node;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.engine.xml.Namespace;
+import org.smooks.support.DomUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.io.Writer;
-import java.util.function.Consumer;
 
 /**
- * <code>SystemConsumeSerializerVisitor</code> consumes and serializes a node iff
- * {@link org.smooks.api.delivery.ContentDeliveryConfig#isDefaultSerializationOn()} in this execution context
- * returns true.
+ * Write a &lt;text&gt; element.
+ * <p/>
+ * Basically just drops the &lt;text&gt; tags.
+ *
+ * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class SystemConsumeSerializerVisitor extends ConsumeSerializerVisitor {
+public class TextSerializerVisitor extends DefaultDOMSerializerVisitor implements BeforeVisitor {
 
     @Override
-    protected void onWrite(final Consumer<Writer> writerConsumer, final ExecutionContext executionContext, final Node node) {
-        if (executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().isDefaultSerializationOn()) {
-            super.onWrite(writerConsumer, executionContext, node);
-        }
+    public void writeStartElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
+    }
+
+    @Override
+    public void writeEndElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
+    }
+
+    public static Element createTextElement(Element element, String templatingResult) {
+        Document ownerDocument = element.getOwnerDocument();
+        Element resultElement = ownerDocument.createElementNS(Namespace.SMOOKS_URI, "text");
+        resultElement.appendChild(ownerDocument.createTextNode(templatingResult));
+        return resultElement;
+    }
+
+    public static boolean isTextElement(Element element) {
+        return DomUtils.getName(element).equals("text") && Namespace.SMOOKS_URI.equals(element.getNamespaceURI());
+    }
+
+    public static String getText(Element element) {
+        return DomUtils.getAllText(element, false);
+    }
+
+    @Override
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+
     }
 }

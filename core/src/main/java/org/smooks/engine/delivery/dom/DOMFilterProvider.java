@@ -57,7 +57,7 @@ import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.api.resource.visitor.dom.Phase;
 import org.smooks.api.resource.visitor.dom.VisitPhase;
 import org.smooks.engine.delivery.AbstractFilterProvider;
-import org.smooks.engine.delivery.dom.serialize.DOMSerializerVisitor;
+import org.smooks.engine.resource.visitor.dom.DOMSerializerVisitor;
 import org.smooks.engine.delivery.event.DefaultContentDeliveryConfigExecutionEvent;
 import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;

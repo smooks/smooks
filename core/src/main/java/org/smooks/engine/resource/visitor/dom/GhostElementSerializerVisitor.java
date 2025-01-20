@@ -40,78 +40,66 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.dom.serialize;
+package org.smooks.engine.resource.visitor.dom;
 
+import org.smooks.api.SmooksException;
 import org.smooks.api.ExecutionContext;
-import org.smooks.api.delivery.Filter;
-import org.smooks.io.DomSerializer;
-import org.w3c.dom.*;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
+import org.smooks.engine.xml.Namespace;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import jakarta.annotation.PostConstruct;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Optional;
 
-public class DefaultDOMSerializerVisitor implements DOMSerializerVisitor {
-    protected DomSerializer domSerializer;
-    protected Boolean closeEmptyElements = false;
-    protected Boolean rewriteEntities = true;
-
-    @Inject
-    public void setCloseEmptyElements(@Named(Filter.CLOSE_EMPTY_ELEMENTS) Optional<Boolean> closeEmptyElements) {
-        this.closeEmptyElements = closeEmptyElements.orElse(this.closeEmptyElements);
-    }
-
-    @Inject
-    public void setRewriteEntities(@Named(Filter.ENTITIES_REWRITE) Optional<Boolean> rewriteEntities) {
-        this.rewriteEntities = rewriteEntities.orElse(this.rewriteEntities);
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        domSerializer = new DomSerializer(closeEmptyElements, rewriteEntities);
-    }
+/**
+ * Ghost element serialization unit.
+ * <p/>
+ * A ghost element can be used to "wrap" other DOM content.  The Ghost element itself
+ * is not serialized, but it's child content is.
+ *
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ */
+public class GhostElementSerializerVisitor extends DefaultDOMSerializerVisitor implements ElementVisitor {
 
     @Override
     public void writeStartElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeStartElement(element, writer);
+        // Write nothing...
     }
 
     @Override
     public void writeEndElement(Element element, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeEndElement(element, writer);
+        // Write nothing...
+    }
+
+    /**
+     * Utility method for creating a &lt;ghost-element/&gt; element.
+     *
+     * @param ownerDocument The owner document.
+     * @return The &lt;ghost-element/&gt; element.
+     */
+    public static Element createElement(Document ownerDocument) {
+        return ownerDocument.createElementNS(Namespace.SMOOKS_URI, "ghost-element");
     }
 
     @Override
-    public void writeCharacterData(Node node, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeCharacterData(node, writer);
+    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+
     }
 
     @Override
-    public void writeElementComment(Comment comment, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeElementComment(comment, writer);
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+
     }
 
     @Override
-    public void writeElementEntityRef(EntityReference entityRef, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeElementEntityRef(entityRef, writer);
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) {
+
     }
 
     @Override
-    public void writeElementCDATA(CDATASection cdata, Writer writer, ExecutionContext executionContext) throws IOException {
-        domSerializer.writeElementCDATA(cdata, writer);
-    }
+    public void visitChildElement(Element childElement, ExecutionContext executionContext) throws SmooksException {
 
-    @Override
-    public void writeElementNode(Node node, Writer writer, ExecutionContext executionContext) throws IOException {
-        throw new IOException("writeElementNode not implemented yet. Node: " + node.getNodeValue() + ", node: [" + node + "]");
-    }
-
-    @Override
-    public boolean writeChildElements() {
-        return true;
     }
 }

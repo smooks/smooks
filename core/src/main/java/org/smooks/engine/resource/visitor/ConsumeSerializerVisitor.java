@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.engine.delivery.sax.ng;
+package org.smooks.engine.resource.visitor;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
@@ -50,6 +50,7 @@ import org.smooks.api.memento.Memento;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.delivery.sax.ng.SaxNgContentDeliveryConfig;
 import org.smooks.engine.memento.AbstractVisitorMemento;
 import org.smooks.engine.memento.SimpleVisitorMemento;
 import org.smooks.engine.memento.VisitorMemento;
@@ -103,20 +104,16 @@ public class ConsumeSerializerVisitor extends SimpleSerializerVisitor implements
         this.closeEmptyElements = closeEmptyElements.orElse(this.closeEmptyElements);
     }
 
-    public void writeStartElement(final Element element, final ExecutionContext executionContext) {
+    protected void writeStartElement(final Element element, final ExecutionContext executionContext, final Writer writer) {
         final Fragment<Node> nodeFragment = new NodeFragment(element);
         executionContext.getMementoCaretaker().stash(new ElementMemento(nodeFragment, this, false), elementMemento -> {
-            if (!elementMemento.isOpen()) {
-                try {
-                    writeStartElement(element, new FragmentWriter(executionContext, nodeFragment), executionContext);
-                } catch (IOException e) {
-                    throw new SmooksException(e.getMessage(), e);
-                }
-
-                return new ElementMemento(nodeFragment, ConsumeSerializerVisitor.this, true);
-            } else {
-                return elementMemento;
+            try {
+                writeStartElement(element, writer, executionContext);
+            } catch (IOException e) {
+                throw new SmooksException(e.getMessage(), e);
             }
+
+            return new ElementMemento(nodeFragment, ConsumeSerializerVisitor.this, true);
         });
     }
 
@@ -131,7 +128,7 @@ public class ConsumeSerializerVisitor extends SimpleSerializerVisitor implements
                 writer.write("/>");
             } else {
                 if (!elementMemento.isOpen()) {
-                    writeStartElement(element, executionContext);
+                    writeStartElement(element, executionContext, writer);
                 }
                 writer.write("</");
                 writer.write(element.getTagName());

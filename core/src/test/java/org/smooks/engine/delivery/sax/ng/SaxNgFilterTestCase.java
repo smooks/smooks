@@ -52,6 +52,7 @@ import org.smooks.io.sink.StreamSink;
 import org.smooks.io.sink.WriterSink;
 import org.smooks.io.source.ReaderSource;
 import org.smooks.io.source.StreamSource;
+import org.smooks.io.source.StringSource;
 import org.smooks.support.StreamUtils;
 import org.smooks.testkit.TextUtils;
 import org.xml.sax.SAXException;
@@ -72,7 +73,7 @@ import static org.smooks.testkit.Assertions.compareCharStreams;
 public class SaxNgFilterTestCase {
 
     @BeforeEach
-    public void before() throws Exception {
+    public void beforeEach() throws Exception {
         Visitor01.element = null;
         Visitor01.children.clear();
         Visitor01.childText.clear();
@@ -90,56 +91,56 @@ public class SaxNgFilterTestCase {
     }
     
 	@Test
-    public void test_reader_writer() throws SAXException, IOException {
+    public void testReaderSourceAndWriterSink() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
         StringWriter writer = new StringWriter();
 
-        smooks.filterSource(execContext, new ReaderSource(new StringReader(input)), new WriterSink(writer));
+        smooks.filterSource(execContext, new ReaderSource<>(new StringReader(input)), new WriterSink<>(writer));
         assertEquals(TextUtils.trimLines(new StringReader(input)).toString(), TextUtils.trimLines(new StringReader(writer.toString())).toString());
     }
 
 	@Test
-    public void test_reader_stream() throws SAXException, IOException {
+    public void testStringSourceAndStreamSink() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
-        smooks.filterSource(execContext, new ReaderSource(new StringReader(input)), new StreamSink(outStream));
+        smooks.filterSource(execContext, new StringSource(input), new StreamSink<>(outStream));
         assertEquals(TextUtils.trimLines(new StringReader(input)).toString(), TextUtils.trimLines(new StringReader(outStream.toString())).toString());
     }
 
 	@Test
-    public void test_stream_stream() throws SAXException, IOException {
+    public void testStreamSourceAndStreamSink() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
-        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), new StreamSink(outStream));
+        smooks.filterSource(execContext, new StreamSource<>(new ByteArrayInputStream(input.getBytes())), new StreamSink<>(outStream));
         assertEquals(TextUtils.trimLines(new StringReader(input)).toString(), TextUtils.trimLines(new StringReader(outStream.toString())).toString());
     }
 
 	@Test
-    public void test_stream_writer() throws SAXException, IOException {
+    public void testStreamSourceAndWriterSink() throws SAXException, IOException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
         StringWriter writer = new StringWriter();
 
-        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())), new WriterSink(writer));
+        smooks.filterSource(execContext, new StreamSource<>(new ByteArrayInputStream(input.getBytes())), new WriterSink<>(writer));
         assertEquals(TextUtils.trimLines(new StringReader(input)).toString(), TextUtils.trimLines(new StringReader(writer.toString())).toString());
     }
 
 	@Test
-    public void test_selection() throws IOException, SAXException {
+    public void testVisits() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-02.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
-        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())));
+        smooks.filterSource(execContext, new StreamSource<>(new ByteArrayInputStream(input.getBytes())));
         assertEquals("h", Visitor01.element.getLocalName());
         assertEquals("y", Visitor01.element.getPrefix());
         assertEquals("http://y", Visitor01.element.getNamespaceURI());
@@ -160,26 +161,26 @@ public class SaxNgFilterTestCase {
     }
 
 	@Test
-    public void test_contextual_1() throws IOException, SAXException {
-        test_contextual("smooks-config-03.xml");
+    public void testVisitsGivenSelectorHasContext() throws IOException, SAXException {
+        testContextual("smooks-config-03.xml");
     }
 
 	@Test
-    public void test_contextual_2() throws IOException, SAXException {
-        test_contextual("smooks-config-03.01.xml");
+    public void testVisitsGivenSelectorHasWildcard() throws IOException, SAXException {
+        testContextual("smooks-config-03.01.xml");
     }
 
 	@Test
-    public void test_contextual_3() throws IOException, SAXException {
-        test_contextual("smooks-config-03.02.xml");
+    public void testVisitsGivenSelectorIsDescendantOrSelf() throws IOException, SAXException {
+        testContextual("smooks-config-03.02.xml");
     }
 
-    public void test_contextual(String config) throws IOException, SAXException {
+    public void testContextual(String config) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
-        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())));
+        smooks.filterSource(execContext, new StreamSource<>(new ByteArrayInputStream(input.getBytes())));
         assertEquals("h", Visitor01.element.getLocalName());
         assertEquals("y", Visitor01.element.getPrefix());
         assertEquals("http://y", Visitor01.element.getNamespaceURI());
@@ -196,49 +197,49 @@ public class SaxNgFilterTestCase {
     }
 
     @Test
-    public void test_document() throws IOException, SAXException {
+    public void testVisitsGivenDocumentSelector() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-04.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
         String input = new String(StreamUtils.readStream(getClass().getResourceAsStream("test-01.xml")));
 
-        smooks.filterSource(execContext, new StreamSource(new ByteArrayInputStream(input.getBytes())));
+        smooks.filterSource(execContext, new StreamSource<>(new ByteArrayInputStream(input.getBytes())));
         assertEquals("xx", Visitor01.element.getLocalName());
         assertEquals("xx", Visitor02.element.getLocalName());
         assertNull(Visitor03.element);
     }
 
     @Test
-    public void test_visitBeforeOnly() throws IOException, SAXException {
+    public void testBeforeVisitorVisited() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<a/>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<a/>")));
         assertTrue(VisitBeforeVisitor.visited);
         assertEquals("Hi There!", VisitBeforeVisitor.staticInjectedParam);
     }
 
     @Test
-    public void test_visitBeforeAndChildren() throws IOException, SAXException {
+    public void testBeforeVisitorAndChildrenVisitorVisited() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<b/>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<b/>")));
         assertTrue(BeforeVisitorAndChildrenVisitor.visited);
         assertFalse(BeforeVisitorAndChildrenVisitor.onChildText);
         assertFalse(BeforeVisitorAndChildrenVisitor.onChildElement);
         BeforeVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<b>text</b>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<b>text</b>")));
         assertTrue(BeforeVisitorAndChildrenVisitor.visited);
         assertTrue(BeforeVisitorAndChildrenVisitor.onChildText);
         assertFalse(BeforeVisitorAndChildrenVisitor.onChildElement);
         BeforeVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<b><x/></b>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<b><x/></b>")));
         assertTrue(BeforeVisitorAndChildrenVisitor.visited);
         assertFalse(BeforeVisitorAndChildrenVisitor.onChildText);
         assertTrue(BeforeVisitorAndChildrenVisitor.onChildElement);
         BeforeVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<b>text<x/></b>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<b>text<x/></b>")));
         assertTrue(BeforeVisitorAndChildrenVisitor.visited);
         assertTrue(BeforeVisitorAndChildrenVisitor.onChildText);
         assertTrue(BeforeVisitorAndChildrenVisitor.onChildElement);
@@ -246,44 +247,44 @@ public class SaxNgFilterTestCase {
     }
 
     @Test
-    public void test_visitAfterOnly() throws IOException, SAXException {
+    public void testAfterVisitorVisited() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<c/>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<c/>")));
         assertTrue(VisitAfterVisitor.visited);
     }
 
     @Test
-    public void test_max_node_depth() throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-06.xml"));
+    public void testMaxNodeDepth() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-max-node-depth.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<a><b><c><d>foo</d></c><e><f><g>bar</g></f></e></b></a>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<a><b><c><d>foo</d></c><e><f><g>bar</g></f></e></b></a>")));
         assertNotNull(MaxNodeDepthVisitor.element);
     }
 
     @Test
-    public void test_visitAfterAndChildren() throws IOException, SAXException {
+    public void testAfterVisitorAndChildrenVisitorVisited() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-05.xml"));
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<d/>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<d/>")));
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertFalse(AfterVisitorAndChildrenVisitor.onChildText);
         assertFalse(AfterVisitorAndChildrenVisitor.onChildElement);
         AfterVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<d>text</d>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<d>text</d>")));
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildText);
         assertFalse(AfterVisitorAndChildrenVisitor.onChildElement);
         AfterVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<d><x/></d>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<d><x/></d>")));
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertFalse(AfterVisitorAndChildrenVisitor.onChildText);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildElement);
         AfterVisitorAndChildrenVisitor.reset();
 
-        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource(new StringReader("<d>text<x/></d>")));
+        smooks.filterSource(smooks.createExecutionContext(), new ReaderSource<>(new StringReader("<d>text<x/></d>")));
         assertTrue(AfterVisitorAndChildrenVisitor.visited);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildText);
         assertTrue(AfterVisitorAndChildrenVisitor.onChildElement);
@@ -292,13 +293,13 @@ public class SaxNgFilterTestCase {
     
     @Test
     @Disabled("FIXME")
-    public void test_report() throws IOException, SAXException {
+    public void testReport() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-04.xml"));
         ExecutionContext executionContext = smooks.createExecutionContext();
         StringWriter reportWriter = new StringWriter();
 
         executionContext.getContentDeliveryRuntime().addExecutionEventListener(new FlatReportGenerator(reportWriter, smooks.getApplicationContext()));
-        smooks.filterSource(executionContext, new ReaderSource(new StringReader("<c/>")));
+        smooks.filterSource(executionContext, new ReaderSource<>(new StringReader("<c/>")));
 
         assertTrue(compareCharStreams(getClass().getResourceAsStream("report-expected.txt"), new ByteArrayInputStream(reportWriter.toString().getBytes())));
     }

@@ -67,7 +67,7 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.delivery.interceptor.ExceptionInterceptor;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorChainFactory;
 import org.smooks.engine.delivery.interceptor.InterceptorVisitorDefinition;
-import org.smooks.engine.delivery.sax.ng.SimpleSerializerVisitor;
+import org.smooks.engine.resource.visitor.SimpleSerializerVisitor;
 import org.smooks.engine.delivery.interceptor.EventPointerStaticProxyInterceptor;
 import org.smooks.engine.lookup.InstanceLookup;
 import org.smooks.engine.lookup.InterceptorVisitorChainFactoryLookup;

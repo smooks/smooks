@@ -74,23 +74,23 @@ public class FilterCloseTestCase {
 
     public void test_close_io(String profile, int expectedCloseCallCount) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config-close-filter-io.xml"));
-        ExecutionContext execContext;
+        ExecutionContext executionContext;
 
         // Test io stream close....
         // We need to +1 this because Xerces always closes input streams/readers and there's no
         // way of turning that off
         TestInputStream inStream = new TestInputStream("<x/>".getBytes(), expectedCloseCallCount + 1);
         TestOutputStream outStream = new TestOutputStream(expectedCloseCallCount);
-        execContext = smooks.createExecutionContext(profile);
-        smooks.filterSource(execContext, new StreamSource(inStream), new StreamSink(outStream));
+        executionContext = smooks.createExecutionContext(profile);
+        smooks.filterSource(executionContext, new StreamSource<>(inStream), new StreamSink<>(outStream));
 
         // Test io reader/writer close...
         // We need to +1 this because Xerces always closes input streams/readers and there's no 
         // way of turning that off
         TestReader reader = new TestReader("<x/>", expectedCloseCallCount + 1);
         TestWriter writer = new TestWriter(expectedCloseCallCount);
-        execContext = smooks.createExecutionContext(profile);
-        smooks.filterSource(execContext, new ReaderSource(reader), new WriterSink(writer));
+        executionContext = smooks.createExecutionContext(profile);
+        smooks.filterSource(executionContext, new ReaderSource<>(reader), new WriterSink<>(writer));
     }
 
     private static class TestInputStream extends ByteArrayInputStream {

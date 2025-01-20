@@ -162,7 +162,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
                 resourceConfigSeq = applicationContext.getResourceConfigLoader().load(smooksResourceList, "./", applicationContext.getClassLoader());
             } else {
                 ResourceConfig resourceConfig = new DefaultResourceConfig("*", new Properties());
-                resourceConfig.setResource("org.smooks.engine.delivery.sax.ng.SimpleSerializerVisitor");
+                resourceConfig.setResource("org.smooks.engine.resource.visitor.SimpleSerializerVisitor");
                 resourceConfigSeq = new DefaultResourceConfigSeq("./");
                 resourceConfigSeq.add(resourceConfig);
             }

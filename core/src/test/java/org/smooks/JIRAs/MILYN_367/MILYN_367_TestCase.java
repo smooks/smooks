@@ -43,19 +43,16 @@
 package org.smooks.JIRAs.MILYN_367;
 
 import org.junit.jupiter.api.Test;
-import org.smooks.FilterSettings;
 import org.smooks.Smooks;
-import org.smooks.StreamFilterType;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMVisitAfter;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.engine.DefaultApplicationContext;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.DefaultFilterSettings;
 import org.smooks.engine.delivery.dom.DOMFilterType;
-import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
-import org.smooks.engine.delivery.sax.ng.ConsumeSerializerVisitor;
+import org.smooks.engine.resource.visitor.dom.DefaultDOMSerializerVisitor;
+import org.smooks.engine.resource.visitor.ConsumeSerializerVisitor;
 import org.smooks.io.sink.StringSink;
 import org.smooks.io.source.StreamSource;
 import org.smooks.support.StreamUtils;
