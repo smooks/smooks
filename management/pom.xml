@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.smooks</groupId>
         <artifactId>smooks</artifactId>
-        <version>2.2.1</version>
+        <version>2.2.2-SNAPSHOT</version>
     </parent>
 
     <name>Smooks Management</name>
