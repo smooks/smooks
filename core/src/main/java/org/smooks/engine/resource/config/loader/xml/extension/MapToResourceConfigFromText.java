@@ -85,7 +85,7 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
 
         if (mapToPropertyName == null) {
             if (!mapToSpecifier.isPresent()) {
-                throw new SmooksException("One of attributes 'mapTo' or 'mapToSpecifier' must be specified.");
+                throw new SmooksException("One of attributes [mapTo] or [mapToSpecifier] must be specified");
             }
             mapToPropertyName = DomUtils.getAttributeValue(element, mapToSpecifier.get());
         }
@@ -93,11 +93,11 @@ public class MapToResourceConfigFromText implements DOMVisitBefore {
         try {
             config = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY).getResourceStack().peek();
         } catch (EmptyStackException e) {
-            throw new SmooksException("No ResourceConfig available in ExtensionContext stack.  Unable to set ResourceConfig property '" + mapToPropertyName + "' with element text value.");
+            throw new SmooksException("No ResourceConfig available in ExtensionContext stack. Unable to set ResourceConfig property [" + mapToPropertyName + "] with element text value");
         }
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Setting property '" + mapToPropertyName + "' on resource configuration to a value of '" + value + "'.");
+            LOGGER.debug("Setting property [{}] on resource configuration to a value of [{}}", mapToPropertyName, value);
         }
 
         ResourceConfigUtils.setProperty(config, mapToPropertyName, value, element, executionContext);

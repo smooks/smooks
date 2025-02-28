@@ -107,9 +107,9 @@ public class LifecycleManagerTestCase {
         MockApplicationContext mockApplicationContext = new MockApplicationContext();
         try {
             lifecycleManager.applyPhase(cdu, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), resourceConfig, cdu)));
-            fail(" Expected SmooksConfigurationException");
+            fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
-            assertTrue(e.getMessage().startsWith("Parameter [paramC] not specified on resource configuration"));
+            assertTrue(e.getMessage().startsWith("Parameter [paramC] not specified on resource config"));
         }
     }
 
@@ -245,10 +245,9 @@ public class LifecycleManagerTestCase {
         assertEquals("UTF-8", cdu1.getEncoding().displayName());
 
         MyContentDeliveryUnit9 cdu2 = new MyContentDeliveryUnit9();
-        resourceConfig.setParameter("encoding", StandardCharsets.UTF_8);
         try {
             lifecycleManager.applyPhase(cdu2, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), resourceConfig, cdu2)));
-            fail("Expected SmooksConfigurationException.");
+            fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
             assertEquals("Unable to determine the property name associated with 'org.smooks.engine.lifecycle.LifecycleManagerTestCase$MyContentDeliveryUnit9#encoding'. " +
                     "Setter methods that specify the @Inject annotation must either follow the Javabean naming convention ('setX' for property 'x'), " +
@@ -256,7 +255,6 @@ public class LifecycleManagerTestCase {
         }
 
         MyContentDeliveryUnit10 cdu3 = new MyContentDeliveryUnit10();
-        resourceConfig.setParameter("encoding", "UTF-8");
         lifecycleManager.applyPhase(cdu3, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), resourceConfig, cdu3)));
         assertEquals("UTF-8", cdu3.getEncoding().displayName());
     }

@@ -48,9 +48,10 @@ import org.smooks.support.ClassUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class FieldInjector extends AbstractInjector<Field> {
 
@@ -67,7 +68,7 @@ public class FieldInjector extends AbstractInjector<Field> {
         inject(instance.getClass(), instance, scope);
     }
 
-    private void inject(Class<?> instanceClass, Object instance, Scope scope) {
+    protected void inject(Class<?> instanceClass, Object instance, Scope scope) {
         Field[] fields = instanceClass.getDeclaredFields();
 
         // Work back up the Inheritance tree first...
@@ -108,7 +109,7 @@ public class FieldInjector extends AbstractInjector<Field> {
     }
 
     @Override
-    protected Object getDefaultParamValue(Object instance, Field field) {
+    protected Object getMemberValue(Object instance, Field field) {
         try {
             return ClassUtils.getField(field, instance);
         } catch (IllegalAccessException e) {
@@ -117,7 +118,21 @@ public class FieldInjector extends AbstractInjector<Field> {
     }
 
     @Override
-    protected void doSetMember(final Member member, final Object instance, final Object value, final String name) throws IllegalAccessException {
-        ClassUtils.setField((Field) member, instance, value);
+    protected void doSetMember(final Field field, final Object instance, final Object value, final String name) throws IllegalAccessException {
+        if (Collection.class.isAssignableFrom(getType(field))) {
+            Collection<Object> fieldValue = (Collection<Object>) getMemberValue(instance, field);
+            if (fieldValue == null) {
+                fieldValue = new ArrayList<>();
+                ClassUtils.setField(field, instance, fieldValue);
+            }
+
+            if (value instanceof Collection) {
+                fieldValue.addAll((Collection<Object>) value);
+            } else {
+                fieldValue.add(value);
+            }
+        } else {
+            ClassUtils.setField(field, instance, value);
+        }
     }
 }

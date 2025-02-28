@@ -398,17 +398,17 @@ public class DefaultResourceConfig implements ResourceConfig {
         if (parameters == null) {
             parameters = new LinkedHashMap<>();
         }
-        Object exists = parameters.get(parameter.getName());
+        Object existingParam = parameters.get(parameter.getName());
 
-        if (exists == null) {
+        if (existingParam == null) {
             parameters.put(parameter.getName(), parameter);
-        } else if (exists instanceof Parameter) {
-            Vector<Parameter<?>> paramList = new Vector<>();
-            paramList.add((Parameter<?>) exists);
-            paramList.add(parameter);
-            parameters.put(parameter.getName(), paramList);
-        } else if (exists instanceof List) {
-            ((List<Object>) exists).add(parameter);
+        } else if (existingParam instanceof Parameter) {
+            Vector<Parameter<?>> paramVector = new Vector<>();
+            paramVector.add((Parameter<?>) existingParam);
+            paramVector.add(parameter);
+            parameters.put(parameter.getName(), paramVector);
+        } else if (existingParam instanceof List) {
+            ((List<Object>) existingParam).add(parameter);
         }
         parameterCount++;
     }

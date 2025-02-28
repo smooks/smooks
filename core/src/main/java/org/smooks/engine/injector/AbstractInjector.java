@@ -72,7 +72,7 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
             } else {
                 doSetMember(member, instance, value, name);
             }
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
             throw new SmooksConfigException(String.format("Failed to set parameter configuration value on [%s]", ClassUtils.getLongMemberName(member)), e);
         }
     }
@@ -138,11 +138,11 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
                 throw new SmooksConfigException(String.format("Failed to set parameter configuration value on [%s]", ClassUtils.getLongMemberName(member)), e);
             }
         } else {
-            if (getDefaultParamValue(instance, member) == null) {
+            if (getMemberValue(instance, member) == null) {
                 if (getType(member).equals(Optional.class)) {
                     setMember(member, instance, Optional.empty(), name);
                 } else {
-                    throw new SmooksConfigException(String.format("Parameter [%s] not specified on resource configuration:%s", name, System.lineSeparator() + scope));
+                    throw new SmooksConfigException(String.format("Parameter [%s] not specified on resource config: %s", name, System.lineSeparator() + scope));
                 }
             }
         }
@@ -154,9 +154,9 @@ public abstract class AbstractInjector<M extends Member> implements Injector {
 
     protected abstract String getName(Named namedAnnotation, M member);
 
-    protected abstract Object getDefaultParamValue(Object instance, M member);
+    protected abstract Object getMemberValue(Object instance, M member);
 
-    protected abstract void doSetMember(Member member, Object instance, Object value, String name) throws InvocationTargetException, IllegalAccessException;
+    protected abstract void doSetMember(M member, Object instance, Object value, String name) throws InvocationTargetException, IllegalAccessException;
 
     protected Type getRealType(final M member) {
         final Class<?> type = getType(member);

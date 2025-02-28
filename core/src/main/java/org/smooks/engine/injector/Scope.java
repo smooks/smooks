@@ -42,6 +42,7 @@
  */
 package org.smooks.engine.injector;
 
+import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.delivery.Filter;
 import org.smooks.io.DomSerializer;
@@ -51,8 +52,10 @@ import org.smooks.engine.lookup.GlobalParamsLookup;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Scope implements Map<Object, Object> {
 
@@ -62,7 +65,13 @@ public class Scope implements Map<Object, Object> {
         this(registry);
         scope.put(ResourceConfig.class, resourceConfig);
         for (String parameterName : resourceConfig.getParameters().keySet()) {
-            scope.put(parameterName, resourceConfig.getParameterValue(parameterName));
+            final List<Parameter<?>> parameters = resourceConfig.getParameters(parameterName);
+            if (parameters.size() > 1) {
+                final List<?> parameterValues = parameters.stream().map(Parameter::getValue).collect(Collectors.toList());
+                scope.put(parameterName, parameterValues);
+            } else {
+                scope.put(parameterName, parameters.get(0).getValue());
+            }
         }
 
         final boolean entitiesRewrite = Boolean.parseBoolean(resourceConfig.getParameterValue(Filter.ENTITIES_REWRITE, String.class, "true"));

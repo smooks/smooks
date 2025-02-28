@@ -90,7 +90,7 @@ public class AbstractInjectorTestCase {
             }
 
             @Override
-            protected Object getDefaultParamValue(Object instance, Member member) {
+            protected Object getMemberValue(Object instance, Member member) {
                 return null;
             }
 

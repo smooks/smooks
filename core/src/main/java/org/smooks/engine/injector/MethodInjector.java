@@ -108,13 +108,13 @@ public class MethodInjector extends AbstractInjector<Method> {
     }
 
     @Override
-    protected Object getDefaultParamValue(Object instance, Method member) {
+    protected Object getMemberValue(Object instance, Method member) {
         return null;
     }
 
     @Override
-    protected void doSetMember(Member member, Object instance, Object value, String name) throws InvocationTargetException, IllegalAccessException {
-        ((Method) member).invoke(instance, value);
+    protected void doSetMember(Method member, Object instance, Object value, String name) throws InvocationTargetException, IllegalAccessException {
+        member.invoke(instance, value);
     }
 
     private String getPropertyName(Method method) {
