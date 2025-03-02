@@ -53,7 +53,7 @@ public class DefaultBeanId implements BeanId {
 
     private final BeanIdStore beanIdStore;
 
-    private ResourceConfig createResourceConfig;
+    private ResourceConfig resourceConfig;
 
     /**
      * @param index
@@ -70,12 +70,12 @@ public class DefaultBeanId implements BeanId {
      * {@link BeanInstanceCreator} that is creating the bean with which this
      * {@link BeanId} instance is associated.
      *
-     * @param createResourceConfig The {@link ResourceConfig} of the creator.
+     * @param resourceConfig The {@link ResourceConfig} of the creator.
      * @return This object instance.
      */
     @Override
-    public BeanId setCreateResourceConfiguration(ResourceConfig createResourceConfig) {
-        this.createResourceConfig = createResourceConfig;
+    public BeanId setCreateResourceConfiguration(ResourceConfig resourceConfig) {
+        this.resourceConfig = resourceConfig;
         return this;
     }
 
@@ -88,7 +88,7 @@ public class DefaultBeanId implements BeanId {
      */
     @Override
     public ResourceConfig getCreateResourceConfiguration() {
-        return createResourceConfig;
+        return resourceConfig;
     }
 
     /**

@@ -61,9 +61,18 @@ import org.smooks.api.bean.context.BeanIdStore;
  */
 public interface BeanId {
 
+    /**
+     * @deprecated  Resource config can be retrieved from the application context
+     *              registry so there is no need keep this method around
+     */
+    @Deprecated
+    BeanId setCreateResourceConfiguration(ResourceConfig resourceConfig);
 
-    BeanId setCreateResourceConfiguration(ResourceConfig createResourceConfig);
-
+    /**
+     * @deprecated  Resource config can be retrieved from the application context
+     *              registry so there is no need keep this method around
+     */
+    @Deprecated
     ResourceConfig getCreateResourceConfiguration();
 
     int getIndex();
