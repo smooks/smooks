@@ -45,7 +45,7 @@ package org.smooks.xml;
 import org.smooks.api.SmooksException;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.support.StreamUtils;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.w3c.dom.*;
 import org.w3c.dom.ls.LSInput;
 import org.xml.sax.SAXException;

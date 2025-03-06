@@ -40,11 +40,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.classpath;
+package org.smooks.support.classpath.scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,7 @@ import java.util.List;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-abstract class AbstractFilter implements Filter {
+public abstract class AbstractScannerFilter implements ScannerFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InstanceOfFilter.class);
 
@@ -66,10 +66,10 @@ abstract class AbstractFilter implements Filter {
             "java/", "javax/", "netscape/", "sun/", "com/sun", "org/omg", "org/xml", "org/w3c", "junit/", "org/apache/commons", "org/apache/log4j",
     };
 
-    AbstractFilter() {
+    public AbstractScannerFilter() {
     }
 
-    AbstractFilter(String[] ignoreList, String[] includeList) {
+    public AbstractScannerFilter(String[] ignoreList, String[] includeList) {
         if (ignoreList != null) {
             this.igrnoreList = ignoreList;
         }
@@ -87,7 +87,7 @@ abstract class AbstractFilter implements Filter {
                     classes.add(clazz);
                 }
             } catch (Throwable throwable) {
-                LOGGER.debug("Resource '" + resourceName + "' presented to '" + InstanceOfFilter.class.getName() + "', but not loadable by classloader.  Ignoring.", throwable);
+                LOGGER.debug("Resource [{}} presented to [{}], but not loadable by classloader. Ignoring...", resourceName, InstanceOfFilter.class.getName(), throwable);
             }
         }
     }

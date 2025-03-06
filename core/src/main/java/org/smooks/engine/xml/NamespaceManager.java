@@ -85,7 +85,7 @@ public class NamespaceManager {
      * Load the namespace prefix-to-uri mappings into the {@link ApplicationContext}.
      */
     @PostConstruct
-    public void postConstruct() throws SAXPathException {
+    public void postConstruct() {
         final Properties newNamespaces = resourceConfig.toProperties();
 
         for (ResourceConfigSeq resourceConfigSeq : applicationContext.getRegistry().lookup(new ResourceConfigSeqsLookup())) {

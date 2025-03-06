@@ -47,7 +47,7 @@ import org.smooks.api.io.Sink;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.delivery.ContentHandler;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

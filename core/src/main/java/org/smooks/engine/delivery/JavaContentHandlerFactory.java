@@ -52,7 +52,7 @@ import org.smooks.api.ApplicationContext;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;

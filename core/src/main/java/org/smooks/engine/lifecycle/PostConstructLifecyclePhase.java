@@ -50,7 +50,7 @@ import org.smooks.engine.injector.FieldInjector;
 import org.smooks.api.injector.Injector;
 import org.smooks.engine.injector.MethodInjector;
 import org.smooks.engine.injector.Scope;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import jakarta.annotation.PostConstruct;
 
@@ -126,7 +126,7 @@ public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
             }
 
             if (injectAnnotation != null) {
-                throw new SmooksConfigException("Property '" + fieldName + "' not configured on class " + instance.getClass().getName() + "'.");
+                throw new SmooksConfigException("Property [" + fieldName + "] not configured on class [" + instance.getClass().getName() + "]");
             }
         }
     }
@@ -141,13 +141,13 @@ public class PostConstructLifecyclePhase extends AbstractLifecyclePhase {
             } catch (NoSuchMethodException e) {
                 // That's fine
             } catch (IllegalAccessException e) {
-                throw new SmooksConfigException("Error invoking 'setConfiguration' method on class '" + instance.getClass().getName() + "'.  This class must be public.  Alternatively, use the @Inject annotation on a class field.", e);
+                throw new SmooksConfigException("Error invoking setConfiguration] method on class [" + instance.getClass().getName() + " ].  This class must be public. Alternatively, use the @Inject annotation on a class field", e);
             } catch (InvocationTargetException e) {
                 if (e.getTargetException() instanceof SmooksConfigException) {
                     throw (SmooksConfigException) e.getTargetException();
                 } else {
                     Throwable cause = e.getTargetException();
-                    throw new SmooksConfigException("Error invoking 'setConfiguration' method on class '" + instance.getClass().getName() + "'.", (cause != null ? cause : e));
+                    throw new SmooksConfigException("Error invoking [setConfiguration] method on class [" + instance.getClass().getName() + "]", (cause != null ? cause : e));
                 }
             }
         }

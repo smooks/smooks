@@ -68,7 +68,7 @@ import org.smooks.engine.resource.config.GlobalParamsResourceConfig;
 import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
 import org.smooks.io.source.DOMSource;
 import org.smooks.resource.URIResourceLocator;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.smooks.support.DomUtils;
 import org.smooks.support.StreamUtils;
 import org.smooks.support.URIUtil;

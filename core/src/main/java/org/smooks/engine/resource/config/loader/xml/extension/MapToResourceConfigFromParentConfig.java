@@ -84,9 +84,9 @@ public class MapToResourceConfigFromParentConfig implements DOMVisitBefore {
     private Optional<String> defaultValue;
 
     @PostConstruct
-    public void postConstruct() throws SmooksConfigException {
+    public void postConstruct() {
         if (parentRelIndex >= 0) {
-            throw new SmooksConfigException("param 'parentRelIndex' value must be negative.  Value is '" + parentRelIndex + "'.");
+            throw new SmooksConfigException("Parameter [parentRelIndex] value must be negative. Value is [" + parentRelIndex + "]");
         }
     }
 

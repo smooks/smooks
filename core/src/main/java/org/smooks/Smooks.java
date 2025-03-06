@@ -70,7 +70,7 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.classpath.CascadingClassLoaderSet;
+import org.smooks.support.classpath.scanner.CascadingClassLoaderSet;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.DefaultExecutionContext;
 import org.smooks.engine.bean.context.preinstalled.Time;

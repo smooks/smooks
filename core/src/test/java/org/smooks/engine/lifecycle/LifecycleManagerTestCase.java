@@ -283,7 +283,7 @@ public class LifecycleManagerTestCase {
             lifecycleManager.applyPhase(cdu2, new PostConstructLifecyclePhase(new Scope(mockApplicationContext.getRegistry(), resourceConfig, cdu2)));
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigException e) {
-            assertEquals("Error invoking @PostConstruct method 'init' on class 'org.smooks.engine.lifecycle.LifecycleManagerTestCase$MyContentDeliveryUnit12'.", e.getMessage());
+            assertEquals("Error invoking [@PostConstruct] method [init] on class [org.smooks.engine.lifecycle.LifecycleManagerTestCase$MyContentDeliveryUnit12]", e.getMessage());
         }
 
         // Uninitialize - exception....
@@ -291,7 +291,7 @@ public class LifecycleManagerTestCase {
             lifecycleManager.applyPhase(cdu2, new PreDestroyLifecyclePhase());
             fail("Expected SmooksConfigurationException.");
         } catch(SmooksConfigException e) {
-            assertEquals("Error invoking @PreDestroy method 'uninit' on class 'org.smooks.engine.lifecycle.LifecycleManagerTestCase$MyContentDeliveryUnit12'.", e.getMessage());
+            assertEquals("Error invoking [@PreDestroy] method [uninit] on class [org.smooks.engine.lifecycle.LifecycleManagerTestCase$MyContentDeliveryUnit12]", e.getMessage());
         }
     }
 

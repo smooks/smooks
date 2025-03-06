@@ -155,7 +155,7 @@ public class NestedSmooksVisitor implements BeforeVisitor, AfterVisitor, Consume
     protected DomSerializer domSerializer;
 
     @PostConstruct
-    public void postConstruct() throws SAXException, IOException, URISyntaxException, ClassNotFoundException {
+    public void postConstruct() {
         if (pipeline == null) {
             if (!resourceConfig.getParameters("smooksResourceList").isEmpty()) {
                 InputStream smooksResourceList = new ByteArrayInputStream(resourceConfig.getParameter("smooksResourceList", String.class).getValue().getBytes());

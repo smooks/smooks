@@ -40,14 +40,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.support;
+package org.smooks.support.classpath;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.classpath.InstanceOfFilter;
-import org.smooks.classpath.IsAnnotationPresentFilter;
-import org.smooks.classpath.Scanner;
+import org.smooks.support.classpath.scanner.InstanceOfFilter;
+import org.smooks.support.classpath.scanner.IsAnnotationPresentFilter;
+import org.smooks.support.classpath.scanner.Scanner;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -223,9 +223,9 @@ public final class ClassUtils {
         try {
             long startTime = System.currentTimeMillis();
             scanner.scanClasspath(Thread.currentThread().getContextClassLoader());
-            LOGGER.debug("Scanned classpath for instances of '" + type.getName() + "'.  Found " + filter.getClasses().size() + " matches. Scan took " + (System.currentTimeMillis() - startTime) + "ms.");
+            LOGGER.debug("Scanned classpath for instances of [{}].  Found [{}] matches. Scan took {} ms.", type.getName(), filter.getClasses().size(), System.currentTimeMillis() - startTime);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to search classspath for instances of '" + type.getName() + "'.", e);
+            throw new RuntimeException("Failed to search classspath for instances of [" + type.getName() + "]", e);
         }
 
         return filter.getClasses();
@@ -249,7 +249,7 @@ public final class ClassUtils {
         try {
             long startTime = System.currentTimeMillis();
             scanner.scanClasspath(Thread.currentThread().getContextClassLoader());
-            LOGGER.debug("Scanned classpath for class annotated with annotation '" + type.getName() + "'.  Found " + filter.getClasses().size() + " matches. Scan took " + (System.currentTimeMillis() - startTime) + "ms.");
+            LOGGER.debug("Scanned classpath for class annotated with annotation [{}].  Found [{}] matches. Scan took {} ms", type.getName(), filter.getClasses().size(), System.currentTimeMillis() - startTime);
         } catch (IOException e) {
             throw new RuntimeException("Failed to search classspath for class annotated with annotation '" + type.getName() + "'.", e);
         }

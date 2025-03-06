@@ -43,7 +43,7 @@
 package org.smooks.engine.lookup.converter;
 
 import org.smooks.api.converter.TypeConverterFactory;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import jakarta.annotation.Resource;
 

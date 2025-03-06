@@ -43,7 +43,7 @@
 package org.smooks.engine.injector;
 
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;

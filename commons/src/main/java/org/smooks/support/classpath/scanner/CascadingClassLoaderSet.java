@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.classpath;
+package org.smooks.support.classpath.scanner;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -52,7 +52,7 @@ import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.api.Registry;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import javax.inject.Named;
 import java.lang.reflect.InvocationTargetException;

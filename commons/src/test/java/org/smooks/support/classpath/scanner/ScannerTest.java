@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.classpath;
+package org.smooks.support.classpath.scanner;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,7 +76,7 @@ public class ScannerTest {
 
     @Test
     public void testScanClasspathGivenInstanceOfFilterHavingIncludeList() throws IOException {
-        InstanceOfFilter filter = new InstanceOfFilter(Filter.class, null, new String[]{"org/smooks"});
+        InstanceOfFilter filter = new InstanceOfFilter(ScannerFilter.class, null, new String[]{"org/smooks"});
         Scanner scanner = new Scanner(filter);
 
         long start = System.currentTimeMillis();
@@ -88,8 +88,8 @@ public class ScannerTest {
         assertEquals(5, classes.size());
         assertTrue(classes.contains(InstanceOfFilter.class));
         assertTrue(classes.contains(IsAnnotationPresentFilter.class));
-        assertTrue(classes.contains(AbstractFilter.class));
-        assertTrue(classes.contains(Filter.class));
+        assertTrue(classes.contains(AbstractScannerFilter.class));
+        assertTrue(classes.contains(ScannerFilter.class));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ScannerTest {
 
     @Test
     public void testScanClasspathGivenInstanceOfFilter() throws IOException {
-        InstanceOfFilter filter = new InstanceOfFilter(Filter.class);
+        InstanceOfFilter filter = new InstanceOfFilter(ScannerFilter.class);
         Scanner scanner = new Scanner(filter);
 
         long start = System.currentTimeMillis();
@@ -122,13 +122,13 @@ public class ScannerTest {
         assertEquals(5, classes.size());
         assertTrue(classes.contains(InstanceOfFilter.class));
         assertTrue(classes.contains(IsAnnotationPresentFilter.class));
-        assertTrue(classes.contains(AbstractFilter.class));
-        assertTrue(classes.contains(Filter.class));
+        assertTrue(classes.contains(AbstractScannerFilter.class));
+        assertTrue(classes.contains(ScannerFilter.class));
     }
 
     @Test
     public void testScanClasspathSkipsFilesThatAreNotArchives() throws IOException {
-        Scanner scanner = new Scanner(new Filter() {
+        Scanner scanner = new Scanner(new ScannerFilter() {
             @Override
             public void filter(String resourceName) {
 

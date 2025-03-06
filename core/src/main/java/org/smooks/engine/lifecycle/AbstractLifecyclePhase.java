@@ -46,11 +46,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.lifecycle.LifecyclePhase;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class AbstractLifecyclePhase implements LifecyclePhase {
 
@@ -71,15 +74,23 @@ public abstract class AbstractLifecyclePhase implements LifecyclePhase {
         for (Method method : methods) {
             if (method.getAnnotation(annotation) != null) {
                 if (method.getParameterTypes().length == 0) {
+                    Class<?>[] exceptionTypes = method.getExceptionTypes();
+                    if (method.getExceptionTypes().length > 0) {
+                        Optional<Class<?>> checkedExceptionTypes = Arrays.stream(exceptionTypes).filter(t -> !(RuntimeException.class.isAssignableFrom(t) || Error.class.isAssignableFrom(t))).findFirst();
+                        if (checkedExceptionTypes.isPresent()) {
+                            String[] exceptionTypesClassNames = Arrays.stream(exceptionTypes).map(Class::getName).collect(Collectors.toList()).toArray(new String[]{});
+                            LOGGER.warn("The lifecycle method [{}] should not throw a checked exception. Future versions of Smooks may fail during initialisation if a checked exception is thrown from a [@{}] method. Related annotation information: annotation [@{}()] on annotated element [{}() throws {}] of type [METHOD]", method.getName(), annotation.getSimpleName(), annotation.getName(), instance.getClass().getName() + "." + method.getName(), String.join(",", exceptionTypesClassNames));
+                        }
+                    }
                     try {
                         method.invoke(instance);
                     } catch (IllegalAccessException e) {
-                        throw new SmooksConfigException("Error invoking @" + annotation.getSimpleName() + " method '" + method.getName() + "' on class '" + instance.getClass().getName() + "'.", e);
+                        throw new SmooksConfigException("Error invoking [@" + annotation.getSimpleName() + "] method [" + method.getName() + "] on class [" + instance.getClass().getName() + "]", e);
                     } catch (InvocationTargetException e) {
-                        throw new SmooksConfigException("Error invoking @" + annotation.getSimpleName() + " method '" + method.getName() + "' on class '" + instance.getClass().getName() + "'.", e.getTargetException());
+                        throw new SmooksConfigException("Error invoking [@" + annotation.getSimpleName() + "] method [" + method.getName() + "] on class [" + instance.getClass().getName() + "]", e.getTargetException());
                     }
                 } else {
-                    LOGGER.warn("Method '" + ClassUtils.getLongMemberName(method) + "' defines an @" + annotation.getSimpleName() + " annotation on a paramaterized method.  This is not allowed!");
+                    LOGGER.warn("Method [{}] defines an @{} annotation on a parameterised method. This is not allowed!", ClassUtils.getLongMemberName(method), annotation.getSimpleName());
                 }
             }
         }

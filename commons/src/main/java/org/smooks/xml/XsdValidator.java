@@ -43,7 +43,7 @@
 package org.smooks.xml;
 
 import org.smooks.assertion.AssertArgument;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

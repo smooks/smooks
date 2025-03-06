@@ -45,7 +45,7 @@ package org.smooks.engine.expression;
 import org.smooks.api.expression.ExecutionContextExpressionEvaluator;
 import org.smooks.api.expression.ExpressionEvaluator;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 public class ExpressionEvaluatorFactory {
 

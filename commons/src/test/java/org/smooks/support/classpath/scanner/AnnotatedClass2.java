@@ -40,32 +40,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.classpath;
-
-import org.smooks.assertion.AssertArgument;
+package org.smooks.support.classpath.scanner;
 
 /**
- * Filter classpath classes based on their type.
- *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
+ * @author
  */
-public class InstanceOfFilter extends AbstractFilter {
-    private final Class<?> searchType;
-
-    public InstanceOfFilter(final Class<?> searchType) {
-        AssertArgument.isNotNull(searchType, "searchType");
-        this.searchType = searchType;
-    }
-
-    public InstanceOfFilter(final Class<?> searchType, final String[] ignoreList, final String[] includeList) {
-        super(ignoreList, includeList);
-
-        AssertArgument.isNotNull(searchType, "searchType");
-        this.searchType = searchType;
-    }
-
-    @Override
-    protected boolean addClass(Class<?> clazz) {
-        return searchType.isAssignableFrom(clazz);
-    }
+@TestAnnotation
+public class AnnotatedClass2 {
 }

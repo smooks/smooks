@@ -50,7 +50,11 @@ import java.util.Map;
  *
  * @author tfennelly
  */
-public abstract class AssertArgument {
+public final class AssertArgument {
+
+    private AssertArgument() {
+
+    }
 
     /**
      * Assert that the argument is not null.

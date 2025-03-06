@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.ContainerResourceLocator;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import java.io.File;
 import java.io.IOException;

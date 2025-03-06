@@ -49,7 +49,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.delivery.Filter;
 import org.smooks.api.io.Sink;
 import org.smooks.api.io.Source;
-import org.smooks.io.NullReader;
+import org.smooks.engine.resource.reader.NullReader;
 import org.smooks.io.NullWriter;
 import org.smooks.io.Stream;
 import org.smooks.io.sink.DOMSink;

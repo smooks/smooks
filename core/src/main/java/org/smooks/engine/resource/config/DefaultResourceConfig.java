@@ -53,7 +53,7 @@ import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.engine.resource.visitor.dom.DefaultDOMSerializerVisitor;
 import org.smooks.engine.resource.config.xpath.SelectorPathFactory;
 import org.smooks.resource.URIResourceLocator;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.smooks.support.StreamUtils;
 import org.smooks.support.XmlUtils;
 import org.w3c.dom.Element;

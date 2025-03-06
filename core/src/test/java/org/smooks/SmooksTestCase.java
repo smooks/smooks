@@ -42,6 +42,8 @@
  */
 package org.smooks;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
@@ -56,15 +58,23 @@ import org.smooks.io.sink.StringSink;
 import org.smooks.io.source.StringSource;
 import org.smooks.resource.URIResourceLocator;
 import org.smooks.support.SmooksUtil;
+import org.smooks.support.classpath.scanner.AbstractScannerFilter;
+import org.smooks.support.classpath.scanner.Scanner;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -79,7 +89,7 @@ public class SmooksTestCase {
     }
 
 	@Test
-    public void test_setClassPath() throws IOException, SAXException {
+    public void testSetClassPath() throws IOException, SAXException {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         TestClassLoader classLoader = new TestClassLoader(contextClassLoader);
         Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().withClassLoader(classLoader).build());
@@ -98,7 +108,7 @@ public class SmooksTestCase {
     }
 
 	@Test
-    public void test_addVisitor_DOM_01() {
+    public void testAddVisitorDom01() {
         Smooks smooks = new Smooks();
         TestDOMVisitorBefore visitor1 = new TestDOMVisitorBefore();
         TestDOMVisitorAfter visitor2 = new TestDOMVisitorAfter();
@@ -113,7 +123,7 @@ public class SmooksTestCase {
     }
 
 	@Test
-    public void test_addVisitor_SAX_01() {
+    public void testAddVisitorSax01() {
         Smooks smooks = new Smooks();
         TestSAXVisitorBefore visitor1 = new TestSAXVisitorBefore();
         TestSAXVisitorAfter visitor2 = new TestSAXVisitorAfter();
@@ -127,15 +137,67 @@ public class SmooksTestCase {
         assertEquals(1, visitor2.callCount);
     }
 
-
 	@Test
-    public void test_setResourceLocator() throws IOException, SAXException {
+    public void testSetResourceLocator() throws IOException, SAXException {
         Smooks smooks = new Smooks("classpath:/org/smooks/test_setClassLoader_01.xml");
 
         // Check that the base URI was properly resolved
         URIResourceLocator resourceLocator = (URIResourceLocator)smooks.getApplicationContext().getResourceLocator();
 		assertEquals("classpath:/org/smooks/", resourceLocator.getBaseURI().toString());
 		assertEquals("classpath:/org/smooks/somethingelse.xml", resourceLocator.getBaseURI().resolve("somethingelse.xml").toString());
+    }
+
+    @Test
+    public void testPostConstructAnnotatedMethodsDoNotThrowCheckedException() throws IOException {
+        AbstractScannerFilter postConstructAnnotationFilter = new AbstractScannerFilter() {
+            @Override
+            protected boolean addClass(Class<?> clazz) {
+                for (Method method : clazz.getMethods()) {
+                    PostConstruct postConstructAnnotation = method.getAnnotation(PostConstruct.class);
+                    if (postConstructAnnotation != null && method.getExceptionTypes().length > 0) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        };
+
+        Scanner scanner = new Scanner(postConstructAnnotationFilter);
+        scanner.scanClasspath(newUrlClassLoader(new File("target", "classes")));
+        assertTrue(postConstructAnnotationFilter.getClasses().isEmpty());
+    }
+
+    @Test
+    public void testPreDestroyAnnotatedMethodsDoNotThrowCheckedException() throws IOException {
+        AbstractScannerFilter postConstructAnnotationFilter = new AbstractScannerFilter() {
+            @Override
+            protected boolean addClass(Class<?> clazz) {
+                for (Method method : clazz.getMethods()) {
+                    PreDestroy postConstructAnnotation = method.getAnnotation(PreDestroy.class);
+                    if (postConstructAnnotation != null && method.getExceptionTypes().length > 0) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        };
+
+        Scanner scanner = new Scanner(postConstructAnnotationFilter);
+        scanner.scanClasspath(newUrlClassLoader(new File("target", "classes")));
+        assertTrue(postConstructAnnotationFilter.getClasses().isEmpty());
+    }
+
+    private URLClassLoader newUrlClassLoader(File... files) throws MalformedURLException {
+        URL[] urls = new URL[files.length];
+        int i = 0;
+        for (File file : files) {
+            urls[i] = file.toURI().toURL();
+            i++;
+        }
+
+        return new URLClassLoader(urls);
     }
 
     private static class TestDOMVisitorBefore implements DOMVisitBefore {

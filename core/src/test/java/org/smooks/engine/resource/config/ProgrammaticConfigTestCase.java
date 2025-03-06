@@ -73,7 +73,7 @@ public class ProgrammaticConfigTestCase {
             smooks.addVisitor(new ConfigurableVisitor());
             fail("Expected SmooksConfigurationException");
         } catch(SmooksConfigException e) {
-            assertEquals("Property 'stringParam' not configured on class org.smooks.engine.resource.config.ConfigurableVisitor'.", e.getMessage());
+            assertEquals("Property [stringParam] not configured on class [org.smooks.engine.resource.config.ConfigurableVisitor]", e.getMessage());
         }
     }
 }

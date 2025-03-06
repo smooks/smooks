@@ -40,15 +40,24 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.classpath;
+package org.smooks.engine.resource.reader;
 
-import java.lang.annotation.*;
+import java.io.IOException;
+import java.io.Reader;
 
 /**
+ * Null Reader.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface TestAnnotation {
+public class NullReader extends Reader {
+
+    @Override
+    public int read(char[] cbuf, int off, int len) throws IOException {
+        return 0;
+    }
+
+    @Override
+    public void close() throws IOException {
+    }
 }

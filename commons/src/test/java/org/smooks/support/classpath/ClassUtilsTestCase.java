@@ -40,10 +40,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.support;
+package org.smooks.support.classpath;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.smooks.support.Animal;
 
 import java.io.File;
 import java.lang.reflect.Method;

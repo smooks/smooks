@@ -40,11 +40,34 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.classpath;
+package org.smooks.support.classpath.scanner;
+
+import org.smooks.assertion.AssertArgument;
+
+import java.lang.annotation.Annotation;
 
 /**
- * @author
+ * Classpath filter for finding classes that are annotated with a particular annotation.
+ *
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-@TestAnnotation
-public class AnnotatedClass2 {
+public class IsAnnotationPresentFilter extends AbstractScannerFilter {
+    private final Class<? extends Annotation> searchType;
+
+    public IsAnnotationPresentFilter(final Class<? extends Annotation> searchType) {
+        AssertArgument.isNotNull(searchType, "searchType");
+        this.searchType = searchType;
+    }
+
+    public IsAnnotationPresentFilter(final Class<? extends Annotation> searchType, final String[] ignoreList, final String[] includeList) {
+        super(ignoreList, includeList);
+
+        AssertArgument.isNotNull(searchType, "searchType");
+        this.searchType = searchType;
+    }
+
+    @Override
+    protected boolean addClass(Class<?> clazz) {
+        return clazz.isAnnotationPresent(searchType);
+    }
 }

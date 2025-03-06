@@ -40,14 +40,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.classpath;
+package org.smooks.support.classpath.scanner;
 
 /**
  * Classpath resource filter.m
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public interface Filter {
+public interface ScannerFilter {
 
     /**
      * Classpath resource filter method.

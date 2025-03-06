@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.classpath;
+package org.smooks.support.classpath.scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,16 +65,16 @@ import java.util.zip.ZipFile;
 public class Scanner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scanner.class);
-    private final Filter filter;
+    private final ScannerFilter filter;
 
-    public Scanner(Filter filter) {
+    public Scanner(ScannerFilter filter) {
         AssertArgument.isNotNull(filter, "filter");
         this.filter = filter;
     }
 
     public void scanClasspath(ClassLoader classLoader) throws IOException {
         if (!(classLoader instanceof URLClassLoader)) {
-            LOGGER.warn("Not scanning classpath for ClassLoader '" + classLoader.getClass().getName() + "'.  ClassLoader must implement '" + URLClassLoader.class.getName() + "'.");
+            LOGGER.warn("Not scanning classpath for ClassLoader [{}].  ClassLoader must implement [{}]", classLoader.getClass().getName(), URLClassLoader.class.getName());
             return;
         }
 
@@ -95,7 +95,7 @@ public class Scanner {
 
             File file = new File(urlPath);
             if (alreadyScanned.contains(file.getAbsolutePath())) {
-                LOGGER.debug("Ignoring classpath URL '" + file.getAbsolutePath() + "'.  Already scanned this URL.");
+                LOGGER.debug("Ignoring classpath URL [{}]. Already scanned this URL", file.getAbsolutePath());
                 continue;
             }
             if (file.isDirectory()) {
@@ -110,12 +110,12 @@ public class Scanner {
     private void handleArchive(File file) {
         if (filter.isIgnorable(file.getName())) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Ignoring archive: " + file);
+                LOGGER.debug("Ignoring archive: {}", file);
             }
             return;
         }
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Scanning archive: " + file.getAbsolutePath());
+            LOGGER.debug("Scanning archive: {}", file.getAbsolutePath());
         }
 
         try {
@@ -128,19 +128,19 @@ public class Scanner {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn(String.format("%s: %s. Unable to scan [%s] for Smooks resources", e.getClass().getName(), e.getMessage(), file));
+            LOGGER.warn("{}: {}. Unable to scan [{}] for Smooks resources", e.getClass().getName(), e.getMessage(), file);
         }
     }
 
     private void handleDirectory(File file, String path) {
         if (path != null && filter.isIgnorable(path)) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Ignoring directory (and subdirectories): " + path);
+                LOGGER.debug("Ignoring directory (and subdirectories): {}", path);
             }
             return;
         }
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Scanning directory: " + file.getAbsolutePath());
+            LOGGER.debug("Scanning directory: {}", file.getAbsolutePath());
         }
 
         for (File child : file.listFiles()) {

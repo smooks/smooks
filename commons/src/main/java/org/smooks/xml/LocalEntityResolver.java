@@ -43,7 +43,7 @@
 package org.smooks.xml;
 
 import org.smooks.support.StreamUtils;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
