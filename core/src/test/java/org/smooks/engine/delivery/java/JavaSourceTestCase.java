@@ -51,6 +51,7 @@ import org.smooks.io.source.JavaSource;
 import org.smooks.io.sink.StringSink;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -62,6 +63,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -70,17 +72,17 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 public class JavaSourceTestCase {
 
 	@Test
-    public void test_dom() throws IOException, SAXException {
+    public void test_dom() throws IOException, SAXException, ParserConfigurationException {
         test("smooks-config-dom.xml", SOURCE_1, EXPECTED_1);
     }
 
 	@Test
-    public void test_sax() throws IOException, SAXException {
+    public void test_sax() throws IOException, SAXException, ParserConfigurationException {
         test("smooks-config-sax.xml", SOURCE_1, EXPECTED_1);
     }
 
 	@Test
-    public void test_includeEnclosingDocument() throws IOException, SAXException {
+    public void test_includeEnclosingDocument() throws IOException, SAXException, ParserConfigurationException {
         // Not sure what that "includeEnclosingDocument" flag on the XStream SaxWriter is supposed to do.
         // Seems to do the same thing whether it's on or off???...
         test("smooks-config-inc-encl-doc-on.xml", SOURCE_1, EXPECTED_1);
@@ -153,14 +155,14 @@ public class JavaSourceTestCase {
         }
     }
 
-    private void test(String config, List<Object> sourceObjects, String expected) throws IOException, SAXException {
+    private void test(String config, List<Object> sourceObjects, String expected) throws IOException, SAXException, ParserConfigurationException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
         ExecutionContext execContext = smooks.createExecutionContext();
         JavaSource source = new JavaSource(sourceObjects);
         StringWriter stringWriter = new StringWriter();
 
         smooks.filterSource(execContext, source, new WriterSink(stringWriter));
-        assertEquals(expected, stringWriter.toString());
+        assertTrue(XmlCompareUtil.compare(expected, stringWriter.toString()));
     }
 
     private static final List<Object> SOURCE_1;
